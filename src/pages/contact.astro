@@ -124,6 +124,10 @@ const type = url.searchParams.get('type') || 'contact';
             <div id="form-success" class="hidden p-4 rounded-xl bg-brand-emerald/10 border border-brand-emerald/20 text-brand-emerald text-sm">
               ✓ Bedankt! We nemen binnen 1 werkdag contact op.
             </div>
+            <!-- Error message -->
+            <div id="form-error" class="hidden p-4 rounded-xl bg-brand-rose/10 border border-brand-rose/20 text-brand-rose text-sm">
+              ✗ Er is iets misgegaan. Probeer het opnieuw of mail naar <a href="mailto:hello@aanloopai.nl" class="underline">hello@aanloopai.nl</a>.
+            </div>
           </form>
         </div>
 
@@ -193,17 +197,49 @@ const type = url.searchParams.get('type') || 'contact';
 
 <script>
   const form = document.getElementById('contact-form') as HTMLFormElement;
-  form?.addEventListener('submit', (e) => {
+  const WEB3FORMS_KEY = '10596d38-fc14-4230-a3c9-4bb1a6981bc7';
+
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('submit-btn') as HTMLButtonElement;
     const label = document.getElementById('submit-label') as HTMLElement;
+    const successMsg = document.getElementById('form-success') as HTMLElement;
+    const errorMsg = document.getElementById('form-error') as HTMLElement;
+
+    // Gather form data
+    const data = new FormData(form);
+    data.append('access_key', WEB3FORMS_KEY);
+    data.append('subject', `Nieuw bericht via aanloopai.nl — ${data.get('type') || 'contact'}`);
+    data.append('from_name', 'Aanloop AI Website');
+    data.append('redirect', 'false');
+
     btn.disabled = true;
     label.textContent = 'Versturen…';
-    setTimeout(() => {
-      document.getElementById('form-success')?.classList.remove('hidden');
-      form.reset();
+    errorMsg?.classList.add('hidden');
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: data,
+      });
+      const json = await res.json();
+
+      if (json.success) {
+        successMsg?.classList.remove('hidden');
+        form.reset();
+        // Redirect to thank you page after 1.5s
+        setTimeout(() => {
+          window.location.href = '/bedankt/?type=contact';
+        }, 1500);
+      } else {
+        throw new Error(json.message || 'Onbekende fout');
+      }
+    } catch (err) {
+      errorMsg?.classList.remove('hidden');
+      console.error('Form error:', err);
+    } finally {
       btn.disabled = false;
       label.textContent = 'Verstuur bericht';
-    }, 1200);
+    }
   });
 </script>
