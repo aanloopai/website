@@ -8,54 +8,126 @@ export interface Props {
   description: string;
   image?: string;
   noindex?: boolean;
-  schema?: object;
+  schema?: object | object[];
+  faqSchema?: { question: string; answer: string }[];
 }
 
 const {
   title,
   description,
-  image = '/brand/logo-horizontal-light.svg',
+  image = '/logo-mark-light-1024.png',
   noindex = false,
   schema,
+  faqSchema,
 } = Astro.props;
 
-const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const canonical = new URL(Astro.url.pathname, 'https://aanloopai.nl').toString();
 const fullTitle = title.includes('Aanloop') ? title : `${title} · Aanloop AI`;
+const ogImage = image.startsWith('http') ? image : `https://aanloopai.nl${image}`;
 
-// Schema.org Organization JSON-LD
+// ── Organization Schema ────────────────────────────────────────────
 const orgSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
+  '@id': 'https://aanloopai.nl/#organization',
   name: 'Aanloop AI',
-  url: 'https://aanloop.ai',
-  logo: 'https://aanloop.ai/brand/logo-horizontal-light.svg',
-  description: 'AI-oplossingen voor het Nederlandse MKB — kant-en-klare AI-assistenten en custom workflows.',
+  alternateName: 'AanloopAI',
+  url: 'https://aanloopai.nl',
+  logo: {
+    '@type': 'ImageObject',
+    url: 'https://aanloopai.nl/logo-mark-light-1024.png',
+    width: 1024,
+    height: 1024,
+  },
+  description: 'Aanloop AI levert AI-oplossingen voor het Nederlandse MKB. Van AI-receptionist tot custom workflows — live in 8 dagen.',
+  slogan: 'AI die echt werkt voor uw bedrijf',
+  foundingDate: '2024',
+  legalName: 'Aanloop AI',
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Rotterdam',
+    addressRegion: 'Zuid-Holland',
     addressCountry: 'NL',
   },
+  contactPoint: {
+    '@type': 'ContactPoint',
+    contactType: 'sales',
+    email: 'hello@aanloopai.nl',
+    areaServed: 'NL',
+    availableLanguage: ['Dutch', 'English'],
+    hoursAvailable: {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+      opens: '09:00',
+      closes: '17:00',
+    },
+  },
   sameAs: [
-    'https://www.linkedin.com/company/aanloop-ai',
+    'https://www.linkedin.com/company/aanloopai',
+    'https://twitter.com/aanloopai',
+  ],
+  knowsAbout: [
+    'AI Automatisering',
+    'AI Receptionist',
+    'WhatsApp AI Assistent',
+    'Workflow Automatisering',
+    'EU AI Act Compliance',
   ],
 };
 
-const localBusinessSchema = {
+// ── WebSite Schema ────────────────────────────────────────────────
+const websiteSchema = {
   '@context': 'https://schema.org',
-  '@type': 'LocalBusiness',
+  '@type': 'WebSite',
+  '@id': 'https://aanloopai.nl/#website',
+  url: 'https://aanloopai.nl',
   name: 'Aanloop AI',
   description: 'AI-oplossingen voor het Nederlandse MKB',
-  url: 'https://aanloop.ai',
-  telephone: '+31000000000',
-  email: 'hello@aanloop.ai',
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: '',
-    addressLocality: 'Rotterdam',
-    postalCode: '3000',
-    addressCountry: 'NL',
+  publisher: { '@id': 'https://aanloopai.nl/#organization' },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: 'https://aanloopai.nl/kennisbank/?q={search_term_string}',
+    },
+    'query-input': 'required name=search_term_string',
   },
 };
+
+// ── FAQ Schema ────────────────────────────────────────────────────
+const faqSchemaLD = faqSchema?.length ? {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqSchema.map(({ question, answer }) => ({
+    '@type': 'Question',
+    name: question,
+    acceptedAnswer: { '@type': 'Answer', text: answer },
+  })),
+} : null;
+
+// ── Breadcrumb Schema ─────────────────────────────────────────────
+const pathParts = Astro.url.pathname.replace(/\/$/, '').split('/').filter(Boolean);
+const breadcrumbSchema = pathParts.length > 0 ? {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://aanloopai.nl/' },
+    ...pathParts.map((part, i) => ({
+      '@type': 'ListItem',
+      position: i + 2,
+      name: part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' '),
+      item: `https://aanloopai.nl/${pathParts.slice(0, i + 1).join('/')}/`,
+    })),
+  ],
+} : null;
+
+const allSchemas = [
+  orgSchema,
+  websiteSchema,
+  breadcrumbSchema,
+  faqSchemaLD,
+  ...(Array.isArray(schema) ? schema : schema ? [schema] : []),
+].filter(Boolean);
 ---
 
 <!DOCTYPE html>
@@ -65,16 +137,22 @@ const localBusinessSchema = {
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="generator" content={Astro.generator} />
 
+    <!-- Canonical & Hreflang -->
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="nl" href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={canonical} />
+
     <!-- Favicons -->
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="canonical" href={canonical} />
 
     <!-- Primary meta -->
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="keywords" content="AI receptionist, AI automatisering, WhatsApp AI, workflow automatisering, AI assistent Nederland, MKB AI oplossingen" />
+    <meta name="author" content="Aanloop AI" />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'} />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -82,27 +160,34 @@ const localBusinessSchema = {
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
-    <meta property="og:image" content={new URL(image, Astro.site).toString()} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Aanloop AI — AI-oplossingen voor het Nederlandse MKB" />
     <meta property="og:locale" content="nl_NL" />
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@aanloopai" />
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={new URL(image, Astro.site).toString()} />
+    <meta name="twitter:image" content={ogImage} />
 
     <!-- Theme color -->
     <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#0B1120" media="(prefers-color-scheme: dark)" />
 
-    <!-- Schema.org JSON-LD -->
-    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
-    <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
-    {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
-
-    <!-- Preconnect -->
+    <!-- Core Web Vitals: Resource Hints -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://api.web3forms.com" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+
+    <!-- Schema.org JSON-LD -->
+    {allSchemas.map(s => (
+      <script type="application/ld+json" set:html={JSON.stringify(s)} />
+    ))}
   </head>
   <body>
     <!-- Skip to main content — accessibility -->

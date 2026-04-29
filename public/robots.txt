@@ -1,0 +1,32 @@
+User-agent: *
+Allow: /
+
+# Private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /bedankt/
+
+# Query parameters (except pagination)
+Disallow: /*?*
+Allow: /*?page=
+
+# Sitemaps
+Sitemap: https://aanloopai.nl/sitemap.xml
+
+# Crawl rate
+Crawl-delay: 1
+
+# AI crawlers — allow kennisbank only
+User-agent: GPTBot
+Allow: /kennisbank/
+Disallow: /tarieven/
+Disallow: /aanvragen/
+Disallow: /
+
+User-agent: ChatGPT-User
+Allow: /kennisbank/
+Disallow: /
+
+User-agent: Google-Extended
+Allow: /kennisbank/
+Disallow: /tarieven/

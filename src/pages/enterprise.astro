@@ -1,0 +1,302 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const faqSchema = [
+  {
+    question: 'Wat is de minimale contractduur voor enterprise?',
+    answer: "Enterprise contracten starten met een jaarlijks abonnement (12 maanden). We bieden maatwerk SLA's met opzegtermijn van 3 maanden na het eerste jaar.",
+  },
+  {
+    question: 'Voldoet Aanloop AI aan de AVG en EU AI Act?',
+    answer: 'Ja. Al onze diensten zijn AVG-compliant. Data wordt verwerkt binnen de EU (Rotterdam datacenters). We begeleiden u ook bij EU AI Act compliance als onderdeel van het enterprise pakket.',
+  },
+  {
+    question: 'Is een dedicated account manager inbegrepen?',
+    answer: 'Elke enterprise klant krijgt een vaste account manager met directe toegang via telefoon, WhatsApp en e-mail. Inclusief maandelijkse business reviews.',
+  },
+  {
+    question: 'Hoe lang duurt een enterprise implementatie?',
+    answer: 'Gemiddeld 14–21 dagen voor standaard enterprise implementaties. Complexe integraties (legacy systemen, SSO) plannen we in 30–45 dagen. We starten altijd met een gratis discovery call.',
+  },
+];
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Aanloop AI Enterprise',
+  serviceType: 'Enterprise AI Automatisering',
+  provider: {
+    '@type': 'Organization',
+    name: 'Aanloop AI',
+    url: 'https://aanloopai.nl',
+  },
+  areaServed: { '@type': 'Country', name: 'Netherlands' },
+  description: 'Enterprise AI-oplossingen met dedicated support, SLA, SSO, API-toegang en AVG/EU AI Act compliance voor Nederlandse organisaties met 200+ medewerkers.',
+  offers: {
+    '@type': 'Offer',
+    price: '1499',
+    priceCurrency: 'EUR',
+    priceSpecification: { '@type': 'UnitPriceSpecification', price: 1499, priceCurrency: 'EUR', unitText: 'MONTH' },
+    availability: 'https://schema.org/InStock',
+  },
+};
+---
+
+<BaseLayout
+  title="Enterprise AI — Aanloop AI"
+  description="Enterprise AI-oplossingen voor organisaties met 200+ medewerkers. Dedicated account manager, SLA 99.9% uptime, SSO, API-toegang en volledige AVG/EU AI Act compliance."
+  faqSchema={faqSchema}
+  schema={serviceSchema}
+>
+  <!-- Hero -->
+  <section class="relative bg-navy overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-navy via-[#0f1e3d] to-brand-indigo/30"></div>
+    <div class="absolute top-0 right-0 w-1/2 h-full opacity-10">
+      <div class="w-full h-full bg-gradient-to-l from-brand-indigo to-transparent"></div>
+    </div>
+    <div class="container-page py-24 lg:py-36 relative">
+      <div class="max-w-4xl">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-indigo/20 border border-brand-indigo/40 text-brand-indigo text-xs font-medium tracking-wide uppercase">
+            Enterprise
+          </span>
+          <span class="text-slate-400 text-sm">Voor organisaties met 200+ medewerkers</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-white text-balance leading-[1.05] mb-6">
+          AI op enterprise schaal. Zonder compromissen.
+        </h1>
+        <p class="text-lg lg:text-xl text-slate-300 leading-relaxed max-w-2xl mb-10">
+          Dedicated account management, 99.9% SLA-garantie, SSO-integratie en volledige AVG/EU AI Act compliance. Van pilot tot enterprise-wide rollout in 30 dagen.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="/contact/?type=offerte" class="btn-primary text-base px-8 py-4">
+            Vraag custom voorstel aan →
+          </a>
+          <a href="/contact/?type=demo" class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl border border-white/20 text-white font-semibold hover:bg-white/10 transition-all">
+            📅 Plan discovery call
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust signals -->
+  <section class="border-b border-slate-200 bg-slate-50">
+    <div class="container-page py-8">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        {[
+          { icon: '🔒', label: 'AVG-compliant', sub: 'EU data processing' },
+          { icon: '⚡', label: '99.9% uptime SLA', sub: 'Gegarandeerd' },
+          { icon: '🛡️', label: 'EU AI Act ready', sub: 'Compliance support' },
+          { icon: '🏆', label: 'Dedicated support', sub: '24/7 Priority access' },
+        ].map(item => (
+          <div class="py-4">
+            <div class="text-2xl mb-2">{item.icon}</div>
+            <div class="font-semibold text-navy text-sm">{item.label}</div>
+            <div class="text-xs text-slate-500 mt-1">{item.sub}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Enterprise features -->
+  <section class="section">
+    <div class="container-page">
+      <div class="text-center mb-16">
+        <span class="eyebrow">Enterprise features</span>
+        <h2 class="text-3xl lg:text-4xl font-bold text-navy mt-2">Alles wat u nodig heeft voor enterprise-adoptie</h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {[
+          {
+            icon: '👤',
+            title: 'Dedicated account manager',
+            desc: 'Vaste contactpersoon met directe toegang via telefoon, WhatsApp en e-mail. Maandelijkse business reviews inclusief.',
+          },
+          {
+            icon: '🔗',
+            title: 'API-toegang & integraties',
+            desc: 'REST API voor integratie met uw bestaande systemen (ERP, CRM, legacy). Uitgebreide documentatie en sandbox omgeving.',
+          },
+          {
+            icon: '🔐',
+            title: 'SSO & RBAC',
+            desc: 'Single Sign-On via SAML 2.0 / OAuth 2.0. Role-Based Access Control voor granulaire rechtenstructuur.',
+          },
+          {
+            icon: '📊',
+            title: 'Geavanceerde analytics',
+            desc: 'Real-time dashboard met gesprekskwaliteit, resolutiepercentage, escalaties en ROI-rapportage per afdeling.',
+          },
+          {
+            icon: '🎯',
+            title: 'Custom AI-training',
+            desc: 'AI getraind op uw kennisbank, producten, processes en tone-of-voice. Doorlopende optimalisatie op basis van data.',
+          },
+          {
+            icon: '⚡',
+            title: 'Priority support 24/7',
+            desc: 'Dedicated support channel. Response time < 2 uur, resolvement < 4 uur voor P1-incidenten. Quarterly business reviews.',
+          },
+          {
+            icon: '🌍',
+            title: 'Multi-locatie deployment',
+            desc: 'Uitrol over meerdere vestigingen, branches of landen. Centrale beheeromgeving met lokale configuraties.',
+          },
+          {
+            icon: '📋',
+            title: 'SLA-garantie',
+            desc: '99.9% uptime gegarandeerd. Automatische credits bij afwijking. Maandelijkse uptime-rapportage.',
+          },
+          {
+            icon: '🔄',
+            title: 'Quarterly business reviews',
+            desc: 'Elke 3 maanden een strategisch gesprek over prestaties, optimalisaties en groeiplannen.',
+          },
+        ].map(f => (
+          <div class="card hover:shadow-lg transition-all">
+            <div class="text-3xl mb-4">{f.icon}</div>
+            <h3 class="font-bold text-navy mb-2">{f.title}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{f.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Security & Compliance -->
+  <section class="section bg-slate-50">
+    <div class="container-page">
+      <div class="max-w-3xl mx-auto text-center mb-12">
+        <span class="eyebrow">Security & Compliance</span>
+        <h2 class="text-3xl lg:text-4xl font-bold text-navy mt-2">Enterprise-grade beveiliging</h2>
+        <p class="mt-4 text-slate-600">Gebouwd voor sectoren met hoge compliance-eisen: zorg, financiën, overheid en legal.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="card">
+          <h3 class="font-bold text-navy mb-4">🛡️ Data & Privacy</h3>
+          <ul class="space-y-3">
+            {[
+              'Alle data verwerkt in EU (NL-datacenter)',
+              'AVG/GDPR volledig compliant',
+              'Data Processing Agreement (DPA) beschikbaar',
+              'Right to be forgotten procedure',
+              'Data breach notification < 72 uur',
+              'DPIA-ondersteuning voor AI-verwerkingen',
+            ].map(item => (
+              <li class="flex items-start gap-3 text-sm">
+                <span class="text-brand-emerald mt-0.5">✓</span>
+                <span class="text-slate-700">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div class="card">
+          <h3 class="font-bold text-navy mb-4">🔒 Technische beveiliging</h3>
+          <ul class="space-y-3">
+            {[
+              'Encryptie at rest & in transit (AES-256)',
+              'Penetration testing (jaarlijks)',
+              'EU AI Act compliance support',
+              'Audit logs & monitoring (24/7)',
+              'Access control & RBAC',
+              'SOC 2 Type II roadmap (2026)',
+            ].map(item => (
+              <li class="flex items-start gap-3 text-sm">
+                <span class="text-brand-emerald mt-0.5">✓</span>
+                <span class="text-slate-700">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLA details -->
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-12">
+          <span class="eyebrow">SLA Details</span>
+          <h2 class="text-3xl font-bold text-navy mt-2">Onze garanties, op papier</h2>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { metric: '99.9%', label: 'Uptime garantie', sub: 'Per maand gemeten' },
+            { metric: '< 2s', label: 'Response tijd', sub: 'AI reactietijd' },
+            { metric: '< 2u', label: 'Support response', sub: 'P1 incidenten' },
+            { metric: '< 4u', label: 'Resolutietijd', sub: 'Kritieke issues' },
+          ].map(s => (
+            <div class="card text-center">
+              <div class="text-3xl font-bold text-brand-indigo mb-1">{s.metric}</div>
+              <div class="font-semibold text-navy text-sm">{s.label}</div>
+              <div class="text-xs text-slate-500 mt-1">{s.sub}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Implementation roadmap -->
+  <section class="section bg-navy text-white">
+    <div class="container-page">
+      <div class="text-center mb-12">
+        <span class="eyebrow text-brand-indigo">Implementatieproces</span>
+        <h2 class="text-3xl lg:text-4xl font-bold text-white mt-2">Van pilot naar enterprise-wide in 30 dagen</h2>
+      </div>
+
+      <div class="grid md:grid-cols-4 gap-6">
+        {[
+          { dag: 'Dag 1–3', title: 'Discovery', desc: 'Technische assessment, requirementsanalyse, stakeholder interviews.' },
+          { dag: 'Dag 4–7', title: 'Ontwerp', desc: 'Architectuur, integraties, SLA-definitie, custom AI-configuratie.' },
+          { dag: 'Dag 8–21', title: 'Bouwen & testen', desc: 'AI-training, systeemintegraties, UAT met uw team.' },
+          { dag: 'Dag 22–30', title: 'Go-live', desc: 'Gefaseerde uitrol, monitoring, hypercare periode met dedicated support.' },
+        ].map(step => (
+          <div class="bg-white/5 border border-white/10 rounded-2xl p-6">
+            <div class="text-brand-indigo text-xs font-medium uppercase tracking-wide mb-2">{step.dag}</div>
+            <h3 class="font-bold text-white mb-2">{step.title}</h3>
+            <p class="text-slate-400 text-sm leading-relaxed">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-3xl font-bold text-navy mb-8 text-center">Veelgestelde vragen</h2>
+      <div class="space-y-4">
+        {faqSchema.map((item, i) => (
+          <div class="card">
+            <h3 class="font-semibold text-navy mb-2">{item.question}</h3>
+            <p class="text-slate-600 text-sm leading-relaxed">{item.answer}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section bg-gradient-to-br from-brand-indigo to-navy text-white">
+    <div class="container-page text-center">
+      <h2 class="text-3xl lg:text-4xl font-bold mb-4">Klaar voor een enterprise gesprek?</h2>
+      <p class="text-slate-300 mb-8 max-w-xl mx-auto">Boek een gratis 45-minuten discovery call. We analyseren uw situatie en leveren binnen 5 werkdagen een custom voorstel.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/contact/?type=offerte" class="btn-primary bg-white text-navy hover:bg-slate-100 text-base px-8 py-4">
+          Vraag custom voorstel aan →
+        </a>
+        <a href="mailto:hello@aanloopai.nl" class="inline-flex items-center gap-2 px-8 py-4 rounded-2xl border border-white/30 text-white hover:bg-white/10 transition-all font-semibold">
+          📧 hello@aanloopai.nl
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
