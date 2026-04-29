@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const type = Astro.url.searchParams.get('type') || 'aanvraag';
+
+const messages: Record<string, { title: string; sub: string; next: { href: string; label: string }[] }> = {
+  aanvraag: {
+    title: 'Aanvraag ontvangen!',
+    sub: 'Uw aanvraag is succesvol ingediend. Uw accountmanager neemt binnen 1 werkdag contact op voor de onboarding-planning.',
+    next: [
+      { href: '/werkwijze/', label: 'Lees hoe onboarding werkt' },
+      { href: '/', label: 'Terug naar de homepage' },
+    ],
+  },
+  demo: {
+    title: 'Demo ingepland!',
+    sub: 'U ontvangt een bevestigingsmail met de details. We kijken ernaar uit u te ontmoeten en de AI live te tonen.',
+    next: [
+      { href: '/cases/', label: 'Lees alvast onze klantcases' },
+      { href: '/diensten/', label: 'Bekijk alle diensten' },
+    ],
+  },
+  contact: {
+    title: 'Bericht verzonden!',
+    sub: 'Bedankt voor uw bericht. We reageren binnen 1 werkdag. Heeft u een urgent verzoek? Bel ons direct op 010 — 000 0000.',
+    next: [
+      { href: '/', label: 'Terug naar de homepage' },
+      { href: '/diensten/', label: 'Bekijk onze diensten' },
+    ],
+  },
+};
+
+const msg = messages[type] ?? messages.contact;
+---
+
+<BaseLayout
+  title="Bedankt · Aanloop AI"
+  description="Uw aanvraag is ontvangen. Het Aanloop AI-team neemt snel contact op."
+  noindex={true}
+>
+  <section class="min-h-[70vh] flex items-center">
+    <div class="container-page py-20">
+      <div class="max-w-2xl mx-auto text-center">
+
+        <!-- Success animation -->
+        <div class="w-20 h-20 rounded-full bg-brand-emerald/10 flex items-center justify-center mx-auto mb-8 success-circle">
+          <svg class="w-10 h-10 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+
+        <div class="accent-band mx-auto mb-6"><span></span><span></span><span></span><span></span></div>
+
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tightest text-navy text-balance mb-4">
+          {msg.title}
+        </h1>
+        <p class="text-lg text-slate-600 leading-relaxed mb-10 max-w-lg mx-auto">
+          {msg.sub}
+        </p>
+
+        <!-- Next steps -->
+        <div class="flex flex-col sm:flex-row gap-3 justify-center mb-16">
+          {msg.next.map((n, i) => (
+            <a href={n.href} class:list={[i === 0 ? 'btn-primary' : 'btn-outline', 'text-base px-6 py-3']}>
+              {n.label}
+            </a>
+          ))}
+        </div>
+
+        <!-- What happens next -->
+        <div class="card bg-slate-50 border-slate-200 text-left max-w-lg mx-auto">
+          <p class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-400 mb-4">Wat nu?</p>
+          <ol class="space-y-4">
+            {[
+              { n: '1', text: 'U ontvangt een bevestigingsmail binnen enkele minuten.' },
+              { n: '2', text: 'Onze accountmanager neemt binnen 1 werkdag telefonisch contact op.' },
+              { n: '3', text: 'We plannen samen het onboarding-gesprek en de demo in.' },
+              { n: '4', text: 'Live binnen 7–14 werkdagen na akkoord.' },
+            ].map(step => (
+              <li class="flex gap-4 items-start">
+                <span class="w-6 h-6 rounded-full bg-navy text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{step.n}</span>
+                <span class="text-sm text-slate-700">{step.text}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .success-circle {
+    animation: pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+  @keyframes pop-in {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  .accent-band {
+    width: fit-content;
+  }
+</style>

@@ -1,0 +1,147 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const openPositions = [
+  {
+    title: 'AI Implementatie Specialist',
+    type: 'Fulltime',
+    location: 'Rotterdam (hybride)',
+    department: 'Customer Success',
+    accent: 'bg-brand-indigo',
+    summary: 'U begeleidt klanten van onboarding tot go-live. U configureert AI-assistenten, traint ze op klantdata en zorgt dat elke implementatie vlekkeloos verloopt.',
+    requirements: ['2+ jaar ervaring in technische implementaties of customer success', 'Affiniteit met AI, automation of SaaS', 'Uitstekende communicatieve vaardigheden in Nederlands', 'Proactief en zelfstandig'],
+  },
+  {
+    title: 'B2B Sales Executive',
+    type: 'Fulltime',
+    location: 'Rotterdam (hybride)',
+    department: 'Sales',
+    accent: 'bg-brand-rose',
+    summary: 'U boekt demos, kwalificeert leads en sluit contracten met MKB-ondernemers. U werkt nauw samen met het marketing- en implementatieteam.',
+    requirements: ['3+ jaar B2B-saleservaring (SaaS of dienstverlening)', 'Aantoonbaar trackrecord in het sluiten van deals', 'Gedreven, positief en resultaatgericht', 'Ervaring met CRM-systemen (Pipedrive of HubSpot)'],
+  },
+  {
+    title: 'AI Trainer & Prompt Engineer',
+    type: 'Fulltime of parttime',
+    location: 'Rotterdam / Remote',
+    department: 'Product',
+    accent: 'bg-brand-amber',
+    summary: 'U schrijft en optimaliseert de prompts en kennisbanken voor onze AI-assistenten. U werkt samen met klanten om de juiste toon, inhoud en escalatielogica te bepalen.',
+    requirements: ['Aantoonbare ervaring met prompting (LLMs, conversational AI)', 'Sterke schrijfvaardigheden in Nederlands', 'Analytisch en detail-georiënteerd', 'Ervaring met spraak-AI of chatbots is een plus'],
+  },
+  {
+    title: 'Marketing Manager',
+    type: 'Fulltime',
+    location: 'Rotterdam (hybride)',
+    department: 'Marketing',
+    accent: 'bg-brand-emerald',
+    summary: 'U bouwt de Aanloop AI-merkbekendheid in de Nederlandse markt. Van content en SEO tot LinkedIn-campagnes en partner-events — u bezit het complete marketingkanaal.',
+    requirements: ['4+ jaar B2B-marketingervaring', 'Sterke content- en copywriting-vaardigheden (NL)', 'Ervaring met Google Analytics, LinkedIn Ads en SEO', 'Data-gedreven met creatieve instelling'],
+  },
+];
+---
+
+<BaseLayout
+  title="Vacatures · Aanloop AI"
+  description="Werken bij Aanloop AI — we zoeken gedreven mensen die AI toegankelijk willen maken voor het Nederlandse MKB. Bekijk onze openstaande vacatures."
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Vacatures</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          Bouw mee aan de AI-revolutie voor het MKB.
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl reveal reveal-delay-2">
+          Bij Aanloop AI werk je in een klein, ambitieus team dat dagelijks impact maakt. We geloven in eigenaarschap, snelheid en eerlijkheid — voor klanten én voor elkaar.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Waarom Aanloop -->
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <p class="eyebrow mb-3">Waarom Aanloop AI?</p>
+        <h2 class="text-3xl font-bold tracking-tightest text-navy">Wat we bieden.</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {[
+          { icon: '💰', title: 'Competitief salaris + equity', desc: 'Salaris op marktniveau plus een optie-participatie voor alle teamleden.' },
+          { icon: '🏠', title: 'Hybride werken', desc: 'Kantoor in Rotterdam, thuis waar het uitkomt. Geen vaste aanwezigheidsvereisten.' },
+          { icon: '🚀', title: 'Snelle groei', desc: 'Klein team, grote impact. Jouw ideeën worden snel geïmplementeerd.' },
+          { icon: '📚', title: 'Leerbudget', desc: '€1.500/jaar voor cursussen, conferenties en boeken. Leren is deel van het werk.' },
+        ].map((b, i) => (
+          <div class={`card reveal reveal-delay-${i + 1}`}>
+            <div class="text-2xl mb-3">{b.icon}</div>
+            <h3 class="font-bold text-navy text-sm mb-1">{b.title}</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">{b.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Open positions -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <p class="eyebrow mb-3">Openstaande vacatures</p>
+        <h2 class="text-3xl font-bold tracking-tightest text-navy">{openPositions.length} posities beschikbaar.</h2>
+      </div>
+      <div class="space-y-4">
+        {openPositions.map((pos, i) => (
+          <details class={`card group cursor-pointer reveal reveal-delay-${(i % 3) + 1}`}>
+            <summary class="flex items-start justify-between list-none cursor-pointer">
+              <div class="flex items-start gap-4">
+                <div class={`w-1 h-12 ${pos.accent} rounded-full flex-shrink-0 mt-1`}></div>
+                <div>
+                  <h3 class="font-bold text-navy">{pos.title}</h3>
+                  <div class="flex flex-wrap gap-2 mt-1">
+                    <span class="text-xs text-slate-500">{pos.department}</span>
+                    <span class="text-slate-300">·</span>
+                    <span class="text-xs text-slate-500">{pos.type}</span>
+                    <span class="text-slate-300">·</span>
+                    <span class="text-xs text-slate-500">{pos.location}</span>
+                  </div>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="mt-6 pl-5 border-l-2 border-slate-100 space-y-4">
+              <p class="text-sm text-slate-600 leading-relaxed">{pos.summary}</p>
+              <div>
+                <p class="text-xs font-bold text-navy mb-2">Wat we zoeken</p>
+                <ul class="space-y-1.5">
+                  {pos.requirements.map(r => (
+                    <li class="flex items-start gap-2 text-xs text-slate-600">
+                      <svg class="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                      {r}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <a href={`/contact/?type=contact&subject=${encodeURIComponent(pos.title)}`} class="btn-primary text-sm inline-flex mt-2">
+                Solliciteer nu
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </a>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Spontaan -->
+  <section class="section-tight">
+    <div class="container-page text-center reveal">
+      <h2 class="text-2xl font-bold text-navy mb-3">Staat uw functie er niet bij?</h2>
+      <p class="text-slate-600 mb-6 max-w-lg mx-auto text-sm">We groeien snel en zijn altijd geïnteresseerd in uitzonderlijk talent. Stuur een open sollicitatie.</p>
+      <a href="/contact/?type=contact" class="btn-outline text-base px-6 py-3">Stuur een open sollicitatie</a>
+    </div>
+  </section>
+</BaseLayout>

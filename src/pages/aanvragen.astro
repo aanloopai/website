@@ -1,0 +1,336 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const url = Astro.url;
+const plan = url.searchParams.get('plan') || 'groei';
+const product = url.searchParams.get('product') || 'marco';
+
+const planDetails: Record<string, { name: string; price: number; annualPrice: number; product: string; features: string[] }> = {
+  starter: {
+    name: 'Starter',
+    price: 297,
+    annualPrice: 249,
+    product: 'Marco — AI sekreter',
+    features: ['Tot 200 gesprekken/maand', '1 callscript op maat', 'E-mail lead-routering', 'Dashboard + transcripts'],
+  },
+  groei: {
+    name: 'Groei',
+    price: 497,
+    annualPrice: 417,
+    product: 'Marco — AI sekreter',
+    features: ['Onbeperkte gesprekken', 'Tot 5 callscripts', 'CRM-integratie + Telegram', 'Prioriteit support < 4 uur'],
+  },
+};
+
+const selected = planDetails[plan] ?? planDetails.groei;
+
+const steps = [
+  { n: 1, label: 'Uw gegevens' },
+  { n: 2, label: 'Betaling' },
+  { n: 3, label: 'Bevestiging' },
+];
+---
+
+<BaseLayout
+  title="Aanvragen · Aanloop AI"
+  description="Start vandaag met uw Aanloop AI-abonnement. Vul uw gegevens in, kies uw betaalmethode en ga live binnen 7 werkdagen."
+>
+  <div class="min-h-screen bg-slate-50">
+    <!-- Progress header -->
+    <div class="bg-white border-b border-slate-200">
+      <div class="container-page py-4 flex items-center justify-between">
+        <a href="/" aria-label="Aanloop AI">
+          <img src="/brand/logo-horizontal-light.svg" alt="Aanloop AI" class="h-8 w-auto" />
+        </a>
+        <nav class="flex items-center gap-2" aria-label="Checkout stappen">
+          {steps.map((step, i) => (
+            <div class="flex items-center gap-2">
+              <div class:list={[
+                'w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold',
+                i === 0 ? 'bg-navy text-white' : 'bg-slate-200 text-slate-500'
+              ]}>
+                {step.n}
+              </div>
+              <span class:list={['text-xs hidden sm:block', i === 0 ? 'font-medium text-navy' : 'text-slate-400']}>
+                {step.label}
+              </span>
+              {i < steps.length - 1 && <div class="w-8 h-px bg-slate-200 mx-1"></div>}
+            </div>
+          ))}
+        </nav>
+      </div>
+    </div>
+
+    <div class="container-page py-12">
+      <div class="grid lg:grid-cols-5 gap-10 max-w-5xl mx-auto">
+
+        <!-- Form -->
+        <div class="lg:col-span-3">
+          <h1 class="text-2xl font-bold text-navy mb-2">Uw gegevens</h1>
+          <p class="text-sm text-slate-500 mb-8">Vul uw contactgegevens in. Na bevestiging neemt uw accountmanager binnen 1 werkdag contact op voor onboarding.</p>
+
+          <form id="checkout-form" class="space-y-5" novalidate>
+            <!-- Contact -->
+            <fieldset class="card p-6">
+              <legend class="text-sm font-bold text-navy mb-4 flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-brand-indigo text-white text-[11px] flex items-center justify-center">1</span>
+                Contactpersoon
+              </legend>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="voornaam" class="block text-xs font-medium text-navy mb-1.5">Voornaam *</label>
+                  <input type="text" id="voornaam" name="voornaam" required autocomplete="given-name" class="form-input" placeholder="Jan" />
+                </div>
+                <div>
+                  <label for="achternaam" class="block text-xs font-medium text-navy mb-1.5">Achternaam *</label>
+                  <input type="text" id="achternaam" name="achternaam" required autocomplete="family-name" class="form-input" placeholder="de Boer" />
+                </div>
+              </div>
+              <div class="mt-4 grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="email" class="block text-xs font-medium text-navy mb-1.5">E-mailadres *</label>
+                  <input type="email" id="email" name="email" required autocomplete="email" class="form-input" placeholder="jan@bedrijf.nl" />
+                </div>
+                <div>
+                  <label for="telefoon" class="block text-xs font-medium text-navy mb-1.5">Telefoonnummer</label>
+                  <input type="tel" id="telefoon" name="telefoon" autocomplete="tel" class="form-input" placeholder="06 12 34 56 78" />
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Bedrijf -->
+            <fieldset class="card p-6">
+              <legend class="text-sm font-bold text-navy mb-4 flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-brand-rose text-white text-[11px] flex items-center justify-center">2</span>
+                Bedrijfsgegevens
+              </legend>
+              <div class="grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="bedrijf" class="block text-xs font-medium text-navy mb-1.5">Bedrijfsnaam *</label>
+                  <input type="text" id="bedrijf" name="bedrijf" required autocomplete="organization" class="form-input" placeholder="De Boer BV" />
+                </div>
+                <div>
+                  <label for="kvk" class="block text-xs font-medium text-navy mb-1.5">KvK-nummer</label>
+                  <input type="text" id="kvk" name="kvk" class="form-input" placeholder="12345678" maxlength="8" pattern="\d{8}" />
+                </div>
+              </div>
+              <div class="mt-4">
+                <label for="sector" class="block text-xs font-medium text-navy mb-1.5">Branche *</label>
+                <select id="sector" name="sector" required class="form-input">
+                  <option value="">Selecteer uw branche</option>
+                  <option>Horeca</option>
+                  <option>Logistiek & transport</option>
+                  <option>Vastgoed & makelaars</option>
+                  <option>Detailhandel</option>
+                  <option>Zakelijke dienstverlening</option>
+                  <option>Zorg & welzijn</option>
+                  <option>Anders</option>
+                </select>
+              </div>
+              <div class="mt-4 grid sm:grid-cols-2 gap-4">
+                <div>
+                  <label for="adres" class="block text-xs font-medium text-navy mb-1.5">Straat + huisnummer</label>
+                  <input type="text" id="adres" name="adres" autocomplete="street-address" class="form-input" placeholder="Voorbeeldstraat 1" />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label for="postcode" class="block text-xs font-medium text-navy mb-1.5">Postcode</label>
+                    <input type="text" id="postcode" name="postcode" autocomplete="postal-code" class="form-input" placeholder="3000 AA" maxlength="7" />
+                  </div>
+                  <div>
+                    <label for="stad" class="block text-xs font-medium text-navy mb-1.5">Stad</label>
+                    <input type="text" id="stad" name="stad" autocomplete="address-level2" class="form-input" placeholder="Rotterdam" />
+                  </div>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- Betaling -->
+            <fieldset class="card p-6">
+              <legend class="text-sm font-bold text-navy mb-4 flex items-center gap-2">
+                <span class="w-5 h-5 rounded-full bg-brand-amber text-white text-[11px] flex items-center justify-center">3</span>
+                Betaalmethode
+              </legend>
+
+              <div class="grid grid-cols-2 gap-3 mb-6">
+                {[
+                  { id: 'sepa', label: 'SEPA-incasso', icon: '🏦', desc: 'Automatische maandinkasso' },
+                  { id: 'ideal', label: 'iDEAL / Overboeking', icon: '💳', desc: 'Op factuur achteraf' },
+                ].map((method, i) => (
+                  <label class="payment-method-label cursor-pointer">
+                    <input type="radio" name="betaalmethode" value={method.id} class="sr-only" checked={i === 0} />
+                    <div class="border-2 border-slate-200 rounded-xl p-4 text-center transition-all">
+                      <div class="text-xl mb-1">{method.icon}</div>
+                      <div class="text-xs font-bold text-navy">{method.label}</div>
+                      <div class="text-[11px] text-slate-400 mt-0.5">{method.desc}</div>
+                    </div>
+                  </label>
+                ))}
+              </div>
+
+              <!-- IBAN field (SEPA) -->
+              <div id="sepa-field">
+                <label for="iban" class="block text-xs font-medium text-navy mb-1.5">IBAN *</label>
+                <input type="text" id="iban" name="iban" class="form-input" placeholder="NL91 ABNA 0417 1643 00" />
+                <p class="text-[11px] text-slate-400 mt-1">Door uw IBAN in te voeren machtigt u Aanloop AI voor SEPA-incasso.</p>
+              </div>
+
+              <div class="mt-4 flex items-start gap-3">
+                <input type="checkbox" id="akkoord" name="akkoord" required class="mt-0.5 w-4 h-4 rounded border-slate-300 text-brand-indigo focus:ring-brand-indigo cursor-pointer" />
+                <label for="akkoord" class="text-xs text-slate-600 leading-relaxed">
+                  Ik ga akkoord met de <a href="/voorwaarden/" class="underline hover:text-navy" target="_blank">algemene voorwaarden</a> en <a href="/privacy/" class="underline hover:text-navy" target="_blank">privacyverklaring</a> van Aanloop AI.
+                </label>
+              </div>
+            </fieldset>
+
+            <button type="submit" id="submit-btn" class="btn-primary w-full text-base py-4 justify-center">
+              <span id="submit-label">Bevestig aanvraag</span>
+              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </button>
+
+            <div id="form-error" class="hidden p-4 rounded-xl bg-brand-rose/10 border border-brand-rose/20 text-brand-rose text-sm">
+              Vul alle verplichte velden in en probeer het opnieuw.
+            </div>
+          </form>
+        </div>
+
+        <!-- Order summary -->
+        <div class="lg:col-span-2">
+          <div class="card sticky top-24">
+            <p class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-400 mb-4">Uw bestelling</p>
+
+            <div class="flex items-start justify-between mb-1">
+              <div>
+                <p class="font-bold text-navy">{selected.product}</p>
+                <p class="text-sm text-slate-500">{selected.name}-plan</p>
+              </div>
+              <div class="text-right">
+                <p id="order-price" class="font-bold text-navy">€{selected.price}</p>
+                <p class="text-xs text-slate-400">/maand</p>
+              </div>
+            </div>
+
+            <div class="my-4 border-t border-slate-100"></div>
+
+            <ul class="space-y-2 mb-4">
+              {selected.features.map(f => (
+                <li class="flex items-start gap-2 text-xs text-slate-600">
+                  <svg class="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  {f}
+                </li>
+              ))}
+            </ul>
+
+            <div class="my-4 border-t border-slate-100"></div>
+
+            <!-- Billing toggle -->
+            <div class="mb-4">
+              <div class="flex items-center justify-between text-sm mb-2">
+                <span class="text-slate-600">Factureringsperiode</span>
+                <div class="flex items-center gap-2">
+                  <span id="billing-monthly-label" class="text-navy font-medium text-xs">Maandelijks</span>
+                  <button id="order-billing-toggle" class="relative w-10 h-5 rounded-full bg-slate-200 transition-colors">
+                    <span class="absolute left-0.5 top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform" id="order-knob"></span>
+                  </button>
+                  <span id="billing-annual-label" class="text-slate-400 text-xs">Jaarlijks</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="bg-slate-50 rounded-xl p-4 space-y-2 text-sm">
+              <div class="flex justify-between text-slate-600">
+                <span>Abonnement</span>
+                <span id="summary-sub">€{selected.price}/maand</span>
+              </div>
+              <div class="flex justify-between text-slate-600">
+                <span>Setup (eenmalig)</span>
+                <span>Op offerte</span>
+              </div>
+              <div class="flex justify-between text-slate-600">
+                <span>BTW (21%)</span>
+                <span>Niet inbegrepen</span>
+              </div>
+              <div class="border-t border-slate-200 pt-2 flex justify-between font-bold text-navy">
+                <span>Totaal/maand</span>
+                <span id="summary-total">€{selected.price}</span>
+              </div>
+            </div>
+
+            <div class="mt-4 flex items-center gap-2 text-xs text-slate-400">
+              <svg class="w-4 h-4 text-brand-emerald flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+              Beveiligde verbinding · Stripe · PCI-DSS
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .form-input {
+    @apply w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm text-navy placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all bg-white;
+  }
+  .payment-method-label input:checked + div {
+    @apply border-navy bg-slate-50;
+  }
+</style>
+
+<script>
+  // Payment method toggle
+  document.querySelectorAll('input[name="betaalmethode"]').forEach(radio => {
+    radio.addEventListener('change', (e) => {
+      const val = (e.target as HTMLInputElement).value;
+      const sepaField = document.getElementById('sepa-field') as HTMLElement;
+      sepaField.style.display = val === 'sepa' ? 'block' : 'none';
+    });
+  });
+
+  // Billing toggle in summary
+  const oToggle = document.getElementById('order-billing-toggle') as HTMLButtonElement;
+  const oKnob = document.getElementById('order-knob') as HTMLElement;
+  const monthlyLabel = document.getElementById('billing-monthly-label') as HTMLElement;
+  const annualLabel = document.getElementById('billing-annual-label') as HTMLElement;
+  const summaryPriceMonthly = parseInt((document.getElementById('order-price') as HTMLElement)?.textContent?.replace('€','') || '497');
+  const summaryPriceAnnual = Math.round(summaryPriceMonthly * 0.84);
+  let annualActive = false;
+
+  oToggle?.addEventListener('click', () => {
+    annualActive = !annualActive;
+    const price = annualActive ? summaryPriceAnnual : summaryPriceMonthly;
+
+    oKnob.style.transform = annualActive ? 'translateX(20px)' : 'translateX(0)';
+    oToggle.classList.toggle('bg-brand-indigo', annualActive);
+    oToggle.classList.toggle('bg-slate-200', !annualActive);
+
+    monthlyLabel.classList.toggle('text-navy', !annualActive);
+    monthlyLabel.classList.toggle('text-slate-400', annualActive);
+    annualLabel.classList.toggle('text-navy', annualActive);
+    annualLabel.classList.toggle('text-slate-400', !annualActive);
+
+    (document.getElementById('order-price') as HTMLElement).textContent = `€${price}`;
+    (document.getElementById('summary-sub') as HTMLElement).textContent = `€${price}/maand`;
+    (document.getElementById('summary-total') as HTMLElement).textContent = `€${price}`;
+  });
+
+  // Form submit
+  const form = document.getElementById('checkout-form') as HTMLFormElement;
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+    const label = document.getElementById('submit-label') as HTMLElement;
+    const errorEl = document.getElementById('form-error') as HTMLElement;
+
+    if (!form.checkValidity()) {
+      errorEl.classList.remove('hidden');
+      return;
+    }
+    errorEl.classList.add('hidden');
+    btn.disabled = true;
+    label.textContent = 'Verwerken…';
+
+    setTimeout(() => {
+      window.location.href = '/bedankt/?type=aanvraag';
+    }, 1500);
+  });
+</script>

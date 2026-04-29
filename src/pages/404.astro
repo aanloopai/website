@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Pagina niet gevonden · Aanloop AI" description="De pagina die u zoekt bestaat niet. Ga terug naar de homepage van Aanloop AI." noindex={true}>
+  <section class="min-h-[80vh] flex items-center">
+    <div class="container-page py-20 text-center">
+      <p class="text-8xl font-black text-slate-100 select-none mb-0">404</p>
+      <div class="accent-band mx-auto mb-6"><span></span><span></span><span></span><span></span></div>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy mb-4">Oops — pagina niet gevonden.</h1>
+      <p class="text-lg text-slate-600 mb-8 max-w-lg mx-auto">De pagina die u zoekt bestaat niet of is verplaatst. Gebruik de navigatie om verder te gaan.</p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center mb-12">
+        <a href="/" class="btn-primary text-base px-6 py-3">Naar de homepage</a>
+        <a href="/contact/" class="btn-outline text-base px-6 py-3">Neem contact op</a>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-xl mx-auto">
+        {[
+          { label: 'Diensten', href: '/diensten/' },
+          { label: 'Sectoren', href: '/sectoren/' },
+          { label: 'Tarieven', href: '/tarieven/' },
+          { label: 'Cases', href: '/cases/' },
+        ].map(l => (
+          <a href={l.href} class="text-sm text-brand-indigo hover:underline">{l.label}</a>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

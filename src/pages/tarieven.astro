@@ -1,110 +1,312 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const products = [
+const plans = [
   {
-    name: 'Marco — AI sekreter',
-    description: 'AI-receptionist die uw telefoon 24/7 aanneemt',
-    plans: [
-      { name: 'Starter', price: '€297', frequency: '/maand', features: ['Tot 200 gesprekken/maand', '1 callscript', 'E-mail lead-routering'] },
-      { name: 'Groei', price: '€497', frequency: '/maand', highlight: true, features: ['Onbeperkte gesprekken', 'Tot 5 callscripts', 'CRM-integratie + Telegram'] },
-      { name: 'Enterprise', price: 'op maat', frequency: '', features: ['Multi-team routing', 'Dedicated account manager', 'SLA + 99.9% uptime'] },
+    id: 'starter',
+    name: 'Starter',
+    tagline: 'Voor kleine teams die willen starten met AI',
+    price: { monthly: 297, annual: 249 },
+    product: 'Marco — AI sekreter',
+    badge: null,
+    color: 'brand-indigo',
+    features: [
+      { text: 'Tot 200 gesprekken/maand', included: true },
+      { text: '1 callscript op maat', included: true },
+      { text: 'E-mail lead-routering', included: true },
+      { text: 'Dashboard + transcripts', included: true },
+      { text: 'Setup binnen 7 werkdagen', included: true },
+      { text: 'CRM-integratie', included: false },
+      { text: 'Meerdere callscripts', included: false },
+      { text: 'Prioriteit support', included: false },
     ],
   },
   {
-    name: 'Emma — WhatsApp agent',
-    description: 'AI-assistent voor klantvragen via WhatsApp',
-    plans: [
-      { name: 'Starter', price: '€247', frequency: '/maand', features: ['Tot 500 gesprekken/maand', 'Eigen kennisbank', 'Standaard handover'] },
-      { name: 'Groei', price: '€397', frequency: '/maand', highlight: true, features: ['Onbeperkte gesprekken', 'Custom kennisbank', 'CRM-koppeling'] },
-      { name: 'Enterprise', price: 'op maat', frequency: '', features: ['Multi-channel inbox', 'Dedicated support', 'SLA + monitoring'] },
+    id: 'groei',
+    name: 'Groei',
+    tagline: 'Voor groeiende bedrijven met meer volume',
+    price: { monthly: 497, annual: 417 },
+    product: 'Marco — AI sekreter',
+    badge: 'Meest gekozen',
+    color: 'navy',
+    features: [
+      { text: 'Onbeperkte gesprekken', included: true },
+      { text: 'Tot 5 callscripts op maat', included: true },
+      { text: 'Lead-routering via e-mail + Telegram', included: true },
+      { text: 'Dashboard + transcripts + opnames', included: true },
+      { text: 'Setup binnen 7 werkdagen', included: true },
+      { text: 'CRM-integratie (HubSpot / Pipedrive)', included: true },
+      { text: 'Meerdere callscripts', included: true },
+      { text: 'Prioriteit support (reactie < 4 uur)', included: true },
     ],
   },
   {
-    name: 'Custom AI workflow',
-    description: 'Maatwerk-automatisering, gebouwd voor uw bedrijf',
-    plans: [
-      { name: 'Pilot', price: 'vanaf €4.500', frequency: 'eenmalig', features: ['1 gerichte workflow', 'Audit + bouw', 'Training inbegrepen'] },
-      { name: 'Project', price: 'vanaf €12.500', frequency: 'eenmalig', highlight: true, features: ['Tot 5 workflows', '8-12 weken doorlooptijd', 'Onderhoud 6 maanden'] },
-      { name: 'Strategisch', price: 'op maat', frequency: '', features: ['Volledige AI-roadmap', 'Multi-jaar partnerschap', 'In-huis team-training'] },
+    id: 'enterprise',
+    name: 'Enterprise',
+    tagline: 'Voor organisaties met hoge eisen',
+    price: { monthly: null, annual: null },
+    product: 'Marco — AI sekreter',
+    badge: null,
+    color: 'slate-700',
+    features: [
+      { text: 'Onbeperkte gesprekken', included: true },
+      { text: 'Onbeperkte callscripts', included: true },
+      { text: 'Multi-team routing & escalatie', included: true },
+      { text: 'Dedicated account manager', included: true },
+      { text: 'SLA met 99.9% uptime garantie', included: true },
+      { text: 'On-premise of private cloud optie', included: true },
+      { text: 'SSO / SAML authenticatie', included: true },
+      { text: 'Custom contracten & verwerking', included: true },
     ],
   },
+];
+
+const addons = [
+  { name: 'Emma — WhatsApp agent Starter', price: '€247', freq: '/maand', desc: 'Tot 500 gesprekken, eigen kennisbank' },
+  { name: 'Emma — WhatsApp agent Groei', price: '€397', freq: '/maand', desc: 'Onbeperkt, CRM-koppeling, custom flows' },
+  { name: 'AI strategie-audit', price: '€1.950', freq: 'eenmalig', desc: 'Procesanalyse + roadmap + ROI-berekening' },
+  { name: 'Custom workflow — Pilot', price: 'v.a. €4.500', freq: 'eenmalig', desc: '1 workflow, audit + bouw + training' },
+  { name: 'Custom workflow — Project', price: 'v.a. €12.500', freq: 'eenmalig', desc: 'Tot 5 workflows, 8–12 weken, 6 mnd. onderhoud' },
+];
+
+const faqs = [
+  { q: 'Zijn de prijzen exclusief btw?', a: 'Ja, alle prijzen zijn exclusief 21% btw. Dit is standaard voor B2B-diensten in Nederland.' },
+  { q: 'Wat zit er inbegrepen in het maandabonnement?', a: 'Hosting, onderhoud, updates, monitoring, support en alle gespreks-/berichtkosten. U betaalt nooit extra per gesprek of bericht. Eenmalige setup-kosten worden apart vermeld in de offerte.' },
+  { q: 'Hoe werkt jaarlijkse betaling?', a: 'Bij jaarlijkse betaling krijgt u circa 16% korting (twee maanden gratis). U betaalt het volledige jaarbedrag vooruit en ontvangt één factuur.' },
+  { q: 'Kan ik maandelijks opzeggen?', a: 'Maandabonnementen zijn maandelijks opzegbaar met één maand opzegtermijn. Bij jaarcontracten geldt een restitutie van niet-genoten maanden minus een administratiekost.' },
+  { q: 'Hoe snel ben ik live?', a: 'Gemiddeld binnen 7 werkdagen voor Starter en Groei. Enterprise-trajecten afhankelijk van de scope. Na ondertekening ontvangt u een onboarding-plan met exacte datum.' },
+  { q: 'Kan ik het systeem eerst uitproberen?', a: 'Ja — plan een gratis demo van 30 minuten. We tonen een live AI-assistent in uw branche. Geen creditcard of verplichting vereist.' },
+  { q: 'Welke betaalmethoden accepteren jullie?', a: 'We factureren via SEPA-incasso (automatische betaling) of via iDEAL/bankoverschrijving op factuur. Alle betalingen verlopen via Stripe, PCI-DSS compliant.' },
+  { q: 'Wat als ik meer gesprekken nodig heb dan mijn plan?', a: 'U ontvangt een melding zodra u 80% van uw limiet bereikt. U kunt dan eenvoudig upgraden. Bij Groei en Enterprise zijn gesprekken onbeperkt.' },
 ];
 ---
 
 <BaseLayout
   title="Tarieven · Aanloop AI"
-  description="Transparante tarieven voor onze AI-oplossingen. Vanaf €247/maand voor kant-en-klare assistenten, custom projecten vanaf €4.500."
+  description="Transparante tarieven voor Aanloop AI-oplossingen. Maandelijks opzegbaar vanaf €249/maand. Geen verborgen kosten, geen setup-verrassingen."
 >
-  <section class="border-b border-slate-200">
+
+  <!-- Hero -->
+  <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">
       <div class="max-w-3xl">
-        <div class="flex items-center gap-4 mb-6">
+        <div class="flex items-center gap-4 mb-6 reveal">
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
           <span class="eyebrow">Tarieven</span>
         </div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
-          Eerlijke prijzen, geen verrassingen.
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          Eerlijke prijzen,<br/>geen verrassingen.
         </h1>
-        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty max-w-2xl">
-          Voor onze kant-en-klare producten betaalt u één vast bedrag per maand.
-          Maandelijks opzegbaar, geen lange contracten. Custom projecten op maat geprijsd na de audit-fase.
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty max-w-2xl reveal reveal-delay-2">
+          Één vast bedrag per maand. Geen extra kosten per gesprek, geen ingewikkelde contracten. Maandelijks opzegbaar.
         </p>
+
+        <!-- Billing toggle -->
+        <div class="mt-8 flex items-center gap-4 reveal reveal-delay-3">
+          <span id="label-monthly" class="text-sm font-medium text-navy">Maandelijks</span>
+          <button
+            id="billing-toggle"
+            role="switch"
+            aria-checked="false"
+            class="relative w-12 h-6 rounded-full bg-slate-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:ring-offset-2"
+          >
+            <span class="absolute left-1 top-1 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200" id="toggle-knob"></span>
+          </button>
+          <span id="label-annual" class="text-sm font-medium text-slate-500">
+            Jaarlijks
+            <span class="ml-1.5 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-medium bg-brand-emerald/10 text-brand-emerald">Bespaar 16%</span>
+          </span>
+        </div>
       </div>
     </div>
   </section>
 
-  {products.map((product, idx) => (
-    <section class:list={['section', idx % 2 === 1 && 'bg-slate-50/60 border-y border-slate-200']}>
-      <div class="container-page">
-        <div class="max-w-3xl mb-12">
-          <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">{product.name}</h2>
-          <p class="mt-2 text-slate-600">{product.description}</p>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {product.plans.map((plan) => (
-            <div class:list={['card relative', plan.highlight && 'border-2 border-navy shadow-xl']}>
-              {plan.highlight && (
-                <span class="absolute -top-3 left-6 px-2.5 py-0.5 bg-navy text-white text-[11px] font-medium tracking-wide uppercase rounded">
-                  Aanbevolen
-                </span>
-              )}
-              <div class="text-sm font-medium text-slate-500 mb-1">{plan.name}</div>
-              <div class="flex items-baseline gap-1.5 mb-6">
-                <span class="text-4xl font-bold text-navy">{plan.price}</span>
-                {plan.frequency && <span class="text-sm text-slate-500">{plan.frequency}</span>}
-              </div>
-              <ul class="space-y-2.5 mb-8">
-                {plan.features.map((f) => (
-                  <li class="flex items-start gap-2 text-sm text-slate-700">
-                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                    <span>{f}</span>
-                  </li>
-                ))}
-              </ul>
-              <a href="/contact/" class:list={['block text-center w-full', plan.highlight ? 'btn-primary' : 'btn-outline']}>
-                Vraag offerte aan
-              </a>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  ))}
-
-  <section class="section-tight">
+  <!-- Pricing cards — Marco -->
+  <section class="section">
     <div class="container-page">
-      <div class="max-w-3xl">
-        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy mb-6">Veelgestelde vragen over tarieven</h2>
-        <div class="space-y-4">
-          {[
-            { q: 'Zijn de prijzen exclusief btw?', a: 'Ja, alle prijzen op deze pagina zijn exclusief 21% btw. Dit is standaard voor B2B-tarieven in Nederland.' },
-            { q: 'Wat zit er bij de maandelijkse abonnementen inbegrepen?', a: 'Hosting, onderhoud, updates, support, en alle gespreks-/berichtkosten. U betaalt nooit extra voor het verbruik. Eenmalige setup-kosten worden apart vermeld in de offerte.' },
-            { q: 'Kan ik tussendoor opschalen of afschalen?', a: 'Ja. U kunt op elk moment switchen tussen Starter, Groei en Enterprise. Bij upgraden is de nieuwe prijs direct actief, bij downgraden vanaf de volgende factuurperiode.' },
-            { q: 'Wat is de opzegtermijn?', a: 'De maandabonnementen zijn maandelijks opzegbaar. Custom projecten hebben een vaste doorlooptijd zoals afgesproken in het contract.' },
-          ].map((item) => (
-            <details class="card group">
+      <div class="max-w-xl mb-12 reveal">
+        <p class="eyebrow mb-2">Marco — AI sekreter</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Kies uw plan</h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {plans.map((plan) => (
+          <div class:list={[
+            'relative rounded-2xl p-8 flex flex-col reveal',
+            plan.badge ? 'border-2 border-navy shadow-2xl bg-white' : 'border border-slate-200 bg-white',
+          ]}>
+            {plan.badge && (
+              <span class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 bg-navy text-white text-xs font-semibold tracking-wide uppercase rounded-full whitespace-nowrap">
+                {plan.badge}
+              </span>
+            )}
+
+            <div>
+              <p class="text-sm font-medium text-slate-500 mb-1">{plan.name}</p>
+              <p class="text-xs text-slate-400 mb-4">{plan.tagline}</p>
+
+              <div class="flex items-baseline gap-1 mb-1">
+                {plan.price.monthly ? (
+                  <>
+                    <span class="text-5xl font-bold text-navy price-display" data-monthly={plan.price.monthly} data-annual={plan.price.annual}>
+                      €{plan.price.monthly}
+                    </span>
+                    <span class="text-sm text-slate-500 price-freq">/maand</span>
+                  </>
+                ) : (
+                  <span class="text-3xl font-bold text-navy">Op maat</span>
+                )}
+              </div>
+              {plan.price.annual && (
+                <p class="text-xs text-slate-400 mb-6 annual-note hidden">
+                  €{plan.price.annual * 12}/jaar bij jaarlijkse betaling
+                </p>
+              )}
+              {!plan.price.annual && plan.price.monthly && <div class="mb-6"></div>}
+            </div>
+
+            <ul class="space-y-3 mb-8 flex-1">
+              {plan.features.map((f) => (
+                <li class="flex items-start gap-2.5 text-sm">
+                  {f.included ? (
+                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  ) : (
+                    <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-slate-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                  )}
+                  <span class:list={[f.included ? 'text-slate-700' : 'text-slate-400']}>{f.text}</span>
+                </li>
+              ))}
+            </ul>
+
+            {plan.id === 'enterprise' ? (
+              <a href="/contact/?type=contact&plan=enterprise" class="btn-outline text-sm w-full justify-center">
+                Neem contact op
+              </a>
+            ) : (
+              <a
+                href={`/aanvragen/?plan=${plan.id}&product=marco`}
+                class:list={['text-sm w-full justify-center', plan.badge ? 'btn-primary' : 'btn-outline']}
+              >
+                Start met {plan.name}
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+              </a>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <p class="text-center text-xs text-slate-400 mt-6">Alle prijzen exclusief 21% btw · Eenmalige setup-kosten op offerte · Maandelijks opzegbaar</p>
+    </div>
+  </section>
+
+  <!-- Add-ons / Emma + Custom -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <p class="eyebrow mb-2">Overige diensten & add-ons</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">
+          Emma, audits en maatwerk.
+        </h2>
+        <p class="mt-3 text-slate-600">Combineer Marco met Emma voor volledige telefoon + WhatsApp dekking, of voeg een custom workflow toe.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {addons.map((addon, i) => (
+          <div class={`card reveal reveal-delay-${(i % 3) + 1}`}>
+            <div class="flex justify-between items-start mb-3">
+              <h3 class="text-sm font-bold text-navy leading-snug pr-4">{addon.name}</h3>
+              <div class="text-right flex-shrink-0">
+                <div class="font-bold text-navy">{addon.price}</div>
+                <div class="text-xs text-slate-400">{addon.freq}</div>
+              </div>
+            </div>
+            <p class="text-xs text-slate-500 mb-4">{addon.desc}</p>
+            <a href="/contact/?type=offerte" class="text-xs font-medium text-brand-indigo hover:underline">
+              Vraag offerte aan →
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature comparison table -->
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <p class="eyebrow mb-2">Vergelijking</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Alles naast elkaar.</h2>
+      </div>
+
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 pr-6 text-slate-500 font-medium w-1/2">Functie</th>
+              <th class="text-center py-4 px-4 font-bold text-navy">Starter</th>
+              <th class="text-center py-4 px-4 font-bold text-navy bg-navy/5 rounded-t-xl">Groei</th>
+              <th class="text-center py-4 px-4 font-bold text-navy">Enterprise</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {[
+              ['Gesprekken per maand', '200', 'Onbeperkt', 'Onbeperkt'],
+              ['Callscripts', '1', '5', 'Onbeperkt'],
+              ['Lead-routering (e-mail)', '✓', '✓', '✓'],
+              ['Telegram-routering', '—', '✓', '✓'],
+              ['Dashboard + transcripts', '✓', '✓', '✓'],
+              ['Gespreksopnames', '—', '✓', '✓'],
+              ['CRM-integratie', '—', '✓', '✓'],
+              ['Multi-team routing', '—', '—', '✓'],
+              ['SLA 99.9% uptime', '—', '—', '✓'],
+              ['Dedicated account manager', '—', '—', '✓'],
+              ['On-premise optie', '—', '—', '✓'],
+              ['Support reactietijd', '< 24 uur', '< 4 uur', '< 1 uur'],
+            ].map(([feature, starter, groei, enterprise]) => (
+              <tr>
+                <td class="py-3 pr-6 text-slate-700">{feature}</td>
+                <td class="py-3 px-4 text-center text-slate-500">{starter}</td>
+                <td class="py-3 px-4 text-center text-navy font-medium bg-navy/5">{groei}</td>
+                <td class="py-3 px-4 text-center text-slate-500">{enterprise}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust signals -->
+  <section class="section-tight bg-slate-50 border-y border-slate-200">
+    <div class="container-page">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        {[
+          { icon: '🔒', label: 'Betaling via Stripe', sub: 'PCI-DSS compliant' },
+          { icon: '📄', label: 'SEPA-incasso of iDEAL', sub: 'Factuur beschikbaar' },
+          { icon: '🇳🇱', label: 'Nederlands bedrijf', sub: 'KvK-geregistreerd' },
+          { icon: '✅', label: 'ISO 27001 gecertificeerd', sub: 'Uw data is veilig' },
+        ].map(t => (
+          <div class="reveal">
+            <div class="text-2xl mb-2">{t.icon}</div>
+            <p class="text-sm font-medium text-navy">{t.label}</p>
+            <p class="text-xs text-slate-500 mt-0.5">{t.sub}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mx-auto">
+        <div class="mb-12 reveal">
+          <p class="eyebrow mb-3">FAQ</p>
+          <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Veelgestelde vragen over tarieven.</h2>
+        </div>
+        <div class="space-y-3">
+          {faqs.map((item, i) => (
+            <details class="card group reveal">
               <summary class="flex items-center justify-between cursor-pointer list-none">
                 <span class="text-base font-bold text-navy pr-6">{item.q}</span>
                 <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
@@ -116,4 +318,64 @@ const products = [
       </div>
     </div>
   </section>
+
+  <!-- Final CTA -->
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance reveal">
+          Twijfelt u nog? Plan eerst een gratis demo.
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed reveal reveal-delay-1">
+          Geen creditcard vereist. We laten u live zien hoe Marco uw telefoon aanneemt — afgestemd op uw branche en situatie. Daarna beslist u rustig.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+          <a href="/contact/?type=demo" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een gratis demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/aanvragen/?plan=groei&product=marco" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Direct Groei starten
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
+
+<script>
+  const toggle = document.getElementById('billing-toggle') as HTMLButtonElement;
+  const knob = document.getElementById('toggle-knob') as HTMLElement;
+  const labelMonthly = document.getElementById('label-monthly') as HTMLElement;
+  const labelAnnual = document.getElementById('label-annual') as HTMLElement;
+  const prices = document.querySelectorAll('.price-display') as NodeListOf<HTMLElement>;
+  const annualNotes = document.querySelectorAll('.annual-note') as NodeListOf<HTMLElement>;
+
+  let isAnnual = false;
+
+  toggle?.addEventListener('click', () => {
+    isAnnual = !isAnnual;
+    toggle.setAttribute('aria-checked', String(isAnnual));
+
+    if (isAnnual) {
+      toggle.classList.replace('bg-slate-200', 'bg-brand-indigo');
+      knob.style.transform = 'translateX(24px)';
+      labelMonthly.classList.replace('text-navy', 'text-slate-500');
+      labelAnnual.classList.replace('text-slate-500', 'text-navy');
+      annualNotes.forEach(n => n.classList.remove('hidden'));
+    } else {
+      toggle.classList.replace('bg-brand-indigo', 'bg-slate-200');
+      knob.style.transform = 'translateX(0)';
+      labelMonthly.classList.replace('text-slate-500', 'text-navy');
+      labelAnnual.classList.replace('text-navy', 'text-slate-500');
+      annualNotes.forEach(n => n.classList.add('hidden'));
+    }
+
+    prices.forEach(el => {
+      const monthly = parseInt(el.dataset.monthly || '0');
+      const annual = parseInt(el.dataset.annual || '0');
+      el.textContent = isAnnual ? `€${annual}` : `€${monthly}`;
+    });
+  });
+</script>

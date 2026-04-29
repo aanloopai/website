@@ -1,0 +1,210 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const articles = [
+  {
+    slug: 'wat-is-een-ai-receptionist',
+    category: 'Uitleg',
+    categoryColor: 'bg-brand-indigo/10 text-brand-indigo',
+    title: 'Wat is een AI-receptionist en hoe werkt het?',
+    excerpt: 'Een AI-receptionist neemt gesprekken aan, plant afspraken en routeert leads — 24/7, zonder pauze. We leggen uit hoe de technologie werkt.',
+    readTime: '4 min',
+    date: '14 april 2026',
+  },
+  {
+    slug: 'ai-mkb-starten-in-7-stappen',
+    category: 'Gids',
+    categoryColor: 'bg-brand-rose/10 text-brand-rose',
+    title: '7 stappen om AI succesvol te implementeren in uw MKB',
+    excerpt: 'Van de eerste verkenning tot de go-live. Een praktische gids voor ondernemers die willen starten met AI zonder IT-afdeling.',
+    readTime: '7 min',
+    date: '8 april 2026',
+  },
+  {
+    slug: 'roi-ai-berekenen',
+    category: 'Finance',
+    categoryColor: 'bg-brand-amber/10 text-brand-amber',
+    title: 'Hoe berekent u de ROI van een AI-assistent?',
+    excerpt: 'Bespaar op personeelskosten, verminder gemiste leads en verbeter klanttevredenheid. Een concrete formule voor de ROI van AI.',
+    readTime: '5 min',
+    date: '1 april 2026',
+  },
+  {
+    slug: 'whatsapp-business-ai',
+    category: 'Uitleg',
+    categoryColor: 'bg-brand-indigo/10 text-brand-indigo',
+    title: 'WhatsApp Business API + AI: de complete gids voor 2026',
+    excerpt: 'Hoe koppelt u een AI-agent aan WhatsApp Business? Wat zijn de kosten, beperkingen en mogelijkheden? Alles wat u moet weten.',
+    readTime: '8 min',
+    date: '24 maart 2026',
+  },
+  {
+    slug: 'horeca-ai-toepassingen',
+    category: 'Sector',
+    categoryColor: 'bg-brand-emerald/10 text-brand-emerald',
+    title: 'AI in de horeca: 6 toepassingen die nu al werken',
+    excerpt: 'Van reserveringen tot no-show reductie — we tonen zes concrete AI-toepassingen die horecaondernemers nu al inzetten.',
+    readTime: '6 min',
+    date: '17 maart 2026',
+  },
+  {
+    slug: 'avg-ai-mkb-nederland',
+    category: 'Juridisch',
+    categoryColor: 'bg-slate-100 text-slate-600',
+    title: 'AI en de AVG: wat moet u weten als MKB-ondernemer?',
+    excerpt: 'AI en privacywetgeving — een praktische uitleg van de regels, uw verplichtingen en hoe u compliant blijft in Nederland.',
+    readTime: '5 min',
+    date: '10 maart 2026',
+  },
+];
+
+const categories = ['Alle', 'Uitleg', 'Gids', 'Finance', 'Sector', 'Juridisch'];
+---
+
+<BaseLayout
+  title="Kennisbank & Blog · Aanloop AI"
+  description="Artikelen, gidsen en uitleg over AI voor het Nederlandse MKB. Van technische uitleg tot ROI-berekeningen en sectorspecifieke inzichten."
+>
+  <!-- Hero -->
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          Alles wat u wilt weten over AI voor uw bedrijf.
+        </h1>
+        <p class="mt-4 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">
+          Praktische artikelen, gidsen en uitleg — geschreven voor ondernemers, niet voor technici.
+        </p>
+
+        <!-- Search -->
+        <div class="mt-6 relative max-w-lg reveal reveal-delay-3">
+          <input
+            type="search"
+            id="blog-search"
+            placeholder="Zoek in de kennisbank…"
+            class="w-full pl-11 pr-4 py-3 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent bg-white"
+          />
+          <svg class="absolute left-3.5 top-3.5 w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <!-- Category filter -->
+      <div class="flex flex-wrap gap-2 mb-10 reveal">
+        {categories.map((cat, i) => (
+          <button
+            class:list={[
+              'category-filter px-4 py-1.5 rounded-full text-xs font-medium border transition-all',
+              i === 0 ? 'bg-navy text-white border-navy' : 'border-slate-200 text-slate-600 hover:border-navy hover:text-navy'
+            ]}
+            data-category={cat}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      <!-- Articles grid -->
+      <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {articles.map((article, i) => (
+          <article
+            class={`card card-interactive flex flex-col reveal reveal-delay-${(i % 3) + 1}`}
+            data-category={article.category}
+          >
+            <div class="flex items-center justify-between mb-4">
+              <span class:list={['pill text-[11px]', article.categoryColor]}>{article.category}</span>
+              <span class="text-xs text-slate-400">{article.readTime} leestijd</span>
+            </div>
+            <h2 class="text-base font-bold text-navy leading-snug mb-3 flex-1">
+              <a href={`/kennisbank/${article.slug}/`} class="hover:text-brand-indigo transition-colors">
+                {article.title}
+              </a>
+            </h2>
+            <p class="text-sm text-slate-600 leading-relaxed mb-4">{article.excerpt}</p>
+            <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+              <span class="text-xs text-slate-400">{article.date}</span>
+              <a href={`/kennisbank/${article.slug}/`} class="text-xs font-medium text-brand-indigo hover:underline flex items-center gap-1">
+                Lees meer
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <!-- Newsletter CTA -->
+      <div class="mt-16 card bg-slate-900 text-pearl reveal">
+        <div class="grid lg:grid-cols-2 gap-8 items-center">
+          <div>
+            <p class="eyebrow text-slate-400 mb-2">Nieuwsbrief</p>
+            <h2 class="text-2xl font-bold text-pearl mb-2">Wekelijkse AI-inzichten in uw inbox.</h2>
+            <p class="text-sm text-slate-400 leading-relaxed">Elke week één praktisch artikel over AI voor MKB. Geen spam, altijd afmeldbaar.</p>
+          </div>
+          <form id="newsletter-form" class="flex flex-col sm:flex-row gap-3" novalidate>
+            <input
+              type="email"
+              id="newsletter-email"
+              placeholder="uw@email.nl"
+              required
+              class="flex-1 px-4 py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-pearl placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo"
+            />
+            <button type="submit" class="btn bg-pearl text-navy hover:bg-white text-sm px-6 whitespace-nowrap">
+              Inschrijven
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Category filter
+  const filters = document.querySelectorAll('.category-filter');
+  const articles = document.querySelectorAll('#articles-grid article');
+
+  filters.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = (btn as HTMLElement).dataset.category || 'Alle';
+
+      filters.forEach(b => {
+        b.classList.remove('bg-navy', 'text-white', 'border-navy');
+        b.classList.add('border-slate-200', 'text-slate-600');
+      });
+      btn.classList.add('bg-navy', 'text-white', 'border-navy');
+      btn.classList.remove('border-slate-200', 'text-slate-600');
+
+      articles.forEach(article => {
+        const articleCat = (article as HTMLElement).dataset.category;
+        const show = cat === 'Alle' || articleCat === cat;
+        (article as HTMLElement).style.display = show ? '' : 'none';
+      });
+    });
+  });
+
+  // Search
+  const searchInput = document.getElementById('blog-search') as HTMLInputElement;
+  searchInput?.addEventListener('input', () => {
+    const q = searchInput.value.toLowerCase();
+    articles.forEach(article => {
+      const text = article.textContent?.toLowerCase() || '';
+      (article as HTMLElement).style.display = text.includes(q) ? '' : 'none';
+    });
+  });
+
+  // Newsletter
+  document.getElementById('newsletter-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const btn = form.querySelector('button') as HTMLButtonElement;
+    btn.textContent = '✓ Ingeschreven!';
+    btn.disabled = true;
+  });
+</script>
