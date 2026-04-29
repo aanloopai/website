@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const faqSchema = [
+  {
+    question: 'Hoe helpt AI bij bouwbedrijven?',
+    answer: 'Aanloop AI neemt telefonische aanvragen en planningsoproepen 24/7 aan, stuurt automatisch offertebevestigingen via WhatsApp en helpt bij het inplannen van monteurs en inspecteurs — zodat uw team op de werf kan blijven.',
+  },
+  {
+    question: 'Kan de AI afspraken inplannen voor inspecteurs?',
+    answer: 'Ja. De AI-assistent koppelt aan uw agenda en plant automatisch afspraken in op basis van beschikbaarheid, locatie en type klus. Bevestigingen en herinneringen gaan automatisch naar de klant.',
+  },
+  {
+    question: 'Wat kost AI voor een bouwbedrijf?',
+    answer: 'AI voor bouw- en installatiebedrijven start vanaf €299 per maand. Dit is inclusief setup, training op uw diensten en maandelijkse optimalisatie. Geen verborgen kosten.',
+  },
+];
+---
+
+<BaseLayout
+  title="AI voor Bouw & Installatie — Aanloop AI"
+  description="AI-assistent voor bouw- en installatiebedrijven. Nooit meer gemiste offerte-aanvragen, automatische planning van monteurs en 24/7 klantenservice. Live in 14 dagen."
+  faqSchema={faqSchema}
+>
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-navy text-white">
+    <div class="absolute inset-0 bg-gradient-to-br from-navy via-[#0f2040] to-brand-indigo/20"></div>
+    <div class="container-page py-24 lg:py-36 relative">
+      <div class="max-w-4xl">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="text-4xl">🏗️</span>
+          <span class="eyebrow text-brand-indigo">Bouw & Installatie</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-white text-balance leading-[1.05] mb-6">
+          Nooit meer een offerte-aanvraag missen.
+        </h1>
+        <p class="text-lg lg:text-xl text-slate-300 leading-relaxed max-w-2xl mb-10">
+          Uw telefoon rinkelt terwijl uw team op de steiger staat. De AI-assistent neemt aan, registreert de aanvraag en plant de afspraak in — terwijl u doorwerkt.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="/contact/?type=demo" class="btn-primary text-base px-8 py-4">Boek een gratis demo →</a>
+          <a href="/tarieven/" class="inline-flex items-center gap-2 px-8 py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/10 transition-all">Bekijk tarieven</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pain points -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-navy">Herkenbaar voor bouw & installatie?</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        {[
+          { icon: '📞', pain: 'Telefoontjes missen op de werf', fix: 'AI neemt 24/7 aan en registreert elk verzoek' },
+          { icon: '📅', pain: 'Planning kost uren per week', fix: 'Automatische agenda-integratie en bevestigingen' },
+          { icon: '📋', pain: 'Offertes blijven liggen', fix: 'Directe opvolging via WhatsApp of e-mail' },
+        ].map(item => (
+          <div class="card">
+            <div class="text-3xl mb-3">{item.icon}</div>
+            <div class="text-sm font-semibold text-brand-rose mb-2">❌ {item.pain}</div>
+            <div class="text-sm text-brand-emerald font-medium">✅ {item.fix}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Features -->
+  <section class="section bg-slate-50">
+    <div class="container-page">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-navy">Wat de AI voor u doet</h2>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[
+          { icon: '📞', title: '24/7 telefonisch aanwezig', desc: 'Neemt aan, vraagt naar de klus, locatie en urgentie. Geeft direct een realistische planning terug.' },
+          { icon: '📱', title: 'WhatsApp offerte-opvolging', desc: 'Stuurt automatisch een bevestiging en vraagt aanvullende foto\'s of informatie op.' },
+          { icon: '🗓️', title: 'Monteur-planning', desc: 'Koppelt aan uw agenda en plant de inspectie of uitvoering in op het eerste vrije slot.' },
+          { icon: '🔔', title: 'Automatische herinneringen', desc: 'Klanten ontvangen een dag van tevoren een WhatsApp-herinnering met het tijdstip en de naam van de monteur.' },
+          { icon: '📊', title: 'Lead-registratie', desc: 'Elk contact wordt gelogd met naam, adres, type klus en urgentie — direct in uw CRM of e-mail.' },
+          { icon: '🌙', title: 'Spoed buiten kantooruren', desc: 'Herkent urgente meldingen (lekkage, storing) en escaleert direct naar de juiste monteur.' },
+        ].map(f => (
+          <div class="card hover:shadow-lg transition-all">
+            <div class="text-3xl mb-3">{f.icon}</div>
+            <h3 class="font-bold text-navy mb-2">{f.title}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{f.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ROI -->
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto text-center">
+      <h2 class="text-3xl font-bold text-navy mb-8">Gemiddeld resultaat bij bouwbedrijven</h2>
+      <div class="grid grid-cols-3 gap-6 mb-10">
+        {[
+          { value: '−68%', label: 'Gemiste aanvragen', color: 'text-brand-emerald' },
+          { value: '+34%', label: 'Meer offertes uitgebracht', color: 'text-brand-indigo' },
+          { value: '6.2u', label: 'Planning bespaard per week', color: 'text-brand-amber' },
+        ].map(s => (
+          <div class="card text-center">
+            <div class={`text-3xl font-bold ${s.color}`}>{s.value}</div>
+            <div class="text-xs text-slate-500 mt-1">{s.label}</div>
+          </div>
+        ))}
+      </div>
+      <a href="/contact/?type=demo" class="btn-primary text-base px-8 py-4">Start gratis — boek een demo →</a>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section bg-slate-50">
+    <div class="container-page max-w-2xl mx-auto">
+      <h2 class="text-2xl font-bold text-navy mb-8 text-center">Veelgestelde vragen</h2>
+      <div class="space-y-4">
+        {faqSchema.map(item => (
+          <div class="card">
+            <h3 class="font-semibold text-navy mb-2">{item.question}</h3>
+            <p class="text-slate-600 text-sm leading-relaxed">{item.answer}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

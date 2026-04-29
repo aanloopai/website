@@ -3,49 +3,160 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import SectorCard from '../../components/SectorCard.astro';
 
 const sectors = [
-  { href: '/sectoren/horeca/', title: 'Horeca', description: 'Reserveringen, no-shows, voorraadprognose — laat AI uw zaal vullen.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h7v18H3zM14 3h7v9h-7zM14 16h7v5h-7z"/></svg>' },
-  { href: '/sectoren/logistiek/', title: 'Logistiek & transport', description: 'Track-and-trace, klantmeldingen, route-optimalisatie via AI.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/></svg>' },
-  { href: '/sectoren/vastgoed/', title: 'Vastgoed & makelaars', description: 'Bezichtigingen plannen, leads kwalificeren, marktrapporten genereren.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>' },
-  { href: '/sectoren/detailhandel/', title: 'Detailhandel', description: 'Productadvies via chat, klantenservice 24/7, retour-afhandeling.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>' },
-  { href: '/sectoren/zakelijk/', title: 'Zakelijke dienstverlening', description: 'Offertes opstellen, contracten reviewen, intakes automatiseren.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>' },
-  { href: '/sectoren/zorg/', title: 'Zorg & welzijn', description: 'Afsprakenbeheer, intake-vragenlijsten, patiëntcommunicatie.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>' },
+  {
+    href: '/sectoren/horeca/',
+    title: 'Horeca',
+    emoji: '🍽️',
+    description: 'AI-receptionist neemt reserveringen aan, beantwoordt vragen over het menu en vermindert no-shows automatisch.',
+    stats: '−61% gemiste reserveringen',
+    color: 'border-brand-rose/30 hover:border-brand-rose/60',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h7v18H3zM14 3h7v9h-7zM14 16h7v5h-7z"/></svg>',
+  },
+  {
+    href: '/sectoren/logistiek/',
+    title: 'Logistiek & Transport',
+    emoji: '🚛',
+    description: 'Track-and-trace updates, leveringsbevestigingen en klachtenafhandeling — volledig geautomatiseerd.',
+    stats: '−54% support tickets',
+    color: 'border-brand-amber/30 hover:border-brand-amber/60',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1"/></svg>',
+  },
+  {
+    href: '/sectoren/vastgoed/',
+    title: 'Vastgoed & Makelaars',
+    emoji: '🏠',
+    description: 'Bezichtigingen inplannen, leads kwalificeren en kopers begeleiden — terwijl u op pad bent.',
+    stats: '+41% bezichtigingen',
+    color: 'border-brand-indigo/30 hover:border-brand-indigo/60',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>',
+  },
+  {
+    href: '/sectoren/zorg/',
+    title: 'Zorg & Welzijn',
+    emoji: '🏥',
+    description: 'Afspraakinplanning, intake-vragenlijsten en patiëntcommunicatie — AVG-compliant en zorgvuldig.',
+    stats: '−69% telefonische afspraken',
+    color: 'border-brand-emerald/30 hover:border-brand-emerald/60',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>',
+  },
+  {
+    href: '/sectoren/detailhandel/',
+    title: 'Detailhandel',
+    emoji: '🛍️',
+    description: 'Productadvies, retourafhandeling en klantenservice 24/7 — via chat, WhatsApp of telefoon.',
+    stats: '+29% herhaalaankopen',
+    color: 'border-brand-rose/30 hover:border-brand-rose/60',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>',
+  },
+  {
+    href: '/sectoren/zakelijk/',
+    title: 'Zakelijke Dienstverlening',
+    emoji: '💼',
+    description: 'Offertes opvolgen, intakes automatiseren en klanten informeren — zonder handwerk.',
+    stats: '+38% conversie offertes',
+    color: 'border-brand-indigo/30 hover:border-brand-indigo/60',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
+  },
+  {
+    href: '/sectoren/bouw/',
+    title: 'Bouw & Installatie',
+    emoji: '🏗️',
+    description: 'Offerte-aanvragen opvangen, monteurs inplannen en herinneringen sturen — terwijl u op de werf staat.',
+    stats: '−68% gemiste aanvragen',
+    color: 'border-brand-amber/30 hover:border-brand-amber/60',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>',
+  },
+  {
+    href: '/sectoren/accountancy/',
+    title: 'Accountancy & Financieel',
+    emoji: '📊',
+    description: 'Routinevragen afhandelen, afspraken inplannen en documenten verzamelen — zodat uw team zich op advies kan richten.',
+    stats: '+28% billable uren',
+    color: 'border-brand-emerald/30 hover:border-brand-emerald/60',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>',
+  },
 ];
 ---
 
 <BaseLayout
-  title="Sectoren · Aanloop AI"
-  description="Aanloop AI heeft gespecialiseerde AI-oplossingen voor horeca, logistiek, vastgoed, detailhandel, zakelijke dienstverlening en zorg."
+  title="Sectoren — Aanloop AI"
+  description="AI-oplossingen op maat voor 8 sectoren: horeca, logistiek, vastgoed, zorg, detailhandel, bouw, accountancy en zakelijke dienstverlening. Bekijk wat AI voor uw branche doet."
 >
-  <section class="border-b border-slate-200 hero-gradient">
-    <div class="container-page py-16 lg:py-24">
+  <!-- Hero -->
+  <section class="relative overflow-hidden hero-gradient border-b border-slate-200">
+    <div class="absolute inset-0 -z-10 dot-grid opacity-[0.03]"></div>
+    <div class="container-page py-20 lg:py-28">
       <div class="max-w-3xl">
-        <div class="flex items-center gap-4 mb-6">
+        <div class="flex items-center gap-4 mb-6 reveal">
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
           <span class="eyebrow">Sectoren</span>
         </div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
-          Toegespitst op uw branche.
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          AI toegespitst op uw branche.
         </h1>
-        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl">
-          Elke sector heeft zijn eigen ritme, klanten en uitdagingen. Wij hebben op basis van honderden gesprekken met MKB-ondernemers gespecialiseerde oplossingen ontwikkeld.
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl reveal reveal-delay-2">
+          Elke sector heeft zijn eigen ritme, klanten en uitdagingen. Op basis van honderden gesprekken met MKB-ondernemers hebben we gespecialiseerde AI-oplossingen ontwikkeld die direct werken — zonder aanpassing.
         </p>
       </div>
     </div>
   </section>
 
+  <!-- Sector grid -->
   <section class="section">
     <div class="container-page">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {sectors.map((sector) => (
-          <SectorCard {...sector} />
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+        {sectors.map((sector, i) => (
+          <a href={sector.href}
+             class={`card group hover:shadow-xl transition-all border-2 ${sector.color} reveal reveal-delay-${(i % 4) + 1}`}>
+            <div class="flex items-start justify-between mb-4">
+              <span class="text-4xl">{sector.emoji}</span>
+              <svg class="w-5 h-5 text-slate-300 group-hover:text-navy group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+              </svg>
+            </div>
+            <h2 class="font-bold text-navy text-lg mb-2 group-hover:text-brand-indigo transition-colors">{sector.title}</h2>
+            <p class="text-sm text-slate-600 leading-relaxed mb-4">{sector.description}</p>
+            <div class="pt-3 border-t border-slate-100">
+              <span class="text-xs font-semibold text-brand-emerald">{sector.stats}</span>
+            </div>
+          </a>
         ))}
       </div>
 
+      <!-- Niet gevonden -->
       <div class="mt-16 text-center reveal">
-        <p class="text-slate-600 mb-4">Uw branche staat er niet bij?</p>
-        <a href="/contact/?type=contact" class="btn-outline">
-          Neem contact op — we denken mee
-        </a>
+        <div class="inline-block p-8 rounded-3xl bg-slate-50 border border-slate-200 max-w-lg">
+          <div class="text-3xl mb-3">🤔</div>
+          <h3 class="font-bold text-navy mb-2">Uw branche staat er niet bij?</h3>
+          <p class="text-slate-600 text-sm mb-5">We passen onze AI aan op elke sector. Neem contact op en we analyseren gratis wat AI voor uw specifieke situatie kan doen.</p>
+          <a href="/contact/?type=contact" class="btn-primary text-sm px-6 py-3">
+            Neem contact op →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats strip -->
+  <section class="section bg-navy text-white">
+    <div class="container-page">
+      <div class="text-center mb-10">
+        <h2 class="text-2xl font-bold text-white">Bewezen resultaten in alle sectoren</h2>
+        <p class="text-slate-400 mt-2">Gemiddelde resultaten bij onze klanten na 3 maanden</p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        {[
+          { value: '500+', label: 'Actieve klanten', sub: 'In 8 sectoren' },
+          { value: '−65%', label: 'Minder gemist', sub: 'Calls & aanvragen' },
+          { value: '€2.4M', label: 'Bespaard', sub: 'Bij onze klanten' },
+          { value: '4.9/5', label: 'Tevredenheid', sub: 'Gemiddelde score' },
+        ].map(s => (
+          <div>
+            <div class="text-3xl font-bold text-white mb-1">{s.value}</div>
+            <div class="text-sm font-medium text-slate-300">{s.label}</div>
+            <div class="text-xs text-slate-500 mt-0.5">{s.sub}</div>
+          </div>
+        ))}
       </div>
     </div>
   </section>

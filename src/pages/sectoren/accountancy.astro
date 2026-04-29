@@ -1,0 +1,124 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const faqSchema = [
+  {
+    question: 'Kan AI boekhoudkundige vragen beantwoorden?',
+    answer: 'De AI-assistent beantwoordt veelgestelde vragen over uw diensten, aanlevertermijnen, benodigde documenten en tarieven. Complexe fiscale vragen worden doorgeleid naar de juiste medewerker.',
+  },
+  {
+    question: 'Hoe gaat de AI om met vertrouwelijke klantinformatie?',
+    answer: 'Aanloop AI verwerkt alle data AVG-compliant binnen de EU. De AI heeft alleen toegang tot informatie die u zelf deelt in de kennisbank. Financiële klantdata wordt nooit opgeslagen of verwerkt door de AI.',
+  },
+  {
+    question: 'Kan de AI afspraken inplannen voor belastingaangifteperiode?',
+    answer: 'Ja. De AI plant automatisch afspraken in uw agenda, stuurt bevestigingen en herinneringen, en vraagt vooraf welke documenten de klant moet meenemen.',
+  },
+];
+---
+
+<BaseLayout
+  title="AI voor Accountancy & Financieel Advies — Aanloop AI"
+  description="AI-assistent voor accountants, boekhouders en financieel adviseurs. Automatische afspraakinplanning, documentverzameling en klantenservice. AVG-compliant. Live in 14 dagen."
+  faqSchema={faqSchema}
+>
+  <section class="relative overflow-hidden bg-navy text-white">
+    <div class="absolute inset-0 bg-gradient-to-br from-navy via-[#0f2040] to-brand-amber/20"></div>
+    <div class="container-page py-24 lg:py-36 relative">
+      <div class="max-w-4xl">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="text-4xl">📊</span>
+          <span class="eyebrow text-brand-amber">Accountancy & Financieel</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-white text-balance leading-[1.05] mb-6">
+          Minder telefoneren, meer adviseren.
+        </h1>
+        <p class="text-lg lg:text-xl text-slate-300 leading-relaxed max-w-2xl mb-10">
+          Uw klanten bellen voor standaardvragen terwijl uw team bezig is met dossiers. De AI-assistent beantwoordt routinevragen, plant afspraken in en verzamelt documenten — automatisch.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a href="/contact/?type=demo" class="btn-primary text-base px-8 py-4">Boek een gratis demo →</a>
+          <a href="/tarieven/" class="inline-flex items-center gap-2 px-8 py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/10 transition-all">Bekijk tarieven</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section border-b border-slate-200">
+    <div class="container-page">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-navy">Herkenbaar voor uw kantoor?</h2>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        {[
+          { icon: '📞', pain: 'Klantvragen onderbreken uw werk', fix: 'AI beantwoordt routinevragen direct en 24/7' },
+          { icon: '📄', pain: 'Klanten leveren documenten te laat aan', fix: 'Automatische herinneringen via WhatsApp' },
+          { icon: '🗓️', pain: 'Agenda vol met planningstelefoons', fix: 'Zelfservice afspraakinplanning voor klanten' },
+        ].map(item => (
+          <div class="card">
+            <div class="text-3xl mb-3">{item.icon}</div>
+            <div class="text-sm font-semibold text-brand-rose mb-2">❌ {item.pain}</div>
+            <div class="text-sm text-brand-emerald font-medium">✅ {item.fix}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50">
+    <div class="container-page">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-navy">Wat de AI voor uw kantoor doet</h2>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {[
+          { icon: '💬', title: 'Routievragen afhandelen', desc: 'BTW-termijnen, aanlevertijden, benodigde documenten — de AI antwoordt direct en correct.' },
+          { icon: '🗓️', title: 'Afspraakinplanning', desc: 'Klanten plannen zelf een gesprek in uw agenda. Bevestiging en herinnering gaan automatisch.' },
+          { icon: '📋', title: 'Documentverzameling', desc: 'AI stuurt een checklist met benodigde documenten en herinnert klanten die niet tijdig aanleveren.' },
+          { icon: '🔄', title: 'Aangifteperiode support', desc: 'Extra capaciteit tijdens drukke periodes. De AI vangt de piek op zonder extra personeel.' },
+          { icon: '📱', title: 'WhatsApp integratie', desc: 'Klanten communiceren via hun favoriete kanaal. De AI reageert binnen seconden.' },
+          { icon: '🔒', title: 'AVG-compliant', desc: 'Alle data binnen de EU. Geen klantdata opgeslagen buiten uw systemen. DPA beschikbaar.' },
+        ].map(f => (
+          <div class="card hover:shadow-lg transition-all">
+            <div class="text-3xl mb-3">{f.icon}</div>
+            <h3 class="font-bold text-navy mb-2">{f.title}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{f.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto text-center">
+      <h2 class="text-3xl font-bold text-navy mb-8">Gemiddeld resultaat bij accountantskantoren</h2>
+      <div class="grid grid-cols-3 gap-6 mb-10">
+        {[
+          { value: '−72%', label: 'Minder telefonische onderbrekingen', color: 'text-brand-emerald' },
+          { value: '+28%', label: 'Meer billable uren', color: 'text-brand-indigo' },
+          { value: '4.8/5', label: 'Klanttevredenheid', color: 'text-brand-amber' },
+        ].map(s => (
+          <div class="card text-center">
+            <div class={`text-3xl font-bold ${s.color}`}>{s.value}</div>
+            <div class="text-xs text-slate-500 mt-1">{s.label}</div>
+          </div>
+        ))}
+      </div>
+      <a href="/contact/?type=demo" class="btn-primary text-base px-8 py-4">Start gratis — boek een demo →</a>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50">
+    <div class="container-page max-w-2xl mx-auto">
+      <h2 class="text-2xl font-bold text-navy mb-8 text-center">Veelgestelde vragen</h2>
+      <div class="space-y-4">
+        {faqSchema.map(item => (
+          <div class="card">
+            <h3 class="font-semibold text-navy mb-2">{item.question}</h3>
+            <p class="text-slate-600 text-sm leading-relaxed">{item.answer}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
