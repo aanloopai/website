@@ -1,0 +1,167 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+export interface Props {
+  title: string;
+  description: string;
+  image?: string;
+  noindex?: boolean;
+  schema?: object;
+}
+
+const {
+  title,
+  description,
+  image = '/brand/logo-horizontal-light.svg',
+  noindex = false,
+  schema,
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const fullTitle = title.includes('Aanloop') ? title : `${title} · Aanloop AI`;
+
+// Schema.org Organization JSON-LD
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'Aanloop AI',
+  url: 'https://aanloop.ai',
+  logo: 'https://aanloop.ai/brand/logo-horizontal-light.svg',
+  description: 'AI-oplossingen voor het Nederlandse MKB — kant-en-klare AI-assistenten en custom workflows.',
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Rotterdam',
+    addressCountry: 'NL',
+  },
+  sameAs: [
+    'https://www.linkedin.com/company/aanloop-ai',
+  ],
+};
+
+const localBusinessSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'LocalBusiness',
+  name: 'Aanloop AI',
+  description: 'AI-oplossingen voor het Nederlandse MKB',
+  url: 'https://aanloop.ai',
+  telephone: '+31000000000',
+  email: 'hello@aanloop.ai',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '',
+    addressLocality: 'Rotterdam',
+    postalCode: '3000',
+    addressCountry: 'NL',
+  },
+};
+---
+
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Primary meta -->
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Aanloop AI" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(image, Astro.site).toString()} />
+    <meta property="og:locale" content="nl_NL" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={new URL(image, Astro.site).toString()} />
+
+    <!-- Theme color -->
+    <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0B1120" media="(prefers-color-scheme: dark)" />
+
+    <!-- Schema.org JSON-LD -->
+    <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
+    {schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  </head>
+  <body>
+    <!-- Skip to main content — accessibility -->
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-navy focus:text-white focus:rounded-lg"
+    >
+      Naar hoofdinhoud
+    </a>
+
+    <Header />
+
+    <main id="main">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <!-- Global scroll reveal -->
+    <script>
+      const revealObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('is-visible');
+            }
+          });
+        },
+        { threshold: 0.08, rootMargin: '0px 0px -40px 0px' }
+      );
+      document.querySelectorAll('.reveal').forEach((el) => revealObserver.observe(el));
+    </script>
+
+    <!-- Counter animation -->
+    <script>
+      const counterObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting && !entry.target.dataset.counted) {
+              entry.target.dataset.counted = 'true';
+              const target = parseInt(entry.target.dataset.target || '0', 10);
+              const suffix = entry.target.dataset.suffix || '';
+              const duration = 1500;
+              const start = performance.now();
+              function update(time: number) {
+                const elapsed = time - start;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                entry.target.textContent = Math.floor(eased * target) + suffix;
+                if (progress < 1) requestAnimationFrame(update);
+                else entry.target.textContent = target + suffix;
+              }
+              requestAnimationFrame(update);
+            }
+          });
+        },
+        { threshold: 0.5 }
+      );
+      document.querySelectorAll('[data-counter]').forEach((el) => counterObserver.observe(el));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,243 @@
+@import '@fontsource-variable/inter/index.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+    --brand-navy: #0F172A;
+    --brand-pearl: #F1F5F9;
+    --brand-indigo: #4338CA;
+    --brand-rose: #E11D48;
+    --brand-amber: #D97706;
+    --brand-emerald: #047857;
+    --brand-midnight: #0B1120;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-navy font-sans antialiased;
+    font-feature-settings: 'cv11', 'ss01', 'ss03';
+  }
+
+  ::selection {
+    @apply bg-brand-indigo/15 text-navy;
+  }
+
+  /* Heading defaults */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-navy;
+    letter-spacing: -0.025em;
+  }
+
+  /* Focus ring — accessible, brand-coloured */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-indigo ring-offset-2 ring-offset-white;
+  }
+
+  /* Smooth details/summary */
+  details > summary {
+    user-select: none;
+  }
+  details[open] > summary {
+    margin-bottom: 0;
+  }
+}
+
+@layer components {
+  /* ─── Layout ─── */
+  .container-page {
+    @apply max-w-container mx-auto px-6 lg:px-10;
+  }
+
+  /* ─── Accent band — Indigo → Rose → Amber → Emerald ─── */
+  .accent-band {
+    @apply flex h-[3px] w-fit;
+  }
+  .accent-band > span {
+    @apply block w-12;
+  }
+  .accent-band > span:nth-child(1) { @apply bg-brand-indigo; }
+  .accent-band > span:nth-child(2) { @apply bg-brand-rose; }
+  .accent-band > span:nth-child(3) { @apply bg-brand-amber; }
+  .accent-band > span:nth-child(4) { @apply bg-brand-emerald; }
+
+  /* ─── Eyebrow ─── */
+  .eyebrow {
+    @apply text-xs font-medium tracking-[0.15em] uppercase text-slate-500;
+  }
+
+  /* ─── Buttons ─── */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-medium text-sm transition-all duration-200;
+  }
+  .btn-primary {
+    @apply btn bg-navy text-white hover:bg-midnight active:scale-[0.98] shadow-sm hover:shadow-md;
+  }
+  .btn-ghost {
+    @apply btn text-navy hover:bg-slate-100;
+  }
+  .btn-outline {
+    @apply btn border border-slate-300 text-navy hover:border-navy hover:bg-slate-50;
+  }
+  .btn-accent {
+    @apply btn bg-brand-indigo text-white hover:bg-indigo-700 active:scale-[0.98] shadow-sm;
+  }
+
+  /* ─── Cards ─── */
+  .card {
+    @apply bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 transition-all duration-200;
+  }
+  .card-interactive {
+    @apply card hover:border-slate-300 hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  /* ─── Section spacing ─── */
+  .section {
+    @apply py-20 lg:py-28;
+  }
+  .section-tight {
+    @apply py-14 lg:py-20;
+  }
+
+  /* ─── Scroll-reveal base state ─── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+  .reveal-delay-5 { transition-delay: 0.5s; }
+
+  /* ─── Gradient text ─── */
+  .gradient-text {
+    background: linear-gradient(135deg, var(--brand-indigo) 0%, var(--brand-rose) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ─── Progress bar ─── */
+  #scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0%;
+    z-index: 9999;
+    background: linear-gradient(90deg, #4338CA, #E11D48, #D97706, #047857);
+    transition: width 0.1s linear;
+  }
+
+  /* ─── Cookie banner ─── */
+  #cookie-banner {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(120%);
+    z-index: 9000;
+    width: min(640px, calc(100vw - 2rem));
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  #cookie-banner.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* ─── Typing cursor ─── */
+  .typing-cursor::after {
+    content: '|';
+    animation: blink 1s step-end infinite;
+    color: var(--brand-rose);
+    font-weight: 300;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  /* ─── Counter animation ─── */
+  .counter {
+    display: inline-block;
+  }
+
+  /* ─── Floating badge ─── */
+  .float-badge {
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+  }
+
+  /* ─── ROI Calculator ─── */
+  .roi-slider {
+    @apply w-full h-2 rounded-full appearance-none cursor-pointer;
+    background: linear-gradient(to right, var(--brand-indigo) var(--slider-pct, 50%), #E2E8F0 var(--slider-pct, 50%));
+  }
+  .roi-slider::-webkit-slider-thumb {
+    @apply appearance-none w-5 h-5 rounded-full bg-brand-indigo border-2 border-white shadow-md cursor-pointer;
+  }
+  .roi-slider::-moz-range-thumb {
+    @apply w-5 h-5 rounded-full bg-brand-indigo border-2 border-white shadow-md cursor-pointer border-none;
+  }
+
+  /* ─── Testimonial carousel ─── */
+  .testimonial-track {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .testimonial-slide {
+    flex: 0 0 100%;
+    width: 100%;
+  }
+
+  /* ─── Gradient hero background ─── */
+  .hero-gradient {
+    background: 
+      radial-gradient(ellipse 80% 60% at 50% -20%, rgba(67, 56, 202, 0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 50% at 100% 80%, rgba(225, 29, 72, 0.05) 0%, transparent 50%),
+      #ffffff;
+  }
+
+  /* ─── Dot grid ─── */
+  .dot-grid {
+    background-image: radial-gradient(circle at 1px 1px, #0F172A 1px, transparent 0);
+    background-size: 24px 24px;
+  }
+
+  /* ─── Pill badge ─── */
+  .pill {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}

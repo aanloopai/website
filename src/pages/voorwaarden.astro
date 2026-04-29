@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Algemene voorwaarden · Aanloop AI" description="Algemene voorwaarden van Aanloop AI voor het gebruik van onze AI-diensten." noindex={true}>
+  <section class="border-b border-slate-200">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Juridisch</span></div>
+        <h1 class="text-4xl font-bold tracking-tightest text-navy">Algemene voorwaarden</h1>
+        <p class="mt-4 text-slate-500 text-sm">Versie 1.0 · April 2026 · van toepassing op alle overeenkomsten met Aanloop AI</p>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl space-y-8 text-sm text-slate-700 leading-relaxed">
+        {[
+          { title: 'Artikel 1 — Definities', body: 'In deze algemene voorwaarden wordt verstaan onder: "Aanloop AI": de besloten vennootschap Aanloop AI gevestigd te Rotterdam; "Opdrachtgever": de partij die een overeenkomst sluit met Aanloop AI; "Diensten": alle producten en diensten die Aanloop AI levert.' },
+          { title: 'Artikel 2 — Toepasselijkheid', body: 'Deze voorwaarden zijn van toepassing op alle aanbiedingen, offertes en overeenkomsten tussen Aanloop AI en Opdrachtgever. Afwijkingen zijn alleen geldig indien schriftelijk overeengekomen.' },
+          { title: 'Artikel 3 — Aanbod en aanvaarding', body: 'Alle aanbiedingen zijn vrijblijvend. Een overeenkomst komt tot stand na schriftelijke bevestiging door Aanloop AI of bij aanvang van de werkzaamheden.' },
+          { title: 'Artikel 4 — Tarieven en betaling', body: 'Alle prijzen zijn exclusief btw. Abonnementen worden maandelijks vooraf gefactureerd. Betaaltermijn is 14 dagen. Bij niet-tijdige betaling is Aanloop AI gerechtigd de dienstverlening op te schorten.' },
+          { title: 'Artikel 5 — Levering en doorlooptijden', body: 'Opgegeven doorlooptijden zijn indicatief. Aanloop AI streeft ernaar de afgesproken termijnen te halen, maar is niet aansprakelijk voor overschrijding door oorzaken buiten haar macht.' },
+          { title: 'Artikel 6 — Intellectueel eigendom', body: 'Alle rechten op door Aanloop AI ontwikkelde software, workflows en documentatie berusten bij Aanloop AI, tenzij schriftelijk anders overeengekomen. Opdrachtgever verkrijgt een niet-exclusief gebruiksrecht.' },
+          { title: 'Artikel 7 — Aansprakelijkheid', body: 'De aansprakelijkheid van Aanloop AI is beperkt tot het bedrag dat in de betreffende maand is gefactureerd, met een maximum van €10.000 per jaar. Aansprakelijkheid voor indirecte schade is uitgesloten.' },
+          { title: 'Artikel 8 — Opzegging', body: 'Maandabonnementen zijn maandelijks opzegbaar met een opzegtermijn van één maand. Opzegging dient schriftelijk te geschieden via hello@aanloop.ai.' },
+          { title: 'Artikel 9 — Toepasselijk recht', body: 'Op alle overeenkomsten is Nederlands recht van toepassing. Geschillen worden voorgelegd aan de bevoegde rechter in Rotterdam.' },
+        ].map(art => (
+          <div>
+            <h2 class="text-base font-bold text-navy mb-2">{art.title}</h2>
+            <p>{art.body}</p>
+          </div>
+        ))}
+        <p class="text-slate-400 text-xs mt-8">Vragen over deze voorwaarden? Stuur een e-mail naar <a href="mailto:hello@aanloop.ai" class="text-brand-indigo underline">hello@aanloop.ai</a>.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

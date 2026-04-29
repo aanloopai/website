@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+
+const services = [
+  { href: '/diensten/marco/', title: 'Marco — AI sekreter', description: 'Neemt uw telefoon 24/7 aan, plant afspraken, levert leads direct in uw inbox. Spreekt vloeiend Nederlands.', badge: 'Meest gekozen', accent: 'indigo' as const, features: ['Onbeperkte gesprekken', 'Lead-routering via Telegram of e-mail', 'Live binnen 7 dagen'] },
+  { href: '/diensten/emma/', title: 'Emma — WhatsApp agent', description: 'Antwoordt klantvragen op WhatsApp in seconden. Getraind op uw eigen kennisbank, met menselijke handover.', accent: 'rose' as const, features: ['Eigen kennisbank (Dify)', 'Naadloze handover naar mens', 'Werkt 24/7 zonder pauze'] },
+  { href: '/diensten/telefoon-assistent/', title: 'AI telefoon assistent', description: 'Volledig aanpasbare telefooncentrale die intakes doet, doorverbindt en samenvattingen maakt.', accent: 'amber' as const, features: ['Eigen telefoonnummer (NL)', 'Gespreksopnames + transcript', 'Integreert met uw CRM'] },
+  { href: '/diensten/custom/', title: 'Custom AI workflows', description: 'Maatwerk-automatisering voor unieke processen — van offerte-generatie tot voorraadbeheer.', accent: 'emerald' as const, features: ['Audit + roadmap inbegrepen', 'Bouwen, testen, opleiden', 'Onderhoud + SLA optioneel'] },
+];
+---
+
+<BaseLayout
+  title="Diensten · Aanloop AI"
+  description="Kant-en-klare AI-assistenten en custom workflows voor het Nederlandse MKB. Marco (AI sekreter), Emma (WhatsApp), telefoon assistent en maatwerk."
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Onze diensten</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Vier manieren om AI te laten werken voor uw bedrijf.
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl">
+          Begin met een kant-en-klaar product, of laat ons een maatwerk-oplossing bouwen. We starten altijd met een gratis adviesgesprek.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        {services.map((service) => (
+          <ServiceCard {...service} />
+        ))}
+      </div>
+
+      <div class="mt-16 card bg-slate-50 border-slate-200 reveal">
+        <div class="grid lg:grid-cols-2 gap-8 items-center">
+          <div>
+            <p class="eyebrow mb-2">Weet u het niet zeker?</p>
+            <h2 class="text-2xl font-bold text-navy">Laat ons meedenken.</h2>
+            <p class="mt-3 text-slate-600 text-sm leading-relaxed">
+              Elke situatie is anders. Plan een gratis AI-audit van 45 minuten en we analyseren samen welke oplossing het meest oplevert voor uw specifieke situatie.
+            </p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3 lg:justify-end">
+            <a href="/diensten/audit/" class="btn-outline">Meer over AI-audit</a>
+            <a href="/contact/?type=demo" class="btn-primary">
+              Boek een gesprek
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

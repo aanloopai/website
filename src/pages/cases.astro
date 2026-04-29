@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const cases = [
+  {
+    client: 'De Vries Installatie B.V.',
+    sector: 'Technische dienstverlening',
+    location: 'Rotterdam',
+    product: 'Marco — AI sekreter',
+    accent: 'bg-brand-indigo',
+    challenge: 'Het installatiebedrijf miste dagelijks 15–20 inkomende gesprekken tijdens werkuren omdat medewerkers op locatie waren. Elke gemiste beller was een potentiële lead.',
+    solution: 'Marco neemt nu alle inkomende gesprekken aan, doet een snelle intake, plant afspraken in de agenda van de eigenaar en stuurt lead-samenvattingen via Telegram.',
+    results: ['70% minder gemiste gesprekken', '23 extra geplande afspraken in maand 1', 'Eigenaar bespaart 1,5 uur/dag', 'Live binnen 6 werkdagen'],
+    quote: '"We dachten dat een AI-receptionist iets voor de toekomst was. Binnen drie weken hadden we Marco live en hij werkt alsof hij er altijd bij heeft gehoord."',
+    person: 'Sander de Vries, eigenaar',
+  },
+  {
+    client: 'Jansen Logistiek',
+    sector: 'Logistiek & transport',
+    location: 'Utrecht',
+    product: 'Emma — WhatsApp agent',
+    accent: 'bg-brand-rose',
+    challenge: 'Het klantenserviceteam werd dagelijks overspoeld met repetitieve WhatsApp-vragen over track-and-trace, levertijden en procedures. Dit kostte 3 uur per medewerker per dag.',
+    solution: 'Emma werd getraind op de FAQ, het track-and-trace systeem en procedures. Ze beantwoordt 80% van de vragen automatisch en escaleert complexe gevallen naar een medewerker.',
+    results: ['80% van vragen automatisch afgehandeld', '3 uur/medewerker/dag bespaard', 'Klanttevredenheid van 7,2 naar 8,6', 'Live binnen 10 werkdagen'],
+    quote: '"Emma beantwoordt meer vragen dan ons hele team samen — en ze slaapt nooit. Onze medewerkers kunnen zich nu focussen op echt complexe situaties."',
+    person: 'Marieke Jansen, operationeel manager',
+  },
+  {
+    client: 'ProMakelaar',
+    sector: 'Vastgoed',
+    location: 'Amsterdam',
+    product: 'Marco + Custom integratie',
+    accent: 'bg-brand-amber',
+    challenge: 'Het makelaarskantoor verloor leads doordat geïnteresseerden buiten kantooruren belden en geen terugbelverzoek konden achterlaten. Gemiddeld 12 gemiste leads per week.',
+    solution: 'Marco neemt gesprekken aan, kwalificeert leads (budget, wensen, tijdlijn) en plant bezichtigingen direct in Outlook. CRM-integratie zorgt voor automatische lead-registratie.',
+    results: ['12 extra gekwalificeerde leads/week', 'Bezichtigingsagenda 40% voller', 'Gemiddelde leadkwalificatie in 3 minuten', '8 werkdagen time-to-live'],
+    quote: '"De ROI was binnen de eerste maand duidelijk. Marco bracht ons meer leads dan we konden verwerken — een goed probleem om te hebben."',
+    person: 'Ahmed Bouali, directeur',
+  },
+];
+---
+
+<BaseLayout
+  title="Klantcases · Aanloop AI"
+  description="Lees hoe MKB-ondernemers in Nederland AI succesvol inzetten met Aanloop AI. Echte resultaten van echte klanten."
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Klantcases</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Echte resultaten bij echte bedrijven.
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl">
+          Geen hype, geen beloftes — concrete voorbeelden van MKB-ondernemers die AI al succesvol inzetten. Lees hoe zij de stap zetten en wat het hen oplevert.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page space-y-16">
+      {cases.map((c, i) => (
+        <article class={`card reveal ${i % 2 === 1 ? 'bg-slate-50/60' : ''}`}>
+          <div class="grid lg:grid-cols-3 gap-8">
+            <!-- Left: info -->
+            <div class="lg:col-span-1">
+              <div class={`w-1 h-16 ${c.accent} rounded-full mb-6`}></div>
+              <div class="space-y-1">
+                <p class="font-bold text-navy text-lg">{c.client}</p>
+                <p class="text-sm text-slate-500">{c.sector} · {c.location}</p>
+                <span class="inline-flex items-center mt-2 px-2 py-0.5 text-[11px] font-medium tracking-wide uppercase text-slate-600 bg-slate-100 rounded">
+                  {c.product}
+                </span>
+              </div>
+
+              <div class="mt-8 grid grid-cols-2 gap-3">
+                {c.results.map(r => (
+                  <div class="flex items-start gap-2 text-xs text-slate-700">
+                    <svg class="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    {r}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Right: story -->
+            <div class="lg:col-span-2 space-y-6">
+              <div>
+                <p class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-400 mb-2">De uitdaging</p>
+                <p class="text-sm text-slate-700 leading-relaxed">{c.challenge}</p>
+              </div>
+              <div>
+                <p class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-400 mb-2">De oplossing</p>
+                <p class="text-sm text-slate-700 leading-relaxed">{c.solution}</p>
+              </div>
+              <blockquote class="border-l-2 border-brand-indigo pl-4">
+                <p class="text-base text-navy font-medium italic leading-relaxed">{c.quote}</p>
+                <footer class="mt-2 text-xs text-slate-500">{c.person}</footer>
+              </blockquote>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-2xl">
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Wordt dit ook uw succesverhaal?
+        </h2>
+        <p class="mt-4 text-slate-300">Plan een gratis adviesgesprek van 30 minuten en ontdek wat AI voor uw bedrijf kan doen.</p>
+        <div class="mt-6">
+          <a href="/contact/?type=demo" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

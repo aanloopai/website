@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectorCard from '../../components/SectorCard.astro';
+
+const sectors = [
+  { href: '/sectoren/horeca/', title: 'Horeca', description: 'Reserveringen, no-shows, voorraadprognose — laat AI uw zaal vullen.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h7v18H3zM14 3h7v9h-7zM14 16h7v5h-7z"/></svg>' },
+  { href: '/sectoren/logistiek/', title: 'Logistiek & transport', description: 'Track-and-trace, klantmeldingen, route-optimalisatie via AI.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/></svg>' },
+  { href: '/sectoren/vastgoed/', title: 'Vastgoed & makelaars', description: 'Bezichtigingen plannen, leads kwalificeren, marktrapporten genereren.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>' },
+  { href: '/sectoren/detailhandel/', title: 'Detailhandel', description: 'Productadvies via chat, klantenservice 24/7, retour-afhandeling.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>' },
+  { href: '/sectoren/zakelijk/', title: 'Zakelijke dienstverlening', description: 'Offertes opstellen, contracten reviewen, intakes automatiseren.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>' },
+  { href: '/sectoren/zorg/', title: 'Zorg & welzijn', description: 'Afsprakenbeheer, intake-vragenlijsten, patiëntcommunicatie.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>' },
+];
+---
+
+<BaseLayout
+  title="Sectoren · Aanloop AI"
+  description="Aanloop AI heeft gespecialiseerde AI-oplossingen voor horeca, logistiek, vastgoed, detailhandel, zakelijke dienstverlening en zorg."
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Sectoren</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Toegespitst op uw branche.
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl">
+          Elke sector heeft zijn eigen ritme, klanten en uitdagingen. Wij hebben op basis van honderden gesprekken met MKB-ondernemers gespecialiseerde oplossingen ontwikkeld.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {sectors.map((sector) => (
+          <SectorCard {...sector} />
+        ))}
+      </div>
+
+      <div class="mt-16 text-center reveal">
+        <p class="text-slate-600 mb-4">Uw branche staat er niet bij?</p>
+        <a href="/contact/?type=contact" class="btn-outline">
+          Neem contact op — we denken mee
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

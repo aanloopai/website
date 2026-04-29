@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Emma — WhatsApp agent · Aanloop AI"
+  description="Emma beantwoordt klantvragen op WhatsApp in seconden. Getraind op uw eigen kennisbank, met naadloze handover naar uw team."
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-28">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <div class="flex items-center gap-3 mb-6">
+            <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+            <span class="eyebrow">Emma — WhatsApp agent</span>
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+            WhatsApp-support die nooit slaapt.
+          </h1>
+          <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-lg">
+            Emma beantwoordt klantvragen via WhatsApp in seconden — getraind op uw eigen kennisbank, met een naadloze handover naar uw team wanneer nodig.
+          </p>
+          <div class="mt-8 flex flex-col sm:flex-row gap-3">
+            <a href="/contact/?type=demo" class="btn-primary text-base px-6 py-3.5">
+              Gratis demo boeken
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+            <a href="/tarieven/" class="btn-outline text-base px-6 py-3.5">Bekijk tarieven</a>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          {[
+            { value: '80%', label: 'van vragen automatisch beantwoord', color: 'text-brand-rose' },
+            { value: '<5s', label: 'gemiddelde reactietijd', color: 'text-brand-indigo' },
+            { value: '24/7', label: 'beschikbaar zonder pauze', color: 'text-brand-amber' },
+            { value: '€247', label: 'vanaf per maand all-in', color: 'text-brand-emerald' },
+          ].map(s => (
+            <div class="card text-center">
+              <div class={`text-3xl font-bold ${s.color}`}>{s.value}</div>
+              <div class="text-xs text-slate-500 mt-1">{s.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-14 reveal">
+        <p class="eyebrow mb-3">Functionaliteiten</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">
+          Alles wat Emma voor u doet.
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {[
+          'Eigen kennisbank — getraind op uw FAQ, website, documenten',
+          'Naadloze handover naar mens bij complexe vragen',
+          'Herkent terugkerende klanten en personaliseert antwoord',
+          'Meertalig: NL, EN, FR, DE op aanvraag',
+          'WhatsApp Business API — officieel geverifieerd',
+          'CRM-koppeling: HubSpot, Pipedrive, eigen systeem',
+          'Conversatie-analytics en maandrapportage',
+          'Escalatie via e-mail, Telegram of interne chat',
+          'Afspraken plannen via WhatsApp (Google Calendar koppeling)',
+          'GDPR-conform — data binnen de EU',
+        ].map((f, i) => (
+          <div class={`flex items-start gap-3 p-4 rounded-xl bg-slate-50 border border-slate-100 reveal reveal-delay-${(i % 4) + 1}`}>
+            <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-sm text-slate-700">{f}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-2xl">
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-pearl text-balance">Klaar om Emma te ontmoeten?</h2>
+        <p class="mt-4 text-slate-300">Boek een live demo van 30 minuten — volledig gratis en zonder verplichtingen.</p>
+        <div class="mt-6">
+          <a href="/contact/?type=demo" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Plan een demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

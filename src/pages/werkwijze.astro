@@ -1,0 +1,137 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const steps = [
+  {
+    n: '01',
+    color: 'indigo',
+    title: 'Adviesgesprek',
+    duration: '30 min',
+    description: 'We bespreken uw bedrijf, processen, en wat AI realistisch kan oplossen. Geen verkooppraatje, geen druk — alleen advies. Soms is het advies "niet nu, eerst dit oplossen".',
+    deliverables: [
+      'Eerlijke inschatting of AI past bij uw situatie',
+      'Top-3 kansen voor uw bedrijf',
+      'Indicatie van budget en doorlooptijd',
+    ],
+  },
+  {
+    n: '02',
+    color: 'rose',
+    title: 'Voorstel & demo',
+    duration: '3 dagen',
+    description: 'Binnen 3 werkdagen ontvangt u een concreet voorstel met live demo. We laten u de AI horen of zien terwijl hij uw scenario afhandelt — niet een algemene demo.',
+    deliverables: [
+      'Schriftelijk voorstel met scope, prijs, timing',
+      'Live demo afgestemd op uw bedrijf',
+      'Verwachtingen en risico\'s helder',
+    ],
+  },
+  {
+    n: '03',
+    color: 'amber',
+    title: 'Bouwen & trainen',
+    duration: '1-3 weken',
+    description: 'We configureren de AI, trainen hem op uw kennisbank, koppelen aan uw systemen. Wekelijkse check-ins met u, geen black box.',
+    deliverables: [
+      'AI volledig getraind op uw data',
+      'Integraties met uw CRM/agenda/etc.',
+      'Test-fase met uw eigen team',
+      'Documentatie + trainingssessie voor uw team',
+    ],
+  },
+  {
+    n: '04',
+    color: 'emerald',
+    title: 'Live & doorontwikkelen',
+    duration: 'doorlopend',
+    description: 'Live-gang met begeleiding. Eerste 30 dagen kijken we mee in alle gesprekken, finetunen waar nodig. Daarna maandelijkse rapportage en optimalisaties.',
+    deliverables: [
+      'Live AI in productie',
+      'Maandelijkse rapportage met data',
+      'Optimalisaties op basis van echte gebruikspatronen',
+      'Direct aanspreekpunt voor vragen',
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Werkwijze · Aanloop AI"
+  description="Hoe we werken: van eerste adviesgesprek tot live AI binnen 14 dagen. Vier fases, transparant gepland, met u als regisseur."
+>
+  <section class="border-b border-slate-200">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Werkwijze</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Van eerste gesprek tot live in 14 dagen.
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty max-w-2xl">
+          Vier fases, transparant gepland. U weet altijd wat er gebeurt, wanneer, en wat u zelf moet leveren.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="space-y-16 lg:space-y-24">
+        {steps.map((step, i) => (
+          <div class="grid lg:grid-cols-12 gap-8 lg:gap-12">
+            <div class="lg:col-span-4">
+              <div class="sticky top-24">
+                <div class:list={[
+                  'inline-block px-2.5 py-0.5 rounded text-xs font-bold tracking-wider mb-4',
+                  step.color === 'indigo' && 'bg-brand-indigo/10 text-brand-indigo',
+                  step.color === 'rose' && 'bg-brand-rose/10 text-brand-rose',
+                  step.color === 'amber' && 'bg-brand-amber/10 text-brand-amber',
+                  step.color === 'emerald' && 'bg-brand-emerald/10 text-brand-emerald',
+                ]}>
+                  Fase {step.n}
+                </div>
+                <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy text-balance">
+                  {step.title}
+                </h2>
+                <p class="mt-3 text-sm text-slate-500 uppercase tracking-wide">{step.duration}</p>
+              </div>
+            </div>
+            <div class="lg:col-span-8">
+              <p class="text-lg text-slate-600 leading-relaxed">{step.description}</p>
+              <h3 class="mt-8 text-sm font-semibold text-navy uppercase tracking-wider">Wat u krijgt</h3>
+              <ul class="mt-4 space-y-3">
+                {step.deliverables.map((d) => (
+                  <li class="flex items-start gap-3 text-slate-700">
+                    <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    <span>{d}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-2xl">
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Klaar voor fase 01?
+        </h2>
+        <p class="mt-4 text-base text-slate-300">
+          Een gratis adviesgesprek van 30 minuten — zonder verplichting.
+        </p>
+        <div class="mt-6">
+          <a href="/contact/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Plan een gesprek
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

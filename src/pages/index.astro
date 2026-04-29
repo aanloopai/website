@@ -1,0 +1,332 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import SectorCard from '../components/SectorCard.astro';
+
+const services = [
+  { href: '/diensten/marco/', title: 'Marco — AI sekreter', description: 'Neemt uw telefoon 24/7 aan, plant afspraken, levert leads direct in uw inbox. Spreekt vloeiend Nederlands.', badge: 'Meest gekozen', accent: 'indigo' as const, features: ['Onbeperkte gesprekken', 'Lead-routering via Telegram of e-mail', 'Live binnen 7 dagen'] },
+  { href: '/diensten/emma/', title: 'Emma — WhatsApp agent', description: 'Antwoordt klantvragen op WhatsApp in seconden. Getraind op uw eigen kennisbank, met menselijke handover.', accent: 'rose' as const, features: ['Eigen kennisbank (Dify)', 'Naadloze handover naar mens', 'Werkt 24/7 zonder pauze'] },
+  { href: '/diensten/telefoon-assistent/', title: 'AI telefoon assistent', description: 'Volledig aanpasbare telefooncentrale die intakes doet, doorverbindt en samenvattingen maakt.', accent: 'amber' as const, features: ['Eigen telefoonnummer (NL)', 'Gespreksopnames + transcript', 'Integreert met uw CRM'] },
+  { href: '/diensten/custom/', title: 'Custom AI workflows', description: 'Maatwerk-automatisering voor unieke processen — van offerte-generatie tot voorraadbeheer.', accent: 'emerald' as const, features: ['Audit + roadmap inbegrepen', 'Bouwen, testen, opleiden', 'Onderhoud + SLA optioneel'] },
+];
+
+const sectors = [
+  { href: '/sectoren/horeca/', title: 'Horeca', description: 'Reserveringen, no-shows, voorraadprognose — laat AI uw zaal vullen.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h7v18H3zM14 3h7v9h-7zM14 16h7v5h-7z"/></svg>' },
+  { href: '/sectoren/logistiek/', title: 'Logistiek & transport', description: 'Track-and-trace, klantmeldingen, route-optimalisatie via AI.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/></svg>' },
+  { href: '/sectoren/vastgoed/', title: 'Vastgoed & makelaars', description: 'Bezichtigingen plannen, leads kwalificeren, marktrapporten genereren.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>' },
+  { href: '/sectoren/detailhandel/', title: 'Detailhandel', description: 'Productadvies via chat, klantenservice 24/7, retour-afhandeling.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>' },
+  { href: '/sectoren/zakelijk/', title: 'Zakelijke dienstverlening', description: 'Offertes opstellen, contracten reviewen, intakes automatiseren.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>' },
+  { href: '/sectoren/zorg/', title: 'Zorg & welzijn', description: 'Afsprakenbeheer, intake-vragenlijsten, patiëntcommunicatie.', icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>' },
+];
+
+const testimonials = [
+  { quote: '"Marco neemt nu 70% van onze inkomende calls af, plant zelf afspraken en levert leads in ons CRM. Binnen drie weken hadden we hem live."', name: 'Sander de Vries', role: 'Eigenaar · De Vries Installatie B.V., Rotterdam' },
+  { quote: '"Emma beantwoordt 80% van de WhatsApp-vragen automatisch. Onze klanttevredenheid is omhoog gegaan en ons team heeft eindelijk tijd voor écht werk."', name: 'Marieke Jansen', role: 'Operationeel manager · Jansen Logistiek, Utrecht' },
+  { quote: '"De AI-telefoonassistent heeft onze receptie volledig ontlast. Nooit meer gemiste leads buiten kantooruren. Uitstekende service van het Aanloop-team."', name: 'Ahmed Bouali', role: 'Directeur · ProMakelaar, Amsterdam' },
+];
+---
+
+<BaseLayout
+  title="Aanloop AI · AI-oplossingen voor het Nederlandse MKB"
+  description="Aanloop AI levert kant-en-klare AI-assistenten en custom workflows voor MKB-ondernemers in Nederland. Van AI-receptionist tot WhatsApp-bot — live binnen 14 dagen."
+>
+  <Hero />
+
+  <!-- Trust bar / stats -->
+  <section class="border-y border-slate-200 bg-slate-50/50">
+    <div class="container-page py-10">
+      <p class="text-center text-xs uppercase tracking-[0.15em] text-slate-500 mb-8">
+        Vertrouwd door 500+ MKB-ondernemers in Nederland
+      </p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div class="reveal">
+          <div class="text-3xl font-bold text-navy" data-counter data-target="14" data-suffix=" dgn">14 dgn</div>
+          <div class="text-sm text-slate-600 mt-1">gemiddelde tijd tot live</div>
+        </div>
+        <div class="reveal reveal-delay-1">
+          <div class="text-3xl font-bold text-navy">24/7</div>
+          <div class="text-sm text-slate-600 mt-1">beschikbaarheid van AI</div>
+        </div>
+        <div class="reveal reveal-delay-2">
+          <div class="text-3xl font-bold text-navy" data-counter data-target="73" data-suffix="%">73%</div>
+          <div class="text-sm text-slate-600 mt-1">minder gemiste leads</div>
+        </div>
+        <div class="reveal reveal-delay-3">
+          <div class="text-3xl font-bold text-navy">€297</div>
+          <div class="text-sm text-slate-600 mt-1">vanaf per maand</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services grid -->
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-14">
+        <p class="eyebrow mb-3 reveal">Onze diensten</p>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tightest text-navy text-balance reveal reveal-delay-1">
+          Vier manieren waarop AI uw bedrijf nu al kan helpen.
+        </h2>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          Begin met een kant-en-klaar product, of laat ons een maatwerk-oplossing bouwen.
+          We starten altijd met een gratis adviesgesprek om te zien wat werkt voor uw situatie.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        {services.map((service, i) => (
+          <div class={`reveal reveal-delay-${i + 1}`}>
+            <ServiceCard {...service} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ROI Calculator -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <p class="eyebrow mb-3">ROI calculator</p>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tightest text-navy text-balance">
+          Hoeveel levert AI uw bedrijf op?
+        </h2>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed">
+          Bereken in 30 seconden wat u bespaart met een AI-assistent.
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-12 items-start reveal reveal-delay-1">
+        <div class="card">
+          <div class="space-y-8">
+            <!-- Slider 1 -->
+            <div>
+              <div class="flex justify-between items-center mb-3">
+                <label for="roi-calls" class="text-sm font-medium text-navy">Inkomende gesprekken per dag</label>
+                <span id="roi-calls-val" class="text-sm font-bold text-brand-indigo">20</span>
+              </div>
+              <input type="range" id="roi-calls" min="5" max="100" value="20" step="5" class="roi-slider" />
+              <div class="flex justify-between text-xs text-slate-400 mt-1"><span>5</span><span>100</span></div>
+            </div>
+            <!-- Slider 2 -->
+            <div>
+              <div class="flex justify-between items-center mb-3">
+                <label for="roi-hourly" class="text-sm font-medium text-navy">Uurloon receptionist (€)</label>
+                <span id="roi-hourly-val" class="text-sm font-bold text-brand-indigo">€18</span>
+              </div>
+              <input type="range" id="roi-hourly" min="12" max="35" value="18" step="1" class="roi-slider" />
+              <div class="flex justify-between text-xs text-slate-400 mt-1"><span>€12</span><span>€35</span></div>
+            </div>
+            <!-- Slider 3 -->
+            <div>
+              <div class="flex justify-between items-center mb-3">
+                <label for="roi-minutes" class="text-sm font-medium text-navy">Gem. gespreksduur (min)</label>
+                <span id="roi-minutes-val" class="text-sm font-bold text-brand-indigo">4 min</span>
+              </div>
+              <input type="range" id="roi-minutes" min="2" max="15" value="4" step="1" class="roi-slider" />
+              <div class="flex justify-between text-xs text-slate-400 mt-1"><span>2</span><span>15</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <div class="card bg-midnight text-pearl">
+            <p class="text-sm text-slate-400">Jaarlijkse besparing</p>
+            <p id="roi-saving" class="text-5xl font-bold text-pearl mt-1">€18.720</p>
+            <p class="text-xs text-slate-500 mt-2">op basis van uw invoer (excl. btw)</p>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="card text-center">
+              <p class="text-xs text-slate-500 mb-1">Uren terug per jaar</p>
+              <p id="roi-hours" class="text-2xl font-bold text-navy">1.040 u</p>
+            </div>
+            <div class="card text-center">
+              <p class="text-xs text-slate-500 mb-1">ROI in maand 1</p>
+              <p id="roi-month" class="text-2xl font-bold text-brand-emerald">+€1.263</p>
+            </div>
+          </div>
+          <a href="/contact/?type=demo" class="btn-primary w-full text-center justify-center text-base py-3.5">
+            Boek een gratis demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-14">
+        <p class="eyebrow mb-3 reveal">Werkwijze</p>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tightest text-navy text-balance reveal reveal-delay-1">
+          Van eerste gesprek tot live in 14 dagen.
+        </h2>
+      </div>
+      <ol class="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-6 relative">
+        <!-- Connector line -->
+        <div class="hidden md:block absolute top-5 left-[12.5%] right-[12.5%] h-px bg-slate-200 -z-0"></div>
+        {[
+          { n: '01', color: 'indigo', colorClass: 'bg-brand-indigo/10 text-brand-indigo', title: 'Adviesgesprek', desc: 'We bespreken uw bedrijf, processen en kansen. Geen verplichting — alleen eerlijk advies.' },
+          { n: '02', color: 'rose', colorClass: 'bg-brand-rose/10 text-brand-rose', title: 'Voorstel & demo', desc: 'Binnen 3 dagen een concreet voorstel met live demo van de AI in uw werkscenario.' },
+          { n: '03', color: 'amber', colorClass: 'bg-brand-amber/10 text-brand-amber', title: 'Bouwen & trainen', desc: 'We configureren de AI, trainen hem op uw kennisbank en testen samen met uw team.' },
+          { n: '04', color: 'emerald', colorClass: 'bg-brand-emerald/10 text-brand-emerald', title: 'Live & doorontwikkelen', desc: 'Live-gang met begeleiding. Maandelijkse rapportage en optimalisaties op basis van data.' },
+        ].map((step, i) => (
+          <li class={`relative bg-white z-10 reveal reveal-delay-${i + 1}`}>
+            <div class={`inline-block px-2 py-0.5 rounded text-xs font-bold tracking-wider ${step.colorClass}`}>{step.n}</div>
+            <h3 class="mt-4 text-lg font-bold text-navy">{step.title}</h3>
+            <p class="mt-2 text-sm text-slate-600 leading-relaxed">{step.desc}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Sectors -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-14">
+        <p class="eyebrow mb-3 reveal">Sectoren</p>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tightest text-navy text-balance reveal reveal-delay-1">
+          Toegespitst op uw branche.
+        </h2>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          Elke sector heeft zijn eigen ritme. We hebben gespecialiseerde oplossingen ontwikkeld op basis van honderden gesprekken met MKB-ondernemers.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {sectors.map((sector) => (
+          <SectorCard {...sector} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials carousel -->
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <div class="flex justify-center mb-8">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+        </div>
+        <p class="eyebrow mb-3 text-center">Klantervaring</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-center text-balance">
+          Wat onze klanten zeggen.
+        </h2>
+      </div>
+
+      <div class="relative max-w-4xl mx-auto overflow-hidden reveal reveal-delay-1">
+        <div id="testimonial-track" class="testimonial-track">
+          {testimonials.map((t) => (
+            <figure class="testimonial-slide px-4">
+              <blockquote class="text-xl lg:text-2xl font-medium text-navy text-balance leading-relaxed text-center">
+                {t.quote}
+              </blockquote>
+              <figcaption class="mt-8 text-sm text-slate-600 text-center">
+                <strong class="text-navy font-bold">{t.name}</strong>
+                <span class="block mt-1">{t.role}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+
+        <!-- Controls -->
+        <div class="flex items-center justify-center gap-3 mt-10">
+          <button id="prev-testimonial" class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors" aria-label="Vorige">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+          </button>
+          <div id="testimonial-dots" class="flex gap-2">
+            {testimonials.map((_, i) => (
+              <button class={`testimonial-dot w-2 h-2 rounded-full transition-all ${i === 0 ? 'bg-navy w-6' : 'bg-slate-300'}`} data-idx={i} aria-label={`Testimonial ${i + 1}`}></button>
+            ))}
+          </div>
+          <button id="next-testimonial" class="w-10 h-10 rounded-full border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors" aria-label="Volgende">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-brand-indigo/10 blur-3xl"></div>
+    <div class="container-page relative">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tightest text-pearl text-balance reveal">
+          Klaar om te zien wat AI voor uw bedrijf kan doen?
+        </h2>
+        <p class="mt-5 text-lg text-slate-300 leading-relaxed text-pretty max-w-2xl reveal reveal-delay-1">
+          Plan een gratis adviesgesprek van 30 minuten. We laten u live een AI-assistent zien, afgestemd op uw branche. Geen verplichtingen.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+          <a href="/contact/?type=demo" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een adviesgesprek
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="tel:+31000000000" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bel direct: 010 — 000 0000
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // ROI Calculator
+  const callsEl = document.getElementById('roi-calls') as HTMLInputElement;
+  const hourlyEl = document.getElementById('roi-hourly') as HTMLInputElement;
+  const minutesEl = document.getElementById('roi-minutes') as HTMLInputElement;
+
+  function updateROI() {
+    const calls = parseInt(callsEl?.value || '20');
+    const hourly = parseInt(hourlyEl?.value || '18');
+    const minutes = parseInt(minutesEl?.value || '4');
+
+    const hoursPerYear = (calls * minutes / 60) * 250;
+    const saving = Math.round(hoursPerYear * hourly);
+    const month1 = Math.round(saving / 12 - 297);
+
+    (document.getElementById('roi-calls-val') as HTMLElement).textContent = String(calls);
+    (document.getElementById('roi-hourly-val') as HTMLElement).textContent = `€${hourly}`;
+    (document.getElementById('roi-minutes-val') as HTMLElement).textContent = `${minutes} min`;
+    (document.getElementById('roi-saving') as HTMLElement).textContent = `€${saving.toLocaleString('nl-NL')}`;
+    (document.getElementById('roi-hours') as HTMLElement).textContent = `${Math.round(hoursPerYear)} u`;
+    (document.getElementById('roi-month') as HTMLElement).textContent = month1 > 0 ? `+€${month1.toLocaleString('nl-NL')}` : `€${month1.toLocaleString('nl-NL')}`;
+
+    // Update slider background
+    [callsEl, hourlyEl, minutesEl].forEach(el => {
+      if (!el) return;
+      const pct = ((parseInt(el.value) - parseInt(el.min)) / (parseInt(el.max) - parseInt(el.min))) * 100;
+      el.style.setProperty('--slider-pct', `${pct}%`);
+    });
+  }
+
+  [callsEl, hourlyEl, minutesEl].forEach(el => el?.addEventListener('input', updateROI));
+  updateROI();
+
+  // Testimonials carousel
+  let current = 0;
+  const track = document.getElementById('testimonial-track') as HTMLElement;
+  const dots = document.querySelectorAll('.testimonial-dot');
+  const total = dots.length;
+
+  function goTo(idx: number) {
+    current = (idx + total) % total;
+    if (track) track.style.transform = `translateX(-${current * 100}%)`;
+    dots.forEach((d, i) => {
+      d.classList.toggle('bg-navy', i === current);
+      d.classList.toggle('w-6', i === current);
+      d.classList.toggle('bg-slate-300', i !== current);
+    });
+  }
+
+  document.getElementById('prev-testimonial')?.addEventListener('click', () => goTo(current - 1));
+  document.getElementById('next-testimonial')?.addEventListener('click', () => goTo(current + 1));
+  dots.forEach((d) => d.addEventListener('click', () => goTo(parseInt((d as HTMLElement).dataset.idx || '0'))));
+
+  // Auto-advance
+  setInterval(() => goTo(current + 1), 6000);
+</script>

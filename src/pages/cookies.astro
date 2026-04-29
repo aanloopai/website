@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Cookieverklaring · Aanloop AI" description="Cookieverklaring van Aanloop AI. Welke cookies wij gebruiken en hoe u uw voorkeuren kunt aanpassen." noindex={true}>
+  <section class="border-b border-slate-200">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Juridisch</span></div>
+        <h1 class="text-4xl font-bold tracking-tightest text-navy">Cookieverklaring</h1>
+        <p class="mt-4 text-slate-500 text-sm">Versie 1.0 · April 2026</p>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <div class="space-y-8 text-sm text-slate-700 leading-relaxed">
+          <p>Aanloop AI gebruikt cookies om de werking van onze website te verbeteren en om inzicht te krijgen in het gebruik van onze diensten. Op deze pagina leggen wij uit welke cookies wij plaatsen en waarom.</p>
+          
+          <div>
+            <h2 class="text-base font-bold text-navy mb-4">Noodzakelijke cookies</h2>
+            <div class="overflow-x-auto">
+              <table class="w-full text-xs border-collapse">
+                <thead><tr class="bg-slate-50"><th class="text-left p-3 border border-slate-200 font-medium">Cookie</th><th class="text-left p-3 border border-slate-200 font-medium">Doel</th><th class="text-left p-3 border border-slate-200 font-medium">Bewaartermijn</th></tr></thead>
+                <tbody>
+                  <tr><td class="p-3 border border-slate-200 font-mono">aanloop_cookie_consent</td><td class="p-3 border border-slate-200">Onthoudt uw cookie-voorkeur</td><td class="p-3 border border-slate-200">1 jaar</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <h2 class="text-base font-bold text-navy mb-4">Analytische cookies</h2>
+            <p>Als u hiermee instemt, plaatsen wij analytische cookies om het gebruik van onze website te meten. De data wordt geanonimiseerd en gebruikt om de website te verbeteren.</p>
+          </div>
+
+          <div>
+            <h2 class="text-base font-bold text-navy mb-4">Uw keuzes aanpassen</h2>
+            <p>U kunt uw cookie-voorkeuren op elk moment aanpassen door op de knop hieronder te klikken of via uw browserinstellingen.</p>
+            <button id="reset-cookies" class="mt-4 btn-outline text-sm">
+              Cookie-instellingen aanpassen
+            </button>
+          </div>
+
+          <div>
+            <h2 class="text-base font-bold text-navy mb-4">Meer informatie</h2>
+            <p>Heeft u vragen over ons cookiegebruik? Neem contact op via <a href="mailto:hello@aanloop.ai" class="text-brand-indigo underline">hello@aanloop.ai</a>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  document.getElementById('reset-cookies')?.addEventListener('click', () => {
+    localStorage.removeItem('aanloop_cookie_consent');
+    window.location.reload();
+  });
+</script>
