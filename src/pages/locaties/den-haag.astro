@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const faqItems = [
+  { question: 'Is Aanloop AI actief in Den Haag?', answer: 'Ja. Aanloop AI bedient klanten in Den Haag en de regio Haaglanden. We werken remote en on-site voor zakelijke klanten in de hofstad.' },
+  { question: 'Welke sectoren bedient Aanloop AI in Den Haag?', answer: 'In Den Haag zijn advocatenkantoren, overheidsgelieerde instellingen (voor zover privaat), makelaars, zakelijke dienstverlening en zorgorganisaties onze voornaamste klantgroepen.' },
+  { question: 'Hoe verschilt een AI agent voor een Den Haags bedrijf?', answer: 'De technologie is identiek. De configuratie past zich aan aan uw sector en klanttype. Aanloop AI heeft ervaring met de zakelijke en formele communicatiestijl die past bij Den Haagse instellingen.' },
+  { question: 'Wat kost een AI agent in Den Haag?', answer: 'Onze prijzen zijn landelijk gelijk: Starter €997/maand, Growth €2.500/maand. U betaalt geen regioproemie.' },
+  { question: 'Kan Aanloop AI ook helpen bij advocatenkantoren in Den Haag?', answer: 'Absoluut. Aanloop AI heeft een specifieke AI-oplossing voor advocatenkantoren: intake-screening, agendabeheer en documentverwerking. Meer info op onze advocaten-pagina.' },
+];
+const localSchema = { '@context': 'https://schema.org', '@type': 'ProfessionalService', name: 'Aanloop AI — AI Agency Den Haag', url: 'https://aanloopai.nl/locaties/den-haag/', address: { '@type': 'PostalAddress', addressLocality: 'Den Haag', addressRegion: 'Zuid-Holland', addressCountry: 'NL' }, geo: { '@type': 'GeoCoordinates', latitude: '52.0705', longitude: '4.3007' }, areaServed: { '@type': 'City', name: 'Den Haag' }, priceRange: '€€' };
+---
+<BaseLayout title="AI Agency Den Haag — AI Agents & Automation voor Den Haagse Bedrijven | Aanloop AI" description="Aanloop AI helpt Den Haagse MKB-bedrijven en advocatenkantoren met AI agents en workflow automation. KVK: 88606902. Plan een gratis AI scan." schema={localSchema} faqSchema={faqItems}>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Locatie · Den Haag</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">AI Agency Den Haag:<br/>AI Agents & Automation voor Den Haagse Bedrijven</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Aanloop AI helpt Den Haagse MKB-bedrijven, advocatenkantoren en zakelijke dienstverleners met AI agents en workflow automation. Transparant geprijsd, AVG-compliant.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 reveal reveal-delay-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI Scan voor Den Haag<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/prijzen/" class="btn-outline">Bekijk prijzen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        {[
+          { icon: '⚖️', sector: 'Advocatenkantoren Den Haag', desc: 'AI intake-screening en agendabeheer voor advocaten.', link: '/sectoren/ai-voor-advocaten/' },
+          { icon: '🏠', sector: 'Makelaars Den Haag', desc: 'AI receptionist voor bezichtigingsafspraken 24/7.', link: '/sectoren/vastgoed/' },
+          { icon: '💼', sector: 'Zakelijke Dienstverlening', desc: 'Workflow automation voor administratie en klantenservice.', link: '/diensten/custom/' },
+          { icon: '🍽️', sector: 'Horeca Den Haag', desc: 'WhatsApp AI voor reserveringen en klantenservice.', link: '/sectoren/horeca/' },
+          { icon: '📊', sector: 'Accountants Den Haag', desc: 'AI factuurverwerking, 85% tijdsbesparing.', link: '/sectoren/accountancy/' },
+          { icon: '💊', sector: 'Zorg Den Haag', desc: 'AI voor afspraken en klantenservice in zorgomgevingen.', link: '/sectoren/zorg/' },
+        ].map(s => (
+          <div class="card reveal">
+            <div class="text-2xl mb-3">{s.icon}</div>
+            <h3 class="font-bold text-navy text-sm mb-2">{s.sector}</h3>
+            <p class="text-xs text-slate-600 mb-4">{s.desc}</p>
+            <a href={s.link} class="text-xs font-medium text-brand-indigo hover:underline">Meer info →</a>
+          </div>
+        ))}
+      </div>
+      <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde Vragen — AI Agency Den Haag</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
+        <p class="text-sm font-bold text-navy mb-3">Andere locaties</p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/locaties/amsterdam/" class="text-sm text-brand-indigo hover:underline">AI Agency Amsterdam →</a>
+          <a href="/locaties/rotterdam/" class="text-sm text-brand-indigo hover:underline">AI Agency Rotterdam →</a>
+          <a href="/locaties/utrecht/" class="text-sm text-brand-indigo hover:underline">AI Agency Utrecht →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Bent u een Den Haags bedrijf?</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Plan een gratis AI scan en ontdek hoe AI uw Den Haagse bedrijf kan versterken.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/prijzen/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk AI prijzen</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

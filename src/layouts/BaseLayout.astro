@@ -28,9 +28,10 @@ const ogImage = image.startsWith('http') ? image : `https://aanloopai.nl${image}
 // ── Organization Schema ────────────────────────────────────────────
 const orgSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
+  '@type': ['Organization', 'ProfessionalService'],
   '@id': 'https://aanloopai.nl/#organization',
   name: 'Aanloop AI',
+  legalName: 'Aanloop AI B.V.',
   alternateName: 'AanloopAI',
   url: 'https://aanloopai.nl',
   logo: {
@@ -39,20 +40,39 @@ const orgSchema = {
     width: 1024,
     height: 1024,
   },
-  description: 'Aanloop AI levert AI-oplossingen voor het Nederlandse MKB. Van AI-receptionist tot custom workflows — live in 8 dagen.',
+  description: 'Aanloop AI B.V. levert AI agents, voice AI en workflow automation voor het Nederlandse MKB. Van AI-receptionist tot custom n8n workflows — live in 7 werkdagen. KVK: 88606902.',
   slogan: 'AI die echt werkt voor uw bedrijf',
   foundingDate: '2024',
-  legalName: 'Aanloop AI',
+  identifier: {
+    '@type': 'PropertyValue',
+    name: 'KVK',
+    value: '88606902',
+  },
   address: {
     '@type': 'PostalAddress',
+    streetAddress: 'Rotterdam',
     addressLocality: 'Rotterdam',
     addressRegion: 'Zuid-Holland',
+    postalCode: '3000',
     addressCountry: 'NL',
   },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: '51.9225',
+    longitude: '4.4792',
+  },
+  areaServed: [
+    { '@type': 'City', name: 'Rotterdam' },
+    { '@type': 'City', name: 'Amsterdam' },
+    { '@type': 'City', name: 'Den Haag' },
+    { '@type': 'City', name: 'Utrecht' },
+    { '@type': 'Country', name: 'Nederland' },
+  ],
   contactPoint: {
     '@type': 'ContactPoint',
     contactType: 'sales',
     email: 'hello@aanloopai.nl',
+    telephone: '+31624741597',
     areaServed: 'NL',
     availableLanguage: ['Dutch', 'English'],
     hoursAvailable: {
@@ -62,16 +82,24 @@ const orgSchema = {
       closes: '17:00',
     },
   },
+  priceRange: '€€',
   sameAs: [
     'https://www.linkedin.com/company/aanloopai',
     'https://twitter.com/aanloopai',
   ],
   knowsAbout: [
+    'AI Agents',
+    'Voice AI',
     'AI Automatisering',
     'AI Receptionist',
     'WhatsApp AI Assistent',
     'Workflow Automatisering',
+    'n8n Workflow Automation',
+    'ElevenLabs Voice AI',
     'EU AI Act Compliance',
+    'AVG GDPR Compliance',
+    'AI voor MKB Nederland',
+    'AI Agency Nederland',
   ],
 };
 

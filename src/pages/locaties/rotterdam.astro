@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const localSchema = {
+  '@context': 'https://schema.org', '@type': 'ProfessionalService',
+  name: 'Aanloop AI — AI Agency Rotterdam',
+  url: 'https://aanloopai.nl/locaties/rotterdam/',
+  image: 'https://aanloopai.nl/logo-mark-light-1024.png',
+  address: { '@type': 'PostalAddress', addressLocality: 'Rotterdam', addressRegion: 'Zuid-Holland', addressCountry: 'NL' },
+  geo: { '@type': 'GeoCoordinates', latitude: '51.9225', longitude: '4.4792' },
+  areaServed: { '@type': 'City', name: 'Rotterdam' },
+  priceRange: '€€',
+};
+const faqItems = [
+  { question: 'Is Aanloop AI gevestigd in Rotterdam?', answer: 'Ja. Aanloop AI B.V. is gevestigd in Rotterdam (KVK: 88606902). Wij bedienen Rotterdamse MKB-bedrijven zowel remote als on-site.' },
+  { question: 'Welke Rotterdamse sectoren zijn populair bij Aanloop AI?', answer: 'In Rotterdam zijn logistiek & transport, horeca (haven en centrum), bouw & installatie, en makelaars de meest voorkomende sectoren die we bedienen.' },
+  { question: 'Hoe snel kan Aanloop AI starten voor een Rotterdams bedrijf?', answer: 'We kunnen direct beginnen. Na de gratis AI scan plannen we de implementatie: standaard 7 werkdagen voor live gaan.' },
+  { question: 'Biedt Aanloop AI korting voor lokale Rotterdamse bedrijven?', answer: 'Onze prijzen zijn transparant en gelijk voor heel Nederland: Starter €997/maand, Growth €2.500/maand. We bieden geen regionale kortingen, maar wél de beste prijs-kwaliteitverhouding voor MKB.' },
+  { question: 'Wat maakt Rotterdam interessant voor AI-implementaties?', answer: 'Rotterdam heeft een sterk MKB-ecosysteem in logistiek, haven, bouw en horeca. Juist in deze sectoren zijn de potentiële tijds- en kostenbesparingen van AI-agents het grootst.' },
+];
+---
+<BaseLayout title="AI Agency Rotterdam — AI Agents & Automation voor Rotterdamse Bedrijven | Aanloop AI" description="Aanloop AI, gevestigd in Rotterdam (KVK: 88606902), helpt Rotterdamse MKB-bedrijven met AI agents, voice AI en workflow automation. Plan een gratis AI scan." schema={localSchema} faqSchema={faqItems}>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Locatie · Rotterdam (Hoofdkantoor)</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">AI Agency Rotterdam:<br/>AI Agents & Automation voor Rotterdamse Bedrijven</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Aanloop AI is gevestigd in Rotterdam en bedient Rotterdamse MKB-bedrijven met AI agents, voice AI en workflow automation. KVK: 88606902.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 reveal reveal-delay-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI Scan voor Rotterdam<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/prijzen/" class="btn-outline">Bekijk prijzen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <h2 class="text-2xl font-bold text-navy">AI voor Rotterdamse Bedrijven</h2>
+        <p class="mt-3 text-slate-600">Rotterdam is de thuisbasis van Aanloop AI. We kennen het Rotterdamse MKB-landschap: logistiek, haven, bouw, horeca en makelaars zijn onze specialiteit.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        {[
+          { icon: '🚢', sector: 'Logistiek Rotterdam', desc: 'AI workflow automation voor havenlogistiek, orderverwerking en transportplanning.', link: '/sectoren/logistiek/' },
+          { icon: '🏗️', sector: 'Bouw Rotterdam', desc: 'AI-agent voor offerteaanvragen, afsprakenplanning en klantenservice.', link: '/sectoren/bouw/' },
+          { icon: '🍽️', sector: 'Horeca Rotterdam', desc: 'WhatsApp AI voor reserveringen. 90% geautomatiseerd, geen overboeking.', link: '/sectoren/horeca/' },
+          { icon: '🏠', sector: 'Makelaars Rotterdam', desc: 'AI receptionist voor bezichtigingen. 68% minder gemiste calls.', link: '/sectoren/vastgoed/' },
+          { icon: '📊', sector: 'Accountants Rotterdam', desc: 'AI factuurverwerking, 85% tijdsbesparing op administratie.', link: '/sectoren/accountancy/' },
+          { icon: '💼', sector: 'ZZP Rotterdam', desc: 'Betaalbare AI voor Rotterdamse ZZP\'ers. Starter vanaf €997/maand.', link: '/sectoren/ai-voor-zzp/' },
+        ].map(s => (
+          <div class="card reveal">
+            <div class="text-2xl mb-3">{s.icon}</div>
+            <h3 class="font-bold text-navy text-sm mb-2">{s.sector}</h3>
+            <p class="text-xs text-slate-600 mb-4">{s.desc}</p>
+            <a href={s.link} class="text-xs font-medium text-brand-indigo hover:underline">Meer info →</a>
+          </div>
+        ))}
+      </div>
+
+      <div class="bg-brand-indigo/5 border border-brand-indigo/20 rounded-2xl p-6 mb-10 reveal">
+        <p class="font-bold text-navy mb-2">🏢 Aanloop AI — Hoofdkantoor Rotterdam</p>
+        <p class="text-sm text-slate-600 mb-4">Aanloop AI B.V. is gevestigd in Rotterdam. KVK: 88606902. Wij zijn beschikbaar voor persoonlijke afspraken in de regio Rotterdam-Rijnmond.</p>
+        <p class="text-sm text-slate-600"><strong>E-mail:</strong> <a href="mailto:hello@aanloopai.nl" class="text-brand-indigo underline">hello@aanloopai.nl</a></p>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde Vragen — AI Agency Rotterdam</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
+        <p class="text-sm font-bold text-navy mb-3">Andere locaties</p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/locaties/amsterdam/" class="text-sm text-brand-indigo hover:underline">AI Agency Amsterdam →</a>
+          <a href="/locaties/den-haag/" class="text-sm text-brand-indigo hover:underline">AI Agency Den Haag →</a>
+          <a href="/locaties/utrecht/" class="text-sm text-brand-indigo hover:underline">AI Agency Utrecht →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Bent u een Rotterdams bedrijf?</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Als Rotterdams bedrijf zijn we dicht bij u in de buurt. Plan een gratis AI scan — remote of on-site.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/prijzen/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk AI prijzen</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

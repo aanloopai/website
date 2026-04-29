@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const faqItems = [
+  { question: 'Wat is beter voor MKB: n8n, Make.com of Zapier?', answer: 'Voor het Nederlandse MKB raden wij n8n aan. n8n is open source en self-hosted, waardoor uw data in Nederland blijft (AVG-compliant). Make.com en Zapier zijn cloud-only en slaan data op buiten Nederland. Functioneel zijn alle drie krachtig, maar n8n geeft de meeste controle.' },
+  { question: 'Wat kost n8n per maand?', answer: 'n8n self-hosted kost alleen de serverkosten: €10-30/maand voor een kleine VPS. n8n Cloud (beheerd) kost €20-50/maand. Aanloop AI beheert uw n8n installatie inclusief updates, backup en monitoring als onderdeel van het AI agent pakket.' },
+  { question: 'Wat kost Make.com per maand?', answer: 'Make.com biedt een gratis plan (1.000 operaties/maand). Betaalde plannen starten vanaf €9/maand (10.000 operaties) tot €29/maand (40.000 operaties). Voor intensief gebruik wordt het snel duurder.' },
+  { question: 'Kan ik overstappen van Make.com naar n8n?', answer: 'Ja, overstappen is mogelijk. Aanloop AI helpt bij migraties van Make.com of Zapier naar n8n. De meeste workflows kunnen worden nagebouwd in n8n met extra voordelen: self-hosted, geen vendor lock-in en betere AVG-compliance.' },
+  { question: 'Is n8n moeilijker te gebruiken dan Make.com of Zapier?', answer: 'n8n heeft een iets steilere leercurve, maar biedt ook veel meer flexibiliteit. Aanloop AI beheert n8n volledig voor u — u hoeft de technische details niet zelf te kennen. We bouwen en onderhouden de workflows.' },
+];
+const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: 'n8n vs Make.com vs Zapier: Welke is het Beste voor MKB in Nederland? (2026)', author: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' }, publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2026-05-06', dateModified: '2026-05-06', inLanguage: 'nl-NL' };
+---
+<BaseLayout title="n8n vs Make.com vs Zapier: Welke is het Beste voor MKB? (2026) | Aanloop AI" description="Volledige vergelijking van n8n, Make.com en Zapier voor het Nederlandse MKB in 2026. Kosten, functies, AVG-compliance en aanbeveling per use case." schema={schema} faqSchema={faqItems}>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Kennisbank · AI Automation</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">n8n vs Make.com vs Zapier:<br/>Welke is het Beste voor MKB?</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Een eerlijke vergelijking van de drie populairste workflow automation tools voor het Nederlandse MKB. Met aanbeveling per use case en AVG-analyse.</p>
+        <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500"><span>📅 6 mei 2026</span><span>·</span><span>⏱ 7 min leestijd</span><span>·</span><span>✍️ Aanloop AI Redactie</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-2">Direct Antwoord</p>
+        <p class="text-sm text-slate-700">Voor het Nederlandse MKB is <strong>n8n self-hosted de beste keuze</strong> vanwege volledige AVG-compliance (data in Nederland), geen vendor lock-in en de beste integratie met AI-systemen. Make.com is een goede tweede voor eenvoudige workflows. Zapier is het duurste en meest beperkt voor complexe use cases.</p>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-6">Volledige Vergelijking</h2>
+      <div class="overflow-x-auto mb-8">
+        <table class="w-full text-sm border-collapse">
+          <thead><tr class="border-b-2 border-slate-200"><th class="text-left py-3 pr-4 font-semibold text-navy w-1/4">Kenmerk</th><th class="text-left py-3 px-4 font-semibold text-brand-indigo">n8n ⭐</th><th class="text-left py-3 px-4 font-semibold text-slate-500">Make.com</th><th class="text-left py-3 pl-4 font-semibold text-slate-500">Zapier</th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            {[
+              ['Self-hosted optie', '✅ Ja (AVG!)', '❌ Nee', '❌ Nee'],
+              ['Data in Nederland', '✅ Uw server', '❌ VS/EU datacenter', '❌ VS datacenter'],
+              ['Open source', '✅ Ja (MIT)', '❌ Nee', '❌ Nee'],
+              ['Vendor lock-in', '❌ Geen', '⚠️ Beperkt', '⚠️ Sterk'],
+              ['Gratis plan', '✅ Self-hosted gratis', '✅ 1.000 ops/maand', '✅ 100 taken/maand'],
+              ['Betaald (instap)', '€10-30/maand (server)', '€9/maand', '€19/maand'],
+              ['AI/LLM integratie', '✅ Uitgebreid', '⚠️ Beperkt', '⚠️ Beperkt'],
+              ['Complexe logica', '✅ Ja', '✅ Ja', '⚠️ Beperkt'],
+              ['Beschikbare integraties', '400+', '1.200+', '5.000+'],
+              ['Leercurve', '⚠️ Steil', '✅ Eenvoudig', '✅ Eenvoudig'],
+              ['Community/support', '✅ Actief', '✅ Goed', '✅ Uitstekend'],
+              ['AVG-compliance', '✅ Optimaal', '⚠️ Mogelijk', '⚠️ Risicovol'],
+            ].map(([k, n, m, z]) => (
+              <tr><td class="py-3 pr-4 font-medium text-slate-700">{k}</td><td class="py-3 px-4 text-navy">{n}</td><td class="py-3 px-4 text-slate-500">{m}</td><td class="py-3 pl-4 text-slate-500">{z}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Wanneer Kiest u voor Welke Tool?</h2>
+      <div class="space-y-4 mb-8">
+        {[
+          { tool: 'n8n (aanbevolen door Aanloop AI)', color: 'brand-indigo', cases: ['AVG-compliance is prioriteit (medisch, financieel, juridisch)', 'Complexe AI-workflows met LLM-integraties', 'Data mag de EU niet verlaten', 'Geen vendor lock-in gewenst', 'Budget bewust (lage serverkosten)'] },
+          { tool: 'Make.com', color: 'slate-500', cases: ['Eenvoudige workflows zonder complexe logica', 'Snelle prototyping van nieuwe workflows', 'Veel kant-en-klare app-integraties nodig', 'Geen technische kennis aanwezig'] },
+          { tool: 'Zapier', color: 'slate-400', cases: ['Maximale app-integraties nodig (5.000+)', 'Zeer eenvoudige 1-stap automatiseringen', 'Team dat al vertrouwd is met Zapier'] },
+        ].map(t => (
+          <div class="bg-white border border-slate-200 rounded-xl p-5">
+            <p class="font-bold text-navy text-sm mb-3">{t.tool}</p>
+            <ul class="space-y-1">
+              {t.cases.map(c => <li class="flex items-start gap-2 text-sm text-slate-600"><span class="text-brand-indigo mt-0.5">→</span>{c}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8">
+        <p class="text-sm font-bold text-navy mb-3">Lees ook</p>
+        <ul class="space-y-2">
+          <li><a href="/kennisbank/ai-workflow-automation/" class="text-sm text-brand-indigo hover:underline">AI Workflow Automation: Complete Uitleg voor Beginners →</a></li>
+          <li><a href="/kennisbank/ai-facturering-automatisering/" class="text-sm text-brand-indigo hover:underline">Hoe Automatiseer je Je Facturering met AI? →</a></li>
+          <li><a href="/kennisbank/wat-is-een-ai-agent/" class="text-sm text-brand-indigo hover:underline">Wat is een AI Agent? De Complete Gids voor MKB →</a></li>
+        </ul>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-6">Veelgestelde Vragen</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+      <div class="border-t border-slate-200 pt-8 flex items-start gap-4">
+        <div class="w-12 h-12 rounded-full bg-brand-indigo/10 flex items-center justify-center flex-shrink-0"><span class="text-xl">🤖</span></div>
+        <div><p class="font-bold text-navy text-sm">Aanloop AI Redactie</p><p class="text-xs text-slate-500 mt-0.5">KVK: 88606902 · Rotterdam, Nederland.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Wij implementeren n8n voor u</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Aanloop AI beheert n8n self-hosted volledig — u hoeft niets technisch te doen. Plan een gratis scan.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/diensten/custom/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Custom workflows</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,122 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const faqItems = [
+  { question: 'Is een AI telefoniste goedkoper dan een menselijke receptionist?', answer: 'Ja, significant. Een menselijke receptionist in Nederland kost gemiddeld €2.200-3.500 bruto per maand (32-40 uur). Een AI telefoniste van Aanloop AI kost €997-2.500 per maand — inclusief 24/7 bereikbaarheid en onbeperkte of hoge gespreksvolumes.' },
+  { question: 'Klinkt een AI telefoniste net als een echte mens?', answer: 'Moderne AI stemmen (ElevenLabs) zijn bijzonder naturel. In blindtests merkt 60-80% van de bellers niet dat ze met AI spreken, zolang het gesprek binnen het getrainde domein blijft. Bij complexe of emotionele gesprekken verbindt de agent door naar een mens.' },
+  { question: 'Wat zijn de nadelen van een AI telefoniste?', answer: 'AI telefonistes presteren minder goed bij: zeer complexe of onverwachte vragen, emotioneel geladen gesprekken, sterk dialect of slechte audiokwaliteit. Aanloop AI bouwt altijd een escalatiepad naar menselijke medewerkers in.' },
+  { question: 'Kan een AI telefoniste afspraken inplannen in mijn agenda?', answer: 'Ja. Via een n8n koppeling met Google Calendar of Outlook plant de AI telefoniste afspraken direct in uw agenda. De beller ontvangt automatisch een bevestiging per e-mail of SMS.' },
+  { question: 'Hoeveel calls kan een AI telefoniste tegelijk verwerken?', answer: 'Een AI telefoniste van Aanloop AI kan onbeperkt veel gesprekken tegelijkertijd verwerken — er is geen wachtrij. Een menselijke receptionist kan er maar één tegelijk afhandelen. Dit is een van de grootste voordelen van AI.' },
+];
+const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: 'AI Telefoniste vs Mens: Kostenbesparing & Kwaliteit (2026)', author: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' }, publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2026-05-10', dateModified: '2026-05-10', inLanguage: 'nl-NL' };
+---
+<BaseLayout title="AI Telefoniste vs Mens: Kostenbesparing & Kwaliteit (2026) | Aanloop AI" description="Eerlijke vergelijking: AI telefoniste vs menselijke receptionist. Kosten, kwaliteit, beschikbaarheid en wanneer u welke kiest. Nederlandse situatie in 2026." schema={schema} faqSchema={faqItems}>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Kennisbank · Voice AI</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">AI Telefoniste vs Mens:<br/>Kostenbesparing & Kwaliteit</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Een eerlijke vergelijking van een AI telefoniste tegenover een menselijke receptionist. Met echte cijfers, kwaliteitsanalyse en een duidelijke aanbeveling voor uw situatie.</p>
+        <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500"><span>📅 10 mei 2026</span><span>·</span><span>⏱ 6 min leestijd</span><span>·</span><span>✍️ Aanloop AI Redactie</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-2">Direct Antwoord</p>
+        <p class="text-sm text-slate-700">Een AI telefoniste is <strong>60-70% goedkoper</strong> dan een menselijke receptionist, werkt 24/7 en kan onbeperkt gesprekken tegelijk voeren. Voor routinematige taken (afspraken, FAQ, doorverbinden) presteert een AI telefoniste vergelijkbaar of beter. Voor complexe of emotionele gesprekken is menselijke tussenkomst nog steeds waardevol.</p>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-6">Kosten Vergelijking (Nederland 2026)</h2>
+      <div class="overflow-x-auto mb-4">
+        <table class="w-full text-sm border-collapse">
+          <thead><tr class="border-b-2 border-slate-200"><th class="text-left py-3 pr-4 font-semibold text-navy">Kostenpost</th><th class="text-left py-3 px-4 font-semibold text-slate-500">Menselijke Receptionist</th><th class="text-left py-3 pl-4 font-semibold text-brand-indigo">AI Telefoniste (Aanloop AI)</th></tr></thead>
+          <tbody class="divide-y divide-slate-100">
+            {[
+              ['Maandloon/abonnement', '€2.200-3.500/maand', '€997-2.500/maand'],
+              ['Beschikbaarheid', '8-40 uur/week', '24/7, 365 dagen'],
+              ['Gelijktijdige gesprekken', '1', 'Onbeperkt'],
+              ['Vakantie/ziekte', '→ Vervanger nodig', '→ Geen impact'],
+              ['Inwerkperiode', '2-4 weken', '7 werkdagen setup'],
+              ['Schaalbaar', 'Nieuw personeel nodig', 'Direct schaalbaar'],
+              ['Totaal/jaar', '€26.400-42.000+', '€11.964-30.000'],
+              ['Besparing/jaar', '—', '€14.400-30.000'],
+            ].map(([k, m, a]) => (
+              <tr class:list={[k === 'Besparing/jaar' ? 'font-bold bg-brand-emerald/5' : '']}>
+                <td class="py-3 pr-4 font-medium text-slate-700">{k}</td>
+                <td class="py-3 px-4 text-slate-500">{m}</td>
+                <td class="py-3 pl-4 text-navy font-medium">{a}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-slate-400 mb-8">* Menselijke receptionist: bruto salaris excl. vakantiegeld, sociale lasten en overheadkosten (schoonmaak, bureau, software).</p>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-6">Kwaliteitsvergelijking</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+          <p class="font-bold text-navy mb-3">AI Telefoniste: sterk in</p>
+          <ul class="space-y-2 text-sm text-slate-700">
+            <li class="flex items-start gap-2"><span class="text-brand-emerald">✓</span> 24/7 bereikbaar, ook buiten kantooruren</li>
+            <li class="flex items-start gap-2"><span class="text-brand-emerald">✓</span> Nooit vergeten, altijd consistent</li>
+            <li class="flex items-start gap-2"><span class="text-brand-emerald">✓</span> Onbeperkt gelijktijdige gesprekken</li>
+            <li class="flex items-start gap-2"><span class="text-brand-emerald">✓</span> Directe CRM & agenda-integratie</li>
+            <li class="flex items-start gap-2"><span class="text-brand-emerald">✓</span> Geen fouten bij datuminvoer of gegevens</li>
+            <li class="flex items-start gap-2"><span class="text-brand-emerald">✓</span> Directe transcriptie van elk gesprek</li>
+          </ul>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+          <p class="font-bold text-navy mb-3">Menselijke Receptionist: sterk in</p>
+          <ul class="space-y-2 text-sm text-slate-700">
+            <li class="flex items-start gap-2"><span class="text-amber-500">→</span> Complexe, onverwachte gesprekken</li>
+            <li class="flex items-start gap-2"><span class="text-amber-500">→</span> Empathie bij emotioneel contact</li>
+            <li class="flex items-start gap-2"><span class="text-amber-500">→</span> Improviseren bij uitzonderingen</li>
+            <li class="flex items-start gap-2"><span class="text-amber-500">→</span> Sterke dialecten of slechte lijn</li>
+            <li class="flex items-start gap-2"><span class="text-amber-500">→</span> Multi-tasking (balie + telefoon)</li>
+          </ul>
+        </div>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Aanbeveling: Hybride Model</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">De meest succesvolle aanpak bij Nederlandse MKB-bedrijven: een <strong>hybride model</strong>. De AI telefoniste verwerkt 70-80% van de calls volledig automatisch. Voor complexe gevallen verbindt de agent naadloos door naar een menselijke medewerker — inclusief een gesprekssamenvatting zodat die direct up-to-speed is.</p>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8">
+        <p class="text-sm font-bold text-navy mb-3">Lees ook</p>
+        <ul class="space-y-2">
+          <li><a href="/kennisbank/voice-ai-klantenservice/" class="text-sm text-brand-indigo hover:underline">Voice AI Agents voor Klantenservice: Werkt het Echt? →</a></li>
+          <li><a href="/kennisbank/elevenlabs-ai-agent-koppelen/" class="text-sm text-brand-indigo hover:underline">ElevenLabs AI Agent Koppelen aan Telefooncentrale →</a></li>
+          <li><a href="/kennisbank/ai-agent-kosten-mkb/" class="text-sm text-brand-indigo hover:underline">Hoeveel kost een AI agent in Nederland? (2026 prijzen) →</a></li>
+        </ul>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-6">Veelgestelde Vragen</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+      <div class="border-t border-slate-200 pt-8 flex items-start gap-4">
+        <div class="w-12 h-12 rounded-full bg-brand-indigo/10 flex items-center justify-center flex-shrink-0"><span class="text-xl">🤖</span></div>
+        <div><p class="font-bold text-navy text-sm">Aanloop AI Redactie</p><p class="text-xs text-slate-500 mt-0.5">KVK: 88606902 · Rotterdam, Nederland.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Start met een AI telefoniste voor uw bedrijf</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Aanloop AI implementeert AI telefonisten voor het Nederlandse MKB. Live in 7 werkdagen. Geen verplichting.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk tarieven</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

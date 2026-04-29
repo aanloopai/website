@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const faqItems = [
+  { question: 'Is een AI agent ook nuttig voor een ZZP\'er?', answer: 'Absoluut. Als ZZP\'er bent u uw eigen receptionist, accountant en klantenservice. Een AI agent neemt die rollen over: beantwoordt calls, plant afspraken en verwerkt leads — ook terwijl u aan het werk bent of slaapt. Aanloop AI biedt betaalbare AI voor ZZP\'ers vanaf €997/maand.' },
+  { question: 'Hoeveel kost een AI agent voor een ZZP\'er?', answer: 'Het Starter pakket van Aanloop AI kost €997/maand en is specifiek geschikt voor ZZP\'ers en kleine bedrijven. Tot 200 gesprekken per maand, 1 callscript en e-mail routering. De gemiddelde terugverdientijd is minder dan 1 maand.' },
+  { question: 'Kan ik als ZZP\'er mijn eigen telefoonnummer houden?', answer: 'Ja. De AI agent wordt gekoppeld aan uw bestaande telefoonnummer. U hoeft niets te wijzigen aan uw huidige telefoniesysteem.' },
+  { question: 'Wat als de AI een vraag niet kan beantwoorden?', answer: 'De agent verbindt door naar uw mobiele nummer of stelt een terugbelverzoek in. U ontvangt altijd een transcript van het gesprek, zodat u direct op de hoogte bent.' },
+  { question: 'Is een AI agent ook geschikt voor ZZP\'ers die deels werken?', answer: 'Juist. Een ZZP\'er die deeltijds werkt profiteert het meest: de AI agent werkt ook tijdens de uren dat u niet beschikbaar bent. Zo mist u nooit een lead of klantcontact.' },
+];
+const schema = { '@context': 'https://schema.org', '@type': 'Service', serviceType: 'AI voor ZZP', provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' }, areaServed: { '@type': 'Country', name: 'Nederland' }, description: 'Betaalbare AI agents voor ZZP\'ers in Nederland. Nooit een gemiste call. Starter vanaf €997/maand.' };
+---
+<BaseLayout title="AI voor ZZP: Nooit Meer een Gemiste Call | Aanloop AI" description="Betaalbare AI agents voor Nederlandse ZZP'ers. Nooit meer een gemiste call of lead. AI receptionist, afspraken inplannen, klantenservice. Starter vanaf €997/maand." schema={schema} faqSchema={faqItems}>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Sectoren · ZZP</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">AI voor ZZP:<br/>Nooit Meer een Gemiste Call of Lead</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Als ZZP'er kunt u niet altijd de telefoon opnemen. Een AI agent doet dat voor u — 24/7. Hij beantwoordt vragen, plant afspraken in en stuurt u een transcript. Betaalbaar vanaf €997/maand.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 reveal reveal-delay-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI Scan voor ZZP<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/prijzen/" class="btn-outline">Starter €997/maand</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <h2 class="text-2xl font-bold text-navy">Wat doet een AI agent voor een ZZP'er?</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        {[
+          { icon: '📞', t: 'Calls aannemen', d: 'De AI agent neemt uw telefoon aan terwijl u werkt, rijdt of slaapt. Geen voicemail meer — altijd een levend gesprek.' },
+          { icon: '📅', t: 'Afspraken inplannen', d: 'Klanten plannen direct een afspraak in uw agenda via telefoon of WhatsApp. Geen heen-en-weer meer.' },
+          { icon: '💬', t: 'Vragen beantwoorden', d: 'Standaardvragen over uw diensten, tarieven en beschikbaarheid worden automatisch beantwoord.' },
+          { icon: '📧', t: 'Leads doorzetten', d: 'Nieuwe leads worden automatisch genoteerd en doorgestuurd naar uw e-mail of CRM.' },
+          { icon: '🔔', t: 'Terugbelverzoeken', d: 'Als de vraag te complex is, plant de agent een terugbelmoment in dat past bij uw agenda.' },
+          { icon: '📊', t: 'Overzicht & Transcripts', d: 'Elke ochtend een overzicht van alle gesprekken, leads en actiepunten in uw inbox.' },
+        ].map(u => (
+          <div class="card reveal">
+            <div class="text-2xl mb-3">{u.icon}</div>
+            <h3 class="font-bold text-navy text-sm mb-2">{u.t}</h3>
+            <p class="text-sm text-slate-600">{u.d}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="bg-brand-indigo/5 border border-brand-indigo/20 rounded-2xl p-8 mb-12 reveal">
+        <p class="eyebrow mb-2">ZZP Starter Pakket</p>
+        <div class="flex flex-col md:flex-row gap-8 items-start">
+          <div class="flex-1">
+            <p class="text-3xl font-bold text-navy mb-1">€997<span class="text-sm font-normal text-slate-500">/maand</span></p>
+            <p class="text-xs text-slate-400 mb-4">Excl. 21% btw · Maandelijks opzegbaar</p>
+            <ul class="space-y-2 text-sm">
+              {['Tot 200 gesprekken/maand', '1 callscript op maat', 'E-mail lead-routering', 'Dashboard + transcripts', 'Setup binnen 7 werkdagen'].map(f => (
+                <li class="flex items-start gap-2"><span class="text-brand-indigo">✓</span>{f}</li>
+              ))}
+            </ul>
+          </div>
+          <div class="flex-1">
+            <p class="font-bold text-navy mb-3">Terugverdientijd: &lt; 1 maand</p>
+            <p class="text-sm text-slate-600 mb-3">Als ZZP'er die 3 leads per maand mist door gemiste calls (à gemiddeld €500 per lead) verliest u €1.500/maand. Een Starter AI agent kost €997 — en u vangt al die leads.</p>
+            <a href="/gratis-ai-scan/" class="btn-primary text-sm">Start gratis AI scan</a>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde Vragen — AI voor ZZP</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Als ZZP'er nooit meer een lead missen?</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Plan een gratis AI scan en ontdek hoe u met €997/maand uw bereikbaarheid verdubbelt.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/prijzen/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk Starter pakket</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

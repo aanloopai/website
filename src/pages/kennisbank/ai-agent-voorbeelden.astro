@@ -1,0 +1,130 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const faqItems = [
+  { question: 'Wat zijn de beste voorbeelden van AI agents voor Nederlandse bedrijven?', answer: 'De meest succesvolle AI agent toepassingen in Nederland zijn: AI telefonisten voor makelaars en advocaten, WhatsApp reserveringsagents voor horeca, lead-kwalificatie agents voor B2B-bedrijven, en factuurverwerking-agents voor accountants en logistieke bedrijven.' },
+  { question: 'Hoe lang duurt het om een AI agent te implementeren?', answer: 'Bij Aanloop AI duurt een standaard implementatie 7 werkdagen. Complexere integraties met meerdere systemen kunnen 3-4 weken duren. We hanteren een gestructureerd implementatieproces: scan, ontwerp, bouw, test, go-live.' },
+  { question: 'Kan een AI agent mijn bestaande software koppelen?', answer: 'Ja. Aanloop AI koppelt AI agents via n8n aan bijna elk systeem: HubSpot, Pipedrive, Exact, e-mail servers, Calendly, Slack en meer. Heeft u een maatwerkoplossing? We bouwen een API-koppeling.' },
+  { question: 'Zijn AI agents ook geschikt voor ZZP\'ers?', answer: 'Absoluut. Een ZZP\'er kan enorm profiteren van een AI telefonist die calls aanneemt terwijl u werkt. Zo mist u nooit een lead. Aanloop AI biedt een Starter pakket speciaal voor kleine bedrijven en ZZP\'ers vanaf €997/maand.' },
+  { question: 'Wat is het meest populaire AI agent gebruik voor MKB?', answer: 'Het meest voorkomende gebruik is de AI receptionist: een agent die telefoontjes aanneemt, afspraken inplant en leads verwerkt — 24/7, zonder extra personeel. Daarna volgt WhatsApp AI voor klantcommunicatie en workflow-automatisering voor administratieve taken.' },
+];
+const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: '5 Voorbeelden van AI Agents voor Nederlandse Bedrijven (2026)', author: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' }, publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2026-05-04', dateModified: '2026-05-04', inLanguage: 'nl-NL' };
+---
+<BaseLayout title="5 Voorbeelden van AI Agents voor Nederlandse Bedrijven (2026) | Aanloop AI" description="Concrete voorbeelden van AI agents die Nederlandse MKB-bedrijven succesvol inzetten. Van AI receptionist voor makelaars tot WhatsApp agent voor horeca. Met resultaten en kosten." schema={schema} faqSchema={faqItems}>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Kennisbank · AI Agents</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">5 Voorbeelden van AI Agents voor Nederlandse Bedrijven (2026)</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Van AI receptionist voor makelaars tot automatische facturering voor accountants — hier zijn 5 concrete voorbeelden van hoe Nederlandse MKB-bedrijven AI agents succesvol inzetten.</p>
+        <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500"><span>📅 4 mei 2026</span><span>·</span><span>⏱ 6 min leestijd</span><span>·</span><span>✍️ Aanloop AI Redactie</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-2">Direct Antwoord</p>
+        <p class="text-sm text-slate-700">De vijf meest succesvolle AI agent toepassingen voor Nederlandse MKB-bedrijven zijn: (1) AI receptionist voor makelaars, (2) WhatsApp reserveringsagent voor horeca, (3) intake-screening voor advocaten, (4) lead-kwalificatie voor B2B, en (5) factuurverwerking voor accountants.</p>
+      </div>
+
+      <div class="space-y-8 mb-10">
+        {[
+          {
+            n: '1', icon: '🏠', sector: 'Vastgoed & Makelaars', title: 'AI Receptionist die 24/7 Bezichtigingen Inplant',
+            problem: 'Een Rotterdamse makelaar miste gemiddeld 8 calls per dag buiten kantooruren. Potentiële kopers belden concurrenten.',
+            solution: 'Aanloop AI implementeerde een AI telefonist (Marco) die calls aanneemt, bezichtigingsafspraken inplant in de agenda en leads verwerkt in het CRM.',
+            results: ['68% minder gemiste calls', '23 uur/week bespaard op administratie', '€18.000/jaar extra omzet door snellere opvolging'],
+            link: '/sectoren/vastgoed/',
+          },
+          {
+            n: '2', icon: '🍽️', sector: 'Horeca', title: 'WhatsApp AI Agent voor Restaurantreserveringen',
+            problem: 'Een restaurantketen ontving dagelijks 50+ reserveringsberichten op WhatsApp. Medewerkers waren uren per dag kwijt aan handmatige verwerking.',
+            solution: 'Een WhatsApp AI agent (Emma) handelt alle reserveringsberichten af: controleert beschikbaarheid, bevestigt, en stuurt reminders.',
+            results: ['90% van reserveringen volledig automatisch', '0 overboekingen dankzij real-time agenda-integratie', '€3.200/maand bespaard op personeel'],
+            link: '/sectoren/horeca/',
+          },
+          {
+            n: '3', icon: '⚖️', sector: 'Advocatenkantoor', title: 'AI Intake-Screening voor Advocaten',
+            problem: 'Een advocatenkantoor spendeerde 15 uur per week aan intake-gesprekken met ongeschikte cliënten.',
+            solution: 'Een AI agent screent potentiële cliënten via telefoon: stelt kwalificerende vragen, bepaalt de urgentie en plant alleen relevante gesprekken in bij de advocaat.',
+            results: ['12 uur/week bespaard op intakegesprekken', '40% hogere kwaliteit van nieuwe cliënten', 'Advocaten richten zich uitsluitend op waardevolle zaken'],
+            link: '/sectoren/ai-voor-advocaten/',
+          },
+          {
+            n: '4', icon: '💼', sector: 'B2B Leadgeneratie', title: 'AI Lead-Kwalificatie Agent voor Sales Teams',
+            problem: 'Een B2B-softwarebedrijf ontving veel websiteleads maar 70% was niet gekwalificeerd. Het salesteam verloor tijd aan cold leads.',
+            solution: 'Een n8n workflow-agent kwalificeert nieuwe leads automatisch: stuurt een gepersonaliseerde e-mail, stelt kwalificerende vragen en schuift alleen warme leads door naar sales.',
+            results: ['60% hogere conversie van lead naar afspraak', 'Salesteam richt zich op hot leads', '€24.000/jaar bespaard op verkoopkosten'],
+            link: '/diensten/custom/',
+          },
+          {
+            n: '5', icon: '📊', sector: 'Accountancy', title: 'Automatische Factuurverwerking voor Accountants',
+            problem: 'Een accountantskantoor verwerkte handmatig 200+ facturen per week. Dit kostte 20+ uur aan handmatig werk.',
+            solution: 'Een AI workflow-agent leest inkomende facturen (PDF/e-mail), extraheert de data, matcht met orders en boekt automatisch in het boekhoudpakket.',
+            results: ['85% tijdbesparing op factuurverwerking', '< 0,5% foutenpercentage', '€1.800/maand bespaard op administratie'],
+            link: '/sectoren/accountancy/',
+          },
+        ].map(ex => (
+          <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden">
+            <div class="p-6 border-b border-slate-100">
+              <div class="flex items-center gap-3 mb-3">
+                <span class="text-2xl">{ex.icon}</span>
+                <div>
+                  <p class="text-xs font-medium text-slate-500">{ex.sector}</p>
+                  <p class="font-bold text-navy">Voorbeeld {ex.n}: {ex.title}</p>
+                </div>
+              </div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div><p class="font-semibold text-slate-600 mb-1">Probleem</p><p class="text-slate-600">{ex.problem}</p></div>
+                <div><p class="font-semibold text-slate-600 mb-1">Oplossing</p><p class="text-slate-600">{ex.solution}</p></div>
+              </div>
+            </div>
+            <div class="p-4 bg-slate-50 flex flex-wrap items-center justify-between gap-4">
+              <div class="flex flex-wrap gap-3">
+                {ex.results.map(r => <span class="text-xs bg-brand-emerald/10 text-brand-emerald font-medium px-3 py-1 rounded-full">✓ {r}</span>)}
+              </div>
+              <a href={ex.link} class="text-xs font-medium text-brand-indigo hover:underline whitespace-nowrap">Meer info →</a>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8">
+        <p class="text-sm font-bold text-navy mb-3">Lees ook</p>
+        <ul class="space-y-2">
+          <li><a href="/kennisbank/wat-is-een-ai-agent/" class="text-sm text-brand-indigo hover:underline">Wat is een AI Agent? De Complete Gids voor MKB in 2026 →</a></li>
+          <li><a href="/kennisbank/ai-agent-kosten-mkb/" class="text-sm text-brand-indigo hover:underline">Hoeveel kost een AI agent in Nederland? (2026 prijzen) →</a></li>
+          <li><a href="/kennisbank/ai-workflow-automation/" class="text-sm text-brand-indigo hover:underline">AI Workflow Automation: Complete Uitleg voor Beginners →</a></li>
+        </ul>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-6">Veelgestelde Vragen</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+      <div class="border-t border-slate-200 pt-8 flex items-start gap-4">
+        <div class="w-12 h-12 rounded-full bg-brand-indigo/10 flex items-center justify-center flex-shrink-0"><span class="text-xl">🤖</span></div>
+        <div><p class="font-bold text-navy text-sm">Aanloop AI Redactie</p><p class="text-xs text-slate-500 mt-0.5">KVK: 88606902 · Rotterdam, Nederland.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Welk voorbeeld past bij uw bedrijf?</h2>
+      <p class="mt-4 text-slate-300 leading-relaxed reveal reveal-delay-1">Plan een gratis AI scan en ontdek welke AI agent het meeste waarde toevoegt voor uw specifieke situatie.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk tarieven</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

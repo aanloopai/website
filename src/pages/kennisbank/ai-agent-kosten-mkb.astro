@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const faqItems = [
+  { question: 'Hoeveel kost een AI agent in Nederland in 2026?', answer: 'De kosten van een AI agent in Nederland variëren sterk. Bij Aanloop AI beginnen onze AI agent oplossingen vanaf €997 per maand voor een Starter pakket. Een uitgebreide AI agent voor MKB kost gemiddeld tussen €997 en €2.500 per maand. Enterprise oplossingen worden op maat geprijsd. De exacte prijs hangt af van de complexiteit, integraties en onderhoudsbehoefte.' },
+  { question: 'Zijn er verborgen kosten bij AI agents?', answer: 'Bij Aanloop AI zijn er geen verborgen kosten. Hosting, onderhoud, updates, monitoring en support zijn inbegrepen in het maandelijkse abonnement. U betaalt nooit extra per gesprek of bericht. Eenmalige setup-kosten worden apart vermeld in de offerte.' },
+  { question: 'Hoe snel verdien ik een AI agent terug?', answer: 'De gemiddelde terugverdientijd voor een AI agent bij Nederlandse MKB-bedrijven is 3-6 maanden. Een AI agent die 20 uur per week bespaart op personeelskosten (à €25/uur) levert €2.000/maand op — en betaalt een Starter pakket van €997 al in 15 werkdagen terug.' },
+  { question: 'Kan ik maandelijks opzeggen?', answer: 'Ja, alle Aanloop AI abonnementen zijn maandelijks opzegbaar (met één maand opzegtermijn). Bij jaarlijkse betaling ontvangt u circa 16% korting.' },
+  { question: 'Zijn er eenmalige setupkosten?', answer: 'Ja, afhankelijk van de complexiteit zijn er eenmalige implementatiekosten. Voor een Starter pakket beginnen deze vanaf €500. Complexe enterprise-implementaties kunnen hogere setupkosten hebben. Wij vermelden dit altijd transparant in de offerte.' },
+];
+const schema = {
+  '@context': 'https://schema.org', '@type': 'Article',
+  headline: 'Hoeveel Kost een AI Agent in Nederland? (2026 Prijzen)',
+  author: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
+  datePublished: '2026-05-03', dateModified: '2026-05-03', inLanguage: 'nl-NL',
+};
+---
+<BaseLayout
+  title="Hoeveel Kost een AI Agent in Nederland? (2026 Prijzen) | Aanloop AI"
+  description="Actuele prijzen voor AI agents in Nederland in 2026. Van €997/maand voor MKB tot enterprise op maat. Transparante kostenopbouw, ROI-berekening en vergelijking."
+  schema={schema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Kennisbank · Kosten & Tarieven</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">Hoeveel Kost een AI Agent<br/>in Nederland? (2026 Prijzen)</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Transparante prijzen, ROI-berekening en alles wat u moet weten over de kosten van een AI agent voor uw bedrijf.</p>
+        <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500"><span>📅 3 mei 2026</span><span>·</span><span>⏱ 7 min leestijd</span><span>·</span><span>✍️ Aanloop AI Redactie</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-2">Direct Antwoord</p>
+        <p class="text-sm text-slate-700">De kosten van een AI agent in Nederland variëren van <strong>€997/maand</strong> voor een basis MKB-oplossing tot <strong>€2.500/maand</strong> voor een uitgebreide groei-oplossing met CRM-integratie en onbeperkte gesprekken. Enterprise-implementaties worden op maat geprijsd.</p>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-6">Aanloop AI Prijsoverzicht (2026)</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4">
+        {[
+          { name: 'Starter', price: '€997', per: '/maand', badge: null, features: ['Tot 200 gesprekken/maand', '1 callscript op maat', 'E-mail lead-routering', 'Dashboard + transcripts', 'Setup binnen 7 werkdagen'] },
+          { name: 'Growth', price: '€2.500', per: '/maand', badge: 'Meest gekozen', features: ['Onbeperkte gesprekken', 'Tot 5 callscripts', 'CRM-integratie', 'Prioriteit support < 4 uur', 'Telegram-routering'] },
+          { name: 'Enterprise', price: 'Op maat', per: '', badge: null, features: ['Onbeperkte gesprekken', 'Multi-team routing', 'SLA 99.9% uptime', 'Dedicated account manager', 'On-premise optie'] },
+        ].map(p => (
+          <div class:list={['rounded-2xl p-6 border', p.badge ? 'border-navy shadow-xl bg-white relative' : 'border-slate-200 bg-slate-50']}>
+            {p.badge && <span class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-navy text-white text-xs font-semibold rounded-full">{p.badge}</span>}
+            <p class="text-xs font-medium text-slate-500 mb-1">{p.name}</p>
+            <p class="text-3xl font-bold text-navy mb-1">{p.price}<span class="text-sm text-slate-500">{p.per}</span></p>
+            <p class="text-xs text-slate-400 mb-4">Excl. 21% btw</p>
+            <ul class="space-y-2">
+              {p.features.map(f => <li class="flex items-start gap-2 text-xs text-slate-600"><span class="text-brand-indigo mt-0.5">✓</span>{f}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <p class="text-sm text-slate-500 mb-8">Meer details en maandelijkse vs. jaarlijkse betaling op onze <a href="/tarieven/" class="text-brand-indigo underline">tarieven pagina</a>.</p>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">ROI Berekening: Wanneer Verdien je het Terug?</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">Een AI agent is een investering die zichzelf doorgaans snel terugverdient. Hier een voorbeeld voor een typisch MKB-bedrijf:</p>
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8">
+        <p class="text-sm font-bold text-navy mb-4">Voorbeeld: Makelaar met AI telefonist (Starter pakket)</p>
+        <div class="space-y-3">
+          {[
+            ['Besparing receptionist (part-time 20u/week à €25/u)', '+€2.000/maand'],
+            ['Meer leads door 24/7 bereikbaarheid (+15%)', '+€3.000/maand'],
+            ['Kosten Starter AI agent', '−€997/maand'],
+            ['Netto maandelijkse winst', '≈ €4.000/maand'],
+          ].map(([label, val]) => (
+            <div class:list={['flex justify-between items-center text-sm py-2 border-b border-slate-200', val.startsWith('≈') ? 'font-bold text-navy' : '']}>
+              <span class="text-slate-700">{label}</span>
+              <span class:list={[val.startsWith('+') ? 'text-brand-emerald' : val.startsWith('−') ? 'text-red-500' : 'text-navy', 'font-semibold']}>{val}</span>
+            </div>
+          ))}
+        </div>
+        <p class="text-xs text-slate-500 mt-4">Terugverdientijd: &lt; 1 maand bij dit voorbeeld.</p>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Wat Beïnvloedt de Prijs van een AI Agent?</h2>
+      <div class="space-y-4 mb-8">
+        {[
+          { t: 'Aantal gesprekken', d: 'Meer gesprekken per maand vereisen meer rekenkracht en opslag. Aanloop AI\'s Growth pakket biedt onbeperkte gesprekken.' },
+          { t: 'Complexiteit van integraties', d: 'Koppeling met CRM, agenda, ERP of maatwerk-systemen verhoogt de setup- en maandkosten.' },
+          { t: 'Aantal callscripts', d: 'Elk callscript vereist configuratie en testen. Het Starter pakket bevat 1 script; Growth tot 5.' },
+          { t: 'Ondersteuning en SLA', d: 'Prioriteit support met reactietijd < 4 uur is beschikbaar in het Growth pakket. SLA 99.9% uptime geldt voor Enterprise.' },
+          { t: 'Dataopslag en privacy', d: 'Aanloop AI gebruikt n8n self-hosted — uw data blijft in Nederland. Dit is inbegrepen in alle pakketten.' },
+        ].map(item => (
+          <div class="bg-white border border-slate-200 rounded-xl p-4">
+            <p class="font-bold text-navy text-sm mb-1">{item.t}</p>
+            <p class="text-sm text-slate-600">{item.d}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8">
+        <p class="text-sm font-bold text-navy mb-3">Lees ook</p>
+        <ul class="space-y-2">
+          <li><a href="/kennisbank/wat-is-een-ai-agent/" class="text-sm text-brand-indigo hover:underline">Wat is een AI Agent? De Complete Gids voor MKB in 2026 →</a></li>
+          <li><a href="/kennisbank/ai-agent-vs-chatbot/" class="text-sm text-brand-indigo hover:underline">AI Agent vs Chatbot: Wat is het Verschil? →</a></li>
+          <li><a href="/kennisbank/ai-workflow-automation/" class="text-sm text-brand-indigo hover:underline">AI Workflow Automation: Complete Uitleg voor Beginners →</a></li>
+        </ul>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-6">Veelgestelde Vragen over AI Agent Kosten</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+
+      <div class="border-t border-slate-200 pt-8 flex items-start gap-4">
+        <div class="w-12 h-12 rounded-full bg-brand-indigo/10 flex items-center justify-center flex-shrink-0"><span class="text-xl">🤖</span></div>
+        <div>
+          <p class="font-bold text-navy text-sm">Aanloop AI Redactie</p>
+          <p class="text-xs text-slate-500 mt-0.5">AI-specialisten gespecialiseerd in praktische AI-implementaties voor het Nederlandse MKB. KVK: 88606902 · Rotterdam.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Bereken uw ROI met een gratis AI scan</h2>
+      <p class="mt-4 text-slate-300 leading-relaxed reveal reveal-delay-1">Ontdek in 10 minuten waar AI waarde toevoegt in uw bedrijf en wat de verwachte terugverdientijd is.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk alle tarieven</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

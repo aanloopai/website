@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const faqItems = [
+  { question: 'Wat is het grootste verschil tussen een AI agent en een chatbot?', answer: 'Het grootste verschil is autonomie en actiegerichtheid. Een chatbot geeft antwoorden op basis van vaste scripts of sleutelwoorden. Een AI agent begrijpt de volledige context van een gesprek, neemt zelfstandig beslissingen en voert concrete acties uit — zoals een afspraak inplannen of een CRM bijwerken.' },
+  { question: 'Kan een AI agent een chatbot volledig vervangen?', answer: 'In de meeste gevallen wel. Een AI agent is in staat alles te doen wat een chatbot doet, plus veel meer. Toch kan een eenvoudige FAQ-chatbot voor heel specifieke, statische use cases (zoals "wat zijn uw openingstijden?") nog steeds nuttig zijn als kostenefficiënte oplossing.' },
+  { question: 'Zijn AI agents duurder dan chatbots?', answer: 'AI agents kosten meer dan traditionele chatbots, maar leveren ook aanzienlijk meer waarde. Bij Aanloop AI starten AI agent oplossingen vanaf €997/maand. De terugverdientijd is typisch 3-6 maanden dankzij besparingen op arbeid en verhoogde conversie.' },
+  { question: 'Welke bedrijven gebruiken AI agents in Nederland?', answer: 'AI agents worden in Nederland ingezet door makelaars, horecabedrijven, advocatenkantoren, logistieke bedrijven en e-commerce winkels. Aanloop AI bedient klanten in diverse sectoren, van ZZP tot MKB in heel Nederland.' },
+  { question: 'Hoe lang duurt het om een AI agent te implementeren?', answer: 'Bij Aanloop AI duurt een standaard AI agent implementatie 7 werkdagen. Een traditionele chatbot is sneller live (1-3 dagen), maar biedt ook veel minder functionaliteit en ROI.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org', '@type': 'Article',
+  headline: 'AI Agent vs Chatbot: Wat is het Verschil? (2026 Vergelijking)',
+  author: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
+  datePublished: '2026-05-02', dateModified: '2026-05-02', inLanguage: 'nl-NL',
+};
+---
+
+<BaseLayout
+  title="AI Agent vs Chatbot: Wat is het Verschil? (2026) | Aanloop AI"
+  description="Het verschil tussen een AI agent en een chatbot uitgelegd met duidelijke voorbeelden. Wat is slimmer voor uw MKB-bedrijf in 2026? Vergelijking van kosten, functionaliteit en ROI."
+  schema={schema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Kennisbank · AI Agents</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">AI Agent vs Chatbot:<br/>Wat is het Verschil?</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Een chatbot geeft vaste antwoorden. Een AI agent denkt mee, handelt zelfstandig en integreert met uw bedrijfssystemen. In dit artikel leggen we het verschil uit met concrete voorbeelden.</p>
+        <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500"><span>📅 2 mei 2026</span><span>·</span><span>⏱ 6 min leestijd</span><span>·</span><span>✍️ Aanloop AI Redactie</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-3">Direct Antwoord</p>
+        <p class="text-sm text-slate-700">Een <strong>chatbot</strong> reageert op vaste sleutelwoorden of scripts en geeft vooraf bepaalde antwoorden. Een <strong>AI agent</strong> begrijpt de volledige context van een gesprek, neemt zelfstandig beslissingen en voert acties uit in externe systemen — zoals een afspraak inplannen, een CRM bijwerken of een e-mail versturen.</p>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-6">Volledige Vergelijking: Chatbot vs AI Agent</h2>
+      <div class="overflow-x-auto mb-8">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b-2 border-slate-200">
+              <th class="text-left py-3 pr-4 font-semibold text-navy w-1/3">Kenmerk</th>
+              <th class="text-left py-3 px-4 font-semibold text-slate-500">Traditionele Chatbot</th>
+              <th class="text-left py-3 pl-4 font-semibold text-brand-indigo">AI Agent</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {[
+              ['Taalinzicht', 'Sleutelwoorden herkennen', 'Volledige contextuele begrip (LLM)'],
+              ['Beslissingen', 'Vaste beslisboomen', 'Autonoom redeneren'],
+              ['Acties', 'Alleen informatie geven', 'Agenda, CRM, e-mail, API-calls'],
+              ['Kanalen', 'Meestal alleen website-chat', 'Telefoon, WhatsApp, e-mail, chat'],
+              ['Integraties', 'Beperkt (handmatig)', 'Onbeperkt via n8n workflows'],
+              ['Leren', 'Handmatig updaten vereist', 'Leert van gesprekken en feedback'],
+              ['Escalatie', 'Geen of eenvoudig', 'Intelligent — alleen bij noodzaak'],
+              ['Beschikbaarheid', '24/7 maar beperkt', '24/7 met volledige capaciteit'],
+              ['Talen', 'Één taal per configuratie', 'Meerdere talen automatisch'],
+              ['Prijs (instap)', 'Gratis – €100/maand', 'Vanaf €997/maand (Aanloop AI)'],
+              ['ROI-termijn', 'Laag (weinig waarde)', '3-6 maanden gemiddeld'],
+            ].map(([k, c, a]) => (
+              <tr>
+                <td class="py-3 pr-4 font-medium text-slate-700">{k}</td>
+                <td class="py-3 px-4 text-slate-500">{c}</td>
+                <td class="py-3 pl-4 text-navy font-medium">{a}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Wanneer Kiest u voor een Chatbot?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Een traditionele chatbot is zinvol als:</p>
+      <ul class="space-y-2 text-sm text-slate-700 mb-8">
+        <li class="flex items-start gap-2"><span class="text-slate-400 mt-0.5">→</span> U alleen eenvoudige FAQ's wilt beantwoorden (openingstijden, adres, prijslijst)</li>
+        <li class="flex items-start gap-2"><span class="text-slate-400 mt-0.5">→</span> Uw budget beperkt is en de use case erg specifiek</li>
+        <li class="flex items-start gap-2"><span class="text-slate-400 mt-0.5">→</span> U geen integraties met externe systemen nodig heeft</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Wanneer Kiest u voor een AI Agent?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Een AI agent is de juiste keuze als:</p>
+      <ul class="space-y-2 text-sm text-slate-700 mb-8">
+        <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> U afspraken wilt laten inplannen via telefoon of WhatsApp</li>
+        <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> U leads automatisch wilt kwalificeren en doorsturen naar uw CRM</li>
+        <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> U klantenservice wilt automatiseren (inclusief complexe vragen)</li>
+        <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> U meerdere kanalen (telefoon, WhatsApp, e-mail) wilt dekken</li>
+        <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> AVG-compliance en dataopslag in Nederland belangrijk is</li>
+      </ul>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8">
+        <p class="text-sm font-bold text-navy mb-3">Lees ook</p>
+        <ul class="space-y-2">
+          <li><a href="/kennisbank/wat-is-een-ai-agent/" class="text-sm text-brand-indigo hover:underline">Wat is een AI Agent? De Complete Gids voor MKB in 2026 →</a></li>
+          <li><a href="/kennisbank/ai-agent-kosten-mkb/" class="text-sm text-brand-indigo hover:underline">Hoeveel kost een AI agent in Nederland? (2026 prijzen) →</a></li>
+          <li><a href="/kennisbank/voice-ai-klantenservice/" class="text-sm text-brand-indigo hover:underline">Voice AI Agents voor Klantenservice: Werkt het Echt? →</a></li>
+        </ul>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-6">Veelgestelde Vragen</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+
+      <div class="border-t border-slate-200 pt-8 flex items-start gap-4">
+        <div class="w-12 h-12 rounded-full bg-brand-indigo/10 flex items-center justify-center flex-shrink-0"><span class="text-xl">🤖</span></div>
+        <div>
+          <p class="font-bold text-navy text-sm">Aanloop AI Redactie</p>
+          <p class="text-xs text-slate-500 mt-0.5">AI-specialisten gespecialiseerd in praktische AI-implementaties voor het Nederlandse MKB. KVK: 88606902 · Rotterdam.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Wilt u een AI agent in plaats van een chatbot?</h2>
+      <p class="mt-4 text-slate-300 leading-relaxed reveal reveal-delay-1">Aanloop AI implementeert AI agents binnen 7 werkdagen. Plan een gratis AI scan en ontdek de mogelijkheden voor uw bedrijf.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk tarieven</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

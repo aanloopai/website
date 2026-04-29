@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const faqItems = [
+  { question: 'Hoe kan AI een advocatenkantoor helpen?', answer: 'AI helpt advocatenkantoren op drie gebieden: (1) intake-screening — automatisch kwalificerende vragen stellen aan potentiële cliënten, (2) agendabeheer — afspraken inplannen en bevestigen zonder receptionist, (3) documentverwerking — contracten en dossiers snel indexeren. Het resultaat: meer factureerbare uren, minder administratie.' },
+  { question: 'Is AI voor advocaten AVG/GDPR-compliant?', answer: 'Ja, mits correct geconfigureerd. Aanloop AI gebruikt n8n self-hosted, waardoor alle cliëntdata op een Nederlandse server wordt verwerkt. Er worden geen persoonsgegevens naar buitenlandse clouddiensten gestuurd. We leveren documentatie voor uw verwerkingsregister (AVG Art. 30).' },
+  { question: 'Vervangt een AI agent mijn secretaresse?', answer: 'Niet volledig — maar het vermindert wel de werklast significant. Een AI agent verwerkt routinetaken (afspraken, FAQ, intake-screening) zodat uw secretaresse zich kan richten op meer complexe taken die menselijke aanwezigheid vereisen.' },
+  { question: 'Kan de AI agent vertrouwelijke cliëntinformatie verwerken?', answer: 'Ja, veilig. Met n8n self-hosted draait alle data op uw eigen server. We configureren de AI agent zo dat vertrouwelijke informatie nooit gedeeld wordt met derden. Advocatengeheim wordt technisch geborgd door strikte data-isolatie.' },
+  { question: 'Hoeveel uur per week bespaart een AI agent voor een advocatenkantoor?', answer: 'Gemiddeld 10-20 uur per week op intake-gesprekken, telefonische vragen en agendabeheer. Een kantoor met 4 advocaten bespaard zo circa €6.000-12.000 per maand aan niet-factureerbaar werk.' },
+];
+const schema = { '@context': 'https://schema.org', '@type': 'Service', serviceType: 'AI voor Advocatenkantoren', provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' }, areaServed: { '@type': 'Country', name: 'Nederland' }, description: 'AI agents en workflow automation voor advocatenkantoren in Nederland. AVG-compliant, intake-screening, agendabeheer.' };
+---
+<BaseLayout title="AI voor Advocatenkantoren in Nederland | Aanloop AI" description="AI agent voor advocatenkantoren: intake-screening, agendabeheer en documentverwerking. AVG-compliant. Bespaar 10-20 uur per week. KVK: 88606902." schema={schema} faqSchema={faqItems}>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Sectoren · Juridisch</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">AI voor Advocatenkantoren:<br/>Meer Factureerbare Uren, Minder Administratie</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Aanloop AI bouwt AVG-compliant AI agents voor Nederlandse advocatenkantoren. Van automatische intake-screening tot 24/7 agendabeheer — zodat advocaten zich richten op de zaken die ertoe doen.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 reveal reveal-delay-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI Scan voor advocaten<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/prijzen/" class="btn-outline">Bekijk tarieven</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50 border-b border-slate-200">
+    <div class="container-page">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        {[
+          { n: '10-20u', l: 'bespaard/week', d: 'op niet-factureerbaar werk' },
+          { n: '40%', l: 'hogere cliëntkwaliteit', d: 'door AI intake-screening' },
+          { n: '24/7', l: 'bereikbaar', d: 'ook buiten kantooruren' },
+          { n: '100%', l: 'AVG-compliant', d: 'data op NL server' },
+        ].map(s => (
+          <div class="reveal">
+            <p class="text-2xl font-bold text-navy">{s.n}</p>
+            <p class="text-sm font-medium text-slate-600">{s.l}</p>
+            <p class="text-xs text-slate-400">{s.d}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Use cases</p>
+        <h2 class="text-2xl font-bold text-navy">Wat doet een AI agent voor uw advocatenkantoor?</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        {[
+          { icon: '📋', t: 'Intake-screening', d: 'De AI agent stelt kwalificerende vragen aan potentiële cliënten via telefoon of formulier. Alleen relevante dossiers worden doorgezet naar de advocaat. Besparing: 8-12 uur per week op niet-factureerbare intakegesprekken.' },
+          { icon: '📅', t: 'Agendabeheer & Afspraken', d: 'Cliënten kunnen 24/7 een consult inplannen via telefoon of WhatsApp. De agent controleert beschikbaarheid, plant in en stuurt automatisch een bevestiging en herinnering.' },
+          { icon: '📞', t: '24/7 Bereikbaarheid', d: 'Buiten kantooruren neemt de AI agent calls aan, beantwoordt basale vragen en legt urgentie vast. U start elke ochtend met een overzicht van alle gemiste calls.' },
+          { icon: '📄', t: 'Documentintake', d: 'Nieuwe cliënten kunnen documenten uploaden. De AI agent indexeert, categoriseert en koppelt aan het juiste dossier — klaar voor de behandelend advocaat.' },
+          { icon: '📧', t: 'E-mail Opvolging', d: 'Automatische e-mail workflows voor standaardcommunicatie: opdrachtbevestiging, facturering, voortgangsupdate. Geen handmatig werk meer voor routinecorrespondentie.' },
+          { icon: '🔒', t: 'AVG-compliant & Veilig', d: 'Alle data blijft op een Nederlandse server (n8n self-hosted). Advocatengeheim is technisch geborgd. Wij leveren documentatie voor uw verwerkingsregister.' },
+        ].map(u => (
+          <div class="card reveal">
+            <div class="text-2xl mb-3">{u.icon}</div>
+            <h3 class="font-bold text-navy mb-2">{u.t}</h3>
+            <p class="text-sm text-slate-600">{u.d}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-8 mb-12 reveal">
+        <p class="eyebrow mb-2">Casestudy</p>
+        <h3 class="text-xl font-bold text-navy mb-4">Advocatenkantoor: 12 uur/week bespaard op intake</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+          <div>
+            <p class="font-semibold text-slate-700 mb-2">Situatie</p>
+            <p class="text-slate-600">Een advocatenkantoor met 6 advocaten ontving wekelijks 40+ telefoontjes van potentiële cliënten. 70% was niet gekwalificeerd. De advocaten verloren 15 uur per week aan ongeschikt intakewerk.</p>
+          </div>
+          <div>
+            <p class="font-semibold text-slate-700 mb-2">Oplossing & Resultaat</p>
+            <ul class="space-y-1 text-slate-600">
+              <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span> AI intake-agent kwalificeert alle inkomende calls</li>
+              <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span> 12 uur/week bespaard op intake</li>
+              <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span> 40% hogere kwaliteit van nieuwe cliënten</li>
+              <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span> €7.200/maand meer factureerbaar werk</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde Vragen — AI voor Advocaten</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
+        <p class="text-sm font-bold text-navy mb-3">Meer over AI agents</p>
+        <ul class="space-y-2">
+          <li><a href="/kennisbank/wat-is-een-ai-agent/" class="text-sm text-brand-indigo hover:underline">Wat is een AI Agent? De Complete Gids voor MKB →</a></li>
+          <li><a href="/kennisbank/voice-ai-klantenservice/" class="text-sm text-brand-indigo hover:underline">Voice AI Agents voor Klantenservice →</a></li>
+          <li><a href="/kennisbank/ai-agent-kosten-mkb/" class="text-sm text-brand-indigo hover:underline">Hoeveel kost een AI agent? (2026 prijzen) →</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Meer factureerbare uren voor uw kantoor?</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Plan een gratis AI scan en ontdek hoeveel uur uw advocaten kunnen terugwinnen op administratie en intake.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/prijzen/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk AI prijzen</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,52 +1,136 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const faqItems = [
+  { question: 'Hoe helpt AI makelaars bij leadkwalificatie?', answer: 'Een AI agent stelt automatisch kwalificerende vragen aan inkomende leads: budget, gewenste locatie, tijdlijn en type woning. Alleen gekwalificeerde leads worden doorgezet naar de makelaar. Dit bespaart gemiddeld 8 uur per week op intakegesprekken.' },
+  { question: 'Kan een AI agent bezichtigingen inplannen?', answer: 'Ja. Via een koppeling met uw agenda (Google Calendar, Outlook) plant de AI agent bezichtigingen direct in. De geïnteresseerde ontvangt automatisch een bevestiging inclusief adres, datum en aanvullende informatie over de woning.' },
+  { question: 'Kan de AI vragen beantwoorden over specifieke woningen?', answer: 'Ja. De AI agent wordt gevoed met de woninggegevens uit uw CRM of MLS-systeem. Vragen over oppervlakte, bouwjaar, energielabel, vraagprijs en bijzonderheden worden direct en correct beantwoord — ook buiten kantooruren.' },
+  { question: 'Is een AI agent AVG-compliant voor vastgoedkantoren?', answer: 'Ja. Aanloop AI gebruikt n8n self-hosted op een Nederlandse server. Gegevens van woningzoekenden worden niet gedeeld met derden en zijn volledig AVG-compliant verwerkt.' },
+  { question: 'Hoeveel gemiste bezichtigingen voorkomen AI agents?', answer: 'Vastgoedkantoren die een AI agent inzetten rapporteren gemiddeld 68% minder gemiste inkomende calls buiten kantooruren. Gecombineerd met geautomatiseerde bevestigingen daalt de no-show bij bezichtigingen met 50%.' },
+];
+const schema = { '@context': 'https://schema.org', '@type': 'Service', serviceType: 'AI voor Vastgoed en Makelaars', provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' }, areaServed: { '@type': 'Country', name: 'Nederland' }, description: 'AI agents voor makelaars: leadkwalificatie, bezichtigingen inplannen, 24/7 bereikbaar. AVG-compliant.' };
 ---
-<BaseLayout title="Vastgoed & makelaars · Aanloop AI" description="AI-oplossingen voor vastgoedbedrijven en makelaars: lead-kwalificatie, bezichtigingen plannen, marktrapportages genereren.">
+<BaseLayout title="AI voor Makelaars & Vastgoed: Nooit Meer een Gemiste Lead | Aanloop AI" description="AI agent voor makelaars en vastgoedbedrijven. Automatisch leads kwalificeren, bezichtigingen inplannen en 24/7 beschikbaar voor woningzoekenden. KVK: 88606902." schema={schema} faqSchema={faqItems}>
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">
       <div class="max-w-3xl">
-        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Vastgoed & makelaars</span></div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">AI die uw vastgoedportfolio versterkt.</h1>
-        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl">Van leads kwalificeren en bezichtigingen plannen tot marktrapportages genereren en huurderscommunicatie automatiseren — AI werkt 24/7 voor uw kantoor.</p>
-        <div class="mt-8 flex gap-3 flex-wrap">
-          <a href="/contact/?type=demo" class="btn-primary text-base px-6 py-3.5">Boek een demo <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Vastgoed &amp; Makelaars</span></div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">AI die uw vastgoedportfolio versterkt.</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl reveal reveal-delay-2">Van leads kwalificeren en bezichtigingen plannen tot 24/7 bereikbaarheid voor woningzoekenden — AI werkt voor uw kantoor ook als u er niet bent.</p>
+        <div class="mt-8 flex gap-3 flex-wrap reveal reveal-delay-3">
+          <a href="/gratis-ai-scan/" class="btn-primary text-base px-6 py-3.5">Gratis AI scan aanvragen <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/prijzen/" class="btn-outline text-base px-6 py-3.5">Bekijk prijzen</a>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- Stats bar -->
+  <section class="section-tight bg-slate-50 border-b border-slate-200">
+    <div class="container-page">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        {[
+          { v: '3×', l: 'meer gekwalificeerde leads' },
+          { v: '−50%', l: 'no-show bezichtigingen' },
+          { v: '24/7', l: 'bereikbaar voor geïnteresseerden' },
+          { v: '7 dgn', l: 'time-to-live' },
+        ].map(s => (
+          <div class="reveal"><p class="text-2xl font-bold text-navy">{s.v}</p><p class="text-xs text-slate-500 mt-1">{s.l}</p></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container-page">
-      <div class="grid lg:grid-cols-2 gap-16">
+      <div class="grid lg:grid-cols-2 gap-12 mb-16">
         <div class="reveal">
-          <h2 class="text-2xl font-bold text-navy mb-6">Vastgoed-specifieke toepassingen</h2>
+          <p class="eyebrow mb-2">Toepassingen</p>
+          <h2 class="text-2xl font-bold text-navy mb-6">Vastgoed-specifieke AI-toepassingen</h2>
           <ul class="space-y-4">
-            {['Inkomende leads kwalificeren (budget, wensen, tijdlijn)', 'Bezichtigingen plannen en bevestigen via WhatsApp', 'Vragen over woningen beantwoorden 24/7', 'Marktwaarde-schattingen genereren op basis van data', 'Huurders automatisch aanschrijven bij onderhoudsverzoeken', 'Contracten samenvatten en afwijkingen signaleren', 'Maandelijkse huurincasso-herinneringen versturen'].map(f => (
+            {[
+              'Inkomende leads kwalificeren (budget, wensen, tijdlijn)',
+              'Bezichtigingen plannen en bevestigen via telefoon & WhatsApp',
+              'Vragen over woningen beantwoorden 24/7',
+              'Huurders automatisch aanschrijven bij onderhoudsverzoeken',
+              'Contracten samenvatten en afwijkingen signaleren',
+              'Maandelijkse huurincasso-herinneringen versturen',
+              'Post-bezichtiging follow-up automatiseren',
+            ].map(f => (
               <li class="flex items-start gap-3 text-sm text-slate-700"><svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>{f}</li>
             ))}
           </ul>
         </div>
         <div class="reveal reveal-delay-2">
-          <div class="card bg-slate-50">
-            <p class="eyebrow mb-3">Resultaten</p>
-            <div class="space-y-4">
-              {[{v:'3×', l:'meer gekwalificeerde leads'},{v:'−50%', l:'no-show bezichtigingen'},{v:'24/7', l:'beschikbaar voor geïnteresseerden'},{v:'14 dgn', l:'time-to-live'}].map(s=>(
-                <div class="flex items-center justify-between py-3 border-b border-slate-200 last:border-0">
-                  <span class="text-sm text-slate-600">{s.l}</span>
-                  <span class="font-bold text-brand-indigo">{s.v}</span>
-                </div>
+          <div class="card bg-slate-50 mb-6">
+            <p class="eyebrow mb-4">Casestudy</p>
+            <h3 class="text-lg font-bold text-navy mb-3">Makelaarskantoor: 68% minder gemiste calls</h3>
+            <p class="text-sm text-slate-600 mb-4">Een makelaarskantoor in Amsterdam ontving dagelijks 25+ calls buiten kantooruren. 40% hiervan betrof bezichtigingsaanvragen die verloren gingen. Na implementatie van de AI agent:</p>
+            <ul class="space-y-2 text-sm">
+              {['68% minder gemiste inkomende calls', '50% reductie no-show bezichtigingen', '3× meer gekwalificeerde leads per maand', '€4.800 extra omzet in eerste 60 dagen'].map(r => (
+                <li class="flex items-start gap-2"><span class="text-brand-emerald">✓</span>{r}</li>
               ))}
-            </div>
+            </ul>
           </div>
+          <div class="card">
+            <blockquote class="text-sm text-slate-700 italic leading-relaxed">"De AI agent beantwoordt 's avonds en in het weekend alle vragen over onze woningen. We missen geen bezichtigingsaanvraag meer en onze makelaars kunnen zich focussen op persoonlijk contact."</blockquote>
+            <div class="mt-3 text-xs text-slate-500"><strong class="text-navy">Petra Smeets</strong> · Eigenaar, Smeets Makelaars, Amsterdam</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Use cases per type -->
+      <div class="mb-16">
+        <div class="mb-8 reveal"><h2 class="text-2xl font-bold text-navy">AI voor elk type vastgoedkantoor</h2></div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {[
+            { icon: '🏡', t: 'Verkoopmakelaar', d: 'AI qualificeert woningzoekers automatisch en plant bezichtigingen in. U ontvangt alleen serieuze kopers.' },
+            { icon: '🏢', t: 'Verhuurmakelaar', d: 'Huurderscommunicatie, onderhoudsverzoeken en incasso-reminders — volledig geautomatiseerd via WhatsApp.' },
+            { icon: '🏗️', t: 'Projectontwikkelaar', d: 'Informatieverstrekking over nieuwbouwprojecten, intakeformulieren en lead nurturing automatisch afgehandeld.' },
+          ].map(u => (
+            <div class="card reveal">
+              <div class="text-2xl mb-3">{u.icon}</div>
+              <h3 class="font-bold text-navy mb-2">{u.t}</h3>
+              <p class="text-sm text-slate-600">{u.d}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="max-w-3xl">
+        <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde Vragen — AI voor Makelaars</h2>
+        <div class="space-y-3 mb-8">
+          {faqItems.map(item => (
+            <details class="card group">
+              <summary class="flex items-center justify-between cursor-pointer list-none">
+                <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+                <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+            </details>
+          ))}
+        </div>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
+          <p class="text-sm font-bold text-navy mb-3">Gerelateerde artikelen</p>
+          <ul class="space-y-2">
+            <li><a href="/kennisbank/ai-agent-voorbeelden/" class="text-sm text-brand-indigo hover:underline">5 Voorbeelden van AI Agents voor Nederlandse Bedrijven →</a></li>
+            <li><a href="/kennisbank/voice-ai-klantenservice/" class="text-sm text-brand-indigo hover:underline">Voice AI Agents voor Klantenservice: Werkt het Echt? →</a></li>
+            <li><a href="/locaties/amsterdam/" class="text-sm text-brand-indigo hover:underline">AI Agency Amsterdam — Makelaars en Vastgoed →</a></li>
+          </ul>
         </div>
       </div>
     </div>
   </section>
-  <section class="section-tight bg-midnight text-pearl">
-    <div class="container-page">
-      <div class="max-w-2xl">
-        <h2 class="text-3xl font-bold tracking-tightest text-pearl">Meer bezichtigingen, minder gemiste leads.</h2>
-        <p class="mt-4 text-slate-300">Plan een gratis demo en zie hoe AI uw vastgoedkantoor versterkt.</p>
-        <div class="mt-6"><a href="/contact/?type=demo" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Boek een demo</a></div>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Meer bezichtigingen, minder gemiste leads.</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Plan een gratis AI scan en ontdek hoe AI uw vastgoedkantoor versterkt. Live in 7 werkdagen.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/prijzen/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk AI prijzen</a>
       </div>
     </div>
   </section>

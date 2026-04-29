@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const faqItems = [
+  { question: 'Kan AI helpen bij klantenservice voor webshops?', answer: 'Ja, zeer effectief. Een AI agent beantwoordt tot 70% van alle klantvragen automatisch: orderstatus, retourinformatie, verzendtijden en productinformatie. Alleen complexe klachten of uitzonderingen worden doorgezet naar een menselijke medewerker.' },
+  { question: 'Werkt een AI agent met mijn webshop-platform (WooCommerce, Shopify)?', answer: 'Ja. Aanloop AI koppelt AI agents via n8n met WooCommerce, Shopify, Magento en maatwerk webshops. De agent heeft real-time toegang tot orderdata, voorraad en klantinformatie.' },
+  { question: 'Hoe gaat een AI agent om met retourvragen?', answer: 'De AI agent heeft uw retourbeleid geladen en kan direct antwoorden geven, een retourlabel genereren (via API-koppeling) en de status van een retouraanvraag bijhouden.' },
+  { question: 'Is een AI klantenservice voor webshops AVG-compliant?', answer: 'Ja. Aanloop AI gebruikt n8n self-hosted, waardoor klantdata op een Nederlandse server wordt verwerkt. Transactielog en klantgegevens blijven uitsluitend bij u.' },
+  { question: 'Wat kost een AI agent voor een webshop?', answer: 'Het Growth pakket (€2.500/maand) is het meest populair voor webshops met hoog volume. Het Starter pakket (€997/maand) is geschikt voor webshops met minder dan 200 klantvragen per maand.' },
+];
+const schema = { '@context': 'https://schema.org', '@type': 'Service', serviceType: 'AI voor Webshops en E-commerce', provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' }, areaServed: { '@type': 'Country', name: 'Nederland' }, description: 'AI agents en workflow automation voor Nederlandse webshops. 70% van klantvragen automatisch afgehandeld.' };
+---
+<BaseLayout title="AI voor Webshops: 70% Minder Klantenservicevragen | Aanloop AI" description="AI klantenservice voor webshops in Nederland. Automatisch orderstatus, retourvragen, productinfo en meer. Koppelt met WooCommerce, Shopify. KVK: 88606902." schema={schema} faqSchema={faqItems}>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Sectoren · E-commerce</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">AI voor Webshops:<br/>70% Minder Klantenservicevragen</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Een AI agent beantwoordt automatisch orderstatus, retourvragen, verzendinfo en productadvies — via chat, WhatsApp of telefoon. Koppelt met WooCommerce, Shopify en meer.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 reveal reveal-delay-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI Scan voor webshops<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/prijzen/" class="btn-outline">Bekijk tarieven</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        {[
+          { icon: '📦', t: 'Orderstatus', d: 'Klanten vragen de status van hun bestelling op via chat of WhatsApp. De AI agent raadpleegt real-time uw webshop.' },
+          { icon: '🔄', t: 'Retourvragen', d: 'Retourbeleid uitleggen, retourlabel aanmaken en aanvraag bijhouden — volledig automatisch.' },
+          { icon: '🚚', t: 'Verzend- & Leverinfo', d: 'Levertijden, verzendkosten en tracking automatisch beantwoord per klant en per bestelling.' },
+          { icon: '💬', t: 'Productadvies', d: 'Op basis van de klantvraag het juiste product aanbevelen uit uw assortiment.' },
+          { icon: '⭐', t: 'Review Opvolging', d: 'Na levering automatisch een review-uitnodiging sturen en opvolgen bij negatieve ervaringen.' },
+          { icon: '📊', t: 'Analytics & Rapportage', d: 'Wekelijks overzicht van meest gestelde vragen, responstijden en escalaties.' },
+        ].map(u => (
+          <div class="card reveal">
+            <div class="text-2xl mb-3">{u.icon}</div>
+            <h3 class="font-bold text-navy text-sm mb-2">{u.t}</h3>
+            <p class="text-sm text-slate-600">{u.d}</p>
+          </div>
+        ))}
+      </div>
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-8 mb-12 reveal">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          {[
+            { n: '70%', l: 'Vragen automatisch', d: 'zonder menselijke ingreep' },
+            { n: '< 1s', l: 'Reactietijd', d: 'vs. minuten bij handmatig' },
+            { n: '24/7', l: 'Beschikbaar', d: 'ook in het weekend' },
+            { n: '€1.500', l: 'Besparing/maand', d: 'gemiddeld voor MKB-webshop' },
+          ].map(s => (
+            <div>
+              <p class="text-2xl font-bold text-navy">{s.n}</p>
+              <p class="text-xs font-medium text-slate-600">{s.l}</p>
+              <p class="text-xs text-slate-400">{s.d}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde Vragen — AI voor Webshops</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Minder klantenservicevragen, meer omzet?</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Plan een gratis AI scan voor uw webshop en ontdek hoeveel klantvragen automatisch kunnen worden afgehandeld.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/prijzen/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk AI prijzen</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

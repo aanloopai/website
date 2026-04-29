@@ -1,0 +1,133 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const faqItems = [
+  { question: 'Hoe koppel ik ElevenLabs aan mijn telefoonsysteem?', answer: 'U koppelt ElevenLabs via een SIP-trunk of VOIP-provider (bijv. Voys, Twilio, Vonage) aan uw bestaande telefoonnummer. Aanloop AI configureert dit volledig voor u: van API-koppeling tot gespreksrouting en fallback naar menselijke medewerkers.' },
+  { question: 'Welk telefoonsysteem is compatibel met ElevenLabs?', answer: 'ElevenLabs is compatibel met alle SIP-gebaseerde telefoonsystemen. In Nederland werkt het goed met Voys, Twilio, KPN, T-Mobile en de meeste VoIP-centrales. U houdt uw huidige telefoonnummer.' },
+  { question: 'Heb ik een ElevenLabs account nodig?', answer: 'Als u de integratie zelf beheert: ja. Als u werkt met Aanloop AI: nee. Aanloop AI beheert de ElevenLabs configuratie volledig voor u, inclusief stem, kennisbank en workflowkoppelingen.' },
+  { question: 'Kan ElevenLabs Nederlands spreken?', answer: 'Ja. ElevenLabs heeft uitstekende Nederlandse stemmen beschikbaar die zeer natuurlijk klinken. De latency (vertraging tussen vraag en antwoord) is minder dan 1 seconde, waardoor gesprekken vloeiend verlopen.' },
+  { question: 'Is ElevenLabs AVG-compliant?', answer: 'ElevenLabs verwerkt data op Europese servers. Voor maximale AVG-compliance combineert Aanloop AI ElevenLabs met n8n self-hosted: de gesprekstranscripties en klantdata blijven in Nederland, op uw eigen server.' },
+];
+const howToSchema = {
+  '@context': 'https://schema.org', '@type': 'HowTo',
+  name: 'ElevenLabs AI Agent koppelen aan je telefooncentrale',
+  description: 'Stap-voor-stap handleiding voor het koppelen van ElevenLabs voice AI aan uw bestaande telefoonsysteem.',
+  totalTime: 'PT30M',
+  supply: [{ '@type': 'HowToSupply', name: 'ElevenLabs account (of Aanloop AI beheert dit)' }, { '@type': 'HowToSupply', name: 'SIP-trunk of VoIP-provider (bijv. Voys, Twilio)' }],
+  step: [
+    { '@type': 'HowToStep', name: 'ElevenLabs agent configureren', text: 'Maak een ElevenLabs account aan, kies een Nederlandse stem en configureer de kennisbank met uw bedrijfsinformatie.' },
+    { '@type': 'HowToStep', name: 'SIP-trunk koppelen', text: 'Verbind ElevenLabs met uw telefoonsysteem via een SIP-trunk bij uw VoIP-provider.' },
+    { '@type': 'HowToStep', name: 'Gespreksrouting instellen', text: 'Bepaal wanneer calls naar de AI agent gaan (altijd, of alleen buiten kantooruren) en stel een fallback in naar menselijke medewerkers.' },
+    { '@type': 'HowToStep', name: 'n8n workflow koppelen', text: 'Verbind de AI agent met n8n voor acties: agenda bijwerken, CRM-lead aanmaken, e-mail versturen na gesprek.' },
+    { '@type': 'HowToStep', name: 'Testen en optimaliseren', text: 'Test de agent uitgebreid met echte gespreksscenario\'s en optimaliseer de kennisbank op basis van de resultaten.' },
+  ],
+};
+const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: 'ElevenLabs AI Agent Koppelen aan je Telefooncentrale (2026 Gids)', author: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' }, publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2026-05-09', dateModified: '2026-05-09', inLanguage: 'nl-NL' };
+---
+<BaseLayout title="ElevenLabs AI Agent Koppelen aan Telefooncentrale (2026 Gids) | Aanloop AI" description="Stap-voor-stap gids: ElevenLabs AI agent koppelen aan uw bestaande telefoonsysteem. Met n8n integratie, SIP-trunk configuratie en AVG-compliance voor het Nederlandse MKB." schema={[schema, howToSchema]} faqSchema={faqItems}>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Kennisbank · Voice AI</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">ElevenLabs AI Agent Koppelen<br/>aan je Telefooncentrale</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Complete gids: hoe koppelt u een ElevenLabs voice AI agent aan uw bestaande telefoonsysteem? Met SIP-trunk configuratie, n8n workflow integratie en AVG-compliance tips.</p>
+        <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500"><span>📅 9 mei 2026</span><span>·</span><span>⏱ 8 min leestijd</span><span>·</span><span>✍️ Aanloop AI Redactie</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-2">Wat u nodig heeft</p>
+        <ul class="space-y-1 text-sm text-slate-700">
+          <li class="flex items-start gap-2"><span class="text-brand-indigo">→</span> ElevenLabs account (of Aanloop AI beheert dit voor u)</li>
+          <li class="flex items-start gap-2"><span class="text-brand-indigo">→</span> SIP-trunk bij een VoIP-provider (Voys, Twilio, KPN)</li>
+          <li class="flex items-start gap-2"><span class="text-brand-indigo">→</span> n8n installatie voor workflow-integraties</li>
+          <li class="flex items-start gap-2"><span class="text-brand-indigo">→</span> Uw bestaande telefoonnummer (u houdt dit)</li>
+        </ul>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4" id="stap-1">Stap 1: ElevenLabs Agent Configureren</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Log in op uw ElevenLabs account en navigeer naar "Conversational AI". Maak een nieuwe agent aan en configureer:</p>
+      <ul class="space-y-2 text-sm text-slate-700 mb-6">
+        <li class="flex items-start gap-2"><span class="font-bold">Stem:</span> Kies een Nederlandse stem (bijv. "Charlotte" of upload een kloonafstem)</li>
+        <li class="flex items-start gap-2"><span class="font-bold">Systeem-prompt:</span> Beschrijf uw bedrijf, welke vragen de agent mag beantwoorden en wanneer hij doorverbindt</li>
+        <li class="flex items-start gap-2"><span class="font-bold">Kennisbank:</span> Upload uw FAQs, dienstenoverzicht en prijslijst als PDF of tekst</li>
+        <li class="flex items-start gap-2"><span class="font-bold">Eerste boodschap:</span> "Goedemiddag, u spreekt met [Naam Agent] van [Bedrijf]. Waarmee kan ik u helpen?"</li>
+      </ul>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4" id="stap-2">Stap 2: SIP-trunk Koppelen</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Verbind ElevenLabs met uw telefoonsysteem via een SIP-trunk:</p>
+      <div class="space-y-3 mb-6">
+        {[
+          { provider: 'Voys (populair in NL)', steps: 'Voeg een nieuw SIP-account toe in het Voys-portaal. Kopieer de SIP-credentials naar ElevenLabs "Phone Numbers" → "Import". Wijs het telefoonnummer toe aan de AI agent.' },
+          { provider: 'Twilio', steps: 'Maak een Twilio account aan, koop een NL nummer (+31). In Twilio: configureer SIP Domain. In ElevenLabs: voeg het Twilio SIP endpoint in.' },
+        ].map(p => (
+          <div class="bg-white border border-slate-200 rounded-xl p-4">
+            <p class="font-bold text-navy text-sm mb-2">{p.provider}</p>
+            <p class="text-sm text-slate-600">{p.steps}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4" id="stap-3">Stap 3: Gespreksrouting & Fallback Instellen</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Bepaal wanneer calls naar de AI agent gaan en wanneer naar een mens:</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><p class="font-bold text-navy text-sm mb-2">Altijd AI first</p><p class="text-sm text-slate-600">Alle inkomende calls gaan naar de AI agent. Bij complexe vragen verbindt de agent door naar uw team.</p></div>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-4"><p class="font-bold text-navy text-sm mb-2">Buiten kantooruren</p><p class="text-sm text-slate-600">Tijdens kantooruren gaat de telefoon naar uw team. Buiten kantooruren neemt de AI agent over.</p></div>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4" id="stap-4">Stap 4: n8n Workflow Integraties Koppelen</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Koppel de voice AI agent via n8n aan uw bedrijfssystemen:</p>
+      <div class="space-y-3 mb-6">
+        {[
+          { icon: '📅', t: 'Agenda koppelen', d: 'Na elk gesprek waarbij een afspraak is gemaakt, triggert ElevenLabs een n8n webhook die de afspraak aanmaakt in Google Calendar of Outlook.' },
+          { icon: '👤', t: 'CRM bijwerken', d: 'Nieuwe leads uit gesprekken worden automatisch aangemaakt in HubSpot, Pipedrive of uw CRM.' },
+          { icon: '📧', t: 'Bevestigingsmail sturen', d: 'Na elke afspraak stuurt n8n automatisch een bevestigingsmail met de gespreksdetails.' },
+          { icon: '📊', t: 'Rapport genereren', d: 'Wekelijks overzicht van alle gesprekken, topics en resultaten automatisch in uw inbox.' },
+        ].map(w => (
+          <div class="flex gap-3 items-start bg-white border border-slate-200 rounded-xl p-4">
+            <span class="text-xl">{w.icon}</span>
+            <div><p class="font-bold text-navy text-sm mb-1">{w.t}</p><p class="text-sm text-slate-600">{w.d}</p></div>
+          </div>
+        ))}
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8">
+        <p class="text-sm font-bold text-navy mb-3">Lees ook</p>
+        <ul class="space-y-2">
+          <li><a href="/kennisbank/voice-ai-klantenservice/" class="text-sm text-brand-indigo hover:underline">Voice AI Agents voor Klantenservice: Werkt het Echt? →</a></li>
+          <li><a href="/kennisbank/ai-telefoniste-vs-mens/" class="text-sm text-brand-indigo hover:underline">AI Telefoniste vs Mens: Kostenbesparing & Kwaliteit →</a></li>
+          <li><a href="/kennisbank/wat-is-een-ai-agent/" class="text-sm text-brand-indigo hover:underline">Wat is een AI Agent? De Complete Gids voor MKB →</a></li>
+        </ul>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-6">Veelgestelde Vragen</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+      <div class="border-t border-slate-200 pt-8 flex items-start gap-4">
+        <div class="w-12 h-12 rounded-full bg-brand-indigo/10 flex items-center justify-center flex-shrink-0"><span class="text-xl">🤖</span></div>
+        <div><p class="font-bold text-navy text-sm">Aanloop AI Redactie</p><p class="text-xs text-slate-500 mt-0.5">KVK: 88606902 · Rotterdam, Nederland.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Laat Aanloop AI dit voor u doen</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Aanloop AI configureert en beheert uw ElevenLabs voice AI agent volledig. Live in 7 werkdagen, inclusief telefoonkoppeling.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/diensten/telefoon-assistent/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">AI telefoon assistent</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

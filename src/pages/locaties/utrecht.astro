@@ -1,0 +1,78 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const faqItems = [
+  { question: 'Is Aanloop AI actief in Utrecht?', answer: 'Ja. Aanloop AI bedient klanten in Utrecht en de provincie Utrecht. We werken remote en on-site voor klanten in de regio.' },
+  { question: 'Welke sectoren bedient Aanloop AI in Utrecht?', answer: 'In Utrecht zijn zakelijke dienstverlening, zorg & welzijn, makelaars, horeca en technologiebedrijven onze voornaamste klantgroepen.' },
+  { question: 'Hoe kan Aanloop AI helpen bij Utrechtse zorgorganisaties?', answer: 'Aanloop AI heeft AVG-compliant AI-oplossingen voor zorginstellingen: afsprakenbeheer, patiëntcommunicatie en administratie-automatisering. Data blijft uitsluitend in Nederland via n8n self-hosted.' },
+  { question: 'Wat kost een AI agent voor een Utrechts bedrijf?', answer: 'Onze prijzen zijn landelijk gelijk: Starter €997/maand, Growth €2.500/maand, Enterprise op maat. Geen regioproemie.' },
+  { question: 'Is Aanloop AI beschikbaar voor persoonlijke afspraken in Utrecht?', answer: 'Ja, we plannen graag een persoonlijk gesprek in Utrecht. Neem contact op via hello@aanloopai.nl of plan direct een gratis AI scan.' },
+];
+const localSchema = { '@context': 'https://schema.org', '@type': 'ProfessionalService', name: 'Aanloop AI — AI Agency Utrecht', url: 'https://aanloopai.nl/locaties/utrecht/', address: { '@type': 'PostalAddress', addressLocality: 'Utrecht', addressRegion: 'Utrecht', addressCountry: 'NL' }, geo: { '@type': 'GeoCoordinates', latitude: '52.0907', longitude: '5.1214' }, areaServed: { '@type': 'City', name: 'Utrecht' }, priceRange: '€€' };
+---
+<BaseLayout title="AI Agency Utrecht — AI Agents & Automation voor Utrechtse Bedrijven | Aanloop AI" description="Aanloop AI helpt Utrechtse MKB-bedrijven met AI agents, voice AI en workflow automation. KVK: 88606902. Plan een gratis AI scan." schema={localSchema} faqSchema={faqItems}>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Locatie · Utrecht</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">AI Agency Utrecht:<br/>AI Agents & Automation voor Utrechtse Bedrijven</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Aanloop AI helpt Utrechtse MKB-bedrijven, zorgorganisaties en zakelijke dienstverleners met AI agents en workflow automation. Transparant geprijsd, AVG-compliant.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 reveal reveal-delay-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI Scan voor Utrecht<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/prijzen/" class="btn-outline">Bekijk prijzen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        {[
+          { icon: '💊', sector: 'Zorg Utrecht', desc: 'AVG-compliant AI voor zorgafspraken en patiëntcommunicatie.', link: '/sectoren/zorg/' },
+          { icon: '🏠', sector: 'Makelaars Utrecht', desc: 'AI receptionist voor bezichtigingen, 24/7 bereikbaar.', link: '/sectoren/vastgoed/' },
+          { icon: '💼', sector: 'Zakelijke Dienstverlening', desc: 'Workflow automation voor consultants en dienstverleners.', link: '/diensten/custom/' },
+          { icon: '🍽️', sector: 'Horeca Utrecht', desc: 'WhatsApp AI voor reserveringen en klantenservice.', link: '/sectoren/horeca/' },
+          { icon: '📊', sector: 'Accountants Utrecht', desc: 'AI factuurverwerking, 85% tijdsbesparing.', link: '/sectoren/accountancy/' },
+          { icon: '💻', sector: 'Tech Startups Utrecht', desc: 'Schaalbare AI-workflows voor snel groeiende technologiebedrijven.', link: '/diensten/custom/' },
+        ].map(s => (
+          <div class="card reveal">
+            <div class="text-2xl mb-3">{s.icon}</div>
+            <h3 class="font-bold text-navy text-sm mb-2">{s.sector}</h3>
+            <p class="text-xs text-slate-600 mb-4">{s.desc}</p>
+            <a href={s.link} class="text-xs font-medium text-brand-indigo hover:underline">Meer info →</a>
+          </div>
+        ))}
+      </div>
+      <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde Vragen — AI Agency Utrecht</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
+        <p class="text-sm font-bold text-navy mb-3">Andere locaties</p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/locaties/amsterdam/" class="text-sm text-brand-indigo hover:underline">AI Agency Amsterdam →</a>
+          <a href="/locaties/rotterdam/" class="text-sm text-brand-indigo hover:underline">AI Agency Rotterdam →</a>
+          <a href="/locaties/den-haag/" class="text-sm text-brand-indigo hover:underline">AI Agency Den Haag →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Bent u een Utrechts bedrijf?</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Plan een gratis AI scan en ontdek hoe AI uw Utrechts bedrijf kan versterken. Remote of on-site mogelijk.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/prijzen/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk AI prijzen</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

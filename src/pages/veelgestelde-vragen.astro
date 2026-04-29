@@ -1,0 +1,102 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const allFaqs = [
+  {
+    category: 'Algemeen',
+    items: [
+      { q: 'Wat doet Aanloop AI precies?', a: 'Aanloop AI is een Nederlands AI-bureau gespecialiseerd in AI agents, voice AI en workflow automation voor MKB en ZZP in Nederland. Wij bouwen en beheren AI-oplossingen die repetitieve taken automatiseren — van telefoon beantwoorden tot facturen verwerken.' },
+      { q: 'Voor welke bedrijven is Aanloop AI geschikt?', a: 'Aanloop AI werkt voor MKB-bedrijven en ZZP\'ers in Nederland, ongeacht de sector. Of u nu makelaar, restauranthouder, advocaat of webshop-eigenaar bent — wij hebben sectorspecifieke AI-oplossingen. Onze pakketten starten vanaf €997/maand.' },
+      { q: 'Wat is het KVK-nummer van Aanloop AI?', a: 'KVK: 88606902. Aanloop AI B.V. is geregistreerd bij de Kamer van Koophandel. U kunt onze gegevens verifiëren op kvk.nl.' },
+      { q: 'Hoe verschilt Aanloop AI van andere AI-bureaus?', a: 'Aanloop AI onderscheidt zich op 6 punten: (1) n8n self-hosted = data blijft in Nederland, (2) ElevenLabs voice AI expertise, (3) transparante prijzen vanaf €997, (4) live in 7 werkdagen, (5) geen vendor lock-in, (6) focus op MKB & ZZP (betaalbaar en toegankelijk).' },
+    ],
+  },
+  {
+    category: 'Technologie',
+    items: [
+      { q: 'Welke technologie gebruikt Aanloop AI?', a: 'Aanloop AI werkt met n8n (self-hosted workflow automation), ElevenLabs (voice AI), Resend (e-mail automation) en grote taalmodellen (LLMs). Onze oplossingen draaien op servers in Nederland voor maximale AVG-compliance.' },
+      { q: 'Werkt de AI agent met mijn bestaande software?', a: 'Ja. Via n8n koppelen we AI agents met HubSpot, Pipedrive, Exact Online, Google Calendar, Outlook, Slack, WhatsApp Business, en honderden andere systemen. Heeft u maatwerksoftware? We bouwen een API-koppeling.' },
+      { q: 'Wat is n8n en waarom gebruikt Aanloop AI het?', a: 'n8n is een open-source workflow automation tool die self-hosted kan worden gedraaid. Aanloop AI kiest voor n8n omdat: (1) data blijft op uw eigen server in Nederland, (2) geen vendor lock-in, (3) volledig AVG-compliant, (4) maximale flexibiliteit voor complexe workflows.' },
+      { q: 'Kan de AI agent meerdere talen spreken?', a: 'Ja. ElevenLabs ondersteunt 29 talen waaronder Nederlands, Engels, Duits en Frans. De Nederlandse stemmen zijn bijzonder naturel. Aanloop AI configureert de taalinstelling op basis van uw klantbase.' },
+    ],
+  },
+  {
+    category: 'Implementatie',
+    items: [
+      { q: 'Hoe snel is een AI agent live?', a: 'Bij Aanloop AI streven we ernaar om standaard AI agents binnen 7 werkdagen live te hebben. Het proces: dag 1-2 intake & ontwerp, dag 3-5 bouw & configuratie, dag 6-7 test & go-live. Complexere enterprise-implementaties duren 4-8 weken.' },
+      { q: 'Wat is er nodig om te starten?', a: 'Om te starten heeft u nodig: (1) uw bedrijfsinformatie en FAQs, (2) toegang tot de systemen die we koppelen (agenda, CRM, etc.), (3) een bestaand telefoonnummer (u houdt dit). Wij regelen de rest.' },
+      { q: 'Moet ik technische kennis hebben?', a: 'Nee. Aanloop AI beheert de technische kant volledig. U hoeft niets te programmeren of te configureren. U vertelt ons hoe uw bedrijf werkt, wij bouwen de AI-oplossing.' },
+      { q: 'Wat gebeurt er als de AI een vraag niet begrijpt?', a: 'De agent is geprogrammeerd om vragen die buiten zijn kennisdomein vallen te herkennen en door te verbinden naar een menselijke medewerker. U ontvangt altijd een transcript van het gesprek.' },
+    ],
+  },
+  {
+    category: 'Prijzen & Contracten',
+    items: [
+      { q: 'Wat kosten de AI-oplossingen van Aanloop AI?', a: 'Starter pakket: €997/maand (tot 200 gesprekken, 1 callscript). Growth pakket: €2.500/maand (onbeperkt, CRM-integratie). Enterprise: op maat. Alle prijzen exclusief 21% btw. Meer details op onze tarieven pagina.' },
+      { q: 'Zijn er verborgen kosten?', a: 'Nee. Hosting, onderhoud, updates, monitoring en support zijn inbegrepen in het maandabonnement. Eenmalige implementatiekosten worden vooraf transparant vermeld in de offerte.' },
+      { q: 'Kan ik maandelijks opzeggen?', a: 'Ja. Alle abonnementen zijn maandelijks opzegbaar met één maand opzegtermijn. Bij jaarlijkse betaling ontvangt u circa 16% korting.' },
+      { q: 'Wat als ik meer gesprekken nodig heb dan mijn plan?', a: 'U ontvangt een melding zodra u 80% van uw gespreksvolume bereikt. U kunt eenvoudig upgraden naar het Growth pakket (onbeperkt). Er worden nooit calls geweigerd; het systeem schaalt automatisch.' },
+    ],
+  },
+  {
+    category: 'Privacy & AVG/GDPR',
+    items: [
+      { q: 'Is uw data veilig bij Aanloop AI?', a: 'Ja. Aanloop AI gebruikt n8n self-hosted, waardoor alle klantdata op een Nederlandse server wordt verwerkt en opgeslagen. Wij delen geen gegevens met derde partijen voor commerciële doeleinden.' },
+      { q: 'Is Aanloop AI AVG/GDPR-compliant?', a: 'Ja, volledig. We zijn geregistreerd bij de KVK (88606902), werken met Nederlandse servers, en hanteren strikte data retention policies. Meer details in onze privacy policy.' },
+      { q: 'Hoelang worden gespreksdata bewaard?', a: 'Gespreksopnames: 90 dagen. Transcripties: 2 jaar. Metadata: 3 jaar. Anonieme analysedata: onbeperkt. U kunt op verzoek eerder alle data laten verwijderen.' },
+      { q: 'Kan ik verzoeken dat mijn data wordt verwijderd?', a: 'Ja, conform de AVG heeft u het recht op verwijdering. Stuur een verzoek naar privacy@aanloopai.nl. We verwerken dit binnen 30 dagen.' },
+    ],
+  },
+];
+
+const allFaqItems = allFaqs.flatMap(cat => cat.items.map(item => ({ question: item.q, answer: item.a })));
+---
+
+<BaseLayout
+  title="Veelgestelde Vragen (FAQ) | Aanloop AI"
+  description="Antwoorden op alle veelgestelde vragen over Aanloop AI. Over AI agents, tarieven, implementatie, privacy, AVG-compliance en technologie. KVK: 88606902."
+  faqSchema={allFaqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Ondersteuning</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">Veelgestelde Vragen</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Antwoorden op de meest gestelde vragen over Aanloop AI, onze diensten, tarieven en privacy.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="space-y-12">
+        {allFaqs.map(cat => (
+          <div>
+            <h2 class="text-xl font-bold text-navy mb-6 pb-3 border-b border-slate-200">{cat.category}</h2>
+            <div class="space-y-3">
+              {cat.items.map(item => (
+                <details class="card group">
+                  <summary class="flex items-center justify-between cursor-pointer list-none">
+                    <span class="text-base font-bold text-navy pr-6">{item.q}</span>
+                    <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.a}</p>
+                </details>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-16 bg-slate-50 border border-slate-200 rounded-2xl p-8 text-center reveal">
+        <p class="font-bold text-navy text-lg mb-2">Staat uw vraag er niet bij?</p>
+        <p class="text-slate-600 text-sm mb-6">Neem direct contact op via e-mail of plan een gratis gesprek.</p>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="/contact/" class="btn-primary text-sm">Contact opnemen</a>
+          <a href="/gratis-ai-scan/" class="btn-outline text-sm">Gratis AI scan aanvragen</a>
+        </div>
+        <p class="text-xs text-slate-400 mt-4">Aanloop AI B.V. · KVK: 88606902 · <a href="mailto:hello@aanloopai.nl" class="underline">hello@aanloopai.nl</a></p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
