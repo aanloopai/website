@@ -1,32 +1,46 @@
 User-agent: *
 Allow: /
-
-# Private areas
 Disallow: /admin/
 Disallow: /api/
-Disallow: /bedankt/
 
-# Query parameters (except pagination)
-Disallow: /*?*
-Allow: /*?page=
-
-# Sitemaps
-Sitemap: https://aanloopai.nl/sitemap.xml
-
-# Crawl rate
-Crawl-delay: 1
-
-# AI crawlers — allow kennisbank only
+# AI Crawlers — Allow all (Aanloop AI is an AI company)
 User-agent: GPTBot
-Allow: /kennisbank/
-Disallow: /tarieven/
-Disallow: /aanvragen/
-Disallow: /
+Allow: /
 
 User-agent: ChatGPT-User
-Allow: /kennisbank/
-Disallow: /
+Allow: /
 
 User-agent: Google-Extended
-Allow: /kennisbank/
-Disallow: /tarieven/
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Applebot
+Allow: /
+
+User-agent: Bytespider
+Allow: /
+
+# SEO bots — rate limit only
+User-agent: SemrushBot
+Crawl-delay: 10
+
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: MJ12bot
+Disallow: /
+
+# Sitemap
+Sitemap: https://aanloopai.nl/sitemap-index.xml
+Sitemap: https://aanloopai.nl/sitemap.xml
