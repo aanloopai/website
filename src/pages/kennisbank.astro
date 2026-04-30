@@ -1,126 +1,24 @@
-const newArticles = [
-  {
-    slug: 'wat-is-een-ai-agent',
-    category: 'AI Agents',
-    categoryColor: 'bg-brand-indigo/10 text-brand-indigo',
-    title: 'Wat is een AI Agent? De Complete Gids voor MKB in 2026',
-    excerpt: 'Ontdek wat een AI agent is, hoe het werkt en hoe Nederlandse MKB-bedrijven er direct van profiteren. Inclusief kosten, voorbeelden en stappenplan.',
-    readTime: '12 min',
-    date: '1 mei 2026',
-    badge: 'Pillar',
-  },
-  {
-    slug: 'ai-agent-vs-chatbot',
-    category: 'AI Agents',
-    categoryColor: 'bg-brand-indigo/10 text-brand-indigo',
-    title: 'AI Agent vs Chatbot: Wat is het Verschil? (2026)',
-    excerpt: 'Het verschil tussen een AI agent en een chatbot helder uitgelegd. Wanneer kiest u welke, en wat levert meer ROI voor uw bedrijf?',
-    readTime: '6 min',
-    date: '2 mei 2026',
-    badge: null,
-  },
-  {
-    slug: 'ai-agent-kosten-mkb',
-    category: 'Kosten',
-    categoryColor: 'bg-brand-amber/10 text-brand-amber',
-    title: 'Hoeveel Kost een AI Agent in Nederland? (2026 Prijzen)',
-    excerpt: 'Transparante prijzen, ROI-berekening en alles wat u moet weten over de kosten van een AI agent voor uw MKB-bedrijf.',
-    readTime: '7 min',
-    date: '3 mei 2026',
-    badge: null,
-  },
-  {
-    slug: 'ai-agent-voorbeelden',
-    category: 'AI Agents',
-    categoryColor: 'bg-brand-indigo/10 text-brand-indigo',
-    title: '5 Voorbeelden van AI Agents voor Nederlandse Bedrijven (2026)',
-    excerpt: 'Van AI receptionist voor makelaars tot WhatsApp reserveringsagent voor horeca. 5 concrete voorbeelden met resultaten en kosten.',
-    readTime: '6 min',
-    date: '4 mei 2026',
-    badge: null,
-  },
-  {
-    slug: 'ai-workflow-automation',
-    category: 'Automation',
-    categoryColor: 'bg-brand-emerald/10 text-brand-emerald',
-    title: 'AI Workflow Automation: Complete Uitleg voor Beginners (2026)',
-    excerpt: 'Wat is AI workflow automation, hoe werkt het en welke processen kunt u automatiseren? Met n8n, Make.com en praktijkvoorbeelden.',
-    readTime: '10 min',
-    date: '5 mei 2026',
-    badge: 'Pillar',
-  },
-  {
-    slug: 'n8n-vs-make-com',
-    category: 'Automation',
-    categoryColor: 'bg-brand-emerald/10 text-brand-emerald',
-    title: 'n8n vs Make.com vs Zapier: Welke is het Beste voor MKB? (2026)',
-    excerpt: 'Volledige vergelijking van n8n, Make.com en Zapier. Kosten, AVG-compliance en aanbeveling per use case voor het Nederlandse MKB.',
-    readTime: '7 min',
-    date: '6 mei 2026',
-    badge: null,
-  },
-  {
-    slug: 'ai-facturering-automatisering',
-    category: 'Automation',
-    categoryColor: 'bg-brand-emerald/10 text-brand-emerald',
-    title: 'Hoe Automatiseer je Je Facturering met AI? (Stap-voor-Stap)',
-    excerpt: 'Van PDF-ontvangst tot automatisch boeken in Exact Online. Stap-voor-stap uitgelegd met n8n en AI. 85% tijdsbesparing.',
-    readTime: '6 min',
-    date: '7 mei 2026',
-    badge: null,
-  },
-  {
-    slug: 'voice-ai-klantenservice',
-    category: 'Voice AI',
-    categoryColor: 'bg-brand-rose/10 text-brand-rose',
-    title: 'Voice AI Agents voor Klantenservice: Werkt het Echt? (2026)',
-    excerpt: 'Eerlijke analyse: wanneer werkt voice AI wél en wanneer niet? Met resultaten van Nederlandse bedrijven, kosten en technische uitleg.',
-    readTime: '10 min',
-    date: '8 mei 2026',
-    badge: 'Pillar',
-  },
-  {
-    slug: 'elevenlabs-ai-agent-koppelen',
-    category: 'Voice AI',
-    categoryColor: 'bg-brand-rose/10 text-brand-rose',
-    title: 'ElevenLabs AI Agent Koppelen aan Telefooncentrale (2026 Gids)',
-    excerpt: 'Stap-voor-stap: ElevenLabs voice AI koppelen aan uw bestaande telefoonsysteem met SIP-trunk en n8n workflow integratie.',
-    readTime: '8 min',
-    date: '9 mei 2026',
-    badge: null,
-  },
-  {
-    slug: 'ai-telefoniste-vs-mens',
-    category: 'Voice AI',
-    categoryColor: 'bg-brand-rose/10 text-brand-rose',
-    title: 'AI Telefoniste vs Mens: Kostenbesparing & Kwaliteit (2026)',
-    excerpt: 'Eerlijke vergelijking: AI telefoniste vs menselijke receptionist. Kosten, kwaliteit, beschikbaarheid en wanneer u welke kiest.',
-    readTime: '6 min',
-    date: '10 mei 2026',
-    badge: null,
-  },
-];
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
 
-const legacyArticles = [
+const articles = [
   {
     slug: 'wat-is-een-ai-receptionist',
     category: 'Uitleg',
-    categoryColor: 'bg-slate-100 text-slate-600',
+    categoryColor: 'bg-brand-indigo/10 text-brand-indigo',
     title: 'Wat is een AI-receptionist en hoe werkt het?',
     excerpt: 'Een AI-receptionist neemt gesprekken aan, plant afspraken en routeert leads — 24/7, zonder pauze. We leggen uit hoe de technologie werkt.',
     readTime: '4 min',
     date: '14 april 2026',
-    badge: null,
   },
   {
     slug: 'ai-mkb-starten-in-7-stappen',
     category: 'Gids',
-    categoryColor: 'bg-slate-100 text-slate-600',
+    categoryColor: 'bg-brand-rose/10 text-brand-rose',
     title: '7 stappen om AI succesvol te implementeren in uw MKB',
     excerpt: 'Van de eerste verkenning tot de go-live. Een praktische gids voor ondernemers die willen starten met AI zonder IT-afdeling.',
     readTime: '7 min',
     date: '8 april 2026',
-    badge: null,
   },
   {
     slug: 'roi-ai-berekenen',
@@ -130,7 +28,24 @@ const legacyArticles = [
     excerpt: 'Bespaar op personeelskosten, verminder gemiste leads en verbeter klanttevredenheid. Een concrete formule voor de ROI van AI.',
     readTime: '5 min',
     date: '1 april 2026',
-    badge: null,
+  },
+  {
+    slug: 'whatsapp-business-ai',
+    category: 'Uitleg',
+    categoryColor: 'bg-brand-indigo/10 text-brand-indigo',
+    title: 'WhatsApp Business API + AI: de complete gids voor 2026',
+    excerpt: 'Hoe koppelt u een AI-agent aan WhatsApp Business? Wat zijn de kosten, beperkingen en mogelijkheden? Alles wat u moet weten.',
+    readTime: '8 min',
+    date: '24 maart 2026',
+  },
+  {
+    slug: 'horeca-ai-toepassingen',
+    category: 'Sector',
+    categoryColor: 'bg-brand-emerald/10 text-brand-emerald',
+    title: 'AI in de horeca: 6 toepassingen die nu al werken',
+    excerpt: 'Van reserveringen tot no-show reductie — we tonen zes concrete AI-toepassingen die horecaondernemers nu al inzetten.',
+    readTime: '6 min',
+    date: '17 maart 2026',
   },
   {
     slug: 'avg-ai-mkb-nederland',
@@ -140,13 +55,11 @@ const legacyArticles = [
     excerpt: 'AI en privacywetgeving — een praktische uitleg van de regels, uw verplichtingen en hoe u compliant blijft in Nederland.',
     readTime: '5 min',
     date: '10 maart 2026',
-    badge: null,
   },
 ];
 
-const articles = [...newArticles, ...legacyArticles];
-const categories = ['Alle', 'AI Agents', 'Voice AI', 'Automation', 'Kosten', 'Gids', 'Juridisch'];
-
+const categories = ['Alle', 'Uitleg', 'Gids', 'Finance', 'Sector', 'Juridisch'];
+---
 
 <BaseLayout
   title="Kennisbank & Blog · Aanloop AI"
@@ -198,6 +111,7 @@ const categories = ['Alle', 'AI Agents', 'Voice AI', 'Automation', 'Kosten', 'Gi
         ))}
       </div>
 
+      <!-- Articles grid -->
       <div id="articles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {articles.map((article, i) => (
           <article
@@ -205,12 +119,7 @@ const categories = ['Alle', 'AI Agents', 'Voice AI', 'Automation', 'Kosten', 'Gi
             data-category={article.category}
           >
             <div class="flex items-center justify-between mb-4">
-              <div class="flex items-center gap-2">
-                <span class:list={['pill text-[11px]', article.categoryColor]}>{article.category}</span>
-                {article.badge && (
-                  <span class="pill text-[10px] bg-navy/10 text-navy font-bold uppercase tracking-wide">{article.badge}</span>
-                )}
-              </div>
+              <span class:list={['pill text-[11px]', article.categoryColor]}>{article.category}</span>
               <span class="text-xs text-slate-400">{article.readTime} leestijd</span>
             </div>
             <h2 class="text-base font-bold text-navy leading-snug mb-3 flex-1">
@@ -229,7 +138,6 @@ const categories = ['Alle', 'AI Agents', 'Voice AI', 'Automation', 'Kosten', 'Gi
           </article>
         ))}
       </div>
-
 
       <!-- Newsletter CTA -->
       <div class="mt-16 card bg-slate-900 text-pearl reveal">
