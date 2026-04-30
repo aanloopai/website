@@ -10,10 +10,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
     <div class="container-page py-16 lg:py-28">
       <div class="grid lg:grid-cols-2 gap-16 items-center">
         <div>
-          <div class="flex items-center gap-3 mb-6">
-            <div class="accent-band"><span></span><span></span><span></span><span></span></div>
-            <span class="eyebrow">Emma — WhatsApp agent</span>
-          </div>
+          <span class="eyebrow mb-6 block">Emma — WhatsApp agent</span>
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
             WhatsApp-support die nooit slaapt.
           </h1>
@@ -27,19 +24,32 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
             </a>
             <a href="/tarieven/" class="btn-outline text-base px-6 py-3.5">Bekijk tarieven</a>
           </div>
-        </div>
-        <div class="grid grid-cols-2 gap-4">
-          {[
-            { value: '80%', label: 'van vragen automatisch beantwoord', color: 'text-brand-rose' },
-            { value: '<5s', label: 'gemiddelde reactietijd', color: 'text-brand-indigo' },
-            { value: '24/7', label: 'beschikbaar zonder pauze', color: 'text-brand-amber' },
-            { value: '€247', label: 'vanaf per maand all-in', color: 'text-brand-emerald' },
-          ].map(s => (
-            <div class="card text-center">
-              <div class={`text-3xl font-bold ${s.color}`}>{s.value}</div>
-              <div class="text-xs text-slate-500 mt-1">{s.label}</div>
+          <!-- Quick stats -->
+          <div class="mt-10 grid grid-cols-3 gap-4">
+            <div class="text-center">
+              <div class="text-2xl font-bold text-brand-rose">80%</div>
+              <div class="text-xs text-slate-500 mt-1">auto beantwoord</div>
             </div>
-          ))}
+            <div class="text-center">
+              <div class="text-2xl font-bold text-brand-indigo">&lt;5s</div>
+              <div class="text-xs text-slate-500 mt-1">reactietijd</div>
+            </div>
+            <div class="text-center">
+              <div class="text-2xl font-bold text-brand-emerald">24/7</div>
+              <div class="text-xs text-slate-500 mt-1">beschikbaar</div>
+            </div>
+          </div>
+        </div>
+        <!-- WhatsApp mockup -->
+        <div class="flex justify-center reveal reveal-delay-2">
+          <img
+            src="/images/emma-whatsapp.png"
+            alt="Emma WhatsApp AI agent — klantgesprek voorbeeld"
+            class="w-72 lg:w-80 rounded-3xl shadow-2xl border border-slate-200"
+            loading="eager"
+            width="800"
+            height="1000"
+          />
         </div>
       </div>
     </div>
