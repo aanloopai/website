@@ -147,6 +147,59 @@ const { sector } = Astro.props;
     </div>
   </section>
 
+  <!-- Locations cross-link (local SEO + internal linking) -->
+  <section class="section-tight border-t border-slate-200">
+    <div class="container-page">
+      <p class="eyebrow mb-3">AI voor {sector.title.toLowerCase()} in heel Nederland</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy text-balance mb-6">
+        Lokaal aanwezig — landelijk inzetbaar.
+      </h2>
+      <p class="text-slate-600 leading-relaxed mb-6 max-w-2xl">
+        Aanloop AI bedient {sector.title.toLowerCase()}-bedrijven in heel Nederland. Onze trajecten verlopen
+        remote (videocall + dashboard), maar we zijn beschikbaar voor on-site gesprekken in de grote steden.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        {[
+          { slug: 'rotterdam', name: 'Rotterdam' },
+          { slug: 'amsterdam', name: 'Amsterdam' },
+          { slug: 'den-haag', name: 'Den Haag' },
+          { slug: 'utrecht', name: 'Utrecht' },
+          { slug: 'eindhoven', name: 'Eindhoven' },
+          { slug: 'tilburg', name: 'Tilburg' },
+          { slug: 'breda', name: 'Breda' },
+          { slug: 'groningen', name: 'Groningen' },
+          { slug: 'nijmegen', name: 'Nijmegen' },
+          { slug: 'haarlem', name: 'Haarlem' },
+          { slug: 'enschede', name: 'Enschede' },
+          { slug: 'almere', name: 'Almere' },
+        ].map((loc) => (
+          <a href={`/locaties/${loc.slug}/`} class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 rounded-lg text-xs font-medium text-navy transition-all">
+            AI in {loc.name}
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Other sectors cross-link (topic clustering) -->
+  <section class="section-tight bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <p class="eyebrow mb-3">Andere sectoren</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy text-balance mb-6">
+        AI-oplossingen per branche
+      </h2>
+      <div class="flex flex-wrap gap-2">
+        {sectors.filter(s => s.slug !== sector.slug).map((s) => (
+          <a href={`/sectoren/${s.slug}/`} class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-navy rounded-lg text-xs font-medium text-navy transition-all">
+            AI voor {s.title.toLowerCase()}
+            <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- CTA -->
   <section class="section-tight bg-midnight text-pearl">
     <div class="container-page">
