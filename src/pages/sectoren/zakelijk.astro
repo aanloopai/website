@@ -1,53 +1,70 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': ['Service', 'FAQPage'],
+  name: 'AI voor Zakelijke Dienstverlening',
+  provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  areaServed: 'NL',
+  mainEntity: [
+    { '@type': 'Question', name: 'Welke zakelijke dienstverleners profiteren het meest van AI?', acceptedAnswer: { '@type': 'Answer', text: 'Adviesbureaus, consultants, interim-bureaus en zakelijke dienstverleners die veel telefonisch contact hebben of repetitieve administratieve taken uitvoeren. AI bespaart gemiddeld 8-12 uur per week per medewerker.' } },
+  ],
+};
 ---
-<BaseLayout title="Zakelijke dienstverlening · Aanloop AI" description="AI-oplossingen voor advocaten, accountants, consultants en andere zakelijke dienstverleners. Offertes, intakes en contracten geautomatiseerd.">
+<BaseLayout title="AI voor Zakelijke Dienstverlening: Minder Administratie, Meer Klantwaarde | Aanloop AI" description="AI voor adviesbureaus, consultants en zakelijke dienstverleners. Automatiseer offertes, e-mails, afspraken en rapportages. Starter €997/maand. KVK: 88606902." schema={schema}>
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">
       <div class="max-w-3xl">
-        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Zakelijke dienstverlening</span></div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">AI voor advocaten, accountants en consultants.</h1>
-        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl">Offertes opstellen, intake-formulieren verwerken, contracten reviewen en klantcommunicatie automatiseren — zodat uw team zich kan focussen op het werk dat écht waarde toevoegt.</p>
-        <div class="mt-8 flex gap-3 flex-wrap">
-          <a href="/contact/?type=demo" class="btn-primary text-base px-6 py-3.5">Boek een demo <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <div class="flex items-center gap-4 mb-6 reveal"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Sector: Zakelijke Dienstverlening</span></div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">AI voor adviesbureaus en consultants</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl reveal reveal-delay-2">Minder tijd aan e-mails, offertes en rapportages — meer tijd voor uw klanten. AI automatiseert de administratieve kant van uw dienstverlening zodat u kunt focussen op klantwaarde.</p>
+        <div class="mt-8 flex gap-3 flex-wrap reveal reveal-delay-3">
+          <a href="/demo-aanvragen/" class="btn-primary text-base px-6 py-3.5">Gratis demo aanvragen <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/gratis-ai-scan/" class="btn-outline text-base px-6 py-3.5">Gratis AI scan</a>
         </div>
+      </div>
+    </div>
+  </section>
+  <section class="section-tight bg-slate-50 border-b border-slate-200">
+    <div class="container-page">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        {[{v:'8–12 uur',l:'bespaard per week'},{v:'−70%',l:'tijd aan e-mailbeheer'},{v:'3×',l:'snellere offertes'},{v:'7 dgn',l:'time-to-live'}].map(s=>(
+          <div class="reveal"><p class="text-2xl font-bold text-navy">{s.v}</p><p class="text-xs text-slate-500 mt-1">{s.l}</p></div>
+        ))}
       </div>
     </div>
   </section>
   <section class="section">
     <div class="container-page">
-      <div class="grid lg:grid-cols-2 gap-16">
+      <div class="grid lg:grid-cols-2 gap-16 mb-16">
         <div class="reveal">
-          <h2 class="text-2xl font-bold text-navy mb-6">Toepassingen voor dienstverleners</h2>
+          <h2 class="text-2xl font-bold text-navy mb-6">AI-toepassingen voor zakelijke dienstverlening</h2>
           <ul class="space-y-4">
-            {['Intake-vragenlijsten automatisch afnemen en samenvatten', 'Offertes genereren op basis van klantprofiel en tarieven', 'Contracten uitlezen, samenvatten en afwijkingen signaleren', 'Klantportaal-vragen beantwoorden 24/7', 'Afspraken plannen en bevestigen', 'Factuurherinneringen versturen', 'Compliance-documenten classificeren en archiveren'].map(f => (
+            {['Offertes automatisch samenstellen op basis van klantprofiel','Inkomende e-mails sorteren, prioriteren en beantwoorden','Klantcontact en follow-ups automatisch inplannen','Rapportages en presentaties genereren vanuit data','Contracten en voorwaarden doorzoekbaar maken via AI','Urenregistratie automatisch bijhouden en samenvatten','Kennisbank voor intern gebruik — AI beantwoordt interne vragen'].map(f=>(
               <li class="flex items-start gap-3 text-sm text-slate-700"><svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>{f}</li>
             ))}
           </ul>
         </div>
         <div class="reveal reveal-delay-2">
-          <div class="card bg-slate-50">
-            <p class="eyebrow mb-3">Resultaten</p>
-            <div class="space-y-4">
-              {[{v:'3 u/dag', l:'bespaard per medewerker'},{v:'−40%', l:'administratieve overhead'},{v:'+35%', l:'snellere offertes'},{v:'100%', l:'GDPR-conform'}].map(s=>(
-                <div class="flex items-center justify-between py-3 border-b border-slate-200 last:border-0">
-                  <span class="text-sm text-slate-600">{s.l}</span>
-                  <span class="font-bold text-brand-indigo">{s.v}</span>
-                </div>
-              ))}
-            </div>
+          <h2 class="text-2xl font-bold text-navy mb-4">Case study: adviesbureau</h2>
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-6">
+            <p class="text-sm text-slate-700 italic">"We besteedden 40% van onze tijd aan e-mails, offertes en rapportages. Na AI-implementatie is dat teruggebracht naar 15%. Onze consultants hebben nu echt meer tijd voor strategisch advies."</p>
+            <p class="text-xs text-slate-500 mt-3 font-medium">— Directeur, strategie-adviesbureau Amsterdam</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            {[{v:'−60%',l:'admin-tijd'},{v:'3×',l:'sneller offertes'},{v:'+35%',l:'klanttevredenheid'},{v:'€62.000',l:'jaarlijkse besparing'}].map(s=>(
+              <div class="bg-white border border-slate-200 rounded-xl p-4 text-center"><p class="text-xl font-bold text-brand-indigo">{s.v}</p><p class="text-xs text-slate-500 mt-1">{s.l}</p></div>
+            ))}
           </div>
         </div>
       </div>
     </div>
   </section>
   <section class="section-tight bg-midnight text-pearl">
-    <div class="container-page">
-      <div class="max-w-2xl">
-        <h2 class="text-3xl font-bold tracking-tightest text-pearl">Meer tijd voor uw vak.</h2>
-        <p class="mt-4 text-slate-300">Plan een gratis demo en ontdek welke processen u kunt automatiseren.</p>
-        <div class="mt-6"><a href="/contact/?type=demo" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Boek een demo</a></div>
-      </div>
+    <div class="container-page max-w-3xl">
+      <h2 class="text-3xl font-bold text-pearl reveal">Meer tijd voor klantwaarde, minder voor administratie?</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Plan een gratis demo en ontdek waar AI uw dienstverlening kan versterken.</p>
+      <a href="/demo-aanvragen/" class="mt-6 btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5 reveal reveal-delay-2">Gratis demo aanvragen</a>
     </div>
   </section>
 </BaseLayout>
