@@ -1,0 +1,141 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const today = new Date().toISOString().split('T')[0];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI voor Restaurant Nederland: van reservering tot bestelling op autopilot',
+  description: 'Voor Nederlandse restaurants en horeca: AI agents die reserveringen aannemen, no-shows verminderen en WhatsApp-bestellingen afhandelen. Live in 7 dagen.',
+  author: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
+  datePublished: today,
+  dateModified: today,
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-voor-restaurant-nederland/',
+  inLanguage: 'nl-NL',
+};
+
+const faqItems = [
+  { question: 'Hoe lang duurt implementatie van AI in mijn restaurant?', answer: 'Standaard 7 werkdagen voor het basispakket Marco AI receptionist. Onboarding-vragenlijst (1 dag), training met uw menu, openingstijden en reserveringssysteem (2 dagen), nummer-portering of doorschakeling (3-4 dagen), testronde (1 dag).' },
+  { question: 'Werkt de AI met mijn bestaande reserveringssysteem?', answer: 'Ja. Native koppelingen voor Resengo, Formitable, Bookatable, Eet.nu, Dish.co en custom systemen via REST API. Tijdens onboarding configureren we de tweezijdige sync zodat de AI in uw systeem plant en wijzigingen direct ziet.' },
+  { question: 'Wat kost AI voor een restaurant in Nederland?', answer: 'Marco Starter (AI receptionist tot 200 gesprekken per maand): vanaf 297 euro per maand. Marco Groei (onbeperkt + WhatsApp + CRM): 497 euro per maand. Emma WhatsApp Bot apart: 197-397 euro per maand. Alle pakketten inclusief setup, training en updates.' },
+  { question: 'Spreekt de AI vloeiend Nederlands?', answer: 'Ja, met natuurlijke prosodie en herkenning van regionale accenten (Amsterdam, Rotterdam, Brabant, Limburg). Op aanvraag voegen we Engels, Duits, Frans en Spaans toe.' },
+  { question: 'Wat als een gast iets vraagt dat de AI niet weet?', answer: 'De AI escaleert volgens uw protocol: doorverbinden naar de manager, terugbelafspraak inplannen of een SMS sturen. U bepaalt zelf de escalatieregels.' },
+  { question: 'Is de AI AVG-compliant en voldoet aan allergenen-verplichtingen?', answer: 'Ja. Aanloop AI is een Nederlandse B.V. (KVK 88606902), data wordt binnen de EU verwerkt en bewaard, allergeneninformatie wordt alleen verstrekt op basis van uw geverifieerde menu-data. Verwerkersovereenkomst-template beschikbaar.' },
+];
+---
+
+<BaseLayout
+  title="AI voor Restaurant Nederland — Reserveringen, Bestellingen & 24/7 Bereikbaarheid | Aanloop AI"
+  description="Voor Nederlandse restaurants en horeca: AI agents die reserveringen aannemen, no-shows verminderen en WhatsApp-bestellingen afhandelen. Live in 7 dagen, vanaf 297 euro per maand."
+  schema={articleSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Horeca</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI voor Restaurant Nederland: van reservering tot bestelling op autopilot
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Nederlandse restaurants verliezen elke week tafels door gemiste telefoongesprekken, no-shows en handmatige WhatsApp-bestellingen. AI agents lossen dit volledig op — 24/7 bereikbaar, in vloeiend Nederlands, gekoppeld aan uw reserveringssysteem en kassasysteem.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">1. Reserveringen 24/7 aannemen — ook na sluitingstijd</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">70% van alle reserveringsaanvragen komt buiten kantooruren binnen, blijkt uit data van Nederlandse boekingsplatformen. Een AI receptionist neemt deze gesprekken aan in vloeiend Nederlands, controleert beschikbaarheid in uw bestaande agenda (Resengo, Formitable, eigen systeem) en bevestigt direct via WhatsApp of e-mail.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Concrete winst: een gemiddeld Nederlands restaurant met 80 zitplaatsen rapporteert 8-15% meer reserveringen na implementatie van een 24/7 AI receptionist, vooral in het segment spontane gasten 18-22 uur.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">2. No-show reductie via geautomatiseerde herinneringen</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">No-shows kosten Nederlandse restaurants gemiddeld 6-12% van de omzet. Een AI agent stuurt automatisch herinneringen via WhatsApp 24 uur en 2 uur voor de reservering, bevestigt aanwezigheid en stelt bij annulering een wachtlijst-gast voor.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Resultaat: 35-50% no-show reductie volgens cases bij Nederlandse horecabedrijven. WhatsApp heeft een 95% open rate vs. 20% voor e-mail.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">3. WhatsApp-bestellingen automatisch verwerken</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor restaurants met afhalen en bezorgen: een AI WhatsApp bot neemt bestellingen aan, controleert allergeneninformatie, stelt upgrades voor (extra gerechten, drankjes) en stuurt het bestelvoorstel direct naar uw POS-systeem.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Integratie met Lightspeed, Untill, ResHotel en eigen systemen via REST API. Bestellingen worden in uw bestaande workflow opgenomen alsof een collega ze handmatig invoerde — maar dan zonder fouten of pauzes.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">4. FAQ in 5+ talen voor toeristische gebieden</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor restaurants in Amsterdam-centrum, Rotterdam-haven of toeristische steden zoals Maastricht: een AI agent beantwoordt vragen over openingstijden, dieetwensen, dresscode en reserveringen automatisch in Nederlands, Engels, Duits, Frans en Spaans.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Toeristen krijgen onmiddellijk antwoord, uw team wordt niet geblokkeerd door eenvoudige vragen. Personeelskosten dalen 30-40% op klantcommunicatie tijdens piekseizoen.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">5. Compliance: AVG, allergenen en HACCP-protocollen</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Nederlandse restaurants zijn verplicht om allergeneninformatie correct te verstrekken (Verordening EU 1169/2011) en gastdata AVG-compliant te bewaren. Een goed geïmplementeerde AI agent volgt uw HACCP-protocollen, geeft alleen geverifieerde allergeneninformatie en bewaart conversaties in EU-datacenters met encryption at-rest.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">ROI rekenvoorbeeld</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat levert dit u op?</h2>
+      <p class="text-slate-600 leading-relaxed">Voor een gemiddeld Nederlands restaurant met 60-100 zitplaatsen: 1.500-3.500 euro per maand extra omzet (8-12% meer reserveringen, 35% minder no-shows). Investering vanaf 297 euro per maand voor het Starter Marco-pakket. Break-even meestal binnen de eerste maand.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Veelgestelde vragen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-8">FAQ AI voor Restaurants</h2>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="group card cursor-pointer">
+            <summary class="flex items-start justify-between gap-4 list-none">
+              <h3 class="text-base font-semibold text-navy pr-4">{item.question}</h3>
+              <svg class="w-5 h-5 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight border-t border-slate-200">
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow mb-3">Verder lezen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy text-balance mb-6">AI-bronnen voor uw restaurant.</h2>
+      <div class="flex flex-wrap gap-2">
+        <a href="/sectoren/horeca/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI voor horeca (volledige hub) →</a>
+        <a href="/diensten/marco/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Marco AI Receptionist →</a>
+        <a href="/diensten/emma/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Emma WhatsApp Bot →</a>
+        <a href="/sectoren/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Alle sectoren →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Klaar om uw restaurant 24/7 bereikbaar te maken?</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Plan een gratis demo van 30 minuten. We laten u zien hoe een AI receptionist werkt voor uw situatie.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Plan een demo</a>
+        <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk tarieven</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
