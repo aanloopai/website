@@ -1,8 +1,10 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import SectorCard from '../components/SectorCard.astro';
+import workflowGraphic from '../assets/images/workflow-graphic.png';
 
 const services = [
   { href: '/diensten/marco/', title: 'Marco — AI Sekreter', description: 'Neemt uw telefoon 24/7 aan, plant afspraken, levert leads direct in uw inbox. Vloeiend Nederlands.', badge: 'Meest gekozen', accent: 'indigo' as const, features: ['Onbeperkte gesprekken', 'Lead-routering via Telegram of e-mail', 'Live binnen 7 dagen'] },
@@ -275,13 +277,15 @@ const testimonials = [
 
       <!-- Workflow visual -->
       <div class="mt-16 reveal">
-        <img
-          src="/images/workflow-graphic.png"
+        <Image
+          src={workflowGraphic}
           alt="AI automatisering workflow: klant belt, AI verwerkt, resultaat direct zichtbaar"
           class="w-full max-w-3xl mx-auto rounded-xl"
           loading="lazy"
-          width="1200"
-          height="500"
+          decoding="async"
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 1024px) 768px, 100vw"
+          format="webp"
         />
       </div>
     </div>

@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import emmaWhatsapp from '../../assets/images/emma-whatsapp.png';
 
 const sectorUseCases = [
   { title: 'Webshops & e-commerce', slug: '/sectoren/ai-voor-webshops/', body: 'Emma beantwoordt vragen over voorraad, levertijden, retouren en orderstatus 24/7. Gekoppeld aan uw Shopify of WooCommerce winkel zoekt ze realtime in uw bestellingen — minder ticketdruk, hogere conversie.' },
@@ -105,13 +107,16 @@ const schema = {
         </div>
         <!-- WhatsApp mockup -->
         <div class="flex justify-center reveal reveal-delay-2">
-          <img
-            src="/images/emma-whatsapp.png"
+          <Image
+            src={emmaWhatsapp}
             alt="Emma WhatsApp AI agent — klantgesprek voorbeeld"
             class="w-72 lg:w-80 rounded-3xl shadow-2xl border border-slate-200"
             loading="eager"
-            width="800"
-            height="1000"
+            decoding="async"
+            fetchpriority="high"
+            widths={[400, 640, 800]}
+            sizes="(min-width: 1024px) 320px, 288px"
+            format="webp"
           />
         </div>
       </div>

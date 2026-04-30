@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import horecaRestaurant from '../../assets/images/horeca-restaurant.png';
 
 const faqItems = [
   { question: 'Hoe helpt AI bij het reduceren van no-shows in de horeca?', answer: 'Een AI agent stuurt automatisch herinneringen via WhatsApp of SMS 24 uur en 2 uur voor de reservering. Bij geen reactie stelt de agent een wachtlijstgast voor. Horeca-ondernemers rapporteren een gemiddelde no-show reductie van 35-50%.' },
@@ -25,13 +27,16 @@ const schema = { '@context': 'https://schema.org', '@type': 'Service', serviceTy
         </div>
         <!-- Restaurant photo -->
         <div class="reveal reveal-delay-2">
-          <img
-            src="/images/horeca-restaurant.png"
+          <Image
+            src={horecaRestaurant}
             alt="Modern Nederlands restaurant — AI voor horeca sector"
             class="w-full rounded-2xl shadow-xl object-cover"
             loading="eager"
-            width="1400"
-            height="700"
+            decoding="async"
+            fetchpriority="high"
+            widths={[480, 800, 1200, 1400]}
+            sizes="(min-width: 1024px) 700px, 100vw"
+            format="webp"
           />
         </div>
       </div>

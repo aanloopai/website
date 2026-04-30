@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import officeRotterdam from '../assets/images/office-rotterdam.png';
 
 const teamleden = [
   {
@@ -185,13 +187,15 @@ const teamSchema = teamleden.map(lid => ({
 
         <!-- Office photo -->
         <div class="reveal reveal-delay-2">
-          <img
-            src="/images/office-rotterdam.png"
+          <Image
+            src={officeRotterdam}
             alt="Aanloop AI kantoor Rotterdam — ons team aan het werk"
             class="w-full rounded-2xl shadow-xl object-cover"
             loading="lazy"
-            width="1400"
-            height="800"
+            decoding="async"
+            widths={[480, 800, 1400]}
+            sizes="(min-width: 1024px) 700px, 100vw"
+            format="webp"
           />
           <p class="text-xs text-slate-400 mt-3 text-center">Ons team in Rotterdam — elke dag bouwen aan de AI van morgen</p>
         </div>
