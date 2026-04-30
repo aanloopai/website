@@ -1,10 +1,75 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const sectorUseCases = [
+  { title: 'Accountancy & financieel', slug: '/sectoren/accountancy/', body: 'IVR-menu naar accountant / fiscalist / loonadministratie. Tijdens piekweken (jaarrekening, btw-deadlines) handelt de telefoonassistent eerstelijnsvragen af zonder uw team uit hun deadline-werk te halen.' },
+  { title: 'Juridisch & advocaten', slug: '/sectoren/ai-voor-advocaten/', body: 'Conflict-of-interest screening bij intake, route urgente strafrechtzaken direct naar piket, plan reguliere intakes in agenda. Vertrouwelijk, AVG- en geheimhoudingsplicht-compliant.' },
+  { title: 'Zorg & welzijn', slug: '/sectoren/zorg/', body: 'Triage volgens uw protocol, escalatie van spoedgevallen naar waarnemend arts, plannen van consulten in EPD-agenda. NEN 7510-compatibele opzet beschikbaar.' },
+  { title: 'Logistiek & transport', slug: '/sectoren/logistiek/', body: 'Inkomende klantvragen over orderstatus, levertijden en retouren worden 24/7 afgehandeld. Vrachtwagenchauffeurs krijgen real-time status van zendingen via een aparte servicelijn.' },
+  { title: 'Bouw & installatie', slug: '/sectoren/bouw/', body: 'Storingsmeldingen direct naar servicemonteur van dienst, nieuwe offertes naar verkoopteam, garantieaanvragen naar administratie. Eén telefoonnummer, intelligente routing.' },
+  { title: 'Vastgoed & makelaars', slug: '/sectoren/vastgoed/', body: 'Bezichtigingsverzoeken automatisch ingepland in agenda. Verhuur- vs koopinteresse wordt direct gescheiden, kandidaten landen warm in CRM met volledige gespreksgeschiedenis.' },
+];
+
+const integrations = {
+  Telefonie: ['VoIP / SIP', 'Twilio', 'KPN ÉÉN', 'BelBlock', 'Vonage', 'Ringo', 'Voys'],
+  CRM: ['HubSpot', 'Salesforce', 'Pipedrive', 'Microsoft Dynamics', 'Exact Online', 'Custom REST API'],
+  Agenda: ['Google Workspace', 'Microsoft 365 / Outlook', 'Calendly', 'Cal.com', 'Resengo (horeca)'],
+  Helpdesk: ['Zendesk', 'Freshdesk', 'TOPdesk', 'ServiceNow', 'Eigen ticketsysteem'],
+};
+
+const comparison = [
+  { feature: '24/7 beschikbaar (nachten + weekend)', ai: true, kpn: 'Tijdens kantooruren', voicemail: 'Beperkt', traditional: 'Bezet bij volume' },
+  { feature: 'Onbeperkte gelijktijdige gesprekken', ai: true, kpn: 'Per lijn extra fee', voicemail: true, traditional: false },
+  { feature: 'IVR-menu volledig configureerbaar', ai: true, kpn: 'Beperkt (basale)', voicemail: false, traditional: 'Hardware-limiet' },
+  { feature: 'Slim routeren op intent (niet alleen op keuze)', ai: true, kpn: false, voicemail: false, traditional: false },
+  { feature: 'Realtime CRM-koppeling', ai: true, kpn: 'Add-on fee', voicemail: false, traditional: false },
+  { feature: 'Setup-tijd', ai: '7-10 werkdagen', kpn: '4-8 weken', voicemail: 'Direct', traditional: '2-6 maanden' },
+  { feature: 'Maandelijkse kosten (10 lijnen)', ai: 'Vanaf €497', kpn: '€800-1.500', voicemail: '€20-50', traditional: '€2.000+' },
+  { feature: 'Schaalt bij groei zonder herinrichten', ai: true, kpn: 'Lijn-licenties bijkopen', voicemail: true, traditional: false },
+  { feature: 'AVG/GDPR-compliant + EU-data', ai: true, kpn: true, voicemail: 'Variabel', traditional: 'Variabel' },
+];
+
+const faqItems = [
+  { question: 'Wat is het verschil tussen Marco en de AI telefoon assistent?', answer: 'Marco is onze gestandaardiseerde AI receptionist met één personage en standaard scripts — ideaal voor kleinere MKB-bedrijven. De AI Telefoon Assistent is een volledig configureerbare telefooncentrale met eigen IVR-menu, multi-team routing en custom integraties — geschikt voor grotere organisaties met meerdere afdelingen of meertalige eisen. Beide draaien op dezelfde technologie maar verschillen in flexibiliteit en setup-diepte.' },
+  { question: 'Hoe wordt het IVR-menu opgezet?', answer: 'Tijdens onboarding ontwerpen we samen met u de menustructuur: welke afdelingen, welke openingstijden per afdeling, welke escalatiepaden. We gebruiken intent-gebaseerde routing (de AI snapt wat de beller wil ook zonder dat hij een keuze doormaakt) bovenop traditionele DTMF-keuzes als fallback. Wijzigingen achteraf doorvoeren we binnen 24 uur.' },
+  { question: 'Kan ik mijn bestaande telefoonnummer gebruiken?', answer: 'Ja. We porten uw bestaande NL-nummer (010, 020, 030, 070, 085, 088 of 06) naar onze infrastructuur. U houdt hetzelfde nummer en uw klanten merken niets van de overgang. Alternatief: doorschakeling vanaf uw huidige operator zonder portering.' },
+  { question: 'Welke talen ondersteunt de telefoonassistent?', answer: 'Standaard Nederlands met natuurlijke prosodie. Op aanvraag voegen we Engels, Duits, Frans en Spaans toe. De assistent detecteert automatisch de taal van de beller en wisselt waar nodig. Voor toeristische gebieden of internationale dienstverlening werkt dit uitstekend.' },
+  { question: 'Worden gesprekken opgenomen?', answer: 'Standaard ja, met een wettelijke aankondiging aan het begin van het gesprek. Opnames staan in EU-datacenters (Frankfurt of Amsterdam) met encryptie at-rest en TLS 1.3 in-transit. Default bewaartermijn 90 dagen, configureerbaar 7-365 dagen. Voor zorg- en juridische klanten is volledige opname-uitschakeling mogelijk.' },
+  { question: 'Wat kost de AI telefoon assistent?', answer: 'Starter is €497/maand (tot 1.000 gesprekken, 1 IVR-menu, 3 team-routings), Professional €1.297/maand (onbeperkt, 5 menu&apos;s, multi-team, prioriteit support), Enterprise op maat. Setup-fee is €750 (Starter) of €1.500 (Professional) en wordt bij eerste maand gefactureerd.' },
+  { question: 'Hoe snel ben ik live?', answer: 'Standaard 7-10 werkdagen voor Starter, 14-21 dagen voor Professional. Tijdsverdeling: onboarding-vragenlijst (1 dag), IVR-design (2-3 dagen), nummer-portering of doorschakeling (3-5 dagen), training & testrondes (2 dagen). Bij urgentie kunnen we Starter binnen 5 werkdagen leveren met express-fee.' },
+  { question: 'Werkt het met mijn bestaande PBX of Microsoft Teams Phone?', answer: 'Ja. We integreren via SIP-trunking met de meeste zakelijke PBX&apos;en (3CX, Asterisk, Cisco Webex Calling) en met Microsoft Teams Phone via Direct Routing. De AI Telefoon Assistent kan ook standalone draaien zonder bestaand PBX.' },
+  { question: 'Kan de assistent doorverbinden naar specifieke medewerkers?', answer: 'Ja. We configureren routeringsregels op basis van afdeling, taal, klanttype, tijd-van-dag en zelfs onderwerp van het gesprek (intent-gebaseerd). Beschikbaarheid checken we via uw agenda — bij geen-bezet gaat het naar de volgende collega of een terugbelafspraak.' },
+  { question: 'Wat als de assistent een vraag niet kan beantwoorden?', answer: 'Volgens uw escalatieprotocol: doorverbinden naar mens, terugbelafspraak inplannen, ticket openen in helpdesk of e-mail-samenvatting sturen. U bepaalt zelf wat er gebeurt bij welk type vraag. Standaard escaleren we ook wanneer de beller letterlijk om "menselijke medewerker" vraagt.' },
+  { question: 'Is dit AVG/GDPR en NEN 7510 compliant?', answer: 'AVG/GDPR: ja, standaard. EU-only data, verwerkersovereenkomst-template, recht op verwijdering binnen 24 uur. NEN 7510: leverbaar als add-on voor zorginstellingen — extra audit-logging, dedicated tenant, role-based access controls. Aanloop AI is een Nederlandse B.V. (KVK 88606902).' },
+  { question: 'Kan ik de assistent testen voor ik teken?', answer: 'Ja. Tijdens een gratis demo van 30 minuten configureren we een testscenario uit uw branche. U krijgt een testnummer waar u zelf kunt bellen, lastige vragen kunt stellen en het IVR-menu kunt doorlopen. Pas daarna beslist u of u verder wilt.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: 'AI Telefoon Assistent voor MKB Nederland',
+  description: 'Volledig aanpasbare AI telefooncentrale voor het Nederlandse MKB met eigen NL-nummer, IVR-menu, multi-team routing en CRM-integratie. Live binnen 7-10 werkdagen.',
+  brand: { '@type': 'Brand', name: 'Aanloop AI' },
+  category: 'AI Telefoon Assistent / Telefooncentrale Software',
+  url: 'https://aanloopai.nl/diensten/telefoon-assistent/',
+  audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
+  offers: {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'EUR',
+    lowPrice: '497',
+    highPrice: '5000',
+    offerCount: '3',
+    availability: 'https://schema.org/InStock',
+    seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  },
+};
 ---
 
 <BaseLayout
   title="AI Telefoon Assistent voor MKB Nederland — 24/7 Telefooncentrale | Aanloop AI"
-  description="Volledig aanpasbare AI-telefoonassistent die intakes doet, doorverbindt en gespreks-samenvattingen maakt. Eigen NL-telefoonnummer, CRM-integratie (HubSpot, Salesforce, Pipedrive). Live binnen 7 dagen."
+  description="Volledig aanpasbare AI-telefoonassistent die intakes doet, doorverbindt en gespreks-samenvattingen maakt. Eigen NL-telefoonnummer, CRM-integratie. Vanaf €497/mnd. Live binnen 7-10 werkdagen."
+  schema={schema}
+  faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-28">
@@ -49,6 +114,142 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
             <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
             <span class="text-sm text-slate-700">{f}</span>
           </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Sector use cases -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-14 reveal">
+        <p class="eyebrow mb-3">Toepassingen per sector</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">
+          Eén configureerbare telefooncentrale, 6+ branche-specifieke setups.
+        </h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">
+          Per sector ontwerpen we een ander IVR-menu, andere intakeflows en andere escalatieregels.
+          Zo levert de telefoonassistent vanaf dag één waarde voor uw specifieke type klantvragen.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {sectorUseCases.map((s, i) => (
+          <a href={s.slug} class={`card group hover:border-navy transition-colors reveal reveal-delay-${(i % 4) + 1}`}>
+            <h3 class="text-lg font-bold text-navy mb-2 group-hover:text-brand-indigo transition-colors">{s.title}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{s.body}</p>
+            <span class="inline-flex items-center gap-1 mt-4 text-sm font-medium text-brand-indigo">
+              AI in {s.title.split(' ')[0].toLowerCase()} →
+            </span>
+          </a>
+        ))}
+      </div>
+      <div class="mt-12 text-center reveal">
+        <p class="text-sm text-slate-600">
+          Kleinere organisatie? Bekijk onze gestandaardiseerde AI receptionist
+          <a href="/diensten/marco/" class="text-brand-indigo font-medium hover:underline">Marco</a>
+          — vanaf €297/maand, live in 7 dagen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison -->
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-14 reveal">
+        <p class="eyebrow mb-3">Vergelijking</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">
+          AI Telefoon Assistent vs. KPN ÉÉN, voicemail en traditionele PBX
+        </h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">
+          De meeste MKB-bedrijven kiezen tussen vier opties voor zakelijke telefonie. Hieronder de eerlijke
+          vergelijking — inclusief setup-tijd, kostenrange (10-lijns volume) en schaalbaarheid.
+        </p>
+      </div>
+      <div class="overflow-x-auto reveal">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-4 pr-4 pl-3 text-slate-600 font-semibold w-2/5">Functie / kenmerk</th>
+              <th class="text-center py-4 px-3 font-bold text-navy bg-brand-indigo/5">AI Assistent</th>
+              <th class="text-center py-4 px-3 font-medium text-slate-600">KPN ÉÉN</th>
+              <th class="text-center py-4 px-3 font-medium text-slate-600">Voicemail</th>
+              <th class="text-center py-4 px-3 font-medium text-slate-600">Traditionele PBX</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparison.map(row => (
+              <tr class="border-b border-slate-100">
+                <td class="py-3 pr-4 pl-3 text-slate-700">{row.feature}</td>
+                <td class="text-center py-3 px-3 bg-brand-indigo/5">
+                  {row.ai === true ? (<span class="text-brand-emerald font-bold">✓</span>) : row.ai === false ? (<span class="text-slate-300">—</span>) : (<span class="text-navy font-medium text-xs">{row.ai}</span>)}
+                </td>
+                <td class="text-center py-3 px-3">
+                  {row.kpn === true ? (<span class="text-brand-emerald">✓</span>) : row.kpn === false ? (<span class="text-slate-300">—</span>) : (<span class="text-slate-600 text-xs">{row.kpn}</span>)}
+                </td>
+                <td class="text-center py-3 px-3">
+                  {row.voicemail === true ? (<span class="text-brand-emerald">✓</span>) : row.voicemail === false ? (<span class="text-slate-300">—</span>) : (<span class="text-slate-600 text-xs">{row.voicemail}</span>)}
+                </td>
+                <td class="text-center py-3 px-3">
+                  {row.traditional === true ? (<span class="text-brand-emerald">✓</span>) : row.traditional === false ? (<span class="text-slate-300">—</span>) : (<span class="text-slate-600 text-xs">{row.traditional}</span>)}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Integrations -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <p class="eyebrow mb-3">Integraties</p>
+        <h2 class="text-3xl font-bold tracking-tightest text-navy text-balance">
+          Werkt met de Nederlandse zakelijke tooling die u al gebruikt.
+        </h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">
+          Native koppelingen met Nederlandse telefonie-providers, CRM-systemen, agenda&apos;s en helpdesks.
+          Custom integraties beschikbaar via REST API, webhook of SIP-trunking.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {Object.entries(integrations).map(([category, tools]) => (
+          <div class="card reveal">
+            <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-[0.1em] mb-4">{category}</h3>
+            <ul class="space-y-2">
+              {tools.map(tool => (
+                <li class="text-sm text-navy flex items-center gap-2">
+                  <svg class="w-3.5 h-3.5 text-brand-emerald flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  {tool}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-14 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">
+          Antwoorden op de 12 meest gestelde vragen.
+        </h2>
+      </div>
+      <div class="max-w-3xl mx-auto space-y-3">
+        {faqItems.map((faq, i) => (
+          <details class={`group card cursor-pointer reveal reveal-delay-${(i % 4) + 1}`}>
+            <summary class="flex items-start justify-between gap-4 list-none">
+              <h3 class="text-base font-semibold text-navy pr-4">{faq.question}</h3>
+              <svg class="w-5 h-5 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">{faq.answer}</p>
+          </details>
         ))}
       </div>
     </div>
