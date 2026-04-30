@@ -95,6 +95,27 @@ const testimonials = [
     </div>
   </section>
 
+  <!-- Scroll-triggered mid-page CTA band -->
+  <section class="bg-brand-indigo text-white py-8 reveal">
+    <div class="container-page">
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div>
+          <p class="font-bold text-white text-lg">Klaar om uw eerste AI-assistent live te zien?</p>
+          <p class="text-indigo-200 text-sm mt-0.5">Gratis demo · 30 minuten · Geen verplichtingen</p>
+        </div>
+        <div class="flex gap-3 flex-shrink-0">
+          <a href="https://wa.me/31624741597" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white text-sm font-medium transition-all border border-white/20">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            WhatsApp
+          </a>
+          <a href="/demo-aanvragen/" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-brand-indigo text-sm font-bold hover:bg-indigo-50 transition-all">
+            Demo boeken →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ROI Calculator -->
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page">
@@ -164,16 +185,45 @@ const testimonials = [
         </div>
       </div>
 
-      <!-- Dashboard visual -->
-      <div class="mt-16 reveal">
-        <img
-          src="/images/dashboard-mockup.png"
-          alt="Aanloop AI analytics dashboard — real-time gesprekken en ROI inzichten"
-          class="w-full max-w-4xl mx-auto rounded-2xl shadow-2xl border border-slate-200"
-          loading="lazy"
-          width="1200"
-          height="800"
-        />
+      <!-- ROI Chart visual -->
+      <div class="mt-12 reveal">
+        <div class="max-w-4xl mx-auto rounded-2xl bg-white border border-slate-200 shadow-lg p-6 lg:p-8">
+          <div class="grid lg:grid-cols-2 gap-8 items-center">
+            <div>
+              <p class="text-sm font-semibold text-slate-500 mb-1">Jaarlijkse kostenstructuur</p>
+              <h3 class="text-xl font-bold text-navy mb-4">AI vs. menselijke receptionist</h3>
+              <div class="space-y-3">
+                <div class="flex items-center gap-3">
+                  <div class="w-3 h-3 rounded-full bg-brand-indigo flex-shrink-0"></div>
+                  <span class="text-sm text-slate-600">AI-assistent (jaarkosten)</span>
+                  <span class="ml-auto text-sm font-bold text-navy">€11.964</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-3 h-3 rounded-full bg-brand-rose flex-shrink-0"></div>
+                  <span class="text-sm text-slate-600">Menselijke receptionist</span>
+                  <span id="chart-human-cost" class="ml-auto text-sm font-bold text-brand-rose">€18.720</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-3 h-3 rounded-full bg-brand-emerald flex-shrink-0"></div>
+                  <span class="text-sm text-slate-600">Uw besparing</span>
+                  <span id="chart-saving-display" class="ml-auto text-sm font-bold text-brand-emerald">€6.756</span>
+                </div>
+              </div>
+              <div class="mt-6 p-4 bg-brand-emerald/5 border border-brand-emerald/20 rounded-xl">
+                <p class="text-xs text-slate-600">Op basis van uw calculator-invoer. Pas de sliders aan om uw persoonlijke besparing te zien.</p>
+              </div>
+            </div>
+            <div class="flex items-center justify-center">
+              <div class="relative w-48 h-48">
+                <canvas id="roi-donut-chart" width="192" height="192"></canvas>
+                <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                  <span class="text-xs text-slate-500">Besparing</span>
+                  <span id="roi-chart-pct" class="text-2xl font-bold text-brand-emerald">36%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <p class="text-center text-xs text-slate-400 mt-3">Live dashboard — gesprekken, leads en ROI in één overzicht</p>
       </div>
     </div>
@@ -315,10 +365,47 @@ const testimonials = [
 </BaseLayout>
 
 <script>
-  // ROI Calculator
+  // ─── Chart.js donut ───
+  let roiChart: any = null;
+
+  async function initChart() {
+    const canvas = document.getElementById('roi-donut-chart') as HTMLCanvasElement;
+    if (!canvas) return;
+    // Dynamically import Chart.js from CDN
+    if (!(window as any).Chart) {
+      await new Promise<void>((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js';
+        s.onload = () => resolve();
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+    const Chart = (window as any).Chart;
+    const ctx = canvas.getContext('2d');
+    roiChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        datasets: [{
+          data: [11964, 18720],
+          backgroundColor: ['#6366f1', '#f43f5e'],
+          borderWidth: 0,
+          hoverOffset: 4,
+        }]
+      },
+      options: {
+        cutout: '72%',
+        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+        animation: { duration: 600 },
+      }
+    });
+  }
+
+  // ─── ROI Calculator ───
   const callsEl = document.getElementById('roi-calls') as HTMLInputElement;
   const hourlyEl = document.getElementById('roi-hourly') as HTMLInputElement;
   const minutesEl = document.getElementById('roi-minutes') as HTMLInputElement;
+  const AI_YEARLY = 11964; // €997 * 12
 
   function updateROI() {
     const calls = parseInt(callsEl?.value || '20');
@@ -326,15 +413,31 @@ const testimonials = [
     const minutes = parseInt(minutesEl?.value || '4');
 
     const hoursPerYear = (calls * minutes / 60) * 250;
-    const saving = Math.round(hoursPerYear * hourly);
+    const humanCost = Math.round(hoursPerYear * hourly);
+    const saving = humanCost - AI_YEARLY;
     const month1 = Math.round(saving / 12 - 997);
+    const savingPct = humanCost > 0 ? Math.round((saving / humanCost) * 100) : 0;
 
     (document.getElementById('roi-calls-val') as HTMLElement).textContent = String(calls);
     (document.getElementById('roi-hourly-val') as HTMLElement).textContent = `€${hourly}`;
     (document.getElementById('roi-minutes-val') as HTMLElement).textContent = `${minutes} min`;
-    (document.getElementById('roi-saving') as HTMLElement).textContent = `€${saving.toLocaleString('nl-NL')}`;
+    (document.getElementById('roi-saving') as HTMLElement).textContent = `€${Math.max(saving, 0).toLocaleString('nl-NL')}`;
     (document.getElementById('roi-hours') as HTMLElement).textContent = `${Math.round(hoursPerYear)} u`;
     (document.getElementById('roi-month') as HTMLElement).textContent = month1 > 0 ? `+€${month1.toLocaleString('nl-NL')}` : `€${month1.toLocaleString('nl-NL')}`;
+
+    // Update chart labels
+    const humanCostEl = document.getElementById('chart-human-cost');
+    const savingDisplayEl = document.getElementById('chart-saving-display');
+    const chartPctEl = document.getElementById('roi-chart-pct');
+    if (humanCostEl) humanCostEl.textContent = `€${humanCost.toLocaleString('nl-NL')}`;
+    if (savingDisplayEl) savingDisplayEl.textContent = `€${Math.max(saving, 0).toLocaleString('nl-NL')}`;
+    if (chartPctEl) chartPctEl.textContent = `${Math.max(savingPct, 0)}%`;
+
+    // Update donut chart
+    if (roiChart) {
+      roiChart.data.datasets[0].data = [AI_YEARLY, Math.max(humanCost, AI_YEARLY + 1)];
+      roiChart.update();
+    }
 
     // Update slider background
     [callsEl, hourlyEl, minutesEl].forEach(el => {
@@ -346,8 +449,10 @@ const testimonials = [
 
   [callsEl, hourlyEl, minutesEl].forEach(el => el?.addEventListener('input', updateROI));
   updateROI();
+  // Init chart after paint
+  requestAnimationFrame(() => initChart().then(() => updateROI()));
 
-  // Testimonials carousel
+  // ─── Testimonials carousel ───
   let current = 0;
   const track = document.getElementById('testimonial-track') as HTMLElement;
   const dots = document.querySelectorAll('.testimonial-dot');
