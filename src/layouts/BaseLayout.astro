@@ -308,51 +308,77 @@ const allSchemas = [
     <script>
       (function () {
         const HIDE_CSS = `
+          /* Target the exact branding link found in the widget Shadow DOM */
+          a[href*="elevenlabs.io/agents"],
+          a[href*="elevenlabs.io"],
+          a[href*="eleven"] {
+            display: none !important;
+          }
+
+          /* Hide the parent wrapper of "Powered by ElevenAgents" text */
+          a[href*="elevenlabs.io/agents"],
+          a[href*="elevenlabs.io/agents"] + *,
+          a[href*="elevenlabs.io/agents"] ~ * {
+            display: none !important;
+          }
+
+          /* Broad catch: any element whose text is "Powered by" */
           [class*="powered"],
           [class*="branding"],
-          [class*="footer"],
-          a[href*="elevenlabs"],
-          a[href*="eleven"],
-          div[class*="powered"],
-          span[class*="powered"],
-          p[class*="powered"] {
+          [class*="attribution"],
+          [id*="powered"],
+          [id*="branding"] {
             display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            height: 0 !important;
-            overflow: hidden !important;
           }
         `;
 
         function injectStyle(root) {
-          if (!root || root.querySelector('style[data-aanloop-hide]')) return;
+          if (!root) return;
+          // Remove old injected style to re-inject fresh (handles re-renders)
+          const old = root.querySelector('style[data-aanloop-hide]');
+          if (old) old.remove();
           const style = document.createElement('style');
           style.setAttribute('data-aanloop-hide', '1');
           style.textContent = HIDE_CSS;
           root.appendChild(style);
+
+          // Also directly find & hide the branding link and its parent
+          root.querySelectorAll('a[href*="elevenlabs"]').forEach(link => {
+            link.style.setProperty('display', 'none', 'important');
+            if (link.parentElement) {
+              link.parentElement.style.setProperty('display', 'none', 'important');
+            }
+          });
         }
 
         function processWidget(widget) {
           if (widget.shadowRoot) {
             injectStyle(widget.shadowRoot);
-            // Watch for inner dynamic re-renders
             new MutationObserver(() => injectStyle(widget.shadowRoot))
               .observe(widget.shadowRoot, { childList: true, subtree: true });
+          } else {
+            // Shadow root not yet attached — poll until it is
+            const poll = setInterval(() => {
+              if (widget.shadowRoot) {
+                clearInterval(poll);
+                injectStyle(widget.shadowRoot);
+                new MutationObserver(() => injectStyle(widget.shadowRoot))
+                  .observe(widget.shadowRoot, { childList: true, subtree: true });
+              }
+            }, 100);
           }
         }
 
         function init() {
           document.querySelectorAll('elevenlabs-convai').forEach(processWidget);
-          // Watch for the widget being added to DOM if not yet present
           new MutationObserver((mutations) => {
             mutations.forEach((m) => {
               m.addedNodes.forEach((node) => {
-                if (node.nodeType === 1) {
-                  if (node.tagName && node.tagName.toLowerCase() === 'elevenlabs-convai') {
-                    processWidget(node);
-                  }
-                  node.querySelectorAll && node.querySelectorAll('elevenlabs-convai').forEach(processWidget);
+                if (node.nodeType !== 1) return;
+                if (node.tagName?.toLowerCase() === 'elevenlabs-convai') {
+                  processWidget(node);
                 }
+                node.querySelectorAll?.('elevenlabs-convai').forEach(processWidget);
               });
             });
           }).observe(document.body, { childList: true, subtree: true });
