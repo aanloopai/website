@@ -1,0 +1,226 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const faqItems = [
+  { question: 'Wat kost n8n automatisering voor mijn bedrijf?', answer: 'n8n self-hosted is open-source en gratis te gebruiken. De kosten zitten in de implementatie: bij Aanloop AI beginnen n8n workflow automatiseringsprojecten vanaf €1.500 eenmalig voor een standaard workflow, of €1.997/maand voor een volledig beheerde automatiseringsoplossing inclusief onderhoud.' },
+  { question: 'Wat is het verschil tussen n8n en Make.com (voorheen Integromat)?', answer: 'n8n is open-source en kan self-hosted worden (uw data verlaat nooit de EU), terwijl Make.com een SaaS-product is met beperkte controle over dataopslag. n8n is technisch complexer maar biedt meer flexibiliteit en is beter voor AVG-compliance in Nederland.' },
+  { question: 'Kan ik n8n gebruiken zonder technische kennis?', answer: 'n8n zelf installeren en beheren vereist technische kennis. Aanloop AI neemt dit volledig van u over: wij bouwen, beheren en onderhouden de n8n workflows op basis van uw bedrijfsprocessen. U hoeft niets technisch te doen.' },
+  { question: 'Met welke systemen kan n8n worden gekoppeld?', answer: 'n8n heeft 400+ ingebouwde integraties, waaronder Gmail, Outlook, Google Calendar, HubSpot, Pipedrive, Exact Online, Twinfield, Slack, WhatsApp Business API, Shopify en nog honderden andere tools. Custom API-koppelingen zijn ook mogelijk.' },
+  { question: 'Is n8n AVG-compliant voor gebruik in Nederland?', answer: 'Ja — mits u n8n self-hosted gebruikt op EU-servers, wat Aanloop AI standaard doet. Data verlaat dan nooit de EU en u heeft volledige controle. Dit is een groot voordeel ten opzichte van cloud-gebaseerde alternatieven als Zapier of Make.com.' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'N8N Workflow Automatisering voor MKB — Gids & Voorbeelden 2026',
+  description: 'Wat is n8n en hoe zet u het in voor workflow automatisering in uw MKB? Kosten, voorbeelden en vergelijking met Make.com. AVG-compliant in Nederland.',
+  author: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
+  datePublished: '2026-05-01',
+  dateModified: '2026-05-01',
+  wordCount: 2000,
+  inLanguage: 'nl-NL',
+};
+---
+
+<BaseLayout
+  title="N8N Workflow Automatisering voor MKB — Gids 2026 | Aanloop AI"
+  description="Wat is n8n en hoe gebruikt u het voor workflow automatisering in uw bedrijf? Kosten, AVG-compliance en hoe Aanloop AI het voor u beheert."
+  schema={articleSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Workflow Automatisering</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">
+          N8N Workflow Automatisering<br />voor MKB — Complete Gids 2026
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">
+          n8n is de krachtigste open-source workflow automatiseringstool voor bedrijven die AVG-compliant willen automatiseren. Aanloop AI gebruikt n8n als fundament voor alle workflow oplossingen.
+        </p>
+        <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500 reveal reveal-delay-3">
+          <span>📅 1 mei 2026</span><span>·</span><span>⏱ 9 min leestijd</span><span>·</span><span>✍️ Aanloop AI Redactie</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="flex flex-col lg:flex-row gap-12 max-w-6xl mx-auto">
+        <aside class="lg:w-64 flex-shrink-0">
+          <div class="lg:sticky lg:top-24 bg-slate-50 rounded-2xl p-6 border border-slate-200">
+            <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Inhoudsopgave</p>
+            <nav class="space-y-2 text-sm">
+              <a href="#wat-is" class="block text-slate-600 hover:text-navy transition-colors py-1">1. Wat is n8n?</a>
+              <a href="#voordelen" class="block text-slate-600 hover:text-navy transition-colors py-1">2. Voordelen voor MKB</a>
+              <a href="#use-cases" class="block text-slate-600 hover:text-navy transition-colors py-1">3. Praktijkvoorbeelden</a>
+              <a href="#vergelijking" class="block text-slate-600 hover:text-navy transition-colors py-1">4. n8n vs Make.com</a>
+              <a href="#kosten" class="block text-slate-600 hover:text-navy transition-colors py-1">5. Kosten in Nederland</a>
+              <a href="#faq" class="block text-slate-600 hover:text-navy transition-colors py-1">6. FAQ</a>
+            </nav>
+            <div class="mt-6 pt-6 border-t border-slate-200">
+              <a href="/gratis-ai-scan/" class="btn-primary text-sm w-full justify-center">Gratis AI Scan →</a>
+            </div>
+          </div>
+        </aside>
+
+        <article class="flex-1 max-w-3xl">
+          <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+            <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-3">Key Takeaways</p>
+            <ul class="space-y-2 text-sm text-slate-700">
+              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> n8n is open-source — data blijft in de EU (AVG-compliant)</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> 400+ integraties: Gmail, Outlook, HubSpot, Exact, WhatsApp en meer</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Aanloop AI beheert n8n volledig — u hoeft niets technisch te doen</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Gemiddelde tijdsbesparing per geautomatiseerde workflow: 8–15 uur/week</li>
+            </ul>
+          </div>
+
+          <h2 id="wat-is" class="text-2xl font-bold text-navy mt-10 mb-4">1. Wat is n8n?</h2>
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-6">
+            <p class="text-sm font-semibold text-navy mb-1">Definitie</p>
+            <p class="text-sm text-slate-700">n8n is een open-source workflow automatiseringstool waarmee u honderden apps en diensten met elkaar kunt verbinden zonder code te schrijven. Het is het technische fundament waarmee AI agents taken uitvoeren, systemen communiceren en processen automatisch verlopen.</p>
+          </div>
+          <p class="text-slate-700 leading-relaxed mb-4">Denk aan n8n als de "lijm" tussen al uw digitale tools. Als een klant een formulier invult, kan n8n automatisch:</p>
+          <ul class="list-disc list-inside text-slate-700 mb-6 space-y-1 text-sm ml-4">
+            <li>De lead opslaan in uw CRM (HubSpot, Pipedrive)</li>
+            <li>Een bevestigingsmail sturen via Gmail of Outlook</li>
+            <li>Een afspraak aanmaken in Google Calendar</li>
+            <li>U een Telegram-notificatie sturen</li>
+            <li>De factuur aanmaken in Exact Online</li>
+          </ul>
+          <p class="text-slate-700 leading-relaxed mb-8">Allemaal automatisch, in seconden, zonder menselijke tussenkomst.</p>
+
+          <h2 id="voordelen" class="text-2xl font-bold text-navy mt-10 mb-4">2. Waarom n8n voor het Nederlandse MKB?</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            {[
+              { icon: '🔒', title: 'AVG-compliant', desc: 'Self-hosted op EU-servers. Data verlaat nooit Nederland. Geen buitenlandse cloudproviders.' },
+              { icon: '🆓', title: 'Open-source', desc: 'Geen licentiekosten. U betaalt alleen voor de implementatie en het beheer.' },
+              { icon: '⚡', title: '400+ integraties', desc: 'Alle tools die u al gebruikt: Gmail, Outlook, WhatsApp, Exact, HubSpot.' },
+              { icon: '🤖', title: 'AI-ready', desc: 'Ingebouwde integratie met OpenAI, Anthropic en andere LLMs voor AI-verrijkte workflows.' },
+              { icon: '📊', title: 'Transparant', desc: 'Volledige inzage in alle workflows en data — geen black-box als bij SaaS-alternatieven.' },
+              { icon: '🔧', title: 'Aanpasbaar', desc: 'Onbeperkt aanpasbaar aan uw unieke bedrijfsprocessen. Geen beperkingen van een platform.' },
+            ].map(v => (
+              <div class="bg-white border border-slate-200 rounded-xl p-5">
+                <div class="text-2xl mb-2">{v.icon}</div>
+                <p class="font-bold text-navy text-sm mb-1">{v.title}</p>
+                <p class="text-sm text-slate-600">{v.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <h2 id="use-cases" class="text-2xl font-bold text-navy mt-10 mb-4">3. n8n Praktijkvoorbeelden voor het MKB</h2>
+          <div class="space-y-4 mb-8">
+            {[
+              { titel: '📞 AI Telefoonassistent → CRM', uitleg: 'Marco neemt de telefoon aan. n8n stuurt de gespreksdata naar HubSpot, maakt een afspraak in Google Calendar en stuurt u een Telegram-bericht. Alles in 10 seconden na het gesprek.', tijd: '4 uur/week bespaard' },
+              { titel: '📧 E-mail Auto-beantwoording', uitleg: 'Inkomende e-mails worden automatisch gelezen door GPT-4, gecategoriseerd en beantwoord. Standaardvragen 100% automatisch, complexe vragen gemarkeerd voor u.', tijd: '6 uur/week bespaard' },
+              { titel: '📄 Factuurverwerking', uitleg: 'Inkomende facturen (PDF) worden uitgelezen, gecontroleerd en automatisch geboekt in Exact Online of Twinfield. 85% tijdsbesparing op administratie.', tijd: '5 uur/week bespaard' },
+              { titel: '💬 WhatsApp → Agenda', uitleg: 'WhatsApp-berichten van klanten worden verwerkt door Emma (AI agent). Afspraakaanvragen worden automatisch ingepland in uw agenda met bevestigingsbericht.', tijd: '3 uur/week bespaard' },
+              { titel: '🏪 Webshop → Logistiek', uitleg: 'Nieuwe bestellingen in Shopify/WooCommerce worden automatisch verwerkt: aanmeldingsemail, magazijn-notificatie, facturatie in Exact en track-and-trace via WhatsApp.', tijd: '8 uur/week bespaard' },
+            ].map(ex => (
+              <div class="bg-white border border-slate-200 rounded-xl p-5">
+                <div class="flex items-start justify-between gap-4">
+                  <div>
+                    <p class="font-bold text-navy text-sm mb-1">{ex.titel}</p>
+                    <p class="text-sm text-slate-600">{ex.uitleg}</p>
+                  </div>
+                  <div class="bg-brand-emerald/10 rounded-lg px-3 py-1 flex-shrink-0">
+                    <span class="text-xs font-semibold text-brand-emerald whitespace-nowrap">{ex.tijd}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <h2 id="vergelijking" class="text-2xl font-bold text-navy mt-10 mb-4">4. n8n vs Make.com vs Zapier — Welke Kiest u?</h2>
+          <div class="overflow-x-auto mb-8">
+            <table class="w-full text-sm border-collapse">
+              <thead>
+                <tr class="border-b-2 border-slate-200 bg-slate-50">
+                  <th class="text-left py-3 px-3 font-semibold text-navy">Kenmerk</th>
+                  <th class="text-center py-3 px-3 font-semibold text-brand-indigo">n8n</th>
+                  <th class="text-center py-3 px-3 font-semibold text-slate-500">Make.com</th>
+                  <th class="text-center py-3 px-3 font-semibold text-slate-500">Zapier</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                {[
+                  ['Open-source', '✅', '❌', '❌'],
+                  ['Self-hosted (AVG)', '✅ NL servers', '❌ Cloud', '❌ Cloud'],
+                  ['Prijs (basis)', 'Gratis (self-hosted)', '€9/mnd', '€20/mnd'],
+                  ['Integraties', '400+', '1000+', '5000+'],
+                  ['AI/LLM native', '✅ Direct', '⚠️ Beperkt', '⚠️ Beperkt'],
+                  ['Technisch niveau', 'Hoog (of beheerd)', 'Medium', 'Laag'],
+                  ['Aanpasbaar', '⭐⭐⭐⭐⭐', '⭐⭐⭐', '⭐⭐'],
+                ].map(([k, n, m, z]) => (
+                  <tr>
+                    <td class="py-3 px-3 font-medium text-slate-700">{k}</td>
+                    <td class="py-3 px-3 text-center text-brand-indigo font-medium">{n}</td>
+                    <td class="py-3 px-3 text-center text-slate-500">{m}</td>
+                    <td class="py-3 px-3 text-center text-slate-500">{z}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="text-sm text-slate-500 mb-8"><strong>Conclusie:</strong> Voor het Nederlandse MKB dat AVG-compliant wil automatiseren, is n8n (self-hosted via Aanloop AI) de beste keuze: veiligste databehandeling, meest flexibel en de beste AI-integratie.</p>
+
+          <h2 id="kosten" class="text-2xl font-bold text-navy mt-10 mb-4">5. Kosten van n8n Automatisering in Nederland</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            {[
+              { naam: 'Losse workflow', prijs: 'Vanaf €1.500', omschrijving: 'Eenmalige implementatie van één workflow. Inclusief testen en go-live.', ideaal: 'Klein project, eerste automatisering' },
+              { naam: 'Beheerde automatisering', prijs: '€1.997/mnd', omschrijving: 'Volledige n8n omgeving door Aanloop AI beheerd. Inclusief onderhoud, updates en nieuwe workflows.', ideaal: 'MKB dat ontzorgd wil worden' },
+            ].map(p => (
+              <div class="border border-slate-200 rounded-xl p-6">
+                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 mb-1">{p.naam}</p>
+                <p class="text-2xl font-bold text-navy mb-2">{p.prijs}</p>
+                <p class="text-sm text-slate-600 mb-3">{p.omschrijving}</p>
+                <p class="text-xs text-brand-indigo font-medium">Ideaal voor: {p.ideaal}</p>
+              </div>
+            ))}
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8">
+            <p class="text-sm font-bold text-navy mb-3">Lees ook</p>
+            <ul class="space-y-2">
+              <li><a href="/kennisbank/ai-automatisering-mkb/" class="text-sm text-brand-indigo hover:underline">AI Automatisering voor MKB — Praktische Gids →</a></li>
+              <li><a href="/kennisbank/ai-workflow-automation/" class="text-sm text-brand-indigo hover:underline">AI Workflow Automation: Complete Uitleg →</a></li>
+              <li><a href="/kennisbank/n8n-vs-make-com/" class="text-sm text-brand-indigo hover:underline">n8n vs Make.com — Uitgebreide Vergelijking →</a></li>
+            </ul>
+          </div>
+
+          <h2 id="faq" class="text-2xl font-bold text-navy mt-10 mb-6">6. FAQ over n8n Automatisering</h2>
+          <div class="space-y-3 mb-8">
+            {faqItems.map(item => (
+              <details class="card group">
+                <summary class="flex items-center justify-between cursor-pointer list-none">
+                  <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+                  <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">n8n voor uw bedrijf — wij regelen alles.</h2>
+        <p class="mt-4 text-slate-300 leading-relaxed reveal reveal-delay-1">Aanloop AI bouwt, beheert en optimaliseert uw n8n workflows. Geen technische kennis nodig. Start met een gratis AI scan.</p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+          <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk pakketten</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
