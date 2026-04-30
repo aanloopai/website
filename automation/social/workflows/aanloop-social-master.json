@@ -1,0 +1,353 @@
+{
+  "name": "Aanloop Social Master",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "30 7 * * 1-5" }]
+        }
+      },
+      "name": "Cron Daily 07:30 NL",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [{ "field": "cronExpression", "expression": "0 9 * * 6" }]
+        }
+      },
+      "name": "Cron Saturday Video 09:00 NL",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [240, 460]
+    },
+    {
+      "parameters": {
+        "jsCode": "const tz = 'Europe/Amsterdam';\nconst now = new Date();\nconst weekday = now.toLocaleDateString('en-US', { weekday: 'long', timeZone: tz }).toLowerCase();\nconst dateNL = now.toLocaleDateString('nl-NL', { timeZone: tz });\nconst yyyymmdd = now.toLocaleDateString('sv-SE', { timeZone: tz }).replaceAll('-', '');\n\nconst pillarMap = {\n  monday: { pillar: 'news', platforms: ['linkedin', 'instagram', 'facebook', 'x'] },\n  tuesday: { pillar: 'sector', platforms: ['linkedin', 'instagram', 'facebook', 'x'] },\n  wednesday: { pillar: 'tip', platforms: ['linkedin', 'instagram', 'facebook', 'x'] },\n  thursday: { pillar: 'service', platforms: ['linkedin', 'instagram', 'facebook', 'x'] },\n  friday: { pillar: 'longform', platforms: ['linkedin'] },\n  saturday: { pillar: 'video', platforms: ['youtube', 'instagram', 'tiktok'] }\n};\n\nconst plan = pillarMap[weekday] || { pillar: 'skip', platforms: [] };\nreturn [{ json: { weekday, dateNL, yyyymmdd, ...plan } }];"
+      },
+      "name": "Pillar Router",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [460, 380]
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/.n8n/aanloop-social/data/services.json",
+        "options": {}
+      },
+      "name": "Read services.json",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [680, 200]
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/.n8n/aanloop-social/data/sectors.json",
+        "options": {}
+      },
+      "name": "Read sectors.json",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [680, 320]
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/.n8n/aanloop-social/data/tips.json",
+        "options": {}
+      },
+      "name": "Read tips.json",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [680, 440]
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/.n8n/aanloop-social/prompts/brand-voice.md",
+        "options": {}
+      },
+      "name": "Read brand-voice.md",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [680, 560]
+    },
+    {
+      "parameters": {
+        "fileSelector": "/home/node/.n8n/aanloop-social/prompts/pillar-prompts.md",
+        "options": {}
+      },
+      "name": "Read pillar-prompts.md",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [680, 680]
+    },
+    {
+      "parameters": {
+        "jsCode": "const input = $('Pillar Router').item.json;\nconst pillar = input.pillar;\nconst week = Math.floor(Date.now() / (7*24*3600*1000));\n\nlet dataRow = null;\nlet sectorTags = [];\n\nif (pillar === 'service' || pillar === 'video') {\n  const services = JSON.parse($('Read services.json').item.binary.data.toString()).services;\n  dataRow = services[week % services.length];\n} else if (pillar === 'sector') {\n  const sectors = JSON.parse($('Read sectors.json').item.binary.data.toString()).sectors;\n  dataRow = sectors[week % sectors.length];\n  sectorTags = dataRow.hashtags_nl;\n} else if (pillar === 'tip') {\n  const tips = JSON.parse($('Read tips.json').item.binary.data.toString()).tips;\n  dataRow = tips[week % tips.length];\n} else if (pillar === 'longform') {\n  const themes = [\n    'AVG, EU AI Act en self-hosted AI',\n    'ROI berekening voor AI projecten',\n    'n8n vs Zapier vs Make voor NL MKB',\n    'Voice AI voor MKB met ElevenLabs',\n    'AI hallucinations: bescherm je klant',\n    'No-code AI agents: werkt het echt?',\n    'AI adoptie in NL MKB: drempels en kansen',\n    'AI met mens: angsten vs realiteit'\n  ];\n  dataRow = { theme: themes[week % themes.length] };\n}\n\nconst brandVoice = $('Read brand-voice.md').item.binary.data.toString();\nconst pillarPrompts = $('Read pillar-prompts.md').item.binary.data.toString();\n\nreturn [{ json: { ...input, dataRow, sectorTags, brandVoice, pillarPrompts } }];"
+      },
+      "name": "Build Pillar Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [900, 380]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "anthropic-version", "value": "2023-06-01" },
+            { "name": "content-type", "value": "application/json" },
+            { "name": "x-api-key", "value": "={{$env.ANTHROPIC_API_KEY}}" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-6\",\n  \"max_tokens\": 2000,\n  \"system\": {{JSON.stringify($json.brandVoice)}},\n  \"messages\": [{\n    \"role\": \"user\",\n    \"content\": {{JSON.stringify('Pillar: ' + $json.pillar + ' | Weekday: ' + $json.weekday + ' | Date: ' + $json.dateNL + ' | UTM: ' + $json.yyyymmdd + ' | Platforms: ' + $json.platforms.join(',') + ' | DataRow: ' + JSON.stringify($json.dataRow) + ' | SectorTags: ' + $json.sectorTags.join(' ') + '\\n\\nPillar prompts (find matching section):\\n' + $json.pillarPrompts + '\\n\\nGenerate posts. Return JSON array of platform variants in code block.')}}\n  }]\n}",
+        "options": {}
+      },
+      "name": "Claude — Generate Content",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [1120, 380]
+    },
+    {
+      "parameters": {
+        "jsCode": "const response = $input.first().json;\nconst contentText = (response.content && response.content[0] && response.content[0].text) || '';\nconst jsonMatch = contentText.match(/```json\\n([\\s\\S]*?)\\n```/) || contentText.match(/(\\[[\\s\\S]*\\])/);\nconst variants = jsonMatch ? JSON.parse(jsonMatch[1]) : [];\nconst pillar = $('Pillar Router').item.json.pillar;\nconst dateNL = $('Pillar Router').item.json.dateNL;\nconst digestText = variants.map(v => v.platform.toUpperCase() + ' (' + v.lang + ', ' + (v.char_count || v.text.length) + ' chars):\\n' + v.text.slice(0, 200) + '...').join('\\n\\n');\nreturn [{ json: { variants, pillar, dateNL, digestText } }];"
+      },
+      "name": "Parse Variants",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1340, 380]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$env.TELEGRAM_CHAT_ID}}",
+        "text": "=📅 *{{$json.dateNL}}* — Pillar: *{{$json.pillar}}*\n\n{{$json.digestText}}\n\n_Reply: /approve | /skip | /regenerate_",
+        "additionalFields": { "parse_mode": "Markdown" }
+      },
+      "name": "Telegram — Send Digest",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [1560, 380]
+    },
+    {
+      "parameters": {
+        "amount": 2,
+        "unit": "hours"
+      },
+      "name": "Wait for Approval",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [1780, 380],
+      "webhookId": "approval-webhook"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{$json.message?.text || ''}}",
+              "operation": "startsWith",
+              "value2": "/approve"
+            }
+          ]
+        }
+      },
+      "name": "IF Approved",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [2000, 380]
+    },
+    {
+      "parameters": {
+        "jsCode": "const variants = $('Parse Variants').item.json.variants;\nreturn variants.map(v => ({ json: v }));"
+      },
+      "name": "Split per Platform",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [2220, 280]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            { "conditions": { "string": [{ "value1": "={{$json.platform}}", "value2": "linkedin" }] }, "outputName": "linkedin" },
+            { "conditions": { "string": [{ "value1": "={{$json.platform}}", "value2": "instagram" }] }, "outputName": "instagram" },
+            { "conditions": { "string": [{ "value1": "={{$json.platform}}", "value2": "facebook" }] }, "outputName": "facebook" },
+            { "conditions": { "string": [{ "value1": "={{$json.platform}}", "value2": "x" }] }, "outputName": "x" },
+            { "conditions": { "string": [{ "value1": "={{$json.platform}}", "value2": "tiktok" }] }, "outputName": "tiktok" },
+            { "conditions": { "string": [{ "value1": "={{$json.platform}}", "value2": "youtube" }] }, "outputName": "youtube" }
+          ]
+        }
+      },
+      "name": "Switch by Platform",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [2440, 280]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.linkedin.com/v2/ugcPosts",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Cookie", "value": "=li_at={{$env.LINKEDIN_LI_AT}}; JSESSIONID={{$env.LINKEDIN_JSESSIONID}}" },
+            { "name": "X-Restli-Protocol-Version", "value": "2.0.0" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"author\": \"urn:li:organization:{{$env.LINKEDIN_COMPANY_PAGE_ID}}\",\n  \"lifecycleState\": \"PUBLISHED\",\n  \"specificContent\": {\n    \"com.linkedin.ugc.ShareContent\": {\n      \"shareCommentary\": { \"text\": {{JSON.stringify($json.text)}} },\n      \"shareMediaCategory\": \"NONE\"\n    }\n  },\n  \"visibility\": { \"com.linkedin.ugc.MemberNetworkVisibility\": \"PUBLIC\" }\n}",
+        "options": {}
+      },
+      "name": "Post LinkedIn",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2660, 100]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{$env.IG_BUSINESS_ACCOUNT_ID}}/media",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"image_url\": {{JSON.stringify($json.image_url || '')}},\n  \"caption\": {{JSON.stringify($json.text)}},\n  \"access_token\": \"{{$env.FB_PAGE_ACCESS_TOKEN}}\"\n}",
+        "options": {}
+      },
+      "name": "Post Instagram",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2660, 240]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.facebook.com/v19.0/{{$env.FB_PAGE_ID}}/feed",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": {{JSON.stringify($json.text)}},\n  \"access_token\": \"{{$env.FB_PAGE_ACCESS_TOKEN}}\"\n}",
+        "options": {}
+      },
+      "name": "Post Facebook",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [2660, 380]
+    },
+    {
+      "parameters": {
+        "resource": "tweet",
+        "operation": "create",
+        "text": "={{$json.text}}"
+      },
+      "name": "Post X",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 2,
+      "position": [2660, 520]
+    },
+    {
+      "parameters": {
+        "chatId": "={{$env.TELEGRAM_CHAT_ID}}",
+        "text": "=📲 TikTok ready for manual upload\n\nCaption:\n{{$json.text}}\n\nVideo location: {{$json.video_url || 'Drive folder pending-tiktok/'}}\n\nUpload via TikTok mobile app (60 seconds)."
+      },
+      "name": "TikTok Drive Drop",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [2660, 660]
+    },
+    {
+      "parameters": {
+        "resource": "video",
+        "operation": "upload",
+        "title": "={{$json.youtube_title_en}}",
+        "regionCode": "NL",
+        "categoryId": "27",
+        "tags": "={{($json.hashtags || []).join(',')}}"
+      },
+      "name": "Post YouTube Shorts",
+      "type": "n8n-nodes-base.youTube",
+      "typeVersion": 1,
+      "position": [2660, 800]
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": { "__rl": true, "mode": "id", "value": "={{$env.GOOGLE_SHEET_ID}}" },
+        "sheetName": { "__rl": true, "mode": "name", "value": "posts-log" },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "date": "={{$now.format('yyyy-MM-dd')}}",
+            "weekday": "={{$('Pillar Router').item.json.weekday}}",
+            "pillar": "={{$('Pillar Router').item.json.pillar}}",
+            "platform": "={{$json.platform}}",
+            "lang": "={{$json.lang}}",
+            "char_count": "={{$json.char_count || ($json.text || '').length}}",
+            "post_url": "={{$json.post_url || ''}}",
+            "status": "={{$json.error ? 'failed' : 'posted'}}",
+            "error": "={{$json.error || ''}}"
+          }
+        }
+      },
+      "name": "Log to Sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [2880, 380]
+    }
+  ],
+  "connections": {
+    "Cron Daily 07:30 NL": { "main": [[{ "node": "Pillar Router", "type": "main", "index": 0 }]] },
+    "Cron Saturday Video 09:00 NL": { "main": [[{ "node": "Pillar Router", "type": "main", "index": 0 }]] },
+    "Pillar Router": { "main": [[
+      { "node": "Read services.json", "type": "main", "index": 0 },
+      { "node": "Read sectors.json", "type": "main", "index": 0 },
+      { "node": "Read tips.json", "type": "main", "index": 0 },
+      { "node": "Read brand-voice.md", "type": "main", "index": 0 },
+      { "node": "Read pillar-prompts.md", "type": "main", "index": 0 }
+    ]] },
+    "Read pillar-prompts.md": { "main": [[{ "node": "Build Pillar Context", "type": "main", "index": 0 }]] },
+    "Build Pillar Context": { "main": [[{ "node": "Claude — Generate Content", "type": "main", "index": 0 }]] },
+    "Claude — Generate Content": { "main": [[{ "node": "Parse Variants", "type": "main", "index": 0 }]] },
+    "Parse Variants": { "main": [[{ "node": "Telegram — Send Digest", "type": "main", "index": 0 }]] },
+    "Telegram — Send Digest": { "main": [[{ "node": "Wait for Approval", "type": "main", "index": 0 }]] },
+    "Wait for Approval": { "main": [[{ "node": "IF Approved", "type": "main", "index": 0 }]] },
+    "IF Approved": { "main": [[{ "node": "Split per Platform", "type": "main", "index": 0 }]] },
+    "Split per Platform": { "main": [[{ "node": "Switch by Platform", "type": "main", "index": 0 }]] },
+    "Switch by Platform": { "main": [
+      [{ "node": "Post LinkedIn", "type": "main", "index": 0 }],
+      [{ "node": "Post Instagram", "type": "main", "index": 0 }],
+      [{ "node": "Post Facebook", "type": "main", "index": 0 }],
+      [{ "node": "Post X", "type": "main", "index": 0 }],
+      [{ "node": "TikTok Drive Drop", "type": "main", "index": 0 }],
+      [{ "node": "Post YouTube Shorts", "type": "main", "index": 0 }]
+    ] },
+    "Post LinkedIn": { "main": [[{ "node": "Log to Sheet", "type": "main", "index": 0 }]] },
+    "Post Instagram": { "main": [[{ "node": "Log to Sheet", "type": "main", "index": 0 }]] },
+    "Post Facebook": { "main": [[{ "node": "Log to Sheet", "type": "main", "index": 0 }]] },
+    "Post X": { "main": [[{ "node": "Log to Sheet", "type": "main", "index": 0 }]] },
+    "TikTok Drive Drop": { "main": [[{ "node": "Log to Sheet", "type": "main", "index": 0 }]] },
+    "Post YouTube Shorts": { "main": [[{ "node": "Log to Sheet", "type": "main", "index": 0 }]] }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "errorWorkflow": "",
+    "timezone": "Europe/Amsterdam"
+  },
+  "staticData": null,
+  "pinData": {},
+  "_documentation": {
+    "description": "Aanloop AI master social media automation workflow scaffold v0.1",
+    "notes": [
+      "After import: assign credentials to nodes that need them (Telegram, X Twitter OAuth, YouTube OAuth, Google Sheets OAuth)",
+      "All other auth flows via env vars: ANTHROPIC_API_KEY, FB_PAGE_ACCESS_TOKEN, IG_BUSINESS_ACCOUNT_ID, FB_PAGE_ID, LINKEDIN_LI_AT, LINKEDIN_JSESSIONID, LINKEDIN_COMPANY_PAGE_ID, TELEGRAM_CHAT_ID, GOOGLE_SHEET_ID",
+      "Test workflow manually before activating cron",
+      "Wait for Approval node uses 2h timeout — extend or replace with Telegram trigger webhook for full button flow",
+      "TikTok branch only sends Telegram alert; user uploads manually via mobile app",
+      "Image generation node not included in scaffold — add Sharp.js or fal.ai branch between Parse Variants and Telegram digest"
+    ]
+  }
+}
