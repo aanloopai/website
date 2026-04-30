@@ -303,5 +303,67 @@ const allSchemas = [
     <!-- ElevenLabs ConvAI Widget -->
     <elevenlabs-convai agent-id="agent_6101kqdjepxmeqsr02kg7vwwd873"></elevenlabs-convai>
     <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+
+    <!-- Hide ElevenLabs/ElevenAgents branding in widget Shadow DOM -->
+    <script>
+      (function () {
+        const HIDE_CSS = `
+          [class*="powered"],
+          [class*="branding"],
+          [class*="footer"],
+          a[href*="elevenlabs"],
+          a[href*="eleven"],
+          div[class*="powered"],
+          span[class*="powered"],
+          p[class*="powered"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            height: 0 !important;
+            overflow: hidden !important;
+          }
+        `;
+
+        function injectStyle(root) {
+          if (!root || root.querySelector('style[data-aanloop-hide]')) return;
+          const style = document.createElement('style');
+          style.setAttribute('data-aanloop-hide', '1');
+          style.textContent = HIDE_CSS;
+          root.appendChild(style);
+        }
+
+        function processWidget(widget) {
+          if (widget.shadowRoot) {
+            injectStyle(widget.shadowRoot);
+            // Watch for inner dynamic re-renders
+            new MutationObserver(() => injectStyle(widget.shadowRoot))
+              .observe(widget.shadowRoot, { childList: true, subtree: true });
+          }
+        }
+
+        function init() {
+          document.querySelectorAll('elevenlabs-convai').forEach(processWidget);
+          // Watch for the widget being added to DOM if not yet present
+          new MutationObserver((mutations) => {
+            mutations.forEach((m) => {
+              m.addedNodes.forEach((node) => {
+                if (node.nodeType === 1) {
+                  if (node.tagName && node.tagName.toLowerCase() === 'elevenlabs-convai') {
+                    processWidget(node);
+                  }
+                  node.querySelectorAll && node.querySelectorAll('elevenlabs-convai').forEach(processWidget);
+                }
+              });
+            });
+          }).observe(document.body, { childList: true, subtree: true });
+        }
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', init);
+        } else {
+          init();
+        }
+      })();
+    </script>
   </body>
 </html>
