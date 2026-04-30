@@ -1,26 +1,47 @@
----
-import BaseLayout from '../../layouts/BaseLayout.astro';
-
 const faqSchema = [
   {
-    question: 'Hoe helpt AI bij bouwbedrijven?',
-    answer: 'Aanloop AI neemt telefonische aanvragen en planningsoproepen 24/7 aan, stuurt automatisch offertebevestigingen via WhatsApp en helpt bij het inplannen van monteurs en inspecteurs — zodat uw team op de werf kan blijven.',
+    question: 'Hoe helpt AI bij bouwbedrijven en installatiebedrijven?',
+    answer: 'Aanloop AI neemt telefonische offerte-aanvragen en planningsoproepen 24/7 aan, stuurt automatisch bevestigingen via WhatsApp en helpt bij het inplannen van monteurs — zodat uw team op de werf kan blijven zonder iets te missen.',
   },
   {
-    question: 'Kan de AI afspraken inplannen voor inspecteurs?',
-    answer: 'Ja. De AI-assistent koppelt aan uw agenda en plant automatisch afspraken in op basis van beschikbaarheid, locatie en type klus. Bevestigingen en herinneringen gaan automatisch naar de klant.',
+    question: 'Kan de AI afspraken inplannen voor monteurs en inspecteurs?',
+    answer: 'Ja. De AI koppelt aan uw agenda (Google Calendar, Outlook) en plant automatisch afspraken op basis van beschikbaarheid, locatie en type klus. Bevestigingen en herinneringen gaan automatisch via WhatsApp of e-mail.',
   },
   {
-    question: 'Wat kost AI voor een bouwbedrijf?',
-    answer: 'AI voor bouw- en installatiebedrijven start vanaf €299 per maand. Dit is inclusief setup, training op uw diensten en maandelijkse optimalisatie. Geen verborgen kosten.',
+    question: 'Wat kost AI voor een bouwbedrijf of installatiebedrijf?',
+    answer: 'AI voor bouw- en installatiebedrijven start vanaf €997/maand bij Aanloop AI. Dit is inclusief setup, training op uw diensten en maandelijkse optimalisatie. Gebruik onze ROI calculator om uw specifieke besparing te berekenen.',
+  },
+  {
+    question: 'Werkt de AI ook buiten kantooruren voor spoedmeldingen?',
+    answer: 'Ja. De AI herkent urgente meldingen (lekkage, stroomstoring, breuk) en escaleert direct naar de bereikbaarheidsdienst of juiste monteur. Klanten worden 24/7 geholpen, ook buiten kantooruren.',
+  },
+  {
+    question: 'Met welke software koppelt de AI voor bouwbedrijven?',
+    answer: 'Aanloop AI koppelt met Google Calendar, Outlook, WhatsApp Business API, HubSpot, Exact Online en de meeste gangbare planningssoftware via API. Maatwerk koppelingen zijn ook mogelijk.',
   },
 ];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'AI voor Bouw & Installatiebedrijven',
+  description: 'Aanloop AI levert AI-automatisering voor bouw- en installatiebedrijven. Nooit meer gemiste offerte-aanvragen, automatische monteurplanning en 24/7 telefonische bereikbaarheid.',
+  provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  areaServed: 'NL',
+  offers: {
+    '@type': 'Offer',
+    price: '997',
+    priceCurrency: 'EUR',
+    priceSpecification: { '@type': 'UnitPriceSpecification', priceType: 'monthly' },
+  },
+};
 ---
 
 <BaseLayout
-  title="AI voor Bouw & Installatie — Aanloop AI"
-  description="AI-assistent voor bouw- en installatiebedrijven. Nooit meer gemiste offerte-aanvragen, automatische planning van monteurs en 24/7 klantenservice. Live in 14 dagen."
+  title="AI voor Bouwbedrijven & Installatiebedrijven — Nooit Meer Gemiste Aanvragen | Aanloop AI"
+  description="AI-assistent voor bouw- en installatiebedrijven. 24/7 telefonisch bereikbaar, automatische monteurplanning en WhatsApp klantenservice. Live in 14 dagen. Gratis scan."
   faqSchema={faqSchema}
+  schema={articleSchema}
 >
   <!-- Hero -->
   <section class="relative overflow-hidden bg-navy text-white">
@@ -92,7 +113,6 @@ const faqSchema = [
     </div>
   </section>
 
-  <!-- ROI -->
   <section class="section">
     <div class="container-page max-w-3xl mx-auto text-center">
       <h2 class="text-3xl font-bold text-navy mb-8">Gemiddeld resultaat bij bouwbedrijven</h2>
@@ -107,6 +127,11 @@ const faqSchema = [
             <div class="text-xs text-slate-500 mt-1">{s.label}</div>
           </div>
         ))}
+      </div>
+      <div class="bg-brand-indigo/5 border border-brand-indigo/20 rounded-2xl p-6 mb-6">
+        <p class="font-bold text-navy mb-2">Bereken uw besparing</p>
+        <p class="text-sm text-slate-600 mb-4">Gebruik onze gratis ROI calculator om te zien hoeveel tijd en geld AI uw bouw- of installatiebedrijf bespaart.</p>
+        <a href="/ai-roi-calculator/" class="btn-primary text-sm">ROI Calculator openen →</a>
       </div>
       <a href="/demo-aanvragen/" class="btn-primary text-base px-8 py-4">Start gratis — boek een demo →</a>
     </div>
