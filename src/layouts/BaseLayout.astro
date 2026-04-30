@@ -304,66 +304,74 @@ const allSchemas = [
     <elevenlabs-convai agent-id="agent_6101kqdjepxmeqsr02kg7vwwd873"></elevenlabs-convai>
     <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
 
-    <!-- Hide "Powered by ElevenAgents" branding bar only — widget button intact -->
+    <!-- Hide "Powered by ElevenAgents" text — scans text nodes directly -->
     <script>
       (function () {
-        function hidePoweredBy() {
-          // Walk all <a> tags linking to elevenlabs in the main document
-          document.querySelectorAll('a[href*="elevenlabs"]').forEach(function(link) {
-            // Traverse up to find the smallest container that includes "Powered by"
-            var el = link;
-            for (var i = 0; i < 6; i++) {
-              var parent = el.parentElement;
-              if (!parent || parent === document.body) break;
-              var txt = (parent.innerText || parent.textContent || '').toLowerCase();
-              if (txt.includes('powered')) {
-                parent.style.cssText += 'display:none!important;height:0!important;overflow:hidden!important;';
-                break;
+        function hidePoweredByText(root) {
+          var doc = root || document;
+          var walker = document.createTreeWalker(
+            doc.body || doc,
+            NodeFilter.SHOW_TEXT,
+            null
+          );
+          var node;
+          while ((node = walker.nextNode())) {
+            var txt = node.nodeValue || '';
+            if (txt.toLowerCase().includes('powered')) {
+              // Walk up to find a block-level element to hide
+              var el = node.parentElement;
+              while (el && el !== document.body) {
+                var tag = el.tagName.toLowerCase();
+                if (tag === 'div' || tag === 'p' || tag === 'span' || tag === 'footer' || tag === 'section') {
+                  el.style.cssText += 'display:none!important;height:0!important;overflow:hidden!important;pointer-events:none!important;';
+                  break;
+                }
+                el = el.parentElement;
               }
-              el = parent;
             }
-            // Also hide the link itself just in case
-            link.style.cssText += 'display:none!important;';
-          });
+          }
         }
 
-        // Also inject into shadow root to hide branding inside widget panel
         function injectShadow(root) {
           if (!root || root.querySelector('style[data-aanloop-pb]')) return;
           var s = document.createElement('style');
           s.setAttribute('data-aanloop-pb', '1');
-          s.textContent = 'a[href*="elevenlabs"]{display:none!important}[class*="powered"],[class*="branding"],[class*="attribution"]{display:none!important;height:0!important;overflow:hidden!important}';
+          s.textContent = '[class*="powered"],[class*="branding"],[class*="attribution"]{display:none!important;height:0!important;overflow:hidden!important}';
           root.appendChild(s);
+          hidePoweredByText(root);
         }
 
         function processWidget(widget) {
-          var attach = function() {
+          var attach = function () {
+            if (!widget.shadowRoot) return;
             injectShadow(widget.shadowRoot);
-            new MutationObserver(function() { injectShadow(widget.shadowRoot); hidePoweredBy(); })
-              .observe(widget.shadowRoot, { childList: true, subtree: true });
+            new MutationObserver(function () {
+              injectShadow(widget.shadowRoot);
+              hidePoweredByText(widget.shadowRoot);
+            }).observe(widget.shadowRoot, { childList: true, subtree: true });
           };
           if (widget.shadowRoot) { attach(); }
           else {
-            var poll = setInterval(function() {
+            var poll = setInterval(function () {
               if (widget.shadowRoot) { clearInterval(poll); attach(); }
             }, 100);
           }
         }
 
         function init() {
-          hidePoweredBy();
+          hidePoweredByText(document);
           document.querySelectorAll('elevenlabs-convai').forEach(processWidget);
-          new MutationObserver(function(mutations) {
+          new MutationObserver(function (mutations) {
             var changed = false;
-            mutations.forEach(function(m) {
-              m.addedNodes.forEach(function(node) {
+            mutations.forEach(function (m) {
+              m.addedNodes.forEach(function (node) {
                 if (node.nodeType !== 1) return;
                 changed = true;
                 if ((node.tagName || '').toLowerCase() === 'elevenlabs-convai') processWidget(node);
                 if (node.querySelectorAll) node.querySelectorAll('elevenlabs-convai').forEach(processWidget);
               });
             });
-            if (changed) hidePoweredBy();
+            if (changed) hidePoweredByText(document);
           }).observe(document.body, { childList: true, subtree: true });
         }
 
