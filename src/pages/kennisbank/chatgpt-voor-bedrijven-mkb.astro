@@ -1,0 +1,262 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const faqItems = [
+  { question: 'Wat is het verschil tussen ChatGPT voor bedrijven en een AI agent?', answer: 'ChatGPT is een generalistisch conversatiemodel dat u zelf moet bedienen. Een AI agent werkt autonoom: hij neemt uw telefoon aan, koppelt met uw agenda en CRM, en handelt taken 24/7 zelfstandig af zonder dat u er iets voor hoeft te doen.' },
+  { question: 'Kan ik ChatGPT gebruiken als telefoniste voor mijn bedrijf?', answer: 'Niet direct. ChatGPT heeft geen telefoniefunctionaliteit en kan geen inkomende gesprekken beantwoorden. Daarvoor hebt u een gespecialiseerde voice AI oplossing nodig, zoals die van Aanloop AI, die wel integreert met uw telefoonnummer.' },
+  { question: 'Is ChatGPT AVG-compliant voor zakelijk gebruik in Nederland?', answer: 'Dit is een grijs gebied. OpenAI\'s dataverwerkingsovereenkomst (DPA) is beschikbaar maar data kan buiten de EU worden verwerkt. Voor klantgegevens in Nederland is het veiliger te kiezen voor EU-gehoste oplossingen zoals n8n self-hosted, wat Aanloop AI gebruikt.' },
+  { question: 'Wat kost een zakelijke AI-oplossing vergeleken met ChatGPT?', answer: 'ChatGPT Plus kost €20/maand maar doet geen acties voor u. Een volledige AI-agent bij Aanloop AI kost vanaf €997/maand, maar die voert daadwerkelijk taken uit: telefoon beantwoorden, leads registreren, afspraken inplannen — 24/7 autonoom.' },
+  { question: 'Welk AI model gebruikt Aanloop AI?', answer: 'Aanloop AI combineert meerdere modellen: OpenAI GPT-4 voor begrip en redeneren, ElevenLabs voor spraakgeneratie en Dify voor kennisbank-retrieval (RAG). We kiezen altijd het beste model voor het specifieke gebruik.' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'ChatGPT voor Bedrijven vs. AI Agents — Wat Past bij uw MKB?',
+  description: 'Vergelijking van ChatGPT voor zakelijk gebruik versus gespecialiseerde AI agents. Kosten, mogelijkheden en wat het beste werkt voor uw MKB.',
+  author: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
+  datePublished: '2026-05-01',
+  dateModified: '2026-05-01',
+  wordCount: 2500,
+  inLanguage: 'nl-NL',
+};
+---
+
+<BaseLayout
+  title="ChatGPT voor Bedrijven vs AI Agents — Wat Past bij uw MKB? | Aanloop AI"
+  description="ChatGPT of een AI agent voor uw bedrijf? We vergelijken kosten, mogelijkheden en AVG-compliance. Ontdek wat het beste werkt voor het Nederlandse MKB."
+  schema={articleSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · AI Vergelijking</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">
+          ChatGPT voor Bedrijven<br />vs. AI Agents — Wat kiest u?
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">
+          Veel MKB-ondernemers beginnen met ChatGPT maar merken dat het niet genoeg is voor echte bedrijfsautomatisering. We leggen het verschil uit en helpen u de juiste keuze maken.
+        </p>
+        <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500 reveal reveal-delay-3">
+          <span>📅 1 mei 2026</span><span>·</span><span>⏱ 8 min leestijd</span><span>·</span><span>✍️ Aanloop AI Redactie</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="flex flex-col lg:flex-row gap-12 max-w-6xl mx-auto">
+        <aside class="lg:w-64 flex-shrink-0">
+          <div class="lg:sticky lg:top-24 bg-slate-50 rounded-2xl p-6 border border-slate-200">
+            <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-4">Inhoudsopgave</p>
+            <nav class="space-y-2 text-sm">
+              <a href="#verschil" class="block text-slate-600 hover:text-navy transition-colors py-1">1. Het grote verschil</a>
+              <a href="#chatgpt-zakelijk" class="block text-slate-600 hover:text-navy transition-colors py-1">2. ChatGPT voor zakelijk gebruik</a>
+              <a href="#ai-agents" class="block text-slate-600 hover:text-navy transition-colors py-1">3. AI Agents voor MKB</a>
+              <a href="#vergelijking" class="block text-slate-600 hover:text-navy transition-colors py-1">4. Vergelijkingstabel</a>
+              <a href="#avg" class="block text-slate-600 hover:text-navy transition-colors py-1">5. AVG & compliance</a>
+              <a href="#wanneer" class="block text-slate-600 hover:text-navy transition-colors py-1">6. Wanneer wat kiezen?</a>
+              <a href="#faq" class="block text-slate-600 hover:text-navy transition-colors py-1">7. FAQ</a>
+            </nav>
+            <div class="mt-6 pt-6 border-t border-slate-200">
+              <a href="/gratis-ai-scan/" class="btn-primary text-sm w-full justify-center">Gratis AI Scan →</a>
+            </div>
+          </div>
+        </aside>
+
+        <article class="flex-1 max-w-3xl">
+          <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+            <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-3">Key Takeaways</p>
+            <ul class="space-y-2 text-sm text-slate-700">
+              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> ChatGPT is een tool — een AI agent is een digitale medewerker</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> AI agents handelen autonoom taken af; ChatGPT antwoordt alleen op vragen</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Voor telefonie, WhatsApp en CRM-integratie hebt u een AI agent nodig</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Aanloop AI combineert de beste modellen (GPT-4, Claude) in één AI agent</li>
+            </ul>
+          </div>
+
+          <h2 id="verschil" class="text-2xl font-bold text-navy mt-10 mb-4">1. Het Grote Verschil: Tool vs. Medewerker</h2>
+          <p class="text-slate-700 leading-relaxed mb-4">ChatGPT is een <strong>tool</strong>: u stelt een vraag, u krijgt een antwoord. U moet zelf actie ondernemen op dat antwoord. U kunt ChatGPT vragen om een e-mail te schrijven, maar u moet hem zelf versturen. U kunt ChatGPT vragen om een afspraak te plannen, maar u moet hem zelf in uw agenda zetten.</p>
+          <p class="text-slate-700 leading-relaxed mb-8">Een AI agent is een <strong>digitale medewerker</strong>: hij handelt autonoom. Hij neemt uw telefoon op, begrijpt wat de klant wil, plant de afspraak in uw Google Calendar, stuurt een bevestigingsmail en meldt de lead aan uw CRM — zonder dat u iets doet. Dat is het fundamentele verschil.</p>
+
+          <h2 id="chatgpt-zakelijk" class="text-2xl font-bold text-navy mt-10 mb-4">2. Wat kunt u wél met ChatGPT voor uw Bedrijf?</h2>
+          <p class="text-slate-700 leading-relaxed mb-6">ChatGPT is uitstekend voor bepaalde zakelijke taken:</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            {[
+              { icon: '✅', title: 'Content schrijven', desc: 'Blogartikelen, productomschrijvingen, e-mailcampagnes opstellen.' },
+              { icon: '✅', title: 'Teksten redigeren', desc: 'Contracten, offertes en rapporten verbeteren en samenvatten.' },
+              { icon: '✅', title: 'Ideeën genereren', desc: 'Brainstormen, marketingideeën, campagnethema\'s.' },
+              { icon: '✅', title: 'Vragen beantwoorden', desc: 'Informatie opzoeken en uitleggen in begrijpelijke taal.' },
+            ].map(v => (
+              <div class="bg-green-50 border border-green-200 rounded-xl p-4">
+                <p class="font-bold text-navy text-sm mb-1">{v.icon} {v.title}</p>
+                <p class="text-sm text-slate-600">{v.desc}</p>
+              </div>
+            ))}
+          </div>
+          <p class="text-slate-700 leading-relaxed mb-8">Maar ChatGPT heeft <strong>grote beperkingen</strong> voor zakelijke automatisering:</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            {[
+              { icon: '❌', title: 'Geen telefonie', desc: 'ChatGPT kan geen inkomende gesprekken beantwoorden.' },
+              { icon: '❌', title: 'Geen acties', desc: 'Hij plant geen afspraken, stuurt geen e-mails, werkt CRM\'s niet bij.' },
+              { icon: '❌', title: 'Geen geheugen', desc: 'Elke sessie begint opnieuw — geen klanthistorie.' },
+              { icon: '❌', title: 'Geen integraties', desc: 'Geen directe koppeling met uw agenda, boekhouding of CRM.' },
+            ].map(v => (
+              <div class="bg-red-50 border border-red-200 rounded-xl p-4">
+                <p class="font-bold text-navy text-sm mb-1">{v.icon} {v.title}</p>
+                <p class="text-sm text-slate-600">{v.desc}</p>
+              </div>
+            ))}
+          </div>
+
+          <h2 id="ai-agents" class="text-2xl font-bold text-navy mt-10 mb-4">3. Wat doen AI Agents die ChatGPT niet kan?</h2>
+          <div class="space-y-4 mb-8">
+            {[
+              { n: '1', t: 'Telefoon beantwoorden', d: 'Een AI agent pakt uw telefoon op, voert een echt gesprek en handelt de vraag af — in vloeiend Nederlands, 24/7.' },
+              { n: '2', t: 'Acties uitvoeren', d: 'Afspraken inplannen in Google Calendar, leads toevoegen aan HubSpot, facturen boeken in Exact — volledig autonoom.' },
+              { n: '3', t: 'WhatsApp beantwoorden', d: 'De AI reageert binnen seconden op inkomende WhatsApp-berichten, 24/7, zonder dat u online hoeft te zijn.' },
+              { n: '4', t: 'Leren van uw kennisbank', d: 'De agent wordt getraind op uw specifieke diensten, prijzen en bedrijfsregels — geen generieke antwoorden.' },
+              { n: '5', t: 'Escaleren naar mens', d: 'Als een vraag te complex is, schakelt de AI naadloos over naar een echte medewerker met volledige gesprekshistorie.' },
+            ].map(s => (
+              <div class="flex gap-4 items-start bg-white border border-slate-200 rounded-xl p-4">
+                <span class="w-8 h-8 rounded-full bg-brand-indigo text-white flex items-center justify-center font-bold text-sm flex-shrink-0">{s.n}</span>
+                <div>
+                  <p class="font-bold text-navy text-sm mb-1">{s.t}</p>
+                  <p class="text-sm text-slate-600">{s.d}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <h2 id="vergelijking" class="text-2xl font-bold text-navy mt-10 mb-4">4. Vergelijkingstabel: ChatGPT vs. AI Agent</h2>
+          <div class="overflow-x-auto mb-8">
+            <table class="w-full text-sm border-collapse">
+              <thead>
+                <tr class="border-b-2 border-slate-200">
+                  <th class="text-left py-3 pr-4 font-semibold text-navy">Functie</th>
+                  <th class="text-center py-3 px-4 font-semibold text-slate-500">ChatGPT Plus (€20/mnd)</th>
+                  <th class="text-center py-3 pl-4 font-semibold text-brand-indigo">AI Agent Aanloop AI (€997/mnd)</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100">
+                {[
+                  ['Telefoon beantwoorden', '❌', '✅ 24/7'],
+                  ['WhatsApp automatiseren', '❌', '✅ Direct'],
+                  ['Afspraken inplannen', '❌ Handmatig', '✅ Automatisch'],
+                  ['CRM bijwerken', '❌', '✅ Real-time'],
+                  ['Kennisbank van uw bedrijf', '⚠️ Handmatig uploaden', '✅ Getraind op uw data'],
+                  ['AVG EU-data', '⚠️ Data kan buiten EU', '✅ NL self-hosted'],
+                  ['Werkt zonder u', '❌ U moet vragen stellen', '✅ Volledig autonoom'],
+                  ['Nederlandse stem', '❌', '✅ ElevenLabs NL'],
+                  ['Integraties (agenda, boekhoud)', '❌', '✅ 50+ integraties'],
+                ].map(([k, c, a]) => (
+                  <tr>
+                    <td class="py-3 pr-4 font-medium text-slate-700">{k}</td>
+                    <td class="py-3 px-4 text-center text-slate-500">{c}</td>
+                    <td class="py-3 pl-4 text-center text-brand-emerald font-medium">{a}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <h2 id="avg" class="text-2xl font-bold text-navy mt-10 mb-4">5. AVG & Compliance: Wat u Moet Weten</h2>
+          <p class="text-slate-700 leading-relaxed mb-4">Voor Nederlandse MKB-bedrijven is AVG-compliance essentieel. Hier zijn de risico's van ChatGPT:</p>
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-6">
+            <p class="font-bold text-amber-800 text-sm mb-2">⚠️ Let op bij ChatGPT en klantgegevens</p>
+            <ul class="space-y-1 text-sm text-amber-700">
+              <li>• Gesprekken kunnen worden gebruikt voor modeltraining (tenzij u dit uitschakelt)</li>
+              <li>• Data wordt mogelijk verwerkt op servers buiten de EU</li>
+              <li>• ChatGPT heeft geen specifieke DPA voor elke klant</li>
+              <li>• Plak nooit klantgegevens, BSN-nummers of medische data in ChatGPT</li>
+            </ul>
+          </div>
+          <div class="bg-green-50 border border-green-200 rounded-xl p-5 mb-8">
+            <p class="font-bold text-green-800 text-sm mb-2">✅ Aanloop AI: Privacy by Design</p>
+            <ul class="space-y-1 text-sm text-green-700">
+              <li>• n8n self-hosted op Nederlandse servers — data verlaat nooit de EU</li>
+              <li>• DPA (Data Processing Agreement) voor elke klant</li>
+              <li>• Geen data gebruikt voor modeltraining</li>
+              <li>• AVG-compliant by design, niet als nagedachte</li>
+            </ul>
+          </div>
+
+          <h2 id="wanneer" class="text-2xl font-bold text-navy mt-10 mb-4">6. Wanneer Kiest u Wat?</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="border border-slate-200 rounded-xl p-6">
+              <p class="font-bold text-navy mb-3">Kies ChatGPT als u...</p>
+              <ul class="space-y-2 text-sm text-slate-600">
+                <li class="flex items-start gap-2"><span class="text-slate-400 mt-0.5">→</span> Content wilt schrijven en redigeren</li>
+                <li class="flex items-start gap-2"><span class="text-slate-400 mt-0.5">→</span> Vragen wilt stellen en uitleg wilt</li>
+                <li class="flex items-start gap-2"><span class="text-slate-400 mt-0.5">→</span> Geen gevoelige klantdata verwerkt</li>
+                <li class="flex items-start gap-2"><span class="text-slate-400 mt-0.5">→</span> Een laag budget hebt (€20/mnd)</li>
+              </ul>
+            </div>
+            <div class="border-2 border-brand-indigo rounded-xl p-6 bg-brand-indigo/5">
+              <p class="font-bold text-navy mb-3">Kies een AI Agent als u...</p>
+              <ul class="space-y-2 text-sm text-slate-600">
+                <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">→</span> Uw telefoon 24/7 wilt laten beantwoorden</li>
+                <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">→</span> WhatsApp wilt automatiseren</li>
+                <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">→</span> Leads nooit meer wilt missen</li>
+                <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">→</span> AVG-compliant wilt werken met klantdata</li>
+                <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">→</span> Processen wilt automatiseren (agenda, CRM, facturen)</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8">
+            <p class="text-sm font-bold text-navy mb-3">Lees ook</p>
+            <ul class="space-y-2">
+              <li><a href="/kennisbank/wat-is-een-ai-agent/" class="text-sm text-brand-indigo hover:underline">Wat is een AI Agent? De Complete Gids →</a></li>
+              <li><a href="/kennisbank/ai-agent-vs-chatbot/" class="text-sm text-brand-indigo hover:underline">AI Agent vs. Chatbot: Wat is het Verschil? →</a></li>
+              <li><a href="/kennisbank/ai-automatisering-mkb/" class="text-sm text-brand-indigo hover:underline">AI Automatisering voor MKB — Praktische Gids →</a></li>
+              <li><a href="/tarieven/" class="text-sm text-brand-indigo hover:underline">Bekijk onze AI agent pakketten & tarieven →</a></li>
+            </ul>
+          </div>
+
+          <h2 id="faq" class="text-2xl font-bold text-navy mt-10 mb-6">7. Veelgestelde Vragen</h2>
+          <div class="space-y-3 mb-8">
+            {faqItems.map(item => (
+              <details class="card group">
+                <summary class="flex items-center justify-between cursor-pointer list-none">
+                  <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+                  <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+              </details>
+            ))}
+          </div>
+
+          <div class="border-t border-slate-200 pt-8 flex items-start gap-4">
+            <div class="w-12 h-12 rounded-full bg-brand-indigo/10 flex items-center justify-center flex-shrink-0"><span class="text-xl">🤖</span></div>
+            <div>
+              <p class="font-bold text-navy text-sm">Aanloop AI Redactie</p>
+              <p class="text-xs text-slate-500 mt-0.5">AI-specialisten gespecialiseerd in praktische AI-implementaties voor het Nederlandse MKB. KVK: 88606902 · Rotterdam.</p>
+              <a href="https://www.linkedin.com/company/aanloop-ai" target="_blank" rel="noopener" class="text-xs text-brand-indigo hover:underline mt-1 inline-block">LinkedIn →</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Klaar voor meer dan ChatGPT?</h2>
+        <p class="mt-4 text-slate-300 leading-relaxed reveal reveal-delay-1">Start met een gratis AI scan. We laten u zien wat een echte AI agent voor uw bedrijf kan doen — en wat het oplevert.</p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+          <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk tarieven</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

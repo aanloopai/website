@@ -87,11 +87,56 @@ const faqSchema = [
   { question: 'Hoe groot is het Aanloop AI team?', answer: 'We zijn een team van 10-25 specialisten, inclusief AI-engineers, trainers en customer success managers.' },
   { question: 'Is Aanloop AI AVG-compliant?', answer: 'Ja, Aanloop AI is volledig AVG-compliant. Alle data wordt verwerkt binnen de EU en we beschikken over een Data Processing Agreement (DPA) voor elke klant.' },
 ];
+const teamSchema = teamleden.map(lid => ({
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: lid.name,
+  jobTitle: lid.role,
+  worksFor: {
+    '@type': 'Organization',
+    name: 'Aanloop AI',
+    url: 'https://aanloopai.nl',
+  },
+  url: lid.linkedin,
+  knowsAbout: lid.expertise,
+}));
+
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': 'https://aanloopai.nl/#organization',
+  name: 'Aanloop AI',
+  legalName: 'Aanloop AI B.V.',
+  url: 'https://aanloopai.nl',
+  logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Rotterdam',
+    addressRegion: 'Zuid-Holland',
+    postalCode: '3000',
+    addressCountry: 'NL',
+  },
+  foundingDate: '2024',
+  identifier: { '@type': 'PropertyValue', name: 'KVK', value: '88606902' },
+  employee: teamleden.map(lid => ({
+    '@type': 'Person',
+    name: lid.name,
+    jobTitle: lid.role,
+  })),
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'hello@aanloopai.nl',
+    telephone: '+31-6-2474-1597',
+    contactType: 'customer service',
+    availableLanguage: ['Dutch', 'English'],
+  },
+};
 ---
 
 <BaseLayout
-  title="Over Aanloop AI — Ons verhaal, team en missie"
-  description="Leer Aanloop AI kennen. Opgericht in Rotterdam, actief bij 500+ MKB-bedrijven. Ontdek wie we zijn, wat we geloven en wie er achter Aanloop AI werkt."
+  title="Over Aanloop AI — AI Bureau Rotterdam | Team, Missie & KVK 88606902"
+  description="Aanloop AI is het AI bureau voor het Nederlandse MKB, gevestigd in Rotterdam (KVK: 88606902). Ontdek ons team, onze missie en hoe we 500+ MKB-bedrijven helpen met AI automatisering."
+  schema={[orgSchema, ...teamSchema]}
   faqSchema={faqSchema}
 >
   <!-- Hero -->
