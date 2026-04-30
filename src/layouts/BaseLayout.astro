@@ -304,105 +304,71 @@ const allSchemas = [
     <elevenlabs-convai agent-id="agent_6101kqdjepxmeqsr02kg7vwwd873"></elevenlabs-convai>
     <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
 
-    <!-- Hide ElevenLabs/ElevenAgents branding (DOM + Shadow DOM) -->
+    <!-- Hide "Powered by ElevenAgents" branding bar only — widget button intact -->
     <script>
       (function () {
-        /* ── 1. Global stylesheet for normal DOM ── */
-        const globalStyle = document.createElement('style');
-        globalStyle.setAttribute('data-aanloop-hide-global', '1');
-        globalStyle.textContent = `
-          a[href*="elevenlabs.io"],
-          a[href*="eleven.io"],
-          a[href*="elevenlabs"],
-          [class*="powered-by"],
-          [class*="poweredBy"],
-          [class*="branding"],
-          [class*="attribution"] {
-            display: none !important;
-            visibility: hidden !important;
-          }
-        `;
-        document.head.appendChild(globalStyle);
-
-        /* ── 2. Hide elements in normal DOM by traversal ── */
-        function hideElevenLabsInDOM(root) {
-          (root || document).querySelectorAll('a[href*="elevenlabs"]').forEach(link => {
-            link.style.setProperty('display', 'none', 'important');
-            // Hide the parent wrapper too (the "Powered by X" container)
-            let el = link.parentElement;
-            while (el && el !== document.body) {
-              const text = el.innerText || el.textContent || '';
-              if (text.toLowerCase().includes('powered')) {
-                el.style.setProperty('display', 'none', 'important');
+        function hidePoweredBy() {
+          // Walk all <a> tags linking to elevenlabs in the main document
+          document.querySelectorAll('a[href*="elevenlabs"]').forEach(function(link) {
+            // Traverse up to find the smallest container that includes "Powered by"
+            var el = link;
+            for (var i = 0; i < 6; i++) {
+              var parent = el.parentElement;
+              if (!parent || parent === document.body) break;
+              var txt = (parent.innerText || parent.textContent || '').toLowerCase();
+              if (txt.includes('powered')) {
+                parent.style.cssText += 'display:none!important;height:0!important;overflow:hidden!important;';
                 break;
               }
-              el = el.parentElement;
+              el = parent;
             }
+            // Also hide the link itself just in case
+            link.style.cssText += 'display:none!important;';
           });
         }
 
-        /* ── 3. Shadow DOM injection ── */
-        const SHADOW_CSS = `
-          a[href*="elevenlabs"],
-          [class*="powered"],
-          [class*="branding"],
-          [class*="attribution"] {
-            display: none !important;
-            visibility: hidden !important;
-          }
-        `;
+        // Also inject into shadow root to hide branding inside widget panel
         function injectShadow(root) {
-          if (!root) return;
-          const old = root.querySelector('style[data-aanloop-shadow]');
-          if (old) old.remove();
-          const style = document.createElement('style');
-          style.setAttribute('data-aanloop-shadow', '1');
-          style.textContent = SHADOW_CSS;
-          root.appendChild(style);
-          hideElevenLabsInDOM(root);
+          if (!root || root.querySelector('style[data-aanloop-pb]')) return;
+          var s = document.createElement('style');
+          s.setAttribute('data-aanloop-pb', '1');
+          s.textContent = 'a[href*="elevenlabs"]{display:none!important}[class*="powered"],[class*="branding"],[class*="attribution"]{display:none!important;height:0!important;overflow:hidden!important}';
+          root.appendChild(s);
         }
 
         function processWidget(widget) {
-          const attach = () => {
+          var attach = function() {
             injectShadow(widget.shadowRoot);
-            new MutationObserver(() => {
-              injectShadow(widget.shadowRoot);
-              hideElevenLabsInDOM(widget.shadowRoot);
-            }).observe(widget.shadowRoot, { childList: true, subtree: true });
+            new MutationObserver(function() { injectShadow(widget.shadowRoot); hidePoweredBy(); })
+              .observe(widget.shadowRoot, { childList: true, subtree: true });
           };
-          if (widget.shadowRoot) {
-            attach();
-          } else {
-            const poll = setInterval(() => {
+          if (widget.shadowRoot) { attach(); }
+          else {
+            var poll = setInterval(function() {
               if (widget.shadowRoot) { clearInterval(poll); attach(); }
-            }, 50);
+            }, 100);
           }
         }
 
-        /* ── 4. Watch the full document for any injected branding ── */
         function init() {
-          hideElevenLabsInDOM();
+          hidePoweredBy();
           document.querySelectorAll('elevenlabs-convai').forEach(processWidget);
-
-          new MutationObserver((mutations) => {
-            let needsCheck = false;
-            mutations.forEach((m) => {
-              m.addedNodes.forEach((node) => {
+          new MutationObserver(function(mutations) {
+            var changed = false;
+            mutations.forEach(function(m) {
+              m.addedNodes.forEach(function(node) {
                 if (node.nodeType !== 1) return;
-                needsCheck = true;
-                if (node.tagName?.toLowerCase() === 'elevenlabs-convai') processWidget(node);
-                node.querySelectorAll?.('elevenlabs-convai').forEach(processWidget);
+                changed = true;
+                if ((node.tagName || '').toLowerCase() === 'elevenlabs-convai') processWidget(node);
+                if (node.querySelectorAll) node.querySelectorAll('elevenlabs-convai').forEach(processWidget);
               });
             });
-            if (needsCheck) hideElevenLabsInDOM();
+            if (changed) hidePoweredBy();
           }).observe(document.body, { childList: true, subtree: true });
         }
 
-        if (document.readyState === 'loading') {
-          document.addEventListener('DOMContentLoaded', init);
-        } else {
-          init();
-        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+        else init();
       })();
     </script>
   </body>

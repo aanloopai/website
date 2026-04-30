@@ -1,21 +1,30 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
+const faqItems = [
+  { question: 'Wat kost de AI scan?', answer: 'De AI scan is volledig gratis en vrijblijvend. We vragen geen creditcard en sturen geen factuur. Het is ons kennismakingsgesprek.' },
+  { question: 'Hoe lang duurt de AI scan?', answer: 'Het videogesprek duurt 20-30 minuten. U ontvangt daarna binnen 2 werkdagen een rapport met bevindingen en aanbevelingen.' },
+  { question: 'Wie voert de AI scan uit?', answer: 'De scan wordt uitgevoerd door een van onze AI-specialisten — geen verkopers. We kijken eerlijk naar uw situatie en adviseren alleen als AI ook echt waarde toevoegt.' },
+  { question: 'Wat gebeurt er na de scan?', answer: 'U ontvangt een rapport met concrete aanbevelingen en een ROI-berekening. Er is geen verplichting tot afname van onze diensten.' },
+  { question: 'Is mijn data veilig?', answer: 'Ja. We verwerken uw gegevens conform de AVG. Uw bedrijfsinformatie wordt niet gedeeld met derden en niet gebruikt voor commerciële doeleinden.' },
+];
+
 const serviceSchema = {
   '@context': 'https://schema.org',
   '@type': 'Service',
   serviceType: 'Gratis AI Scan voor MKB',
   provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
   areaServed: { '@type': 'Country', name: 'Nederland' },
-  description: 'Gratis AI scan van 10-30 minuten: ontdek waar AI tijd en geld bespaart in uw bedrijf.',
+  description: 'Gratis AI scan van 20-30 minuten: ontdek waar AI tijd en geld bespaart in uw bedrijf.',
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
 };
 ---
 
 <BaseLayout
   title="Gratis AI Scan voor Uw Bedrijf | Aanloop AI"
-  description="Ontdek in 10 minuten waar AI tijd en geld bespaart in uw bedrijf. Gratis AI scan door Aanloop AI — geen verplichting, geen creditcard. KVK: 88606902."
+  description="Ontdek in 30 minuten waar AI tijd en geld bespaart in uw bedrijf. Gratis AI scan door Aanloop AI — persoonlijk advies, concrete ROI-berekening. Geen verplichting."
   schema={serviceSchema}
+  faqSchema={faqItems}
 >
   <!-- Hero -->
   <section class="border-b border-slate-200 hero-gradient">
@@ -23,19 +32,26 @@ const serviceSchema = {
       <div class="max-w-3xl">
         <div class="flex items-center gap-4 mb-6 reveal">
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
-          <span class="eyebrow">Gratis & Vrijblijvend</span>
+          <span class="eyebrow">Gratis &amp; Vrijblijvend</span>
         </div>
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
           Gratis AI Scan<br />voor Uw Bedrijf
         </h1>
         <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty max-w-2xl reveal reveal-delay-2">
-          Ontdek in 10-30 minuten waar AI direct waarde toevoegt in uw bedrijf — en wat de verwachte tijdsbesparing en ROI zijn. Geen verplichting, geen creditcard.
+          In 30 minuten ontdekken we samen waar AI direct waarde toevoegt in uw bedrijf — met een concrete ROI-berekening en een implementatieplan. Helemaal gratis, geen verplichtingen.
         </p>
         <div class="mt-8 flex flex-wrap gap-6 text-sm text-slate-600 reveal reveal-delay-3">
-          <div class="flex items-center gap-2"><svg class="w-5 h-5 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Gratis en vrijblijvend</div>
-          <div class="flex items-center gap-2"><svg class="w-5 h-5 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Persoonlijk advies</div>
-          <div class="flex items-center gap-2"><svg class="w-5 h-5 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Concrete ROI-berekening</div>
-          <div class="flex items-center gap-2"><svg class="w-5 h-5 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>AVG-compliant</div>
+          {[
+            'Gratis en vrijblijvend',
+            'Persoonlijk advies door specialist',
+            'Concrete ROI-berekening',
+            'AVG-compliant',
+          ].map(t => (
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-brand-emerald flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              {t}
+            </div>
+          ))}
         </div>
       </div>
     </div>
@@ -46,13 +62,14 @@ const serviceSchema = {
     <div class="container-page">
       <div class="max-w-3xl mb-12 reveal">
         <p class="eyebrow mb-2">Wat u ontvangt</p>
-        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Wat krijgt u uit de gratis AI scan?</h2>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Wat zit er in de gratis AI scan?</h2>
+        <p class="mt-3 text-slate-600">Geen verkooppraatje. Gewoon een eerlijk gesprek met een AI-specialist die meekijkt in uw bedrijf.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
-          { icon: '🔍', title: 'Procesanalyse', desc: 'We identificeren welke processen in uw bedrijf het meest geschikt zijn voor automatisering met AI.' },
-          { icon: '💶', title: 'ROI Berekening', desc: 'U ontvangt een concrete berekening: hoeveel uur per week besparen, en wat dat in euro\'s betekent.' },
-          { icon: '🗺️', title: 'Implementatieplan', desc: 'Een concreet stappenplan met prioriteiten: wat kunt u het beste als eerste automatiseren?' },
+          { icon: '🔍', title: 'Procesanalyse', desc: 'We identificeren welke processen in uw bedrijf het meest geschikt zijn voor automatisering — op basis van tijdsinvestering en herhaalbaarheid.' },
+          { icon: '💶', title: 'ROI-berekening', desc: 'U ontvangt een concrete berekening: hoeveel uur per week bespaart u, en wat dat in euro\'s betekent op jaarbasis.' },
+          { icon: '🗺️', title: 'Implementatieplan', desc: 'Een concreet stappenplan: wat automatiseert u als eerste, wat zijn de kosten, en hoe snel is het live?' },
         ].map(item => (
           <div class="card reveal">
             <div class="text-3xl mb-4">{item.icon}</div>
@@ -64,26 +81,68 @@ const serviceSchema = {
     </div>
   </section>
 
+  <!-- What we analyze -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <p class="eyebrow mb-2 reveal">Wat we bekijken</p>
+          <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy mb-6 reveal reveal-delay-1">Welke processen analyseren we?</h2>
+          <div class="space-y-4">
+            {[
+              { icon: '📞', title: 'Klantcommunicatie', desc: 'Telefonie, e-mail, WhatsApp — hoeveel tijd kost het beantwoorden van terugkerende vragen?' },
+              { icon: '📅', title: 'Afspraken & planning', desc: 'Hoe worden afspraken ingepland? Kan dit slimmer, zonder menselijke tussenkomst?' },
+              { icon: '📄', title: 'Documentverwerking', desc: 'Facturen, offertes, formulieren — worden deze handmatig overgetypt of ingevoerd?' },
+              { icon: '🔄', title: 'Repetitieve taken', desc: 'Welke taken voert uw team elke dag opnieuw uit? Dit zijn de prime kandidaten voor AI.' },
+              { icon: '📊', title: 'Rapportage & administratie', desc: 'Worden rapporten handmatig samengesteld? Data-invoer in Excel of boekhoudpakket?' },
+            ].map(item => (
+              <div class="flex gap-4 reveal">
+                <div class="text-2xl flex-shrink-0 mt-0.5">{item.icon}</div>
+                <div>
+                  <p class="font-semibold text-navy text-sm">{item.title}</p>
+                  <p class="text-sm text-slate-600">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="reveal reveal-delay-2">
+          <div class="bg-navy rounded-2xl p-8 text-white">
+            <p class="text-brand-indigo font-semibold text-sm mb-4">Gemiddelde resultaten na AI-implementatie</p>
+            <div class="space-y-6">
+              {[
+                { stat: '12 uur', label: 'tijdsbesparing per week', sub: 'Per medewerker bij MKB-bedrijven' },
+                { stat: '€18.000', label: 'kostenbesparing per jaar', sub: 'Gemiddeld bij onze klanten' },
+                { stat: '7 dagen', label: 'tot go-live', sub: 'Van akkoord tot werkende AI-agent' },
+              ].map(item => (
+                <div class="border-b border-slate-700 pb-6 last:border-0 last:pb-0">
+                  <p class="text-3xl font-bold text-white">{item.stat}</p>
+                  <p class="text-slate-300 font-medium">{item.label}</p>
+                  <p class="text-slate-500 text-sm mt-1">{item.sub}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Form -->
-  <section class="section">
+  <section class="section" id="aanvraag">
     <div class="container-page">
       <div class="max-w-2xl mx-auto">
         <div class="mb-10 reveal text-center">
           <p class="eyebrow mb-2">Aanvraag</p>
           <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Plan uw gratis AI scan</h2>
-          <p class="mt-3 text-slate-600">Vul het formulier in en we nemen binnen 1 werkdag contact op om een afspraak te plannen.</p>
+          <p class="mt-3 text-slate-600">Vul het formulier in en we nemen binnen 1 werkdag contact op om een videocall in te plannen.</p>
         </div>
 
         <form
           id="ai-scan-form"
-          action="https://api.web3forms.com/submit"
-          method="POST"
           class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm reveal"
+          novalidate
         >
-          <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY" />
-          <input type="hidden" name="subject" value="Gratis AI Scan aanvraag — Aanloop AI" />
-          <input type="hidden" name="redirect" value="https://aanloopai.nl/bedankt/" />
-
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <label for="naam" class="block text-sm font-medium text-navy mb-2">Naam *</label>
@@ -105,33 +164,51 @@ const serviceSchema = {
               <label for="sector" class="block text-sm font-medium text-navy mb-2">Sector *</label>
               <select id="sector" name="sector" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all bg-white">
                 <option value="">Kies uw sector...</option>
-                <option value="horeca">Horeca & Restaurant</option>
-                <option value="vastgoed">Vastgoed & Makelaars</option>
-                <option value="advocatuur">Juridisch & Advocatuur</option>
-                <option value="accountancy">Accountancy & Administratie</option>
-                <option value="bouw">Bouw & Installatie</option>
-                <option value="logistiek">Logistiek & Transport</option>
-                <option value="zorg">Zorg & Welzijn</option>
+                <option value="horeca">Horeca &amp; Restaurant</option>
+                <option value="vastgoed">Vastgoed &amp; Makelaars</option>
+                <option value="advocatuur">Juridisch &amp; Advocatuur</option>
+                <option value="accountancy">Accountancy &amp; Administratie</option>
+                <option value="bouw">Bouw &amp; Installatie</option>
+                <option value="logistiek">Logistiek &amp; Transport</option>
+                <option value="zorg">Zorg &amp; Welzijn</option>
                 <option value="zzp">ZZP / Freelance</option>
-                <option value="ecommerce">E-commerce & Detailhandel</option>
+                <option value="ecommerce">E-commerce &amp; Detailhandel</option>
                 <option value="overig">Overig</option>
               </select>
             </div>
             <div class="md:col-span-2">
+              <label for="medewerkers" class="block text-sm font-medium text-navy mb-2">Aantal medewerkers</label>
+              <select id="medewerkers" name="medewerkers" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all bg-white">
+                <option value="">Selecteer...</option>
+                <option value="zzp">ZZP / alleen</option>
+                <option value="2-5">2–5 medewerkers</option>
+                <option value="6-20">6–20 medewerkers</option>
+                <option value="21-50">21–50 medewerkers</option>
+                <option value="50+">Meer dan 50</option>
+              </select>
+            </div>
+            <div class="md:col-span-2">
               <label for="uitdaging" class="block text-sm font-medium text-navy mb-2">Wat is uw grootste tijdverspiller? (optioneel)</label>
-              <textarea id="uitdaging" name="uitdaging" rows="3" placeholder="Bijv. handmatig afspraken inplannen, facturen verwerken, klanten beantwoorden..." class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all resize-none"></textarea>
+              <textarea id="uitdaging" name="uitdaging" rows="3" placeholder="Bijv. handmatig afspraken inplannen, facturen verwerken, terugkerende klantvragen beantwoorden..." class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all resize-none"></textarea>
             </div>
           </div>
 
           <div class="mt-6">
-            <button type="submit" class="btn-primary w-full justify-center text-base py-4">
-              Gratis AI Scan aanvragen
+            <button type="submit" id="scan-submit-btn" class="btn-primary w-full justify-center text-base py-4">
+              <span id="scan-submit-label">Gratis AI Scan aanvragen</span>
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
             </button>
             <p class="text-center text-xs text-slate-400 mt-3">
-              Geen spam. Geen verplichting. Wij nemen binnen 1 werkdag contact op.
-              <br />Door te verzenden gaat u akkoord met onze <a href="/privacy/" class="underline hover:text-slate-600">privacyverklaring</a>.
+              Geen spam. Geen verplichting. We nemen binnen 1 werkdag contact op.<br />
+              Door te verzenden gaat u akkoord met onze <a href="/privacy/" class="underline hover:text-slate-600">privacyverklaring</a>.
             </p>
+          </div>
+
+          <div id="scan-success" class="hidden mt-4 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm text-center">
+            ✓ Bedankt! We nemen binnen 1 werkdag contact op om de scan in te plannen.
+          </div>
+          <div id="scan-error" class="hidden mt-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm text-center">
+            Er is iets misgegaan. Probeer het opnieuw of mail naar <a href="mailto:hello@aanloopai.nl" class="underline">hello@aanloopai.nl</a>.
           </div>
         </form>
       </div>
@@ -159,7 +236,7 @@ const serviceSchema = {
   </section>
 
   <!-- Process -->
-  <section class="section">
+  <section class="section border-b border-slate-200">
     <div class="container-page">
       <div class="max-w-3xl mb-12 mx-auto reveal text-center">
         <p class="eyebrow mb-2">Hoe werkt het?</p>
@@ -167,9 +244,9 @@ const serviceSchema = {
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
         {[
-          { n: '1', t: 'Aanvraag (2 min)', d: 'Vul het formulier in. We nemen binnen 1 werkdag contact op om een videocall in te plannen.' },
-          { n: '2', t: 'Gesprek (30 min)', d: 'We bespreken uw bedrijfsprocessen en identificeren de beste AI-kansen. Concreet en praktisch.' },
-          { n: '3', t: 'Rapport & Plan', d: 'U ontvangt een rapport met ROI-berekening en een implementatieplan. Helemaal gratis.' },
+          { n: '1', t: 'Aanvraag (2 min)', d: 'Vul het formulier in. We nemen binnen 1 werkdag contact op om een videocall van 30 minuten in te plannen.' },
+          { n: '2', t: 'Gesprek (30 min)', d: 'We bespreken uw bedrijfsprocessen, identificeren de beste AI-kansen en stellen concrete vragen over uw dagelijkse werk.' },
+          { n: '3', t: 'Rapport & Plan', d: 'Binnen 2 werkdagen ontvangt u een rapport met ROI-berekening, aanbevelingen en een implementatieplan op maat.' },
         ].map(s => (
           <div class="text-center reveal">
             <div class="w-12 h-12 rounded-full bg-brand-indigo text-white flex items-center justify-center font-bold text-lg mx-auto mb-4">{s.n}</div>
@@ -180,4 +257,88 @@ const serviceSchema = {
       </div>
     </div>
   </section>
+
+  <!-- FAQ -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page">
+      <div class="max-w-2xl mx-auto">
+        <div class="mb-10 text-center reveal">
+          <p class="eyebrow mb-2">Veelgestelde vragen</p>
+          <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Uw vragen beantwoord</h2>
+        </div>
+        <div class="space-y-4">
+          {faqItems.map((item, i) => (
+            <details class="group card reveal" open={i === 0}>
+              <summary class="flex justify-between items-center cursor-pointer list-none font-semibold text-navy text-sm">
+                {item.question}
+                <svg class="w-4 h-4 flex-shrink-0 ml-4 text-slate-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <p class="mt-3 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section bg-navy text-white">
+    <div class="container-page text-center">
+      <h2 class="text-2xl lg:text-3xl font-bold reveal">Klaar om te ontdekken wat AI voor uw bedrijf kan doen?</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Vraag nu uw gratis AI scan aan. Binnen 1 werkdag plannen we een afspraak.</p>
+      <div class="mt-8 flex flex-wrap gap-4 justify-center reveal reveal-delay-2">
+        <a href="#aanvraag" class="btn bg-white text-navy hover:bg-slate-100 text-base px-6 py-3.5">
+          Gratis AI scan aanvragen
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+        <a href="https://wa.me/31624741597" class="btn border border-slate-600 text-slate-300 hover:bg-slate-800 text-base px-6 py-3.5">
+          WhatsApp ons
+        </a>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
+
+<script>
+  const form = document.getElementById('ai-scan-form') as HTMLFormElement;
+  const WEB3FORMS_KEY = '10596d38-fc14-4230-a3c9-4bb1a6981bc7';
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('scan-submit-btn') as HTMLButtonElement;
+    const label = document.getElementById('scan-submit-label') as HTMLElement;
+    const successMsg = document.getElementById('scan-success') as HTMLElement;
+    const errorMsg = document.getElementById('scan-error') as HTMLElement;
+
+    const formData = new FormData(form);
+    const naam = (formData.get('naam') as string)?.split(' ')[0] || 'daar';
+
+    formData.append('access_key', WEB3FORMS_KEY);
+    formData.append('subject', `Gratis AI Scan aanvraag — ${formData.get('bedrijf') || 'onbekend bedrijf'}`);
+    formData.append('from_name', 'Aanloop AI Website');
+    formData.append('replyto', formData.get('email') as string);
+    formData.append('redirect', 'false');
+
+    btn.disabled = true;
+    label.textContent = 'Versturen…';
+    errorMsg?.classList.add('hidden');
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData });
+      const json = await res.json();
+      if (json.success) {
+        successMsg?.classList.remove('hidden');
+        form.reset();
+        setTimeout(() => { window.location.href = '/bedankt/?type=scan'; }, 1500);
+      } else {
+        throw new Error(json.message || 'Onbekende fout');
+      }
+    } catch (err) {
+      errorMsg?.classList.remove('hidden');
+      console.error('Form error:', err);
+    } finally {
+      btn.disabled = false;
+      label.textContent = 'Gratis AI Scan aanvragen';
+    }
+  });
+</script>
