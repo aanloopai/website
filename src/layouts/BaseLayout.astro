@@ -304,74 +304,43 @@ const allSchemas = [
     <elevenlabs-convai agent-id="agent_6101kqdjepxmeqsr02kg7vwwd873"></elevenlabs-convai>
     <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
 
-    <!-- Hide "Powered by ElevenAgents" text — scans text nodes directly -->
+    <!-- Hide "Powered by ElevenAgents" — targets exact injected link -->
     <script>
       (function () {
-        function hidePoweredByText(root) {
-          var doc = root || document;
-          var walker = document.createTreeWalker(
-            doc.body || doc,
-            NodeFilter.SHOW_TEXT,
-            null
-          );
-          var node;
-          while ((node = walker.nextNode())) {
-            var txt = node.nodeValue || '';
-            if (txt.toLowerCase().includes('powered')) {
-              // Walk up to find a block-level element to hide
-              var el = node.parentElement;
-              while (el && el !== document.body) {
-                var tag = el.tagName.toLowerCase();
-                if (tag === 'div' || tag === 'p' || tag === 'span' || tag === 'footer' || tag === 'section') {
-                  el.style.cssText += 'display:none!important;height:0!important;overflow:hidden!important;pointer-events:none!important;';
-                  break;
+        function hideBranding() {
+          // Target the exact link ElevenLabs injects: href="https://elevenlabs.io/agents"
+          var link = document.querySelector('a[href="https://elevenlabs.io/agents"]');
+          if (!link) {
+            // Also try partial match in case URL changes slightly
+            link = document.querySelector('a[href*="elevenlabs.io/agents"]');
+          }
+          if (link) {
+            // Hide the link itself
+            link.style.cssText += 'display:none!important;';
+            // Hide the parent container (holds "Powered by " text + the link)
+            var parent = link.parentElement;
+            if (parent) {
+              parent.style.cssText += 'display:none!important;height:0!important;overflow:hidden!important;pointer-events:none!important;';
+              // One more level up just in case
+              if (parent.parentElement && parent.parentElement !== document.body) {
+                var grandParentText = (parent.parentElement.textContent || '').toLowerCase();
+                if (grandParentText.includes('powered')) {
+                  parent.parentElement.style.cssText += 'display:none!important;height:0!important;overflow:hidden!important;pointer-events:none!important;';
                 }
-                el = el.parentElement;
               }
             }
           }
         }
 
-        function injectShadow(root) {
-          if (!root || root.querySelector('style[data-aanloop-pb]')) return;
-          var s = document.createElement('style');
-          s.setAttribute('data-aanloop-pb', '1');
-          s.textContent = '[class*="powered"],[class*="branding"],[class*="attribution"]{display:none!important;height:0!important;overflow:hidden!important}';
-          root.appendChild(s);
-          hidePoweredByText(root);
-        }
-
-        function processWidget(widget) {
-          var attach = function () {
-            if (!widget.shadowRoot) return;
-            injectShadow(widget.shadowRoot);
-            new MutationObserver(function () {
-              injectShadow(widget.shadowRoot);
-              hidePoweredByText(widget.shadowRoot);
-            }).observe(widget.shadowRoot, { childList: true, subtree: true });
-          };
-          if (widget.shadowRoot) { attach(); }
-          else {
-            var poll = setInterval(function () {
-              if (widget.shadowRoot) { clearInterval(poll); attach(); }
-            }, 100);
-          }
-        }
-
         function init() {
-          hidePoweredByText(document);
-          document.querySelectorAll('elevenlabs-convai').forEach(processWidget);
+          hideBranding();
+          // Watch for the link being injected dynamically
           new MutationObserver(function (mutations) {
             var changed = false;
             mutations.forEach(function (m) {
-              m.addedNodes.forEach(function (node) {
-                if (node.nodeType !== 1) return;
-                changed = true;
-                if ((node.tagName || '').toLowerCase() === 'elevenlabs-convai') processWidget(node);
-                if (node.querySelectorAll) node.querySelectorAll('elevenlabs-convai').forEach(processWidget);
-              });
+              m.addedNodes.forEach(function (n) { if (n.nodeType === 1) changed = true; });
             });
-            if (changed) hidePoweredByText(document);
+            if (changed) hideBranding();
           }).observe(document.body, { childList: true, subtree: true });
         }
 
