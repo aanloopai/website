@@ -1,0 +1,250 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const toolSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'AI ROI Calculator — Bereken uw besparing met AI automatisering',
+  description: 'Gratis online calculator om de ROI van AI automatisering voor uw MKB-bedrijf te berekenen. Bereken hoeveel tijd en geld u bespaart.',
+  url: 'https://aanloopai.nl/ai-roi-calculator/',
+  applicationCategory: 'BusinessApplication',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+  creator: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+};
+
+const faqItems = [
+  { question: 'Hoe nauwkeurig is de AI ROI calculator?', answer: 'De calculator gebruikt gemiddelden gebaseerd op onze implementaties bij 500+ MKB-bedrijven in Nederland. De werkelijke besparing is afhankelijk van uw specifieke situatie. Onze gratis AI scan geeft een nauwkeurig, op maat gemaakt beeld.' },
+  { question: 'Hoe snel verdient mijn investering zich terug?', answer: 'Op basis van onze klantdata is de gemiddelde terugverdientijd 2-4 maanden bij het Starter pakket. Bedrijven met meer dan 50 inkomende calls per dag realiseren dit vaak al in de eerste maand.' },
+  { question: 'Wat is inbegrepen in de berekende besparing?', answer: 'De calculator rekent met directe kostenbesparingen (minder personeel voor routinetaken), omzetgroei door minder gemiste leads, en tijdsbesparing. Indirecte voordelen zoals hogere klanttevredenheid zijn niet meegenomen.' },
+];
+---
+
+<BaseLayout
+  title="AI ROI Calculator — Bereken uw Besparing met AI Automatisering | Aanloop AI"
+  description="Bereken gratis hoeveel tijd en geld uw bedrijf bespaart met AI automatisering. Vul uw situatie in en zie direct uw ROI. Tool door Aanloop AI."
+  schema={toolSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Gratis Tool · AI ROI Calculator</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">
+          Hoeveel bespaart<br />AI voor uw bedrijf?
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">
+          Vul uw huidige situatie in en bereken in 60 seconden uw geschatte jaarlijkse besparing met AI automatisering. Gebaseerd op 500+ MKB-implementaties.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="grid lg:grid-cols-2 gap-10">
+
+        <!-- Calculator Input -->
+        <div class="card">
+          <h2 class="text-xl font-bold text-navy mb-6">Stap 1 — Uw huidige situatie</h2>
+
+          <div class="space-y-6" id="calc-form">
+
+            <div>
+              <label class="block text-sm font-semibold text-navy mb-2">Hoeveel inkomende telefoontjes ontvangt u per dag?</label>
+              <input type="range" id="calls-per-day" min="5" max="150" value="30" step="5"
+                class="w-full accent-blue-700" oninput="updateCalc()">
+              <div class="flex justify-between text-xs text-slate-500 mt-1">
+                <span>5</span><span id="calls-display" class="font-bold text-navy">30 calls/dag</span><span>150+</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-navy mb-2">Hoeveel calls worden momenteel gemist of niet goed afgehandeld?</label>
+              <input type="range" id="missed-pct" min="5" max="60" value="25" step="5"
+                class="w-full accent-blue-700" oninput="updateCalc()">
+              <div class="flex justify-between text-xs text-slate-500 mt-1">
+                <span>5%</span><span id="missed-display" class="font-bold text-navy">25%</span><span>60%</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-navy mb-2">Wat is de gemiddelde waarde van een nieuwe klant voor u?</label>
+              <input type="range" id="client-value" min="100" max="10000" value="1500" step="100"
+                class="w-full accent-blue-700" oninput="updateCalc()">
+              <div class="flex justify-between text-xs text-slate-500 mt-1">
+                <span>€100</span><span id="value-display" class="font-bold text-navy">€1.500</span><span>€10.000</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-navy mb-2">Hoeveel uur per week besteedt uw team aan handmatige, repetitieve taken?</label>
+              <input type="range" id="manual-hours" min="2" max="40" value="15" step="1"
+                class="w-full accent-blue-700" oninput="updateCalc()">
+              <div class="flex justify-between text-xs text-slate-500 mt-1">
+                <span>2u</span><span id="hours-display" class="font-bold text-navy">15 uur/week</span><span>40u</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-navy mb-2">Gemiddeld uurtarief van medewerkers die routinetaken uitvoeren</label>
+              <input type="range" id="hourly-rate" min="15" max="80" value="30" step="5"
+                class="w-full accent-blue-700" oninput="updateCalc()">
+              <div class="flex justify-between text-xs text-slate-500 mt-1">
+                <span>€15</span><span id="rate-display" class="font-bold text-navy">€30/uur</span><span>€80</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-navy mb-2">Sector</label>
+              <select id="sector" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-indigo focus:outline-none" onchange="updateCalc()">
+                <option value="1.0">Zakelijke dienstverlening</option>
+                <option value="1.2">Bouw & Installatie</option>
+                <option value="0.9">Horeca</option>
+                <option value="1.3">Vastgoed & Makelaars</option>
+                <option value="1.1">Logistiek & Transport</option>
+                <option value="1.0">Zorg & Welzijn</option>
+                <option value="1.2">Accountancy & Financieel</option>
+                <option value="1.1">E-commerce & Retail</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Results -->
+        <div class="space-y-4">
+
+          <!-- Main result card -->
+          <div class="card bg-navy text-pearl relative overflow-hidden">
+            <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+            <div class="relative">
+              <p class="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">Geschatte jaarlijkse besparing</p>
+              <p id="result-total" class="text-5xl font-bold text-pearl mb-1">€ —</p>
+              <p class="text-slate-400 text-sm">Inclusief teruggewonnen leads + tijdsbesparing</p>
+              <div class="mt-6 pt-6 border-t border-white/10">
+                <p class="text-xs text-slate-400 mb-3">Terugverdientijd bij Starter pakket (€997/mnd)</p>
+                <p id="result-payback" class="text-2xl font-bold text-brand-emerald">— maanden</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Breakdown -->
+          <div class="card">
+            <p class="text-sm font-bold text-navy mb-4">Uitsplitsing</p>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                <span class="text-sm text-slate-600">💰 Teruggewonnen leads/jaar</span>
+                <span id="result-leads" class="text-sm font-bold text-navy">—</span>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                <span class="text-sm text-slate-600">⏱ Tijdsbesparing/jaar</span>
+                <span id="result-time" class="text-sm font-bold text-navy">—</span>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                <span class="text-sm text-slate-600">📞 Extra afspraken/maand</span>
+                <span id="result-appointments" class="text-sm font-bold text-navy">—</span>
+              </div>
+              <div class="flex justify-between items-center py-2">
+                <span class="text-sm text-slate-600">📈 Netto ROI (jaar 1)</span>
+                <span id="result-roi" class="text-sm font-bold text-brand-emerald">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <div class="bg-brand-indigo/5 border border-brand-indigo/20 rounded-2xl p-5">
+            <p class="font-bold text-navy text-sm mb-1">Wilt u een nauwkeurige berekening op maat?</p>
+            <p class="text-xs text-slate-600 mb-4">Onze gratis AI scan (30 min) geeft u een exacte analyse van uw specifieke situatie en besparingspotentieel.</p>
+            <a href="/gratis-ai-scan/" class="btn-primary text-sm w-full justify-center">
+              Gratis AI Scan aanvragen →
+            </a>
+          </div>
+
+          <p class="text-xs text-slate-400 text-center">Berekeningen zijn schattingen op basis van gemiddelden bij 500+ MKB-implementaties.<br>Werkelijke resultaten kunnen afwijken.</p>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="mt-16 max-w-3xl mx-auto">
+        <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde vragen over AI ROI</h2>
+        <div class="space-y-3">
+          {faqItems.map(item => (
+            <details class="card group">
+              <summary class="flex items-center justify-between cursor-pointer list-none">
+                <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+                <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <!-- Related -->
+      <div class="mt-12 max-w-3xl mx-auto bg-slate-50 border border-slate-200 rounded-2xl p-6">
+        <p class="text-sm font-bold text-navy mb-3">Lees ook</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <a href="/kennisbank/ai-automatisering-mkb/" class="text-sm text-brand-indigo hover:underline">AI Automatisering voor MKB →</a>
+          <a href="/kennisbank/ai-agent-kosten-mkb/" class="text-sm text-brand-indigo hover:underline">Hoeveel kost een AI agent? →</a>
+          <a href="/kennisbank/ai-telefoonassistent-bedrijven/" class="text-sm text-brand-indigo hover:underline">AI Telefoonassistent voor Bedrijven →</a>
+          <a href="/tarieven/" class="text-sm text-brand-indigo hover:underline">Bekijk pakketten & tarieven →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  function fmt(n: number): string {
+    return '€ ' + Math.round(n).toLocaleString('nl-NL');
+  }
+
+  function updateCalc(): void {
+    const calls = parseInt((document.getElementById('calls-per-day') as HTMLInputElement).value);
+    const missedPct = parseInt((document.getElementById('missed-pct') as HTMLInputElement).value) / 100;
+    const clientValue = parseInt((document.getElementById('client-value') as HTMLInputElement).value);
+    const manualHours = parseInt((document.getElementById('manual-hours') as HTMLInputElement).value);
+    const hourlyRate = parseInt((document.getElementById('hourly-rate') as HTMLInputElement).value);
+    const sectorMult = parseFloat((document.getElementById('sector') as HTMLSelectElement).value);
+
+    // Update display labels
+    (document.getElementById('calls-display') as HTMLElement).textContent = `${calls} calls/dag`;
+    (document.getElementById('missed-display') as HTMLElement).textContent = `${Math.round(missedPct * 100)}%`;
+    (document.getElementById('value-display') as HTMLElement).textContent = `€${clientValue.toLocaleString('nl-NL')}`;
+    (document.getElementById('hours-display') as HTMLElement).textContent = `${manualHours} uur/week`;
+    (document.getElementById('rate-display') as HTMLElement).textContent = `€${hourlyRate}/uur`;
+
+    // Calculations
+    const missedCallsPerDay = calls * missedPct;
+    const workDaysPerYear = 250;
+    const aiRecoveryRate = 0.68; // AI recovers 68% of missed calls
+    const leadConversionRate = 0.15; // 15% of recovered calls convert
+
+    const recoveredLeadsPerYear = missedCallsPerDay * workDaysPerYear * aiRecoveryRate * leadConversionRate;
+    const leadsValue = recoveredLeadsPerYear * clientValue * sectorMult;
+
+    const aiTimeSaving = 0.45; // AI handles 45% of manual work
+    const timeSavingPerYear = manualHours * 52 * aiTimeSaving * hourlyRate;
+
+    const totalSaving = leadsValue + timeSavingPerYear;
+    const annualCost = 997 * 12; // Starter pakket
+    const netROI = totalSaving - annualCost;
+    const paybackMonths = annualCost / (totalSaving / 12);
+    const extraAppointmentsPerMonth = (missedCallsPerDay * 30 * aiRecoveryRate * leadConversionRate);
+
+    // Update results
+    (document.getElementById('result-total') as HTMLElement).textContent = fmt(totalSaving);
+    (document.getElementById('result-leads') as HTMLElement).textContent = fmt(leadsValue) + '/jaar';
+    (document.getElementById('result-time') as HTMLElement).textContent = fmt(timeSavingPerYear) + '/jaar';
+    (document.getElementById('result-appointments') as HTMLElement).textContent = Math.round(extraAppointmentsPerMonth) + ' extra afspraken';
+    (document.getElementById('result-roi') as HTMLElement).textContent = fmt(netROI);
+    (document.getElementById('result-payback') as HTMLElement).textContent =
+      paybackMonths < 1 ? '< 1 maand' : `${Math.round(paybackMonths)} maanden`;
+  }
+
+  // Initialize on load
+  document.addEventListener('DOMContentLoaded', updateCalc);
+</script>

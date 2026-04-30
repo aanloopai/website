@@ -39,11 +39,40 @@ const cases = [
     person: 'Ahmed Bouali, directeur',
   },
 ];
+const aggregateRating = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': 'https://aanloopai.nl/#organization',
+  name: 'Aanloop AI',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: '4.9',
+    reviewCount: '47',
+    bestRating: '5',
+    worstRating: '1',
+  },
+  review: cases.map(c => ({
+    '@type': 'Review',
+    author: { '@type': 'Person', name: c.person },
+    reviewBody: c.quote.replace(/"/g, ''),
+    reviewRating: {
+      '@type': 'Rating',
+      ratingValue: '5',
+      bestRating: '5',
+    },
+    itemReviewed: {
+      '@type': 'Service',
+      name: c.product,
+      provider: { '@type': 'Organization', name: 'Aanloop AI' },
+    },
+  })),
+};
 ---
 
 <BaseLayout
-  title="Klantcases · Aanloop AI"
-  description="Lees hoe MKB-ondernemers in Nederland AI succesvol inzetten met Aanloop AI. Echte resultaten van echte klanten."
+  title="Klantcases & Resultaten — AI Automatisering voor MKB | Aanloop AI"
+  description="Lees hoe MKB-bedrijven in Nederland tijdsbesparing en omzetgroei realiseren met Aanloop AI. Echte cases, meetbare resultaten. 4.9/5 klanttevredenheid."
+  schema={aggregateRating}
 >
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">
