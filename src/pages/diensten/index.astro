@@ -21,10 +21,32 @@ const catalog = [
   { href: '/diensten/ai-seo-content-generator/', title: 'AI SEO Content Generator', description: 'SEO-artikelen, landingspagina\'s en blogs in uw tone of voice. Ranken in Google.', icon: '✍️', price: 'v.a. €1.000/maand' },
   { href: '/diensten/ai-verkoopagent-outbound/', title: 'AI Verkoopagent Outbound', description: 'Prospects automatisch bellen, kwalificeren en opvolgen. Schaalbare outbound sales.', icon: '📣', price: 'v.a. €1.500/maand' },
 ];
+const allDiensten = [...producten, ...catalog];
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': 'https://aanloopai.nl/diensten/#collection',
+  name: 'Alle AI Diensten — Aanloop AI',
+  description: '15 AI-diensten voor het Nederlandse MKB: AI receptionist, WhatsApp bot, telefooncentrale, document processing, e-mail assistent en meer.',
+  url: 'https://aanloopai.nl/diensten/',
+  inLanguage: 'nl-NL',
+  isPartOf: { '@type': 'WebSite', '@id': 'https://aanloopai.nl/#website' },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: allDiensten.length,
+    itemListElement: allDiensten.map((d, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `https://aanloopai.nl${d.href}`,
+      name: d.title,
+    })),
+  },
+};
 ---
 <BaseLayout
   title="Alle AI Diensten & Oplossingen | Aanloop AI"
   description="15 AI-diensten voor het Nederlandse MKB. Van AI-receptionist en chatbot tot document processing en outbound sales. Ontdek de juiste oplossing voor uw bedrijf. KVK: 88606902."
+  schema={collectionSchema}
 >
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">

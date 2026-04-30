@@ -103,11 +103,33 @@ const sectors = [
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>',
   },
 ];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': 'https://aanloopai.nl/sectoren/#collection',
+  name: 'Alle Sectoren — AI per Branche',
+  description: 'AI-oplossingen op maat voor 11 sectoren: horeca, logistiek, vastgoed, zorg, detailhandel, bouw, accountancy, zakelijke dienstverlening, advocatuur, ZZP en webshops.',
+  url: 'https://aanloopai.nl/sectoren/',
+  inLanguage: 'nl-NL',
+  isPartOf: { '@type': 'WebSite', '@id': 'https://aanloopai.nl/#website' },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: sectors.length,
+    itemListElement: sectors.map((s, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: `https://aanloopai.nl${s.href}`,
+      name: `AI voor ${s.title}`,
+    })),
+  },
+};
 ---
 
 <BaseLayout
   title="Alle Sectoren — AI voor 11 Branches | Aanloop AI"
   description="AI-oplossingen op maat voor 11 sectoren: horeca, logistiek, vastgoed, zorg, detailhandel, bouw, accountancy, zakelijke dienstverlening, advocatuur, ZZP en webshops. KVK: 88606902."
+  schema={collectionSchema}
 >
   <!-- Hero -->
   <section class="relative overflow-hidden hero-gradient border-b border-slate-200">
