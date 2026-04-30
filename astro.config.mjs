@@ -9,19 +9,20 @@ export default defineConfig({
     sitemap({
       changefreq: 'weekly',
       priority: 0.7,
-      lastmod: new Date(),
       filter: (page) => !page.includes('/bedankt') && !page.includes('/demo-bedankt') && !page.includes('/demo-bevestigd') && !page.includes('/demo-herplannen') && !page.includes('/demo-inplannen') && !page.includes('/aanvragen') && !page.includes('/cookies') && !page.includes('/disclaimer') && !page.includes('/privacy') && !page.includes('/voorwaarden'),
       serialize: (item) => {
         // Hoge prioriteit voor kernpagina's
-        if (item.url === 'https://aanloopai.nl/') item.priority = 1.0;
-        if (item.url.includes('/diensten/')) item.priority = 0.9;
-        if (item.url.includes('/sectoren/')) item.priority = 0.85;
-        if (item.url.includes('/kennisbank/')) item.priority = 0.8;
-        if (item.url.includes('/locaties/')) item.priority = 0.75;
-        if (item.url.includes('/gratis-ai-scan')) item.priority = 0.95;
-        if (item.url.includes('/tarieven')) item.priority = 0.9;
-        if (item.url.includes('/over')) item.priority = 0.7;
-        return item;
+        const url = item.url;
+        let priority = 0.7;
+        if (url === 'https://aanloopai.nl/') priority = 1.0;
+        else if (url.includes('/gratis-ai-scan')) priority = 0.95;
+        else if (url.includes('/diensten/')) priority = 0.9;
+        else if (url.includes('/tarieven')) priority = 0.9;
+        else if (url.includes('/sectoren/')) priority = 0.85;
+        else if (url.includes('/kennisbank/')) priority = 0.8;
+        else if (url.includes('/locaties/')) priority = 0.75;
+        else if (url.includes('/over')) priority = 0.7;
+        return { ...item, priority, lastmod: new Date().toISOString() };
       },
     }),
   ],

@@ -1,0 +1,179 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const cases = [
+  {
+    sector: 'Horeca',
+    company: 'Restaurant De Pier',
+    location: 'Scheveningen',
+    title: 'Marco neemt 70% van de avondreserveringen aan',
+    description: 'Voor de implementatie misten we 30% van de inkomende reserveringen tijdens de drukke service. Marco lost dit op zonder onze bediening te belasten.',
+    metrics: [
+      { label: 'Omzetstijging', value: '+18%' },
+      { label: 'No-shows verlaagd', value: '−60%' },
+      { label: 'Tijdsbesparing/week', value: '11 uur' },
+    ],
+    services: ['marco', 'emma'],
+    color: 'indigo',
+  },
+  {
+    sector: 'Logistiek',
+    company: 'Trans-Holland Logistiek',
+    location: 'Vlaardingen',
+    title: 'Status-vragen via WhatsApp volledig geautomatiseerd',
+    description: 'Klanten vragen continu naar zending-status. Emma haalt nu live data uit ons TMS en geeft direct antwoord, 24/7.',
+    metrics: [
+      { label: 'Telefonische status-vragen', value: '−85%' },
+      { label: 'Klanttevredenheid', value: '+22%' },
+      { label: 'Planner-uren vrij/week', value: '14 uur' },
+    ],
+    services: ['emma', 'custom'],
+    color: 'rose',
+  },
+  {
+    sector: 'Vastgoed',
+    company: 'Vastgoed Centraal',
+    location: 'Utrecht',
+    title: 'Snelste reactie op Funda-leads in regio',
+    description: 'Marco belt nieuwe Funda-leads binnen 60 seconden, kwalificeert ze, plant bezichtigingen. Conversie verdrievoudigd.',
+    metrics: [
+      { label: 'Lead-naar-bezichtiging', value: '+175%' },
+      { label: 'Reactietijd', value: '< 60 sec' },
+      { label: 'Tijd per marktrapport', value: '4u → 8 min' },
+    ],
+    services: ['marco', 'custom'],
+    color: 'amber',
+  },
+  {
+    sector: 'Detailhandel',
+    company: 'Brandstof Sneakers',
+    location: 'Rotterdam',
+    title: '83% van klantvragen autonoom afgehandeld',
+    description: 'Emma neemt productadvies, voorraad-vragen, retourstart en track-vragen volledig op zich via WhatsApp en webshop-chat.',
+    metrics: [
+      { label: 'Tickets door AI opgelost', value: '83%' },
+      { label: 'Reactietijd gemiddeld', value: '< 30 sec' },
+      { label: 'Retour-afhandeling', value: '24u → 3u' },
+    ],
+    services: ['emma'],
+    color: 'emerald',
+  },
+  {
+    sector: 'Zakelijk',
+    company: 'Van Doorn Accountants',
+    location: 'Den Haag',
+    title: 'Intakes geautomatiseerd, partners doen weer declarabel werk',
+    description: 'AI-intake-bot stelt alle benodigde vragen, levert gestructureerde samenvatting. Partners besteden hun tijd weer aan adviseren.',
+    metrics: [
+      { label: 'Niet-declarabele uren bespaard', value: '12u/week' },
+      { label: 'Tijd per offerte', value: '90 → 15 min' },
+      { label: 'Sales-call filter', value: '95% accuraat' },
+    ],
+    services: ['marco', 'custom'],
+    color: 'indigo',
+  },
+  {
+    sector: 'Zorg',
+    company: 'Huisartspraktijk Maaszicht',
+    location: 'Rotterdam',
+    title: 'Telefoondruk in piek met 70% verlaagd',
+    description: 'Marco filtert spoed van niet-spoed, plant routine-afspraken zelfstandig. Assistent kan eindelijk patiënten in wachtkamer aandacht geven.',
+    metrics: [
+      { label: 'Telefoondruk in piek', value: '−70%' },
+      { label: 'No-shows door reminders', value: '−45%' },
+      { label: 'Intakes correct ingevuld', value: '93%' },
+    ],
+    services: ['marco', 'emma'],
+    color: 'rose',
+  },
+];
+---
+
+<BaseLayout
+  title="Klantcases · Aanloop AI"
+  description="Echte klanten, echte resultaten. Lees hoe Aanloop AI MKB-bedrijven helpt om met AI hun operatie te verbeteren — van horeca tot zorg."
+>
+  <section class="border-b border-slate-200">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Klantcases</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Echte klanten, echte resultaten.
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty max-w-2xl">
+          Geen marketingverhalen. Hieronder leest u hoe MKB-ondernemers in zes verschillende sectoren
+          AI inzetten om hun operatie te versterken — met de cijfers die het bewijzen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {cases.map((c) => (
+          <article class="card relative overflow-hidden">
+            <div class:list={[
+              'absolute top-0 left-0 w-1 h-full',
+              c.color === 'indigo' && 'bg-brand-indigo',
+              c.color === 'rose' && 'bg-brand-rose',
+              c.color === 'amber' && 'bg-brand-amber',
+              c.color === 'emerald' && 'bg-brand-emerald',
+            ]}></div>
+
+            <div class="flex items-center gap-2 text-xs">
+              <span class="font-medium tracking-wide uppercase text-slate-500">{c.sector}</span>
+              <span class="text-slate-300">·</span>
+              <span class="text-slate-500">{c.location}</span>
+            </div>
+
+            <h2 class="mt-3 text-xl lg:text-2xl font-bold tracking-tighter-2 text-navy">{c.title}</h2>
+
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">{c.description}</p>
+
+            <div class="mt-6 grid grid-cols-3 gap-3">
+              {c.metrics.map((m) => (
+                <div class="text-center p-3 bg-slate-50 rounded-lg">
+                  <div class="text-lg lg:text-xl font-bold text-navy">{m.value}</div>
+                  <div class="text-[10px] text-slate-500 mt-1 uppercase tracking-wide leading-tight">{m.label}</div>
+                </div>
+              ))}
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-200 flex items-center justify-between">
+              <div class="text-xs text-slate-500">
+                <strong class="text-navy">{c.company}</strong>
+              </div>
+              <div class="flex flex-wrap gap-1.5">
+                {c.services.map((s) => (
+                  <span class="inline-flex items-center px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase bg-slate-100 text-slate-600 rounded">{s}</span>
+                ))}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-2xl">
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Wilt u de volgende casestudy zijn?
+        </h2>
+        <p class="mt-4 text-base text-slate-300">
+          Plan een gratis adviesgesprek. We laten u eerlijk zien wat AI realistisch voor uw bedrijf kan betekenen.
+        </p>
+        <div class="mt-6">
+          <a href="/contact/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Plan een gesprek
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

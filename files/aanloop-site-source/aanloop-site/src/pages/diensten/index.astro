@@ -1,0 +1,129 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ServiceCard from '../../components/ServiceCard.astro';
+
+const services = [
+  {
+    href: '/diensten/marco/',
+    title: 'Marco — AI sekreter',
+    description: 'Een AI-receptionist die uw telefoon 24/7 aanneemt, in vloeiend Nederlands. Plant afspraken, kwalificeert leads en levert ze direct in uw inbox of Telegram. Vervangt geen medewerker — versterkt het.',
+    badge: 'Meest gekozen',
+    accent: 'indigo' as const,
+    features: [
+      'Onbeperkte gesprekken voor één vaste prijs',
+      'Lead-routering naar e-mail, Telegram of CRM',
+      'Eigen Nederlands telefoonnummer',
+      'Live binnen 7 dagen',
+    ],
+  },
+  {
+    href: '/diensten/emma/',
+    title: 'Emma — WhatsApp agent',
+    description: 'Beantwoordt klantvragen op WhatsApp Business, getraind op uw eigen kennisbank. Werkt 24/7 en draagt vlekkeloos over aan uw team wanneer dat nodig is.',
+    accent: 'rose' as const,
+    features: [
+      'Eigen kennisbank op basis van uw documenten',
+      'Naadloze handover naar mens',
+      'Volgt uw schrijfstijl en tone-of-voice',
+      'Werkt op uw bestaande WhatsApp Business-nummer',
+    ],
+  },
+  {
+    href: '/diensten/telefoon-assistent/',
+    title: 'AI telefoon assistent',
+    description: 'Volledig configureerbare AI-telefooncentrale voor grotere setups. Ondersteunt meerdere afdelingen, IVR-flows, opnames, transcripts en CRM-integratie.',
+    accent: 'amber' as const,
+    features: [
+      'Meerdere routings (sales, support, finance, etc.)',
+      'Gespreksopnames + automatische samenvattingen',
+      'Integratie met HubSpot, Pipedrive, Salesforce',
+      'GDPR-compliant gegevensverwerking',
+    ],
+  },
+  {
+    href: '/diensten/custom/',
+    title: 'Custom AI workflows',
+    description: 'Maatwerk-automatisering voor unieke processen. Van offerte-generatie en contract-review tot voorraadprognose en concurrentie-monitoring.',
+    accent: 'emerald' as const,
+    features: [
+      'AI-audit + roadmap inbegrepen (gratis)',
+      'Bouwen, testen, opleiden van uw team',
+      'Onderhoud + SLA optioneel',
+      'Volledig in uw eigen omgeving (self-hosted mogelijk)',
+    ],
+  },
+  {
+    href: '/diensten/audit/',
+    title: 'AI strategie & audit',
+    description: 'Niet zeker waar te beginnen? Wij doorlopen uw bedrijfsprocessen en leveren een concreet rapport met top-5 AI-kansen, ROI-inschatting en implementatieplan.',
+    accent: 'indigo' as const,
+    features: [
+      '2 sessies van 90 minuten met uw team',
+      'Geschreven rapport (15-25 paginas)',
+      'Concrete tools + kostenraming per kans',
+      'Eenmalig €1.495 — verrekend bij vervolgopdracht',
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Diensten · Aanloop AI"
+  description="Vijf AI-oplossingen voor het Nederlandse MKB: AI-sekreter Marco, WhatsApp-agent Emma, telefooncentrale, custom workflows en AI-audit. Kant-en-klaar of op maat."
+>
+  <!-- Page header -->
+  <section class="border-b border-slate-200">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Onze diensten</span>
+        </div>
+
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Vijf manieren waarop AI uw bedrijf nu al kan helpen.
+        </h1>
+
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty max-w-2xl">
+          Van kant-en-klare assistenten die u binnen een week live heeft, tot maatwerk-workflows
+          die specifiek voor uw bedrijf zijn gebouwd. Begin klein, schaal op wat werkt.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services grid -->
+  <section class="section">
+    <div class="container-page">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        {services.map((service) => (
+          <ServiceCard {...service} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Decision helper -->
+  <section class="section-tight bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-4xl">
+        <p class="eyebrow mb-3">Hulp nodig bij kiezen?</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy text-balance">
+          Niet zeker welke dienst bij uw situatie past?
+        </h2>
+        <p class="mt-4 text-base text-slate-600 leading-relaxed max-w-2xl">
+          Plan een gratis adviesgesprek van 30 minuten. We luisteren naar uw situatie
+          en geven eerlijk advies — ook als dat is dat AI nog niet de juiste keuze is.
+        </p>
+        <div class="mt-6">
+          <a href="/contact/" class="btn-primary">
+            Plan een adviesgesprek
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

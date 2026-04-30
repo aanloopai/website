@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Custom AI workflows · Aanloop AI"
+  description="Maatwerk-automatisering voor unieke bedrijfsprocessen. Van offerte-generatie tot voorraadprognose. Vanaf €4.500."
+>
+  <section class="border-b border-slate-200">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-4xl">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded text-xs font-medium tracking-wide uppercase bg-brand-emerald/10 text-brand-emerald">Op maat</span>
+          <span class="eyebrow">Custom AI</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Wanneer kant-en-klaar niet past — bouwen we het op maat.
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed text-pretty max-w-2xl">
+          Elk bedrijf heeft processen die uniek zijn. Een offerte-generator die uw prijslogica volgt.
+          Een voorraadprognose die uw seizoenspatroon kent. Een contract-checker die uw clausules begrijpt.
+          Wij bouwen het, testen het, en leiden uw team op om er mee te werken.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="/contact/?type=custom" class="btn-primary text-base px-6 py-3.5">
+            Plan een audit
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="#voorbeelden" class="btn-outline text-base px-6 py-3.5">Bekijk voorbeelden</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="voorbeelden" class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-14">
+        <p class="eyebrow mb-3">Voorbeelden uit de praktijk</p>
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy text-balance">
+          Wat we al hebben gebouwd voor onze klanten.
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {[
+          {
+            sector: 'Bouwbedrijf',
+            title: 'Offerte-generator op basis van foto + intake',
+            description: 'Klant stuurt foto van project + voicebericht via WhatsApp. AI genereert binnen 5 minuten een conceptofferte met materiaalspecificatie en uurraming, klaar voor review.',
+            metrics: ['90 min → 5 min per offerte', '4× meer offertes per week', '32% hogere conversie'],
+            color: 'indigo',
+          },
+          {
+            sector: 'Webshop',
+            title: 'Retour-classificatie + automatische afhandeling',
+            description: 'AI leest retourreden, beoordeelt foto van product, beslist over compensatie binnen kaders, mailt klant en boekt voorraad terug. Mens checkt alleen randgevallen.',
+            metrics: ['Retour-tijd 24u → 3u', '78% volledig automatisch', '€1.200/maand bespaard'],
+            color: 'rose',
+          },
+          {
+            sector: 'Accountancy',
+            title: 'Factuur-controle met flagging',
+            description: 'AI scant inkomende facturen, vergelijkt met PO, controleert btw-nummers en standaardafwijkingen. Flagged alleen wat echt aandacht nodig heeft.',
+            metrics: ['85% facturen automatisch', '12 uur/week vrijgespeeld', '4× minder fouten'],
+            color: 'amber',
+          },
+          {
+            sector: 'Vastgoed',
+            title: 'Marktrapport-generator voor verkopers',
+            description: 'Op basis van adres genereert AI een 8-pagina marktrapport met vergelijkbare panden, buurtanalyse, prijsindicatie. Tijdsbesparing voor makelaars enorm.',
+            metrics: ['4u → 8 min per rapport', 'Consistente kwaliteit', '+40% verkoper-conversie'],
+            color: 'emerald',
+          },
+        ].map((c) => (
+          <div class="card relative overflow-hidden">
+            <div class:list={[
+              'absolute top-0 left-0 w-1 h-full',
+              c.color === 'indigo' && 'bg-brand-indigo',
+              c.color === 'rose' && 'bg-brand-rose',
+              c.color === 'amber' && 'bg-brand-amber',
+              c.color === 'emerald' && 'bg-brand-emerald',
+            ]}></div>
+            <div class="text-xs font-medium tracking-wide uppercase text-slate-500 mb-2">{c.sector}</div>
+            <h3 class="text-xl font-bold tracking-tighter-2 text-navy">{c.title}</h3>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">{c.description}</p>
+            <div class="mt-5 pt-5 border-t border-slate-200 flex flex-wrap gap-x-5 gap-y-2 text-xs">
+              {c.metrics.map((m) => (
+                <span class="text-slate-700"><strong class="text-navy">●</strong> {m}</span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-14">
+        <p class="eyebrow mb-3">Onze aanpak</p>
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy text-balance">
+          Hoe we een custom workflow bouwen.
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        {[
+          { n: '01', title: 'AI-audit', desc: 'We doorlopen uw processen, identificeren waar AI realistisch waarde toevoegt. Output: prioritering met ROI-inschatting.' },
+          { n: '02', title: 'Bouwen + testen', desc: 'Wekelijkse iteraties met u. We bouwen in uw eigen omgeving, testen met uw eigen data. Geen vendor lock-in.' },
+          { n: '03', title: 'Live + opleiding', desc: 'Live-gang met begeleiding. Trainingssessie voor uw team. Onderhoudscontract optioneel.' },
+        ].map((s) => (
+          <div>
+            <div class="text-sm font-bold tracking-wider text-slate-400">{s.n}</div>
+            <h3 class="mt-2 text-xl font-bold text-navy">{s.title}</h3>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-2xl">
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Heeft u een proces in gedachten dat AI zou moeten doen?
+        </h2>
+        <p class="mt-4 text-base text-slate-300">
+          Plan een gratis 30-minuten audit. We zeggen eerlijk of het haalbaar is.
+        </p>
+        <div class="mt-6">
+          <a href="/contact/?type=custom" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Plan een audit
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

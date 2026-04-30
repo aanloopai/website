@@ -1,0 +1,108 @@
+---
+const year = new Date().getFullYear();
+
+const columns = [
+  {
+    title: 'Diensten',
+    links: [
+      { href: '/diensten/marco/', label: 'Marco — AI sekreter' },
+      { href: '/diensten/emma/', label: 'Emma — WhatsApp agent' },
+      { href: '/diensten/telefoon-assistent/', label: 'AI telefoon assistent' },
+      { href: '/diensten/custom/', label: 'Custom AI workflows' },
+      { href: '/diensten/audit/', label: 'AI strategie & audit' },
+    ],
+  },
+  {
+    title: 'Sectoren',
+    links: [
+      { href: '/sectoren/horeca/', label: 'Horeca' },
+      { href: '/sectoren/logistiek/', label: 'Logistiek & transport' },
+      { href: '/sectoren/vastgoed/', label: 'Vastgoed & makelaars' },
+      { href: '/sectoren/detailhandel/', label: 'Detailhandel' },
+      { href: '/sectoren/zakelijk/', label: 'Zakelijke dienstverlening' },
+      { href: '/sectoren/zorg/', label: 'Zorg & welzijn' },
+    ],
+  },
+  {
+    title: 'Bedrijf',
+    links: [
+      { href: '/over/', label: 'Over ons' },
+      { href: '/cases/', label: 'Klantcases' },
+      { href: '/werkwijze/', label: 'Werkwijze' },
+      { href: '/tarieven/', label: 'Tarieven' },
+      { href: '/contact/', label: 'Contact' },
+    ],
+  },
+];
+---
+
+<footer class="bg-midnight text-pearl">
+  <div class="container-page py-16 lg:py-20">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
+      <!-- Brand block -->
+      <div class="lg:col-span-4">
+        <img
+          src="/brand/logo-horizontal-dark.svg"
+          alt="Aanloop AI"
+          width="180"
+          height="56"
+          class="h-10 w-auto"
+        />
+        <p class="mt-6 text-sm text-slate-400 leading-relaxed max-w-xs">
+          AI-oplossingen voor het Nederlandse MKB. Kant-en-klare assistenten en
+          custom workflows die uw team versterken — zonder de complexiteit.
+        </p>
+
+        <div class="mt-6">
+          <div class="accent-band">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+
+        <div class="mt-8 space-y-2 text-sm text-slate-400">
+          <p>Rotterdam, Nederland</p>
+          <p>
+            <a href="mailto:hello@aanloop.ai" class="hover:text-pearl transition-colors">
+              hello@aanloop.ai
+            </a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Link columns -->
+      {columns.map((col) => (
+        <div class="lg:col-span-2 lg:col-start-auto" class:list={col.title === 'Sectoren' ? 'lg:col-span-3' : ''}>
+          <h3 class="text-xs font-semibold tracking-[0.15em] uppercase text-slate-500">
+            {col.title}
+          </h3>
+          <ul class="mt-4 space-y-3">
+            {col.links.map((link) => (
+              <li>
+                <a
+                  href={link.href}
+                  class="text-sm text-slate-300 hover:text-pearl transition-colors"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="border-t border-slate-800/60">
+    <div class="container-page py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+      <p class="text-xs text-slate-500">
+        © {year} Aanloop AI. Alle rechten voorbehouden.
+      </p>
+      <div class="flex items-center gap-6 text-xs text-slate-500">
+        <a href="/privacy/" class="hover:text-slate-300 transition-colors">Privacyverklaring</a>
+        <a href="/voorwaarden/" class="hover:text-slate-300 transition-colors">Algemene voorwaarden</a>
+        <a href="/cookies/" class="hover:text-slate-300 transition-colors">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>

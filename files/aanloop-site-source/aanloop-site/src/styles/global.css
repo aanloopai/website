@@ -1,0 +1,100 @@
+@import '@fontsource-variable/inter/index.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white text-navy font-sans antialiased;
+    font-feature-settings: 'cv11', 'ss01', 'ss03';
+  }
+
+  ::selection {
+    @apply bg-brand-indigo/15 text-navy;
+  }
+
+  /* Heading defaults — sentence case always, never title case */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold text-navy;
+    letter-spacing: -0.025em;
+  }
+
+  /* Focus ring — accessible, brand-coloured */
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-indigo ring-offset-2 ring-offset-white;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply max-w-container mx-auto px-6 lg:px-10;
+  }
+
+  /* The signature accent band — used as a hairline element */
+  .accent-band {
+    @apply flex h-[3px] w-fit;
+  }
+  .accent-band > span {
+    @apply block w-12;
+  }
+  .accent-band > span:nth-child(1) { @apply bg-brand-indigo; }
+  .accent-band > span:nth-child(2) { @apply bg-brand-rose; }
+  .accent-band > span:nth-child(3) { @apply bg-brand-amber; }
+  .accent-band > span:nth-child(4) { @apply bg-brand-emerald; }
+
+  /* Eyebrow — the small uppercase label above headings */
+  .eyebrow {
+    @apply text-xs font-medium tracking-[0.15em] uppercase text-slate-500;
+  }
+
+  /* Buttons */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-medium text-sm transition-all duration-200;
+  }
+  .btn-primary {
+    @apply btn bg-navy text-white hover:bg-midnight active:scale-[0.98];
+  }
+  .btn-ghost {
+    @apply btn text-navy hover:bg-slate-100;
+  }
+  .btn-outline {
+    @apply btn border border-slate-300 text-navy hover:border-navy hover:bg-slate-50;
+  }
+
+  /* Cards */
+  .card {
+    @apply bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 transition-all duration-200;
+  }
+  .card-interactive {
+    @apply card hover:border-slate-300 hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  /* Section spacing — consistent vertical rhythm */
+  .section {
+    @apply py-20 lg:py-28;
+  }
+  .section-tight {
+    @apply py-14 lg:py-20;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}

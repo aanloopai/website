@@ -1,0 +1,241 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import SectorCard from '../components/SectorCard.astro';
+
+const services = [
+  {
+    href: '/diensten/marco/',
+    title: 'Marco — AI sekreter',
+    description: 'Neemt uw telefoon 24/7 aan, plant afspraken, levert leads direct in uw inbox. Spreekt vloeiend Nederlands.',
+    badge: 'Meest gekozen',
+    accent: 'indigo' as const,
+    features: ['Onbeperkte gesprekken', 'Lead-routering via Telegram of e-mail', 'Live binnen 7 dagen'],
+  },
+  {
+    href: '/diensten/emma/',
+    title: 'Emma — WhatsApp agent',
+    description: 'Antwoordt klantvragen op WhatsApp in seconden. Getraind op uw eigen kennisbank, met menselijke handover.',
+    accent: 'rose' as const,
+    features: ['Eigen kennisbank (Dify)', 'Naadloze handover naar mens', 'Werkt 24/7 zonder pauze'],
+  },
+  {
+    href: '/diensten/telefoon-assistent/',
+    title: 'AI telefoon assistent',
+    description: 'Volledig aanpasbare telefooncentrale die intakes doet, doorverbindt en samenvattingen maakt.',
+    accent: 'amber' as const,
+    features: ['Eigen telefoonnummer (NL)', 'Gespreksopnames + transcript', 'Integreert met uw CRM'],
+  },
+  {
+    href: '/diensten/custom/',
+    title: 'Custom AI workflows',
+    description: 'Maatwerk-automatisering voor unieke processen — van offerte-generatie tot voorraadbeheer.',
+    accent: 'emerald' as const,
+    features: ['Audit + roadmap inbegrepen', 'Bouwen, testen, opleiden', 'Onderhoud + SLA optioneel'],
+  },
+];
+
+const sectors = [
+  {
+    href: '/sectoren/horeca/',
+    title: 'Horeca',
+    description: 'Reserveringen, no-shows, voorraadprognose — laat AI uw zaal vullen.',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h7v18H3zM14 3h7v9h-7zM14 16h7v5h-7z"/></svg>',
+  },
+  {
+    href: '/sectoren/logistiek/',
+    title: 'Logistiek & transport',
+    description: 'Track-and-trace, klantmeldingen, route-optimalisatie via AI.',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/></svg>',
+  },
+  {
+    href: '/sectoren/vastgoed/',
+    title: 'Vastgoed & makelaars',
+    description: 'Bezichtigingen plannen, leads kwalificeren, marktrapporten genereren.',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>',
+  },
+  {
+    href: '/sectoren/detailhandel/',
+    title: 'Detailhandel',
+    description: 'Productadvies via chat, klantenservice 24/7, retour-afhandeling.',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>',
+  },
+  {
+    href: '/sectoren/zakelijk/',
+    title: 'Zakelijke dienstverlening',
+    description: 'Offertes opstellen, contracten reviewen, intakes automatiseren.',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
+  },
+  {
+    href: '/sectoren/zorg/',
+    title: 'Zorg & welzijn',
+    description: 'Afsprakenbeheer, intake-vragenlijsten, patiëntcommunicatie.',
+    icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>',
+  },
+];
+---
+
+<BaseLayout
+  title="Aanloop AI · AI-oplossingen voor het Nederlandse MKB"
+  description="Aanloop AI levert kant-en-klare AI-assistenten en custom workflows voor MKB-ondernemers in Nederland. Van AI-receptionist tot WhatsApp-bot — live binnen 14 dagen."
+>
+  <Hero />
+
+  <!-- Trust bar — logos / numbers -->
+  <section class="border-y border-slate-200 bg-slate-50/50">
+    <div class="container-page py-10">
+      <p class="text-center text-xs uppercase tracking-[0.15em] text-slate-500 mb-8">
+        Vertrouwd door 500+ MKB-ondernemers in Nederland
+      </p>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        <div>
+          <div class="text-3xl font-bold text-navy">14 dagen</div>
+          <div class="text-sm text-slate-600 mt-1">gemiddelde tijd tot live</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold text-navy">24/7</div>
+          <div class="text-sm text-slate-600 mt-1">beschikbaarheid van AI</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold text-navy">73%</div>
+          <div class="text-sm text-slate-600 mt-1">minder gemiste leads</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold text-navy">€297</div>
+          <div class="text-sm text-slate-600 mt-1">vanaf per maand</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services grid -->
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-14">
+        <p class="eyebrow mb-3">Onze diensten</p>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tightest text-navy text-balance">
+          Vier manieren waarop AI uw bedrijf nu al kan helpen.
+        </h2>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed text-pretty">
+          Begin met een kant-en-klaar product, of laat ons een maatwerk-oplossing bouwen.
+          We starten altijd met een gratis adviesgesprek om te zien wat werkt voor uw situatie.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+        {services.map((service) => (
+          <ServiceCard {...service} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- How it works -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-14">
+        <p class="eyebrow mb-3">Werkwijze</p>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tightest text-navy text-balance">
+          Van eerste gesprek tot live in 14 dagen.
+        </h2>
+      </div>
+
+      <ol class="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-6">
+        {[
+          { n: '01', color: 'indigo', title: 'Adviesgesprek', desc: 'We bespreken uw bedrijf, processen en kansen. Geen verplichting, geen verkooppraatje — alleen advies.' },
+          { n: '02', color: 'rose', title: 'Voorstel & demo', desc: 'Binnen 3 dagen ontvangt u een concreet voorstel met live demo van de AI in uw werkscenario.' },
+          { n: '03', color: 'amber', title: 'Bouwen & trainen', desc: 'We configureren de AI, trainen hem op uw kennisbank en testen samen met uw team.' },
+          { n: '04', color: 'emerald', title: 'Live & doorontwikkelen', desc: 'Live-gang met begeleiding. Maandelijkse rapportage en optimalisaties op basis van data.' },
+        ].map((step) => (
+          <li class="relative">
+            <div class:list={[
+              'inline-block px-2 py-0.5 rounded text-xs font-bold tracking-wider',
+              step.color === 'indigo' && 'bg-brand-indigo/10 text-brand-indigo',
+              step.color === 'rose' && 'bg-brand-rose/10 text-brand-rose',
+              step.color === 'amber' && 'bg-brand-amber/10 text-brand-amber',
+              step.color === 'emerald' && 'bg-brand-emerald/10 text-brand-emerald',
+            ]}>
+              {step.n}
+            </div>
+            <h3 class="mt-4 text-lg font-bold text-navy">{step.title}</h3>
+            <p class="mt-2 text-sm text-slate-600 leading-relaxed">{step.desc}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Sectors -->
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-14">
+        <p class="eyebrow mb-3">Sectoren</p>
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tightest text-navy text-balance">
+          Toegespitst op uw branche.
+        </h2>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed text-pretty">
+          Elke sector heeft zijn eigen ritme. We hebben gespecialiseerde
+          oplossingen ontwikkeld op basis van honderden gesprekken met MKB-ondernemers.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {sectors.map((sector) => (
+          <SectorCard {...sector} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonial -->
+  <section class="section">
+    <div class="container-page">
+      <figure class="max-w-4xl mx-auto text-center">
+        <div class="flex justify-center mb-8">
+          <div class="accent-band">
+            <span></span><span></span><span></span><span></span>
+          </div>
+        </div>
+        <blockquote class="text-2xl lg:text-3xl font-medium text-navy text-balance leading-relaxed">
+          "We dachten dat een AI-receptionist iets voor de toekomst was. Marco neemt nu
+          70% van onze inkomende calls af, plant zelf afspraken en levert leads in
+          ons CRM. Binnen drie weken hadden we hem live."
+        </blockquote>
+        <figcaption class="mt-8 text-sm text-slate-600">
+          <strong class="text-navy font-bold">Sander de Vries</strong>
+          <span class="block mt-1">Eigenaar · De Vries Installatie B.V., Rotterdam</span>
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle at 1px 1px, #F1F5F9 1px, transparent 0); background-size: 24px 24px;"></div>
+
+    <div class="container-page relative">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tightest text-pearl text-balance">
+          Klaar om te zien wat AI voor uw bedrijf kan doen?
+        </h2>
+        <p class="mt-5 text-lg text-slate-300 leading-relaxed text-pretty max-w-2xl">
+          Plan een gratis adviesgesprek van 30 minuten. We laten u live een AI-assistent zien,
+          afgestemd op uw branche. Geen verplichtingen.
+        </p>
+
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="/contact/?type=demo" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een adviesgesprek
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </a>
+          <a href="tel:+31000000000" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bel direct: 010 — 000 0000
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
