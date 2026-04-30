@@ -1,0 +1,167 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "AI voor Huisartsenpraktijk: triage, afsprakenbeheer en patientcommunicatie",
+    "description": "AI voor Nederlandse huisartsenpraktijken: triage volgens NHG-protocol, afspraken inplannen in EPD, no-show reductie via WhatsApp. NEN 7510 plus AVG compliant.",
+    "author": {
+      "@type": "Organization",
+      "name": "Aanloop AI",
+      "url": "https://aanloopai.nl"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "Aanloop AI",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://aanloopai.nl/logo-mark-light-1024.png"
+      }
+    },
+    "datePublished": "2026-04-30",
+    "dateModified": "2026-04-30",
+    "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-voor-huisartsenpraktijk/",
+    "inLanguage": "nl-NL"
+  };
+
+const faqItems = [
+  { question: 'Voldoet AI aan NEN 7510 en AVG?', answer: 'Ja. Aanloop AI biedt een NEN 7510-compatibele opzet met dedicated tenant per praktijk, ISO 27001-gecertificeerde EU-cloud, role-based access, audit-logging.' },
+  { question: 'Werkt de AI met Promedico, MicroHIS, Medicom?', answer: 'Ja. Native koppelingen voor Promedico VDF, MicroHIS X, Medicom, Calculus en Tetra.' },
+  { question: 'Hoe veilig is AI-triage volgens NHG-protocol?', answer: 'De AI volgt uitsluitend uw eigen NHG-conforme protocol; geeft geen autonoom medisch advies. Bij twijfel escaleert direct naar arts.' },
+  { question: 'Wat als een patient psychische klachten heeft of in crisis is?', answer: 'De AI herkent crisis-keywords en escaleert direct naar de huisarts of huisartsenpost (HAP).' },
+  { question: 'Hoe lang duurt implementatie?', answer: '10-14 werkdagen voor solo-praktijk. 21-30 dagen voor groepspraktijk.' },
+  { question: 'Wat kost AI voor een Nederlandse huisartsenpraktijk?', answer: 'Marco Starter: 297 euro per maand. Marco Groei plus EPD-koppeling: 897 euro per maand.' },
+  { question: 'Kan de AI ook herhaalrecepten verwerken?', answer: 'Ja. AI controleert dossier op laatste voorschrift, valideert herhaal-criteria en zet aanvraag klaar voor arts-controle.' },
+  { question: 'Werkt AI ook tijdens ANW-tijden?', answer: 'Ja. Tijdens ANW-tijden routeert de AI automatisch naar de huisartsenpost (HAP) met behoud van triage-protocol.' },
+];
+---
+
+<BaseLayout
+  title="AI voor Huisartsenpraktijk Nederland — Triage, Afspraken & EPD-Koppeling | Aanloop AI"
+  description="AI voor Nederlandse huisartsenpraktijken: triage volgens NHG-protocol, afspraken inplannen in EPD, no-show reductie via WhatsApp. NEN 7510 plus AVG compliant."
+  schema={articleSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Zorg</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI voor Huisartsenpraktijk: triage, afsprakenbeheer en patientcommunicatie
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          De Nederlandse huisartsenzorg staat onder druk: praktijkassistenten zijn moeilijk te vinden, patienten verwachten 24/7 bereikbaarheid, en de NHG-protocollen voor triage moeten consistent worden gevolgd. AI kan een groot deel van de eerstelijns-bereikbaarheid overnemen zonder de zorgkwaliteit of patientveiligheid te schenden. In dit artikel: vijf AI-toepassingen die in Nederlandse huisartsenpraktijken in 2026 het verschil maken.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">1. Triage volgens NHG-protocol</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI agent voert triage volgens uw eigen NHG-conforme protocol: vragen over symptomen, duur, urgentie, koortsmeting, ademhalingsritme. Op basis van het protocol classificeert de AI de oproep als U1 (spoed), U2 (snel terugbellen), U3 (afspraak vandaag), U4 (afspraak deze week) of U5 (zelfzorgadvies plus afspraakoptie).</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor U1 (spoed): direct doorverbinden naar de waarnemend arts of dienstpost (HAP) via SMS plus telefoon. Bij geen reactie binnen 60 seconden escalatie naar tweede collega plus 112-instructie aan patient indien levensbedreigend.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor U3-U5: directe inplanning in EPD-agenda met de juiste consulttijd. De patient krijgt direct een bevestiging via WhatsApp met de voorbereidingsinstructies.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">2. Afsprakenbeheer in EPD</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Native koppelingen met de meest gebruikte Nederlandse huisartsen-EPDs: Promedico VDF, MicroHIS X, Medicom, Calculus, Tetra. De AI plant afspraken direct in uw agenda zonder dat de assistent moet schakelen tussen telefoon, agenda en patientdossier.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor herhaalrecepten: koppeling met EPD-receptenmodule. Patient belt voor herhaal-receptaanvraag, AI controleert dossier op laatste voorschrift, valideert herhaal-criteria en zet aanvraag klaar voor partner-controle.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Resultaat: praktijkassistenten besparen 30-45 minuten per uur op routinegesprekken en kunnen zich focussen op complexe patientenzorg.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">3. No-show reductie via WhatsApp herinneringen</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Nederlandse huisartsenpraktijken verliezen 8-15% van geplande afspraken aan no-shows. Een AI agent stuurt automatisch herinneringen via WhatsApp 48 uur, 24 uur en 2 uur voor de afspraak met optie tot bevestigen, verzetten of annuleren.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor patienten die meerdere keren no-show vertonen: praktijk-managementprotocol triggert automatisch een gesprek of overplaatsing naar speciale spreekuren.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Cases bij Nederlandse praktijken: 50-65% no-show reductie binnen 6 maanden. Tijdswinst per arts: 2-4 vrijgekomen consulten per dag.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">4. Aanlevering van laboratoriumuitslagen</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Patienten bellen vaak voor uitslagen. Met EPD-koppeling kan de AI status communiceren. Voor uitslagen die de arts heeft beoordeeld en geclassificeerd als ok: automatische WhatsApp-notificatie volgens uw protocol.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor afwijkende uitslagen die overleg vereisen: de AI initieert geen autonome communicatie maar plant een terugbel-afspraak met de arts in.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor specifieke groepen (chronisch zieken, polyfarmacie patienten) configureerbare protocollen om misclassificatie te voorkomen.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">5. Compliance: NEN 7510, AVG, BIG-registratie</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Huisartsenpraktijken vallen onder NEN 7510 (informatiebeveiliging in zorg) en AVG. AI-systemen moeten patientdata binnen Nederland of EU verwerken, voldoen aan NEN 7510-eisen voor logging, encryption en toegangscontroles.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI: Nederlandse B.V. (KVK 88606902), NEN 7510-compatibele opzet met dedicated tenant per praktijk, ISO 27001 cloud-infrastructuur in Frankfurt of Amsterdam, role-based access, audit-logging.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor praktijken die aan ZorgDomein of LSP zijn gekoppeld: de AI raakt deze flows niet aan. Patientcommunicatie via AI wordt gelogd in EPD voor BIG-toetsbaarheid.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">6. Implementatie en zorgvuldige overdracht</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Implementatie 10-14 werkdagen voor solo-praktijk; 21-30 dagen voor groepspraktijk met meerdere artsen, ANW-rooster en gespecialiseerde spreekuren (POH-S, POH-GGZ).</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor praktijken met inwonende ANW-zorg: directe koppeling met de huisartsenpost (HAP) zodat patienten in U1-categorie automatisch worden doorgeleid naar de juiste partij.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Periodieke kwaliteitscontrole door uw protocolaire team: random 10% van AI-conversaties wordt door de praktijkmanager nagekeken op consistentie en zorgvuldigheid.</p>
+    </div>
+  </section>
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">ROI rekenvoorbeeld</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat levert dit u op?</h2>
+      <p class="text-slate-600 leading-relaxed">Voor een huisartsenpraktijk met 2-5 artsen plus 2-4 assistenten: gemiddeld 70-100 uur per maand tijdwinst voor assistenten. Bij assistent-loonkosten van 30-40 euro per uur all-in is dat 2.100-4.000 euro per maand winst. Investering vanaf 297 euro per maand voor Marco Starter.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Veelgestelde vragen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-8">FAQ</h2>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="group card cursor-pointer">
+            <summary class="flex items-start justify-between gap-4 list-none">
+              <h3 class="text-base font-semibold text-navy pr-4">{item.question}</h3>
+              <svg class="w-5 h-5 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight border-t border-slate-200">
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow mb-3">Verder lezen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy text-balance mb-6">Verder verdiepen.</h2>
+      <div class="flex flex-wrap gap-2">
+        <a href="/sectoren/zorg/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI voor zorg (volledige hub) →</a>
+        <a href="/diensten/marco/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Marco AI Receptionist →</a>
+        <a href="/kennisbank/voice-ai-klantenservice/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Voice AI voor klantenservice →</a>
+        <a href="/kennisbank/ai-telefoonassistent-bedrijven/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">AI telefoonassistent voor bedrijven →</a>
+        <a href="/sectoren/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Alle sectoren →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Klaar om uw huisartsenpraktijk 24/7 bereikbaar te maken?</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Plan een gratis demo. We laten zien hoe NHG-conforme triage werkt met Promedico of MicroHIS.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Plan een demo</a>
+        <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk tarieven</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
