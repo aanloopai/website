@@ -229,19 +229,33 @@ const allSchemas = [
       <script type="application/ld+json" set:html={JSON.stringify(s)} />
     ))}
 
-    <!-- Hide ElevenLabs "Powered by" branding via CSS (instant, no JS delay) -->
-    <style>
-      a[href="https://elevenlabs.io/agents"],
-      a[href*="elevenlabs.io/agents"] {
-        display: none !important;
-        visibility: hidden !important;
-        pointer-events: none !important;
-      }
-      /* Hide the parent container too ("Powered by " text node + link) */
-      a[href*="elevenlabs.io/agents"]:is(a) {
-        display: none !important;
-      }
-    </style>
+    <!-- Intercept shadow root creation to inject branding-hide CSS before widget renders -->
+    <script is:inline>
+      (function () {
+        var _origAttachShadow = Element.prototype.attachShadow;
+        Element.prototype.attachShadow = function (init) {
+          var root = _origAttachShadow.call(this, init);
+          var style = document.createElement('style');
+          style.setAttribute('data-hide-pb', '1');
+          style.textContent = [
+            'a[href*="elevenlabs.io"] { display:none!important; }',
+            '[class*="powered"] { display:none!important; }',
+            '[class*="branding"] { display:none!important; }',
+            /* Hide the container holding "Powered by" + link together */
+            'a[href*="elevenlabs.io"] ~ *, a[href*="elevenlabs.io"] + * { display:none!important; }'
+          ].join('');
+          root.appendChild(style);
+          /* Also watch for late-rendered content inside this shadow root */
+          new MutationObserver(function () {
+            root.querySelectorAll('a[href*="elevenlabs.io"]').forEach(function (link) {
+              link.style.setProperty('display', 'none', 'important');
+              if (link.parentElement) link.parentElement.style.setProperty('display', 'none', 'important');
+            });
+          }).observe(root, { childList: true, subtree: true });
+          return root;
+        };
+      })();
+    </script>
   </head>
   <body>
     <!-- Skip to main content — accessibility -->
@@ -318,33 +332,6 @@ const allSchemas = [
     <elevenlabs-convai agent-id="agent_6101kqdjepxmeqsr02kg7vwwd873"></elevenlabs-convai>
     <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
 
-    <!-- Hide "Powered by ElevenAgents" — CSS + JS double layer -->
-    <script>
-      (function () {
-        function hideBranding() {
-          // Find ALL links to elevenlabs.io/agents (the injected "Powered by" link)
-          document.querySelectorAll('a[href*="elevenlabs.io/agents"], a[href*="elevenlabs.io"]').forEach(function(link) {
-            link.style.setProperty('display', 'none', 'important');
-            link.style.setProperty('visibility', 'hidden', 'important');
-            // Hide parent container (wraps "Powered by " text node + the link)
-            var parent = link.parentElement;
-            if (parent && parent !== document.body) {
-              parent.style.setProperty('display', 'none', 'important');
-              parent.style.setProperty('height', '0', 'important');
-              parent.style.setProperty('overflow', 'hidden', 'important');
-            }
-          });
-        }
-
-        function init() {
-          hideBranding();
-          new MutationObserver(function () { hideBranding(); })
-            .observe(document.body, { childList: true, subtree: true });
-        }
-
-        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-        else init();
-      })();
-    </script>
+    <!-- Branding hidden via attachShadow intercept above -->
   </body>
 </html>
