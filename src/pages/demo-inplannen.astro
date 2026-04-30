@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+// Cal.com embed URL — vervang met uw eigen Cal.com/Calendly link
+const calUrl = 'https://cal.com/aanloopai/demo';
+---
+<BaseLayout title="Plan uw gratis AI demo in | Aanloop AI" description="Kies zelf een datum en tijdstip voor uw gratis 30-minuten AI demo met Aanloop AI. Geen verplichting.">
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-14 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6 reveal"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Demo inplannen</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">Kies uw moment</h1>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Selecteer een datum en tijdstip dat u uitkomt. De demo duurt <strong>30 minuten</strong> en vindt online plaats via Google Meet.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="grid lg:grid-cols-3 gap-10">
+
+        <!-- Wat u kunt verwachten -->
+        <div class="lg:col-span-1 reveal">
+          <h2 class="text-lg font-bold text-navy mb-5">Wat behandelen we?</h2>
+          <ul class="space-y-4">
+            {[
+              { icon: '🎯', t: 'Uw situatie', d: 'We bespreken uw specifieke bedrijfsprocessen en uitdagingen.' },
+              { icon: '🤖', t: 'Live AI demo', d: 'U ziet een werkende AI agent — aangepast aan uw sector.' },
+              { icon: '💶', t: 'ROI berekening', d: 'We berekenen samen de verwachte tijdsbesparing en opbrengst.' },
+              { icon: '🗺️', t: 'Implementatieplan', d: 'U ontvangt een concreet stappenplan om direct mee aan de slag te gaan.' },
+            ].map(i => (
+              <li class="flex gap-3">
+                <span class="text-xl flex-shrink-0">{i.icon}</span>
+                <div>
+                  <p class="font-semibold text-navy text-sm">{i.t}</p>
+                  <p class="text-sm text-slate-500 mt-0.5">{i.d}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+
+          <div class="mt-8 bg-slate-50 border border-slate-200 rounded-xl p-5">
+            <p class="text-xs font-bold text-navy uppercase tracking-wide mb-3">Trust signals</p>
+            <ul class="space-y-2 text-sm text-slate-600">
+              <li class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-emerald flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>100% vrijblijvend</li>
+              <li class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-emerald flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>30 minuten, online</li>
+              <li class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-emerald flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Geen verkooppraatje</li>
+              <li class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-emerald flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>KVK: 88606902</li>
+            </ul>
+          </div>
+
+          <div class="mt-6 text-sm text-slate-600">
+            <p class="font-medium text-navy mb-1">Liever bellen?</p>
+            <a href="tel:+31624741597" class="text-brand-indigo hover:underline">+31 6 24 74 15 97</a>
+            <p class="text-xs text-slate-400 mt-0.5">Ma–Vr 09:00–17:00</p>
+          </div>
+        </div>
+
+        <!-- Calendar embed -->
+        <div class="lg:col-span-2 reveal reveal-delay-1">
+          <!-- Cal.com inline embed -->
+          <div id="calendar-container" class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm min-h-[600px] flex items-center justify-center">
+            <!-- Fallback: Cal.com embed. Vervang data-cal-link met uw eigen Cal.com link -->
+            <div id="cal-fallback" class="text-center p-8">
+              <div class="w-16 h-16 rounded-full bg-brand-indigo/10 flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-brand-indigo" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                </svg>
+              </div>
+              <h3 class="font-bold text-navy mb-2">Agenda laden...</h3>
+              <p class="text-sm text-slate-600 mb-6">Als de agenda niet laadt, kunt u direct een moment kiezen via:</p>
+              <a href={calUrl} target="_blank" rel="noopener noreferrer" class="btn-primary">
+                Kies een moment via Cal.com
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+              </a>
+            </div>
+            <!-- Cal.com script embed (wordt geladen zodra Cal.com link geconfigureerd is) -->
+          </div>
+
+          <!-- WhatsApp alternatief -->
+          <div class="mt-4 flex items-center justify-center gap-4 text-sm text-slate-500">
+            <span>Of direct via</span>
+            <a href="https://wa.me/31624741597?text=Hallo%2C%20ik%20wil%20graag%20een%20AI%20demo%20inplannen." target="_blank" class="flex items-center gap-2 text-green-600 hover:text-green-700 font-medium">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              WhatsApp
+            </a>
+            <span>|</span>
+            <a href="mailto:hello@aanloopai.nl" class="text-brand-indigo hover:underline font-medium">hello@aanloopai.nl</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+// Cal.com embed initialisatie
+// Zodra u uw Cal.com account heeft, verwijder de fallback en uncomment:
+/*
+(function (C, A, L) {
+  let p = function (a: any, ar: any) { a.q.push(ar); };
+  let d = C.document;
+  C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if (typeof namespace === "string") { cal.ns[namespace] = cal.ns[namespace] || api; p(cal.ns[namespace], ar); p(cal, [L, namespace, ar[2]]); } else p(cal, ar); return; } p(cal, ar); };
+})(window, "https://app.cal.com/embed/embed.js", "init");
+Cal("init", {origin:"https://cal.com"});
+Cal("inline", {
+  elementOrSelector: "#calendar-container",
+  calLink: "aanloopai/demo",
+  layout: "month_view"
+});
+Cal("ui", {
+  styles: {branding: {brandColor: "#0B1120"}},
+  hideEventTypeDetails: false,
+});
+*/
+</script>

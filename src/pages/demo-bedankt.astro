@@ -1,0 +1,65 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Bedankt voor uw demo aanvraag! | Aanloop AI" description="Uw demo aanvraag is ontvangen. Wij nemen binnen 1 werkdag contact met u op om een moment in te plannen." noindex={true}>
+  <section class="section min-h-[70vh] flex items-center">
+    <div class="container-page">
+      <div class="max-w-2xl mx-auto text-center">
+        <!-- Animatie checkmark -->
+        <div class="w-20 h-20 rounded-full bg-brand-emerald/10 flex items-center justify-center mx-auto mb-8 reveal">
+          <svg class="w-10 h-10 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+          </svg>
+        </div>
+
+        <div class="reveal reveal-delay-1">
+          <p class="eyebrow text-brand-emerald mb-3">Aanvraag ontvangen!</p>
+          <h1 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy mb-4">Bedankt! We nemen snel contact op.</h1>
+          <p class="text-lg text-slate-600 leading-relaxed mb-8">
+            Uw demo aanvraag is ontvangen. U ontvangt een bevestiging per e-mail en wij nemen <strong>binnen 1 werkdag</strong> contact met u op om een datum en tijdstip in te plannen.
+          </p>
+        </div>
+
+        <!-- Volgende stappen -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-8 text-left mb-8 reveal reveal-delay-2">
+          <h2 class="text-lg font-bold text-navy mb-5">Wat kunt u verwachten?</h2>
+          <div class="space-y-4">
+            {[
+              { n: '1', t: 'Bevestiging per e-mail', d: 'U ontvangt direct een ontvangstbevestiging in uw inbox.' },
+              { n: '2', t: 'Contact binnen 1 werkdag', d: 'Een van onze consultants neemt telefonisch of via e-mail contact op.' },
+              { n: '3', t: 'Demo inplannen', d: 'We plannen een 30-minutengesprek in op een moment dat u uitkomt.' },
+              { n: '4', t: 'Live AI demo', d: 'Wij laten zien hoe een AI agent werkt voor uw specifieke situatie.' },
+            ].map(s => (
+              <div class="flex gap-4">
+                <div class="w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">{s.n}</div>
+                <div>
+                  <p class="font-semibold text-navy text-sm">{s.t}</p>
+                  <p class="text-sm text-slate-600 mt-0.5">{s.d}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Direct inplannen CTA -->
+        <div class="bg-brand-indigo/5 border border-brand-indigo/20 rounded-2xl p-6 mb-8 reveal reveal-delay-3">
+          <p class="font-bold text-navy mb-2">Liever direct inplannen?</p>
+          <p class="text-sm text-slate-600 mb-4">Kies zelf een datum en tijdstip dat u uitkomt via onze agenda.</p>
+          <a href="/demo-inplannen/" class="btn-primary">
+            Kies direct uw moment
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 justify-center reveal">
+          <a href="/" class="btn-outline text-sm">Terug naar homepagina</a>
+          <a href="/kennisbank/" class="btn-ghost text-sm">Lees onze kennisbank</a>
+        </div>
+
+        <p class="mt-8 text-xs text-slate-400">
+          Vragen? Mail naar <a href="mailto:hello@aanloopai.nl" class="underline hover:text-slate-600">hello@aanloopai.nl</a> of bel <a href="tel:+31624741597" class="underline hover:text-slate-600">+31 6 24 74 15 97</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Demo bevestigd! | Aanloop AI" description="Uw AI demo is ingepland. Tot snel!" noindex={true}>
+  <section class="section min-h-[70vh] flex items-center">
+    <div class="container-page">
+      <div class="max-w-2xl mx-auto text-center">
+        <div class="w-20 h-20 rounded-full bg-brand-indigo/10 flex items-center justify-center mx-auto mb-8 reveal">
+          <svg class="w-10 h-10 text-brand-indigo" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <div class="reveal reveal-delay-1">
+          <p class="eyebrow text-brand-indigo mb-3">Demo ingepland!</p>
+          <h1 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy mb-4">Tot snel! We kijken ernaar uit.</h1>
+          <p class="text-lg text-slate-600 leading-relaxed mb-8">U ontvangt een kalenderuitnodiging per e-mail met de vergaderlink. Heeft u vragen? Neem gerust contact op.</p>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-8 text-left mb-8 reveal reveal-delay-2">
+          <h2 class="text-lg font-bold text-navy mb-5">Ter voorbereiding op de demo</h2>
+          <ul class="space-y-3">
+            {[
+              'Bedenk welke processen de meeste tijd kosten in uw bedrijf',
+              'Noteer 2-3 concrete vragen die u wilt beantwoord zien',
+              'Zorg dat u beschikking heeft over een scherm om de demo te volgen',
+              'Optioneel: nodig een collega of medewerker mee uit',
+            ].map(item => (
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-indigo" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div class="flex flex-col sm:flex-row gap-3 justify-center reveal">
+          <a href="/" class="btn-outline text-sm">Terug naar homepagina</a>
+          <a href="/kennisbank/" class="btn-ghost text-sm">Lees alvast onze kennisbank</a>
+        </div>
+        <p class="mt-8 text-sm text-slate-500">Wilt u de demo herplannen? <a href="/demo-herplannen/" class="text-brand-indigo hover:underline">Klik hier</a></p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
