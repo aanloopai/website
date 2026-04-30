@@ -101,42 +101,13 @@ const teamSchema = teamleden.map(lid => ({
   knowsAbout: lid.expertise,
 }));
 
-const orgSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  '@id': 'https://aanloopai.nl/#organization',
-  name: 'Aanloop AI',
-  legalName: 'Aanloop AI B.V.',
-  url: 'https://aanloopai.nl',
-  logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
-  address: {
-    '@type': 'PostalAddress',
-    addressLocality: 'Rotterdam',
-    addressRegion: 'Zuid-Holland',
-    postalCode: '3000',
-    addressCountry: 'NL',
-  },
-  foundingDate: '2024',
-  identifier: { '@type': 'PropertyValue', name: 'KVK', value: '88606902' },
-  employee: teamleden.map(lid => ({
-    '@type': 'Person',
-    name: lid.name,
-    jobTitle: lid.role,
-  })),
-  contactPoint: {
-    '@type': 'ContactPoint',
-    email: 'hello@aanloopai.nl',
-    telephone: '+31-6-2474-1597',
-    contactType: 'customer service',
-    availableLanguage: ['Dutch', 'English'],
-  },
-};
+// Organization schema is provided globally by BaseLayout — only ship team-specific schema here to avoid duplicate @id.
 ---
 
 <BaseLayout
   title="Over Aanloop AI — AI Bureau Rotterdam | Team, Missie & KVK 88606902"
   description="Aanloop AI is het AI bureau voor het Nederlandse MKB, gevestigd in Rotterdam (KVK: 88606902). Ontdek ons team, onze missie en hoe we 500+ MKB-bedrijven helpen met AI automatisering."
-  schema={[orgSchema, ...teamSchema]}
+  schema={teamSchema}
   faqSchema={faqSchema}
 >
   <!-- Hero -->

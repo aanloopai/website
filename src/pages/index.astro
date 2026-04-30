@@ -490,6 +490,8 @@ const testimonials = [
   document.getElementById('next-testimonial')?.addEventListener('click', () => goTo(current + 1));
   dots.forEach((d) => d.addEventListener('click', () => goTo(parseInt((d as HTMLElement).dataset.idx || '0'))));
 
-  // Auto-advance
-  setInterval(() => goTo(current + 1), 6000);
+  // Auto-advance (skip if user prefers reduced motion — WCAG 2.2.2 Pause/Stop/Hide)
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    setInterval(() => goTo(current + 1), 6000);
+  }
 </script>

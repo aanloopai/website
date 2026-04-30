@@ -10,7 +10,7 @@ export default defineConfig({
       changefreq: 'weekly',
       priority: 0.7,
       lastmod: new Date(),
-      filter: (page) => !page.includes('/bedankt') && !page.includes('/demo-bedankt') && !page.includes('/demo-bevestigd') && !page.includes('/demo-herplannen') && !page.includes('/cookies') && !page.includes('/disclaimer') && !page.includes('/privacy') && !page.includes('/voorwaarden'),
+      filter: (page) => !page.includes('/bedankt') && !page.includes('/demo-bedankt') && !page.includes('/demo-bevestigd') && !page.includes('/demo-herplannen') && !page.includes('/demo-inplannen') && !page.includes('/aanvragen') && !page.includes('/cookies') && !page.includes('/disclaimer') && !page.includes('/privacy') && !page.includes('/voorwaarden'),
       serialize: (item) => {
         // Hoge prioriteit voor kernpagina's
         if (item.url === 'https://aanloopai.nl/') item.priority = 1.0;
