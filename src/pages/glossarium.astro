@@ -182,6 +182,66 @@ const terms = [
     definition: 'ROI = (Bespaarde tijdkosten + Extra omzet - Investering) / Investering. Voor AI in MKB Nederland gemiddeld 8-15x op 12-maand basis bij goede implementatie. Hoogste ROI in afspraak-intensieve sectoren (zorg, beauty, garage).',
     related: 'ai-roi-berekenen-mkb-nederland-2026',
   },
+  {
+    term: 'Embedding',
+    slug: 'embedding',
+    definition: 'Een embedding is een numerieke representatie (vector) van tekst, beeld of audio die de betekenis weergeeft in een hoog-dimensionale ruimte. Embeddings stellen RAG-systemen in staat om semantisch zoeken te doen — vragen die qua woorden verschillen maar betekeniskundig hetzelfde zijn worden samen gegroepeerd.',
+    related: 'beste-ai-assistent-mkb-nederland',
+  },
+  {
+    term: 'Token',
+    slug: 'token',
+    definition: 'Een token is de kleinste tekst-eenheid die een LLM verwerkt — typisch 0,75 woord in het Nederlands. LLM-providers rekenen per 1.000 tokens (in en uit). Voor AI receptionist gemiddelde gespreksduur 1.500-2.500 tokens. Tokens bepalen kosten, latency en de maximale lengte van context.',
+    related: 'ai-agent-kosten-mkb',
+  },
+  {
+    term: 'Context window',
+    slug: 'context-window',
+    definition: 'Het context window is het maximale aantal tokens dat een LLM tegelijk kan zien (bijv. 200K bij Claude Sonnet 4.5, 1M bij Opus 4.7). Een groter window stelt AI-agents in staat langere gesprekken, complete dossiers of grote kennisbanken in een keer te verwerken zonder gegevensverlies.',
+    related: 'ai-agent-vs-chatbot',
+  },
+  {
+    term: 'Function calling (tool use)',
+    slug: 'function-calling',
+    definition: 'Function calling — ook tool use genoemd — is het mechanisme waarmee een LLM externe systemen aanroept (agenda boeken, CRM updaten, factuur opzoeken) op basis van conversatie-context. Dit transformeert een passief chatmodel in een actiegerichte agent. Essentieel voor AI receptionists.',
+    related: 'wat-is-een-ai-agent',
+  },
+  {
+    term: 'Knowledge base',
+    slug: 'knowledge-base',
+    definition: 'De knowledge base is de gestructureerde verzameling FAQ, productinfo, escalatieregels en bedrijfstoon waar de AI uit put. Voor MKB-AI typisch 50-500 documenten plus 100 voorbeeld-conversaties. Hoe rijker de kennisbank, hoe nauwkeuriger en menselijker de AI klinkt — en hoe lager de escalatie-ratio.',
+    related: 'ai-implementatie-stappen-mkb-nederland',
+  },
+  {
+    term: 'Sub-verwerker',
+    slug: 'sub-verwerker',
+    definition: 'Een sub-verwerker is een derde partij die persoonsgegevens verwerkt namens uw verwerker (bijv. OpenAI of Anthropic onder Aanloop AI). AVG vereist transparantie over alle sub-verwerkers en een DPA-clausule voor wijzigingen met opt-out-recht. Aanloop AI publiceert sub-verwerkerslijst standaard.',
+    related: 'ai-avg-gdpr-compliance-mkb-nederland',
+  },
+  {
+    term: 'SIP-trunk',
+    slug: 'sip-trunk',
+    definition: 'Een SIP-trunk (Session Initiation Protocol) is de digitale verbinding tussen het telefoonnetwerk en een AI-receptionist via VoIP. Aanloop AI koppelt Marco via SIP-trunk aan uw bestaande nummer (KPN, Voys, Twilio) zonder nummerwijziging. Verbinding latency typisch 50-150 ms.',
+    related: 'elevenlabs-ai-agent-koppelen',
+  },
+  {
+    term: 'Deflection rate',
+    slug: 'deflection-rate',
+    definition: 'Deflection rate is het percentage klantvragen dat een AI volledig zonder menselijke escalatie afhandelt. Branchegemiddelde 60-75 procent voor goed-getrainde AI; Aanloop AI haalt typisch 70-85 procent na 30 dagen training. Hoe hoger, hoe lager de personeelskosten en hoger de ROI.',
+    related: 'ai-klantenservice-voor-mkb-2026',
+  },
+  {
+    term: 'CSAT (Customer Satisfaction)',
+    slug: 'csat',
+    definition: 'CSAT is een KPI gemeten via korte enquete na klantcontact (vaak 1-5 sterren). Voor AI-klantenservice geldt 4,2+ als goed, 4,5+ als excellent. CSAT vergelijken voor en na AI-implementatie geeft inzicht of de AI de klantervaring verbetert of verzwakt — niet alleen kosten verlaagt.',
+    related: 'ai-klantenservice-voor-mkb-2026',
+  },
+  {
+    term: 'SLA (Service Level Agreement)',
+    slug: 'sla',
+    definition: 'Een SLA is een contractuele toezegging over beschikbaarheid (bijv. 99,9 procent uptime), responstijd (bijv. AI antwoordt binnen 2 sec) en herstel-tijd bij incidenten. Aanloop AI biedt standaard 99,5 procent SLA op Marco/Emma; enterprise-pakketten 99,9 procent met financiele credits bij onderschrijding.',
+    related: 'ai-agent-kosten-mkb',
+  },
 ];
 
 const collectionSchema = {
@@ -214,7 +274,7 @@ const speakableSchema = {
 
 <BaseLayout
   title="AI Begrippenlijst — Glossarium voor MKB Nederland"
-  description="Complete AI-begrippenlijst voor Nederlandse MKB-ondernemers. 30+ termen uitgelegd: AI agent, voicebot, RAG, AVG, NEN 7510, n8n en meer. Direct praktisch toepasbaar."
+  description="Complete AI-begrippenlijst voor Nederlandse MKB-ondernemers. 40+ termen uitgelegd: AI agent, voicebot, RAG, AVG, NEN 7510, n8n, embedding, token, deflection rate en meer. Direct praktisch toepasbaar."
   schema={[collectionSchema, speakableSchema]}
 >
   <section class="section">
