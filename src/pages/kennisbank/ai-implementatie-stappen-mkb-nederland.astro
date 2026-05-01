@@ -34,6 +34,25 @@ const articleSchema = {
     "inLanguage": "nl-NL"
   };
 
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'AI implementatie voor MKB Nederland in 7 stappen',
+  description: 'Complete implementatiegids voor Nederlands MKB: van scoping tot live-gang, KPI-monitoring en compliance. Gemiddelde doorlooptijd 7-30 werkdagen afhankelijk van scope.',
+  totalTime: 'P30D',
+  estimatedCost: { '@type': 'MonetaryAmount', currency: 'EUR', value: '197' },
+  inLanguage: 'nl-NL',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Pijnpunten identificeren', text: 'Kies een concreet pijnpunt: 24/7 telefoon, WhatsApp-druk, factuurverwerking. Beperk je tot een kanaal en een hoofdtaak voor de eerste 90 dagen.' },
+    { '@type': 'HowToStep', position: 2, name: 'Discovery en scoping', text: 'Analyseer 100 historische klantcontacten om de meest voorkomende vragen, escalaties en pijnpunten in kaart te brengen. Ontwerp conversational flow plus escalatieprotocollen.' },
+    { '@type': 'HowToStep', position: 3, name: 'Kennisbank opbouwen', text: 'Verzamel FAQ, productinfo, veelgestelde klantvragen, bedrijfstoon en escalatieregels. Hoe rijker de kennisbank, hoe nauwkeuriger en menselijker de AI klinkt.' },
+    { '@type': 'HowToStep', position: 4, name: 'Integraties opzetten', text: 'Koppel met agenda (Google/Outlook), CRM, betaalsysteem (Mollie/Stripe), kantoorsoftware. Voor zorg: NEN 7510-conforme EPD-koppeling.' },
+    { '@type': 'HowToStep', position: 5, name: 'Pilot met 20-30 procent verkeer', text: 'Live met deel van klantverkeer voor twee weken monitoring. Dagelijkse KPI-monitoring, wekelijkse iteratie op handover-data.' },
+    { '@type': 'HowToStep', position: 6, name: 'Volledig live op primaire kanaal', text: 'Schaal naar 100 procent verkeer op primaire kanaal. Maandelijkse rapportage, verfijning op escalatie-patronen, kennisbank-aanvullingen.' },
+    { '@type': 'HowToStep', position: 7, name: 'Uitbreiden naar tweede kanaal', text: 'Vanaf maand 4 uitbreiden naar tweede kanaal (typisch WhatsApp na telefoon, of vice versa). Kwartaalreviews voor strategische verbeteringen.' },
+  ],
+};
+
 const faqItems = [
   { question: 'Hoe lang duurt complete AI-implementatie?', answer: '7 werkdagen voor solo-praktijk, 14 werkdagen voor klein-MKB, 21-30 dagen voor multi-vestiging.' },
   { question: 'Wat is de grootste valkuil?', answer: 'Te veel tegelijk willen automatiseren. Begin met een pijnpunt en breid pas uit nadat eerste implementatie stabiel draait.' },
@@ -49,7 +68,7 @@ const faqItems = [
 <BaseLayout
   title="AI Implementatie voor MKB Nederland — De 7 Stappen voor Succesvolle Adoptie | Aanloop AI"
   description="Complete implementatiegids: 7 stappen voor succesvolle AI-adoptie in het Nederlandse MKB. Van scoping tot live-gang, KPI-monitoring en compliance."
-  schema={articleSchema}
+  schema={[articleSchema, howToSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

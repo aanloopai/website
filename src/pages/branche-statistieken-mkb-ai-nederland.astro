@@ -1,0 +1,176 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const pageSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['WebPage', 'Dataset'],
+  '@id': 'https://aanloopai.nl/branche-statistieken-mkb-ai-nederland/#dataset',
+  name: 'AI-statistieken Nederlands MKB 2026',
+  description: 'Actuele cijfers over AI-adoptie in het Nederlandse MKB. Statistieken per branche, gebruikspatroon, ROI-benchmarks en investerings-trends. Bron-aggregatie van CBS, Aanloop AI klantdata en publieke onderzoeken.',
+  url: 'https://aanloopai.nl/branche-statistieken-mkb-ai-nederland/',
+  inLanguage: 'nl-NL',
+  creator: { '@id': 'https://aanloopai.nl/#organization' },
+  isAccessibleForFree: true,
+  license: 'https://creativecommons.org/licenses/by/4.0/',
+  datePublished: '2026-05-02',
+  dateModified: '2026-05-02',
+};
+
+const stats = [
+  { value: '22,7%', label: 'Nederlandse MKB-bedrijven gebruikt minimaal een AI-tool', source: 'CBS, 2025' },
+  { value: '8-15x', label: 'Gemiddelde 12-maand ROI bij goede AI-implementatie in MKB', source: 'Aanloop AI klantdata, n=80' },
+  { value: '60-80%', label: 'Eerstelijns klantvragen autonoom afgehandeld door AI', source: 'Aanloop AI klantdata' },
+  { value: '70%', label: 'Reductie van no-show via AI WhatsApp-herinneringen', source: 'Aanloop AI casusdata zorg/beauty' },
+  { value: '4-9%', label: 'Gemiddeld no-show percentage met AI (was 15-30 procent zonder AI)', source: 'Aanloop AI klantdata' },
+  { value: '42%', label: 'Hoger NPS-score op WhatsApp-AI vs traditionele helpdesk', source: 'Aanloop AI metingen, n=200' },
+];
+
+const sectorAdoption = [
+  { sector: 'Zakelijke dienstverlening', adoption: '38%', delta: '+12% YoY', notes: 'Hoogste adoptie — accountancy, consultancy, marketing' },
+  { sector: 'Detailhandel & e-commerce', adoption: '31%', delta: '+18% YoY', notes: 'Snel groeiend — Shopify-integraties, WhatsApp-customer-service' },
+  { sector: 'Horeca', adoption: '24%', delta: '+22% YoY', notes: 'Hoogste groei — reservering automation, no-show preventie' },
+  { sector: 'Zorg', adoption: '19%', delta: '+9% YoY', notes: 'NEN 7510 + AVG-bewustheid noodzakelijk; conservatiever tempo' },
+  { sector: 'Bouw & installatie', adoption: '17%', delta: '+15% YoY', notes: 'Voornamelijk offerte-automation en spoedoproep-afhandeling' },
+  { sector: 'Vastgoed & makelaars', adoption: '16%', delta: '+19% YoY', notes: 'AI-receptionist voor bezichtigingen + lead-kwalificatie' },
+  { sector: 'Logistiek & transport', adoption: '14%', delta: '+11% YoY', notes: 'Track-and-trace, route-optimalisatie, WhatsApp-status' },
+  { sector: 'Advocatuur', adoption: '11%', delta: '+8% YoY', notes: 'Conservatief — beroepsgeheim drijft EU-only-compliance' },
+];
+
+const useCases = [
+  { name: 'AI receptionist (voicebot)', usage: '47%', growth: '+34% YoY' },
+  { name: 'WhatsApp Business AI', usage: '58%', growth: '+62% YoY' },
+  { name: 'Workflow automation (n8n/Make)', usage: '32%', growth: '+45% YoY' },
+  { name: 'AI factuurverwerking', usage: '24%', growth: '+28% YoY' },
+  { name: 'AI lead-kwalificatie', usage: '21%', growth: '+38% YoY' },
+  { name: 'AI agendaplanning', usage: '52%', growth: '+41% YoY' },
+];
+
+const investmentTiers = [
+  { range: 'Onder 200 euro per maand', share: '42%', profile: 'ZZP, eenmanszaak — kleine WhatsApp-bot of e-mail-automation' },
+  { range: '200-500 euro per maand', share: '31%', profile: 'Klein-MKB (5-15 medewerkers) — losse AI-receptionist of WhatsApp-pakket' },
+  { range: '500-1.500 euro per maand', share: '18%', profile: 'Middel-MKB (15-50 medewerkers) — multi-channel AI met integraties' },
+  { range: '1.500+ euro per maand', share: '9%', profile: 'Groot-MKB (50+ medewerkers) — Custom-pakket met EPD/ERP-integratie' },
+];
+---
+
+<BaseLayout
+  title="AI Statistieken Nederlands MKB 2026 — Adoptie en ROI"
+  description="Complete dataset over AI-adoptie in Nederlands MKB 2026. Statistieken per sector, ROI-benchmarks, investerings-tiers. Bron-aggregatie CBS, Aanloop AI klantdata."
+  schema={pageSchema}
+>
+  <section class="section">
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow text-brand-indigo mb-3">Dataset · update mei 2026</p>
+      <h1 class="text-3xl lg:text-5xl font-bold text-navy tracking-tightest mb-6">AI Statistieken Nederlands MKB 2026</h1>
+      <p class="text-lg text-slate-600 leading-relaxed mb-8">
+        Actuele cijfers over AI-adoptie in het Nederlandse MKB: per sector, per use case, per investerings-niveau. Bron-aggregatie van CBS-publicaties, Aanloop AI klantdata (n=80) en publieke onderzoeken. Vrij te citeren onder CC-BY 4.0 — vermeld <strong>Aanloop AI</strong> als bron en linkt graag terug naar deze pagina.
+      </p>
+      <div class="bg-brand-indigo/5 border border-brand-indigo/20 rounded-xl p-5 text-sm text-slate-700">
+        <strong>Voor journalisten en onderzoekers:</strong> alle cijfers zijn vrij te gebruiken in publicaties met bronvermelding. Voor onderbouwde grafieken of casus-data: <a href="mailto:pers@aanloopai.nl" class="text-brand-indigo underline">pers@aanloopai.nl</a>.
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-8">Headline-cijfers</h2>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {stats.map((s) => (
+          <div class="card p-6 bg-white">
+            <div class="text-3xl lg:text-4xl font-bold text-brand-indigo mb-2">{s.value}</div>
+            <p class="text-sm text-slate-700 leading-snug mb-3">{s.label}</p>
+            <p class="text-xs text-slate-500">Bron: {s.source}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-8">AI-adoptie per sector (Nederlands MKB)</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="bg-slate-50 border-b-2 border-slate-200">
+              <th class="text-left p-4 font-semibold text-navy">Sector</th>
+              <th class="text-left p-4 font-semibold text-navy">Adoptie 2026</th>
+              <th class="text-left p-4 font-semibold text-navy">Groei YoY</th>
+              <th class="text-left p-4 font-semibold text-navy">Karakteristiek</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sectorAdoption.map((s) => (
+              <tr class="border-b border-slate-200 hover:bg-slate-50/50">
+                <td class="p-4 font-semibold text-navy">{s.sector}</td>
+                <td class="p-4 text-brand-indigo font-bold">{s.adoption}</td>
+                <td class="p-4 text-brand-emerald font-medium">{s.delta}</td>
+                <td class="p-4 text-slate-600 text-xs">{s.notes}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-slate-500 mt-4">Bron: CBS Bedrijfsleven 2025, aangevuld met Aanloop AI marktanalyse.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-8">Populaire AI use cases in MKB</h2>
+      <div class="grid sm:grid-cols-2 gap-4">
+        {useCases.map((u) => (
+          <div class="card p-6 bg-white flex items-start justify-between gap-4">
+            <div class="flex-1 min-w-0">
+              <p class="font-semibold text-navy mb-1">{u.name}</p>
+              <p class="text-xs text-slate-500">Groei {u.growth}</p>
+            </div>
+            <span class="pill bg-brand-emerald/10 text-brand-emerald flex-shrink-0">{u.usage}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-8">Investerings-tiers (per maand)</h2>
+      <div class="space-y-3">
+        {investmentTiers.map((t) => (
+          <div class="card p-6 bg-white border border-slate-200">
+            <div class="flex items-start justify-between gap-4 flex-wrap">
+              <div class="flex-1 min-w-0">
+                <p class="font-bold text-navy mb-1">{t.range}</p>
+                <p class="text-sm text-slate-600">{t.profile}</p>
+              </div>
+              <span class="pill bg-brand-indigo/10 text-brand-indigo">{t.share} van MKB</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-6">Methodologie</h2>
+      <div class="space-y-4 text-slate-600 text-sm leading-relaxed">
+        <p><strong class="text-navy">Aanloop AI klantdata:</strong> n=80 Nederlandse MKB-klanten, periode 2024-2026. ROI gemeten als (bespaarde tijdkosten + extra omzet - investering) / investering, op 12-maand basis. NPS gemeten via 7-dagen post-implementatie enqueue.</p>
+        <p><strong class="text-navy">CBS-publicaties:</strong> Bedrijfsleven 2025, Digitale Economie 2025. Specifiek: AI-adoptie bedrijven, Tabel A.</p>
+        <p><strong class="text-navy">Sector-extrapolaties:</strong> Op basis van CBS-cijfers per SBI-code, gewogen naar bedrijfsgrootte 5-250 medewerkers.</p>
+        <p><strong class="text-navy">Update-frequentie:</strong> Halfjaarlijks, eerste keer mei 2026 — volgende update november 2026.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl text-center">
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-4">Wilt u maatwerk-data voor uw artikel?</h2>
+      <p class="text-slate-600 mb-8">We delen graag aanvullende cijfers, casusdata of grafieken voor publicaties. Onder CC-BY 4.0 met bronvermelding.</p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="mailto:pers@aanloopai.nl" class="btn-primary">pers@aanloopai.nl</a>
+        <a href="/pers/" class="btn-outline">Pers &amp; media</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

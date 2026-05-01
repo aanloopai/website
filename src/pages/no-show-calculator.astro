@@ -1,0 +1,166 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const calculatorSchema = {
+  '@context': 'https://schema.org',
+  '@type': ['WebPage', 'WebApplication'],
+  '@id': 'https://aanloopai.nl/no-show-calculator/#calculator',
+  name: 'No-show Calculator voor MKB Nederland',
+  description: 'Bereken in 30 seconden hoeveel uw bedrijf jaarlijks verliest aan no-shows en wat u kunt besparen met AI-WhatsApp herinneringen. Vrij te gebruiken, geen registratie.',
+  url: 'https://aanloopai.nl/no-show-calculator/',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Any (web)',
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+  inLanguage: 'nl-NL',
+  creator: { '@id': 'https://aanloopai.nl/#organization' },
+};
+---
+
+<BaseLayout
+  title="No-show Calculator MKB Nederland — Bereken Uw Verlies"
+  description="Bereken in 30 seconden uw jaarlijkse no-show kosten en hoeveel u bespaart met AI WhatsApp-herinneringen. Voor MKB Nederland — geen registratie nodig."
+  schema={calculatorSchema}
+>
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow text-brand-indigo mb-3">Tools · Calculator</p>
+      <h1 class="text-3xl lg:text-5xl font-bold text-navy tracking-tightest mb-6">No-show Calculator voor MKB</h1>
+      <p class="text-lg text-slate-600 leading-relaxed mb-2">
+        Bereken in 30 seconden hoeveel uw bedrijf jaarlijks verliest aan no-shows — en hoeveel u bespaart met AI-WhatsApp herinneringen.
+      </p>
+      <p class="text-sm text-slate-500">Geen registratie. Cijfers gebaseerd op Aanloop AI klantdata van 80+ Nederlandse MKB-bedrijven.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <div class="card p-6 lg:p-8 bg-white">
+        <div class="space-y-6">
+          <div>
+            <label for="appointments" class="block text-sm font-semibold text-navy mb-2">
+              Hoeveel afspraken per week heeft u gemiddeld?
+            </label>
+            <input id="appointments" type="number" min="1" max="2000" value="100" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-lg font-semibold text-navy focus:outline-none focus:border-brand-indigo" />
+          </div>
+
+          <div>
+            <label for="value" class="block text-sm font-semibold text-navy mb-2">
+              Wat is uw gemiddelde afspraakwaarde (euro)?
+            </label>
+            <input id="value" type="number" min="10" max="10000" value="75" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-lg font-semibold text-navy focus:outline-none focus:border-brand-indigo" />
+            <p class="text-xs text-slate-500 mt-1">Bijv. huisarts 90 euro, fysio 50 euro, kapper 65 euro, garage APK 75 euro</p>
+          </div>
+
+          <div>
+            <label for="rate" class="block text-sm font-semibold text-navy mb-2">
+              Wat is uw huidige no-show percentage?
+            </label>
+            <select id="rate" class="w-full px-4 py-3 border border-slate-300 rounded-xl text-lg font-semibold text-navy focus:outline-none focus:border-brand-indigo">
+              <option value="10">10% (zeer goed — al sterke herinneringsflow)</option>
+              <option value="15" selected>15% (gemiddeld voor MKB Nederland)</option>
+              <option value="20">20% (typisch zonder herinneringen)</option>
+              <option value="25">25% (boven gemiddeld — vaak premium-segment)</option>
+              <option value="30">30% (zeer hoog — actie nodig)</option>
+            </select>
+          </div>
+        </div>
+
+        <button id="calc-button" class="btn-primary w-full mt-8 justify-center">
+          Bereken mijn no-show verlies
+        </button>
+      </div>
+
+      <div id="results" class="mt-6 hidden">
+        <div class="card p-6 lg:p-8 bg-white border-2 border-brand-indigo">
+          <p class="eyebrow text-brand-indigo mb-3">Uw resultaten</p>
+          <h2 class="text-2xl font-bold text-navy mb-6">Berekening</h2>
+
+          <div class="grid sm:grid-cols-2 gap-4 mb-6">
+            <div class="bg-slate-50 rounded-xl p-5">
+              <p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Uw huidige verlies (jaar)</p>
+              <p class="text-2xl font-bold text-rose-600" id="current-loss">-</p>
+              <p class="text-xs text-slate-500 mt-1" id="current-detail">-</p>
+            </div>
+            <div class="bg-brand-emerald/5 rounded-xl p-5 border border-brand-emerald/20">
+              <p class="text-xs uppercase tracking-wider text-brand-emerald mb-1">Met AI (no-show 5%)</p>
+              <p class="text-2xl font-bold text-brand-emerald" id="ai-loss">-</p>
+              <p class="text-xs text-slate-500 mt-1" id="ai-detail">-</p>
+            </div>
+          </div>
+
+          <div class="card p-5 bg-brand-indigo/5 border border-brand-indigo/20 mb-6">
+            <p class="text-xs uppercase tracking-wider text-brand-indigo mb-2">Mogelijke besparing per jaar</p>
+            <p class="text-4xl font-bold text-brand-indigo" id="saved">-</p>
+            <p class="text-xs text-slate-500 mt-2" id="saved-detail">-</p>
+          </div>
+
+          <div class="card p-5 bg-slate-50">
+            <p class="text-xs uppercase tracking-wider text-slate-500 mb-2">Aanloop AI Emma WhatsApp-pakket</p>
+            <p class="text-sm font-semibold text-navy mb-1">Vanaf 197 euro per maand all-in</p>
+            <p class="text-xs text-slate-500" id="roi-detail">-</p>
+          </div>
+
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a href="/demo-aanvragen/" class="btn-primary">Plan gratis demo</a>
+            <a href="/kennisbank/ai-no-show-reductie-mkb-nederland/" class="btn-outline">Lees: AI no-show reductie</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-6">Hoe werkt deze berekening?</h2>
+      <div class="space-y-4 text-slate-600 text-sm leading-relaxed">
+        <p><strong class="text-navy">Formule:</strong> Jaarlijks verlies = (afspraken per week × 52) × (no-show percentage / 100) × afspraakwaarde.</p>
+        <p><strong class="text-navy">Met AI:</strong> Wij rekenen met 5 procent residueel no-show — gemiddelde Aanloop AI klantdata na 90 dagen WhatsApp-herinneringen plus segmentatie. Sommige klanten halen 4 procent (zorg met goede flow), enkele 7-9 procent (premium beauty).</p>
+        <p><strong class="text-navy">ROI-context:</strong> Emma WhatsApp-pakket vanaf 197 euro per maand (2.364 euro per jaar). Bij gemiddelde MKB-praktijk levert dit 4-15x ROI op no-show alleen — exclusief de extra winsten op klantcontact, vaccinatieherinneringen, agenda-vragen.</p>
+        <p><strong class="text-navy">Onbekende waardes?</strong> Schat realistisch. Voor exacte cijfers per branche: zie onze sectorspecifieke <a href="/kennisbank/" class="text-brand-indigo underline">kennisbank-gidsen</a>.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const fmt = (n: number) => n.toLocaleString('nl-NL', { maximumFractionDigits: 0 });
+
+  const btn = document.getElementById('calc-button');
+  const resultsBox = document.getElementById('results');
+
+  btn?.addEventListener('click', () => {
+    const apptsPerWeek = parseFloat($('appointments').value || '0');
+    const value = parseFloat($('value').value || '0');
+    const noShowPct = parseFloat($('rate').value || '15');
+
+    if (apptsPerWeek <= 0 || value <= 0) return;
+
+    const apptsPerYear = apptsPerWeek * 52;
+    const currentNoShows = apptsPerYear * (noShowPct / 100);
+    const currentLoss = currentNoShows * value;
+
+    const aiNoShows = apptsPerYear * 0.05;
+    const aiLoss = aiNoShows * value;
+
+    const saved = currentLoss - aiLoss;
+    const investment = 197 * 12;
+    const roiMultiple = saved / investment;
+
+    document.getElementById('current-loss')!.textContent = '€ ' + fmt(currentLoss);
+    document.getElementById('current-detail')!.textContent = `${fmt(currentNoShows)} gemiste afspraken per jaar bij ${noShowPct}%`;
+
+    document.getElementById('ai-loss')!.textContent = '€ ' + fmt(aiLoss);
+    document.getElementById('ai-detail')!.textContent = `${fmt(aiNoShows)} gemiste afspraken per jaar bij 5%`;
+
+    document.getElementById('saved')!.textContent = '€ ' + fmt(saved);
+    document.getElementById('saved-detail')!.textContent = `${fmt(currentNoShows - aiNoShows)} extra ingevulde slots per jaar`;
+
+    document.getElementById('roi-detail')!.textContent =
+      `Investering Emma 197 euro per maand = 2.364 euro per jaar. Uw potentiele ROI: ${roiMultiple.toFixed(1)}x op alleen no-show besparingen.`;
+
+    resultsBox?.classList.remove('hidden');
+    resultsBox?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>

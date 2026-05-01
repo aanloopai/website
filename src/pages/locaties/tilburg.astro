@@ -13,6 +13,8 @@ const localSchema = {
   geo: { '@type': 'GeoCoordinates', latitude: lat, longitude: lon },
   areaServed: { '@type': 'City', name: city },
   priceRange: '€€',
+  telephone: '+31624741597',
+  email: 'hello@aanloopai.nl',
 };
 const faqItems = [
   { question: `Werkt Aanloop AI ook voor bedrijven in ${city}?`, answer: `Ja. Aanloop AI (KVK: 88606902) bedient bedrijven in heel Nederland, inclusief ${city} en de regio ${region}. Alle trajecten verlopen remote, met optioneel een persoonlijk gesprek.` },
@@ -56,7 +58,7 @@ const faqItems = [
             <div class="text-2xl mb-3" aria-hidden="true">{s.icon}</div>
             <h3 class="font-bold text-navy text-sm mb-2">{s.title}</h3>
             <p class="text-xs text-slate-600 mb-4">{s.desc}</p>
-            <a href={s.link} class="text-xs font-medium text-brand-indigo hover:underline">Meer info →</a>
+            <a href={s.link} class="text-xs font-medium text-brand-indigo hover:underline">AI in Tilburg bekijken →</a>
           </div>
         ))}
       </div>
@@ -84,6 +86,20 @@ const faqItems = [
       </div>
     </div>
   </section>
+  <section class="section-tight bg-slate-50/60 border-t border-slate-200">
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow text-brand-indigo mb-2">Kennisbank</p>
+      <h2 class="text-2xl font-bold text-navy mb-6">Verdiepende AI-gidsen</h2>
+      <div class="grid sm:grid-cols-2 gap-3">
+        <a href="/kennisbank/wat-is-een-ai-agent/" class="card p-4 hover:shadow-md transition-all bg-white"><p class="text-xs text-brand-indigo mb-1">Gids</p><p class="text-sm font-semibold text-navy">Wat is een AI agent? Complete gids</p></a>
+        <a href="/kennisbank/ai-roi-berekenen-mkb-nederland-2026/" class="card p-4 hover:shadow-md transition-all bg-white"><p class="text-xs text-brand-indigo mb-1">Gids</p><p class="text-sm font-semibold text-navy">AI ROI berekenen voor MKB 2026</p></a>
+        <a href="/kennisbank/ai-implementatie-stappen-mkb-nederland/" class="card p-4 hover:shadow-md transition-all bg-white"><p class="text-xs text-brand-indigo mb-1">Gids</p><p class="text-sm font-semibold text-navy">AI implementatie in 7 stappen</p></a>
+        <a href="/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/" class="card p-4 hover:shadow-md transition-all bg-white"><p class="text-xs text-brand-indigo mb-1">Gids</p><p class="text-sm font-semibold text-navy">AI en AVG-compliance voor MKB</p></a>
+      </div>
+    </div>
+  </section>
+
+
   <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
     <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
     <div class="container-page relative max-w-3xl">
