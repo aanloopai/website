@@ -179,6 +179,20 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    // Diagnostic endpoint — lists which env vars ARE visible to the worker (no values, just presence)
+    if (url.pathname === '/api/health') {
+      const envKeys = Object.keys(env || {}).filter(k => k !== 'ASSETS').sort();
+      return jsonResponse({
+        status: 'ok',
+        worker: 'aanloop-website',
+        deployed_at: new Date().toISOString(),
+        env_keys_present: envKeys,
+        brevo_key_present: !!env.BREVO_API_KEY,
+        brevo_key_length: env.BREVO_API_KEY ? env.BREVO_API_KEY.length : 0,
+        assets_binding_present: !!env.ASSETS,
+      });
+    }
+
     if (url.pathname === '/api/submit') {
       if (request.method === 'OPTIONS') {
         return new Response(null, { headers: CORS_HEADERS });
