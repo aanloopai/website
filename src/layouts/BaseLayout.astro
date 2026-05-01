@@ -307,6 +307,32 @@ const allSchemas = [
     <Header />
 
     <main id="main">
+      {pathParts.length > 0 && (
+        <nav aria-label="Kruimelpad" class="border-b border-slate-100 bg-white">
+          <div class="container-page py-3">
+            <ol class="flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
+              <li><a href="/" class="hover:text-navy">Home</a></li>
+              {pathParts.map((part, i) => {
+                const isLast = i === pathParts.length - 1;
+                const href = `/${pathParts.slice(0, i + 1).join('/')}/`;
+                const label = part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' ');
+                return (
+                  <>
+                    <li aria-hidden="true" class="text-slate-300">›</li>
+                    <li>
+                      {isLast ? (
+                        <span class="text-navy font-medium" aria-current="page">{label}</span>
+                      ) : (
+                        <a href={href} class="hover:text-navy">{label}</a>
+                      )}
+                    </li>
+                  </>
+                );
+              })}
+            </ol>
+          </div>
+        </nav>
+      )}
       <slot />
       {isKennisbankArticle && (
         <section class="border-t border-slate-200 bg-slate-50/60">
