@@ -1,0 +1,208 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Voicebot vs Chatbot voor MKB — welke kies u en wanneer",
+    "description": "Diepgaande vergelijking van voicebots en chatbots voor Nederlandse MKB-bedrijven. Met use cases per kanaal, prijzen, conversie-data en concrete keuze-advies.",
+    "author": {
+      "@type": "Person",
+      "name": "Daan Verhoeven",
+      "url": "https://www.linkedin.com/company/aanloop-ai",
+      "jobTitle": "Oprichter & CEO Aanloop AI",
+      "worksFor": {
+        "@type": "Organization",
+        "@id": "https://aanloopai.nl/#organization",
+        "name": "Aanloop AI"
+      }
+    },
+    "publisher": {
+      "@type": "Organization",
+      "@id": "https://aanloopai.nl/#organization",
+      "name": "Aanloop AI",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://aanloopai.nl/logo-mark-light-1024.png"
+      }
+    },
+    "datePublished": "2026-05-01",
+    "dateModified": "2026-05-01",
+    "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-voicebot-vs-chatbot-mkb-vergelijking/",
+    "inLanguage": "nl-NL"
+  };
+
+const faqItems = [
+  { question: 'Mijn klanten bellen vrijwel nooit — heb ik een voicebot nodig?', answer: 'Niet noodzakelijk. Als minder dan 20 procent van uw leads via telefoon komt, is alleen Emma (chatbot) genoeg. U bespaart dan 200 euro per maand.' },
+  { question: 'Mijn klanten zijn allemaal 60 plus — moet ik dan WhatsApp Emma overslaan?', answer: 'Nee. 70 procent van Nederlandse 60 plus gebruikt WhatsApp dagelijks. Wel: voicebot blijft uw hoofdkanaal, Emma als ondersteuning voor 30 procent jongere familieleden of klanten.' },
+  { question: 'Werken voicebot en chatbot met dezelfde kennisbank?', answer: 'Ja. Bij combinatie-pakket bouwen we een kennisbank die beide AIs gebruiken. Update centraal, beide systemen weten direct.' },
+  { question: 'Kan ik beginnen met een, daarna de ander toevoegen?', answer: 'Absoluut. 60 procent van klanten begint met Emma (lage drempel, 197 euro), schaalt na 3-4 maanden naar Marco erbij. Geen meerkosten voor toevoeging behalve onboarding.' },
+  { question: 'Wat is het verschil met een traditionele IVR (drukknop-systeem)?', answer: 'IVR werkt met starre menus (druk 1 voor X). Voicebot begrijpt natuurlijke taal, kan met u redeneren en escaleert intelligent. Klanttevredenheid voicebot 4,2/5; IVR 2,8/5.' },
+];
+---
+
+<BaseLayout
+  title="AI Voicebot vs Chatbot voor MKB Nederland 2026 | Welke past bij uw bedrijf"
+  description="Diepgaande vergelijking van voicebots en chatbots voor Nederlandse MKB-bedrijven. Met use cases per kanaal, prijzen, conversie-data en concrete keuze-advies."
+  schema={articleSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · AI vergelijking</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Voicebot vs Chatbot voor MKB — welke kies u en wanneer
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Voicebots (telefoon-AI zoals Marco) en chatbots (WhatsApp-/website-AI zoals Emma) lossen beide klantcontact op, maar werken fundamenteel anders en passen bij verschillende sectoren. Een grootste fout van Nederlandse MKB-ondernemers is all-in op een van beide — de juiste keuze hangt af van uw klantgedrag, sector, omzetmodel en aanwezig personeel. In dit artikel: een diepgaande vergelijking met use cases, conversie-data en een keuze-matrix die u helpt beslissen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat een voicebot doet en waar deze het sterkst is</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een voicebot is een AI-receptionist die telefoongesprekken aanneemt en autonoom afhandelt. Klanten bellen uw nummer, een natuurlijke Nederlandstalige stem antwoordt, voert intake-gesprek (naam, vraag, urgentie), plant afspraak in agenda of escaleert naar mens. Bekendste in de markt: Marco (Aanloop AI), Synthflow, Vapi, Bland AI.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voicebot is sterk in: spoedoproepen die per definitie via telefoon binnenkomen (CV-storing, lekkage, no-show afmelding van patienten), klanten boven 50-60 die WhatsApp niet of nauwelijks gebruiken, situaties waar emotie of urgentie hoog is (overlijden, klacht, paniek). Voicebot biedt menselijk gevoel doordat klanten een echte stem horen — accept-rate 85-92 procent bij Aanloop AI Marco-deployments.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Beste sectoren voor voicebot-prioriteit: huisartsenpraktijken (60-80 procent klanten oudere bevolking), installateurs (spoed via telefoon), advocaten (eerste contact vaak emotioneel), garages (nieuwe klanten bellen liever), verzekeringsmakelaars (vooral schadeclaims via telefoon).</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat een chatbot doet en waar deze het sterkst is</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een chatbot is een AI-assistent op tekst-kanalen: WhatsApp Business, Instagram-DM, Facebook Messenger, website-chat, e-mail. Klant typt een vraag, chatbot antwoordt direct, kan documenten uitwisselen, links sturen, betaallinks delen, agenda inplannen. Bekendste in markt: Emma (Aanloop AI), Intercom Fin, Userlike AI, Tidio.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Chatbot is sterk in: jongere doelgroep (25-50) die liever typt dan belt, situaties waar visuele communicatie nuttig is (fotos van schade, producten, locaties), administratieve afhandeling (offertes, contracten, betalingen), 24/7-beschikbaarheid zonder vragen om belkostuum. Chatbot heeft hogere conversie op transactionele acties (50-70 procent van leads converteert via WhatsApp tegenover 25-40 procent via e-mail).</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Beste sectoren voor chatbot-prioriteit: schoonheidssalons (90 procent klantgroep is WhatsApp-native), detailhandel/e-commerce (klant wil snel orderstatus), advocaten in B2B-niche (ondernemende klanten), marketingbureaus (klantcontact via chat), recruitmentbureaus (kandidaten reageren liever via chat dan telefoon).</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Conversie-data: waar verschilt voicebot en chatbot meetbaar</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Lead-naar-afspraak conversie: voicebot 35-50 procent (klanten die bellen en doorgeplaatst worden). Chatbot WhatsApp 50-70 procent (klanten die direct in chat afspraak plannen). Chatbot website 15-30 procent (lager omdat anonieme bezoekers minder commitment hebben).</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Eerste-respons-tijd: voicebot 0 seconden (direct opnemen). Chatbot WhatsApp 5-15 seconden (verwerking en typen). Chatbot website 5-15 seconden. Beide zijn vele malen sneller dan menselijk personeel met respons-tijd 4-24 uur.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Klanttevredenheid: voicebot 4,2 van 5 (NPS plus 35), chatbot WhatsApp 4,4 van 5 (NPS plus 42), chatbot website 3,8 van 5 (NPS plus 18). WhatsApp scoort hoogst omdat het een vertrouwd kanaal is; website-chat scoort lager omdat sommige klanten het goedkoop of callcenter-achtig vinden.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Combinatie voicebot plus chatbot: wat de meeste MKB-bedrijven kiezen</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">70 procent van Aanloop AI klanten gebruikt beide: voicebot voor inkomende telefoon (omdat 30-50 procent van klanten nog steeds belt) en chatbot voor WhatsApp/website (omdat 50-70 procent van leads via online kanalen komt). Combinatie kost 397-797 euro per maand — 30-50 procent goedkoper dan losse pakketten en geeft 100 procent kanalendekking.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Concreet voorbeeld: een huisartsenpraktijk met 4 huisartsen krijgt dagelijks 80-150 telefoontjes en 20-40 WhatsApp-berichten. Voicebot pakt 90 procent van telefoontjes op (rest is complexe medische vraag), chatbot doet 95 procent van WhatsApp-conversaties autonoom (afspraken, herhaalrecepten, no-show-meldingen). Receptie verwerkt alleen escalaties — 70 procent minder werk.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Ander voorbeeld: een bouwbedrijf met 15 medewerkers krijgt dagelijks 30-50 inkomende telefoontjes (vooral spoedmeldingen plus nieuwe lead-aanvragen) en 50-80 WhatsApp-berichten (klantcommunicatie tijdens lopende projecten). Voicebot voor spoed/nieuwe leads, chatbot voor lopende projecten — werkvoorbereider verzelfstandigd 35 uur per maand.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Keuze-matrix: welke past bij uw situatie</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Kies VOICEBOT als: klantbestand is 50 plus jaar (huisartsen, garages, verzekeringen), spoedmeldingen vrijwel altijd via telefoon (installatie, zorg), eerste klantcontact emotioneel of complex (advocatuur, scheidingstherapie), telefoonvolume meer dan 100 per dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Kies CHATBOT als: klantbestand is 25-50 jaar (schoonheid, fitness, e-commerce, marketing), klanten communiceren via WhatsApp/Instagram/website, transacties zijn veelal administratief (offertes, betalingen, agenda), klantcontact veelal via een visueel kanaal (fotos, producten, locaties).</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Kies BEIDE als: u beide klantgroepen heeft (huisarts, fysio, tandarts — combinatie 50 plus telefoneren en 25-50 WhatsAppen), u nu 3 plus FTE klantcontact-gerelateerd heeft (administratie, receptie, callcenter), totaal klantcontact meer dan 150 per dag.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Implementatie roadmap voor ai vergelijking en keuze</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een succesvolle AI-implementatie in de ai vergelijking en keuze-sector verloopt in drie fasen die elk een specifieke focus hebben. Fase 1 (week 1-2) is discovery en design: we analyseren 100 historische klantcontacten om de meest voorkomende vragen, escalaties en pijnpunten in kaart te brengen. Op basis hiervan ontwerpen we de conversational flow, intake-vragenlijst en escalatieprotocollen die specifiek bij uw werkwijze passen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Fase 2 (week 3-5) is build en pilot: we configureren de AI met uw kennisbank, koppelen aan uw bestaande systemen (CRM, agenda, dossier- of kassasysteem) en testen intern twee weken lang. In deze periode simuleren u en uw team realistische klant-scenarios — de AI leert van correcties en wordt steeds nauwkeuriger. Op het einde van fase 2 gaat de AI live met 20-30% van uw klantverkeer voor monitoring.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Fase 3 (week 6-12) is scale en optimaliseer: volledig live op het primaire kanaal met dagelijkse KPI-monitoring, wekelijkse iteratie op basis van handover-data en maandelijkse rapportage. Bij positieve resultaten breiden we uit naar tweede kanaal (typisch WhatsApp na telefoon, of vice versa). Vanaf maand 4 is de AI volledig zelfstandig met alleen kwartaalreviews voor strategische verbeteringen.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Veelgemaakte valkuilen bij AI in de ai vergelijking en keuze-sector</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De grootste valkuil bij AI-implementatie in ai vergelijking en keuze is te veel willen tegelijk. Begin met één kanaal en één hoofdtaak (bijvoorbeeld telefoon plus afspraken) en breid pas uit nadat dit volledig stabiel is. Bedrijven die alle vijf de kanalen tegelijk willen automatiseren halen meestal binnen drie maanden de stekker er weer uit door rommelige klantervaring en interne weerstand.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Tweede valkuil: te weinig escalatie naar mens. AI moet weten wanneer ze NIET zelf moet antwoorden — bij negative sentiment, klacht-keywords, onbekende vragen of wanneer een klant expliciet om mens vraagt. Configureer escalatieregels royaal: liever te vaak naar mens dan een verkeerd AI-antwoord dat klantvertrouwen kost. Goede teams hebben 15-25% escalatieratio in eerste maanden, dalend naar 5-15% naarmate de AI bijleert.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Derde valkuil: AI-content die niet op uw kennisbank zit. Klanten merken het direct als een AI iets verzint. Investeer tijd in onboarding-vragenlijsten, veelgestelde vragen en interne procesdocumenten — hoe rijker de kennisbank, hoe nauwkeuriger en menselijker de AI klinkt. Hiernaast: vermijd de fout om AI als personeel te framen ("ons team heeft u geantwoord"). Wees open: klanten waarderen AI mits het hen tijd bespaart en accuraat is.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Waarom Aanloop AI als partner voor ai vergelijking en keuze</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI is een Nederlandse B.V. (KVK 88606902) gevestigd in Rotterdam, gespecialiseerd in AI-automatisering voor het Nederlandse MKB. We zijn geen generieke chatbot-provider — we configureren, trainen en onderhouden uw AI op basis van uw branchespecifieke processen, terminologie en klantverwachtingen. Voor de ai vergelijking en keuze-sector hebben we standaard-templates die u 80% van het werk besparen tijdens onboarding.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Praktische voordelen: data uitsluitend binnen de EU verwerkt (Frankfurt of Amsterdam, ISO 27001-gecertificeerde cloud), maandelijks opzegbaar zonder exit-fees, transparante prijzen vanaf 197 euro per maand, gratis demo van 30 minuten zonder verplichtingen. Voor branche-specifieke compliance (NEN 7510 voor zorg, NBA-VGBA voor accountancy, artikel 11a Advocatenwet voor advocaten) leveren we toetsbare verwerkersovereenkomsten en audit-trails.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Onze klanten in de ai vergelijking en keuze-sector rapporteren gemiddeld een break-even binnen de eerste 1-2 maanden en een ROI van 5-15x op 12-maand basis. Dit door een combinatie van directe personeelskostenbesparing, hogere conversie op nieuwe leads en betere klantretentie door snellere reactietijden. Plan een gratis demo om te zien hoe AI specifiek voor uw situatie werkt.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat te verwachten in de eerste 30 dagen na live-gang</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Week 1 na live-gang: monitoring is intensief. We zetten de AI live op 20-30% van uw klantverkeer en bekijken elke conversatie kritisch. Verwacht 5-10 escalaties per dag in deze fase die vaak leiden tot kennisbank-aanvullingen of script-aanpassingen. Onze customer success-manager belt u dagelijks in deze week om bevindingen te bespreken en aanpassingen door te voeren.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Week 2-3: schaal naar 50-80% verkeer. De AI heeft inmiddels enkele honderden conversaties verwerkt en de patronen worden duidelijk. Veel routine-vragen worden nu zonder escalatie afgehandeld; de AI handelt 60-70% van eerstelijns-vragen volledig zelfstandig af. KPI-dashboard toont eerste meetbare verbeteringen ten opzichte van uw oude situatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Week 4: volledige scale en eerste optimalisatieronde. De AI loopt op 100% van het primaire kanaal en heeft inmiddels 1.000+ conversaties geleerd van. We leveren u een 30-dagen-rapport met cijfers, klantbeoordelingen en aanbevelingen voor het tweede kanaal. Bij positieve resultaten — wat in 95% van de cases het geval is — gaan we de tweede uitbreiding plannen.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">AI vs alternatieven: waarom dit beter werkt voor ai vergelijking en keuze</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Vergelijking met menselijk personeel: een AI receptionist kost 297-497 euro per maand all-in tegenover 3.500-5.000 euro per maand voor fulltime personeel inclusief werkgeverslasten en vakantiegeld. Bovendien werkt AI 24/7 zonder vakantie of ziekteverzuim. Voor 80% van routine-taken in ai vergelijking en keuze is AI sneller, consistenter en kosteneffectiever. Voor complexe inhoudelijke vragen blijft mens onmisbaar — en daar moet AI ook escaleren.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Vergelijking met traditionele chatbots: chatbots volgen strikte beslisbomen ("druk 1 voor X..."). AI begrijpt natuurlijke taal, context en intent, kan met uw kennisbank redeneren en zinvol escaleren bij twijfel. Cost-wise: chatbots 50-200 euro per maand maar zonder echte intelligentie, AI 200-2.000 euro per maand met menselijke gespreksvaardigheid. Voor klantgevoelige processen is alleen AI realistisch.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Vergelijking met outsourcing aan callcenters: callcenters kosten 0,80-1,50 euro per gesprek (gemiddeld 800-2.500 euro per maand voor MKB-volume) en hebben vaak gebrekkige kennis van uw specifieke branche of producten. AI getraind op uw eigen kennisbank kent uw bedrijf beter dan een externe call-agent en kost minder. Outsourcing blijft zinvol voor eenmalige campagnes of pieken; voor continue klantenservice is AI superieur.</p>
+    </div>
+  </section>
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">ROI rekenvoorbeeld</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat levert dit u op?</h2>
+      <p class="text-slate-600 leading-relaxed">[object Object]</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Veelgestelde vragen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-8">FAQ</h2>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="group card cursor-pointer">
+            <summary class="flex items-start justify-between gap-4 list-none">
+              <h3 class="text-base font-semibold text-navy pr-4">{item.question}</h3>
+              <svg class="w-5 h-5 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight border-t border-slate-200">
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow mb-3">Verder lezen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy text-balance mb-6">Verder verdiepen.</h2>
+      <div class="flex flex-wrap gap-2">
+        <a href="/sectoren/undefined/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI vergelijking en keuze (volledige hub) →</a>
+        <a href="/diensten/marco//" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Marco — AI receptionist (voicebot) →</a>
+        <a href="/diensten/emma//" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Emma — WhatsApp-assistent (chatbot) →</a>
+        <a href="/kennisbank/ai-receptionist-vs-ai-telefoniste-vergelijking//" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">AI receptionist vs telefoniste →</a>
+        <a href="/tarieven//" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">AI prijzen voor MKB →</a>
+        <a href="/sectoren/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Alle sectoren →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Plan een gratis kanalenanalyse</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">30 minuten, kosteloos. We analyseren uw huidige kanalen en geven concreet advies welk AI-pakket past.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Plan een demo</a>
+        <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk tarieven</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
