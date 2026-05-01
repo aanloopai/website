@@ -83,7 +83,7 @@ function buildAutoresponseHtml(template, userName) {
   </body></html>`;
 }
 
-async function sendBrevoEmail(apiKey, payload) {
+async function sendBrevoEmail(apiKey, payload, label) {
   const res = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
     headers: {
@@ -93,11 +93,15 @@ async function sendBrevoEmail(apiKey, payload) {
     },
     body: JSON.stringify(payload),
   });
+  const text = await res.text();
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Brevo API error ${res.status}: ${text.substring(0, 300)}`);
+    // Common Brevo errors:
+    // 401 unauthorized -> invalid API key
+    // 400 with "Sender ... is not verified" -> verify sender email in Brevo dashboard
+    // 403 with credits -> account out of credits
+    throw new Error(`Brevo ${label} HTTP ${res.status}: ${text.substring(0, 400)}`);
   }
-  return res.json();
+  try { return JSON.parse(text); } catch { return { raw: text }; }
 }
 
 export async function onRequestPost(context) {
@@ -151,7 +155,7 @@ export async function onRequestPost(context) {
       replyTo: { email: userEmail, name: fullName },
       subject,
       htmlContent: buildNotificationHtml(formType, fields, userEmail, fullName),
-    });
+    }, 'notification');
 
     // 2. Autoresponse to user
     await sendBrevoEmail(env.BREVO_API_KEY, {
@@ -160,13 +164,19 @@ export async function onRequestPost(context) {
       replyTo: { email: NOTIFICATION_EMAIL, name: 'Aanloop AI' },
       subject: template.subject,
       htmlContent: buildAutoresponseHtml(template, firstName),
-    });
+    }, 'autoresponse');
 
     return new Response(JSON.stringify({ success: true, message: 'Verzonden' }), {
       headers: { 'content-type': 'application/json' },
     });
   } catch (err) {
-    return new Response(JSON.stringify({ success: false, message: err.message || 'Brevo send failed' }), {
+    // Log full error to Cloudflare console (visible in Pages → Functions → Logs)
+    console.error('[/api/submit] error:', err);
+    return new Response(JSON.stringify({
+      success: false,
+      message: err.message || 'Brevo send failed',
+      hint: 'Check: 1) BREVO_API_KEY env var set in Cloudflare Pages? 2) hello@aanloopai.nl verified as sender in Brevo dashboard? 3) Brevo account has credits?',
+    }), {
       status: 502,
       headers: { 'content-type': 'application/json' },
     });

@@ -231,15 +231,18 @@ document.getElementById('demo-form')?.addEventListener('submit', async (e) => {
   const data = new FormData(form);
   try {
     const res = await fetch('/api/submit', { method: 'POST', body: data });
-    const json = await res.json();
-    if (json.success) {
+    const text = await res.text();
+    let json: any = {};
+    try { json = JSON.parse(text); } catch { json = { message: text }; }
+    if (res.ok && json.success) {
       window.location.href = '/demo-bedankt/';
     } else {
-      throw new Error(json.message || 'Onbekende fout');
+      throw new Error(`[HTTP ${res.status}] ${json.message || text || 'Onbekende fout'}`);
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error('Demo form error:', err);
-    alert('Er ging iets mis bij het versturen. Probeer het nogmaals of stuur een e-mail naar hello@aanloopai.nl');
+    const msg = err?.message || 'Onbekende fout';
+    alert('Er ging iets mis bij het versturen.\n\nFout: ' + msg + '\n\nProbeer het nogmaals of stuur een e-mail naar hello@aanloopai.nl');
     btn.disabled = false;
     txt.textContent = 'Demo aanvragen';
     ico?.classList.remove('hidden');
