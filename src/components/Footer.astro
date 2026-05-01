@@ -309,9 +309,7 @@
     data.append('email', email);
     data.append('replyto', email);
     data.append('source', 'Footer newsletter signup');
-    data.append('autoresponse', 'true');
-    data.append('autoresponse_subject', 'Welkom bij de Aanloop AI nieuwsbrief');
-    data.append('autoresponse_message', `Hallo,\n\nBedankt voor uw aanmelding voor de Aanloop AI nieuwsbrief.\n\nU ontvangt maandelijks een mail met:\n- Praktische AI-tips voor het MKB\n- Sector-specifieke cases en benchmarks\n- Nieuwe gidsen uit onze kennisbank\n\nGeen spam — altijd direct afmeldbaar via de link onderaan elke mail.\n\nMet vriendelijke groet,\nAanloop AI\n\n---\nhello@aanloopai.nl | aanloopai.nl | KvK 88606902`);
+    // Note: autoresponse is configured in Web3Forms dashboard
     data.append('redirect', 'false');
     try {
       const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });

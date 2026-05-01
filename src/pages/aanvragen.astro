@@ -340,9 +340,7 @@ const steps = [
     data.append('subject', `Nieuwe aanvraag via aanloopai.nl — ${data.get('bedrijf') || 'onbekend bedrijf'}`);
     data.append('from_name', 'Aanloop AI Website');
     data.append('replyto', userEmail);
-    data.append('autoresponse', 'true');
-    data.append('autoresponse_subject', 'Bedankt voor uw aanvraag — Aanloop AI');
-    data.append('autoresponse_message', `Hallo ${submitterName},\n\nBedankt voor uw aanvraag bij Aanloop AI. We hebben uw gegevens goed ontvangen.\n\nWe nemen binnen 1 werkdag contact met u op om uw aanvraag verder te bespreken en een onboarding-traject in te plannen.\n\nMet vriendelijke groet,\nHet team van Aanloop AI\n\n---\nAanloop AI | AI-oplossingen voor het Nederlandse MKB\nhello@aanloopai.nl | aanloopai.nl | KvK 88606902`);
+    // Note: autoresponse subject/message is configured in Web3Forms dashboard, not here
     data.append('redirect', 'false');
 
     try {

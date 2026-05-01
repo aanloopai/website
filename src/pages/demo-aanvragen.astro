@@ -234,9 +234,7 @@ document.getElementById('demo-form')?.addEventListener('submit', async (e) => {
   const userEmail = data.get('email') as string;
 
   data.append('replyto', userEmail);
-  data.append('autoresponse', 'true');
-  data.append('autoresponse_subject', 'Bedankt voor uw demo-aanvraag — Aanloop AI');
-  data.append('autoresponse_message', `Hallo ${submitterName},\n\nBedankt voor uw demo-aanvraag bij Aanloop AI.\n\nWe hebben uw gegevens goed ontvangen en plannen binnen 1 werkdag een 30-minuten demo in waarin we live laten zien hoe AI agents werken voor uw situatie.\n\nMet vriendelijke groet,\nHet team van Aanloop AI\n\n---\nAanloop AI | AI-oplossingen voor het Nederlandse MKB\nhello@aanloopai.nl | aanloopai.nl | KvK 88606902`);
+  // Note: autoresponse subject/message is configured in Web3Forms dashboard, not here
   data.append('redirect', 'false');
 
   try {

@@ -317,9 +317,7 @@ const serviceSchema = {
     formData.append('subject', `Gratis AI Scan aanvraag — ${formData.get('bedrijf') || 'onbekend bedrijf'}`);
     formData.append('from_name', 'Aanloop AI Website');
     formData.append('replyto', formData.get('email') as string);
-    formData.append('autoresponse', 'true');
-    formData.append('autoresponse_subject', 'Bedankt voor uw AI-scan aanvraag — Aanloop AI');
-    formData.append('autoresponse_message', `Hallo ${naam},\n\nBedankt voor uw aanvraag voor een gratis AI-scan bij Aanloop AI.\n\nWe nemen binnen 1 werkdag contact met u op om een 30-minuten remote sessie in te plannen. Hierin analyseren we uw bedrijfsprocessen en laten we zien waar AI concrete besparingen oplevert — met indicatieve cijfers voor uw situatie.\n\nMet vriendelijke groet,\nHet team van Aanloop AI\n\n---\nAanloop AI | AI-oplossingen voor het Nederlandse MKB\nhello@aanloopai.nl | aanloopai.nl | KvK 88606902`);
+    // Note: autoresponse is configured in Web3Forms dashboard, not here
     formData.append('redirect', 'false');
 
     btn.disabled = true;

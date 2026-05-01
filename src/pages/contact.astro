@@ -221,10 +221,7 @@ const type = url.searchParams.get('type') || 'contact';
     data.append('from_name', 'Aanloop AI');
     data.append('replyto', data.get('email') as string);
 
-    // Auto-response to the submitter
-    data.append('autoresponse', 'true');
-    data.append('autoresponse_subject', `Bedankt voor uw ${typeLabel[requestType] || 'bericht'} — Aanloop AI`);
-    data.append('autoresponse_message', `Hallo ${submitterName},\n\nBedankt voor uw bericht! We hebben uw ${typeLabel[requestType] || 'bericht'} goed ontvangen.\n\nWe nemen zo snel mogelijk contact met u op — bij demo-aanvragen streven we naar dezelfde werkdag.\n\nMet vriendelijke groet,\nHet team van Aanloop AI\n\n---\nAanloop AI | AI-oplossingen voor het Nederlandse MKB\nhello@aanloopai.nl | aanloopai.nl`);
+    // Note: autoresponse subject/message is configured in Web3Forms dashboard, not here
     data.append('redirect', 'false');
 
     btn.disabled = true;
