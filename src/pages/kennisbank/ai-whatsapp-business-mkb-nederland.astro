@@ -25,6 +25,25 @@ const articleSchema = {
     "inLanguage": "nl-NL"
   };
 
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'AI WhatsApp Business opzetten voor MKB Nederland',
+  description: 'Stap-voor-stap: WhatsApp Business API verkrijgen, AI koppelen, conversational flow ontwerpen en live gaan — gemiddelde doorlooptijd 7 werkdagen voor MKB.',
+  totalTime: 'P7D',
+  estimatedCost: { '@type': 'MonetaryAmount', currency: 'EUR', value: '197' },
+  inLanguage: 'nl-NL',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'WhatsApp Business API aanvragen', text: 'Aanmelden bij een Business Solution Provider (360dialog, Twilio, MessageBird). Aanloop AI regelt de complete aanmelding bij Meta inclusief KvK-verificatie en groen vinkje.' },
+    { '@type': 'HowToStep', position: 2, name: 'Bestaand nummer migreren of nieuw aanvragen', text: 'Bestaand zakelijk nummer migreren naar de API zonder nummerwijziging, of nieuw nummer aanvragen via de BSP.' },
+    { '@type': 'HowToStep', position: 3, name: 'Kennisbank en FAQ opbouwen', text: 'FAQ-sectie, productcatalogus, leveringsvoorwaarden en interne documenten verzamelen. Hoe rijker de kennisbank, hoe nauwkeuriger Emma reageert.' },
+    { '@type': 'HowToStep', position: 4, name: 'Integraties koppelen', text: 'Native koppelingen activeren: Shopify, WooCommerce, Magento, Lightspeed, PrestaShop. Voor track-and-trace: PostNL, DHL, DPD, Bpost.' },
+    { '@type': 'HowToStep', position: 5, name: 'Conversational flow ontwerpen', text: 'Begroeting, intent-detectie, top-20 vraag-categorieen en escalatieprotocol uittekenen. Doel: 70-85 procent van inkomende vragen automatisch afhandelen.' },
+    { '@type': 'HowToStep', position: 6, name: 'Pilot met 20-30 procent verkeer', text: 'Twee weken live met deel van WhatsApp-verkeer. Dagelijkse KPI-monitoring (deflection-ratio, CSAT, escalatie-redenen) en wekelijkse iteratie.' },
+    { '@type': 'HowToStep', position: 7, name: 'Volledig live en uitbreiden', text: 'Schaal naar 100 procent verkeer op WhatsApp. Maandelijkse rapportage, kennisbank-aanvullingen en uitbreiding naar campagne-templates en proactieve berichten.' },
+  ],
+};
+
 const faqItems = [
   { question: 'Heb ik een WhatsApp Business account nodig?', answer: 'Ja, u krijgt automatisch de WhatsApp Business API. Aanloop AI regelt de complete aanmelding bij Meta via 360dialog of Twilio.' },
   { question: 'Kan ik mijn bestaande nummer gebruiken?', answer: 'Ja. We migreren uw bestaande nummer naar de API zonder dat het nummer wijzigt.' },
@@ -40,7 +59,7 @@ const faqItems = [
 <BaseLayout
   title="AI WhatsApp Business voor MKB Nederland — Setup, Use Cases & Prijzen 2026 | Aanloop AI"
   description="Complete gids: AI op WhatsApp Business voor het Nederlandse MKB. Meta API setup, gebruikscases per sector, conversational flow design en prijzen vanaf 197 euro per maand."
-  schema={articleSchema}
+  schema={[articleSchema, howToSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

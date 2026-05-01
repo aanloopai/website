@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AVG-checklist voor AI in het MKB — 25 controlepunten voor compliant gebruik',
+  description: 'Volledige AVG-checklist met 25 controlepunten voordat u AI inschakelt in uw Nederlandse MKB-bedrijf. Verwerkersovereenkomst, datalokatie, sub-verwerkers, betrokkenenrechten en NEN 7510. Vrij toegankelijk, downloadbaar als PDF.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-01',
+  dateModified: '2026-05-01',
+  mainEntityOfPage: 'https://aanloopai.nl/avg-checklist-ai-mkb/',
+  inLanguage: 'nl-NL',
+  license: 'https://creativecommons.org/licenses/by/4.0/',
+};
+
+const checklistSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  '@id': 'https://aanloopai.nl/avg-checklist-ai-mkb/#checklist',
+  name: 'AVG-checklist AI voor MKB Nederland',
+  description: '25-punts AVG-controlechecklist voor MKB-ondernemers die AI inzetten — gebaseerd op AVG, EU AI Act, EU-DPF en NEN 7510.',
+  inLanguage: 'nl-NL',
+  license: 'https://creativecommons.org/licenses/by/4.0/',
+  isAccessibleForFree: true,
+  creator: { '@id': 'https://aanloopai.nl/#organization' },
+};
+
+const sections = [
+  {
+    title: '1. Leverancier en sub-verwerkers',
+    items: [
+      'Leverancier hanteert verwerking binnen EU (datacenter Frankfurt, Amsterdam of Parijs)',
+      'Sub-verwerkers (OpenAI, Anthropic, Google) zijn opgenomen onder EU-DPF of werken via EU-only deployment',
+      'Sub-verwerkerslijst is opgevraagd, ontvangen en beoordeeld',
+      'Wijzigingen in sub-verwerkers worden 30 dagen vooraf gemeld met opt-out-recht',
+      'Leverancier heeft expliciete no-training-toezegging op uw klantdata',
+    ],
+  },
+  {
+    title: '2. Verwerkersovereenkomst (DPA)',
+    items: [
+      'Standaard verwerkersovereenkomst getekend met clausules voor datalokatie en bewaartermijn',
+      'Beveiligingsmaatregelen onder ISO 27001 of vergelijkbaar gespecificeerd',
+      'Incident-meldplicht binnen 72 uur is contractueel vastgelegd',
+      'Data-export of bewijs van verwijdering bij contracteinde is gegarandeerd',
+      'Audit-recht (op eigen kosten) is opgenomen',
+    ],
+  },
+  {
+    title: '3. Datalokatie en bewaartermijn',
+    items: [
+      'Bewaartermijn voor klantgesprekken is vastgesteld (30, 90 of 180 dagen)',
+      'Bewaartermijn is consistent met wettelijke plichten (zorg: NEN 7510, financieel: WWFT)',
+      'Pseudonimisering en encryptie at rest zijn geactiveerd',
+      'Data-residentie is technisch afgedwongen (geen fallback naar US-regio bij overload)',
+    ],
+  },
+  {
+    title: '4. Privacystatement en informatieplicht',
+    items: [
+      'Privacystatement bevat AI-paragraaf: leverancier, doel, datalokatie, bewaartermijn, betrokkenenrechten',
+      'Telefoongesprekken openen met informatieplicht-statement (gesprek wordt opgenomen voor kwaliteit en training)',
+      'WhatsApp- en chat-flows tonen AI-disclosure binnen eerste bericht',
+      'Algemene voorwaarden vermelden dat AI eerstelijns vragen verwerkt',
+    ],
+  },
+  {
+    title: '5. Verwerkingsregister (Artikel 30 AVG)',
+    items: [
+      'AI-verwerking is opgenomen in artikel 30-register met doel, categorieen, ontvangers, bewaartermijn',
+      'Risico-classificatie en eventuele DPIA (artikel 35) zijn uitgevoerd voor zorg-, juridische of financiele context',
+      'Periodieke review (jaarlijks) van het register staat in de agenda',
+    ],
+  },
+  {
+    title: '6. Betrokkenenrechten en escalatie',
+    items: [
+      'Centrale e-mail of dashboard voor inzage-, correctie- en vergetelverzoeken is ingericht',
+      'Aanloop AI levert binnen 30 dagen volledige data-export of bewijs van verwijdering',
+      'Escalatie-flow voor klacht of bezwaar is gedocumenteerd, inclusief functionaris gegevensbescherming (FG) waar verplicht',
+    ],
+  },
+];
+
+const totalItems = sections.reduce((sum, s) => sum + s.items.length, 0);
+---
+
+<BaseLayout
+  title="AVG-checklist AI voor MKB Nederland 2026 — 25-punts compliance check (gratis)"
+  description="25-punts AVG-checklist voor Nederlandse MKB-ondernemers die AI willen inzetten. Verwerkersovereenkomst, datalokatie, sub-verwerkers, betrokkenenrechten en NEN 7510. Vrij toegankelijk, downloadbaar."
+  schema={[articleSchema, checklistSchema]}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Gratis tool · {totalItems}-punts checklist</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AVG-checklist voor AI in het MKB
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Voordat u AI (telefonist, WhatsApp-assistent, chatbot, document-AI) inzet in uw Nederlandse MKB-bedrijf: doorloop deze {totalItems}-punts checklist. Gebaseerd op AVG, EU AI Act, EU-DPF en NEN 7510. Vrij toegankelijk onder CC-BY 4.0 — bron-vermelding naar aanloopai.nl voldoende.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <button onclick="window.print()" class="btn-primary">Downloaden als PDF (browser-print)</button>
+          <a href="/aanvragen/" class="btn-secondary">Hulp bij compliance-check</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 mb-12 text-sm text-amber-900">
+        <strong>Disclaimer:</strong> Deze checklist is een hulpmiddel en geen juridisch advies. Voor sector-specifieke verplichtingen (zorg: NEN 7510, financieel: WWFT, advocatuur: Wwft + beroepsgeheim) raadpleeg uw FG of jurist. Aanloop AI biedt op aanvraag een gratis 30-minuten compliance-quickscan.
+      </div>
+
+      {sections.map((section) => (
+        <div class="mb-12">
+          <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-5">{section.title}</h2>
+          <ul class="space-y-3">
+            {section.items.map((item) => (
+              <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4">
+                <span class="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded border-2 border-slate-300" aria-hidden="true"></span>
+                <span class="text-slate-700 leading-relaxed">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Veelvoorkomende valkuilen bij MKB-AI compliance</h2>
+      <div class="space-y-5 text-slate-700 leading-relaxed">
+        <p><strong class="text-navy">1. US-only-leverancier zonder EU-deployment.</strong> ChatGPT-Enterprise of Anthropic via standaard-API verwerkt data buiten EU. Voor klantdata van EU-burgers heeft u expliciet EU-residentie nodig of verwerking via EU-DPF.</p>
+        <p><strong class="text-navy">2. Geen DPA met sub-verwerker.</strong> Veel SaaS-AI-tools sluiten alleen een Terms of Service af. Voor klantdata is een verwerkersovereenkomst (artikel 28 AVG) vereist, niet optioneel.</p>
+        <p><strong class="text-navy">3. Onbeperkte bewaartermijn.</strong> AI-leveranciers houden gespreksdata vaak default 12+ maanden. Voor MKB-klantenservice is 90-180 dagen voldoende; verlaag actief.</p>
+        <p><strong class="text-navy">4. Geen openings-statement bij telefoon.</strong> Wie gesprekken opneemt, moet de klant informeren bij gespreksopening. Marco van Aanloop AI doet dit standaard.</p>
+        <p><strong class="text-navy">5. Privacystatement niet bijgewerkt.</strong> Bij invoering AI moet uw privacystatement binnen 14 dagen worden aangepast. Anders datalek-risico bij eerste klacht.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder lezen</h2>
+      <ul class="space-y-3 text-slate-700">
+        <li><a href="/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/" class="text-navy hover:underline">AI en AVG-compliance voor MKB — diepgaande gids</a></li>
+        <li><a href="/kennisbank/ai-voor-huisartsenpraktijk/" class="text-navy hover:underline">AI in zorg met NEN 7510-conforme verwerking</a></li>
+        <li><a href="/team/daan-verhoeven/" class="text-navy hover:underline">Over de auteur — Daan Verhoeven</a></li>
+        <li><a href="/aanvragen/" class="text-navy hover:underline">Gratis 30-minuten compliance-quickscan aanvragen</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <style>
+    @media print {
+      header, footer, .btn-primary, .btn-secondary { display: none !important; }
+      body { font-size: 11pt; line-height: 1.4; }
+      h1 { font-size: 22pt; }
+      h2 { font-size: 14pt; page-break-after: avoid; }
+      ul li { page-break-inside: avoid; }
+    }
+  </style>
+</BaseLayout>

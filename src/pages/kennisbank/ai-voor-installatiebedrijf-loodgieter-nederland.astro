@@ -34,6 +34,25 @@ const articleSchema = {
     "inLanguage": "nl-NL"
   };
 
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'AI receptionist en WhatsApp-assistent voor installatiebedrijf en loodgieter opzetten',
+  description: 'Spoedoproepen filteren, agenda automatisch plannen en standaard-offertes versturen voor Nederlandse installatie- en loodgietersbedrijven. Doorlooptijd circa 14 werkdagen.',
+  totalTime: 'P14D',
+  estimatedCost: { '@type': 'MonetaryAmount', currency: 'EUR', value: '397' },
+  inLanguage: 'nl-NL',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Spoed-flow definieren', text: 'Lijst opstellen van urgentie-keywords (lekkage, geen warm water, gas, overstort) met SMS- of WhatsApp-alert binnen 1 minuut naar dienstdoende monteur.' },
+    { '@type': 'HowToStep', position: 2, name: 'Planningsysteem koppelen', text: 'Standaard-koppelingen activeren: Bouw7, InstallerNet, Topdesk, Simplicate, AFAS Profit. Andere systemen via API, webhook of Make.com.' },
+    { '@type': 'HowToStep', position: 3, name: 'Vakterminologie trainen', text: '50-100 historische voorbeeldgesprekken aanleveren waarin Nederlandse installatie-terminologie voorkomt (lekkende verwarmingsketel, ketel-onderhoud, overstort, expansievat).' },
+    { '@type': 'HowToStep', position: 4, name: 'Offerte-flow voor standaard-klussen', text: 'AI laten kwalificeren en standaard-offertes laten opstellen voor CV-onderhoud, kleine reparaties en ketelvervangingen onder 5.000 euro. Grote projecten escaleren naar werkvoorbereider.' },
+    { '@type': 'HowToStep', position: 5, name: 'AVG en data-instellingen', text: 'Verwerkersovereenkomst tekenen, EU-datalokatie bevestigen (Frankfurt of Amsterdam), bewaartermijn standaard 180 dagen instellen.' },
+    { '@type': 'HowToStep', position: 6, name: 'Pilot bij avond- en weekenddienst', text: 'Eerst 14 dagen alleen avond- en weekenduren live. Daarna uitbreiden naar 24/7 nadat KPIs (deflection, escalatie, CSAT) stabiel zijn.' },
+    { '@type': 'HowToStep', position: 7, name: 'Volledig live op telefoon en WhatsApp', text: 'Na pilot uitrollen op alle inkomende kanalen. Maandelijkse rapportage en kennisbank-aanvullingen op basis van escalatie-redenen.' },
+  ],
+};
+
 const faqItems = [
   { question: 'Werkt een AI receptionist met mijn bestaande planningsysteem?', answer: 'Ja. We hebben standaard-koppelingen met Bouw7, InstallerNet, Topdesk, Simplicate en AFAS Profit. Voor andere systemen werken we via API, webhook of Make.com — integratie kost meestal 1-3 werkdagen.' },
   { question: 'Begrijpt de AI Nederlandse vakterminologie zoals lekkende verwarmingsketel of overstort?', answer: 'Ja. We trainen de AI specifiek op Nederlandse installatie-terminologie tijdens de onboarding-fase. U levert ons 50-100 voorbeeld-conversaties uit uw verleden, daar leert de AI van.' },
@@ -46,7 +65,7 @@ const faqItems = [
 <BaseLayout
   title="AI voor installatiebedrijf en loodgieter Nederland 2026 | Spoedoproep, agenda en planning automatiseren"
   description="Hoe een AI receptionist en WhatsApp-assistent spoedoproepen, afspraakplanning en offertes voor installatiebedrijven en loodgieters in Nederland automatiseren. Met integraties, prijzen en concrete ROI."
-  schema={articleSchema}
+  schema={[articleSchema, howToSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

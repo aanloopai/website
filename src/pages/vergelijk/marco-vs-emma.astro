@@ -1,0 +1,151 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Marco of Emma: AI-receptionist of AI-WhatsApp — wat past het beste bij uw MKB?',
+  description: 'Vergelijking Marco (telefonie-AI) versus Emma (WhatsApp-AI) van Aanloop AI: feature-tabel, gebruikscases per sector, prijzen vanaf 197 euro per maand, live in 7 werkdagen.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-01',
+  dateModified: '2026-05-01',
+  mainEntityOfPage: 'https://aanloopai.nl/vergelijk/marco-vs-emma/',
+  inLanguage: 'nl-NL',
+};
+
+const comparison = [
+  { feature: 'Primair kanaal', marco: 'Telefoon (24/7)', emma: 'WhatsApp Business' },
+  { feature: 'Doorlooptijd live-gang', marco: '7 werkdagen', emma: '5-10 werkdagen' },
+  { feature: 'Startprijs per maand', marco: '397 euro', emma: '197 euro' },
+  { feature: 'Talen standaard', marco: 'Nederlands, Engels', emma: 'Nederlands, Engels' },
+  { feature: 'Extra talen op aanvraag', marco: 'Duits, Frans, Spaans', emma: 'Duits, Frans, Spaans, Pools' },
+  { feature: 'Agenda-koppeling', marco: 'Google, Outlook, Cal.com, Calendly', emma: 'Google, Outlook, Cal.com, Calendly' },
+  { feature: 'CRM-koppeling', marco: 'HubSpot, Salesforce, Pipedrive, AFAS', emma: 'HubSpot, Salesforce, Pipedrive, AFAS' },
+  { feature: 'E-commerce-koppeling', marco: 'Beperkt (orderstatus per nummer)', emma: 'Shopify, WooCommerce, Magento, Lightspeed' },
+  { feature: 'Doorzettrouten', marco: 'Live doorverbinden naar mens', emma: 'Live handover via WhatsApp-chat' },
+  { feature: 'Sentiment-detectie', marco: 'Ja — escalatie binnen 1 minuut', emma: 'Ja — escalatie binnen 1 minuut' },
+  { feature: 'Beste voor', marco: 'Spoed, no-show reductie, 24/7 bereikbaarheid', emma: 'E-commerce, productvragen, retourbeleid, hoge volumes' },
+  { feature: 'Meta-fee bovenop pakket', marco: 'Geen', emma: '0,03-0,08 euro per uniek 24u-venster' },
+  { feature: 'AVG/EU-data', marco: 'EU-only datalokatie', emma: 'EU-only datalokatie' },
+  { feature: 'NEN 7510 conform', marco: 'Ja (zorg-add-on)', emma: 'Ja (zorg-add-on)' },
+];
+
+const useCases = [
+  { sector: 'Huisartsenpraktijk', kies: 'Marco', reden: 'Spoedvragen, triage, 24/7 telefoon — patienten bellen, ze WhatsAppen niet bij koorts.' },
+  { sector: 'E-commerce / webshop', kies: 'Emma', reden: 'Klanten WhatsAppen voor orderstatus, retouren, productvragen — telefoon is overkill.' },
+  { sector: 'Installatiebedrijf', kies: 'Marco + Emma', reden: 'Spoed altijd telefoon (Marco). Standaard-vragen (offerte status, planning) via WhatsApp (Emma).' },
+  { sector: 'Rijschool', kies: 'Emma', reden: 'Leerlingen WhatsAppen — telefoon is voor ouders. Multi-touch herinneringen reduceren no-show 70 procent.' },
+  { sector: 'Restaurant', kies: 'Emma + Marco', reden: 'Reserveringen via WhatsApp (Emma). Annuleringen op de dag zelf vaak via telefoon (Marco).' },
+  { sector: 'Garage / autobedrijf', kies: 'Marco', reden: 'APK-afspraken en spoedreparaties via telefoon. WhatsApp soms voor offerte-foto.' },
+  { sector: 'Notariskantoor / advocatuur', kies: 'Marco', reden: 'Vertrouwelijke intake via telefoon. WhatsApp ongepast voor juridische zaken.' },
+  { sector: 'Schoonheidssalon / kapper', kies: 'Emma', reden: 'Klanten boeken en herplannen via WhatsApp. Geen 24/7-noodzaak.' },
+];
+---
+
+<BaseLayout
+  title="Marco vs Emma — AI-receptionist of AI-WhatsApp voor uw MKB? | Aanloop AI vergelijking"
+  description="Vergelijking Marco (telefonie-AI) versus Emma (WhatsApp-AI): feature-tabel, gebruikscases per sector, prijzen vanaf 197 euro per maand, live in 7 werkdagen."
+  schema={articleSchema}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Vergelijken · Marco vs Emma</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Marco of Emma: welke AI past bij uw MKB?
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Marco is onze AI-receptionist voor telefonie. Emma is onze AI-assistent voor WhatsApp Business. Veel ondernemers vragen zich af welke ze moeten kiezen — of allebei. Hier de complete vergelijking met 14 features, 8 sector-aanbevelingen en prijzen.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/aanvragen/" class="btn-primary">Gratis adviesgesprek</a>
+          <a href="/prijzen/" class="btn-secondary">Bekijk prijzen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Feature-tabel</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Feature</th>
+              <th class="text-left p-4 font-semibold text-navy">Marco (telefoon)</th>
+              <th class="text-left p-4 font-semibold text-navy">Emma (WhatsApp)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparison.map((row, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{row.feature}</td>
+                <td class="p-4 text-slate-700">{row.marco}</td>
+                <td class="p-4 text-slate-700">{row.emma}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Welke kiezen per sector?</h2>
+      <div class="space-y-4">
+        {useCases.map((uc) => (
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="flex items-start gap-4">
+              <span class="rounded-full bg-navy text-white text-xs px-3 py-1 font-semibold whitespace-nowrap">{uc.kies}</span>
+              <div>
+                <h3 class="font-bold text-navy">{uc.sector}</h3>
+                <p class="text-sm text-slate-600 mt-1 leading-relaxed">{uc.reden}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Wanneer beide?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Voor middelgrote MKB-bedrijven met 50+ klantcontacten per week is het combineren van Marco en Emma vaak voordeliger dan alleen een. Telefoon vangt spoed en no-show op (Marco), WhatsApp vangt asynchrone vragen op tegen lager kost (Emma). Bij gecombineerde inzet 25 procent korting op het totaal-pakket.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Aanbevolen pad: begin met een kanaal dat 80 procent van uw inkomende contact afhandelt, voeg het tweede toe in maand 3-4 nadat KPIs stabiel zijn.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/diensten/marco/" class="btn-secondary">Meer over Marco</a>
+        <a href="/diensten/emma/" class="btn-secondary">Meer over Emma</a>
+        <a href="/aanvragen/" class="btn-primary">Adviesgesprek aanvragen</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder vergelijken</h2>
+      <ul class="space-y-3 text-slate-700">
+        <li><a href="/vergelijk/ai-receptionist-vs-callcenter/" class="text-navy hover:underline">AI-receptionist versus extern callcenter</a></li>
+        <li><a href="/kennisbank/ai-receptionist-vs-ai-telefoniste-vergelijking/" class="text-navy hover:underline">AI-receptionist versus AI-telefoniste — verschil uitgelegd</a></li>
+        <li><a href="/kennisbank/ai-voicebot-vs-chatbot-mkb-vergelijking/" class="text-navy hover:underline">AI-voicebot versus chatbot voor MKB</a></li>
+        <li><a href="/vergelijk/" class="text-navy hover:underline">Aanloop AI versus andere leveranciers</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

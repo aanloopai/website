@@ -1,0 +1,157 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI-receptionist versus extern callcenter — kostprijs, kwaliteit en flexibiliteit voor MKB',
+  description: 'Volledige vergelijking AI-receptionist (Marco van Aanloop AI) versus extern callcenter voor Nederlandse MKB-bedrijven. Maandelijkse kosten, doorlooptijd, kwaliteit en sectorgeschiktheid.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-01',
+  dateModified: '2026-05-01',
+  mainEntityOfPage: 'https://aanloopai.nl/vergelijk/ai-receptionist-vs-callcenter/',
+  inLanguage: 'nl-NL',
+};
+
+const comparison = [
+  { feature: 'Maandelijkse kosten basis', ai: '397-997 euro', callcenter: '1.500-4.500 euro (afhankelijk van uren)' },
+  { feature: 'Kosten per gesprek', ai: 'Inbegrepen tot 1.500 gesprekken/maand', callcenter: '1,50-3,50 euro per gesprek' },
+  { feature: 'Doorlooptijd live-gang', ai: '7 werkdagen', callcenter: '4-8 weken (training + script)' },
+  { feature: 'Beschikbaarheid', ai: '24/7/365 zonder meerprijs', callcenter: '24/7 mogelijk maar 1,5-2x premium' },
+  { feature: 'Talen standaard', ai: 'Nederlands, Engels (extra op aanvraag)', callcenter: 'Nederlands; meertalig 25-40 procent duurder' },
+  { feature: 'Schaalbaarheid bij piek', ai: 'Onbeperkt — geen wachttijd', callcenter: 'Wachtrij 30s-3 min bij piek' },
+  { feature: 'Antwoordsnelheid', ai: 'Onmiddellijk (binnen 2 sec)', callcenter: 'Gemiddeld 30-90 seconden wachttijd' },
+  { feature: 'Consistentie van antwoord', ai: '100 procent — zelfde script', callcenter: 'Variabel per agent en moment' },
+  { feature: 'Maatwerk-script wijziging', ai: 'Direct (binnen 1 dag)', callcenter: '1-2 weken (re-training agents)' },
+  { feature: 'Doorzettrouten naar mens', ai: 'Live doorverbinden naar uw team', callcenter: 'Standaard onderdeel' },
+  { feature: 'Sentiment-detectie', ai: 'Ja — escalatie binnen 1 minuut', callcenter: 'Afhankelijk van agent-ervaring' },
+  { feature: 'CRM-integratie', ai: 'HubSpot, Salesforce, Pipedrive, AFAS', callcenter: 'Op aanvraag (vaak meerprijs)' },
+  { feature: 'Rapportage en KPIs', ai: 'Live dashboard met deflection, CSAT', callcenter: 'Maandelijkse rapportage (vaak basic)' },
+  { feature: 'AVG/EU-data', ai: 'EU-only datalokatie, NEN 7510 mogelijk', callcenter: 'Afhankelijk — vaak buiten EU bij budget-aanbieders' },
+  { feature: 'Opzegtermijn', ai: 'Maandelijks', callcenter: '6-12 maanden contracten gangbaar' },
+];
+
+const scenarios = [
+  { situatie: 'Huisartsenpraktijk met 80 oproepen per dag', ai: 'Marco 397-697 euro/maand', callcenter: '2.800-3.800 euro/maand', verschil: '4-6x goedkoper' },
+  { situatie: 'Webshop met seizoenspieken (kerstperiode 5x volume)', ai: 'Geen extra kosten — onbeperkt schaalbaar', callcenter: 'Premium-fee bij piek (2-3x basis)', verschil: 'Geen piek-fee' },
+  { situatie: 'Installatiebedrijf met 24/7 storingsdienst', ai: '24/7 inbegrepen', callcenter: 'Nachturen 50-100 procent duurder', verschil: '2-3x goedkoper avond/nacht' },
+  { situatie: 'B2B-zakelijk met complexe technische intake', ai: 'Custom-getraind op uw productcatalogus', callcenter: 'Algemeen — beperkte productkennis', verschil: 'Hogere kwalificatie' },
+];
+---
+
+<BaseLayout
+  title="AI-receptionist versus extern callcenter 2026 — kosten, kwaliteit en SLA voor MKB | Aanloop AI"
+  description="Volledige vergelijking AI-receptionist versus extern callcenter voor Nederlandse MKB. 15 features, 4 scenarios, kosten 4-6x lager, live in 7 werkdagen versus 4-8 weken."
+  schema={articleSchema}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Vergelijken · AI versus callcenter</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI-receptionist of extern callcenter?
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Voor Nederlandse MKB-bedrijven die overwegen telefonische klantenservice uit te besteden: een eerlijke vergelijking. AI-receptionist (Marco van Aanloop AI) versus traditioneel extern callcenter. Wij vergelijken 15 features, 4 realistische scenarios en geven aan wanneer welke keuze logisch is.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/aanvragen/" class="btn-primary">Gratis adviesgesprek</a>
+          <a href="/diensten/marco/" class="btn-secondary">Meer over Marco</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Feature- en kostenvergelijking</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Feature</th>
+              <th class="text-left p-4 font-semibold text-navy">AI-receptionist (Marco)</th>
+              <th class="text-left p-4 font-semibold text-navy">Extern callcenter</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparison.map((row, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{row.feature}</td>
+                <td class="p-4 text-slate-700">{row.ai}</td>
+                <td class="p-4 text-slate-700">{row.callcenter}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Realistische kostenscenarios</h2>
+      <div class="space-y-4">
+        {scenarios.map((s) => (
+          <div class="rounded-2xl border border-slate-200 bg-white p-5 lg:p-6">
+            <h3 class="font-bold text-navy mb-3">{s.situatie}</h3>
+            <div class="grid sm:grid-cols-3 gap-4 text-sm">
+              <div>
+                <p class="text-xs uppercase tracking-wider text-slate-500 mb-1">AI-receptionist</p>
+                <p class="text-slate-700">{s.ai}</p>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Callcenter</p>
+                <p class="text-slate-700">{s.callcenter}</p>
+              </div>
+              <div>
+                <p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Verschil</p>
+                <p class="text-navy font-semibold">{s.verschil}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Wanneer is een callcenter alsnog beter?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">In drie situaties is een traditioneel callcenter alsnog de juiste keuze:</p>
+      <ul class="space-y-3 text-slate-700 list-disc pl-5 mb-6">
+        <li><strong class="text-navy">Outbound campagnes met persoonlijke verkoop.</strong> Cold calling, fundraising en complexe B2B-acquisitie vragen menselijke gespreksvoering die AI nu nog niet evenaart.</li>
+        <li><strong class="text-navy">Crisis-situaties met emotionele begeleiding.</strong> Lichaamstaal-substituut, compassie en spontane improvisatie zijn menselijke sterkten.</li>
+        <li><strong class="text-navy">Hoog-vertrouwelijke intake (notariaat, advocatuur).</strong> Wanneer de klant verwacht een mens te spreken voor het contract zelf — al kan de AI prima doorzetten naar uw partner.</li>
+      </ul>
+      <p class="text-slate-700 leading-relaxed">Voor 80 procent van MKB-klantenservice (orderstatus, afspraken plannen, FAQ, no-show preventie) is AI sneller, goedkoper en consistenter.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder lezen</h2>
+      <ul class="space-y-3 text-slate-700">
+        <li><a href="/vergelijk/marco-vs-emma/" class="text-navy hover:underline">Marco vs Emma — telefoon-AI of WhatsApp-AI?</a></li>
+        <li><a href="/kennisbank/ai-telefoniste-vs-mens/" class="text-navy hover:underline">AI-telefoniste versus menselijke receptioniste</a></li>
+        <li><a href="/kennisbank/ai-voicebot-vs-chatbot-mkb-vergelijking/" class="text-navy hover:underline">AI-voicebot versus chatbot</a></li>
+        <li><a href="/diensten/marco/" class="text-navy hover:underline">Marco — onze AI-receptionist</a></li>
+        <li><a href="/aanvragen/" class="text-navy hover:underline">Gratis adviesgesprek aanvragen</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

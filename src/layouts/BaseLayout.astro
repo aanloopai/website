@@ -27,6 +27,13 @@ const canonical = canonicalOverride ?? new URL(Astro.url.pathname, 'https://aanl
 const fullTitle = title.includes('Aanloop') ? title : `${title} · Aanloop AI`;
 const ogImage = image.startsWith('http') ? image : `https://aanloopai.nl${image}`;
 
+// Auto-inject author bio + last-updated on kennisbank-articles (not on index)
+const isKennisbankArticle =
+  Astro.url.pathname.startsWith('/kennisbank/') &&
+  Astro.url.pathname !== '/kennisbank/' &&
+  Astro.url.pathname !== '/kennisbank';
+const lastUpdated = '1 mei 2026';
+
 // ── Organization Schema ────────────────────────────────────────────
 const orgSchema = {
   '@context': 'https://schema.org',
@@ -301,6 +308,38 @@ const allSchemas = [
 
     <main id="main">
       <slot />
+      {isKennisbankArticle && (
+        <section class="border-t border-slate-200 bg-slate-50/60">
+          <div class="container-page max-w-3xl py-12 lg:py-16">
+            <div class="flex items-center justify-between text-sm text-slate-500 mb-8">
+              <span>Laatst bijgewerkt: {lastUpdated}</span>
+              <a href="/kennisbank/" class="hover:text-navy">Terug naar kennisbank</a>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-6 lg:p-8 shadow-sm">
+              <div class="flex items-start gap-4">
+                <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-navy text-white text-lg font-bold">DV</div>
+                <div class="min-w-0">
+                  <p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Geschreven door</p>
+                  <h3 class="text-lg font-bold text-navy">
+                    <a href="/team/daan-verhoeven/" class="hover:underline">Daan Verhoeven</a>
+                  </h3>
+                  <p class="text-sm text-slate-600 mt-1">Oprichter en CEO Aanloop AI. Begeleidt 80+ Nederlandse MKB-bedrijven met implementatie van AI-receptionisten, WhatsApp-assistenten en workflow automatisering.</p>
+                  <div class="flex flex-wrap gap-3 mt-3 text-sm">
+                    <a href="/team/daan-verhoeven/" class="text-navy hover:underline">Profiel</a>
+                    <a href="https://www.linkedin.com/in/daanverhoeven/" rel="author noopener" target="_blank" class="text-navy hover:underline">LinkedIn</a>
+                    <a href="/contact/" class="text-navy hover:underline">Contact</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 mt-6 text-xs">
+              <a href="/kennisbank/" class="rounded-full border border-slate-200 px-3 py-1 text-slate-600 hover:border-navy hover:text-navy">Meer kennisbank-artikelen</a>
+              <a href="/glossarium/" class="rounded-full border border-slate-200 px-3 py-1 text-slate-600 hover:border-navy hover:text-navy">AI-begrippenlijst</a>
+              <a href="/aanvragen/" class="rounded-full border border-slate-200 px-3 py-1 text-slate-600 hover:border-navy hover:text-navy">Gratis adviesgesprek</a>
+            </div>
+          </div>
+        </section>
+      )}
     </main>
 
     <Footer />
