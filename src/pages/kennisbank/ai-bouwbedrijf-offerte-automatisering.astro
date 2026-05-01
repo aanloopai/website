@@ -16,6 +16,25 @@ const articleSchema = {
   inLanguage: 'nl-NL',
 };
 
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Offerte- en planningsautomatisering opzetten voor bouw- en installatiebedrijf',
+  description: 'Stap-voor-stap: AI receptionist + WhatsApp koppelen aan uw planning, offerte-flow voor standaard-klussen, monteur-routering. Doorlooptijd circa 10 werkdagen.',
+  totalTime: 'P10D',
+  estimatedCost: { '@type': 'MonetaryAmount', currency: 'EUR', value: '297' },
+  inLanguage: 'nl-NL',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Standaard-klussen definieren', text: 'Lijst opstellen van klustypes onder 5.000 euro (CV-onderhoud, kleine reparaties, ketelvervangingen) met vaste prijsranges en intake-vragen.' },
+    { '@type': 'HowToStep', position: 2, name: 'Spoed-keywords en escalatie-flow', text: 'Lekkage, stroomstoring, breuk, spoed triggeren SMS plus telefoon naar bereikbaarheidsdienst-monteur. Bij geen reactie binnen 5 minuten escalatie naar tweede monteur en eigenaar.' },
+    { '@type': 'HowToStep', position: 3, name: 'Werkbonsysteem koppelen', text: 'Native koppelingen: Bouwsoft, NetBau, Werkbon, AFAS, Exact. Custom systemen via REST API. Tweezijdige sync.' },
+    { '@type': 'HowToStep', position: 4, name: 'Foto en plattegrond-flow', text: 'Klanten sturen fotos, videos en pdfs via WhatsApp. AI valideert, slaat op en koppelt aan offerte-aanvraag. Complexe technische tekeningen escaleren naar specialist.' },
+    { '@type': 'HowToStep', position: 5, name: 'Vakjargon trainen', text: 'Onboarding met voorbeelden van CV-installaties, dakwerk, elektra, sanitair, metselwerk. AI leert uw specifieke terminologie en spreekt klantvriendelijk Nederlands.' },
+    { '@type': 'HowToStep', position: 6, name: 'Pilot avond- en weekenddienst', text: '7-10 dagen alleen avond- en weekenduren live. KPI-monitoring (deflection, escalatie, CSAT) wekelijks.' },
+    { '@type': 'HowToStep', position: 7, name: 'Volledig 24/7 live', text: 'Na pilot uitrollen op alle inkomende telefonie en WhatsApp. Maandelijkse rapportage en kennisbank-aanvullingen.' },
+  ],
+};
+
 const faqItems = [
   { question: 'Werkt AI met mijn werkbon-systeem of planning-software?', answer: 'Ja. Native koppelingen voor Bouwsoft, NetBau, Werkbon, AFAS, Exact en custom systemen via REST API. Tijdens onboarding configureren we de tweezijdige sync zodat AI-data direct in uw planning landt.' },
   { question: 'Kan de AI tekeningen of plattegronden ontvangen via WhatsApp?', answer: 'Ja. Klanten kunnen fotos, videos en pdfs sturen — de AI valideert, slaat op en koppelt aan de offerte-aanvraag in uw systeem. Voor complexe technische tekeningen escaleert de AI automatisch naar een specialist.' },
@@ -29,7 +48,7 @@ const faqItems = [
 <BaseLayout
   title="AI Bouwbedrijf — Offerte-Automatisering & Servicemonteur Routing voor MKB | Aanloop AI"
   description="AI automatisering voor Nederlandse bouw- en installatiebedrijven: offerte-aanvragen 24/7 verwerken, monteurs slim routeren, storingsmeldingen direct geëscaleerd. Vanaf 297 euro per maand."
-  schema={articleSchema}
+  schema={[articleSchema, howToSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">
