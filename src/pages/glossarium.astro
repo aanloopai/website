@@ -1,0 +1,257 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const terms = [
+  {
+    term: 'AI agent',
+    slug: 'ai-agent',
+    definition: 'Een AI agent is een autonoom softwareprogramma dat zelfstandig taken uitvoert, beslissingen neemt en met systemen of mensen interacteert om een doel te bereiken. In tegenstelling tot een chatbot kan een AI agent meerdere stappen overzien, externe systemen aanroepen en zonder menselijke tussenkomst tot een uitkomst komen.',
+    related: 'wat-is-een-ai-agent',
+  },
+  {
+    term: 'AI receptionist',
+    slug: 'ai-receptionist',
+    definition: 'Een AI receptionist is een spraak-AI die telefoongesprekken aanneemt en autonoom afhandelt: intake voeren, afspraken plannen, klantvragen beantwoorden of escaleren naar een mens. Werkt 24/7 zonder personeelskosten en is geintegreerd met agenda- en CRM-systemen.',
+    related: 'ai-telefoonassistent-bedrijven',
+  },
+  {
+    term: 'Voicebot',
+    slug: 'voicebot',
+    definition: 'Een voicebot is een AI die natuurlijke spraak begrijpt en genereert via telefoon of voice-interface. Anders dan een traditioneel IVR-keuzemenu (druk 1 voor X) begrijpt een voicebot vrije gesproken taal en kan de bot intent en context herkennen.',
+    related: 'voice-ai-klantenservice',
+  },
+  {
+    term: 'Chatbot',
+    slug: 'chatbot',
+    definition: 'Een chatbot is een geautomatiseerde gespreksassistent op tekstkanalen zoals WhatsApp, Messenger, Instagram-DM of website-chat. Moderne AI-chatbots gebruiken LLMs voor natuurlijke taalbegrip; eenvoudige chatbots werken via vooraf-geprogrammeerde beslisbomen.',
+    related: 'ai-agent-vs-chatbot',
+  },
+  {
+    term: 'LLM (Large Language Model)',
+    slug: 'llm',
+    definition: 'Een Large Language Model is een neuraal netwerk getraind op grote hoeveelheden tekst, zoals GPT-4, Claude of Gemini. LLMs vormen de kern van moderne AI-assistenten en kunnen tekst genereren, vragen beantwoorden, samenvatten en redeneren over context.',
+    related: 'wat-is-een-ai-agent',
+  },
+  {
+    term: 'RAG (Retrieval-Augmented Generation)',
+    slug: 'rag',
+    definition: 'RAG is een AI-techniek waarbij een LLM eerst relevante informatie uit een kennisbank ophaalt voordat het een antwoord genereert. Dit verhoogt accuraatheid en voorkomt hallucinaties. RAG is essentieel voor bedrijfs-AI die met eigen documenten en kennisbank werkt.',
+    related: 'beste-ai-assistent-mkb-nederland',
+  },
+  {
+    term: 'Conversational AI',
+    slug: 'conversational-ai',
+    definition: 'Conversational AI is de overkoepelende term voor AI-systemen die menselijke conversatie kunnen voeren via spraak of tekst. Omvat voicebots, chatbots, virtuele assistenten en spraakgestuurde interfaces. Doel: natuurlijke, contextbewuste interactie met klanten of medewerkers.',
+    related: 'ai-klantenservice-voor-mkb-2026',
+  },
+  {
+    term: 'Workflow automation',
+    slug: 'workflow-automation',
+    definition: 'Workflow automation is het automatiseren van repetitieve bedrijfsprocessen via tools zoals n8n, Make, Zapier of custom scripts. AI-gedreven workflow automation voegt intelligente beslislogica toe: classificatie van inkomende leads, contextuele routing, sentimentanalyse.',
+    related: 'ai-workflow-automation',
+  },
+  {
+    term: 'n8n',
+    slug: 'n8n',
+    definition: 'n8n is een open-source workflow automation platform met 400+ ingebouwde integraties (CRM, e-mail, agenda, AI-modellen). Zelf-hostbaar voor data-soevereiniteit. Populair bij MKB voor het bouwen van AI-gedreven processen zonder vendor lock-in.',
+    related: 'n8n-automatisering-mkb',
+  },
+  {
+    term: 'WhatsApp Business API',
+    slug: 'whatsapp-business-api',
+    definition: 'De WhatsApp Business API is de officiele B2B-interface waarmee bedrijven WhatsApp-berichten kunnen automatiseren via geaccrediteerde providers (BSPs) zoals 360dialog, Twilio of CM.com. Vereist: groene check, template-goedkeuring, AVG-compliance.',
+    related: 'ai-whatsapp-business-mkb-nederland',
+  },
+  {
+    term: 'AVG (Algemene Verordening Gegevensbescherming)',
+    slug: 'avg',
+    definition: 'De AVG (in Engels: GDPR) is de Europese privacywetgeving die regelt hoe persoonsgegevens verwerkt mogen worden. Voor AI-tools: vereist verwerkersovereenkomst, EU-only verwerking aanbevolen, geen modeltraining op klantdata zonder expliciete toestemming.',
+    related: 'ai-avg-gdpr-compliance-mkb-nederland',
+  },
+  {
+    term: 'NEN 7510',
+    slug: 'nen-7510',
+    definition: 'NEN 7510 is de Nederlandse norm voor informatiebeveiliging in de zorgsector, bovenop AVG. Vereist extra strikte logging, toegangscontrole en encryptie. Voor AI-tools die met patientendata werken (huisartsen, fysio, tandarts) is NEN 7510-bewuste verwerking noodzakelijk.',
+    related: 'ai-voor-huisartsenpraktijk',
+  },
+  {
+    term: 'EPD (Elektronisch Patientendossier)',
+    slug: 'epd',
+    definition: 'Een EPD is een digitaal patientendossier zoals Promedico, MicroHIS, Medicom (huisartsen) of Intramed, FysioRoadmap (fysiotherapie). AI-koppelingen met EPDs vereisen NEN 7510-conforme verbindingen en strikte autorisatie.',
+    related: 'ai-voor-fysiotherapiepraktijk-nederland',
+  },
+  {
+    term: 'No-show',
+    slug: 'no-show',
+    definition: 'No-show: een afspraak waarbij de klant niet komt opdagen zonder annulering. Kost gemiddeld MKB met afspraken (zorg, beauty, garage) 8.000-25.000 euro per FTE per jaar. AI-WhatsApp-herinneringen reduceren no-show van 15-30 procent naar 4-9 procent.',
+    related: 'ai-no-show-reductie-mkb-nederland',
+  },
+  {
+    term: 'BANT-kwalificatie',
+    slug: 'bant',
+    definition: 'BANT staat voor Budget, Authority, Need, Timeline — de vier criteria om B2B sales-leads te kwalificeren. AI-intake-bots gebruiken BANT-vragen om hot, warm en cold leads te scoren voordat een verkoper tijd investeert.',
+    related: 'ai-tools-zzp-freelancers-nederland',
+  },
+  {
+    term: 'IVR (Interactive Voice Response)',
+    slug: 'ivr',
+    definition: 'IVR is een traditioneel keuzemenu via toetsdruk (druk 1 voor verkoop, druk 2 voor support). Klanttevredenheid IVR ligt rond 2,8 van 5; voicebots scoren 4,2 van 5 omdat ze natuurlijke taal begrijpen i.p.v. starre menus.',
+    related: 'ai-voicebot-vs-chatbot-mkb-vergelijking',
+  },
+  {
+    term: 'NPS (Net Promoter Score)',
+    slug: 'nps',
+    definition: 'NPS meet klantloyaliteit op schaal -100 tot +100 via de vraag: hoe waarschijnlijk beveelt u ons aan? AI-WhatsApp-assistent verhoogt MKB-NPS gemiddeld met +18 tot +42 punten door snellere respons en consistente service.',
+    related: 'ai-klantenservice-voor-mkb-2026',
+  },
+  {
+    term: 'CRM (Customer Relationship Management)',
+    slug: 'crm',
+    definition: 'CRM-systemen (HubSpot, Salesforce, Pipedrive, Teamleader) registreren klantgegevens, pipeline en interacties. AI-assistenten koppelen aan CRM voor automatische lead-creatie, contact-update en follow-up planning.',
+    related: 'ai-tools-zzp-freelancers-nederland',
+  },
+  {
+    term: 'API (Application Programming Interface)',
+    slug: 'api',
+    definition: 'Een API is een standaardinterface waarmee softwaresystemen onderling communiceren. AI-agents gebruiken APIs om met agendas (Google Calendar), CRM (HubSpot), betaalsystemen (Mollie) en sectorspecifieke tools (Promedico, AFAS, Exact) te integreren.',
+    related: 'ai-implementatie-stappen-mkb-nederland',
+  },
+  {
+    term: 'Webhook',
+    slug: 'webhook',
+    definition: 'Een webhook is een real-time HTTP-callback die getriggerd wordt door een gebeurtenis (bijv. nieuwe lead, betaling ontvangen). Gebruikt om AI-systemen direct te informeren bij externe events zonder polling.',
+    related: 'n8n-vs-make-com',
+  },
+  {
+    term: 'Latency (responstijd)',
+    slug: 'latency',
+    definition: 'Latency is de tijd tussen vraag en antwoord. Voor voicebots: <800ms voor natuurlijke conversatie, <1500ms acceptabel. Voor chatbots: <3 seconden gewenst. Aanloop AI Marco haalt gemiddeld 600-900ms voor Nederlands.',
+    related: 'voice-ai-klantenservice',
+  },
+  {
+    term: 'Hallucinatie',
+    slug: 'hallucinatie',
+    definition: 'Een hallucinatie is wanneer een LLM feiten verzint die niet in de bron-data staan. Wordt voorkomen via RAG (kennisbank-koppeling), strikte system-prompts en escalatie-regels bij onbekende vragen — kritisch voor zorg, advocatuur en financiele dienstverlening.',
+    related: 'ai-avg-gdpr-compliance-mkb-nederland',
+  },
+  {
+    term: 'Prompt engineering',
+    slug: 'prompt-engineering',
+    definition: 'Prompt engineering is het ontwerpen van instructies voor een LLM om gewenste output te krijgen. Voor MKB-AI: bedrijfstoon, escalatieregels, kennisbank-grenzen en compliance-instructies in de system-prompt.',
+    related: 'chatgpt-voor-bedrijven-mkb',
+  },
+  {
+    term: 'Fine-tuning',
+    slug: 'fine-tuning',
+    definition: 'Fine-tuning is het verder trainen van een bestaand LLM op specifieke data. Voor de meeste MKB-cases overbodig — RAG met kennisbank levert betere resultaten tegen lagere kosten en minder AVG-risico.',
+    related: 'beste-ai-assistent-mkb-nederland',
+  },
+  {
+    term: 'TTS (Text-to-Speech)',
+    slug: 'tts',
+    definition: 'TTS converteert tekst naar natuurlijke spraak. Aanloop AI gebruikt ElevenLabs en Cartesia voor Nederlandstalige TTS met natuurlijke intonatie en regionale accenten — essentieel voor voicebot-klanttevredenheid.',
+    related: 'elevenlabs-ai-agent-koppelen',
+  },
+  {
+    term: 'STT (Speech-to-Text)',
+    slug: 'stt',
+    definition: 'STT converteert spraak naar tekst. Voor Nederlandstalige voicebots gebruiken we Deepgram of Whisper met fine-tuning op Nederlandse accenten en vakterminologie (zorg, recht, bouw).',
+    related: 'voice-ai-klantenservice',
+  },
+  {
+    term: 'Vector database',
+    slug: 'vector-database',
+    definition: 'Een vector database (Pinecone, Weaviate, Qdrant) slaat embeddings op voor semantische zoekopdrachten. Kern van RAG: vindt relevante kennisbank-fragmenten op betekenis i.p.v. exacte woordovereenkomst.',
+    related: 'beste-ai-assistent-mkb-nederland',
+  },
+  {
+    term: 'Sentiment analyse',
+    slug: 'sentiment-analyse',
+    definition: 'Sentiment analyse classificeert tekst of spraak als positief, neutraal of negatief. AI-assistenten gebruiken sentiment om klachten direct te herkennen en te escaleren naar mensen i.p.v. zelf af te handelen.',
+    related: 'ai-klantenservice-voor-mkb-2026',
+  },
+  {
+    term: 'Escalatie',
+    slug: 'escalatie',
+    definition: 'Escalatie is het doorgeven van een gesprek door AI naar een mens. Triggers: negatief sentiment, onbekende vraag, expliciete klantverzoek of crisis-keywords. Goede AIs hebben 5-25 procent escalatieratio — niet te laag (verkeerde antwoorden) en niet te hoog (verspilde tijd).',
+    related: 'ai-receptionist-vs-ai-telefoniste-vergelijking',
+  },
+  {
+    term: 'ROI (Return on Investment)',
+    slug: 'roi',
+    definition: 'ROI = (Bespaarde tijdkosten + Extra omzet - Investering) / Investering. Voor AI in MKB Nederland gemiddeld 8-15x op 12-maand basis bij goede implementatie. Hoogste ROI in afspraak-intensieve sectoren (zorg, beauty, garage).',
+    related: 'ai-roi-berekenen-mkb-nederland-2026',
+  },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'DefinedTermSet',
+  '@id': 'https://aanloopai.nl/glossarium/#termset',
+  name: 'AI Begrippenlijst voor Nederlands MKB',
+  description: 'Compleet glossarium van AI-termen voor Nederlandse MKB-ondernemers: van AI agent tot vector database, met praktische uitleg en links naar uitgebreide gidsen.',
+  url: 'https://aanloopai.nl/glossarium/',
+  inLanguage: 'nl-NL',
+  hasDefinedTerm: terms.map((t) => ({
+    '@type': 'DefinedTerm',
+    '@id': `https://aanloopai.nl/glossarium/#${t.slug}`,
+    name: t.term,
+    description: t.definition,
+    inDefinedTermSet: 'https://aanloopai.nl/glossarium/#termset',
+    url: `https://aanloopai.nl/glossarium/#${t.slug}`,
+  })),
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['h1', '.definition'],
+  },
+};
+---
+
+<BaseLayout
+  title="AI Begrippenlijst — Glossarium voor MKB Nederland"
+  description="Complete AI-begrippenlijst voor Nederlandse MKB-ondernemers. 30+ termen uitgelegd: AI agent, voicebot, RAG, AVG, NEN 7510, n8n en meer. Direct praktisch toepasbaar."
+  schema={[collectionSchema, speakableSchema]}
+>
+  <section class="section">
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow text-brand-indigo mb-3">Kennisbank · Glossarium</p>
+      <h1 class="text-3xl lg:text-5xl font-bold text-navy tracking-tightest mb-6">AI Begrippenlijst voor Nederlands MKB</h1>
+      <p class="text-lg text-slate-600 leading-relaxed mb-8">
+        Compleet woordenboek van AI-termen die u tegenkomt als MKB-ondernemer. Elke definitie linkt door naar een uitgebreide gids met praktische voorbeelden uit Nederlandse bedrijven.
+      </p>
+      <p class="text-sm text-slate-500">{terms.length} termen · gesorteerd voor leesgemak</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl">
+      <div class="space-y-8">
+        {terms.map((t) => (
+          <div id={t.slug} class="card p-6 bg-white scroll-mt-24">
+            <h2 class="text-xl font-bold text-navy mb-3">{t.term}</h2>
+            <p class="definition text-slate-600 leading-relaxed mb-4">{t.definition}</p>
+            <a href={`/kennisbank/${t.related}/`} class="text-sm text-brand-indigo hover:underline font-medium">
+              Lees verder: gids over {t.term} →
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl text-center">
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-4">Mist u een begrip?</h2>
+      <p class="text-slate-600 mb-8">We breiden het glossarium continu uit. Stuur uw suggestie via WhatsApp of e-mail — meestal binnen 48 uur toegevoegd.</p>
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="https://wa.me/31624741597" class="btn-primary">WhatsApp uw vraag</a>
+        <a href="/kennisbank/" class="btn-outline">Alle 48 gidsen</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

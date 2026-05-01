@@ -9,6 +9,10 @@ export default defineConfig({
   integrations: [tailwind()],
   output: 'static',
   compressHTML: true,
+  prefetch: {
+    prefetchAll: false,
+    defaultStrategy: 'viewport',
+  },
   build: {
     inlineStylesheets: 'auto',
   },
