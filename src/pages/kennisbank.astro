@@ -722,12 +722,40 @@ const collectionSchema = {
   // Initial render
   applyFilters();
 
-  // Newsletter
-  document.getElementById('newsletter-form')?.addEventListener('submit', (e) => {
+  // Newsletter (Web3Forms — sends to hello@aanloopai.nl + autoresponse to user)
+  const KB_NL_KEY = '10596d38-fc14-4230-a3c9-4bb1a6981bc7';
+  document.getElementById('newsletter-form')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const form = e.target as HTMLFormElement;
     const btn = form.querySelector('button') as HTMLButtonElement;
-    btn.textContent = '✓ Ingeschreven!';
+    const emailEl = document.getElementById('newsletter-email') as HTMLInputElement;
+    const email = emailEl?.value;
+    if (!email || !email.includes('@')) return;
+    btn.textContent = 'Versturen…';
     btn.disabled = true;
+    const data = new FormData();
+    data.append('access_key', KB_NL_KEY);
+    data.append('subject', 'Nieuwe nieuwsbrief-aanmelding (kennisbank) — aanloopai.nl');
+    data.append('from_name', 'Aanloop AI Kennisbank');
+    data.append('email', email);
+    data.append('replyto', email);
+    data.append('source', 'Kennisbank newsletter signup');
+    data.append('autoresponse', 'true');
+    data.append('autoresponse_subject', 'Welkom bij de Aanloop AI kennisbank nieuwsbrief');
+    data.append('autoresponse_message', `Hallo,\n\nBedankt voor uw aanmelding voor onze kennisbank nieuwsbrief.\n\nU ontvangt maandelijks een mail met:\n- Nieuwe gidsen uit de kennisbank\n- Sector-specifieke AI cases en benchmarks\n- Praktische tips voor MKB-implementatie\n\nGeen spam — altijd direct afmeldbaar via de link onderaan elke mail.\n\nMet vriendelijke groet,\nAanloop AI\n\n---\nhello@aanloopai.nl | aanloopai.nl | KvK 88606902`);
+    data.append('redirect', 'false');
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
+      const json = await res.json();
+      if (json.success) {
+        btn.textContent = '✓ Ingeschreven!';
+      } else {
+        throw new Error(json.message || 'fout');
+      }
+    } catch (err) {
+      console.error('KB newsletter error:', err);
+      btn.textContent = 'Probeer opnieuw';
+      btn.disabled = false;
+    }
   });
 </script>

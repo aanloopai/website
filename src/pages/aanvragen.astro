@@ -314,24 +314,51 @@ const steps = [
     (document.getElementById('summary-total') as HTMLElement).textContent = `€${price}`;
   });
 
-  // Form submit
+  // Form submit (Web3Forms — sends to hello@aanloopai.nl + autoresponse to user)
   const form = document.getElementById('checkout-form') as HTMLFormElement;
-  form?.addEventListener('submit', (e) => {
+  const WEB3FORMS_KEY = '10596d38-fc14-4230-a3c9-4bb1a6981bc7';
+
+  form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('submit-btn') as HTMLButtonElement;
     const label = document.getElementById('submit-label') as HTMLElement;
     const errorEl = document.getElementById('form-error') as HTMLElement;
 
     if (!form.checkValidity()) {
-      errorEl.classList.remove('hidden');
+      errorEl?.classList.remove('hidden');
       return;
     }
-    errorEl.classList.add('hidden');
+    errorEl?.classList.add('hidden');
     btn.disabled = true;
     label.textContent = 'Verwerken…';
 
-    setTimeout(() => {
-      window.location.href = '/bedankt/?type=aanvraag';
-    }, 1500);
+    const data = new FormData(form);
+    const submitterName = (data.get('voornaam') as string) || 'daar';
+    const userEmail = data.get('email') as string;
+
+    data.append('access_key', WEB3FORMS_KEY);
+    data.append('subject', `Nieuwe aanvraag via aanloopai.nl — ${data.get('bedrijf') || 'onbekend bedrijf'}`);
+    data.append('from_name', 'Aanloop AI Website');
+    data.append('replyto', userEmail);
+    data.append('autoresponse', 'true');
+    data.append('autoresponse_subject', 'Bedankt voor uw aanvraag — Aanloop AI');
+    data.append('autoresponse_message', `Hallo ${submitterName},\n\nBedankt voor uw aanvraag bij Aanloop AI. We hebben uw gegevens goed ontvangen.\n\nWe nemen binnen 1 werkdag contact met u op om uw aanvraag verder te bespreken en een onboarding-traject in te plannen.\n\nMet vriendelijke groet,\nHet team van Aanloop AI\n\n---\nAanloop AI | AI-oplossingen voor het Nederlandse MKB\nhello@aanloopai.nl | aanloopai.nl | KvK 88606902`);
+    data.append('redirect', 'false');
+
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
+      const json = await res.json();
+      if (json.success) {
+        window.location.href = '/bedankt/?type=aanvraag';
+      } else {
+        throw new Error(json.message || 'Onbekende fout');
+      }
+    } catch (err) {
+      console.error('Aanvraag form error:', err);
+      errorEl?.classList.remove('hidden');
+      if (errorEl) errorEl.textContent = 'Er ging iets mis. Probeer het nogmaals of mail hello@aanloopai.nl';
+      btn.disabled = false;
+      label.textContent = 'Bevestig aanvraag';
+    }
   });
 </script>

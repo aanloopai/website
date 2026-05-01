@@ -24,11 +24,11 @@ const sizes = ['1 persoon (ZZP)','2–10 medewerkers','11–50 medewerkers','51�
   </section>
   <section class="section">
     <div class="container-page max-w-2xl mx-auto">
-      <form id="demo-form" action="https://api.web3forms.com/submit" method="POST" novalidate>
-        <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_KEY" />
-        <input type="hidden" name="subject" value="🚀 Nieuwe Demo Aanvraag — Aanloop AI" />
-        <input type="hidden" name="redirect" value="https://aanloopai.nl/demo-bedankt/" />
-        <input type="checkbox" name="botcheck" class="hidden" style="display:none" />
+      <form id="demo-form" novalidate>
+        <input type="hidden" name="access_key" value="10596d38-fc14-4230-a3c9-4bb1a6981bc7" />
+        <input type="hidden" name="subject" value="Nieuwe Demo Aanvraag — Aanloop AI" />
+        <input type="hidden" name="from_name" value="Aanloop AI Website" />
+        <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
 
         <!-- Stap 1 -->
         <div id="stap-1" class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm reveal">
@@ -214,13 +214,46 @@ document.getElementById('terug-1')?.addEventListener('click',()=>toonStap(1));
 document.getElementById('naar-stap-3')?.addEventListener('click',()=>{ if(v2()){ fillSummary(); toonStap(3); }});
 document.getElementById('terug-2')?.addEventListener('click',()=>toonStap(2));
 
-document.getElementById('demo-form')?.addEventListener('submit', e => {
+document.getElementById('demo-form')?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.target as HTMLFormElement;
   const ck = document.getElementById('akkoord') as HTMLInputElement;
-  if (!ck?.checked) { e.preventDefault(); alert('Ga akkoord met de privacyverklaring om door te gaan.'); return; }
+  if (!ck?.checked) { alert('Ga akkoord met de privacyverklaring om door te gaan.'); return; }
+
   const btn = document.getElementById('submit-btn') as HTMLButtonElement;
   const txt = document.getElementById('submit-txt') as HTMLElement;
   const ico = document.getElementById('submit-icon') as HTMLElement;
   const spn = document.getElementById('submit-spin') as HTMLElement;
-  btn.disabled=true; txt.textContent='Verzenden...'; ico?.classList.add('hidden'); spn?.classList.remove('hidden');
+  btn.disabled = true;
+  txt.textContent = 'Verzenden...';
+  ico?.classList.add('hidden');
+  spn?.classList.remove('hidden');
+
+  const data = new FormData(form);
+  const submitterName = (data.get('voornaam') as string) || 'daar';
+  const userEmail = data.get('email') as string;
+
+  data.append('replyto', userEmail);
+  data.append('autoresponse', 'true');
+  data.append('autoresponse_subject', 'Bedankt voor uw demo-aanvraag — Aanloop AI');
+  data.append('autoresponse_message', `Hallo ${submitterName},\n\nBedankt voor uw demo-aanvraag bij Aanloop AI.\n\nWe hebben uw gegevens goed ontvangen en plannen binnen 1 werkdag een 30-minuten demo in waarin we live laten zien hoe AI agents werken voor uw situatie.\n\nMet vriendelijke groet,\nHet team van Aanloop AI\n\n---\nAanloop AI | AI-oplossingen voor het Nederlandse MKB\nhello@aanloopai.nl | aanloopai.nl | KvK 88606902`);
+  data.append('redirect', 'false');
+
+  try {
+    const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
+    const json = await res.json();
+    if (json.success) {
+      window.location.href = '/demo-bedankt/';
+    } else {
+      throw new Error(json.message || 'Onbekende fout');
+    }
+  } catch (err) {
+    console.error('Demo form error:', err);
+    alert('Er ging iets mis bij het versturen. Probeer het nogmaals of stuur een e-mail naar hello@aanloopai.nl');
+    btn.disabled = false;
+    txt.textContent = 'Demo aanvragen';
+    ico?.classList.remove('hidden');
+    spn?.classList.add('hidden');
+  }
 });
 </script>
