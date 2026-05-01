@@ -25,7 +25,24 @@ const {
 
 const canonical = canonicalOverride ?? new URL(Astro.url.pathname, 'https://aanloopai.nl').toString();
 const fullTitle = title.includes('Aanloop') ? title : `${title} · Aanloop AI`;
-const ogImage = image.startsWith('http') ? image : `https://aanloopai.nl${image}`;
+
+// Per-page OG-image: derive from URL path, fallback to default
+const ogSlugMap: Record<string, string> = {
+  '/': 'home',
+  '/diensten/marco/': 'marco',
+  '/diensten/emma/': 'emma',
+  '/ai-receptionist-nederland/': 'ai-receptionist-nederland',
+  '/ai-roi-calculator/': 'ai-roi-calculator',
+  '/no-show-calculator/': 'no-show-calculator',
+  '/avg-checklist-ai-mkb/': 'avg-checklist',
+  '/kennisbank/': 'kennisbank',
+  '/glossarium/': 'glossarium',
+  '/locaties/': 'locaties',
+};
+const ogSlug = ogSlugMap[Astro.url.pathname];
+const derivedImage = ogSlug ? `/og/${ogSlug}.png` : image;
+const finalImage = image !== '/og-image-default.png' ? image : derivedImage;
+const ogImage = finalImage.startsWith('http') ? finalImage : `https://aanloopai.nl${finalImage}`;
 
 // Auto-inject author bio + last-updated on kennisbank-articles (not on index)
 const isKennisbankArticle =
