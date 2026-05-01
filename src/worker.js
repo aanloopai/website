@@ -195,3 +195,4 @@ export default {
     return new Response('Not configured: ASSETS binding missing in wrangler.toml', { status: 500 });
   },
 };
+// Force redeploy after BREVO_API_KEY env var added (Sprint 38)
