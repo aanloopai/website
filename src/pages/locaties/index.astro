@@ -1,0 +1,128 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const cities = [
+  { name: 'Amsterdam', slug: 'amsterdam', region: 'Noord-Holland', focus: 'Tech-MKB en e-commerce' },
+  { name: 'Rotterdam', slug: 'rotterdam', region: 'Zuid-Holland', focus: 'Maritiem, logistiek en industrie' },
+  { name: 'Den Haag', slug: 'den-haag', region: 'Zuid-Holland', focus: 'Juridisch en publieke sector' },
+  { name: 'Utrecht', slug: 'utrecht', region: 'Utrecht', focus: 'Zakelijke dienstverlening en zorg' },
+  { name: 'Eindhoven', slug: 'eindhoven', region: 'Noord-Brabant', focus: 'Tech, industrie en design' },
+  { name: 'Tilburg', slug: 'tilburg', region: 'Noord-Brabant', focus: 'Logistiek en industrie' },
+  { name: 'Almere', slug: 'almere', region: 'Flevoland', focus: 'MKB en e-commerce' },
+  { name: 'Breda', slug: 'breda', region: 'Noord-Brabant', focus: 'MKB en zakelijke dienstverlening' },
+  { name: 'Groningen', slug: 'groningen', region: 'Groningen', focus: 'Zorg en universitair MKB' },
+  { name: 'Nijmegen', slug: 'nijmegen', region: 'Gelderland', focus: 'Zorg en zakelijke dienstverlening' },
+  { name: 'Enschede', slug: 'enschede', region: 'Overijssel', focus: 'Tech, productie en grensverkeer' },
+  { name: 'Haarlem', slug: 'haarlem', region: 'Noord-Holland', focus: 'Retail en cultuur-MKB' },
+  { name: 'Leiden', slug: 'leiden', region: 'Zuid-Holland', focus: 'Medisch, academisch en juridisch' },
+  { name: 'Zwolle', slug: 'zwolle', region: 'Overijssel', focus: 'Logistiek en regionaal MKB' },
+  { name: 'Arnhem', slug: 'arnhem', region: 'Gelderland', focus: 'Energie, utility en zorg' },
+  { name: 'Apeldoorn', slug: 'apeldoorn', region: 'Gelderland', focus: 'Zorg, kantoor en accountancy' },
+  { name: 'Dordrecht', slug: 'dordrecht', region: 'Zuid-Holland', focus: 'Maritiem en juridische dienstverlening' },
+  { name: 'Hilversum', slug: 'hilversum', region: 'Noord-Holland', focus: 'Media, productiehuizen en marketing' },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': 'https://aanloopai.nl/locaties/#collection',
+  name: 'Aanloop AI — locaties in heel Nederland',
+  description: `Aanloop AI bedient MKB-bedrijven in ${cities.length} grote Nederlandse steden. Volledige dekking van Noord-Holland tot Zuid-Holland, Utrecht, Noord-Brabant, Gelderland, Overijssel, Groningen en Flevoland.`,
+  url: 'https://aanloopai.nl/locaties/',
+  inLanguage: 'nl-NL',
+  hasPart: cities.map((c) => ({
+    '@type': 'WebPage',
+    '@id': `https://aanloopai.nl/locaties/${c.slug}/`,
+    name: `AI Agency ${c.name}`,
+    url: `https://aanloopai.nl/locaties/${c.slug}/`,
+  })),
+};
+
+const faqItems = [
+  { question: 'In welke Nederlandse steden werkt Aanloop AI?', answer: `Aanloop AI bedient bedrijven in ${cities.length} grote Nederlandse steden waaronder ${cities.slice(0, 6).map((c) => c.name).join(', ')} en meer. Alle trajecten verlopen remote, dus locatie is geen beperking — wij werken voor MKB-bedrijven in heel Nederland.` },
+  { question: 'Werkt Aanloop AI alleen voor de grote vier steden?', answer: 'Nee. Naast Amsterdam, Rotterdam, Den Haag en Utrecht bedienen we MKB-bedrijven in middelgrote steden (Eindhoven, Tilburg, Groningen, Nijmegen) en regio-hubs (Zwolle, Arnhem, Dordrecht, Hilversum). Onze remote-aanpak maakt locatie irrelevant voor de implementatie.' },
+  { question: 'Wat als mijn stad er niet bij staat?', answer: 'We helpen ook bedrijven buiten deze 18 stadspagina-locaties. De pagina-lijst is voor SEO en regio-specifieke voorbeelden — als u in Sittard, Maastricht, Lelystad of een andere plaats zit, plan een gratis AI-scan en we starten direct.' },
+  { question: 'Hoe verschilt AI-implementatie per regio?', answer: 'De technische implementatie is identiek (we werken remote), maar de sectorfocus verschilt per stad: Hilversum-mediabedrijven, Eindhoven-tech, Dordrecht-maritiem, Apeldoorn-zorg. Onze regio-pagina toont voorbeelden uit uw lokale economie.' },
+];
+---
+
+<BaseLayout
+  title="AI Agency Nederland — 18 stadspagina's voor MKB | Aanloop AI"
+  description={`Aanloop AI helpt MKB-bedrijven in ${cities.length} grote Nederlandse steden met AI automatisering. Bekijk onze locatie-pagina's voor regionale voorbeelden en sectorfocus.`}
+  schema={collectionSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Locaties · {cities.length} steden</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Aanloop AI in heel Nederland
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Wij bedienen MKB-bedrijven in {cities.length} grote Nederlandse steden — van Groningen tot Eindhoven, van Hilversum tot Dordrecht. Remote-implementatie betekent: locatie is geen beperking, regiogerichte sectorfocus geeft u relevante voorbeelden.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI Scan</a>
+          <a href="/aanvragen/" class="btn-secondary">Adviesgesprek</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-10">
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-3">Selecteer uw stad</h2>
+        <p class="text-slate-600">Elke regio-pagina bevat sector-relevante voorbeelden, lokale economische context en verwijzingen naar relevante kennisbank-artikelen.</p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {cities.map((c) => (
+          <a href={`/locaties/${c.slug}/`} class="card card-interactive p-5 hover:border-navy hover:shadow-md transition-all">
+            <div class="flex items-baseline justify-between mb-2">
+              <h3 class="font-bold text-navy text-lg">{c.name}</h3>
+              <span class="text-xs text-slate-400">{c.region}</span>
+            </div>
+            <p class="text-sm text-slate-600 leading-relaxed">{c.focus}</p>
+            <p class="mt-3 text-xs font-medium text-brand-indigo flex items-center gap-1">
+              Bekijk pagina
+              <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Veelgestelde vragen</h2>
+      <div class="space-y-3">
+        {faqItems.map((item) => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance">Klaar om te beginnen?</h2>
+      <p class="mt-4 text-slate-300">Gratis AI scan van 30 minuten. Wij werken remote — uw locatie is geen beperking. We laten zien wat AI concreet voor uw bedrijf oplevert.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan</a>
+        <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk tarieven</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
