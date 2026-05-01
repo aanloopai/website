@@ -213,6 +213,9 @@ const allSchemas = [
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
 
+    <!-- RSS Feed -->
+    <link rel="alternate" type="application/rss+xml" title="Aanloop AI Kennisbank" href="/rss.xml" />
+
     <!-- PWA Web App Manifest -->
     <link rel="manifest" href="/manifest.webmanifest" />
     <meta name="application-name" content="Aanloop AI" />
@@ -369,6 +372,69 @@ const allSchemas = [
     </main>
 
     <Footer />
+
+    <!-- Cookie consent banner (AVG/GDPR) -->
+    <div
+      id="cookie-banner"
+      role="dialog"
+      aria-labelledby="cookie-banner-title"
+      class="fixed bottom-0 left-0 right-0 z-50 hidden bg-navy text-pearl border-t border-slate-700 shadow-2xl"
+    >
+      <div class="container-page py-4 lg:py-5">
+        <div class="flex flex-col lg:flex-row lg:items-center gap-4">
+          <div class="flex-1 text-sm leading-relaxed">
+            <p id="cookie-banner-title" class="font-semibold mb-1">Wij gebruiken cookies</p>
+            <p class="text-slate-300 text-xs lg:text-sm">
+              Functionele cookies zijn altijd actief. Voor analyse vragen we uw toestemming. Lees meer in onze <a href="/cookies/" class="underline hover:text-white">cookieverklaring</a>.
+            </p>
+          </div>
+          <div class="flex gap-2 shrink-0">
+            <button
+              id="cookie-decline"
+              type="button"
+              class="px-4 py-2 rounded-xl text-sm font-medium border border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
+              aria-label="Alleen functionele cookies accepteren"
+            >
+              Alleen functioneel
+            </button>
+            <button
+              id="cookie-accept"
+              type="button"
+              class="px-4 py-2 rounded-xl text-sm font-semibold bg-pearl text-navy hover:bg-white transition-colors"
+              aria-label="Alle cookies accepteren"
+            >
+              Alle cookies
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script is:inline>
+      (function () {
+        var KEY = 'aanloop_cookie_consent';
+        try {
+          if (localStorage.getItem(KEY)) return;
+        } catch (e) { return; }
+        var banner = document.getElementById('cookie-banner');
+        if (!banner) return;
+        banner.classList.remove('hidden');
+        function setConsent(value) {
+          try { localStorage.setItem(KEY, value); } catch (e) {}
+          if (window.gtag && value === 'all') {
+            window.gtag('consent', 'update', {
+              ad_storage: 'granted',
+              ad_user_data: 'granted',
+              ad_personalization: 'granted',
+              analytics_storage: 'granted',
+            });
+          }
+          banner.classList.add('hidden');
+        }
+        document.getElementById('cookie-accept').addEventListener('click', function () { setConsent('all'); });
+        document.getElementById('cookie-decline').addEventListener('click', function () { setConsent('functional'); });
+      })();
+    </script>
 
     <!-- Global scroll reveal (respects prefers-reduced-motion) -->
     <script>
