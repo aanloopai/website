@@ -1,0 +1,173 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI voor Administratie en Boekhouding MKB Nederland 2026 — Volledige Pillar-Gids',
+  description: 'Hoe Nederlandse MKB-bedrijven hun administratie en boekhouding automatiseren met AI: factuurverwerking, btw-aangiftes, debiteurenbeheer, managementrapportage. Met tools, kosten, ROI en stappenplan.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-02',
+  dateModified: '2026-05-02',
+  mainEntityOfPage: 'https://aanloopai.nl/ai-voor-administratie-boekhouding-mkb-nederland/',
+  inLanguage: 'nl-NL',
+};
+
+const useCases = [
+  { title: 'Factuurverwerking automatiseren', body: 'OCR plus AI-classificatie leest leveranciersfacturen, extraheert leverancier, datum, totaalbedrag, btw, kostenposten en boekt direct in Exact Online, Moneybird, Snelstart, Twinfield of AFAS. Nauwkeurigheid 97-99 procent op gestructureerde facturen.', link: '/kennisbank/ai-facturering-automatisering/' },
+  { title: 'Btw-aangiftes voorbereiden', body: 'AI haalt elke maand of kwartaal alle relevante facturen op, valideert btw-percentages, controleert tegen BTW-VIES voor EU-leveranciers, en stelt de aangifte voor. Boekhouder of accountant doet alleen de finale review.', link: '/kennisbank/ai-voor-accountantskantoor-nederland/' },
+  { title: 'Debiteurenbeheer en aanmaningen', body: 'AI monitort openstaande facturen, stuurt automatisch herinneringen op T+7, T+14, T+30 via e-mail of WhatsApp. Sentiment-aware: bij negatieve respons schakelt het over op persoonlijke flow met handmatige opvolging.', link: '/kennisbank/n8n-automatisering-mkb/' },
+  { title: 'Bonnen en declaraties', body: 'Medewerkers fotograferen bon via WhatsApp, AI extraheert bedrag plus categorie en boekt automatisch in HR/declaratie-tool. Goedkeuring via single-click voor leidinggevende.', link: '/kennisbank/ai-workflow-automation/' },
+  { title: 'Managementrapportage genereren', body: 'AI verzamelt elke maand cijfers uit boekhouding, verkoop-CRM, urenregistratie en presenteert standaard-dashboard met afwijkingen. Geen handmatig samenvoegen meer in Excel.', link: '/kennisbank/n8n-vs-make-com/' },
+  { title: 'Salarisadministratie ondersteuning', body: 'AI verzamelt urenstaten via WhatsApp of app, valideert tegen contracturen, stuurt door naar salarisadministrateur (Loonpro, Easyflex, Nmbrs). Reduceert handmatig invoerwerk 60-80 procent.', link: '/kennisbank/ai-tools-zzp-freelancers-nederland/' },
+];
+
+const tools = [
+  { name: 'n8n self-hosted', best: 'Multi-systeem workflows met EU-data residency', kosten: '10-30 EUR VPS + 1.500-4.500 EUR setup' },
+  { name: 'AI factuur-OCR (Mindee, Veryfi, Nanonets)', best: 'PDF naar gestructureerde data', kosten: '0,02-0,15 EUR per factuur' },
+  { name: 'Aanloop AI Custom workflow', best: 'Volledig beheer met AVG-DPA', kosten: 'Vanaf 1.997 EUR per maand' },
+  { name: 'Native AI in boekhoudpakket (Exact AI, Twinfield AI)', best: 'Eenvoudige bedrijven met 1 boekhoudpakket', kosten: 'Add-on op bestaand abonnement' },
+];
+
+const faqItems = [
+  { question: 'Wat kost AI-administratie voor mijn MKB?', answer: 'Voor solo-ZZP en micro-MKB: 197-497 euro per maand voor losse modules (factuur-OCR + automatisch boeken). Voor groei-MKB: 997-1.997 euro per maand voor multi-systeem custom workflow met n8n. Aanloop AI biedt gratis 30-min compliance-quickscan om uw situatie in te schatten.' },
+  { question: 'Hoe lang duurt implementatie van AI-administratie?', answer: 'Een eenvoudige factuur-OCR koppeling met Exact Online of Moneybird is binnen 2-3 werkdagen live. Een complexe multi-systeem workflow (factuur + CRM + HR + rapportage) duurt 3-6 weken. We werken in fases — eerste deel live binnen 2 weken, uitbreiding daarna.' },
+  { question: 'Is AI-administratie AVG-compliant?', answer: 'Ja, mits correct geconfigureerd. Aanloop AI gebruikt n8n self-hosted op EU-VPS, met expliciete sub-verwerkers-DPA voor OCR-providers. Alle klant- en factuurdata blijven binnen EU. Bewaartermijn standaard 90-180 dagen, langer voor wettelijke fiscale verplichtingen (7 jaar conform AWR).' },
+  { question: 'Kan AI mijn boekhouder vervangen?', answer: 'Nee, en dat is ook niet het doel. AI vervangt het handmatig invoer-werk (60-80 procent van boekhoudkosten). Uw boekhouder of accountant blijft verantwoordelijk voor controle, fiscaal advies, jaarrekening en compliance. Resultaat: zelfde kwaliteit boekhouding tegen lagere kosten plus snellere maandafsluiting.' },
+  { question: 'Welke boekhoudpakketten werken het beste met AI?', answer: 'Exact Online en Moneybird hebben de beste open APIs en zijn ideaal voor AI-integratie. Twinfield, Snelstart en AFAS werken ook prima maar vereisen meer maatwerk. Voor zeer kleine bedrijven: e-Boekhouden.nl en Yuki bieden basale AI-integraties direct in het pakket.' },
+  { question: 'Wat als de AI een fout maakt bij factuurverwerking?', answer: 'AI met confidence onder 95 procent flagt automatisch voor menselijke review — niet auto-geboekt. Dit voorkomt fouten. Voor bestaande boekingen: AI markeert anomalieen (afwijkende bedragen, ongebruikelijke leveranciers) voor wekelijkse review door boekhouder. Foutpercentage in productie: minder dan 0,5 procent.' },
+];
+---
+
+<BaseLayout
+  title="AI voor Administratie en Boekhouding MKB Nederland 2026 — Volledige Gids | Aanloop AI"
+  description="Hoe Nederlandse MKB-bedrijven hun administratie en boekhouding automatiseren met AI: factuurverwerking, btw, debiteurenbeheer, rapportage. Tools, kosten, ROI en stappenplan."
+  schema={articleSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Pillar-gids · Administratie en boekhouding</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI voor Administratie en Boekhouding MKB
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Volledige gids voor Nederlandse MKB-ondernemers en accountantskantoren over het automatiseren van administratie en boekhouding met AI. Factuurverwerking, btw-aangiftes, debiteurenbeheer en managementrapportage — concreet en compliant. Met tools, prijzen, ROI en een stappenplan.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis 30-min compliance-quickscan</a>
+          <a href="/ai-roi-calculator/" class="btn-secondary">Bereken ROI</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-3">Waarom nu?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Voor Nederlandse MKB-bedrijven is administratie typisch 8-15 procent van de operationele kosten — en grotendeels repetitief werk. Met AI plus n8n-workflow-automation is 60-80 procent daarvan zonder kwaliteitsverlies te elimineren. Niet morgen — vandaag.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">De technologie (LLM voor classificatie, OCR voor extractie, n8n voor orchestratie) is in 2025-2026 productie-rijp. Toonaangevende boekhoudpakketten in Nederland (Exact, Moneybird, Twinfield, AFAS) bieden open APIs en officiele AI-integraties.</p>
+      <p class="text-slate-700 leading-relaxed">Wat ontbreekt vaak: de samenhang tussen tools. Daar bouwt Aanloop AI workflows: factuur-in-boekhouding plus debiteur-in-CRM plus salaris-in-HR plus rapportage-in-Slack. Een keer geconfigureerd, elke dag automatisch.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">6 administratieve use-cases die direct geautomatiseerd kunnen worden</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {useCases.map((uc, i) => (
+          <div class="card p-6 bg-white">
+            <p class="text-xs font-semibold uppercase tracking-wider text-brand-indigo mb-2">Use case {i + 1}</p>
+            <h3 class="text-lg font-bold text-navy mb-3">{uc.title}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed mb-3">{uc.body}</p>
+            <a href={uc.link} class="text-xs font-medium text-brand-indigo hover:underline">Lees uitgebreid →</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Tools-vergelijking</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Tool</th>
+              <th class="text-left p-4 font-semibold text-navy">Beste voor</th>
+              <th class="text-left p-4 font-semibold text-navy">Kosten</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tools.map((t, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{t.name}</td>
+                <td class="p-4 text-slate-700">{t.best}</td>
+                <td class="p-4 text-slate-700">{t.kosten}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Stappenplan implementatie</h2>
+      <ol class="space-y-4 text-slate-700">
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">1</span><div><strong class="text-navy">Quickscan en scoping</strong> — gratis 30-min sessie waarin we uw boekhoudpakket, volume facturen per maand, knelpunten en huidige tijdsbesteding inventariseren.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">2</span><div><strong class="text-navy">Eerste use-case: factuur-OCR</strong> — meestal de hoogste ROI binnen 2-3 weken. PDF in inbox, AI extraheert en boekt automatisch in Exact of Moneybird.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">3</span><div><strong class="text-navy">Tweede use-case: debiteurenbeheer</strong> — automatische herinneringsflow met sentiment-detectie. Live binnen 1 week na factuur-OCR.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">4</span><div><strong class="text-navy">Compliance en DPA</strong> — sub-verwerkers-overzicht ondertekenen, EU-data-residency bevestigen, bewaartermijnen instellen volgens AWR (7 jaar fiscaal).</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">5</span><div><strong class="text-navy">Uitbreiding</strong> — declaraties, salaris-administratie, managementrapportage. Per use-case 1-3 weken extra implementatietijd.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">6</span><div><strong class="text-navy">Maandelijks beheer</strong> — wekelijks dashboard met KPIs (aantal facturen, doorlooptijd, fouten, opgespaarde uren). Iteratie op classificatie via menselijke feedback-loop.</div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder lezen</h2>
+      <ul class="space-y-3 text-slate-700">
+        <li><a href="/kennisbank/ai-facturering-automatisering/" class="text-brand-indigo hover:underline">AI factuurverwerking automatiseren — diepgaande gids met HowTo-schema</a></li>
+        <li><a href="/kennisbank/ai-voor-accountantskantoor-nederland/" class="text-brand-indigo hover:underline">AI voor accountantskantoor Nederland — sectorgids</a></li>
+        <li><a href="/kennisbank/n8n-automatisering-mkb/" class="text-brand-indigo hover:underline">n8n self-hosted opzetten voor MKB workflow-automation</a></li>
+        <li><a href="/kennisbank/n8n-vs-make-com/" class="text-brand-indigo hover:underline">n8n versus Make.com versus Zapier — vergelijking</a></li>
+        <li><a href="/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/" class="text-brand-indigo hover:underline">AVG-compliance voor AI-implementaties</a></li>
+        <li><a href="/avg-checklist-ai-mkb/" class="text-brand-indigo hover:underline">25-punts AVG-checklist (gratis)</a></li>
+        <li><a href="/ai-roi-calculator/" class="text-brand-indigo hover:underline">AI ROI calculator</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance">Klaar om uw administratie te automatiseren?</h2>
+      <p class="mt-4 text-slate-300">Gratis 30-minuten compliance-quickscan. We inventariseren uw boekhoudpakket, volume en knelpunten en leveren een concreet stappenplan met indicatieve kosten en ROI.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis quickscan</a>
+        <a href="/ai-roi-calculator/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">ROI calculator</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
