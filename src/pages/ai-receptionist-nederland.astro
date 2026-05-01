@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI Receptionist Nederland — Volledige Gids voor MKB 2026',
+  description: 'Wat is een AI receptionist, hoe werkt het, wat kost het en welke past bij uw Nederlandse MKB-bedrijf? Pillar-gids met sector-voorbeelden, vergelijking met mens/callcenter en 6-step implementatie.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-02',
+  dateModified: '2026-05-02',
+  mainEntityOfPage: 'https://aanloopai.nl/ai-receptionist-nederland/',
+  inLanguage: 'nl-NL',
+};
+
+const useCases = [
+  { sector: 'Huisartsenpraktijk', text: 'Triage volgens uw protocol, afspraken in EPD plannen, spoedgevallen direct doorzetten naar waarnemer. NEN 7510 conform.', link: '/kennisbank/ai-voor-huisartsenpraktijk/' },
+  { sector: 'Installatiebedrijf', text: 'Spoedoproepen filteren (lekkage, gas, breuk), planning in Bouw7 of Werkbon, offertes onder 5.000 euro automatisch.', link: '/kennisbank/ai-voor-installatiebedrijf-loodgieter-nederland/' },
+  { sector: 'Notariskantoor', text: 'Vertrouwelijke pre-juridische intake, KNB-bewust, conflict-of-interest screening voor doorverbinden naar partner.', link: '/kennisbank/ai-voor-notariskantoor-nederland-2026/' },
+  { sector: 'Garagebedrijf', text: 'APK-afspraken, spoedreparaties, offerte-uitvragen — terwijl u onder de auto staat.', link: '/kennisbank/ai-voor-garagebedrijf-autobedrijf-nederland/' },
+  { sector: 'Dierenartspraktijk', text: '24/7 spoedlijn-triage, vaccinatieherinneringen, IDEXX/Vetfaktum koppeling, KNMvD-bewust.', link: '/kennisbank/ai-voor-dierenarts-spoedlijn-triage-nederland/' },
+  { sector: 'Uitvaartondernemer', text: 'Respectvol intake bij overlijden 24/7, escalatie naar verzorger binnen 30 min — voorkomt verzorger-burn-out.', link: '/kennisbank/ai-voor-uitvaartondernemer-24-7-telefoon-nederland/' },
+];
+
+const comparison = [
+  { row: 'Bereikbaarheid', mens: 'Kantooruren', callcenter: '24/7 (premium)', ai: '24/7/365 (standaard)' },
+  { row: 'Maandelijkse kosten', mens: '2.200-3.500 euro bruto', callcenter: '1.500-4.500 euro', ai: '297-997 euro' },
+  { row: 'Doorlooptijd live-gang', mens: '4-8 weken (werving)', callcenter: '4-8 weken', ai: '7 werkdagen' },
+  { row: 'Onbeperkte gesprekken', mens: 'Nee (1 tegelijk)', callcenter: 'Wachtrij', ai: 'Ja' },
+  { row: 'Talen standaard', mens: 'Variabel', callcenter: 'NL', ai: 'NL + EN (uitbreidbaar)' },
+  { row: 'CRM-integratie', mens: 'Handmatig', callcenter: 'Op aanvraag', ai: 'Native (HubSpot, Pipedrive, AFAS)' },
+  { row: 'Consistentie', mens: 'Variabel', callcenter: 'Variabel', ai: '100 procent' },
+  { row: 'Opzegtermijn', mens: '1-2 maanden', callcenter: '6-12 maanden', ai: 'Maandelijks' },
+];
+
+const faqItems = [
+  { question: 'Wat is een AI receptionist precies?', answer: 'Een AI receptionist is een spraak-AI die telefoongesprekken aanneemt en autonoom afhandelt: intake voeren, afspraken plannen, klantvragen beantwoorden of escaleren naar een mens. Werkt 24/7 zonder personeelskosten en is geintegreerd met agenda- en CRM-systemen.' },
+  { question: 'Klinkt een AI receptionist net als een echte mens?', answer: 'Moderne AI-stemmen (zoals ElevenLabs) zijn bijzonder naturel. In blindtests merkt 60-80 procent van de bellers niet dat ze met AI spreken, zolang het gesprek binnen het getrainde domein blijft. Bij complexe of emotionele gesprekken verbindt de agent door naar een mens.' },
+  { question: 'Hoeveel kost een AI receptionist in Nederland?', answer: 'Aanloop AI biedt Marco Starter vanaf 297 euro per maand (tot 200 gesprekken), Marco Groei 497 euro per maand (onbeperkt + WhatsApp + CRM-integratie). Custom enterprise op maat. Maandelijks opzegbaar.' },
+  { question: 'Wat zijn de nadelen van een AI receptionist?', answer: 'AI presteert minder goed bij: zeer complexe of onverwachte vragen, sterk dialect of slechte audiokwaliteit, emotioneel geladen crisis-gesprekken. Daarom bouwt Aanloop AI altijd een escalatiepad naar menselijke medewerkers in.' },
+  { question: 'Hoe lang duurt implementatie van een AI receptionist?', answer: 'Standaard 7 werkdagen voor Marco/Emma-pakketten. Onboarding-vragenlijst, training op uw kennisbank en bedrijfstoon, integratie met agenda en CRM, testronde met echte scenarios. Custom enterprise 3-6 weken.' },
+  { question: 'Is een AI receptionist AVG-compliant?', answer: 'Ja, mits correct geconfigureerd. Aanloop AI verwerkt uitsluitend binnen EU (Frankfurt of Amsterdam), met expliciete sub-verwerkers-DPA voor LLM- en voice-providers (Anthropic, OpenAI, ElevenLabs). Bewaartermijn instelbaar 30-180 dagen.' },
+  { question: 'Werkt een AI receptionist met mijn bestaande telefoonnummer?', answer: 'Ja. Via SIP-trunk koppelen we Marco aan uw bestaande nummer (KPN, Voys, Twilio, Vonage, BelBlock). U houdt uw nummer, klanten merken niets aan de buitenkant — alleen dat de telefoon nu altijd wordt opgenomen.' },
+  { question: 'Vervangt een AI receptionist mijn receptioniste volledig?', answer: 'Voor 80-90 procent van standaard-receptiewerk: ja. Voor crisis-management, sales-gesprekken die persoonlijke onderhandeling vragen, en zeer complexe casuistiek: nee. Beste praktijk is hybride: AI vangt eerstelijns op, mens neemt de complexe gevallen.' },
+];
+---
+
+<BaseLayout
+  title="AI Receptionist Nederland — Volledige Gids voor MKB 2026 | Aanloop AI"
+  description="Wat is een AI receptionist, hoe werkt het en welke past bij uw MKB? Vergelijking met mens en callcenter, sector-voorbeelden, prijzen vanaf 297 euro per maand. Live in 7 werkdagen."
+  schema={articleSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Pillar-gids · AI Receptionist Nederland</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI Receptionist Nederland — Volledige Gids
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Een AI receptionist neemt uw telefoon aan in vloeiend Nederlands, plant afspraken, kwalificeert leads en routeert naar uw CRM — 24/7, zonder pauzes. In deze pillar-gids: wat het is, hoe het werkt, wat het kost, en welke sectoren er het meeste profijt van hebben.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/diensten/marco/" class="btn-primary">Bekijk Marco — vanaf 297 euro</a>
+          <a href="/gratis-ai-scan/" class="btn-secondary">Gratis 30-min AI scan</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Wat is een AI receptionist?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Een AI receptionist is een spraak-AI die inkomende telefoongesprekken aanneemt en zelfstandig afhandelt. Het systeem combineert drie technologieen: <strong class="text-navy">spraakherkenning</strong> (verstaat wat de beller zegt), <strong class="text-navy">een LLM</strong> (interpreteert context, beslist wat te doen), en <strong class="text-navy">spraaksynthese</strong> (antwoordt in vloeiend Nederlands).</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Anders dan een traditioneel IVR-keuzemenu (druk 1 voor sales, druk 2 voor support) <em>begrijpt</em> de AI receptionist de bedoeling van een gesprek. Een beller kan vrijuit praten — over een lekkende kraan, een afspraak voor de tandarts, of een vraag over een bestelling — en de AI bepaalt zelfstandig wat te doen.</p>
+      <p class="text-slate-700 leading-relaxed">Voor het Nederlandse MKB is een AI receptionist een directe vervanger of versterking van de telefoniste, een 24/7-bereikbaarheidsoplossing en een no-show-reductie-tool tegelijk. Bovendien: vanaf 297 euro per maand kost het minder dan 1 dag per maand parttime-receptioniste.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-2">AI receptionist vs menselijke receptioniste vs callcenter</h2>
+      <p class="text-sm text-slate-600 mb-6">Eerlijke vergelijking voor Nederlandse MKB-bedrijven.</p>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Vergelijking</th>
+              <th class="text-left p-4 font-semibold text-navy">Mens</th>
+              <th class="text-left p-4 font-semibold text-navy">Callcenter</th>
+              <th class="text-left p-4 font-semibold text-navy">AI Receptionist</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparison.map((row, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{row.row}</td>
+                <td class="p-4 text-slate-700">{row.mens}</td>
+                <td class="p-4 text-slate-700">{row.callcenter}</td>
+                <td class="p-4 text-slate-700">{row.ai}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-slate-500 mt-3">Prijzen indicatief, gebaseerd op Aanloop AI marktdata 2026.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-2">6 sectoren waar een AI receptionist het meest oplevert</h2>
+      <p class="text-sm text-slate-600 mb-8">Met sector-specifieke compliance en integratie-aandachtspunten.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {useCases.map((uc) => (
+          <a href={uc.link} class="card card-interactive p-6 hover:border-navy hover:shadow-md transition-all bg-white">
+            <h3 class="text-lg font-bold text-navy mb-2">{uc.sector}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed mb-3">{uc.text}</p>
+            <p class="text-xs font-medium text-brand-indigo flex items-center gap-1">Sector-gids lezen →</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Stappenplan implementatie</h2>
+      <ol class="space-y-4 text-slate-700">
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">1</span><div><strong class="text-navy">Gratis AI-scan (30 min)</strong> — we inventariseren uw inkomende gesprekken, knelpunten en gewenste integraties.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">2</span><div><strong class="text-navy">Kennisbank-opbouw</strong> — we trainen de AI op uw FAQ, productinfo, openingstijden, escalatieprotocol.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">3</span><div><strong class="text-navy">SIP-trunk koppelen</strong> — uw bestaande nummer wordt aangesloten via VoIP. U houdt uw nummer, klanten merken niets.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">4</span><div><strong class="text-navy">Integraties activeren</strong> — agenda (Google, Outlook, Cal.com), CRM (HubSpot, Pipedrive, AFAS), notificaties (Telegram, WhatsApp, e-mail).</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">5</span><div><strong class="text-navy">Pilot 5 dagen</strong> — live met deel van de gesprekken, dagelijkse KPI-check (deflection-rate, CSAT, escalatie-redenen).</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">6</span><div><strong class="text-navy">Volledig live + iteratie</strong> — 100 procent verkeer, wekelijkse iteratie op kennisbank en escalatie-paden.</div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder lezen</h2>
+      <ul class="space-y-3 text-slate-700">
+        <li><a href="/diensten/marco/" class="text-brand-indigo hover:underline">Marco — onze AI receptionist (productpagina)</a></li>
+        <li><a href="/kennisbank/ai-telefoonassistent-bedrijven/" class="text-brand-indigo hover:underline">AI telefoonassistent voor bedrijven — diepgaande gids</a></li>
+        <li><a href="/kennisbank/ai-telefoniste-vs-mens/" class="text-brand-indigo hover:underline">AI telefoniste vs mens — kostenvergelijking</a></li>
+        <li><a href="/kennisbank/voice-ai-klantenservice/" class="text-brand-indigo hover:underline">Voice AI voor klantenservice — werkt het echt?</a></li>
+        <li><a href="/vergelijk/ai-receptionist-vs-callcenter/" class="text-brand-indigo hover:underline">AI receptionist vs extern callcenter — 15 features</a></li>
+        <li><a href="/kennisbank/elevenlabs-ai-agent-koppelen/" class="text-brand-indigo hover:underline">ElevenLabs AI agent koppelen aan telefoon (HowTo)</a></li>
+        <li><a href="/avg-checklist-ai-mkb/" class="text-brand-indigo hover:underline">25-punts AVG-checklist voor AI in MKB</a></li>
+        <li><a href="/ai-roi-calculator/" class="text-brand-indigo hover:underline">Bereken uw AI ROI</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance">Klaar voor uw AI receptionist?</h2>
+      <p class="mt-4 text-slate-300">Gratis 30-minuten AI-scan. We laten zien wat een AI receptionist concreet voor uw bedrijf oplevert — met cijfers, geen marketingverhalen.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan</a>
+        <a href="/diensten/marco/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk Marco</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
