@@ -16,12 +16,23 @@ const schema = {
   publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
   datePublished: '2026-05-02', dateModified: '2026-05-02', inLanguage: 'nl-NL',
 };
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'],
+  },
+  url: 'https://aanloopai.nl/kennisbank/ai-agent-vs-chatbot/',
+  inLanguage: 'nl-NL',
+};
 ---
 
 <BaseLayout
   title="AI Agent vs Chatbot: Wat is het Verschil? (2026) | Aanloop AI"
   description="Het verschil tussen een AI agent en een chatbot uitgelegd met duidelijke voorbeelden. Wat is slimmer voor uw MKB-bedrijf in 2026? Vergelijking van kosten, functionaliteit en ROI."
-  schema={schema}
+  schema={[schema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">
