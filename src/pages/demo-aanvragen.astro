@@ -25,9 +25,8 @@ const sizes = ['1 persoon (ZZP)','2–10 medewerkers','11–50 medewerkers','51�
   <section class="section">
     <div class="container-page max-w-2xl mx-auto">
       <form id="demo-form" novalidate>
-        <input type="hidden" name="access_key" value="10596d38-fc14-4230-a3c9-4bb1a6981bc7" />
+        <input type="hidden" name="form_type" value="demo" />
         <input type="hidden" name="subject" value="Nieuwe Demo Aanvraag — Aanloop AI" />
-        <input type="hidden" name="from_name" value="Aanloop AI Website" />
         <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
 
         <!-- Stap 1 -->
@@ -230,15 +229,8 @@ document.getElementById('demo-form')?.addEventListener('submit', async (e) => {
   spn?.classList.remove('hidden');
 
   const data = new FormData(form);
-  const submitterName = (data.get('voornaam') as string) || 'daar';
-  const userEmail = data.get('email') as string;
-
-  data.append('replyto', userEmail);
-  // Note: autoresponse subject/message is configured in Web3Forms dashboard, not here
-  data.append('redirect', 'false');
-
   try {
-    const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
+    const res = await fetch('/api/submit', { method: 'POST', body: data });
     const json = await res.json();
     if (json.success) {
       window.location.href = '/demo-bedankt/';

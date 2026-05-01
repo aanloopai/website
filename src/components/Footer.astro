@@ -293,26 +293,21 @@
     }
   });
 
-  // ─── Newsletter form (Web3Forms) ───
+  // ─── Newsletter form (Brevo via /api/submit) ───
   const nlForm = document.getElementById('footer-newsletter') as HTMLFormElement;
   const nlSuccess = document.getElementById('newsletter-success') as HTMLElement;
-  const NL_KEY = '10596d38-fc14-4230-a3c9-4bb1a6981bc7';
   nlForm?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const emailEl = document.getElementById('newsletter-email') as HTMLInputElement;
     const email = emailEl?.value;
     if (!email || !email.includes('@')) return;
     const data = new FormData();
-    data.append('access_key', NL_KEY);
-    data.append('subject', 'Nieuwe nieuwsbrief-aanmelding — aanloopai.nl');
-    data.append('from_name', 'Aanloop AI Newsletter');
+    data.append('form_type', 'newsletter');
+    data.append('subject', 'Nieuwe nieuwsbrief-aanmelding (footer) — aanloopai.nl');
     data.append('email', email);
-    data.append('replyto', email);
     data.append('source', 'Footer newsletter signup');
-    // Note: autoresponse is configured in Web3Forms dashboard
-    data.append('redirect', 'false');
     try {
-      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
+      const res = await fetch('/api/submit', { method: 'POST', body: data });
       const json = await res.json();
       if (json.success) {
         nlForm.style.display = 'none';

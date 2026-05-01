@@ -197,7 +197,6 @@ const type = url.searchParams.get('type') || 'contact';
 
 <script>
   const form = document.getElementById('contact-form') as HTMLFormElement;
-  const WEB3FORMS_KEY = '10596d38-fc14-4230-a3c9-4bb1a6981bc7';
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -206,9 +205,7 @@ const type = url.searchParams.get('type') || 'contact';
     const successMsg = document.getElementById('form-success') as HTMLElement;
     const errorMsg = document.getElementById('form-error') as HTMLElement;
 
-    // Gather form data
     const data = new FormData(form);
-    const submitterName = (data.get('name') as string)?.split(' ')[0] || 'daar';
     const requestType = data.get('type') as string || 'contact';
     const typeLabel: Record<string, string> = {
       demo: 'demo-aanvraag',
@@ -216,29 +213,20 @@ const type = url.searchParams.get('type') || 'contact';
       offerte: 'offerteaanvraag',
     };
 
-    data.append('access_key', WEB3FORMS_KEY);
+    data.append('form_type', requestType === 'demo' ? 'demo' : 'contact');
     data.append('subject', `Nieuw bericht via aanloopai.nl — ${typeLabel[requestType] || requestType}`);
-    data.append('from_name', 'Aanloop AI');
-    data.append('replyto', data.get('email') as string);
-
-    // Note: autoresponse subject/message is configured in Web3Forms dashboard, not here
-    data.append('redirect', 'false');
 
     btn.disabled = true;
     label.textContent = 'Versturen…';
     errorMsg?.classList.add('hidden');
 
     try {
-      const res = await fetch('https://api.web3forms.com/submit', {
-        method: 'POST',
-        body: data,
-      });
+      const res = await fetch('/api/submit', { method: 'POST', body: data });
       const json = await res.json();
 
       if (json.success) {
         successMsg?.classList.remove('hidden');
         form.reset();
-        // Redirect to thank you page after 1.5s
         setTimeout(() => {
           window.location.href = '/bedankt/?type=contact';
         }, 1500);

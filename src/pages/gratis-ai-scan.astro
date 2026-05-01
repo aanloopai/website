@@ -301,7 +301,6 @@ const serviceSchema = {
 
 <script>
   const form = document.getElementById('ai-scan-form') as HTMLFormElement;
-  const WEB3FORMS_KEY = '10596d38-fc14-4230-a3c9-4bb1a6981bc7';
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -311,21 +310,15 @@ const serviceSchema = {
     const errorMsg = document.getElementById('scan-error') as HTMLElement;
 
     const formData = new FormData(form);
-    const naam = (formData.get('naam') as string)?.split(' ')[0] || 'daar';
-
-    formData.append('access_key', WEB3FORMS_KEY);
+    formData.append('form_type', 'scan');
     formData.append('subject', `Gratis AI Scan aanvraag — ${formData.get('bedrijf') || 'onbekend bedrijf'}`);
-    formData.append('from_name', 'Aanloop AI Website');
-    formData.append('replyto', formData.get('email') as string);
-    // Note: autoresponse is configured in Web3Forms dashboard, not here
-    formData.append('redirect', 'false');
 
     btn.disabled = true;
     label.textContent = 'Versturen…';
     errorMsg?.classList.add('hidden');
 
     try {
-      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: formData });
+      const res = await fetch('/api/submit', { method: 'POST', body: formData });
       const json = await res.json();
       if (json.success) {
         successMsg?.classList.remove('hidden');

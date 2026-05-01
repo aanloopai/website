@@ -314,9 +314,8 @@ const steps = [
     (document.getElementById('summary-total') as HTMLElement).textContent = `€${price}`;
   });
 
-  // Form submit (Web3Forms — sends to hello@aanloopai.nl + autoresponse to user)
+  // Form submit (Brevo via /api/submit — sends to hello@aanloopai.nl + autoresponse to user)
   const form = document.getElementById('checkout-form') as HTMLFormElement;
-  const WEB3FORMS_KEY = '10596d38-fc14-4230-a3c9-4bb1a6981bc7';
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -333,18 +332,11 @@ const steps = [
     label.textContent = 'Verwerken…';
 
     const data = new FormData(form);
-    const submitterName = (data.get('voornaam') as string) || 'daar';
-    const userEmail = data.get('email') as string;
-
-    data.append('access_key', WEB3FORMS_KEY);
+    data.append('form_type', 'aanvraag');
     data.append('subject', `Nieuwe aanvraag via aanloopai.nl — ${data.get('bedrijf') || 'onbekend bedrijf'}`);
-    data.append('from_name', 'Aanloop AI Website');
-    data.append('replyto', userEmail);
-    // Note: autoresponse subject/message is configured in Web3Forms dashboard, not here
-    data.append('redirect', 'false');
 
     try {
-      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
+      const res = await fetch('/api/submit', { method: 'POST', body: data });
       const json = await res.json();
       if (json.success) {
         window.location.href = '/bedankt/?type=aanvraag';
