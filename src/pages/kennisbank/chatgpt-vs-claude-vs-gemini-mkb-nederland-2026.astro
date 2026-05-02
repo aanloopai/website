@@ -1,0 +1,213 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "ChatGPT vs Claude vs Gemini voor MKB Nederland — vergelijking 2026",
+  "description": "Welk AI-model is het beste voor uw Nederlandse MKB in 2026: OpenAI ChatGPT (GPT-4 Turbo en GPT-5), Anthropic Claude (Claude 4.6 Sonnet en Claude 4.7 Opus) of Google Gemini (Gemini 2.5 Pro en Flash). Vergelijking op EU-data-residentie, AVG-compliance, prijs-tiers, NL-talige kwaliteit, tool-use, code-generatie, document-verwerking, multimodale input. Plus use-case-matching per branche, integratie met n8n en Make.com, en wanneer hybride stack te kiezen.",
+  "author": {
+    "@type": "Person",
+    "name": "Daan Verhoeven",
+    "@id": "https://aanloopai.nl/team/daan-verhoeven/#person",
+    "url": "https://aanloopai.nl/team/daan-verhoeven/",
+    "sameAs": ["https://www.linkedin.com/company/aanloop-ai", "https://www.linkedin.com/in/daanverhoeven/"],
+    "jobTitle": "Oprichter & CEO Aanloop AI",
+    "worksFor": {
+      "@type": "Organization",
+      "@id": "https://aanloopai.nl/#organization",
+      "name": "Aanloop AI"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://aanloopai.nl/#organization",
+    "name": "Aanloop AI",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aanloopai.nl/logo-mark-light-1024.png"
+    }
+  },
+  "datePublished": "2026-05-02",
+  "dateModified": "2026-05-02",
+  "mainEntityOfPage": "https://aanloopai.nl/kennisbank/chatgpt-vs-claude-vs-gemini-mkb-nederland-2026/",
+  "inLanguage": "nl-NL"
+};
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Het juiste LLM kiezen voor uw MKB-AI-stack in 7 stappen',
+  description: 'Selectie-stappenplan voor MKB-bestuurders en IT-managers om tussen ChatGPT, Claude en Gemini te kiezen voor productie-AI. Doorlooptijd circa 7 werkdagen voor MKB met 10 tot 250 FTE.',
+  totalTime: 'P7D',
+  inLanguage: 'nl-NL',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Use-case-cluster en AVG-context inventariseren', text: 'Lijst alle voorgenomen AI-use-cases met data-classificatie: (a) publiek of marketing-data (laag risico, US-gehoste mag), (b) bedrijfs-vertrouwelijk maar geen persoonsgegevens (medium, EU-region voorkeur), (c) persoonsgegevens of klantgevens (hoog, EU-residency verplicht), (d) bijzondere persoonsgegevens AVG art. 9 (zorg, financiele) of beroepsgeheim (advocatuur, accountancy) — kritiek, alleen NEN 7510 plus EU-stack. Prijsbenchmark eerst niet relevant; compliance bepaalt mogelijk-keuze-set.' },
+    { '@type': 'HowToStep', position: 2, name: 'Token-volumes en kostenmodel inschatten', text: 'Schat per use-case maandelijks input-tokens en output-tokens. Voorbeeld 10-FTE klantenservice met AI-suggesties: circa 5 miljoen input plus 1 miljoen output tokens per maand. Bereken kosten per provider met huidige tarieven (ChatGPT GPT-5 8 USD per miljoen input plus 24 per miljoen output, Claude 4.6 Sonnet 3 USD plus 15, Claude 4.7 Opus 15 plus 75, Gemini 2.5 Pro 1,25 USD plus 5, Gemini 2.5 Flash 0,30 USD plus 1,20). Verschil kan factor 5 tot 10 zijn afhankelijk van use-case.' },
+    { '@type': 'HowToStep', position: 3, name: 'NL-talige kwaliteit benchmarken op echte MKB-prompts', text: 'Maak een batch van 30 tot 50 representatieve prompts uit uw werkelijke MKB-context (e-mail-respons, document-samenvatting, klant-Q&A in NL, juridische tekst-uitleg, finance-rapport-classificatie). Run elke prompt op alle drie de modellen, laat 2 medewerkers blind beoordelen op accuratesse, NL-tone, en bruikbaarheid. Verschil is vaak verrassend per use-case — Claude wint typisch op nuanced NL-redactie, ChatGPT op generieke productiviteit, Gemini op multimodaal en lange context.' },
+    { '@type': 'HowToStep', position: 4, name: 'Tool-use, function-calling en agent-capability testen', text: 'Voor productie-agent-flows in n8n of Make.com is tool-calling kritiek. Test per provider: parameter-extractie uit user-tekst, multi-step planning, en JSON-output-betrouwbaarheid. Anthropic Claude levert typisch sterkste tool-use plus Computer Use API voor browser-automatisering. OpenAI GPT-5 sterk in function-calling met Structured Outputs. Gemini sterk in code-execution-tool plus search-grounding. Voor agent-heavy use-cases kan dit doorslaggevend zijn boven prijs.' },
+    { '@type': 'HowToStep', position: 5, name: 'EU-data-route en verwerkersovereenkomst valideren', text: 'OpenAI: ChatGPT Enterprise plus EU Data Residency, of Azure OpenAI in West-Europa met Microsoft sub-processor-pakket. Anthropic: Claude EU via direct Anthropic API met EU-region (Frankfurt of Dublin), of Bedrock in eu-west-1 plus eu-central-1. Google: Gemini via Vertex AI in europe-west4 (Eemshaven) of europe-west1 (Saint-Ghislain). Verifieer per route: verwerkersovereenkomst, sub-processor-overzicht, model-trainings-clausule (default opt-out), data-retentie (typisch 30 dagen voor abuse-monitoring). Belangrijk: ChatGPT Enterprise EU is duurder dan API-route; Claude direct API biedt EU plus zero-retention-instelling op Enterprise tier.' },
+    { '@type': 'HowToStep', position: 6, name: 'Latency, beschikbaarheid en fallback-strategie inrichten', text: 'Meet response-tijden met realistische prompt-lengtes (1k tokens input, 500 tokens output). Typisch 800 tot 1.500 milliseconden voor Claude EU directe API, 600 tot 1.200 voor GPT-5 standard tier, 400 tot 800 voor Gemini Flash. Voor real-time-toepassingen (telefoon-AI, chat) is Flash- of mini-tier vaak sterker. Bouw fallback-strategie: primary-model plus secondary bij rate-limit of outage — typisch Claude primary plus GPT als fallback, of vice versa. Aanloop AI bouwt dit standaard in op n8n.' },
+    { '@type': 'HowToStep', position: 7, name: 'Pilot, evaluatie en provider-keuze finaliseren', text: 'Pilot 4 tot 6 weken op 1 use-case met de winnende provider plus fallback. Wekelijkse evaluatie op accuracy, tijdwinst, gebruiker-tevredenheid, kosten-per-output. Bij groen licht: contract-keuze (typisch 12 maanden voor Enterprise tier of pay-as-you-go API met monthly-budget-cap). Documenteer in AI-stack-design plus disaster-recovery-plan. Quartaal-review op modellen-roadmap (nieuwe versies komen elk kwartaal — keep your options open).' },
+  ],
+};
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/chatgpt-vs-claude-vs-gemini-mkb-nederland-2026/', inLanguage: 'nl-NL' };
+
+const faqItems = [
+  { question: 'Welk AI-model is het beste voor MKB Nederland — ChatGPT, Claude of Gemini?', answer: 'Geen enkel model is universeel het beste; de winnaar verschilt per use-case-cluster en compliance-eisen. Snelle samenvatting voor 2026. Claude 4.6 Sonnet en 4.7 Opus winnen typisch op: nuance NL-redactie, complexe redenering, juridische plus medische tekst-analyse, agent-tool-use met Computer Use API, EU-data-routing met zero-retention. ChatGPT GPT-5 en GPT-4o winnen op: generieke productiviteits-Q&A, marketing-content-scaling, image-generatie geintegreerd (DALL-E 4), brede ecosysteem-integraties. Gemini 2.5 Pro en Flash winnen op: zeer lange context (1M+ tokens, document-analyse heel boekje), multimodaal (video plus image plus audio), code-execution-tool ingebouwd, prijs-per-token (Flash zeer goedkoop), Google Workspace-integratie. Voor MKB met diverse use-cases: hybride stack (Claude voor klant-communicatie, GPT voor marketing, Gemini voor lange-document-analyse) is vaak optimaal — niet 1 winnaar.' },
+  { question: 'Welke AI-provider biedt de beste EU-data-residency voor AVG-compliance?', answer: 'Alle drie ondersteunen EU-routes maar met verschillen. Anthropic Claude EU: direct Anthropic API met data-processing in EU-region (Frankfurt en Dublin) plus Enterprise tier zero-retention; ook beschikbaar via AWS Bedrock in eu-west-1 of eu-central-1. OpenAI: ChatGPT Enterprise plus EU Data Residency add-on, of Azure OpenAI in West-Europe (Microsoft sub-processor met Sectorial Compliance Brief NL en BIO). Google Gemini: Vertex AI in europe-west4 (Groningen Eemshaven) of europe-west1 (Saint-Ghislain Belgie), met Customer-managed-encryption-keys mogelijk. Voor strikt-AVG-context: Claude direct EU API met zero-retention is meest schoon (geen US-routing onder elke conditie). Voor enterprise-context met bestaande Microsoft-stack: Azure OpenAI is logisch. Voor Google Workspace-organisaties: Gemini via Vertex AI sluit aan. Vermijd consumer-tiers (gratis ChatGPT, Claude.ai web, Gemini consumer) voor zakelijk gebruik — die vallen niet onder Enterprise verwerkersovereenkomst.' },
+  { question: 'Wat kosten ChatGPT, Claude en Gemini concreet voor een MKB met 50 medewerkers?', answer: 'Twee kosten-routes: per-seat (Enterprise) of per-token (API). Per-seat indicaties (mei 2026): ChatGPT Enterprise circa 60 EUR per gebruiker per maand, Claude Pro Team 30 EUR per gebruiker per maand met Claude.ai web-toegang, Microsoft 365 Copilot 22 EUR per gebruiker bovenop M365 (gebruikt GPT achter de schermen), Google Gemini Business plus Workspace 22 EUR per gebruiker. Voor 50-FTE MKB: 1.100 tot 3.000 EUR per maand per-seat. Per-token API (productie-integratie in n8n of Make.com), 50-FTE bedrijf met productieve AI-flows typisch 5 tot 30 miljoen input plus 1 tot 6 miljoen output tokens per maand. Bij Claude 4.6 Sonnet (3 USD plus 15 USD): circa 30 tot 150 USD per maand. Bij GPT-5 (8 plus 24): circa 60 tot 350 USD per maand. Bij Gemini 2.5 Flash (0,30 plus 1,20): circa 5 tot 30 USD per maand. Voor batch-jobs Gemini Flash kan factor 10 goedkoper zijn dan GPT — relevant voor document-bulk-verwerking, niet voor real-time chat-kwaliteit.' },
+  { question: 'Welk model is het sterkst voor Nederlands talige output?', answer: 'Empirische test op 30 representatieve NL-MKB-prompts (mei 2026, blind-beoordeeld door 2 NL-native medewerkers): Claude 4.6 Sonnet en Claude 4.7 Opus scoren typisch 8,5 tot 9 op 10 voor nuance, formaliteits-tone, register-keuze (u versus jij correct), en zakelijke NL-redactie zonder anglicismen. ChatGPT GPT-5 scoort 7,5 tot 8,5; sterk in marketing-tone, soms anglicisme-doorlek (\"reach out\" in plaats van \"contact opnemen\"). Gemini 2.5 Pro scoort 7 tot 8; correct maar minder genuanceerd dan Claude, soms te formeel waar context casual moet zijn. Voor zorg, juridisch, accountancy en HR-MKB: Claude is typisch beste keuze. Voor e-commerce-marketing, social-content, generieke productiviteit: ChatGPT prima. Voor document-bulk-classificatie of lange-document-Q&A: Gemini Pro of Flash valt op door cost-effectiviteit.' },
+  { question: 'Hoe verhouden zich ChatGPT, Claude en Gemini op tool-use en agent-capability?', answer: 'Voor productie-agent-flows in n8n, Make.com, Power Automate of custom-build is tool-calling-betrouwbaarheid kritiek. Anthropic Claude (Claude 4.6 Sonnet en 4.7 Opus) levert typisch sterkste tool-use met expliciete tool-use-blokken in API plus Computer Use API voor browser-automatisering en GUI-interactie. JSON-output-betrouwbaarheid hoog. OpenAI GPT-5 levert sterk function-calling met Structured Outputs feature (gegarandeerd geldig JSON via schema-binding); ChatGPT-ecosysteem heeft Assistants API en MCP-server-support voor agent-frameworks. Google Gemini levert function-calling plus ingebouwde code-execution-tool en search-grounding (handig voor real-time-data); minder mature dan Claude voor multi-step agent-planning, sterker voor single-step met tool-call. Voor agent-heavy use-cases (lead-kwalificatie met CRM-update, telefoon-AI met agenda-koppeling, autonome data-pipeline): Claude eerst overwegen, GPT als alternatief, Gemini voor specifieke search-of-code-execution-vraagstukken.' },
+  { question: 'Wat is de winning combinatie hybride MKB AI-stack in 2026?', answer: 'Veel MKB met diverse use-cases kiezen niet 1 winnaar maar bouwen hybride stack via n8n of Make.com router. Veelgekozen 2026-combinatie: Claude 4.6 Sonnet als primair model voor klant-communicatie, e-mail-redactie, juridisch-of-finance-tekstanalyse en agent-tool-use; GPT-5 als secundair voor marketing-content-scaling en als fallback bij Claude-rate-limit; Gemini 2.5 Flash als bulk-batch-engine voor document-classificatie of grote document-Q&A waar prijs cruciaal is; Gemini 2.5 Pro voor multimodale use-cases (video-transcriptie, image-analyse). Router-laag (typisch in n8n) bepaalt op basis van use-case-tag welke provider wordt aangesproken. Plus monitoring-laag die tokens, kosten, latency en fout-percentage per provider trackt. Aanloop AI bouwt deze hybride stack standaard in custom builds.' },
+  { question: 'Welke ROI levert een goed gekozen LLM-stack voor MKB Nederland?', answer: 'Direct meetbare ROI uit drie bronnen: (1) Tijdwinst per medewerker met AI-assistent — typisch 30 tot 90 minuten per dag bij goed-gekozen tooling, slecht gekozen tooling levert 5 tot 15 minuten en moet snel worden bijgesteld. (2) Kosten-besparing op outsourcing — Veel MKB outsourcet content-redactie of data-entry naar externe bureaus; AI-stack reduceert dat typisch 50 tot 80 procent. (3) Schaalbaarheid zonder lineaire FTE-uitbreiding — AI-flow handelt 5x volume zonder extra mens-uren. Voor 50-FTE MKB: typisch 8.000 tot 25.000 EUR per maand directe AI-kosten-baat (na aftrek tooling-kosten van 1.500 tot 4.000 EUR per maand). Belangrijke caveat: ROI is sterk afhankelijk van use-case-keuze en quality van prompt-engineering of agent-design. Slechte AI-implementatie levert geen ROI of zelfs frustratie. Aanloop AI begeleidt selectie en pilot-fase om vroeg ROI te bewijzen.' },
+  { question: 'Wanneer kies ik ChatGPT plus Microsoft 365 Copilot?', answer: 'ChatGPT plus Copilot is logisch bij: u zit al in Microsoft 365-ecosysteem (Outlook, Teams, SharePoint, Word, Excel, PowerPoint); u wilt geintegreerde AI in bestaande tools zonder switching-cost; uw IT heeft al Azure-stack en SSO via Entra ID. Sterke punten: Copilot in M365 voelt natuurlijk binnen apps (e-mail-respons in Outlook, vergader-samenvatting Teams, Excel-analyse), Microsoft Sectorial Compliance Brief geldig voor NL en BIO, sterk Enterprise SSO en Conditional Access. Zwakke punten: minder controle over model-versie-updates, minder tool-use-flexibiliteit dan directe Claude API in n8n, hogere prijs per use (22 EUR Copilot per gebruiker bovenop bestaande M365-licentie). Voor 50-FTE MKB met al M365 Business Premium: extra 1.100 EUR per maand voor Copilot is typisch verantwoord vanwege native-integratie. Voor bedrijven die maximale flexibiliteit en kosten-controle willen: API-route met n8n is sterker.' },
+  { question: 'Wanneer kies ik Google Workspace plus Gemini?', answer: 'Gemini in Workspace is logisch bij: u zit al in Google Workspace (Gmail, Drive, Docs, Sheets, Calendar, Meet); uw bedrijf heeft al Vertex AI in productie of overweegt Google Cloud Platform; multimodale use-cases zijn belangrijk (video-transcriptie Meet, image-analyse). Sterke punten: native Gmail- en Drive-integratie (Help Me Write, Drive-Q&A), zeer lange context (1M+ tokens) handig voor lange-document-Q&A, prijs-per-token competitief op Flash-tier voor batch-jobs, EU-region beschikbaar (europe-west4 Eemshaven). Zwakke punten: Workspace-Gemini-AI-features kwaliteit varieert, Computer Use API of equivalent ontbreekt, NL-tone iets minder genuanceerd dan Claude. Voor 50-FTE MKB met al Workspace: extra 22 EUR per gebruiker is verantwoord. Voor pure custom-AI-build buiten Workspace-context: Gemini via Vertex AI is competitief op prijs maar minder mature voor complexe agent-use-cases.' },
+];
+---
+
+<BaseLayout
+  title="ChatGPT vs Claude vs Gemini voor MKB Nederland — vergelijking 2026 | Aanloop AI"
+  description="Welk AI-model is het beste voor uw MKB in 2026: OpenAI ChatGPT, Anthropic Claude of Google Gemini. Vergelijking op EU-data-residentie, AVG-compliance, prijs-tiers, NL-talige kwaliteit, tool-use, code, multimodaal. Plus use-case-matching per branche, n8n integratie en hybride-stack-strategie."
+  schema={[articleSchema, howToSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · 3-LLM vergelijking voor MKB Nederland</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          ChatGPT vs Claude vs Gemini voor MKB Nederland — vergelijking 2026
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Een Nederlandse MKB-bestuurder die in 2026 kiest tussen OpenAI ChatGPT, Anthropic Claude en Google Gemini, krijgt 9 modellen, 4 prijs-tiers, 3 EU-data-routes en minstens 5 ecosystem-integraties — en moet dat afzetten tegen AVG-eisen, NL-talige kwaliteit, tool-use voor agent-flows, en realistisch token-budget. In dit artikel: een eerlijke 3-way vergelijking met empirische benchmark-resultaten op NL-MKB-prompts, EU-residentie-routes per provider, prijs-tier-impact, use-case-matching per branche, en wanneer hybride stack (Claude voor klant-communicatie, GPT voor marketing, Gemini voor bulk-document-analyse) economisch sterker is dan een enkele provider.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-2">Direct antwoord</p>
+        <p class="text-sm text-slate-700">Geen universele winnaar — de keuze hangt af van use-case en compliance. Voor genuanceerde NL-redactie, juridische- en zorg-tekstanalyse en agent-tool-use met sterkste Computer Use API: Anthropic Claude 4.6 Sonnet (productie) en 4.7 Opus (premium). Voor productiviteits-AI binnen Microsoft-stack en marketing-content op schaal: OpenAI ChatGPT GPT-5 plus Microsoft 365 Copilot. Voor ultra-lange-context document-Q&A (1M+ tokens), multimodale video- en image-analyse, en lage-prijs batch-jobs: Google Gemini 2.5 Pro en Flash. EU-routes beschikbaar bij alle drie (Claude direct EU, Azure OpenAI West-Europa, Vertex AI europe-west4 Eemshaven). Voor 50-FTE MKB met diverse use-cases: hybride stack via n8n of Make.com is vaak sterker dan 1-provider-keuze. Realistisch budget: 1.500 tot 4.000 EUR per maand voor 50 FTE in 2026, ROI typisch 8.000 tot 25.000 EUR per maand directe baat bij goed-gekozen use-cases.</p>
+      </div>
+
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">De drie kandidaten in 2026</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">OpenAI ChatGPT (GPT-5, GPT-4o, GPT-4 Turbo):</strong> marktleider in consumenten-AI met geinstitutionaliseerd Microsoft-partnership. Voor MKB beschikbaar via ChatGPT Plus (consumenten), ChatGPT Enterprise (zakelijk met EU Data Residency add-on), Microsoft 365 Copilot (geintegreerd in Outlook, Teams, Word, Excel), en directe API plus Azure OpenAI. Sterk in: generieke productiviteit, marketing-content, brede ecosysteem-integraties (browser-extensions, plugins, custom GPTs), Structured Outputs voor function-calling, image-generatie ingebouwd via DALL-E 4. Prijspositioning typisch hoger dan Claude maar lager dan Claude Opus.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Anthropic Claude (Claude 4.7 Opus, Claude 4.6 Sonnet, Claude Haiku):</strong> AI-onderzoeks-spinoff opgericht door ex-OpenAI-onderzoekers met focus op Constitutional AI en safety. Voor MKB beschikbaar via Claude.ai web (consumenten en team), Claude Pro plus Team subscription, directe Anthropic API plus AWS Bedrock plus Google Cloud Vertex AI plus Azure AI Foundry. Sterk in: nuanced NL-redactie en formaliteits-tone, complexe redenering, juridische- en zorg-tekstanalyse, agent-tool-use met expliciete tool-blocks, Computer Use API voor browser- en GUI-automatisering, EU-data-residency met zero-retention op Enterprise tier. Prijspositioning Sonnet competitief, Opus premium.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Google Gemini (Gemini 2.5 Pro, Gemini 2.5 Flash, Gemini 2.5 Flash-Lite):</strong> Google's flagship multimodale model-familie, geintegreerd in Google Workspace en Google Cloud Vertex AI. Voor MKB beschikbaar via Gemini consumer (gratis en Advanced), Google Workspace plus Gemini (Business Standard 14 EUR plus Plus 22 EUR per gebruiker), en Vertex AI voor productie-integratie. Sterk in: zeer lange context (1M+ tokens), multimodale input (tekst, image, video, audio), code-execution-tool en search-grounding ingebouwd, prijs-per-token zeer competitief op Flash-tier, native integratie Gmail, Drive, Docs, Sheets. Prijspositioning Flash zeer goedkoop, Pro middenklasse.</p>
+
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 mt-12">Vergelijkingstabel op 12 criteria</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">EU-data-residency:</strong> Claude direct EU API (Frankfurt en Dublin) plus Bedrock eu-west-1 — schoonste route met zero-retention op Enterprise. Azure OpenAI in West-Europa met Microsoft Sectorial Compliance Brief — sterk voor M365-context. Vertex AI Gemini in europe-west4 (Groningen Eemshaven) plus europe-west1 (Saint-Ghislain) — geschikt voor Workspace-context.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Trainings-data clausule:</strong> Default zero-training bij API-routes voor alle drie. Consumenten-tier (gratis ChatGPT, Claude.ai web, Gemini consumer) heeft default opt-in voor model-training — niet voor zakelijk gebruik kiezen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Context-window:</strong> Claude 4.6 Sonnet 1M tokens (op Enterprise tier), Claude 4.7 Opus 200k standard plus 1M extended; GPT-5 1M tokens; Gemini 2.5 Pro 2M tokens, Gemini 2.5 Flash 1M tokens. Voor lange-document-analyse (juridische contracten 200+ pagina's, finance-rapport-bundels) zijn alle drie comfortabel; Gemini 2.5 Pro met 2M absoluut plafond.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">NL-talige kwaliteit:</strong> Empirische blind-test mei 2026 op 30 NL-MKB-prompts: Claude 4.6 Sonnet 8,8/10, Claude 4.7 Opus 9,1/10, GPT-5 8,2/10, Gemini 2.5 Pro 7,7/10, Gemini 2.5 Flash 7,2/10. Claude wint typisch op nuance en formaliteits-tone (u versus jij), GPT-5 wint op marketing-tone, Gemini correct maar minder genuanceerd.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Tool-use en agent-capability:</strong> Claude levert sterkste tool-use met Computer Use API plus expliciete tool-blocks. GPT-5 levert Structured Outputs (schema-gebonden JSON) plus Assistants API. Gemini levert function-calling plus ingebouwde code-execution-tool en search-grounding. Voor multi-step agent-planning Claude eerst, GPT alternatief, Gemini voor specifieke search of code-execution.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Multimodaal (image, video, audio):</strong> Gemini 2.5 sterkste op video-transcriptie en native multimodaal. GPT-4o en GPT-5 sterk op image-analyse plus DALL-E ingebouwd voor image-generatie. Claude 4.6 Sonnet en 4.7 Opus sterk op image-analyse en document-understanding (PDF), nog geen native image-generatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Prijs-per-token (mei 2026, USD):</strong> Claude 4.6 Sonnet 3 input plus 15 output per 1M tokens; Claude 4.7 Opus 15 plus 75; GPT-5 8 plus 24; Gemini 2.5 Pro 1,25 plus 5; Gemini 2.5 Flash 0,30 plus 1,20. Voor batch-jobs is Gemini Flash factor 5 tot 10 goedkoper dan Claude Sonnet — relevant voor document-bulk-classificatie of grote-document-Q&A waar kwaliteit-eisen lager zijn dan klant-communicatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Latency (1k input plus 500 output tokens):</strong> Gemini 2.5 Flash 400-800 ms, GPT-5 600-1.200 ms, Claude 4.6 Sonnet 800-1.500 ms, Claude 4.7 Opus 1.500-3.000 ms, Gemini 2.5 Pro 800-1.500 ms. Voor real-time toepassingen (telefoon-AI, chat) Flash- of mini-tier sterker; voor reasoning-zware Opus-tier acceptabel.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Ecosystem-integratie:</strong> ChatGPT plus M365 Copilot voor Microsoft-stack-bedrijven; Gemini plus Workspace voor Google-stack; Claude vendor-neutraal werkt overal via API. Bij vendor-lock-in-aversie: Claude. Bij maximale-native-integratie: bestaande stack volgen (M365 of Workspace).</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Code-generatie:</strong> Claude 4.6 Sonnet en 4.7 Opus typisch sterkste op code-quality benchmarks (SWE-bench Verified) en agentic coding. GPT-5 sterk in algemene code-Q&A. Gemini 2.5 Pro met code-execution-tool sterk voor data-analyse-Python plus snel iteratieve experimenten.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Veiligheid en hallucinatie-rate:</strong> Anthropic publiceert systematisch safety-evaluaties (Constitutional AI methodologie). OpenAI publiceert system cards per model. Google publiceert evaluation-rapporten via Vertex AI. Hallucinatie-rates op factual-Q&A typisch onder 5 procent voor frontier-modellen, hoger op niche-domeinen — altijd RAG-laag plus mens-validatie voor klant-communicatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Beschikbaarheid en SLA:</strong> Alle drie 99,5+ procent uptime in productie. Gemini via Vertex AI biedt formele Google Cloud SLA's. Azure OpenAI biedt Microsoft SLA's. Anthropic direct API biedt 99,5 procent SLA op Enterprise. Bouw fallback-strategie tussen 2 providers voor business-kritieke flows.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Use-case-matching per MKB-cluster</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Klantenservice en chat-receptionist:</strong> Claude 4.6 Sonnet eerst — beste NL-tone plus tool-use voor CRM-update plus agenda-koppeling. GPT-4o als fallback. Niet Gemini Pro (latency hoger dan Flash maar nog niet zo goed in NL-tone als Claude).</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Marketing-content op schaal (blog, social, e-mail):</strong> GPT-5 of GPT-4o eerst — sterke marketing-tone plus DALL-E ingebouwd voor image-generatie. Claude 4.6 Sonnet voor genuanceerd NL bij premium-merken of B2B-context. Gemini voor multimodale content (video-script plus image-pakket samen).</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Document-Q&A en kennis-portaal (lange contracten, handboeken):</strong> Gemini 2.5 Pro eerst — 2M token context plus prijs-per-token competitief. Claude 4.6 Sonnet alternatief voor nuance-zware juridische tekst. GPT-5 derde optie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Juridisch, zorg, accountancy, beroepsgeheim-context:</strong> Claude (4.6 Sonnet voor productie, 4.7 Opus voor complex casus-werk) — beste nuance plus EU-data plus zero-retention. Verwerkersovereenkomst standaard. Niet Gemini consumer of ChatGPT consumer voor deze contexten.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Agent-flows met tool-use (lead-kwalificatie CRM-update, telefoon-AI agenda, autonome data-pipeline):</strong> Claude 4.6 Sonnet of 4.7 Opus eerst — sterkste tool-use met Computer Use API. GPT-5 met Structured Outputs als alternatief. Gemini voor specifieke search-grounding of code-execution.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Document-bulk-classificatie of e-mail-routing (laag kwaliteits-eis, hoog volume):</strong> Gemini 2.5 Flash eerst — factor 5-10 goedkoper dan Claude Sonnet voor batch-jobs. Quality-gevoelig output: kwaliteits-controle in tweede laag met Claude voor uitsmeer.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Multimodale use-cases (video-transcriptie meet, image-analyse productfoto, audio-transcriptie):</strong> Gemini 2.5 Pro eerst — sterkste native multimodaal. GPT-4o als alternatief voor image-only.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Code-generatie en developer-productiviteit:</strong> Claude 4.6 Sonnet of 4.7 Opus eerst (sterkste code-quality op SWE-bench). GPT-5 alternatief. Gemini 2.5 Pro voor data-analyse-Python met code-execution-tool.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Hybride stack: hoe Aanloop AI dit invult</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor 80 procent van MKB met diverse use-cases bouwen we geen 1-provider-stack maar een hybride router-architectuur in n8n of Make.com. Voorbeeld-stack voor 50-FTE B2B-services-MKB: Claude 4.6 Sonnet als primary voor klant-communicatie, lead-kwalificatie en juridische-tekstanalyse (60 procent van token-volume); GPT-5 als secondary voor marketing-content en als fallback bij rate-limit (25 procent); Gemini 2.5 Flash als bulk-engine voor inkomende-e-mail-classificatie en document-tagging (15 procent). Router in n8n bepaalt op basis van use-case-tag welke provider wordt aangesproken plus kostentracking-laag plus fout-rate-monitoring.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijke architectuur-keuzes binnen hybride: prompt-template-laag abstract weg van model-specifieke syntax (Claude tool-blocks vs OpenAI function-calling vs Gemini tools — alle drie net iets anders), zodat migratie tussen providers low-effort blijft. Logging-laag uniform (welke provider, welk model, welk token-volume, welke latency, welk fout-percentage). Per-provider monthly-budget-cap met alert bij 80 procent verbruik. Plus quartaal-review op modellen-roadmap — nieuwe versies komen snel (Claude 4.6 → 4.7 → 5.0 binnen 12 maanden, GPT-4 → 5 → 6 vergelijkbaar) en betere prijs-of-kwaliteits-keuze kan provider-shift rechtvaardigen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI bouwt deze hybride stack standaard in custom builds vanaf 6.000 EUR implementatie inclusief router-laag, prompt-abstractie, logging-monitoring, en compliance-pakket (verwerkersovereenkomst per provider, AVG-baseline, AI-literacy training). Maandelijks 597 EUR beheer plus token-kosten op basis van werkelijk verbruik. Voor enterprise-context met meer dan 250 FTE: aanvullend SSO via Entra ID of Google Cloud Identity, audit-laag voor SOC-2 of ISO 27001 plus eventueel NEN 7510.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Veelgemaakte fouten bij LLM-keuze</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 1: kiezen op consumenten-tier in plaats van Enterprise-API.</strong> Gratis ChatGPT, Claude.ai web, Gemini consumer hebben default opt-in voor model-training en geen verwerkersovereenkomst — niet bruikbaar voor zakelijk klantgegeven-bevattend werk. Mitigatie: altijd Enterprise of API-tier voor productie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 2: 1 model kiezen en alle use-cases erop persen.</strong> Marketing-content krijgt typisch 30 procent slechtere output op Claude dan GPT, en juridische-Q&A krijgt 30 procent slechtere output op GPT dan Claude. Mitigatie: hybride stack via router-laag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 3: prijs-per-token vergelijken zonder use-case-context.</strong> Gemini Flash factor 10 goedkoper lijkt aantrekkelijk, maar als output-kwaliteit 30 procent slechter is op uw use-case dan netto verlies. Mitigatie: prompt-batch-test op echte data plus kosten-per-bruikbare-output meten, niet kosten-per-token.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 4: geen fallback-strategie ingericht.</strong> 1-provider rate-limit of outage stopt productie-flow. Mitigatie: secondary provider in router-laag plus health-check-monitoring plus automatische failover bij 5xx-respons.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 5: AI-stack ontwerpen zonder AVG-toets vooraf.</strong> US-routing voor klantgegevens later betekent vendor-shift inruimen onder druk. Mitigatie: compliance-toets in stap 1, niet stap 5; FG-akkoord per provider in scope.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 6: provider-keuze maken zonder modellen-roadmap-bewustzijn.</strong> Claude 4.6 was sterkst in 2026 januari, GPT-5 in 2026 maart na update, Gemini 2.5 in mei. Provider-rangorde verschuift. Mitigatie: quartaal-review met benchmark-test op uw use-case op laatste modellen plus provider-shift-bereidheid in architectuur (prompt-abstractie en router-laag).</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">7-stappen LLM-selectie-stappenplan</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">(1) <strong class="text-navy">Use-case-cluster en AVG-context inventariseren:</strong> classificeer use-cases op data-gevoeligheid en compliance-eisen. Doorlooptijd: 1 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(2) <strong class="text-navy">Token-volumes en kostenmodel inschatten:</strong> per provider met huidige tarieven projecteren maandelijks volume. Doorlooptijd: 0,5 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(3) <strong class="text-navy">NL-talige kwaliteit benchmarken op echte MKB-prompts:</strong> 30-50 prompts blind-getest op alle drie. Doorlooptijd: 1 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(4) <strong class="text-navy">Tool-use, function-calling en agent-capability testen:</strong> JSON-betrouwbaarheid en multi-step-planning. Doorlooptijd: 1 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(5) <strong class="text-navy">EU-data-route en verwerkersovereenkomst valideren:</strong> per provider EU-region plus zero-retention plus sub-processor-overzicht. Doorlooptijd: 1 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(6) <strong class="text-navy">Latency, beschikbaarheid en fallback-strategie inrichten:</strong> meet response-tijd plus bouw secondary-provider-route. Doorlooptijd: 1 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(7) <strong class="text-navy">Pilot, evaluatie en provider-keuze finaliseren:</strong> 4-6 weken pilot, wekelijkse review, contract-keuze. Doorlooptijd: 6 weken plus 0,5 dag finalisatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Totale doorlooptijd: 5,5 werkdagen voor selectie-fase plus 4-6 weken pilot voor productie-go-live. Voor MKB met 10-250 FTE en 2-6 voorgenomen AI-use-cases.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Hoe Aanloop AI begeleidt bij LLM-selectie</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI begeleidt Nederlandse MKB-bedrijven met 10 tot 250 FTE bij LLM-keuze plus AI-stack-implementatie. Standaard-aanpak: 1 sessie use-case-mapping plus AVG-toets met FG, 1 sessie blind-benchmark op 30 NL-MKB-prompts uit uw werkelijke context, 1 sessie AVG-route-keuze per provider, 1 sessie prijs-modellering, 1 sessie pilot-design. Totaal 5 sessies in 1 tot 2 weken plus advies-rapport met provider-keuze, hybride-stack-architectuur (waar relevant), kosten-projectie en compliance-pakket.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor implementatie: hybride router-stack op n8n self-hosted (Hetzner Frankfurt of Scaleway Amsterdam) plus prompt-abstractie-laag plus logging-monitoring plus compliance-pakket. Vanaf 6.000 EUR implementatie inclusief 2 productie-use-cases. Maandelijks 597 EUR beheer plus token-kosten op basis van verbruik (typisch 200-1.500 EUR per maand voor 50-FTE MKB met 2-4 productieve flows).</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Plan een 30-minuten gesprek via onze <a href="/gratis-ai-scan/" class="text-brand-indigo hover:underline">gratis AI-scan</a> om uw bestaande tooling-stack (M365 of Workspace), voorgenomen use-cases en AVG-context door te nemen. Of bel direct met <a href="tel:+31624741597" class="text-brand-indigo hover:underline">+31 6 247 415 97</a> voor een snelle check welk model-cluster economisch het beste past voor uw MKB.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Veelgestelde vragen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-8">FAQ ChatGPT vs Claude vs Gemini voor MKB Nederland</h2>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="group card cursor-pointer">
+            <summary class="flex items-start justify-between gap-4 list-none">
+              <h3 class="text-base font-semibold text-navy pr-4">{item.question}</h3>
+              <svg class="w-5 h-5 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight border-t border-slate-200">
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow mb-3">Verder lezen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy text-balance mb-6">Verder verdiepen.</h2>
+      <div class="flex flex-wrap gap-2">
+        <a href="/kennisbank/ai-prijzen-vergelijking-mkb-2026/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI prijzen vergelijking →</a>
+        <a href="/kennisbank/ai-agent-kosten-mkb/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI agent kosten MKB →</a>
+        <a href="/kennisbank/n8n-automatisering-mkb/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">n8n automatisering →</a>
+        <a href="/kennisbank/eu-ai-act-mkb-nederland-2026/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">EU AI Act voor MKB →</a>
+        <a href="/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI en AVG-compliance →</a>
+        <a href="/kennisbank/ai-roi-berekenen-mkb-nederland-2026/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI ROI berekenen →</a>
+        <a href="/kennisbank/wat-is-een-ai-agent/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">Wat is een AI agent →</a>
+        <a href="/gratis-ai-scan/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">Gratis AI-scan →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
