@@ -45,6 +45,81 @@ const allFaqs = [
       { q: 'Is Aanloop AI AVG/GDPR-compliant?', a: 'Ja, volledig. We zijn geregistreerd bij de KVK (88606902), werken met Nederlandse servers, en hanteren strikte data retention policies. Meer details in onze privacy policy.' },
       { q: 'Hoelang worden gespreksdata bewaard?', a: 'Gespreksopnames: 90 dagen. Transcripties: 2 jaar. Metadata: 3 jaar. Anonieme analysedata: onbeperkt. U kunt op verzoek eerder alle data laten verwijderen.' },
       { q: 'Kan ik verzoeken dat mijn data wordt verwijderd?', a: 'Ja, conform de AVG heeft u het recht op verwijdering. Stuur een verzoek naar privacy@aanloopai.nl. We verwerken dit binnen 30 dagen.' },
+      { q: 'Voldoet jullie AI aan de EU AI Act?', a: 'Ja. Onze AI-agents vallen in de "limited risk" categorie van de EU AI Act (transparantie-verplichting bij AI-interactie). We tonen altijd duidelijk aan bellers en chatters dat ze met AI praten, en bieden directe doorverbinding naar een mens. We monitoren AI Act updates voor het MKB.' },
+      { q: 'Worden mijn gespreksdata gebruikt voor het trainen van AI-modellen?', a: 'Nee. Klantdata van Aanloop AI wordt nooit gebruikt voor het trainen van LLMs of voice-modellen. We hanteren strikte data-isolation: uw gesprekken blijven binnen uw eigen instance op een Nederlandse server.' },
+    ],
+  },
+
+  {
+    category: 'Hoe begin ik?',
+    items: [
+      { q: 'Hoe begin ik met AI in mijn MKB?', a: 'Start met de gratis AI-scan van Aanloop AI: een 30-minuten remote sessie waarin we uw bedrijfsprocessen analyseren en concrete besparingsmogelijkheden identificeren. Daarna kiest u uit Marco (telefoon), Emma (WhatsApp) of een custom workflow. Live in 7 werkdagen, vanaf 197 euro per maand.' },
+      { q: 'Hoe weet ik of AI iets voor mijn bedrijf is?', a: 'AI loont voor MKB als u een of meer van deze hebt: (1) repetitieve telefoongesprekken (>50 per maand), (2) afspraken inplannen met no-shows (>10%), (3) standaard WhatsApp-vragen (>30 per dag), (4) handmatige factuurverwerking (>20 facturen per maand), (5) terugkerende e-mailpatronen. Onze gratis AI-scan geeft binnen 30 minuten uitsluitsel.' },
+      { q: 'Hoe lang duurt de implementatie van een AI agent?', a: 'Standaard implementaties (Marco AI receptionist, Emma WhatsApp bot): 7 werkdagen van intake tot go-live. Custom workflows met meerdere systeemkoppelingen: 4 tot 8 weken. Enterprise oplossingen met IT-security audit: 8 tot 12 weken. Tijdens onboarding krijgt u een vaste projectmanager.' },
+      { q: 'Hoe meet ik de ROI van een AI agent?', a: 'Aanloop AI levert maandelijks een ROI-rapport: (1) aantal afgehandelde gesprekken, (2) doorverbindingen naar mens, (3) gemiddelde gespreksduur, (4) conversie naar afspraak of lead, (5) bespaarde uren personeel maal uurtarief. Gemiddelde ROI bij Aanloop-klanten: 3,5x in jaar 1 en 7x in jaar 2.' },
+      { q: 'Hoe trainen we de AI op onze specifieke bedrijfskennis?', a: 'Tijdens onboarding levert u: (1) bedrijfsinformatie (FAQs, openingstijden, diensten), (2) callscripts of voorbeeldgesprekken, (3) toegang tot kennisbank of wiki indien beschikbaar. Aanloop AI vult dit aan met sectorkennis uit 80+ MKB-implementaties. Updates kunnen wekelijks via een eenvoudig dashboard.' },
+      { q: 'Hoe verbinden jullie de AI met mijn bestaande telefooncentrale?', a: 'Voor Marco AI receptionist: SIP-trunk doorverbinding via uw VoIP-provider (KPN EEN, Voiceworks, RoutIT, Belcentrale, etc.) of een nieuw nummer dat u doorschakelt. Implementatietijd: 1 tot 3 dagen. Bestaande nummers houdt u; geen vendor lock-in.' },
+    ],
+  },
+
+  {
+    category: 'AI per Sector',
+    items: [
+      { q: 'Welke AI agent is het beste voor een advocatenkantoor?', a: 'Voor advocaten raden we Marco AI receptionist plus een custom intake-workflow aan: (1) Marco beantwoordt 24/7 calls en screent op rechtsgebied (familie, strafrecht, zakelijk), (2) intake-formulier met conflict-of-interest check, (3) automatische agendering met de juiste advocaat, (4) AVG en beroepsgeheim compliant via Nederlandse server zonder training op klantdata. Vanaf 497 euro per maand.' },
+      { q: 'Kan AI mijn webshop helpen?', a: 'Ja, Emma AI WhatsApp bot is ideaal voor webshops: track-and-trace updates, retour-aanvragen automatiseren, voorraadwaarschuwingen, productadvies, klachtafhandeling, abandoned-cart recovery. Integreert met Shopify, WooCommerce, Lightspeed en Magento. Zie pillar-gids: /ai-voor-ecommerce-webshops-nederland/.' },
+      { q: 'Hoe gebruik je AI in een huisartsenpraktijk of fysiotherapie?', a: 'Zorg-MKB heeft een eigen AI-flow: triagebot (geen medisch advies, alleen routing), afspraakherinneringen via WhatsApp, no-show preventie (-78% volgens Aanloop-data), recept-aanvragen en formulier-uploads. NEN 7510 plus AVG compliant via Nederlandse server. Pillar-gids: /ai-voor-zorg-mkb-nederland/.' },
+      { q: 'Werkt AI ook voor restaurants en horeca?', a: 'Ja. Restaurants gebruiken Marco voor reserveringen plus dieetwensen plus tafel-toewijzing, Emma voor bestellingen via WhatsApp, en custom agents voor leverancier-orders. Integreert met Formitable, Zenchef, Untill en Dish.co. Verwacht 30 tot 40% minder gemiste calls in piekuren.' },
+      { q: 'Hoe past AI in een accountantskantoor of administratiekantoor?', a: 'Accountancy-AI: (1) automatische factuurverwerking via OCR (Twinfield, Exact, Yuki integratie), (2) AI-receptionist voor klantcalls, (3) WhatsApp bot voor BTW-vragen, (4) intake-formulieren voor nieuwe klanten met UBO-check. Zie pillar: /ai-voor-administratie-boekhouding-mkb-nederland/.' },
+      { q: 'Kan ik AI gebruiken in mijn makelaarskantoor?', a: 'Ja. Makelaars gebruiken Marco voor 24/7 woninginfo (huurprijs, oppervlakte, beschikbaarheid), bezichtigingen inplannen, callback-verzoeken en taxatie-aanvragen. Emma stuurt automatisch documenten (energielabel, koopakte concept) via WhatsApp. Integreert met Realworks, Tiara en Funda Pro.' },
+      { q: 'Welke AI past bij een tandartspraktijk?', a: 'Tandartsen kiezen meestal Marco plus Emma combinatie: Marco neemt overdag pijnklachten op met urgentie-triage (acute pijn = directe doorverbinding), Emma stuurt WhatsApp afspraakherinneringen 24 uur en 2 uur vooraf (no-show -85% volgens een Rotterdamse praktijk). NEN 7510 compliant. Vanaf 397 euro per maand.' },
+      { q: 'Hoe gebruik je AI als ZZPer of freelancer?', a: 'ZZP-AI begint laagdrempelig: Marco Starter (297 euro per maand) neemt al uw calls aan tijdens deep-work blokken, screent leads en regelt afspraken. Geen personeel nodig, geen kantoor. Onze ZZP-klanten besparen gemiddeld 8 uur per week aan administratie en gemiste calls.' },
+    ],
+  },
+
+  {
+    category: 'Beslissing & Selectie',
+    items: [
+      { q: 'Wat is het verschil tussen Marco en Emma?', a: 'Marco = AI receptionist (telefoon, voice). Emma = AI WhatsApp bot (chat, tekst). Marco neemt calls aan in vloeiend Nederlands met ElevenLabs-stemmen, ideaal voor 24/7 telefonische bereikbaarheid. Emma chat via WhatsApp Business API met menselijke handover, ideaal voor klantenservice plus sales-vragen. Combinatie: 497 euro per maand.' },
+      { q: 'Wanneer kies je voor Marco vs een callcenter?', a: 'Marco loont vanaf 50+ calls per maand. Callcenter rekent 1,50 tot 3,50 euro per beantwoorde call (gemiddeld 750 tot 1.750 euro per maand bij 500 calls). Marco kost vast 297 tot 497 euro per maand bij onbeperkte calls plus 24/7 beschikbaarheid plus 100% Nederlands accent. Vergelijk: /vergelijk/ai-receptionist-vs-callcenter/.' },
+      { q: 'Wat is het verschil tussen een AI agent en een chatbot?', a: 'Chatbot = regel-gebaseerd, beantwoordt vooraf-geprogrammeerde vragen via menus. AI agent = LLM-gebaseerd, begrijpt natuurlijke taal, voert acties uit (afspraak inplannen, doorverbinden, factuur verwerken) en leert van interacties. Aanloop AI bouwt alleen agents; chatbots zijn 2010-tech.' },
+      { q: 'Welke AI past bij een team van 5 mensen?', a: 'Voor 1 tot 10 medewerkers: Marco Starter (297 euro per maand, 200 calls) of Emma Starter (197 euro per maand, 500 chats). Voldoende voor 80% van MKB-bedrijven onder de 10 fte. Bij meer volume of meerdere talen: Growth pakket 497 euro per maand.' },
+      { q: 'Wanneer is enterprise-AI nodig?', a: 'Enterprise-implementatie (2.500 euro plus per maand) wordt aanbevolen bij: meer dan 5.000 calls of chats per maand, integratie met SAP, Oracle of maatwerksoftware, multi-tenant security, SOC 2 audit-eisen, eigen LLM-fine-tune of on-premise deployment. Onder die drempels is Growth (497 euro per maand) ruim voldoende.' },
+      { q: 'Waarom Aanloop AI en niet een buitenlandse aanbieder?', a: 'Drie redenen: (1) data blijft in Nederland (n8n self-hosted op Nederlandse server), (2) vloeiend Nederlands met regionaal accent (geen Engelstalig met NL-vertaling), (3) directe support in NL of EN tijdens kantooruren. Buitenlandse aanbieders (Voiceflow, Bland AI) hebben geen NL-grounding en US data-flows.' },
+    ],
+  },
+
+  {
+    category: 'Werking & Capaciteit',
+    items: [
+      { q: 'Wat als de AI een vraag niet begrijpt?', a: 'De agent is geprogrammeerd om vragen buiten zijn kennisdomein te herkennen en door te verbinden naar een menselijke medewerker. Dit gebeurt typisch bij 5 tot 15% van calls (afhankelijk van use-case). U ontvangt altijd een transcript plus audio-opname van het gesprek voor follow-up.' },
+      { q: 'Werkt jullie AI ook s nachts en in het weekend?', a: 'Ja. Marco AI receptionist en Emma WhatsApp bot draaien 24 uur per dag, 7 dagen per week, 365 dagen per jaar zonder downtime. Geen pauzes, geen vakantie, geen ziekteverzuim. SLA-uptime: 99,9% (gegarandeerd in Growth en Enterprise pakketten).' },
+      { q: 'Kan jullie AI meerdere talen spreken?', a: 'Ja. ElevenLabs ondersteunt 29 talen waaronder vloeiend Nederlands (incl. Vlaams), Engels, Duits, Frans, Spaans, Pools, Arabisch en Turks. Marco kan binnen een gesprek tussen talen wisselen op basis van wat de beller spreekt. Multilingual setup: plus 100 euro per maand.' },
+      { q: 'Wat als de AI fouten maakt?', a: 'Aanloop AI heeft 3-laagse vangnetten: (1) confidence-threshold; onzekere antwoorden = automatische doorverbinding mens, (2) wekelijkse audit van 5% random gesprekken, (3) directe correctie via dashboard wanneer u een fout meldt. Bij significante fouten: refund-clausule in Growth en Enterprise SLA.' },
+      { q: 'Kan AI emoties van klanten herkennen?', a: 'Ja, in beperkte mate. Marco detecteert sentiment via toonhoogte, spreektempo en woordkeuze. Bij detectie van boosheid, frustratie of urgentie volgt automatische escalatie naar mens. Emma detecteert sentiment in tekst via NLP-analyse. Geen 100% accurate emotie-herkenning, wel praktisch bruikbaar.' },
+      { q: 'Hoe lang duurt een gemiddeld gesprek met de AI?', a: 'Marco AI calls: gemiddeld 2 minuten 40 seconden (vs 4 minuten 20 seconden bij menselijke receptionist). Emma WhatsApp: gemiddeld 4 tot 6 berichten over 8 minuten. Korter = klant tevredener en efficienter voor uw bedrijf.' },
+      { q: 'Wat doet de AI als iemand dringende hulp nodig heeft?', a: 'Bij detectie van urgentie-keywords (spoed, noodgeval, pijn, ongeval) of wanneer de beller herhaaldelijk om een mens vraagt, verbreekt Marco de AI-flow direct en verbindt door naar een vooraf afgesproken nood-nummer (uw mobiele nummer, sleuteldienst, achtervang of 112-routing).' },
+      { q: 'Kan ik de AI zelf aanpassen of trainen?', a: 'Ja, via het Aanloop-dashboard kunt u zelf: FAQs toevoegen of wijzigen, openingstijden aanpassen, doorverbind-nummers updaten, callscripts herschrijven en sentiment-thresholds tunen. Major changes (nieuwe taal, andere stem, complete flow-redesign) doen wij in overleg.' },
+    ],
+  },
+
+  {
+    category: 'Comparison & Alternatieven',
+    items: [
+      { q: 'Wat is het verschil tussen Aanloop AI en Watermelon?', a: 'Watermelon is een chat-only platform (geen voice), gericht op grote enterprise. Aanloop AI biedt voice plus chat plus custom workflows met Nederlandse focus en MKB-prijzen vanaf 197 euro per maand (vs Watermelon 399 euro plus enterprise). Volledige vergelijking: /vergelijk/aanloop-vs-watermelon/.' },
+      { q: 'Is Aanloop AI hetzelfde als Voiceflow?', a: 'Nee. Voiceflow is een DIY-platform; u bouwt zelf voice agents (US-based, Engelstalig, geen NL-support). Aanloop AI is een full-service bureau dat de agent voor u bouwt, host op een Nederlandse server, en onderhoudt. Vergelijking: /vergelijk/marco-vs-voiceflow/.' },
+      { q: 'Wat is het verschil tussen Aanloop en n8n zelf gebruiken?', a: 'n8n is de open-source automation tool die wij gebruiken. U kunt n8n zelf draaien (gratis self-hosted, 20 euro plus per maand cloud), maar u moet alle workflows zelf bouwen, debuggen en de LLM-kant integreren. Aanloop AI levert het complete pakket: server plus workflows plus LLM-tuning plus Nederlandse stemmen plus onderhoud.' },
+      { q: 'Hoe verschilt jullie aanpak van Make.com of Zapier?', a: 'Make.com en Zapier zijn no-code automation tools (data-flows tussen apps). Aanloop AI bouwt AI agents (LLM-gedreven gesprekken). Andere oplossingen: gebruik Make of Zapier voor app-koppelingen, Aanloop voor klantgesprekken. Beide kunnen complementair zijn. Vergelijking: /vergelijk/n8n-vs-zapier/.' },
+      { q: 'Waarom geen ChatGPT of Gemini direct gebruiken?', a: 'Generieke LLMs (ChatGPT, Gemini, Claude) hebben geen voice-output, geen telefoon-integratie, geen WhatsApp, geen kennis van uw bedrijf, geen AVG-garanties op Nederlandse servers en geen workflow-koppelingen. Aanloop AI levert de complete laag eromheen die ze bruikbaar maakt voor uw MKB.' },
+    ],
+  },
+
+  {
+    category: 'Toekomst & Schaalbaarheid',
+    items: [
+      { q: 'Wat als mijn bedrijf in 6 maanden verdubbelt?', a: 'Aanloop AI schaalt automatisch mee. Het Growth-pakket biedt onbeperkt volume. Bij multi-locatie expansie voegen we per vestiging een eigen call-flow toe (100 euro per maand extra per locatie). Bij internationalisering activeren we extra talen. Geen herbouw nodig.' },
+      { q: 'Wat gebeurt er als ik wil opzeggen?', a: 'Maandelijks opzegbaar met 1 maand opzegtermijn. Bij opzegging: (1) gespreks-data wordt geexporteerd (CSV plus JSON) en aan u overgedragen, (2) instance wordt gepurged binnen 30 dagen, (3) telefoonnummers blijven van u (geen vendor lock-in). Geen exit-fee.' },
+      { q: 'Vervangt AI uiteindelijk al mijn personeel?', a: 'Nee. AI agents nemen routine-taken over (40 tot 60% van inkomende interacties), waardoor uw personeel zich kan concentreren op: complexe gevallen, deals sluiten, persoonlijke service en strategie. Aanloop-klanten zien gemiddeld 1 tot 2 fte productiviteitswinst, niet 1 tot 2 fte ontslag. AI als versterker, niet vervanger.' },
+      { q: 'Hoe blijft jullie AI bij met nieuwe ontwikkelingen (GPT-5, Claude 4, etc.)?', a: 'Aanloop AI updatet maandelijks de onderliggende LLMs in alle klant-instances (incl. testen op uw FAQs). Voice-modellen (ElevenLabs) updaten quarterly. Major nieuwe modellen testen we 4 tot 6 weken op interne accounts voordat ze live gaan. Geen actie nodig van u.' },
     ],
   },
 ];
