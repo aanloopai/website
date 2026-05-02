@@ -1,0 +1,211 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Marco vs Voiceflow: Nederlandse AI-receptionist of internationaal voice-platform?',
+  description: 'Vergelijking Marco (Aanloop AI) versus Voiceflow voor MKB Nederland: Nederlands taalmodel, EU-data, prijs, doorlooptijd, integraties en supporttijd vergeleken.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-02',
+  dateModified: '2026-05-02',
+  mainEntityOfPage: 'https://aanloopai.nl/vergelijk/marco-vs-voiceflow/',
+  inLanguage: 'nl-NL',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Werkt Voiceflow native in het Nederlands?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Voiceflow biedt Nederlandstalige voice-flows via gekoppelde TTS-engines (Azure, ElevenLabs), maar de tooling, documentatie en support zijn Engelstalig en gericht op design teams. Marco is volledig Nederlandstalig opgezet — model, prompts, supportkanaal, factuur en datacenter — voor MKB-eindklanten zonder voice-engineer.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Waar staat de spraakdata bij elk platform?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Voiceflow draait op AWS US-East standaard; EU-regio is mogelijk maar vereist Enterprise-contract. Marco draait standaard EU-only (Frankfurt, Amsterdam) met DPA en NEN 7510 add-on voor zorg.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Wat is de werkelijke total cost of ownership na 12 maanden?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Voiceflow Pro start vanaf 50 dollar per maand per editor, plus per-call kosten van TTS, ASR en LLM (gemiddeld 0,12-0,25 euro per minuut). Marco vanaf 397 euro per maand all-in inclusief 1.000 minuten en 7-werkdagen onboarding. Voor 1.500 minuten per maand komt Voiceflow gemiddeld op 380-450 euro plus implementatie 4.000-12.000 euro eenmalig.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Kan ik mijn Voiceflow-design overzetten naar Marco?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Ja — wij importeren de intent-structuur en doorzettrouten naar onze Marco-templates. Doorlooptijd: 5-10 werkdagen extra bovenop het standaard 7 werkdagen.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Wie is verantwoordelijk voor onderhoud en flow-updates?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Bij Voiceflow ben jij of je voice-engineer eindverantwoordelijk voor flows, prompts en tests. Bij Marco doet Aanloop AI alle prompt-tuning, handover-tests en kwartaalreviews — opgenomen in het maandtarief.',
+      },
+    },
+  ],
+};
+
+const comparison = [
+  { feature: 'Doelgroep', marco: 'MKB Nederland (eindklant)', voiceflow: 'Voice-design teams, agencies, enterprises' },
+  { feature: 'Taal interface', marco: 'Nederlands', voiceflow: 'Engels' },
+  { feature: 'Native NL-spraak', marco: 'Native Nederlands LLM-prompting', voiceflow: 'Via TTS-koppeling (Azure, ElevenLabs)' },
+  { feature: 'Datalokatie standaard', marco: 'EU (Frankfurt/Amsterdam)', voiceflow: 'AWS US-East (EU-regio op Enterprise)' },
+  { feature: 'NEN 7510 zorgcompliance', marco: 'Ja, optionele add-on', voiceflow: 'Niet uit de doos — eigen audit' },
+  { feature: 'Doorlooptijd live-gang', marco: '7 werkdagen', voiceflow: '4-12 weken (zelf bouwen of via partner)' },
+  { feature: 'Startprijs per maand', marco: '397 euro all-in (1.000 min)', voiceflow: '50-150 dollar Pro + per-call kosten' },
+  { feature: 'Implementatiekosten eenmalig', marco: '0 euro (in pakket)', voiceflow: '4.000-12.000 euro typisch' },
+  { feature: 'CRM-koppelingen', marco: 'HubSpot, Salesforce, Pipedrive, AFAS native', voiceflow: 'Webhooks + zelfbouw integraties' },
+  { feature: 'Agenda-koppeling', marco: 'Google, Outlook, Cal.com, Calendly out-of-the-box', voiceflow: 'Via webhook + eigen middleware' },
+  { feature: 'Support taal', marco: 'Nederlands, telefoon + e-mail', voiceflow: 'Engels, ticket-only (Pro)' },
+  { feature: 'Onderhoud / prompt-updates', marco: 'Inbegrepen in maandtarief', voiceflow: 'Eigen verantwoordelijkheid' },
+  { feature: 'AVG/DPA', marco: 'NL-DPA, signing in 1 dag', voiceflow: 'EN-DPA, Enterprise-onderhandeling' },
+  { feature: 'Beste voor', marco: 'MKB met focus op klantgesprek, niet op voice-engineering', voiceflow: 'Bedrijven met intern voice-team en complexe multi-product flows' },
+];
+
+const useCases = [
+  { sector: 'Huisartsenpraktijk', kies: 'Marco', reden: 'NEN 7510 + Nederlandse medische context out-of-the-box. Voiceflow vereist eigen compliance-audit.' },
+  { sector: 'Tandartsketen', kies: 'Marco', reden: 'AVG-conform NL-data + agenda-koppeling Google/Outlook standaard. Geen eigen voice-engineer nodig.' },
+  { sector: 'SaaS-bedrijf met support-team', kies: 'Voiceflow', reden: 'Eigen voice-team kan complex multi-tenant flows ontwerpen en versiebeheer voeren.' },
+  { sector: 'Autobedrijf / garage MKB', kies: 'Marco', reden: 'APK-afspraken, planning, Nederlandse spraakherkenning prio. Marco is binnen 7 werkdagen live.' },
+  { sector: 'Internationaal e-commerce platform', kies: 'Voiceflow', reden: 'Multi-language voice-flows (NL/EN/DE/FR/ES) met centrale design-tool waar product-managers live kunnen iterateren.' },
+  { sector: 'Notariskantoor', kies: 'Marco', reden: 'Nederlandse juridische intake, AVG-DPA in NL ondertekend, vertrouwelijke datalokatie EU.' },
+  { sector: 'Tech-startup met AI-engineer', kies: 'Voiceflow', reden: 'Wil zelf flows bouwen, A/B-testen, Knowledge Base koppelen — heeft de skills in huis.' },
+  { sector: 'Installatiebedrijf', kies: 'Marco', reden: 'Spoed + planning + Nederlandse vakjargon. Out-of-the-box CRM + agenda-koppeling.' },
+];
+---
+
+<BaseLayout
+  title="Marco vs Voiceflow — Nederlandse AI-telefoon of US voice-platform? | Aanloop AI"
+  description="Marco (Aanloop AI) versus Voiceflow vergeleken op Nederlandstaligheid, EU-data, prijs, doorlooptijd, support en TCO over 12 maanden voor MKB Nederland."
+  schema={[articleSchema, faqSchema]}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Vergelijken &middot; Marco vs Voiceflow</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Marco of Voiceflow: welk voice-platform past bij uw MKB?
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Marco is een kant-en-klare Nederlandse AI-receptionist met Aanloop AI als operator. Voiceflow is een Amerikaans voice-design platform voor teams die zelf flows ontwerpen. Hieronder de 14-punts feature-vergelijking, total cost of ownership en sectoradvies. Voiceflow is een handelsmerk van Voiceflow, Inc.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/aanvragen/" class="btn-primary">Gratis adviesgesprek</a>
+          <a href="/diensten/marco/" class="btn-secondary">Meer over Marco</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Feature-tabel</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Feature</th>
+              <th class="text-left p-4 font-semibold text-navy">Marco (Aanloop AI)</th>
+              <th class="text-left p-4 font-semibold text-navy">Voiceflow</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparison.map((row, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{row.feature}</td>
+                <td class="p-4 text-slate-700">{row.marco}</td>
+                <td class="p-4 text-slate-700">{row.voiceflow}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Welke kiezen per sector?</h2>
+      <div class="space-y-4">
+        {useCases.map((uc) => (
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="flex items-start gap-4">
+              <span class="rounded-full bg-navy text-white text-xs px-3 py-1 font-semibold whitespace-nowrap">{uc.kies}</span>
+              <div>
+                <h3 class="font-bold text-navy">{uc.sector}</h3>
+                <p class="text-sm text-slate-600 mt-1 leading-relaxed">{uc.reden}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Wanneer Voiceflow het juiste platform is</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Voiceflow is sterk wanneer u een eigen voice-engineering team heeft, complexe multi-product flows met versiebeheer wilt ontwerpen, of een agency runt die voor meerdere klanten voice-experiences bouwt. De canvas-tool, prototyping en A/B-test mogelijkheden zijn industrieleidend.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Voor MKB-eindklanten zonder voice-engineer is de implementatiehorzon (4-12 weken eigen bouw of partner-project van 4.000-12.000 euro) en de Engelstalige support-stack vaak een blocker. Marco lost dit op door operator-as-a-service: u beschrijft uw bedrijf, wij bouwen, testen, deployen en onderhouden.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/diensten/marco/" class="btn-secondary">Meer over Marco</a>
+        <a href="/aanvragen/" class="btn-primary">Adviesgesprek aanvragen</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Veelgestelde vragen</h2>
+      <div class="space-y-4">
+        {faqSchema.mainEntity.map((q) => (
+          <details class="rounded-2xl border border-slate-200 bg-white p-5">
+            <summary class="font-semibold text-navy cursor-pointer">{q.name}</summary>
+            <p class="text-sm text-slate-600 mt-3 leading-relaxed">{q.acceptedAnswer.text}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder vergelijken</h2>
+      <ul class="space-y-3 text-slate-700">
+        <li><a href="/vergelijk/marco-vs-emma/" class="text-navy hover:underline">Marco vs Emma — telefoon of WhatsApp?</a></li>
+        <li><a href="/vergelijk/aanloop-vs-watermelon/" class="text-navy hover:underline">Aanloop AI vs Watermelon — chatbot vergelijking</a></li>
+        <li><a href="/vergelijk/ai-receptionist-vs-callcenter/" class="text-navy hover:underline">AI-receptionist versus extern callcenter</a></li>
+        <li><a href="/vergelijk/" class="text-navy hover:underline">Aanloop AI versus andere leveranciers</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

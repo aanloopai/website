@@ -1,0 +1,211 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Marco vs Make.com voice-flows: managed AI-receptionist of zelfgebouwde voice-automation?',
+  description: 'Vergelijking Marco (Aanloop AI) versus Make.com voice-flows voor MKB Nederland: scope, doorlooptijd, betrouwbaarheid, EU-data, prijs en onderhoud vergeleken.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-02',
+  dateModified: '2026-05-02',
+  mainEntityOfPage: 'https://aanloopai.nl/vergelijk/marco-vs-make-com-voice/',
+  inLanguage: 'nl-NL',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Kan Make.com hetzelfde als Marco?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Make.com is een no-code automation-platform dat met externe modules (Twilio, ElevenLabs, OpenAI, Vapi) een voice-flow kan opbouwen. Het is technisch mogelijk, maar latency-gevoelige real-time gesprekken vragen low-latency websockets en barge-in handling die buiten Make.com polling-architectuur liggen. Voor productie-grade telefonie bouwen we Marco op een dedicated voice-runtime, niet op Make.com.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Wat is het verschil in latency?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Marco werkt op een real-time voice-runtime met typische 800-1.300 ms response (van eind-spraak tot start-antwoord). Make.com voice-flows polling-based hebben doorgaans 2-5 seconden vertraging — voor MKB-receptie acceptabel bij eenvoudige IVR, te traag voor natuurlijke conversatie.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Wie is verantwoordelijk voor 24/7 uptime?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Marco komt met 99,9 procent SLA en monitoring door Aanloop AI. Make.com voice-flows zijn uw eigen verantwoordelijkheid — als een module faalt of een API-key verloopt, ligt de telefoon plat tot u handmatig ingrijpt.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Kan ik Make.com gebruiken naast Marco?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Ja, en dat raden we aan voor backoffice-flows. Marco handelt het gesprek af, stuurt de samenvatting naar Make.com, en daar gebeurt verdere automation (CRM-update, Slack-melding, factuur-aanmaak). Beste van beide werelden: real-time voice + flexibele backoffice automation.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Wanneer is Make.com voice-flow toch een goede keuze?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Voor uitgaande campagnes met simpele scripts (afspraakherinnering, no-show terugbel-poging), low-volume IVR-menu of voor tech-teams die zelf willen experimenteren met Vapi/Retell binnen Make.com — niet voor mission-critical inbound MKB-receptie.',
+      },
+    },
+  ],
+};
+
+const comparison = [
+  { feature: 'Type oplossing', marco: 'Managed AI-receptionist (operator)', make: 'Zelfgebouwde voice-flow (no-code)' },
+  { feature: 'Real-time latency', marco: '800-1.300 ms', make: '2-5 seconden (polling)' },
+  { feature: 'Doorlooptijd live-gang', marco: '7 werkdagen', make: '2-6 weken eigen bouw' },
+  { feature: 'SLA / uptime-garantie', marco: '99,9 procent contractueel', make: 'Geen — eigen verantwoordelijkheid' },
+  { feature: 'Onderhoud / monitoring', marco: 'Aanloop AI 24/7', make: 'Eigen IT-team' },
+  { feature: 'Datalokatie EU', marco: 'EU-only standaard', make: 'EU-regio mogelijk; modules variabel' },
+  { feature: 'NEN 7510 zorg-add-on', marco: 'Beschikbaar', make: 'Niet uit de doos' },
+  { feature: 'AVG-DPA', marco: 'NL-DPA, signing in 1 dag', make: 'EU-DPA via Make + per-module' },
+  { feature: 'Startprijs per maand', marco: '397 euro all-in (1.000 min)', make: '10-50 euro Make + Twilio + LLM + ASR/TTS variabel' },
+  { feature: 'Implementatiekosten', marco: '0 euro (in pakket)', make: 'Eigen tijd of partner 2.000-6.000 euro' },
+  { feature: 'CRM-koppelingen', marco: 'HubSpot, Salesforce, Pipedrive, AFAS native', make: 'Via Make-modules — 1.500+ apps' },
+  { feature: 'Backoffice flexibiliteit', marco: 'Beperkt tot CRM/agenda-koppeling', make: 'Zeer breed — alle Make-modules beschikbaar' },
+  { feature: 'Beste voor', marco: 'Productie-receptie, real-time, MKB-eindklant', make: 'Outbound campagnes, simpele IVR, tech-team' },
+  { feature: 'Hybride mogelijk', marco: 'Ja — Marco stuurt data naar Make', make: 'Ja — Make ontvangt data van Marco' },
+];
+
+const useCases = [
+  { sector: 'Huisartsenpraktijk inbound', kies: 'Marco', reden: 'Real-time triage en NEN 7510 zijn niet onderhandelbaar; Make.com voice-flow latency te hoog voor patientgesprek.' },
+  { sector: 'Outbound no-show terugbel', kies: 'Make.com', reden: 'Simpel script, low-stakes, low-volume — Make.com + Twilio + ElevenLabs is kosteneffectief.' },
+  { sector: 'Tandartsketen 5+ vestigingen', kies: 'Marco', reden: '24/7 SLA, monitoring, sector-prompts standaard. Geen eigen IT nodig.' },
+  { sector: 'Marketing-bureau lead-qualification', kies: 'Make.com', reden: 'Multistep automation Form -> CRM -> Slack -> AI-call met Vapi binnen Make. Tech-team heeft skills in huis.' },
+  { sector: 'Restaurant reservering inbound', kies: 'Marco', reden: 'Real-time gesprek, pieken in avonduren, agenda-koppeling out-of-the-box.' },
+  { sector: 'SaaS-bedrijf trial-onboarding call', kies: 'Make.com', reden: 'Scheduled outbound calls met simpele script + intent-tracking via Make-modules.' },
+  { sector: 'Notariskantoor', kies: 'Marco', reden: 'AVG-strikt, vertrouwelijke intake, NL-DPA. Make.com voor backoffice na het gesprek.' },
+  { sector: 'Webshop retour-callback', kies: 'Make.com', reden: 'Automatische terugbel bij retouraanvraag — Make orchestreert Twilio + AI in een eenvoudige flow.' },
+];
+---
+
+<BaseLayout
+  title="Marco vs Make.com voice-flows — managed receptie of zelfgebouwd? | Aanloop AI"
+  description="Marco (Aanloop AI) versus Make.com voice-flows vergeleken op latency, SLA, EU-data, prijs en doorlooptijd voor MKB Nederland — inclusief hybride model."
+  schema={[articleSchema, faqSchema]}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Vergelijken &middot; Marco vs Make.com voice</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Marco of Make.com voice: kant-en-klaar of zelf bouwen?
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Marco is een managed AI-receptionist met 99,9 procent SLA en 7-werkdagen oplevering. Make.com voice-flows zijn no-code voice-automations die u zelf samenstelt met Twilio, ElevenLabs, OpenAI of Vapi — krachtig voor outbound en backoffice, kwetsbaar voor real-time inbound. Hier de 14-punts vergelijking en sector-aanbevelingen. Make.com is een handelsmerk van Celonis SE.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/aanvragen/" class="btn-primary">Gratis adviesgesprek</a>
+          <a href="/diensten/marco/" class="btn-secondary">Meer over Marco</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Feature-tabel</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Feature</th>
+              <th class="text-left p-4 font-semibold text-navy">Marco</th>
+              <th class="text-left p-4 font-semibold text-navy">Make.com voice-flow</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparison.map((row, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{row.feature}</td>
+                <td class="p-4 text-slate-700">{row.marco}</td>
+                <td class="p-4 text-slate-700">{row.make}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Welke kiezen per sector?</h2>
+      <div class="space-y-4">
+        {useCases.map((uc) => (
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="flex items-start gap-4">
+              <span class="rounded-full bg-navy text-white text-xs px-3 py-1 font-semibold whitespace-nowrap">{uc.kies}</span>
+              <div>
+                <h3 class="font-bold text-navy">{uc.sector}</h3>
+                <p class="text-sm text-slate-600 mt-1 leading-relaxed">{uc.reden}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Hybride model: Marco + Make.com</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">In de praktijk werkt de combinatie het beste. Marco vangt het real-time gesprek op (sub-seconde latency, SLA, monitoring). Aan het einde van het gesprek stuurt Marco een gestructureerde JSON-payload (intent, samenvatting, sentiment, agenda-actie) naar een Make.com webhook. Daar lopen verdere acties: CRM-update, Slack-melding, factuur, e-mail follow-up.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Hiermee combineert u real-time grade voice met de breedte van Make.com 1.500+ app-bibliotheek voor backoffice — zonder dat de telefoon afhangt van een no-code keten.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/diensten/marco/" class="btn-secondary">Meer over Marco</a>
+        <a href="/aanvragen/" class="btn-primary">Hybride opzet bespreken</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Veelgestelde vragen</h2>
+      <div class="space-y-4">
+        {faqSchema.mainEntity.map((q) => (
+          <details class="rounded-2xl border border-slate-200 bg-white p-5">
+            <summary class="font-semibold text-navy cursor-pointer">{q.name}</summary>
+            <p class="text-sm text-slate-600 mt-3 leading-relaxed">{q.acceptedAnswer.text}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder vergelijken</h2>
+      <ul class="space-y-3 text-slate-700">
+        <li><a href="/vergelijk/marco-vs-voiceflow/" class="text-navy hover:underline">Marco vs Voiceflow</a></li>
+        <li><a href="/vergelijk/n8n-vs-zapier/" class="text-navy hover:underline">n8n vs Zapier — automation-tools</a></li>
+        <li><a href="/vergelijk/marco-vs-emma/" class="text-navy hover:underline">Marco vs Emma — telefoon of WhatsApp?</a></li>
+        <li><a href="/vergelijk/" class="text-navy hover:underline">Aanloop AI versus andere leveranciers</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

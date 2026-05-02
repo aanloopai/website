@@ -1,0 +1,211 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'n8n vs Zapier: welke automation-tool past bij MKB Nederland in 2026?',
+  description: 'Vergelijking n8n versus Zapier voor MKB Nederland: hosting, EU-data, prijs, complexiteit, AI-stappen, integraties en wanneer welke keuze rationeel is.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-02',
+  dateModified: '2026-05-02',
+  mainEntityOfPage: 'https://aanloopai.nl/vergelijk/n8n-vs-zapier/',
+  inLanguage: 'nl-NL',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Wat is het belangrijkste verschil tussen n8n en Zapier?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Zapier is een SaaS-only no-code automation-platform met focus op eenvoud en breedste app-bibliotheek (7.000+ apps). n8n is open-source en kan zelf gehost worden, met visuele workflows die complexere logica, code-stappen en AI-pipelines toelaten — meestal goedkoper bij grote volumes maar steiler in setup.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Welke is goedkoper voor MKB Nederland?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Zapier rekent per Task — vanaf 19,99 dollar per maand voor 750 Tasks (Starter). n8n self-hosted op een 8 euro per maand Hetzner VPS kan 100.000+ executies aan; n8n Cloud start vanaf 24 euro per maand voor 2.500 executies. Bij volumes boven 5.000 executies per maand is n8n self-hosted typisch 5-10x goedkoper.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Hoe zit het met EU-data en AVG?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Zapier heeft EU-datacenters voor sommige plannen maar payload-data passeert US-infrastructuur. n8n self-hosted op Nederlandse of Duitse VPS houdt alle data in EU. Voor zorg, juridisch en HR-data is n8n self-hosted vaak de enige conforme keuze.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Welke heeft betere AI-integraties?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Beide hebben native nodes voor OpenAI, Anthropic, Google, Mistral, Hugging Face. n8n heeft native LangChain-nodes en branching/looping rond AI-output. Zapier heeft Tables en AI by Zapier voor low-code AI flows. Voor agentic workflows (multi-step LLM met tools) is n8n typisch krachtiger; voor 1-shot AI-formulieren is Zapier sneller te bouwen.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Helpt Aanloop AI bij beide platforms?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Ja. Wij bouwen op n8n (zelf-hosted of n8n Cloud) en op Zapier — afhankelijk van uw bestaande stack, IT-volwassenheid en datapolicy. Voor AVG-gevoelige sectoren adviseren we n8n self-hosted; voor snelle no-code starts Zapier.',
+      },
+    },
+  ],
+};
+
+const comparison = [
+  { feature: 'Type platform', n8n: 'Open-source + self-hosted of Cloud', zapier: 'SaaS-only' },
+  { feature: 'Aantal integraties', n8n: '500+ native + HTTP voor elke API', zapier: '7.000+ native' },
+  { feature: 'Self-hosting mogelijk', n8n: 'Ja — Docker, Kubernetes, NPM', zapier: 'Nee' },
+  { feature: 'Datalokatie EU-only mogelijk', n8n: 'Ja — Hetzner/AWS Frankfurt/Amsterdam', zapier: 'Beperkt — payload via US-infra' },
+  { feature: 'Prijs (lage volumes)', n8n: '24 euro/m Cloud (2.500 exec)', zapier: '19,99 dollar/m Starter (750 Tasks)' },
+  { feature: 'Prijs (hoge volumes 50.000+)', n8n: '8-50 euro/m self-hosted', zapier: '299+ dollar/m + per-Task' },
+  { feature: 'Complexe logica (branches, loops)', n8n: 'Sterk — visueel en met code-stappen', zapier: 'Beperkt — Paths + Filters' },
+  { feature: 'JavaScript/Python in flow', n8n: 'Native code-node', zapier: 'Code by Zapier (extra Task-cost)' },
+  { feature: 'AI-nodes', n8n: 'OpenAI, Anthropic, LangChain native', zapier: 'OpenAI, AI by Zapier, Tables' },
+  { feature: 'Versiebeheer / Git', n8n: 'Source-control met n8n CLI / Git', zapier: 'Versies binnen Zap-editor' },
+  { feature: 'Leercurve', n8n: 'Steiler — IT-skills helpen', zapier: 'Vlak — non-technical-friendly' },
+  { feature: 'Doorlooptijd voor 1e flow', n8n: '1-3 dagen (na hosting setup)', zapier: 'Dezelfde dag' },
+  { feature: 'AVG-zware sectoren', n8n: 'Voorkeur (self-hosted EU)', zapier: 'Beperkt; afhankelijk van plan' },
+  { feature: 'Beste voor', n8n: 'Volume, AVG-strikt, AI-pipelines, tech-team', zapier: 'Snel starten, breedste apps, non-tech team' },
+];
+
+const useCases = [
+  { sector: 'Zorginstelling met AVG-strikt beleid', kies: 'n8n', reden: 'Self-hosted op NL VPS — alle patientendata in EU. Zapier US-payload route is geen optie.' },
+  { sector: 'Webshop met 200 orders/dag', kies: 'Zapier', reden: 'Snelle koppeling Shopify + Klaviyo + Slack. Volume past binnen Pro-plan.' },
+  { sector: 'SaaS-startup met data-pipeline', kies: 'n8n', reden: 'Code-nodes + AI-branches voor lead-scoring. Self-hosted scaalt zonder per-Task kosten.' },
+  { sector: 'Eenpitter / ZZP', kies: 'Zapier', reden: 'Free tier en eenvoud — geen hosting onderhoud. 100 Tasks per maand vaak genoeg.' },
+  { sector: 'Notariskantoor', kies: 'n8n', reden: 'Vertrouwelijke documenten verwerken — self-hosted EU + on-premise mogelijk.' },
+  { sector: 'Marketing-bureau klantautomatie', kies: 'Zapier', reden: 'Brede app-bibliotheek (CRM, ads, analytics) en non-technische teamleden kunnen meebouwen.' },
+  { sector: 'Logistiek-bedrijf met track-and-trace', kies: 'n8n', reden: 'Hoge event-volumes, eigen ERP-koppeling via REST. Self-hosted eindigt bij vaste maandprijs.' },
+  { sector: 'Accountantskantoor', kies: 'n8n', reden: 'Twinfield/Exact + AI-categorisatie binnen EU-data. Zapier voor non-financial flows mogelijk hybride.' },
+];
+---
+
+<BaseLayout
+  title="n8n vs Zapier — welke automation-tool past bij MKB Nederland 2026? | Aanloop AI"
+  description="n8n versus Zapier vergeleken op hosting, EU-data, prijs, AI-integraties, complexiteit en leercurve voor MKB Nederland — inclusief sectoradvies."
+  schema={[articleSchema, faqSchema]}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Vergelijken &middot; n8n vs Zapier</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          n8n of Zapier: welke automation-tool past bij uw MKB?
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Beide platforms automatiseren werk tussen apps, maar de keuze tussen n8n (open-source, self-hostable) en Zapier (SaaS, breedste app-aanbod) hangt af van datalokatie, volume, complexiteit en team-skills. Hier de 14-punts vergelijking en sector-aanbevelingen. n8n en Zapier zijn handelsmerken van n8n GmbH respectievelijk Zapier, Inc.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/aanvragen/" class="btn-primary">Gratis automation-scan</a>
+          <a href="/diensten/" class="btn-secondary">Alle diensten</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Feature-tabel</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Feature</th>
+              <th class="text-left p-4 font-semibold text-navy">n8n</th>
+              <th class="text-left p-4 font-semibold text-navy">Zapier</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparison.map((row, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{row.feature}</td>
+                <td class="p-4 text-slate-700">{row.n8n}</td>
+                <td class="p-4 text-slate-700">{row.zapier}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Welke kiezen per sector?</h2>
+      <div class="space-y-4">
+        {useCases.map((uc) => (
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="flex items-start gap-4">
+              <span class="rounded-full bg-navy text-white text-xs px-3 py-1 font-semibold whitespace-nowrap">{uc.kies}</span>
+              <div>
+                <h3 class="font-bold text-navy">{uc.sector}</h3>
+                <p class="text-sm text-slate-600 mt-1 leading-relaxed">{uc.reden}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Hybride: vaak het slimste</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">In de praktijk gebruiken veel MKB-bedrijven beide. Zapier voor snelle koppelingen met SaaS-tools waar non-technische collega's ook in willen werken. n8n voor de zware data-pipelines, AI-flows en AVG-gevoelige verwerkingen op een eigen Hetzner of AWS Frankfurt instance.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Aanloop AI bouwt op beide platforms. Tijdens een gratis automation-scan brengen we uw flows in kaart en kiezen we per workflow het juiste platform — geen religie, wel ROI per uur bespaard.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/aanvragen/" class="btn-primary">Plan een automation-scan</a>
+        <a href="/kennisbank/" class="btn-secondary">Kennisbank automation</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Veelgestelde vragen</h2>
+      <div class="space-y-4">
+        {faqSchema.mainEntity.map((q) => (
+          <details class="rounded-2xl border border-slate-200 bg-white p-5">
+            <summary class="font-semibold text-navy cursor-pointer">{q.name}</summary>
+            <p class="text-sm text-slate-600 mt-3 leading-relaxed">{q.acceptedAnswer.text}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder vergelijken</h2>
+      <ul class="space-y-3 text-slate-700">
+        <li><a href="/vergelijk/marco-vs-voiceflow/" class="text-navy hover:underline">Marco vs Voiceflow — voice-platform</a></li>
+        <li><a href="/vergelijk/aanloop-vs-watermelon/" class="text-navy hover:underline">Aanloop AI vs Watermelon — chatbot</a></li>
+        <li><a href="/vergelijk/aanloop-vs-chatlayer/" class="text-navy hover:underline">Aanloop AI vs Chatlayer</a></li>
+        <li><a href="/vergelijk/" class="text-navy hover:underline">Aanloop AI versus andere leveranciers</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
