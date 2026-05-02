@@ -1,0 +1,351 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI voor E-commerce en Webshops Nederland 2026 — Volledige Pillar-Gids',
+  description: 'Hoe Nederlandse webshops AI inzetten voor klantcontact, retouren, voorraad, abandoned-cart en ordertracking. Met integraties voor Shopify, WooCommerce, Magento, Lightspeed, Mollie, Klaviyo en Twinfield.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    jobTitle: 'Oprichter en CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-02',
+  dateModified: '2026-05-02',
+  mainEntityOfPage: 'https://aanloopai.nl/ai-voor-ecommerce-webshops-nederland/',
+  inLanguage: 'nl-NL',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.speakable-lede', 'h1'],
+  },
+};
+
+const platformen = [
+  { naam: 'Shopify (Plus)', focus: 'Marktleider in Nederland; open API plus webhooks; Aanloop heeft sector-gids', link: '/kennisbank/ai-voor-shopify-webshop-nederland/' },
+  { naam: 'WooCommerce', focus: 'WordPress-gebaseerd; REST API; populair voor merken die volledige controle willen', link: '/kennisbank/ai-voor-detailhandel-klantcontact-voorraad/' },
+  { naam: 'Magento (Adobe Commerce)', focus: 'Enterprise; complexe catalogus; AI voor product-finder en B2B-flows', link: '/kennisbank/ai-voor-detailhandel-klantcontact-voorraad/' },
+  { naam: 'Lightspeed eCom', focus: 'Nederlands platform; populair retail-omnichannel; native API plus POS-koppeling', link: '/kennisbank/ai-voor-detailhandel-klantcontact-voorraad/' },
+  { naam: 'CCV Shop', focus: 'Nederlandse SaaS voor MKB-webshops; standaard koppelingen Mollie en Twinfield', link: '/kennisbank/ai-voor-detailhandel-klantcontact-voorraad/' },
+  { naam: 'PrestaShop', focus: 'Open-source; veelgebruikt door fashion en niche-shops; modulair AI-uitbreidbaar', link: '/kennisbank/ai-voor-detailhandel-klantcontact-voorraad/' },
+];
+
+const useCases = [
+  { title: 'WhatsApp Business AI klantcontact 24/7', body: 'Klant stuurt vraag via WhatsApp Business, AI antwoordt binnen 5 seconden met productinfo, voorraadstatus, leveringsdatum, retourflow of orderupdate. Bij complexe vraag: escalatie naar mens met volledige conversatie-context. Werkt op Shopify, WooCommerce, Lightspeed en Magento via webhook-koppeling.', link: '/diensten/emma/' },
+  { title: 'Abandoned-cart recovery met AI-personalisatie', body: 'Klant verlaat winkelwagen. Na 30 minuten stuurt AI een persoonlijk WhatsApp- of e-mailbericht: Twijfel je over de Nike Air Max maat 42? Hier zijn 3 reviews van klanten die hem ook kochten. Conversie-uplift in productie 18-32 procent versus standaard Klaviyo flow.', link: '/kennisbank/ai-voor-marketingbureau-nederland-2026/' },
+  { title: 'Retour-flow automatisering', body: 'Klant initieert retour via chat of e-mail, AI vraagt reden (defect, verkeerd maat, niet bevallen), genereert retour-label via PostNL of DHL, plant ophaal indien zwaar, registreert in Shopify of WooCommerce, en triggert refund via Mollie zodra retour ontvangen. Doorlooptijd van 5-7 dagen naar 24-48 uur.', link: '/kennisbank/ai-voor-detailhandel-klantcontact-voorraad/' },
+  { title: 'Voorraadwaarschuwingen en herbevoorrading', body: 'AI monitort verkoopsnelheid per SKU, voorspelt out-of-stock 14 dagen vooruit op basis van seizoen plus marketing-pieken, stuurt automatisch inkoop-voorstel naar leverancier (e-mail of EDI), en blokkeert verkoop op marktplaatsen (Bol.com, Amazon) bij low-stock om strafkortingen te voorkomen.', link: '/kennisbank/ai-voor-detailhandel-klantcontact-voorraad/' },
+  { title: 'Productvragen pre-purchase', body: 'Klant op productpagina vraagt: Past dit horloge bij polsmaat 17 cm? of Is dit eten geschikt voor een gevoelige maag?. AI haalt antwoord uit productspec, reviews en kennisbank, antwoordt direct in chat-widget. Tijd tot conversie daalt 40 procent.', link: '/kennisbank/ai-voor-shopify-webshop-nederland/' },
+  { title: 'Ordertracking en leveringsupdates', body: 'AI haalt elke 4 uur tracking-status op bij PostNL, DHL, DPD, GLS, en stuurt proactief WhatsApp-update aan klant bij vertraging of levering buiten de afgesproken slot. Reduceert where is my order-tickets 70-85 procent.', link: '/kennisbank/ai-voor-detailhandel-klantcontact-voorraad/' },
+];
+
+const integraties = [
+  { systeem: 'Shopify Admin API', categorie: 'Webshop', notes: 'GraphQL en REST; webhooks voor order, klant, retour; AI heeft directe lees-en-schrijf-toegang' },
+  { systeem: 'WooCommerce REST API', categorie: 'Webshop', notes: 'Productdata, orders, klanten; vereist consumer key plus webhooks; AI-koppeling stabiel' },
+  { systeem: 'Magento (Adobe Commerce) API', categorie: 'Webshop enterprise', notes: 'REST plus GraphQL; complexer maar volledige catalogus-integratie mogelijk' },
+  { systeem: 'Lightspeed eCom API', categorie: 'Webshop NL', notes: 'API key plus webhooks; sterke retail-integratie met POS-systeem' },
+  { systeem: 'Mollie', categorie: 'Payment', notes: 'Nederlandse marktleider; API voor refunds, terugkerende betalingen, payment-status webhooks' },
+  { systeem: 'Klaviyo', categorie: 'E-mail en SMS marketing', notes: 'AI synchroniseert events plus segmenten; trigger campaigns op AI-detected klant-intent' },
+  { systeem: 'Twinfield', categorie: 'Boekhouding', notes: 'AI boekt orders direct als omzet-mutatie; btw-classificatie automatisch (NL, EU, buiten EU)' },
+  { systeem: 'PostNL en DHL Parcel', categorie: 'Verzending', notes: 'API voor labels, tracking, ophaalverzoeken; AI plant zwaar of fragile retour automatisch' },
+  { systeem: 'Bol.com Seller API', categorie: 'Marktplaats', notes: 'Voorraad-sync, order-pull, retour-flow; AI bewaakt prestatie-KPIs en voorkomt boete' },
+  { systeem: 'WhatsApp Business Platform', categorie: 'Klantcontact', notes: 'Officiele WABA-API via Meta; vereist Business-verificatie; AI antwoordt 24/7' },
+];
+
+const compliance = [
+  { eis: 'AVG plus UAVG', wat: 'Klantgegevens en bestelhistorie', actie: 'Verwerkersovereenkomst, expliciete grondslag (overeenkomst), data-portabiliteit, recht op vergetelheid' },
+  { eis: 'Wet bescherming consument digitaal', wat: 'Online-verkoop NL', actie: 'Heldere voorwaarden, herroepingsrecht 14 dagen, retourkostenregeling transparant' },
+  { eis: 'EU AI Act (2026)', wat: 'AI-chatbots transparant', actie: 'Klant moet weten dat hij met AI praat (artikel 52); Aanloop levert standaard openings-zin' },
+  { eis: 'Cookie-wet (e-Privacy)', wat: 'Tracking en analytics', actie: 'Consent-banner met granulaire opt-in; AI-chat alleen na functionele consent' },
+  { eis: 'WhatsApp Business Policy', wat: 'Bericht-typen', actie: 'Onderscheid utility (gratis) versus marketing (betaald); 24-uur klantenservice-window' },
+  { eis: 'Btw-regels EU (OSS)', wat: 'Grensoverschrijdende verkoop', actie: 'AI past juiste btw-percentage toe op land van klant; OSS-aangifte automatisch via Twinfield' },
+];
+
+const conversieData = [
+  { kpi: 'Cart-recovery rate', voor: '8-12 procent (standaard Klaviyo)', na: '18-32 procent (AI-personalisatie)' },
+  { kpi: 'Klantenservice-respons', voor: '4-12 uur (e-mail)', na: 'Onder 1 minuut (WhatsApp AI)' },
+  { kpi: 'Retour-doorlooptijd', voor: '5-7 dagen', na: '24-48 uur' },
+  { kpi: 'Where-is-my-order tickets', voor: '15-25 procent van orders', na: '3-7 procent' },
+  { kpi: 'Conversie product-vragen', voor: '2-4 procent', na: '6-12 procent (chat-respons direct)' },
+  { kpi: 'Out-of-stock listings', voor: '5-12 dagen per maand', na: '0-2 dagen per maand' },
+];
+
+const faqItems = [
+  { question: 'Werkt AI met mijn Shopify of WooCommerce shop?', answer: 'Ja. Voor Shopify gebruiken we de officiele Admin API (REST plus GraphQL) plus webhooks voor real-time orders, retouren en klanten. Voor WooCommerce werken we via REST API met consumer-key authenticatie plus webhooks. Setup typisch 5-7 werkdagen inclusief WhatsApp Business-koppeling. We hebben werkende productie-integraties bij meerdere Nederlandse Shopify-shops in fashion, food en horeca-supplies.' },
+  { question: 'Mag een AI met mijn klanten praten via WhatsApp?', answer: 'Ja, mits via de officiele WhatsApp Business Platform (WABA) van Meta. Aanloop AI configureert dit voor u inclusief Business-verificatie, displayname-goedkeuring en message-template-approvals. Klant moet eerst opt-in geven (bestelling plaatsen of formulier invullen). Binnen het 24-uurs klantenservice-window mag AI vrij antwoorden; daarbuiten alleen approved utility-templates.' },
+  { question: 'Hoeveel kost AI voor een gemiddelde Nederlandse webshop?', answer: 'Solo of micro-shop (onder 500 orders per maand): 297-497 euro per maand. Groei-shop (500-3000 orders): 697-997 euro per maand. Multi-channel (eigen shop plus Bol.com plus Amazon): 1297-1997 euro per maand. Eenmalige setup 1500-3500 euro afhankelijk van platform en aantal integraties (Mollie, Klaviyo, Twinfield, PostNL).' },
+  { question: 'Kan AI mijn retour-handeling volledig automatiseren?', answer: 'Voor 70-85 procent van retouren ja. AI verwerkt standaard-retouren (verkeerde maat, niet bevallen, dubbele bestelling) end-to-end: label, ophaal, refund. Complexere gevallen (defect, te laat, geschil) gaan automatisch naar mens met volledige context. Refund via Mollie is direct geautomatiseerd zodra magazijn de retour scant.' },
+  { question: 'Verlaagt AI mijn klantenservice-kwaliteit?', answer: 'Niet als correct geimplementeerd. AI is voor de eerste-lijn (orderstatus, leverdatum, retour, productinfo) sneller en consistenter dan mens. Voor complexere vragen (klacht, garantie, persoonlijk advies) escaleert AI direct naar mens met volledige conversatie-context, sentiment-detectie en suggested-response. Klanttevredenheid stijgt typisch 8-15 punten op CSAT.' },
+  { question: 'Hoe gaat AI om met meertaligheid (NL, EN, DE)?', answer: 'Voor Nederlandse webshops met internationale klanten ondersteunen we standaard NL, EN, DE en FR. Detectie automatisch op taal van inkomend bericht. Voor specifieke productcategorieen of jargon trainen we de prompt extra. ElevenLabs Multilingual v2 voor stem ondersteunt dezelfde talen plus 25 andere voor toekomstige expansie.' },
+  { question: 'Kan AI mijn voorraad-prognose verbeteren?', answer: 'Ja. AI analyseert verkoopgeschiedenis per SKU, seizoen, marketing-piek (Black Friday, Sinterklaas), retour-percentage en levertijd leverancier. Out-of-stock signalen 14 dagen vooruit. Voor fashion en seizoens-producten is verbetering 25-40 procent op voorspelling. Voor staple-producten 8-15 procent.' },
+  { question: 'Hoe integreert AI met Klaviyo voor e-mail marketing?', answer: 'AI is geen vervanging voor Klaviyo maar een augment. AI detecteert klant-intent (browsing-gedrag, chat-gesprek, retour-reden) en pusht events naar Klaviyo voor segment-update of trigger-campaign. Voorbeeld: klant vroeg over duurzame variant triggert duurzame-collectie email-flow. Resultaat: hogere relevantie, lagere unsubscribe-rate.' },
+  { question: 'Wat als AI een fout maakt in een klant-conversatie?', answer: 'Drie-laags vangnet: laag 1 — confidence-threshold per intent, onder 92 procent escaleert naar mens; laag 2 — sentiment-detectie, bij negatieve emotie (boos, gefrustreerd) directe escalatie ongeacht confidence; laag 3 — wekelijkse audit door human-in-the-loop op random 5 procent gesprekken voor prompt-verbetering. Foutpercentage in productie onder 0,8 procent.' },
+  { question: 'Werkt dit ook voor Bol.com en Amazon multi-channel?', answer: 'Ja. AI synchroniseert voorraad bidirectioneel met Bol.com Seller API en Amazon SP-API. Bij verkoop op Bol.com daalt voorraad direct in Shopify. AI bewaakt prestatie-KPIs per kanaal (verzendtijd, klanttevredenheid, retour-percentage) en geeft alert bij dreigende strafkorting. Wel separate kanaal-prompts voor klantcontact aangezien Bol.com eigen messaging-systeem heeft.' },
+];
+
+const verderLezen = [
+  { url: '/kennisbank/ai-voor-shopify-webshop-nederland/', tekst: 'AI voor Shopify webshop Nederland — volledige gids' },
+  { url: '/kennisbank/ai-voor-detailhandel-klantcontact-voorraad/', tekst: 'AI voor detailhandel klantcontact en voorraad' },
+  { url: '/kennisbank/ai-voor-marketingbureau-nederland-2026/', tekst: 'AI voor marketingbureaus Nederland 2026' },
+  { url: '/diensten/emma/', tekst: 'Emma — WhatsApp en chat AI-assistent' },
+  { url: '/avg-checklist-ai-mkb/', tekst: 'AVG-checklist voor AI-implementaties' },
+  { url: '/ai-roi-calculator/', tekst: 'AI ROI calculator' },
+];
+---
+
+<BaseLayout
+  title="AI voor E-commerce en Webshops Nederland 2026 — Volledige Pillar-Gids | Aanloop AI"
+  description="Volledige gids voor Nederlandse webshops over AI: WhatsApp Business klantcontact, retour-flow, voorraadbeheer, abandoned-cart en ordertracking. Met Shopify, WooCommerce, Magento, Lightspeed, Mollie en Klaviyo."
+  schema={articleSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Pillar-gids · E-commerce en webshops</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI voor E-commerce en Webshops Nederland
+        </h1>
+        <p class="speakable-lede mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Volledige gids voor Nederlandse webshop-eigenaren over het inzetten van AI: WhatsApp Business 24/7 klantcontact, retour-flow automatisering, voorraadwaarschuwingen, abandoned-cart recovery en ordertracking. Met productie-integraties voor Shopify, WooCommerce, Magento, Lightspeed, Mollie, Klaviyo, Twinfield en PostNL. Concreet, conversie-gericht en EU-compliant.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis 30-min webshop-quickscan</a>
+          <a href="/ai-roi-calculator/" class="btn-secondary">Bereken ROI</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">In deze gids</h2>
+      <ol class="space-y-2 text-slate-700">
+        <li><a href="#waarom-nu" class="text-brand-indigo hover:underline">1. Waarom AI nu in e-commerce</a></li>
+        <li><a href="#platformen" class="text-brand-indigo hover:underline">2. Welke webshop-platformen werken het beste</a></li>
+        <li><a href="#use-cases" class="text-brand-indigo hover:underline">3. Zes use-cases met directe ROI</a></li>
+        <li><a href="#whatsapp" class="text-brand-indigo hover:underline">4. WhatsApp Business AI in detail</a></li>
+        <li><a href="#integraties" class="text-brand-indigo hover:underline">5. Integraties met Mollie, Klaviyo, Twinfield, PostNL</a></li>
+        <li><a href="#conversie" class="text-brand-indigo hover:underline">6. Conversie-uplift in productie</a></li>
+        <li><a href="#compliance" class="text-brand-indigo hover:underline">7. Compliance: AVG, EU AI Act, WABA</a></li>
+        <li><a href="#kosten" class="text-brand-indigo hover:underline">8. Kosten en ROI per shop-grootte</a></li>
+        <li><a href="#stappenplan" class="text-brand-indigo hover:underline">9. Stappenplan implementatie</a></li>
+        <li><a href="#faq" class="text-brand-indigo hover:underline">10. Veelgestelde vragen</a></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="waarom-nu" class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-3">Waarom AI nu in e-commerce</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">De Nederlandse webshop-markt zit klem tussen drie krachten: stijgende advertentiekosten op Meta en Google (CAC stijgt 18-25 procent jaar-op-jaar), klanten die direct antwoord verwachten via WhatsApp en chat, en marges die onder druk staan door retouren en logistieke kosten. Tegelijk is de bezetting van klantenservice-teams duurder en moeilijker te schalen.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">AI biedt nu — eindelijk — een werkende oplossing voor alle drie. Een goed geconfigureerde AI-assistent doet 70-85 procent van eerste-lijns vragen zelfstandig, herstelt 18-32 procent van afgebroken winkelwagens, automatiseert retouren binnen 24-48 uur en bewaakt voorraad real-time over Shopify, Bol.com en marketplaces.</p>
+      <p class="text-slate-700 leading-relaxed">Wat 2026 anders maakt dan 2024: WhatsApp Business Platform is mainstream geworden voor klantcontact, Shopify en WooCommerce hebben officiele AI-extensies vrijgegeven met productie-API's, en EU AI Act dwingt transparantie af zodat klanten weten met AI te praten. Geen gimmick — een productiviteitskanaal voor MKB-webshops.</p>
+    </div>
+  </section>
+
+  <section id="platformen" class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Zes webshop-platformen waar AI productie-rijp is</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {platformen.map((p) => (
+          <div class="card p-6 bg-white">
+            <h3 class="text-lg font-bold text-navy mb-2">{p.naam}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed mb-3">{p.focus}</p>
+            <a href={p.link} class="text-xs font-medium text-brand-indigo hover:underline">Verdiepingsgids →</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="use-cases" class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Zes use-cases met directe ROI</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {useCases.map((uc, i) => (
+          <div class="card p-6 bg-white">
+            <p class="text-xs font-semibold uppercase tracking-wider text-brand-indigo mb-2">Use case {i + 1}</p>
+            <h3 class="text-lg font-bold text-navy mb-3">{uc.title}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed mb-3">{uc.body}</p>
+            <a href={uc.link} class="text-xs font-medium text-brand-indigo hover:underline">Lees uitgebreid →</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="whatsapp" class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">WhatsApp Business AI in detail</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">WhatsApp is in Nederland het dominante klantcontact-kanaal voor e-commerce: 87 procent van consumenten gebruikt WhatsApp dagelijks, openpercentage van berichten ligt op 95 procent (versus 22 procent voor e-mail). Voor webshops die nog op e-mail leunen is dit een directe conversie-hefboom.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">De officiele WhatsApp Business Platform (WABA) is sinds 2024 toegankelijk voor MKB. Aanloop AI configureert: Business-verificatie bij Meta, displayname-goedkeuring, message-template-approval voor utility-berichten, integratie met shop-API voor real-time data, en een AI-laag die binnen 5 seconden persoonlijk antwoordt.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Het 24-uurs klantenservice-window is essentieel: zodra een klant initieert (bestelling, vraag) heeft de shop 24 uur om vrij te antwoorden. Daarna alleen approved templates. AI bewaakt deze grens automatisch en gebruikt template-bibliotheek voor follow-up.</p>
+      <p class="text-slate-700 leading-relaxed">Tegen welk volume? Vanaf 200 berichten per maand is een dedicated AI-agent rendabel. Onder die drempel adviseren we eerst e-mail plus chat-widget op de site, daarna doorgroeien naar WhatsApp.</p>
+    </div>
+  </section>
+
+  <section id="integraties" class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Integraties met Mollie, Klaviyo, Twinfield, PostNL</h2>
+      <p class="text-slate-700 leading-relaxed mb-6 max-w-3xl">Een AI zonder volledige stack-integratie is een geisoleerde chatbot. Aanloop AI bouwt productie-koppelingen tussen webshop, payment, marketing, boekhouding en logistiek.</p>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Systeem</th>
+              <th class="text-left p-4 font-semibold text-navy">Categorie</th>
+              <th class="text-left p-4 font-semibold text-navy">Notities</th>
+            </tr>
+          </thead>
+          <tbody>
+            {integraties.map((k, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{k.systeem}</td>
+                <td class="p-4 text-slate-700">{k.categorie}</td>
+                <td class="p-4 text-slate-700">{k.notes}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="conversie" class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Conversie-uplift in productie</h2>
+      <p class="text-slate-700 leading-relaxed mb-6 max-w-3xl">Onderstaand overzicht is gebaseerd op KPI-bewegingen die we daadwerkelijk meten bij Aanloop AI klanten in de eerste 90 dagen na livegang. Cijfers varieren per shop op basis van branche, productcategorie en pre-AI baseline.</p>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">KPI</th>
+              <th class="text-left p-4 font-semibold text-navy">Voor AI</th>
+              <th class="text-left p-4 font-semibold text-navy">Na AI (productie)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {conversieData.map((c, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{c.kpi}</td>
+                <td class="p-4 text-slate-700">{c.voor}</td>
+                <td class="p-4 text-slate-700">{c.na}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="compliance" class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Compliance: AVG, EU AI Act, WABA</h2>
+      <p class="text-slate-700 leading-relaxed mb-6 max-w-3xl">E-commerce AI heeft in 2026 zes compliance-regimes om rekening mee te houden. Deze tabel is een werkbare checklist; geen vervanging voor juridisch advies.</p>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Eis</th>
+              <th class="text-left p-4 font-semibold text-navy">Wat het regelt</th>
+              <th class="text-left p-4 font-semibold text-navy">Concrete actie</th>
+            </tr>
+          </thead>
+          <tbody>
+            {compliance.map((c, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{c.eis}</td>
+                <td class="p-4 text-slate-700">{c.wat}</td>
+                <td class="p-4 text-slate-700">{c.actie}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-slate-700 leading-relaxed mt-6 max-w-3xl">Aanloop AI levert standaard een DPA, sub-verwerkers-overzicht (Meta WABA, Mollie, Hetzner, ElevenLabs EU), AVG-grondslag-template en een EU AI Act transparantie-statement bij contractondertekening.</p>
+    </div>
+  </section>
+
+  <section id="kosten" class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Kosten en ROI per shop-grootte</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Een eerlijke analyse op basis van Nederlandse webshop-segmenten:</p>
+      <ul class="list-disc pl-6 text-slate-700 leading-relaxed space-y-3 mb-4">
+        <li><strong class="text-navy">Solo shop (onder 500 orders per maand):</strong> 297-497 euro per maand, setup 1500 euro. Break-even in maand 2-3 op basis van 1-2 ge-recoverde carts per dag plus 50 procent reductie klantenservice-tijd.</li>
+        <li><strong class="text-navy">Groei-shop (500-3000 orders per maand):</strong> 697-997 euro per maand, setup 2500 euro. Break-even in maand 1-2. Belangrijkste hefboom: WhatsApp 24/7 klantcontact plus retour-automatisering.</li>
+        <li><strong class="text-navy">Multi-channel shop (3000-15000 orders, eigen plus marktplaatsen):</strong> 1297-1997 euro per maand, setup 3500-5000 euro. Break-even binnen maand 1. Belangrijkste hefboom: voorraad-sync over kanalen plus prestatie-bewaking marktplaatsen.</li>
+        <li><strong class="text-navy">Enterprise (15000+ orders):</strong> Vanaf 2497 euro per maand, custom setup. Break-even afhankelijk van complexiteit; gemiddeld jaarlijkse besparing 60-180k euro op klantenservice plus omzet-uplift 3-7 procent.</li>
+      </ul>
+      <p class="text-slate-700 leading-relaxed">De ROI calculator op <a href="/ai-roi-calculator/" class="text-brand-indigo hover:underline">/ai-roi-calculator/</a> rekent uw specifieke situatie door op basis van orders per maand, gemiddeld order-bedrag, klantenservice-bezetting en huidige conversie.</p>
+    </div>
+  </section>
+
+  <section id="stappenplan" class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Stappenplan implementatie</h2>
+      <ol class="space-y-4 text-slate-700">
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">1</span><div><strong class="text-navy">Webshop-quickscan (gratis)</strong> — 30 minuten waarin we platform, orders per maand, klantenservice-volume, retour-percentage en bestaande integraties (Mollie, Klaviyo, Twinfield) inventariseren.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">2</span><div><strong class="text-navy">WhatsApp Business verificatie</strong> — Meta-aanvraag, displayname, BUSI-document. Doorlooptijd 5-10 werkdagen onafhankelijk van Aanloop AI.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">3</span><div><strong class="text-navy">Webshop-API koppeling</strong> — Shopify Admin API, WooCommerce REST of Magento GraphQL. Inclusief webhooks voor real-time orders, retouren en klant-events.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">4</span><div><strong class="text-navy">Eerste use-case: orderstatus en retour</strong> — meestal 60-70 procent van inkomende vragen. Live binnen 5-7 werkdagen na API-koppeling.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">5</span><div><strong class="text-navy">Tweede use-case: abandoned-cart recovery</strong> — Klaviyo-trigger plus WhatsApp-flow. Live in week 2-3.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">6</span><div><strong class="text-navy">Voorraad en marktplaats-sync</strong> — alleen voor multi-channel shops; Bol.com Seller API plus voorraad-prognose-laag. Week 4-6.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">7</span><div><strong class="text-navy">Compliance-pakket en AVG-documentatie</strong> — DPA, sub-verwerkers, EU AI Act transparantie-statement. Bij oplevering live-status.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">8</span><div><strong class="text-navy">Maandelijkse optimalisatie</strong> — KPI-rapportage (carts, retouren, klantenservice, conversie), prompt-iteratie op basis van human-in-the-loop reviews.</div></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="faq" class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Veelgestelde vragen</h2>
+      <div class="space-y-4">
+        {faqItems.map((f) => (
+          <details class="rounded-2xl border border-slate-200 bg-white p-5 group">
+            <summary class="font-semibold text-navy cursor-pointer list-none flex items-start justify-between gap-3">
+              <span>{f.question}</span>
+              <span class="text-slate-400 group-open:rotate-180 transition-transform shrink-0">▾</span>
+            </summary>
+            <p class="text-sm text-slate-700 leading-relaxed mt-3">{f.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder lezen</h2>
+      <ul class="space-y-3 text-slate-700">
+        {verderLezen.map((l) => (
+          <li><a href={l.url} class="text-brand-indigo hover:underline">{l.tekst}</a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance">Klaar om uw webshop te schalen met AI?</h2>
+      <p class="mt-4 text-slate-300">Gratis 30-minuten webshop-quickscan. We inventariseren platform, volume, klantenservice-bezetting en bestaande integraties. U ontvangt een concreet stappenplan inclusief WhatsApp Business setup, integratie-architectuur en kosten-indicatie.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis quickscan</a>
+        <a href="/diensten/emma/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Emma WhatsApp-assistent</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

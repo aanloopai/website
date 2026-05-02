@@ -1,0 +1,420 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI-Telefonie Compleet Gids Nederland 2026 — Voice AI, SIP-trunks, Latency, Nederlandse Stem',
+  description: 'De volledige technische gids voor AI-telefonie in Nederland: ElevenLabs versus OpenAI Voice versus Cartesia versus Azure, SIP-trunks via Twilio, Vonage en Retell, latency-budget, Nederlands accent, dialect-coverage en 24/7 escalatie.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    jobTitle: 'Oprichter en CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-02',
+  dateModified: '2026-05-02',
+  mainEntityOfPage: 'https://aanloopai.nl/ai-telefonie-compleet-gids-nederland-2026/',
+  inLanguage: 'nl-NL',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['.speakable-lede', 'h1'],
+  },
+};
+
+const ttsProviders = [
+  { naam: 'ElevenLabs Multilingual v2', stem: 'Zeer natuurlijk, brede stem-bibliotheek, custom voice-clone', nederlands: 'Excellent (native NL stemmen)', latency: '180-280 ms', kosten: 'Vanaf 0,18 EUR per minuut', ehv: 'EU-cluster (Frankfurt)' },
+  { naam: 'OpenAI Voice (GPT-4o Realtime)', stem: 'Zeer goed, geintegreerd met LLM', nederlands: 'Goed (geaccentueerd)', latency: '300-500 ms', kosten: 'Vanaf 0,30 EUR per minuut', ehv: 'EU-region beschikbaar' },
+  { naam: 'Cartesia Sonic', stem: 'Ultra-laag latency, kleinere voice-bib', nederlands: 'Acceptabel (verbetert snel)', latency: '90-150 ms', kosten: 'Vanaf 0,15 EUR per minuut', ehv: 'EU-cluster' },
+  { naam: 'Azure Neural Voice', stem: 'Microsoft-kwaliteit, breed dialect-aanbod', nederlands: 'Goed (Vlaams plus Nederlands)', latency: '250-400 ms', kosten: 'Vanaf 0,12 EUR per minuut', ehv: 'Azure NL-North/EU-West' },
+  { naam: 'Google Cloud Text-to-Speech', stem: 'Polyglot, redelijk natuurlijk', nederlands: 'Redelijk (mechanisch op nuance)', latency: '300-450 ms', kosten: 'Vanaf 0,10 EUR per minuut', ehv: 'EU-region beschikbaar' },
+  { naam: 'Coqui XTTS open-source', stem: 'Self-hosted optie', nederlands: 'Zwak voor Nederlands', latency: '500-800 ms (afh. server)', kosten: 'Compute-kosten alleen', ehv: 'Volledig EU self-host' },
+];
+
+const sipProviders = [
+  { naam: 'Twilio Voice', focus: 'Marktleider, brede globale dekking', voordelen: 'Stabiel, goed gedocumenteerd, Programmable Voice SDK', nadelen: 'Duurder voor NL-nummers; data via VS tenzij EDGE-locatie EU' },
+  { naam: 'Vonage (Nexmo)', focus: 'Sterk in EU, native NL-presence', voordelen: 'EU-data-residency, goede NL-quality, lokale kost-structuur', nadelen: 'Minder community-content versus Twilio' },
+  { naam: 'Retell AI', focus: 'AI-native voice infrastructuur', voordelen: 'Ingebouwde latency-optimalisatie, barge-in, interruption-handling', nadelen: 'Jonger platform; minder volwassen ops-tooling' },
+  { naam: 'Telnyx', focus: 'EU-eigen netwerk, ontwikkelaar-georienteerd', voordelen: 'Lage latency in EU, transparant tariefmodel, MRC-vrij', nadelen: 'Setup vereist meer technische kennis' },
+  { naam: 'Plivo', focus: 'Concurrent met Twilio, lager kostenmodel', voordelen: 'Goed voor hoog-volume use-cases', nadelen: 'Minder advanced features dan Twilio' },
+  { naam: 'KPN Smart Voice', focus: 'Nederlandse incumbent, traditionele PBX', voordelen: 'Bestaande NL-business-relatie, BHV-grade SLAs', nadelen: 'Niet AI-native; moeilijk te koppelen aan moderne LLM-stack' },
+];
+
+const latencyBudget = [
+  { component: 'Audio capture en VAD (Voice Activity Detection)', tijd: '20-50 ms', uitleg: 'Microfoon-input plus pakkering naar SIP-trunk; VAD bepaalt einde van klantzin' },
+  { component: 'ASR (Whisper-large of equivalent) streaming', tijd: '150-300 ms', uitleg: 'Speech-to-text; streaming-modus levert eerste tokens binnen 150 ms' },
+  { component: 'LLM-inferentie (GPT-4o, Mistral Large of Claude)', tijd: '300-800 ms', uitleg: 'First-token-time; streaming start zodra eerste tokens er zijn' },
+  { component: 'Tool-call (database, agenda, EPD-koppeling)', tijd: '100-400 ms', uitleg: 'Optioneel; alleen als AI externe data nodig heeft (orderstatus, agenda-slot)' },
+  { component: 'TTS-generatie streaming', tijd: '90-280 ms', uitleg: 'Text-to-speech; ElevenLabs en Cartesia leveren eerste audio-bytes binnen 100-150 ms' },
+  { component: 'Audio-uitlevering naar SIP-trunk', tijd: '20-50 ms', uitleg: 'Encoding naar G.711 of Opus, doorgifte naar telefoonnetwerk' },
+  { component: 'TOTAAL eerste-respons (best case)', tijd: '680-1880 ms', uitleg: 'Onder 1 seconde voor barge-in; onder 2 seconden voor natuurlijke conversatie' },
+];
+
+const ivrVergelijking = [
+  { aspect: 'Klant-routering', klassiek: 'Druk 1 voor verkoop, druk 2 voor service (DTMF-tonen)', ai: 'Vrije spraak: vertel waar u over belt — AI begrijpt context' },
+  { aspect: 'Doorvoertijd tot juiste persoon', klassiek: '60-180 seconden door menu-bomen', ai: '8-25 seconden door direct begrip' },
+  { aspect: 'Klanttevredenheid', klassiek: '3,2-3,8 op 5 (frustratie met menu)', ai: '4,1-4,5 op 5 (natuurlijk gevoel)' },
+  { aspect: '24/7 bereikbaarheid buiten kantooruren', klassiek: 'Voicemail of hangtone', ai: 'Volledige eerstelijns afhandeling plus terugbel-afspraak' },
+  { aspect: 'Schaalbaarheid bij piekmomenten', klassiek: 'Wachtrijen tot 10-20 minuten', ai: 'Onbeperkt parallel; geen wachttijd' },
+  { aspect: 'Maandkosten klassiek IVR-systeem', klassiek: 'KPN of Belsimpel: 200-800 EUR per maand plus per-minuut kosten', ai: 'Aanloop AI: vanaf 297 EUR per maand all-in' },
+  { aspect: 'Updates of script-wijzigingen', klassiek: 'Service-tickets, doorlooptijd 5-15 dagen', ai: 'Self-service prompt-aanpassing, doorlooptijd minuten' },
+];
+
+const dialecten = [
+  { regio: 'Randstadse standaard-Nederlands', kwaliteit: 'Excellent — primaire training-data', notities: 'Best ondersteund; uitgangspunt voor alle providers' },
+  { regio: 'Brabants accent', kwaliteit: 'Goed — herkenning 95-97 procent', notities: 'Whisper-large plus ElevenLabs hanteert dit goed; soms verwarring met diftongen' },
+  { regio: 'Limburgs accent en dialect', kwaliteit: 'Acceptabel — herkenning 88-93 procent', notities: 'Sterke dialectvormen geven uitdaging; we adviseren bij volledig dialect een terugbel-flow' },
+  { regio: 'Fries en Gronings', kwaliteit: 'Wisselend — herkenning 80-92 procent', notities: 'Fries als aparte taal; beste aanpak: AI vraagt of gesprek in NL of Fries voortgezet wordt' },
+  { regio: 'Vlaams (Belgische klanten)', kwaliteit: 'Goed — Azure heeft native Vlaamse stem', notities: 'Voor NL-shops met BE-klanten: Azure of mengmodel werkt het beste' },
+  { regio: 'Surinaams-Nederlands', kwaliteit: 'Goed — herkenning 92-96 procent', notities: 'Uitgesproken accent maar consistente fonetische structuur; goed te trainen' },
+  { regio: 'Marokkaans-Nederlands', kwaliteit: 'Goed — herkenning 91-95 procent', notities: 'Multi-generationale variatie; nieuwe generatie standaarder' },
+];
+
+const useCases = [
+  { title: '24/7 AI-receptionist huisartsenpraktijk', body: 'Triage volgens NHG-protocol, doorschakelen naar HAP buiten kantooruren, herhaalrecepten via spraak. Latency onder 1.2 seconden voor natuurlijke flow.', link: '/kennisbank/ai-voor-huisartsenpraktijk/' },
+  { title: 'Spoedlijn dierenarts buiten praktijktijd', body: 'AI scant op spoed-trefwoorden, classificeert urgentie, schakelt direct door naar dienstdoende of bij levensgevaar 112-instructie. SIP via Vonage EU.', link: '/kennisbank/ai-voor-dierenarts-spoedlijn-triage-nederland/' },
+  { title: '24/7 uitvaarttelefoon', body: 'Bij overlijden bereikbaar zijn is essentieel. AI vangt eerste contact op, registreert basisgegevens, plant terugbel met uitvaartondernemer binnen 1 uur.', link: '/kennisbank/ai-voor-uitvaartondernemer-24-7-telefoon-nederland/' },
+  { title: 'Outbound sales-kwalificatie', body: 'AI belt warme leads (form-fill, demo-aanvraag), kwalificeert (BANT), boekt indien geschikt direct in agenda van accountmanager. 50-70 procent meer afspraken per AE.', link: '/diensten/marco/' },
+  { title: 'After-hours klantenservice e-commerce', body: 'Buiten 17:00 vangt AI inkomende vragen op: orderstatus, retour, klacht. Volledige afhandeling 70-85 procent; rest gaat naar mens met context.', link: '/kennisbank/ai-voor-detailhandel-klantcontact-voorraad/' },
+  { title: 'Restaurant-reserveringen', body: 'AI neemt op binnen 2 seconden, controleert beschikbaarheid in OpenTable of Resengo, bevestigt reservering, stuurt SMS-confirmatie. Gemist: 0 procent.', link: '/kennisbank/ai-voor-restaurant-nederland/' },
+];
+
+const faqItems = [
+  { question: 'Welke voice-AI provider is het beste voor Nederlands?', answer: 'Voor pure stemkwaliteit en natuurlijkheid: ElevenLabs Multilingual v2 met een Nederlandse stem (custom-clone of native). Voor laagste latency (onder 150 ms TTS): Cartesia Sonic, met de kanttekening dat de NL-stem nog verfijnd wordt. Voor multi-talige enterprise (NL plus EN plus DE plus FR): Azure Neural Voice. Voor een geintegreerde stack waar LLM en stem in 1 model zitten: OpenAI GPT-4o Realtime, met iets hogere latency.' },
+  { question: 'Wat is het verschil tussen ElevenLabs en OpenAI Voice?', answer: 'ElevenLabs is gespecialiseerd in TTS (text-to-speech) met de breedste stem-bibliotheek en de beste custom-voice-clone-technologie. Combineer met externe LLM (GPT-4, Claude, Mistral). OpenAI GPT-4o Realtime combineert ASR plus LLM plus TTS in 1 model: lagere coordinatie-overhead, simpeler architectuur, maar minder controle over individuele stappen plus iets hogere latency op TTS-deel. Aanloop AI gebruikt voornamelijk ElevenLabs vanwege NL-stem-kwaliteit.' },
+  { question: 'Welke SIP-trunk provider werkt het beste voor Nederlandse telefoonnummers?', answer: 'Voor productie-stabiliteit en EU-data-residency: Vonage (sterke NL-presence) of Telnyx (eigen EU-netwerk). Voor maximale flexibiliteit en SDK-rijkdom: Twilio mits met EU-EDGE-locatie geconfigureerd. Voor AI-native voice met ingebouwde barge-in en interruption-handling: Retell AI. Voor zeer hoog volume (10.000+ minuten per maand): Plivo of directe SIP via een Nederlandse VoIP-leverancier zoals RoutIT of Solcon.' },
+  { question: 'Wat is een acceptabele latency voor AI-telefonie?', answer: 'Onder 1 seconde tussen einde-klant-zin en begin AI-antwoord voelt natuurlijk. Tussen 1 en 1,5 seconden merkbaar maar acceptabel. Boven 2 seconden voelt vertraagd en breekt natuurlijke flow. In productie streven we 1100-1400 ms na (gemeten als first-audio-out na end-of-utterance). Voor barge-in (klant onderbreekt AI) is 200-400 ms detection-tijd noodzakelijk.' },
+  { question: 'Werkt AI-telefonie met regionale dialecten en accenten?', answer: 'Ja, voor de meest gebruikte Nederlandse accenten (Brabants, Limburgs accent, Surinaams-Nederlands, Marokkaans-Nederlands, Vlaams) ligt de woord-herkenning op 91-97 procent met Whisper-large. Voor sterke dialectvormen (volledig Limburgs dialect, Fries) adviseren we een terugbel-flow waarbij AI vraagt of het gesprek in standaard-Nederlands voortgezet kan worden, of routeert naar menselijke medewerker.' },
+  { question: 'Hoeveel kost AI-telefonie per minuut?', answer: 'Total-cost-per-minute (TCPM) voor productie-quality NL-AI-telefonie ligt tussen 0,28-0,55 euro per minuut, opgebouwd uit: SIP-trunk (0,03-0,08 EUR), ASR (0,03-0,08 EUR), LLM-inferentie (0,05-0,15 EUR), TTS (0,12-0,25 EUR). Daarbovenop maandelijkse infra-kosten 50-200 EUR per nummer. Aanloop AI biedt all-in pakketten vanaf 297 EUR per maand met 500 inbound-minuten inclusief.' },
+  { question: 'Hoe werkt barge-in en interruption-handling?', answer: 'Barge-in betekent dat een klant de AI mag onderbreken zonder dat het gesprek mislukt. Implementatie: continue VAD op input-stream tijdens AI-spreken, na 250-400 ms aanhoudend spraak-signaal stopt AI direct, ASR pakt klant-zin op, LLM krijgt context dat AI onderbroken werd plus de oorspronkelijke onafgemaakte boodschap. Retell heeft dit native; bij ElevenLabs plus eigen orchestratie (zoals Aanloop AI gebruikt) bouwen we deze laag zelf.' },
+  { question: 'Is AI-telefonie AVG-compliant voor zorg-praktijken?', answer: 'Ja, mits goed geconfigureerd. EU-only stack: Vonage of Telnyx EU voor SIP, ElevenLabs EU-cluster voor TTS, Mistral Large via Azure EU-West voor LLM, Hetzner of OVHcloud EU voor app-hosting. Verplicht: DPA met elke sub-verwerker, DPIA voor zorg-toepassingen, NEN 7510-bewijsstuk. Aanloop AI levert dit standaard. Geen data-export buiten EER. Bewaartermijn telefoongesprekken 90 dagen, transcripten 12 maanden.' },
+  { question: 'Hoe verhoudt AI-telefonie zich tot een klassieke IVR (KPN, Belsimpel, etc)?', answer: 'Klassieke IVR-systemen werken met DTMF-tonen (druk 1 voor X, druk 2 voor Y) en starre menu-bomen. AI-telefonie werkt met natuurlijke spraak en context-begrip. Voor klant: doorvoertijd tot juiste afhandeling daalt 60-80 procent, klanttevredenheid stijgt 0,5-1,2 punten op 5-schaal. Voor bedrijf: maandkosten typisch lager (Aanloop vanaf 297 EUR versus klassiek IVR 200-800 EUR), updates self-service in plaats van service-tickets bij telefonie-leverancier.' },
+  { question: 'Kan AI-telefonie sentiment detecteren tijdens een gesprek?', answer: 'Ja. Real-time sentiment-detectie werkt op twee assen: prosodisch (toonhoogte, snelheid, pauzes) en semantisch (woordkeuze, intentie). Bij detectie van frustratie of woede schakelt AI direct over op de-escalatie-prompt en escaleert tegelijkertijd naar mens. Voor zorg: detectie van crisis-signalen (suicidaliteit, zelfbeschadiging) escaleert direct naar BIG-geregistreerd zorgverlener of bij levensgevaar 113.' },
+  { question: 'Hoe lang duurt setup voor een AI-telefoonnummer in Nederland?', answer: 'Bestaand Nederlands nummer porteren naar Vonage of Telnyx: 5-15 werkdagen (afhankelijk van vorige operator). Nieuw nummer aanvragen: 1-3 werkdagen. AI-laag configuratie (prompt, integraties, escalatie-flows): 5-10 werkdagen. Pilot live op tweede nummer (parallel): typisch binnen 7-10 werkdagen. Volledige overgang van bestaande lijn: na 4-6 weken inclusief monitoring en finetuning.' },
+  { question: 'Wat als de internetverbinding van de praktijk uitvalt?', answer: 'AI-telefonie draait op cloud-infrastructuur, niet op de praktijk-locatie. Internet-uitval bij de praktijk heeft geen invloed op AI-bereikbaarheid. Bij doorschakeling naar mens (medewerker, dienstdoende arts) kan AI alternatieven suggereren: SMS terugbelverzoek, callback-afspraak, of bij spoed direct 112-instructie. Voor mission-critical zorg-AI biedt Aanloop een redundant SIP-trunk via twee verschillende providers met automatische failover.' },
+];
+
+const verderLezen = [
+  { url: '/diensten/marco/', tekst: 'Marco — AI voice-assistent voor Nederlandse MKB' },
+  { url: '/kennisbank/ai-voor-uitvaartondernemer-24-7-telefoon-nederland/', tekst: 'AI-uitvaarttelefoon 24/7 voor uitvaartondernemers' },
+  { url: '/kennisbank/ai-voor-dierenarts-spoedlijn-triage-nederland/', tekst: 'AI-spoedlijn voor dierenartsen 24/7 triage' },
+  { url: '/vergelijk/marco-vs-voiceflow/', tekst: 'Marco versus Voiceflow — voice-AI vergelijking' },
+  { url: '/vergelijk/marco-vs-make-com-voice/', tekst: 'Marco versus Make.com Voice — vergelijking' },
+  { url: '/vergelijk/ai-receptionist-vs-callcenter/', tekst: 'AI-receptionist versus klassieke callcenter' },
+  { url: '/vergelijk/marco-vs-emma/', tekst: 'Marco versus Emma — voice versus chat' },
+  { url: '/ai-receptionist-nederland/', tekst: 'AI-receptionist Nederland — productpagina' },
+];
+---
+
+<BaseLayout
+  title="AI-Telefonie Compleet Gids Nederland 2026 — Voice AI, SIP, Latency, Stem | Aanloop AI"
+  description="Volledige technische gids voor AI-telefonie Nederland: ElevenLabs versus OpenAI Voice versus Cartesia versus Azure, SIP via Twilio, Vonage en Retell, latency-budget, Nederlands accent en dialecten."
+  schema={articleSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Pillar-gids · AI-telefonie en voice AI</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI-Telefonie Compleet Gids Nederland 2026
+        </h1>
+        <p class="speakable-lede mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          De volledige technische gids voor AI-telefonie in Nederland: ElevenLabs versus OpenAI Voice versus Cartesia versus Azure, SIP-trunks via Twilio, Vonage, Retell en Telnyx, latency-budget per component, Nederlandse stem-kwaliteit, dialect-coverage van Brabants tot Surinaams-Nederlands, barge-in handling en sentiment-detectie. Voor MKB-ondernemers, technische beslissers en agencies die voice AI productie-rijp willen inzetten.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/diensten/marco/" class="btn-primary">Marco voice-assistent</a>
+          <a href="/gratis-ai-scan/" class="btn-secondary">Gratis architectuur-scan</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">In deze gids</h2>
+      <ol class="space-y-2 text-slate-700">
+        <li><a href="#waarom-nu" class="text-brand-indigo hover:underline">1. Waarom AI-telefonie nu mainstream wordt</a></li>
+        <li><a href="#stack" class="text-brand-indigo hover:underline">2. Voice-AI stack: ASR, LLM, TTS</a></li>
+        <li><a href="#tts" class="text-brand-indigo hover:underline">3. TTS-providers vergeleken voor Nederlands</a></li>
+        <li><a href="#sip" class="text-brand-indigo hover:underline">4. SIP-trunk providers vergeleken</a></li>
+        <li><a href="#latency" class="text-brand-indigo hover:underline">5. Latency-budget breakdown</a></li>
+        <li><a href="#barge-in" class="text-brand-indigo hover:underline">6. Barge-in en interruption-handling</a></li>
+        <li><a href="#dialecten" class="text-brand-indigo hover:underline">7. Nederlands accent en dialect-coverage</a></li>
+        <li><a href="#sentiment" class="text-brand-indigo hover:underline">8. Sentiment-detectie en escalatie</a></li>
+        <li><a href="#ivr" class="text-brand-indigo hover:underline">9. AI versus klassieke IVR (KPN, Belsimpel)</a></li>
+        <li><a href="#use-cases" class="text-brand-indigo hover:underline">10. Productie use-cases per sector</a></li>
+        <li><a href="#kosten" class="text-brand-indigo hover:underline">11. Kosten-model per minuut en per maand</a></li>
+        <li><a href="#faq" class="text-brand-indigo hover:underline">12. Veelgestelde vragen</a></li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="waarom-nu" class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-3">Waarom AI-telefonie nu mainstream wordt</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">AI-telefonie heeft een kantelpunt bereikt in 2025-2026. Drie technologische shifts hebben dat mogelijk gemaakt: TTS-stemkwaliteit (ElevenLabs Multilingual v2 levert native NL-stemmen die niet meer van mens te onderscheiden zijn), latency (Cartesia Sonic onder 150 ms TTS, gecombineerde stack onder 1,2 seconden total) en kosten (van 1,50-2,50 EUR per minuut in 2023 naar 0,28-0,55 EUR per minuut in 2026).</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Voor Nederlandse MKB-ondernemers betekent dit dat AI-telefonie eindelijk de natuurlijkheid en het zakelijke karakter heeft waarmee klanten geen frictie ervaren. Geen monotone IVR meer met druk 1 voor verkoop, druk 2 voor service. In plaats daarvan: vertel waar u over belt, en de AI begrijpt het.</p>
+      <p class="text-slate-700 leading-relaxed">Tegelijkertijd dwingt de EU AI Act sinds 2026 transparantie af: klanten moeten weten dat ze met AI praten. Dit blijkt geen frictie maar juist een vertrouwens-driver: openheid over AI-gebruik plus consistentie van service zorgt voor klanttevredenheid die typisch 0,5-1,2 punten hoger ligt dan bij klassieke IVR.</p>
+    </div>
+  </section>
+
+  <section id="stack" class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Voice-AI stack: ASR, LLM, TTS</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Een AI-telefonie-systeem bestaat uit zes lagen die in real-time samenwerken:</p>
+      <ol class="list-decimal pl-6 text-slate-700 leading-relaxed space-y-2 mb-4">
+        <li><strong class="text-navy">SIP-trunk</strong>: verbinding met telefoonnetwerk (Twilio, Vonage, Retell, Telnyx)</li>
+        <li><strong class="text-navy">VAD (Voice Activity Detection)</strong>: detectie wanneer klant praat versus stil is</li>
+        <li><strong class="text-navy">ASR (Automatic Speech Recognition)</strong>: spraak naar tekst (Whisper-large, Deepgram, AssemblyAI)</li>
+        <li><strong class="text-navy">LLM (Large Language Model)</strong>: begrijpen en antwoord-formuleren (GPT-4o, Claude, Mistral Large)</li>
+        <li><strong class="text-navy">Tool-calls</strong>: optionele externe data-ophaling (agenda, EPD, voorraad)</li>
+        <li><strong class="text-navy">TTS (Text-to-Speech)</strong>: tekst terug naar spraak (ElevenLabs, Cartesia, Azure)</li>
+      </ol>
+      <p class="text-slate-700 leading-relaxed mb-4">Iedere laag is afzonderlijk te kiezen en in te richten. De moderne aanpak is streaming op alle niveaus: ASR levert eerste tokens binnen 150 ms van klant-spraak, LLM start streaming-respons binnen 300 ms, TTS pakt tokens op zodra ze binnenkomen en levert eerste audio-bytes binnen 100 ms. Dat brengt totale latency onder de seconde.</p>
+      <p class="text-slate-700 leading-relaxed">De alternatieve aanpak is een end-to-end model zoals OpenAI GPT-4o Realtime, dat alle drie de lagen in 1 model combineert. Voordeel: minder coordination overhead. Nadeel: minder controle, minder voice-options, hogere kosten per minuut.</p>
+    </div>
+  </section>
+
+  <section id="tts" class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">TTS-providers vergeleken voor Nederlands</h2>
+      <p class="text-slate-700 leading-relaxed mb-6 max-w-3xl">Onderstaand overzicht is gebaseerd op productie-tests met Nederlandse zakelijke gesprekken (zorg, e-commerce, dienstverlening) tussen Q1 2025 en Q1 2026.</p>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Provider</th>
+              <th class="text-left p-4 font-semibold text-navy">Stemkwaliteit</th>
+              <th class="text-left p-4 font-semibold text-navy">Nederlands</th>
+              <th class="text-left p-4 font-semibold text-navy">Latency</th>
+              <th class="text-left p-4 font-semibold text-navy">Kosten</th>
+              <th class="text-left p-4 font-semibold text-navy">EU-hosting</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ttsProviders.map((p, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{p.naam}</td>
+                <td class="p-4 text-slate-700">{p.stem}</td>
+                <td class="p-4 text-slate-700">{p.nederlands}</td>
+                <td class="p-4 text-slate-700">{p.latency}</td>
+                <td class="p-4 text-slate-700">{p.kosten}</td>
+                <td class="p-4 text-slate-700">{p.ehv}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="sip" class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">SIP-trunk providers vergeleken</h2>
+      <p class="text-slate-700 leading-relaxed mb-6 max-w-3xl">De SIP-trunk is de connectie tussen het telefoonnetwerk en de AI-stack. Voor Nederlandse productie-deployments adviseren we EU-hosted providers met sterke EU-data-residency.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {sipProviders.map((s) => (
+          <div class="card p-6 bg-white">
+            <h3 class="text-lg font-bold text-navy mb-2">{s.naam}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed mb-3"><strong class="text-navy">Focus:</strong> {s.focus}</p>
+            <p class="text-sm text-slate-600 leading-relaxed mb-2"><strong class="text-navy">Voordelen:</strong> {s.voordelen}</p>
+            <p class="text-sm text-slate-600 leading-relaxed"><strong class="text-navy">Nadelen:</strong> {s.nadelen}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="latency" class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Latency-budget breakdown</h2>
+      <p class="text-slate-700 leading-relaxed mb-6 max-w-3xl">Voor natuurlijke conversatie moet de totale tijd tussen einde-klant-zin en eerste-audio-byte van AI onder 1,5 seconde liggen, idealiter onder 1,1 seconde. Onderstaand de breakdown per component zoals gemeten in Aanloop AI productie-installaties.</p>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Component</th>
+              <th class="text-left p-4 font-semibold text-navy">Tijd</th>
+              <th class="text-left p-4 font-semibold text-navy">Uitleg</th>
+            </tr>
+          </thead>
+          <tbody>
+            {latencyBudget.map((l, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{l.component}</td>
+                <td class="p-4 text-slate-700">{l.tijd}</td>
+                <td class="p-4 text-slate-700">{l.uitleg}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-slate-700 leading-relaxed mt-6 max-w-3xl">Belangrijke kanttekening: latency-tabellen zijn het resultaat van streaming op alle lagen. Bij niet-streaming (volledige zin afwachten voordat ASR start, volledig LLM-antwoord afwachten voordat TTS start) loopt totale latency op naar 3-5 seconden — onbruikbaar voor natuurlijke gesprekken.</p>
+    </div>
+  </section>
+
+  <section id="barge-in" class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Barge-in en interruption-handling</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Barge-in is het vermogen van een AI om onderbroken te worden door de klant zonder dat het gesprek mislukt. Mensen onderbreken elkaar voortdurend; een AI die dat niet aankan voelt robotachtig en frustreert.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Technisch werkt barge-in zo: tijdens AI-spraak draait er een continue VAD op de input-stream van de klant. Zodra er 250-400 ms aanhoudend spraak-signaal is (geen achtergrondruis, geen kuchje) onderbreekt de AI zichzelf direct. De ASR pakt de klant-zin op, het LLM krijgt context dat het werd onderbroken plus de tot dan gegenereerde boodschap, en formuleert een passend nieuw antwoord.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Een goede AI herkent het verschil tussen: een echte interruptie (klant heeft een vraag of correctie), backchanneling (ja, hmm, oke — geen onderbreking), en ruis (achtergrondgeluid, ingrijpen-pieptoon). Aanloop AI gebruikt een twee-laags model: VAD plus prosodische detectie van intentie. False-positive rate onder 3 procent.</p>
+      <p class="text-slate-700 leading-relaxed">Retell AI heeft barge-in native ingebouwd. ElevenLabs plus eigen orchestratie (zoals Aanloop AI) bouwt deze laag zelf met meer controle. Twilio plus Whisper plus GPT-4 zonder barge-in optimalisatie levert robotische gesprekken; niet aan te raden voor productie.</p>
+    </div>
+  </section>
+
+  <section id="dialecten" class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Nederlands accent en dialect-coverage</h2>
+      <p class="text-slate-700 leading-relaxed mb-6 max-w-3xl">Een AI die alleen Randstadse standaard-Nederlands begrijpt is in de praktijk onvoldoende. Onderstaand een overzicht van de coverage in productie met Whisper-large plus Aanloop AI prompt-laag.</p>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Regio of variant</th>
+              <th class="text-left p-4 font-semibold text-navy">Kwaliteit</th>
+              <th class="text-left p-4 font-semibold text-navy">Notities</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dialecten.map((d, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{d.regio}</td>
+                <td class="p-4 text-slate-700">{d.kwaliteit}</td>
+                <td class="p-4 text-slate-700">{d.notities}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="sentiment" class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Sentiment-detectie en escalatie</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Een productie-grade AI moet de emotie van de klant herkennen en daarop reageren. Boze of gefrustreerde klanten escaleren; hulpvragen die crisis-signalen bevatten (suicidaliteit, zelfbeschadiging, ernstige medische klacht) gaan direct naar mens of nooddienst.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Real-time sentiment-detectie werkt op twee dimensies. Prosodisch: toonhoogte-verschuiving, spreeksnelheid, pauze-patroon, volume. Semantisch: woordkeuze (boos, woedend, klacht, ontevreden, niet-meer), grammatica (uitroepen, vragen herhaald), expliciete intentie (ik wil mijn geld terug, ik bel een advocaat).</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Bij detectie van negatieve emotie schakelt de AI direct over op de-escalatie-prompt (begrip tonen, herhaling probleem in eigen woorden, oplossing voorstellen) en triggert een achtergrond-event om mens-escalatie voor te bereiden. Bij detectie van crisis-signalen (zorg-context) escaleert AI direct met overdracht van transcript en sentiment-flag.</p>
+      <p class="text-slate-700 leading-relaxed">Voor zorg-AI is dit verplicht: NHG-protocollen vereisen herkenning van psychische crisis. Aanloop AI heeft een dedicated crisis-detectie-laag die expliciet getraind is op Nederlandse signaal-fraseringen, samen met een huisarts uit het partnernetwerk.</p>
+    </div>
+  </section>
+
+  <section id="ivr" class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">AI-telefonie versus klassieke IVR (KPN, Belsimpel)</h2>
+      <p class="text-slate-700 leading-relaxed mb-6 max-w-3xl">Voor veel Nederlandse MKB-ondernemers is de overstap niet van niets naar AI maar van een bestaand klassiek IVR-systeem (KPN Smart Voice, Belsimpel of een lokale telefonie-leverancier) naar AI-telefonie. Onderstaand de directe vergelijking.</p>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Aspect</th>
+              <th class="text-left p-4 font-semibold text-navy">Klassiek IVR</th>
+              <th class="text-left p-4 font-semibold text-navy">AI-telefonie</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ivrVergelijking.map((v, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{v.aspect}</td>
+                <td class="p-4 text-slate-700">{v.klassiek}</td>
+                <td class="p-4 text-slate-700">{v.ai}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-slate-700 leading-relaxed mt-6 max-w-3xl">Voor diepere vergelijking met menselijke alternatieven, zie onze gids <a href="/vergelijk/ai-receptionist-vs-callcenter/" class="text-brand-indigo hover:underline">AI-receptionist versus klassiek callcenter</a>.</p>
+    </div>
+  </section>
+
+  <section id="use-cases" class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Productie use-cases per sector</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {useCases.map((uc, i) => (
+          <div class="card p-6 bg-white">
+            <p class="text-xs font-semibold uppercase tracking-wider text-brand-indigo mb-2">Use case {i + 1}</p>
+            <h3 class="text-lg font-bold text-navy mb-3">{uc.title}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed mb-3">{uc.body}</p>
+            <a href={uc.link} class="text-xs font-medium text-brand-indigo hover:underline">Lees uitgebreid →</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="kosten" class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Kosten-model per minuut en per maand</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Total-cost-per-minute (TCPM) voor productie-quality NL-AI-telefonie ligt anno 2026 tussen 0,28 en 0,55 euro per minuut, afhankelijk van provider-mix en volume-staffel. Opbouw:</p>
+      <ul class="list-disc pl-6 text-slate-700 leading-relaxed space-y-2 mb-4">
+        <li><strong class="text-navy">SIP-trunk (Vonage of Telnyx EU):</strong> 0,03-0,08 EUR per minuut inkomend NL</li>
+        <li><strong class="text-navy">ASR (Whisper-large of Deepgram):</strong> 0,03-0,08 EUR per minuut</li>
+        <li><strong class="text-navy">LLM-inferentie (GPT-4o of Mistral Large):</strong> 0,05-0,15 EUR per minuut (afhankelijk van prompt-grootte plus tool-calls)</li>
+        <li><strong class="text-navy">TTS (ElevenLabs Multilingual v2):</strong> 0,12-0,25 EUR per minuut</li>
+        <li><strong class="text-navy">Infrastructuur en orchestratie:</strong> 0,02-0,05 EUR per minuut amortized</li>
+      </ul>
+      <p class="text-slate-700 leading-relaxed mb-4">Daarbovenop maandelijkse vaste kosten: nummer-huur (15-50 EUR per maand per nummer), platform-fee, monitoring en compliance-overhead. Aanloop AI biedt all-in pakketten:</p>
+      <ul class="list-disc pl-6 text-slate-700 leading-relaxed space-y-2 mb-4">
+        <li><strong class="text-navy">Starter (solo praktijk of micro-shop):</strong> 297 EUR per maand met 500 inbound-minuten inclusief</li>
+        <li><strong class="text-navy">Groei (MKB):</strong> 597 EUR per maand met 1500 inbound-minuten plus eenvoudige integraties</li>
+        <li><strong class="text-navy">Premium (multi-locatie of zorg):</strong> 1297 EUR per maand met 3500 inbound-minuten plus EPD-koppeling plus NEN 7510-pakket</li>
+        <li><strong class="text-navy">Enterprise:</strong> Custom pricing vanaf 2497 EUR per maand</li>
+      </ul>
+      <p class="text-slate-700 leading-relaxed">Voor een direct kosten-overzicht zie de <a href="/ai-roi-calculator/" class="text-brand-indigo hover:underline">ROI calculator</a>; voor een vergelijking met klassiek callcenter zie <a href="/vergelijk/ai-receptionist-vs-callcenter/" class="text-brand-indigo hover:underline">AI-receptionist versus callcenter</a>.</p>
+    </div>
+  </section>
+
+  <section id="faq" class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Veelgestelde vragen</h2>
+      <div class="space-y-4">
+        {faqItems.map((f) => (
+          <details class="rounded-2xl border border-slate-200 bg-white p-5 group">
+            <summary class="font-semibold text-navy cursor-pointer list-none flex items-start justify-between gap-3">
+              <span>{f.question}</span>
+              <span class="text-slate-400 group-open:rotate-180 transition-transform shrink-0">▾</span>
+            </summary>
+            <p class="text-sm text-slate-700 leading-relaxed mt-3">{f.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder lezen</h2>
+      <ul class="space-y-3 text-slate-700">
+        {verderLezen.map((l) => (
+          <li><a href={l.url} class="text-brand-indigo hover:underline">{l.tekst}</a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance">Klaar om uw telefonie te upgraden naar voice AI?</h2>
+      <p class="mt-4 text-slate-300">Gratis 30-minuten architectuur-scan. We inventariseren huidige telefonie-setup, volume, gebruikspatroon en compliance-vereisten. U ontvangt een concreet stappenplan inclusief stack-aanbeveling, nummer-portering-tijdpad en kosten-indicatie.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        <a href="/diensten/marco/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Marco voice-assistent</a>
+        <a href="/gratis-ai-scan/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Gratis quickscan</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
