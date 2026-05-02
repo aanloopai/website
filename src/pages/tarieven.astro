@@ -130,7 +130,7 @@ const priceSchema = {
   title="Tarieven — AI Agents & Automatisering voor MKB | Aanloop AI"
   description="Transparante tarieven voor Aanloop AI. Starter vanaf €597/mnd, Groei (Marco + Emma) €1.197/mnd. Geen verborgen kosten. Maandelijks opzegbaar. KVK: 88606902."
   schema={priceSchema}
-  faqSchema={faqs}
+  faqSchema={faqs.map(f => ({ question: f.q, answer: f.a }))}
 >
 
   <!-- Hero -->
