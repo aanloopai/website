@@ -1,0 +1,231 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "EU AI Act voor MKB Nederland 2026 — wat moet u nu regelen",
+  "description": "De EU AI Act is van kracht. Wat betekent dit voor uw MKB? Welke AI-tools (chatbot, voicebot, WhatsApp-bot, document-AI) vallen in welke risico-categorie, welke verplichtingen gelden, deadlines en boetes. Met compliance-checklist.",
+  "author": {
+    "@type": "Person",
+    "name": "Daan Verhoeven",
+    "@id": "https://aanloopai.nl/team/daan-verhoeven/#person",
+    "url": "https://aanloopai.nl/team/daan-verhoeven/",
+    "sameAs": ["https://www.linkedin.com/company/aanloop-ai", "https://www.linkedin.com/in/daanverhoeven/"],
+    "jobTitle": "Oprichter & CEO Aanloop AI",
+    "worksFor": {
+      "@type": "Organization",
+      "@id": "https://aanloopai.nl/#organization",
+      "name": "Aanloop AI"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://aanloopai.nl/#organization",
+    "name": "Aanloop AI",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aanloopai.nl/logo-mark-light-1024.png"
+    }
+  },
+  "datePublished": "2026-05-02",
+  "dateModified": "2026-05-02",
+  "mainEntityOfPage": "https://aanloopai.nl/kennisbank/eu-ai-act-mkb-nederland-2026/",
+  "inLanguage": "nl-NL"
+};
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'EU AI Act compliance regelen voor uw MKB-bedrijf',
+  description: 'Stappenplan om uw AI-tools (telefoon, WhatsApp, chat, document-AI) EU AI Act conform te maken. Doorlooptijd circa 8 werkdagen.',
+  totalTime: 'P8D',
+  inLanguage: 'nl-NL',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'AI-inventarisatie maken', text: 'Lijst alle AI-tools die uw organisatie gebruikt: voicebot, WhatsApp-bot, chatbot, document-OCR, e-mail-classifier, AI-features in CRM. Per tool: leverancier, doel, type data, gebruikers.' },
+    { '@type': 'HowToStep', position: 2, name: 'Risico-categorie bepalen per tool', text: 'Toets per AI-tool tegen de 4 categorieen: unacceptable risk (verboden), high risk (zware compliance), limited risk (transparantie-plicht), minimal risk (geen verplichtingen). Klantgesprek-AI valt typisch onder limited risk.' },
+    { '@type': 'HowToStep', position: 3, name: 'Transparantie-disclaimer toevoegen', text: 'Voor limited-risk AI: aan begin van elk gesprek expliciet melden dat de gebruiker met AI praat. Marco: u spreekt met de virtuele receptionist van bedrijfsnaam. Emma: bij eerste WhatsApp-bericht van AI ik ben de AI-assistent van bedrijfsnaam.' },
+    { '@type': 'HowToStep', position: 4, name: 'Logging en audit-trail inrichten', text: 'Elk AI-gesprek wordt gelogd: input, output, timestamp, escalatie naar mens, gebruikte modelversie. Bewaartermijn minimaal 6 maanden voor audit-controle. Aanloop AI heeft logging standaard ingebouwd.' },
+    { '@type': 'HowToStep', position: 5, name: 'Menselijke escalatie standaard maken', text: 'Configureer dat bij twijfel, klacht of expliciete vraag van gebruiker direct doorverbinding naar een mens plaatsvindt. AI Act vereist altijd betekenisvolle menselijke supervisie bij high-impact beslissingen.' },
+    { '@type': 'HowToStep', position: 6, name: 'AI-literacy training organiseren', text: 'Vanaf februari 2025 verplicht: medewerkers die met AI werken moeten basistraining krijgen over werking, beperkingen en risicos. Aanloop AI levert een 1-uurs e-learning bij onboarding.' },
+    { '@type': 'HowToStep', position: 7, name: 'Verwerkersovereenkomst aanvullen', text: 'Naast bestaande AVG-DPA: AI-specifieke clausules over modeltraining (geen klantdata gebruikt), modelversies (notification bij major updates), explainability (op verzoek toelichting AI-beslissing).' },
+    { '@type': 'HowToStep', position: 8, name: 'Klantcommunicatie aanpassen', text: 'Privacy statement aanvullen met AI-paragraaf. Optioneel: pagina ai-policy met overzicht welke AI uw bedrijf gebruikt en welke garanties (transparantie, geen training, EU-data, menselijke supervisie). Bouwt vertrouwen.' },
+  ],
+};
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/eu-ai-act-mkb-nederland-2026/', inLanguage: 'nl-NL' };
+
+const faqItems = [
+  { question: 'Vanaf wanneer is de EU AI Act van toepassing op mijn MKB?', answer: 'De wet is gefaseerd ingevoerd. Verboden AI-praktijken: vanaf 2 februari 2025. AI-literacy verplichting: 2 februari 2025. General Purpose AI rules: 2 augustus 2025. High-risk AI: 2 augustus 2026. Volledige werking: 2 augustus 2027. Voor MKB met klantgesprek-AI (Marco of Emma): u moet nu transparantie-verplichtingen en AI-literacy training geregeld hebben.' },
+  { question: 'In welke risico-categorie valt een AI receptionist of WhatsApp bot?', answer: 'Limited risk. Klantgesprek-AI heeft een transparantie-verplichting (gebruiker informeren dat hij met AI praat) maar geen high-risk verplichtingen zoals risk-management-systeem of conformity assessment. Marco en Emma van Aanloop AI zijn standaard EU AI Act compliant binnen de limited-risk categorie.' },
+  { question: 'Wat zijn de boetes bij niet-naleving van de AI Act?', answer: 'Boetes lopen op tot 35 miljoen euro of 7 procent wereldwijde jaaromzet (welke hoger is) voor verboden AI-praktijken. Voor andere overtredingen: 15 miljoen euro of 3 procent omzet. Voor MKB realistisch: 50.000 tot 500.000 euro afhankelijk van de overtreding en omzet. Toezichthouder in Nederland: Autoriteit Persoonsgegevens (AP) plus AI-toezichthouder (in oprichting per AI Act).' },
+  { question: 'Wat is AI-literacy en waarom moet ik training organiseren?', answer: 'AI-literacy is basiskennis over hoe AI werkt, wat het wel en niet kan, en welke risicos er zijn. Vanaf 2 februari 2025 verplicht voor alle medewerkers die AI gebruiken. Doel: voorkomen dat medewerkers AI-output blind vertrouwen of verkeerd interpreteren. Aanloop AI levert een 1-uurs Nederlandstalige e-learning gratis bij elke implementatie.' },
+  { question: 'Vallen ChatGPT en Claude onder de AI Act?', answer: 'Ja, als General Purpose AI (GPAI) modellen. Vanaf 2 augustus 2025 hebben OpenAI, Anthropic en Google verplichtingen rond modeldocumentatie, copyright-policy en transparantie. Als MKB-gebruiker valt u onder de deployer-verplichtingen, niet de provider-verplichtingen. Praktisch betekent dit transparantie-disclaimer plus logging plus AI-literacy training.' },
+  { question: 'Moet ik een conformity assessment doen voor mijn AI-tool?', answer: 'Alleen voor high-risk AI (gebruik in werving en selectie, kredietbeoordeling, biometrische identificatie, kritieke infrastructuur). Klantgesprek-AI valt hier niet onder, dus geen conformity assessment nodig. Wel: documenteer uw risico-classificatie zelf — dit is bewijs van due diligence bij eventueel onderzoek door toezichthouder.' },
+];
+---
+
+<BaseLayout
+  title="EU AI Act voor MKB Nederland 2026 | Compliance-checklist, deadlines en boetes"
+  description="Wat moet uw MKB nu regelen onder de EU AI Act? Risico-categorieen, transparantie-plicht, AI-literacy, deadlines tot 2027 en boetes tot 35 miljoen euro. Met 8-stappen compliance-checklist en concrete voorbeelden voor Marco AI receptionist en Emma WhatsApp bot."
+  schema={[articleSchema, howToSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · EU AI Act compliance</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          EU AI Act voor MKB Nederland 2026 — wat moet u nu regelen
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          De Europese AI-verordening (EU AI Act) is sinds februari 2025 gefaseerd in werking en geldt voor elk Nederlands MKB-bedrijf dat AI inzet — van een eenvoudige WhatsApp-bot tot een AI-receptionist. In 2026 lopen de eerste deadlines af voor transparantie, logging en AI-literacy training. In dit artikel: welke verplichtingen gelden voor uw bedrijf, in welke risico-categorie uw AI valt, een 8-stappen compliance-checklist en de boetes bij niet-naleving (tot 35 miljoen euro of 7 procent wereldwijde omzet).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat is de EU AI Act in een notendop</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De EU AI Act (verordening 2024/1689) is de eerste alomvattende AI-wetgeving ter wereld. Doel: zorgen dat AI in de EU veilig, transparant en in lijn met grondrechten wordt ingezet. De wet werkt risico-gebaseerd: hoe groter het risico van een AI-toepassing, hoe zwaarder de eisen. Voor het Nederlandse MKB betekent dit dat de meeste AI-tools (klantgesprek-AI, document-automatisering, recommendation-engines) onder de licht-risico of geen-risico categorie vallen, maar er gelden wel transparantie-verplichtingen en een verplichte AI-literacy training voor medewerkers.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">De wet werd gepubliceerd op 12 juli 2024 en is gefaseerd in werking getreden. Vanaf 2 februari 2025 zijn verboden AI-praktijken (zoals social scoring of emotie-herkenning op werkvloer) onmiddellijk verboden, en moet elk bedrijf basis AI-literacy trainen. Vanaf 2 augustus 2025 gelden regels voor General Purpose AI providers (OpenAI, Anthropic, Google). Vanaf 2 augustus 2026 worden high-risk AI-systemen volledig gereguleerd. Op 2 augustus 2027 is de wet volledig van kracht.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Toezichthouder in Nederland is de Autoriteit Persoonsgegevens (AP) voor AI in combinatie met persoonsgegevens, plus de Rijksinspectie Digitale Infrastructuur (RDI) voor andere AI-toepassingen. De AP heeft inmiddels een aparte AI-afdeling met handhavingscapaciteit. Boetes bij overtreding lopen op tot 35 miljoen euro of 7 procent wereldwijde jaaromzet voor verboden praktijken, 15 miljoen of 3 procent voor andere overtredingen, en 7,5 miljoen of 1 procent voor onjuiste informatie aan de toezichthouder.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">De vier risico-categorieen — waar valt uw AI in?</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Unacceptable risk (verboden, sinds 2 februari 2025):</strong> social scoring door overheden, real-time biometrische identificatie in publieke ruimtes (met uitzonderingen), emotie-herkenning op werkvloer of in onderwijs, manipulatieve AI gericht op kwetsbare groepen. Deze toepassingen zijn volledig verboden. Voor regulier MKB niet relevant — geen enkele klantgesprek-AI valt hieronder. Boete bij gebruik: tot 35 miljoen euro of 7 procent omzet.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">High risk (zware compliance, vanaf 2 augustus 2026):</strong> AI in werving en selectie van personeel, kredietbeoordeling, biometrische identificatie, scoring van examens, beslissingen over toegang tot essentiele diensten, kritieke infrastructuur, justitie en grenscontrole. High-risk vereist: risk-management systeem, data governance, technische documentatie, logging, transparantie, menselijke supervisie, accuracy-tests en conformity assessment. Voor MKB relevant alleen als u AI inzet voor solliciatie-screening of kredietbesluit — anders niet van toepassing.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Limited risk (transparantie-plicht, vanaf 2 februari 2025):</strong> AI-systemen die met mensen interageren (chatbots, voicebots, AI-receptionisten), AI die content genereert (deepfake-detectie, AI-generated tekst en beeld), emotie-herkenning, biometrische categorisatie. Verplichting: gebruiker informeren dat hij met AI praat of dat content AI-gegenereerd is. <strong>Marco AI receptionist en Emma WhatsApp bot vallen hieronder.</strong> Implementatie: 1 zin aan begin van elk gesprek of bericht.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Minimal risk (geen verplichtingen):</strong> AI in spam-filters, AI in games, AI-tools voor optimalisatie van interne processen zonder klant-impact, AI-spellingscheckers. Vrijwillige codes of conduct mogelijk maar geen wettelijke verplichtingen. De meeste AI in MKB-software valt hier — denk aan AI-features in Office 365, automatisch antwoord-suggesties in Outlook, AI-tagging in foto-software.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor het gemiddelde MKB-bedrijf geldt: 90 procent van de gebruikte AI valt in limited risk of minimal risk. Alleen wanneer u AI specifiek inzet voor sollicitanten-screening, kredietbeslissingen of medische triage komt high-risk in beeld — en zelfs dan zijn er vaak limited-risk-alternatieven.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Concrete voorbeelden — welke MKB-tool in welke categorie</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Marco AI receptionist (klantgesprek-AI):</strong> limited risk. Verplichting: opening-statement met AI-disclosure (u spreekt met de virtuele receptionist). Aanloop AI heeft dit standaard geconfigureerd. Geen conformity assessment nodig. Logging is standaard ingebouwd voor audit. AI-literacy training voor uw kantoor-medewerkers wel verplicht (1 uur e-learning).</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Emma AI WhatsApp bot:</strong> limited risk. Verplichting: bij eerste contact in conversatie melden dat het een AI-assistent is. Standaard configuratie: hallo, ik ben de digitale assistent van bedrijf, voor complexe vragen verbind ik u door met een collega. Verder geen extra verplichtingen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">AI-document automation (factuur OCR, contract-extractie):</strong> minimal risk. Geen verplichtingen onder AI Act. Wel relevant: AVG-vereisten blijven van toepassing voor persoonsgegevens in documenten. Aanloop AI's document-AI verwerkt op EU-servers en gebruikt geen klantdata voor training.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">AI in CRM (lead-scoring, next-best-action):</strong> meestal minimal risk, soms limited risk als de output direct aan de klant getoond wordt. Praktisch: documenteer in uw verwerkingsregister dat u AI-features in HubSpot of Pipedrive gebruikt en welke datatypes verwerkt worden.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">AI-sollicitatie-screening:</strong> high risk. Volledige compliance-stack vereist vanaf 2 augustus 2026: risk management, data governance, conformity assessment, monitoring, transparantie naar sollicitanten, en menselijke supervisie bij elke beslissing. Aanbeveling voor MKB: gebruik AI alleen ondersteunend (CV-samenvatting, eerste filtering) en houd alle beslissingen nadrukkelijk bij mens.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">AI in webshop (product-recommendations, personalisatie):</strong> minimal tot limited risk. Algemene recommendation-engines: minimal risk. Persoonsgebonden personalisatie: limited risk met transparantie-plicht. Praktisch: in privacy statement noemen dat u recommendation-AI gebruikt.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">8-stappen compliance-checklist voor MKB</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">(1) <strong class="text-navy">AI-inventarisatie:</strong> lijst alle AI-tools in uw organisatie. Niet alleen de obvious (Marco, Emma, ChatGPT-account), ook AI-features in bestaande software (Office Copilot, HubSpot AI, Salesforce Einstein, Outlook automatisch beantwoorden). Doorlooptijd: 1 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(2) <strong class="text-navy">Risico-classificatie:</strong> per tool de categorie bepalen aan de hand van de wet-checklist. De meeste klantgesprek-AI is limited risk; de meeste interne tools zijn minimal risk. Documenteer uw classificatie schriftelijk; dit is uw bewijs van due diligence. Doorlooptijd: 1 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(3) <strong class="text-navy">Transparantie-disclaimers:</strong> voor elke limited-risk AI een AI-disclosure inrichten. Bij voicebot: opening-statement. Bij chatbot: eerste-bericht-disclaimer. Bij AI-generated content op website: subtiele label. Aanloop AI heeft dit standaard geconfigureerd voor Marco en Emma. Doorlooptijd: 0,5 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(4) <strong class="text-navy">Logging en audit-trail:</strong> elke AI-interactie wordt gelogd met input, output, timestamp, escalatie, modelversie. Bewaartermijn minimaal 6 maanden, voor audit-doelen liefst 24 maanden. Aanloop AI's instances loggen automatisch in een gestructureerde database die op verzoek exporteerbaar is. Doorlooptijd: 0 (bestaande klanten), 1 dag (nieuwe).</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(5) <strong class="text-navy">Menselijke escalatie standaard:</strong> elke AI heeft een betekenisvolle menselijke escalatie-pad. Voor klantgesprek: bij sentiment-detectie, klacht-keywords, of expliciete vraag van gebruiker direct doorverbinden. Voor document-AI: bij confidence onder 80 procent naar mens. Voor sollicitatie-AI (high risk): elke beslissing menselijk geverifieerd. Doorlooptijd: 1 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(6) <strong class="text-navy">AI-literacy training:</strong> alle medewerkers die AI gebruiken krijgen een verplichte basistraining (1 tot 2 uur). Onderwerpen: hoe werkt AI op hoofdlijnen, wat zijn beperkingen (hallucinatie, bias), wanneer wel of niet vertrouwen, hoe rapporteer je een AI-fout. Aanloop AI levert een Nederlandstalige e-learning bij onboarding inclusief certificaat per medewerker. Doorlooptijd: 1 dag voor team van 10.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(7) <strong class="text-navy">Verwerkersovereenkomsten herzien:</strong> bestaande AVG-DPA aanvullen met AI-specifieke clausules: garantie op geen-modeltraining op klantdata, notification bij major modelupdates, recht op uitleg bij betekenisvolle AI-beslissingen, handelswijze bij modelfouten of bias-detectie. Aanloop AI levert standaard een AI Act-conforme DPA. Doorlooptijd: 1 tot 2 dagen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(8) <strong class="text-navy">Klantcommunicatie en privacy statement:</strong> uw privacy statement aanvullen met een AI-paragraaf (welke AI gebruikt u, voor welke doeleinden, welke garanties). Optioneel: een aparte AI-policy pagina (/ai-policy) met overzicht. Dit bouwt vertrouwen en is bewijs van proactieve compliance. Doorlooptijd: 0,5 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Totale doorlooptijd voor een gemiddeld MKB met 1 tot 5 AI-tools: 6 tot 8 werkdagen verspreid over 2 tot 4 weken. Voor Aanloop AI-klanten: stappen 3, 4, 5 en 7 zijn al ingericht — u hoeft alleen 1, 2, 6 en 8 zelf te doen (circa 3 dagen werk).</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Tijdlijn — welke deadlines moet u halen</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">2 februari 2025 (verstreken):</strong> verboden AI-praktijken zijn onmiddellijk verboden. AI-literacy training is verplicht voor alle medewerkers die AI gebruiken. Als u dit nog niet heeft geregeld, doe dit deze maand — handhaving begint actief in tweede helft 2025.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">2 augustus 2025 (verstreken):</strong> General Purpose AI Providers (OpenAI, Anthropic, Google, Mistral, Meta) hebben transparantie- en documentatie-verplichtingen. Praktisch impact voor MKB: u kunt op verzoek bij uw AI-leverancier vragen om een GPAI-compliance-statement. Aanloop AI gebruikt GPAIs via gecertificeerde providers en kan dit direct leveren.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">2 februari 2026 (toezichthouders operationeel):</strong> nationale toezichthouders moeten volledig operationeel zijn. In Nederland: Autoriteit Persoonsgegevens AI-afdeling plus RDI. Vanaf deze datum kunt u verwachten dat klachten en onderzoeken in behandeling worden genomen. Eerste boete-besluiten worden in 2026 verwacht — vooral bij verboden praktijken en grove transparantie-overtredingen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">2 augustus 2026:</strong> high-risk AI-systemen zijn volledig gereguleerd. Indien u high-risk AI gebruikt (sollicitatie-screening, kredietbeoordeling): conformity assessment moet zijn doorlopen, technische documentatie volledig, risk management systeem operationeel. Voor de meeste MKB niet relevant; check uw inventarisatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">2 augustus 2027 (volledige inwerking):</strong> alle bepalingen van de AI Act volledig van kracht, inclusief overgangsbepalingen voor reeds in gebruik zijnde high-risk AI. Vanaf nu kunt u boetes verwachten voor elk type overtreding, niet alleen voor verboden praktijken.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor de meeste MKB-bedrijven is de praktische deadline 2 februari 2026 — vanaf dan zijn toezichthouders actief en wordt handhaving zichtbaar. Tot die tijd loont elke maand voorbereiding; we adviseren om uiterlijk december 2025 de 8-stappen-checklist volledig afgerond te hebben.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Boetes en handhaving — wat staat er op het spel</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De AI Act kent drie niveaus van boetes, gebaseerd op de zwaarte van de overtreding. <strong class="text-navy">Categorie 1 (verboden praktijken):</strong> tot 35 miljoen euro of 7 procent van wereldwijde jaaromzet (welke hoger is). Voor een MKB met 1 miljoen euro omzet is dit theoretisch 70.000 euro, maar bij nationale CEOs van grote bedrijven kan dit oplopen tot honderden miljoenen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Categorie 2 (overtreding andere verplichtingen):</strong> tot 15 miljoen euro of 3 procent wereldwijde omzet. Dit is de meest waarschijnlijke categorie voor MKB-overtredingen — bijvoorbeeld geen transparantie-disclaimer, geen logging, of geen menselijke escalatie-pad. Voor kleine MKB realistisch: 25.000 tot 250.000 euro per overtreding.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Categorie 3 (onjuiste informatie aan toezichthouder):</strong> tot 7,5 miljoen euro of 1 procent omzet. Bij MKB realistisch: 5.000 tot 50.000 euro. Vermijdbaar door eerlijk en volledig te documenteren — onbedoelde fouten worden meestal niet beboet, opzettelijke misleiding wel.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">In de praktijk hanteert de AP voor AVG-overtredingen al een glijdende schaal waarbij MKB-bedrijven aanmerkelijk lagere boetes krijgen dan grote ondernemingen, en first-time offenders met goede compliance-intentie vaak een waarschuwing of voorschrift tot herstel krijgen voordat een boete volgt. We verwachten dezelfde aanpak voor AI Act-handhaving.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Naast directe boetes zijn er andere risicos: reputatieschade bij publicatie van een toezichthoudersbesluit, civiele aansprakelijkheid bij schade aan klant door AI-fout, contractuele consequenties (klanten kunnen ontbinden bij niet-compliance van uw AI), en verzekeringsdekking die kan vervallen bij niet-naleving van wettelijke vereisten.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Aanloop AIs compliance-status onder de AI Act</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI heeft sinds februari 2025 een end-to-end EU AI Act compliance-stack ingericht voor alle klantimplementaties. Marco AI receptionist en Emma WhatsApp bot vallen onder limited risk en hebben standaard transparantie-disclaimers, gestructureerde logging en menselijke escalatie-paden. AI-document automation valt onder minimal risk maar heeft wel logging voor audit-trail.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Onze GPAI-providers (Anthropic Claude, OpenAI GPT-4o) hebben hun GPAI-compliance-statements gepubliceerd en zijn EU AI Act-compliant per 2 augustus 2025. Aanloop AI kan deze statements doorleveren aan klanten op verzoek. Voor klantdata: gegarandeerd geen modeltraining (contractueel vastgelegd), EU-only verwerking (Frankfurt of Amsterdam), volledige data-export bij contract-einde.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">AI-literacy training: alle Aanloop-klanten krijgen bij onboarding een Nederlandstalige e-learning van 60 tot 90 minuten met certificaat per medewerker. Onderwerpen: werking en beperkingen van AI, herkennen van AI-fouten, escalatie-procedures, klant-communicatie over AI. Bij major modelupdates (bijv. GPT-5 release): refresh-training inbegrepen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Documentatie: elke klant ontvangt bij ondertekening een AI Act compliance-pakket met: risico-classificatie van de geleverde AI, technische beschrijving, logging-policy, escalatie-protocol, AI-disclosure templates, AI-paragraaf voor uw privacy statement, en GPAI-statements. Dit is uw bewijs van due diligence bij eventueel toezichthouder-onderzoek.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Onze high-risk service: voor klanten die AI willen inzetten in werving en selectie, kredietbeoordeling, of medische triage leveren we een aparte high-risk implementatie met conformity assessment, formele risk management, en uitgebreide documentatie. Doorlooptijd: 12 tot 16 weken, prijs op aanvraag. We raden de meeste MKB aan om deze processen voorlopig niet volledig te automatiseren.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Veelgemaakte fouten bij AI Act compliance</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 1: alleen de zichtbare AI inventariseren.</strong> Veel MKB-bedrijven kijken naar Marco of Emma maar vergeten de AI-features in Office 365, in Outlook, in HubSpot of in Salesforce. Deze tools hebben hun eigen compliance-stack, maar u bent als deployer verantwoordelijk om te weten welke AI u gebruikt.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 2: AI-literacy training overslaan.</strong> Dit lijkt een formele pro-forma, maar is sinds februari 2025 hard verplicht. Toezichthouder kan op elk moment vragen om een training-overzicht. Een 1-uurs e-learning met certificaten is gemakkelijk te leveren en vermijdt boetes.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 3: transparantie-disclaimer te subtiel.</strong> Wettelijke vereiste is duidelijke en herkenbare AI-disclosure. Een microscoop-letter onder een form, of powered by AI in een footer is onvoldoende. Beste practice: 1 zin in begroeting van AI-systeem.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 4: geen documentatie van AI-keuzes.</strong> Bij toezichthouder-onderzoek moet u kunnen aantonen dat u bewust hebt nagedacht over AI-impact. Een schriftelijke risico-classificatie en compliance-checklist is uw bewijs. Aanloop AI levert templates die u kunt invullen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 5: AI als black box behandelen.</strong> AI Act vereist dat u kunt uitleggen waarom AI een bepaalde uitkomst gaf, zeker bij betekenisvolle beslissingen. Werk alleen met AI-leveranciers die explainability bieden — dus niet met platforms waar u niet kunt zien welke kennisbank-bron werd gebruikt.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat te doen als u nog niet compliant bent</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Als u na het lezen van dit artikel constateert dat uw bedrijf nog gaten heeft, raak niet in paniek. De handhaving is in 2026 nog mild en first-time offenders krijgen meestal eerst een waarschuwing met termijn voor herstel voordat een boete volgt. Belangrijker dan paniek is een gestructureerde aanpak om binnen 4 tot 8 weken volledig compliant te worden.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Stap 1 (deze week): inventariseer alle AI-tools die u gebruikt en classificeer ze per risico-categorie. Documenteer dit schriftelijk in een eenvoudig spreadsheet. Stap 2 (volgende week): voor elke limited-risk AI een transparantie-disclaimer inrichten. Voor klantgesprek-AI van Aanloop AI: dit is al actief. Stap 3 (week 3): AI-literacy training voor alle medewerkers — kan een 1-uurs e-learning zijn met certificaat. Stap 4 (week 4 tot 6): privacy statement aanvullen, verwerkersovereenkomsten herzien, documentatie compleet maken.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor Aanloop AI-klanten is dit aanmerkelijk eenvoudiger: stappen 2 (transparantie), 4 (logging), 5 (escalatie) en 7 (DPA) zijn standaard ingericht. U hoeft alleen 1 (inventarisatie van AI buiten Aanloop), 3 (literacy training), 6 (training) en 8 (privacy statement) te regelen — circa 3 dagen werk. We helpen u op verzoek met een 1-uurs compliance-walkthrough waarin we uw situatie doornemen en concrete acties identificeren.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Plan een gratis 30-minuten compliance-scan via onze <a href="/gratis-ai-scan/" class="text-brand-indigo hover:underline">gratis AI-scan</a> of bel ons direct via <a href="tel:+31624741597" class="text-brand-indigo hover:underline">+31 6 247 415 97</a>. We bespreken uw AI-stack, identificeren de gaten en geven een concreet stappenplan — kosteloos, geen verplichtingen.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Ondersteunende dienst</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">EU AI Act check als onderdeel van uw AI-implementatie</h2>
+      <p class="text-slate-600 leading-relaxed">Bij elke nieuwe Marco of Emma implementatie van Aanloop AI is een EU AI Act compliance-check standaard inbegrepen. We classificeren uw AI, configureren transparantie-disclaimers, leveren AI-literacy training met certificaten, en bouwen logging plus escalatie-paden. Geen extra kosten — onderdeel van het Starter (197 euro per maand) of Growth (497 euro per maand) pakket.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Veelgestelde vragen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-8">FAQ EU AI Act</h2>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="group card cursor-pointer">
+            <summary class="flex items-start justify-between gap-4 list-none">
+              <h3 class="text-base font-semibold text-navy pr-4">{item.question}</h3>
+              <svg class="w-5 h-5 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight border-t border-slate-200">
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow mb-3">Verder lezen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy text-balance mb-6">Verder verdiepen.</h2>
+      <div class="flex flex-wrap gap-2">
+        <a href="/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI en AVG-compliance voor MKB →</a>
+        <a href="/avg-checklist-ai-mkb/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">25-punts AVG-checklist →</a>
+        <a href="/diensten/marco/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">Marco AI receptionist →</a>
+        <a href="/gratis-ai-scan/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">Gratis compliance-scan →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
