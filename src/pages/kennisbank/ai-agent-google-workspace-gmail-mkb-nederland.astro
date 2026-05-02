@@ -1,0 +1,220 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "AI agent voor Google Workspace en Gmail — gids voor MKB Nederland 2026",
+  "description": "Wat doet een AI agent in Google Workspace en Gmail concreet, hoe verhoudt Gemini for Workspace zich tot een custom AI agent op Apps Script of n8n, welke 6 use-cases leveren direct ROI, AVG en EU AI Act overwegingen, en hoe implementeert u dit in 10 werkdagen voor uw MKB.",
+  "author": {
+    "@type": "Person",
+    "name": "Daan Verhoeven",
+    "@id": "https://aanloopai.nl/team/daan-verhoeven/#person",
+    "url": "https://aanloopai.nl/team/daan-verhoeven/",
+    "sameAs": ["https://www.linkedin.com/company/aanloop-ai", "https://www.linkedin.com/in/daanverhoeven/"],
+    "jobTitle": "Oprichter & CEO Aanloop AI",
+    "worksFor": {
+      "@type": "Organization",
+      "@id": "https://aanloopai.nl/#organization",
+      "name": "Aanloop AI"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://aanloopai.nl/#organization",
+    "name": "Aanloop AI",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aanloopai.nl/logo-mark-light-1024.png"
+    }
+  },
+  "datePublished": "2026-05-02",
+  "dateModified": "2026-05-02",
+  "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-agent-google-workspace-gmail-mkb-nederland/",
+  "inLanguage": "nl-NL"
+};
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'AI agent in Google Workspace en Gmail implementeren voor MKB in 8 stappen',
+  description: 'Stappenplan om een AI agent op Google Workspace en Gmail in te richten voor email-triage, agenda-scheduling, Meet-notes en document-Q&A. Doorlooptijd circa 10 werkdagen voor een team van 5 tot 25 gebruikers.',
+  totalTime: 'P10D',
+  inLanguage: 'nl-NL',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Use-cases prioriteren', text: 'Selecteer 2 of 3 use-cases met hoogste ROI: typisch Gmail-triage, agenda-scheduling en Meet take-notes. Vermijd brede scope bij start. Per use-case: succescriterium (bijv. 50 procent minder tijd in inbox per dag, 80 procent Meet-notes auto-gegenereerd).' },
+    { '@type': 'HowToStep', position: 2, name: 'Plan- en architectuur-keuze maken', text: 'Beslis Google Workspace Business Standard met Gemini inbegrepen (circa 14 euro per gebruiker per maand) versus Business Plus met diepere Gemini-features (circa 22 euro per gebruiker per maand) versus custom Apps Script plus Vertex AI versus custom n8n plus Anthropic Claude EU. Voor 5 tot 25 gebruikers met standaard use-cases: Business Standard. Voor specifieke flows of full data-sovereignty: custom build via Aanloop AI.' },
+    { '@type': 'HowToStep', position: 3, name: 'Workspace Data Regions en data-residentie configureren', text: 'In Google Workspace admin console: schakel Data Regions in op EU-only (beschikbaar op Business Plus en Enterprise), bevestig dat Drive, Gmail en Vertex AI prompt-data binnen EU-regions blijven (europe-west1 Belgie, europe-west3 Frankfurt, europe-west4 Nederland), configureer Context-Aware Access en beperk welke OUs toegang krijgen tijdens pilot.' },
+    { '@type': 'HowToStep', position: 4, name: 'Pilot-team selecteren en trainen', text: 'Begin met 3 tot 5 power-users uit verschillende rollen (sales, ops, finance). Geef 1-uurs Nederlandstalige hands-on training: Help me write in Gmail, side-panel Gemini in Docs en Sheets, Take notes for me in Meet, prompt-patronen, hallucinatie-herkenning, escalatie-flow, AI-disclosure naar externe relaties. Geef pilot 2 weken.' },
+    { '@type': 'HowToStep', position: 5, name: 'Use-case 1 implementeren — Gmail-triage', text: 'Configureer Gmail Help me write plus custom Apps Script of n8n-flow die binnenkomende mails categoriseert (urgent, normaal, nieuwsbrief, intern) via Gmail labels, draft-replies maakt voor bekende vraagtypen, en uitzonderingen flagt voor menselijke review. Test 3 dagen, meet tijdwinst.' },
+    { '@type': 'HowToStep', position: 6, name: 'Use-case 2 en 3 toevoegen — Calendar en Meet-notes', text: 'Calendar: AI agent vindt vrij overlappend slot tussen meerdere Google Calendars via appointment scheduling, stelt voor en plant na bevestiging. Meet-notes: Meet meeting wordt getranscribeerd via Take notes for me, action-items en besluiten geextraheerd, samenvatting per email naar deelnemers. Beide use-cases activeren incrementeel.' },
+    { '@type': 'HowToStep', position: 7, name: 'AVG-disclaimers en logging inrichten', text: 'In Gmail-handtekening pilot-team: vermelding dat AI ondersteunt bij correspondentie (transparantie naar externe ontvangers, AI Act limited-risk plicht). Logging-laag: elke AI-actie gelogd via Workspace Audit Log of custom BigQuery-database voor audit. AI-literacy training voor alle pilot-deelnemers documenteren met certificaten.' },
+    { '@type': 'HowToStep', position: 8, name: 'Roll-out, meten en bijsturen', text: 'Na succesvolle pilot: roll-out in 2 golven (kantoorpersoneel eerst, externe-facing rollen tweede). Maandelijkse review: aantal AI-acties via Workspace Reports, tijdwinst per gebruiker, fout-frequentie, gebruikers-tevredenheid. Bijsturen op prompts, training en use-case-uitbreidingen.' },
+  ],
+};
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-agent-google-workspace-gmail-mkb-nederland/', inLanguage: 'nl-NL' };
+
+const faqItems = [
+  { question: 'Wat doet een AI agent in Google Workspace en Gmail concreet?', answer: 'Een AI agent automatiseert repetitieve taken in uw Workspace-omgeving: Gmail-triage met Help me write draft-replies, Calendar appointment scheduling tussen meerdere gebruikers, transcriptie en samenvatting van Meet-meetings via Take notes for me, document-Q&A op Drive via de Gemini side-panel in Docs, formules en data-analyse in Sheets via Help me organize, en draft-Slides op basis van een prompt. De gebruiker bevestigt of overrulet, AI bespaart tijd op de uitvoering.' },
+  { question: 'Wat is het verschil tussen Gemini for Google Workspace en een custom AI agent?', answer: 'Gemini is sinds januari 2025 ingebakken in Workspace Business Standard (circa 14 euro per gebruiker per maand) en Business Plus (circa 22 euro per gebruiker per maand) zonder aparte add-on, met goede UX in Gmail, Docs, Sheets, Slides en Meet maar beperkte aanpasbaarheid. Een custom AI agent op Apps Script plus Vertex AI of n8n plus Anthropic Claude EU is een eigen workflow die specifiek uw bedrijfsprocessen automatiseert (bijv. CRM-koppeling, branche-specifieke email-classificatie, custom rapportage), volledig op EU-data, met aanpasbare logging. Gemini is sneller live, custom is preciezer en goedkoper bij meer dan 25 gebruikers met specifieke use-cases.' },
+  { question: 'Blijft mijn data binnen de EU als ik Gemini voor Google Workspace gebruik?', answer: 'Met Workspace Business Plus of Enterprise kunt u Data Regions instellen op EU-only — covered data wordt at rest opgeslagen in EU-datacenters (Belgie europe-west1, Nederland europe-west4, Frankfurt europe-west3, Dublin europe-west1). Voor Vertex AI prompt-verwerking kiest u expliciet een EU-regio in de admin console. Gemini-prompts en outputs worden niet gebruikt voor model-training en zijn niet zichtbaar voor andere klanten. Voor Business Standard zonder Data Regions geldt globale data-flow met EU-as-primary, wat voor veel MKB voldoende is maar niet voor zorginstellingen of overheidsleveranciers. Alternatief: custom AI agent via Anthropic Claude EU of Vertex AI in europe-west4 met expliciete EU-only configuratie.' },
+  { question: 'Welke ROI levert een AI agent op in een MKB van 10 tot 25 gebruikers in Workspace?', answer: 'Conservatief: 30 tot 60 minuten per gebruiker per dag tijdwinst op Gmail-triage, Calendar en Meet-notes. Bij 20 gebruikers en uurtarief 65 euro: 13.000 tot 26.000 euro per maand winst. Workspace Business Standard met Gemini kost circa 14 euro per gebruiker per maand voor 20 gebruikers = 280 euro per maand, of Business Plus 22 euro = 440 euro per maand. Custom AI agent: 4.500 tot 12.000 euro implementatie + 297 tot 597 euro per maand. Terugverdientijd 1 tot 3 maanden bij gemiddelde adoptie.' },
+  { question: 'Hoe verhoudt een AI agent in Google Workspace zich tot de EU AI Act?', answer: 'Een Gemini- of custom AI agent in Workspace valt onder limited risk in de EU AI Act — gebruiker moet weten dat hij met AI werkt. Praktisch: vermelding in Gmail-handtekening of in interne tooling-overview. Geen high-risk plichten zoals conformity assessment, mits AI niet wordt gebruikt voor sollicitatie-screening, kredietbeoordeling of biometrische identificatie. Wel: AI-literacy training voor alle gebruikers verplicht sinds februari 2025, plus disclosure waar AI naar externe relaties communiceert.' },
+  { question: 'Kan ik een AI agent in Gmail combineren met mijn CRM zoals HubSpot of Pipedrive?', answer: 'Ja, via Apps Script, Workspace Marketplace add-ons of n8n-workflows. Concreet: AI agent leest binnenkomende email, herkent contact-naam, controleert HubSpot voor lead-status, en stelt context-aware draft-reply voor (bijv. inclusief deal-stage en laatste gespreksnotities). Aanloop AI bouwt deze integraties standaard op n8n self-hosted plus Workspace API plus Anthropic Claude EU, met EU-only data-flow. Implementatie typisch 5 tot 10 werkdagen na go-live van basis-AI-agent.' },
+  { question: 'Wat zijn de grootste fouten bij Gemini of Workspace AI-implementatie in MKB?', answer: 'Top 3 fouten: (1) te brede scope ineens uitrollen (start met 2 use-cases, niet 8), (2) geen training en geen prompt-handleiding voor team (gebruikers zien dan alleen de Help me write knop en gebruiken Gemini niet), (3) gebrek aan AI-disclosure naar externe relaties (kan AVG artikel 13 schenden bij geautomatiseerde correspondentie). Mitigatie: kleine pilot, 1-uurs training met cheatsheet, vermelding in Gmail-handtekening.' },
+  { question: 'Wanneer kies ik Gemini for Google Workspace versus een Aanloop AI custom agent?', answer: 'Kies Gemini bij: 5 tot 25 gebruikers, standaard use-cases (Gmail draft, Meet-notes, Docs/Sheets/Slides assistentie, Drive-Q&A), korte time-to-value (binnen 1 week live), geen specifieke compliance-eisen. Kies custom Aanloop AI bij: 25+ gebruikers, branche-specifieke automatisering (juridische klacht-routing, accountants-werkbladen, makelaardij-CRM-flow), strikte data-sovereignty (geen Google AI-services), of integratie met niet-Google systemen (Twinfield, AFAS, NMBRS, Exact). Hybride is ook mogelijk: Gemini voor basis plus custom voor 1 of 2 specifieke flows.' },
+];
+---
+
+<BaseLayout
+  title="AI agent voor Google Workspace en Gmail — gids MKB Nederland 2026 | Aanloop AI"
+  description="Wat doet een AI agent in Google Workspace en Gmail concreet, Gemini for Workspace vs custom agent, 6 use-cases met ROI, AVG en EU AI Act overwegingen, en 8-stappen implementatie in 10 werkdagen voor MKB."
+  schema={[articleSchema, howToSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · AI in Google Workspace + Gmail</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI agent voor Google Workspace en Gmail — gids voor MKB Nederland
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Google Workspace draait in een groot deel van het Nederlandse MKB als productiviteits-stack — en daarmee is het de natuurlijke plek om een AI agent neer te zetten die Gmail-triage, Calendar-scheduling, Meet-notes en Drive-Q&A automatiseert. In dit artikel: wat een AI agent in Workspace concreet doet, hoe Gemini for Google Workspace zich verhoudt tot een custom AI agent op Apps Script of n8n, 6 use-cases met directe ROI, AVG en EU AI Act overwegingen, en een 8-stappen implementatie in 10 werkdagen — inclusief tools, kosten en valkuilen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-2">Direct antwoord</p>
+        <p class="text-sm text-slate-700">Een AI agent in Google Workspace en Gmail automatiseert email-triage, agenda-scheduling, Meet-transcriptie en Drive-Q&A. Voor MKB met 5 tot 25 gebruikers en standaard use-cases is Workspace Business Standard met Gemini inbegrepen (circa 14 euro per gebruiker per maand) de snelste route, of Business Plus voor diepere features en EU Data Regions (circa 22 euro per gebruiker per maand). Voor branche-specifieke flows of strikte data-sovereignty: custom AI agent via Aanloop AI op Apps Script plus Vertex AI of n8n plus Anthropic Claude EU (4.500 tot 12.000 euro implementatie + 297 tot 597 euro per maand). Tijdwinst 30 tot 60 minuten per gebruiker per dag, terugverdientijd 1 tot 3 maanden.</p>
+      </div>
+
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat is een AI agent in Google Workspace en Gmail</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI agent in Google Workspace is een automatiserings-laag die op basis van uw Gmail-inbox, Calendar, Drive en Meet-data zelfstandig taken voorbereidt of uitvoert — met de gebruiker als laatste bevestiging. Verschil met een traditionele Gmail-filter of regel-gebaseerde Apps Script: de AI agent begrijpt natuurlijke taal, herkent context (wie schrijft, over welk project, met welke urgentie), en kan beslissingen nemen die met regels niet vooraf programmeerbaar zijn. Praktisch betekent dit dat een AI agent emails categoriseert, draft-replies opstelt, agenda-conflicten oplost, Meet-notes maakt, Drive-documenten samenvat en formules in Sheets uitlegt.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">In het Google-ecosysteem zijn er drie hoofdroutes om een AI agent neer te zetten: (1) Gemini for Google Workspace — sinds januari 2025 standaard inbegrepen in Business Standard (circa 14 euro per gebruiker per maand) en Business Plus (circa 22 euro per gebruiker per maand) met diepe integratie in Gmail, Docs, Sheets, Slides en Meet maar beperkte aanpasbaarheid; (2) Apps Script plus Vertex AI — Google's low-code platform plus de Vertex AI Generative API waarmee u eigen workflows bouwt die specifiek uw bedrijfsprocessen automatiseren, gehost op Google Cloud EU; (3) externe AI agent via n8n self-hosted plus Anthropic Claude EU of OpenAI EU, gekoppeld aan Workspace via Gmail- en Drive-API — maximale flexibiliteit, beste data-sovereignty, vergt iets meer engineering. Voor MKB tot circa 25 gebruikers met standaard use-cases is route 1 of 2 typisch het meest pragmatisch.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk verschil met chatbot of voicebot: een AI agent in Workspace werkt niet rechtstreeks met externe klanten, maar versterkt uw eigen team. De ROI komt uit tijdwinst op repetitieve administratieve taken (typisch 30 tot 60 minuten per gebruiker per dag) plus betere consistentie van uitgaande communicatie. Bij 20 gebruikers en een uurtarief van 65 euro bespaart u 13.000 tot 26.000 euro per maand op pure productiviteit — bij Business Standard-licentiekosten van 280 euro per maand voor 20 users is dat een 45x tot 90x return op de AI-laag.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Gemini for Workspace vs custom AI agent — wanneer welke keuze</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Gemini for Google Workspace (inbegrepen in Business Standard circa 14 euro per gebruiker per maand of Business Plus circa 22 euro per gebruiker per maand):</strong> kies dit bij 5 tot 25 gebruikers, standaard use-cases (Help me write in Gmail, Take notes for me in Meet, Help me organize in Sheets, draft-Slides, Docs-revisie), behoefte aan korte time-to-value (binnen 1 week live), en geen specifieke aanpassingen. Voordelen: native UX in Gmail en Docs, geen engineering-werk, automatische updates, EU Data Regions optioneel op Business Plus. Nadelen: weinig grip op exact gedrag, geen branche-specifieke knoppen, geen integratie met niet-Google-systemen, kosten lopen op bij groeiende gebruikersgroep.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Apps Script plus Vertex AI (vanaf circa 200 euro per maand prompt-kosten):</strong> kies dit bij specifieke workflows die niet in Gemini's UX passen, integratie met Drive-libraries op zware schaal, of wanneer u al een Google Cloud-project draait. Voordelen: gratis Apps Script-runtime, native in Google-stack, schaalbaar pricing-model met pay-per-token op Vertex AI, EU-region selecteerbaar (europe-west1 of europe-west4). Nadelen: design-time vergt JavaScript-kennis of consultancy, afhankelijk van Google Cloud-roadmap, beperkte logging-flexibiliteit zonder eigen BigQuery-laag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Custom n8n plus Anthropic Claude EU of Vertex AI (Aanloop AI build, 4.500 tot 12.000 euro implementatie + 297 tot 597 euro per maand):</strong> kies dit bij 25+ gebruikers met specifieke flows, integratie met niet-Google systemen (Twinfield, AFAS, NMBRS, Exact, eigen CRM), strikte data-sovereignty (geen Google AI-services), of behoefte aan custom logging-laag voor audit. Voordelen: volledige controle op model en data, geen vendor lock-in op AI-laag, lagere maandkosten bij grote gebruikersgroep, aangepaste logging conform AI Act. Nadelen: langere time-to-value (10 tot 20 werkdagen), engineering-investering, koppeling aan Workspace via Gmail- en Drive-API moet onderhouden worden bij Google-updates.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Hybride aanpak:</strong> Gemini for Workspace voor de basis-productiviteit-use-cases plus een custom AI agent voor 1 of 2 branche-specifieke workflows. Dit krijgt u snel time-to-value op de eenvoudige cases en daarna verfijning op de cases waar standaard tooling tekort schiet. In de praktijk is dit voor middelgrote MKB (15 tot 50 gebruikers) vaak de beste verhouding kosten en functionaliteit.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">6 use-cases voor MKB met directe ROI</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Use-case 1: Gmail-triage.</strong> AI agent leest binnenkomende mails, categoriseert via Gmail labels (urgent, normaal, nieuwsbrief, intern, spam-grijs), maakt draft-replies via Help me write voor bekende vraagtypen, en flagt uitzonderingen voor menselijke review. Tijdwinst: 25 tot 40 procent minder tijd in inbox per dag (gemiddeld 30 minuten op een 90-minuten-inbox-dag). Geschikt voor: alle kantoorpersoneel met meer dan 30 emails per dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Use-case 2: Calendar appointment scheduling.</strong> AI agent vindt vrije slots tussen 2 of meer Google Calendars (intern of via een appointment scheduling-link extern), stelt 3 opties voor en plant na bevestiging. Houdt rekening met tijdzones, voorkeuren (geen meetings na 16 uur op vrijdag bijv.) en travel-time tussen kantoor en thuis. Tijdwinst: 5 tot 15 minuten per geplande meeting (en je vermijdt het email-getetter heen en weer). Geschikt voor: sales, key-account-managers, team-leads.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Use-case 3: Meet-transcriptie en take-notes.</strong> AI agent transcribeert Meet-meetings (NL of EN) via Take notes for me, extraheert action-items en besluiten, en stuurt samenvatting per email naar deelnemers binnen 5 minuten na meeting-einde. Tijdwinst: 10 tot 30 minuten per meeting (besluit niet meer kwijt, action-items getraceerd, geen hand-notitie nodig). Geschikt voor: project-meetings, sales-calls, klantgesprekken (mits AI-disclosure).</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Use-case 4: Drive-Q&A op Docs en gedeelde drives.</strong> Stel een vraag in natuurlijke taal (bijv. wat staat er in onze leveringsvoorwaarden over force majeure), Gemini-side-panel of custom AI agent doorzoekt relevante documenten en geeft antwoord met bronvermelding. Voorkomt minutenlange handmatige zoektochten. Tijdwinst: 5 tot 20 minuten per document-zoekopdracht. Geschikt voor: legal, HR, finance, ops — overal waar veel beleidsdocumenten zijn.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Use-case 5: Sheets-analyse via Help me organize en formule-uitleg.</strong> AI agent stelt formules voor op basis van een natuurlijke vraag (bijv. bereken omzet per regio per kwartaal en markeer regios met meer dan 15 procent groei), legt complexe formules uit, bouwt draft-pivot-tables en genereert charts. Tijdwinst: 15 tot 60 minuten per analyse-vraag. Geschikt voor: finance, controllers, ops, marketing-analisten.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Use-case 6: draft-Slides en Docs uit prompt.</strong> AI agent maakt draft-Slides op basis van een prompt plus referentie-bestanden (bijv. maak een 8-slide klantpresentatie op basis van dit aanbod en deze case-study), of draft-contracten en offertes uit een Docs-template plus klantnaam plus deal-context. Tijdwinst: 60 tot 180 minuten per document. Geschikt voor: sales, marketing, consultants.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">AVG en EU AI Act — wat moet u regelen</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Data-residentie:</strong> Google Workspace biedt sinds Business Plus de Data Regions-functie waarmee u covered data at rest in EU-only kunt vasthouden (datacenters Belgie europe-west1, Nederland europe-west4, Frankfurt europe-west3, Dublin europe-west1). Voor Vertex AI prompt-verwerking kiest u expliciet de EU-region in de admin console of het Google Cloud-project. Gemini-prompts en outputs worden niet gebruikt voor model-training en zijn niet zichtbaar voor andere klanten — Google bevestigt dit contractueel in de Workspace Customer Agreement. Voor Business Standard zonder Data Regions geldt globale data-flow met EU-as-primary, wat voor veel MKB voldoende is maar niet voor zorginstellingen of overheidsleveranciers. Documenteer uw keuze in uw verwerkingsregister.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">EU AI Act classificatie:</strong> een AI agent in Google Workspace en Gmail valt onder limited risk in de EU AI Act — gebruikers en betrokkenen moeten weten dat AI ondersteunt. Praktisch: vermelding in Gmail-handtekening (bijv. delen van deze correspondentie kunnen door AI worden ondersteund), interne tooling-overview met AI-disclosure, AI-literacy training voor alle gebruikers (verplicht sinds februari 2025). Geen high-risk plichten zoals conformity assessment, mits AI niet wordt ingezet voor sollicitatie-screening, kredietbeoordeling, biometrische identificatie of medische beslissingen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">AVG verplichtingen:</strong> bij geautomatiseerde correspondentie met externe relaties geldt AVG artikel 13 — transparantie over AI-gebruik en AI-disclosure. Bij gebruik van persoonsgegevens van klanten in AI-prompts (bijv. samenvatting van klantgesprekken in Meet): documenteer in uw verwerkingsregister. AI-output mag geen rechtelijke besluiten nemen zonder menselijke tussenkomst (artikel 22). Verwerkersovereenkomst met Google of uw AI-leverancier: standaard ingeregeld bij Workspace Customer Agreement met EU Standard Contractual Clauses, voor custom builds aanvullen met AI-clausules.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Praktische compliance-checklist Workspace AI:</strong> (1) bevestig of Data Regions is ingeschakeld op EU-only (Business Plus en hoger), (2) documenteer welke AI-tools u gebruikt in uw verwerkingsregister, (3) stel een AI-disclaimer in Gmail-handtekening pilot-team in, (4) lever 1-uurs AI-literacy training met certificaten aan alle gebruikers, (5) configureer logging via Workspace Audit Log of custom BigQuery-database, (6) verwerkersovereenkomst aanvullen waar nodig. Aanloop AI levert een NL-talige template-pakket voor punten 2 tot en met 6.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">8-stappen implementatie voor MKB</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">(1) <strong class="text-navy">Use-cases prioriteren:</strong> selecteer 2 of 3 use-cases met hoogste ROI — typisch Gmail-triage, Calendar-scheduling en Meet take-notes voor de eerste fase. Vermijd ineens 8 use-cases tegelijk uitrollen. Per use-case: bepaal succescriterium (bijv. 50 procent minder inbox-tijd, 80 procent Meet-notes auto-gegenereerd). Doorlooptijd: 0,5 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(2) <strong class="text-navy">Plan- en architectuur-keuze:</strong> Workspace Business Standard (Gemini inbegrepen) voor 5 tot 25 gebruikers met standaard use-cases. Business Plus voor diepere Gemini-features en EU Data Regions. Apps Script plus Vertex AI bij specifieke workflows binnen Google-stack. Custom n8n plus Anthropic Claude EU bij 25+ gebruikers, branche-specifieke flows of strikte data-sovereignty. Hybride is gebruikelijk. Doorlooptijd: 0,5 dag voor beslissing, 1 dag voor licentie-procurement of upgrade.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(3) <strong class="text-navy">Workspace-instellingen configureren:</strong> Data Regions op EU-only zetten waar beschikbaar, Gemini in Workspace activeren voor pilot-OU, Vertex AI EU-regio selecteren bij custom build, Context-Aware Access aanscherpen, pilot-team isoleren in eigen OU. Documenteer instellingen voor audit. Doorlooptijd: 0,5 dag (mits IT-admin beschikbaar).</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(4) <strong class="text-navy">Pilot-team selecteren en trainen:</strong> 3 tot 5 power-users uit verschillende rollen (sales, ops, finance), 1-uurs Nederlandstalige hands-on training met cheatsheet. Behandel: Help me write in Gmail, Take notes for me in Meet, side-panel Gemini in Docs/Sheets, prompt-patronen, hallucinatie-herkenning (AI verzint feiten — altijd verifieren), escalatie-flow bij twijfel, AI-disclosure naar externe relaties. Doorlooptijd: 1 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(5) <strong class="text-navy">Use-case 1 implementeren — Gmail-triage:</strong> configureer Help me write plus custom Apps Script of n8n-flow voor email-categorisatie via Gmail labels, draft-replies en uitzonderings-flagging. Test 3 dagen met pilot-team, meet tijdwinst en accuracy. Doorlooptijd: 1 dag (Gemini standaard) of 3 tot 5 dagen (custom).</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(6) <strong class="text-navy">Use-case 2 en 3 toevoegen — Calendar en Meet-notes:</strong> Calendar appointment scheduling activeren (vrije-slots-vinder met booking-link), Meet Take notes for me inschakelen voor pilot-OU, samenvatting-template configureren. Train pilot-team op nieuwe flows in 30 minuten. Doorlooptijd: 1 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(7) <strong class="text-navy">Compliance-stack inrichten:</strong> AI-disclaimer in Gmail-handtekening, logging in Workspace Audit Log of custom BigQuery-database, AI-literacy training (1-uurs e-learning) voor alle pilot-deelnemers met certificaat, verwerkingsregister bijwerken. Aanloop AI levert NL-talige templates voor handtekening, training en register. Doorlooptijd: 1 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(8) <strong class="text-navy">Roll-out, meten en bijsturen:</strong> na 2 weken succesvolle pilot: roll-out in 2 golven (kantoor eerst, externe-facing rollen tweede). Maandelijkse review-meeting via Workspace Reports: aantal AI-acties, tijdwinst per gebruiker, fout-frequentie, gebruikers-tevredenheid (NPS-vraag). Bijsturen op prompts, training en use-case-uitbreidingen. Doorlooptijd: continu, eerste meet-rapport na 4 weken.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Totale doorlooptijd voor 5 tot 25 gebruikers met Gemini for Workspace: 7 tot 10 werkdagen tot pilot-go-live, plus 4 weken voor full roll-out. Voor custom Aanloop AI build: 14 tot 21 werkdagen tot pilot-go-live, 6 tot 8 weken voor full roll-out met integraties.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">ROI — kosten, tijdwinst en terugverdientijd</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Tijdwinst per gebruiker per dag:</strong> 30 tot 60 minuten op een gemiddeld kantoor-profiel met 30+ emails, 4+ meetings per week en 2+ documenten per dag. Gmail-triage levert circa 30 procent tijdwinst (gemiddeld 30 min op een 90-min-inbox-dag), Meet take-notes bespaart 10 tot 30 min per meeting, Drive-Q&A en Sheets-assist 15 tot 60 min per ad-hoc taak.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Conservatieve berekening voor MKB van 20 gebruikers:</strong> 45 minuten per gebruiker per dag tijdwinst maal 20 gebruikers maal 22 werkdagen per maand = 330 uur per maand bespaard. Bij intern uurtarief 65 euro: 21.450 euro per maand.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Kosten Workspace Business Standard met Gemini voor 20 gebruikers:</strong> circa 14 euro per gebruiker per maand maal 20 = 280 euro per maand. Eenmalige onboarding en training: 4.000 tot 8.000 euro afhankelijk van diepte. Maandnetto-baat: 21.450 euro min 280 = 21.170 euro winst per maand. Terugverdientijd op onboarding: 1 maand. ROI op licentie: 75x. Business Plus (22 euro per gebruiker = 440 euro per maand) maakt de ROI 48x — nog steeds een dramatische verhouding.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Kosten Aanloop AI custom build voor 20 gebruikers:</strong> eenmalig 8.000 tot 15.000 euro implementatie (afhankelijk van use-cases en integraties), maandelijks 497 tot 997 euro beheer. Maandnetto-baat: 21.450 min 597 = 20.853 euro per maand winst. Terugverdientijd: 1 tot 2 maanden. Voordeel boven Gemini: vaste maandkosten ongeacht aantal gebruikers (schaalt beter naar 50+ users), branche-specifieke flows mogelijk, full data-sovereignty op n8n self-hosted.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Indirecte ROI:</strong> consistentere uitgaande communicatie (minder typo's en betere toon), kortere lead-time op klantverzoeken (snellere reacties verhoogt conversie), betere meeting-discipline (action-items getraceerd), minder context-switching (gebruikers minder uitgeput aan einde dag). Lastiger te kwantificeren, maar in NPS-onderzoeken na 6 maanden adoptie typisch +10 tot +20 punten gebruikers-tevredenheid.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Veelgemaakte fouten en hoe ze te vermijden</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 1: te brede scope ineens uitrollen.</strong> 8 use-cases tegelijk activeren in 100 user-tenant leidt tot adoptie-paralysis en frustratie. Mitigatie: 2 use-cases in pilot van 5 gebruikers, na 2 weken evaluatie en uitbreiding.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 2: geen training en geen prompt-cheatsheet.</strong> Gebruikers zien Help me write maar gebruiken het niet omdat ze niet weten hoe ze er goed mee praten. Mitigatie: 1-uurs hands-on training met een 1-pagina cheatsheet ("zo schrijf je een goede prompt voor Gmail en Docs").</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 3: gebrek aan AI-disclosure naar externe relaties.</strong> Geautomatiseerde correspondentie zonder vermelding kan AVG artikel 13 schenden bij klacht. Mitigatie: korte vermelding in Gmail-handtekening van pilot-team plus standaard interne policy.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 4: hallucinatie blind vertrouwen.</strong> Gemini en andere LLMs verzinnen feiten en cijfers — vooral bij Drive-Q&A en Sheets-formules. Mitigatie: gebruikers leren om elke harde cijfer of feit te verifieren tegen bron, vooral bij externe correspondentie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 5: pilot-fase overslaan en direct full roll-out.</strong> Bij 50 of 100 gebruikers tegelijk activeren zonder pilot-data: te grote risk op adoptie-faal of compliance-issue. Mitigatie: minimaal 2 weken pilot met 3 tot 5 power-users, dan stapsgewijs uitrollen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 6: geen meting van ROI.</strong> Zonder data over tijdwinst en gebruik kunt u Gemini- of custom AI-investering niet rechtvaardigen bij CFO-vraag. Mitigatie: maandelijks 15-min-review met 3 metrics uit Workspace Reports (aantal AI-acties, tijdwinst per user, NPS).</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Hoe Aanloop AI het invult voor MKB-klanten</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI begeleidt Nederlandse MKB-bedrijven van 5 tot 100 gebruikers in Google Workspace AI-agent implementatie. Voor klanten met standaard use-cases en 5 tot 25 gebruikers: Gemini for Workspace setup met 1-uurs training, AI-disclaimer-templates, AVG-checklist en 4 weken adoptie-coaching. Eenmalig 4.000 tot 8.000 euro afhankelijk van organisatie-grootte. Workspace Business Standard- of Business Plus-licentie loopt direct via uw bestaande Workspace-account.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor klanten met 25+ gebruikers, branche-specifieke flows of strikte data-sovereignty: custom AI agent op n8n self-hosted plus Anthropic Claude EU of Vertex AI in europe-west4. Eenmalig 8.000 tot 15.000 euro implementatie inclusief Gmail- en Drive-API-koppeling, AVG-conforme logging, NL-talige rapportage en 8 weken adoptie-coaching. Maandelijks 497 tot 997 euro beheer (logging, monitoring, modelupdates, kleine aanpassingen). Branches met sterke fit: accountantskantoren, advocatenkantoren, makelaardij, marketing-bureaus, consultancy.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Compliance-stack standaard inbegrepen bij beide routes: AI-disclaimer in Gmail-handtekening, AVG-verwerkingsregister-aanvulling, AI-literacy training met certificaten voor alle gebruikers (NL-talig, 1 uur), logging-laag voor audit. Bij modelupdates (bijv. Gemini 3 release of Claude 5): refresh-training en bias-check inbegrepen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Plan een 30-minuten gesprek via onze <a href="/gratis-ai-scan/" class="text-brand-indigo hover:underline">gratis AI-scan</a> om uw Workspace-tenant, gebruikers-aantal en use-case-prioriteiten door te nemen. Of bel direct met <a href="tel:+31624741597" class="text-brand-indigo hover:underline">+31 6 247 415 97</a> voor een snelle check of Gemini for Workspace of een custom AI agent voor uw MKB economisch zinvol is.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Veelgestelde vragen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-8">FAQ AI agent voor Google Workspace en Gmail</h2>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="group card cursor-pointer">
+            <summary class="flex items-start justify-between gap-4 list-none">
+              <h3 class="text-base font-semibold text-navy pr-4">{item.question}</h3>
+              <svg class="w-5 h-5 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight border-t border-slate-200">
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow mb-3">Verder lezen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy text-balance mb-6">Verder verdiepen.</h2>
+      <div class="flex flex-wrap gap-2">
+        <a href="/kennisbank/ai-agent-microsoft-365-outlook-mkb-nederland/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI agent voor M365 + Outlook →</a>
+        <a href="/diensten/ai-email-assistent/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI email-assistent dienst →</a>
+        <a href="/kennisbank/eu-ai-act-mkb-nederland-2026/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">EU AI Act voor MKB →</a>
+        <a href="/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI en AVG-compliance →</a>
+        <a href="/kennisbank/ai-automatisering-mkb/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI-automatisering MKB →</a>
+        <a href="/kennisbank/ai-roi-berekenen-mkb-nederland-2026/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI ROI berekenen →</a>
+        <a href="/gratis-ai-scan/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">Gratis AI-scan →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
