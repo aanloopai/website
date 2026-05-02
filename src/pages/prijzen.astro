@@ -1,12 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
+// Pakketprijzen sync met canonieke bron /tarieven (Starter €597, Groei €1.197, Partner op maat).
+// /prijzen heeft canonicalOverride naar /tarieven — content moet daarmee overeenkomen.
 const faqItems = [
-  { question: 'Hoeveel kost een AI agent bij Aanloop AI?', answer: 'Onze AI agent oplossingen starten vanaf €997 per maand voor het Starter pakket (tot 200 gesprekken). Het Growth pakket kost €2.500 per maand en biedt onbeperkte gesprekken en CRM-integratie. Enterprise wordt op maat geprijsd. Alle prijzen zijn exclusief 21% btw.' },
-  { question: 'Zijn er verborgen kosten?', answer: 'Nee. Hosting, onderhoud, updates, monitoring en support zijn allemaal inbegrepen in het maandelijkse abonnement. U betaalt nooit extra per gesprek of bericht. Eenmalige setup-kosten worden transparant vermeld in de offerte.' },
-  { question: 'Kan ik maandelijks opzeggen?', answer: 'Ja. Alle abonnementen zijn maandelijks opzegbaar met één maand opzegtermijn. Bij jaarlijkse betaling ontvangt u circa 16% korting.' },
-  { question: 'Wat is het verschil tussen Starter en Growth?', answer: 'Starter is ideaal voor kleine bedrijven die willen beginnen met AI: tot 200 gesprekken per maand, 1 callscript, en e-mail routering. Growth biedt onbeperkte gesprekken, tot 5 callscripts, CRM-integratie (HubSpot/Pipedrive) en prioriteit support met reactietijd < 4 uur.' },
-  { question: 'Hoe snel ben ik live?', answer: 'Gemiddeld binnen 7 werkdagen voor Starter en Growth. Enterprise-trajecten afhankelijk van de scope. Na ondertekening ontvangt u een onboarding-plan met exacte datum.' },
+  { question: 'Hoeveel kost een AI agent bij Aanloop AI?', answer: 'Onze pakketten starten vanaf €597 per maand voor Starter (Marco AI-telefoniste, tot 150 gesprekken). Het Groei pakket (€1.197/maand) bevat Marco + Emma WhatsApp en onbeperkte gesprekken. Partner is op maat geprijsd. Alle prijzen exclusief 21% btw.' },
+  { question: 'Zijn er verborgen kosten?', answer: 'Nee. Hosting, onderhoud, updates, monitoring en support zijn allemaal inbegrepen in het maandelijkse abonnement. U betaalt nooit extra per gesprek of bericht. Eenmalige setup-kosten staan transparant vermeld: Starter €495, Groei €795, Partner op offerte.' },
+  { question: 'Kan ik maandelijks opzeggen?', answer: 'Ja. Alle abonnementen zijn maandelijks opzegbaar met één maand opzegtermijn. Bij jaarlijkse betaling ontvangt u circa 16% korting (Starter €497/mnd, Groei €997/mnd jaarlijks).' },
+  { question: 'Wat is het verschil tussen Starter en Groei?', answer: 'Starter (€597/maand) is voor bedrijven die alleen Marco AI-telefoniste willen: tot 150 gesprekken per maand, 1 callscript, agenda-integratie en e-mail leadnotificatie. Groei (€1.197/maand) voegt Emma WhatsApp toe, onbeperkte gesprekken, tot 3 callscripts, CRM-integratie en prioriteit support met reactietijd < 4 uur.' },
+  { question: 'Hoe snel ben ik live?', answer: 'Starter: gemiddeld 10 werkdagen. Groei: 7 werkdagen. Partner: 14 werkdagen afhankelijk van de scope. Na ondertekening ontvangt u direct een onboarding-plan met exacte datum.' },
 ];
 
 const serviceSchema = {
@@ -19,8 +21,8 @@ const serviceSchema = {
     '@type': 'OfferCatalog',
     name: 'AI Diensten Aanloop AI',
     itemListElement: [
-      { '@type': 'Offer', name: 'Starter AI Agent', price: '997.00', priceCurrency: 'EUR', priceValidUntil: '2026-12-31', availability: 'https://schema.org/InStock' },
-      { '@type': 'Offer', name: 'Growth AI Agent', price: '2500.00', priceCurrency: 'EUR', priceValidUntil: '2026-12-31', availability: 'https://schema.org/InStock' },
+      { '@type': 'Offer', name: 'Starter — Marco AI Telefoniste', price: '597.00', priceCurrency: 'EUR', priceValidUntil: '2026-12-31', availability: 'https://schema.org/InStock' },
+      { '@type': 'Offer', name: 'Groei — Marco + Emma', price: '1197.00', priceCurrency: 'EUR', priceValidUntil: '2026-12-31', availability: 'https://schema.org/InStock' },
     ],
   },
   termsOfService: 'https://aanloopai.nl/voorwaarden/',
@@ -28,53 +30,59 @@ const serviceSchema = {
 
 const plans = [
   {
-    id: 'starter', name: 'Starter', tagline: 'Voor kleine teams die willen starten met AI',
-    price: 997, badge: null,
+    id: 'starter', name: 'Starter', tagline: 'Marco AI-telefoniste — eerste stap naar AI',
+    price: 597, badge: null,
     features: [
-      { text: 'Tot 200 gesprekken/maand', ok: true },
+      { text: 'Marco — AI telefoniste (24/7)', ok: true },
+      { text: 'Tot 150 gesprekken/maand', ok: true },
       { text: '1 callscript op maat', ok: true },
-      { text: 'E-mail lead-routering', ok: true },
-      { text: 'Dashboard + transcripts', ok: true },
-      { text: 'Setup binnen 7 werkdagen', ok: true },
+      { text: 'Lead-melding via e-mail', ok: true },
+      { text: 'Agenda-integratie (Google / Outlook)', ok: true },
+      { text: 'Dashboard + gespreks­transcripts', ok: true },
+      { text: 'Live binnen 10 werkdagen', ok: true },
+      { text: 'WhatsApp AI (Emma)', ok: false },
       { text: 'CRM-integratie', ok: false },
-      { text: 'Meerdere callscripts', ok: false },
       { text: 'Prioriteit support', ok: false },
     ],
   },
   {
-    id: 'growth', name: 'Growth', tagline: 'Voor groeiende bedrijven met meer volume',
-    price: 2500, badge: 'Meest gekozen',
+    id: 'groei', name: 'Groei', tagline: 'Marco + Emma — telefoon en WhatsApp volledig geautomatiseerd',
+    price: 1197, badge: 'Meest gekozen',
     features: [
+      { text: 'Marco — AI telefoniste (24/7)', ok: true },
       { text: 'Onbeperkte gesprekken', ok: true },
-      { text: 'Tot 5 callscripts op maat', ok: true },
-      { text: 'Lead-routering via e-mail + Telegram', ok: true },
+      { text: 'Tot 3 callscripts op maat', ok: true },
+      { text: 'Emma — WhatsApp AI agent', ok: true },
+      { text: 'Lead-melding via e-mail + Telegram', ok: true },
+      { text: 'Agenda-integratie + CRM (HubSpot / Pipedrive)', ok: true },
       { text: 'Dashboard + transcripts + opnames', ok: true },
-      { text: 'Setup binnen 7 werkdagen', ok: true },
-      { text: 'CRM-integratie (HubSpot / Pipedrive)', ok: true },
-      { text: 'Meerdere callscripts', ok: true },
+      { text: 'Live binnen 7 werkdagen', ok: true },
       { text: 'Prioriteit support (reactie < 4 uur)', ok: true },
+      { text: 'Workflow automation (basis)', ok: false },
     ],
   },
   {
-    id: 'enterprise', name: 'Enterprise', tagline: 'Voor organisaties met hoge eisen',
+    id: 'partner', name: 'Partner', tagline: 'Marco + Emma + Custom Workflows op maat',
     price: null, badge: null,
     features: [
-      { text: 'Onbeperkte gesprekken', ok: true },
+      { text: 'Marco + Emma (onbeperkt)', ok: true },
       { text: 'Onbeperkte callscripts', ok: true },
+      { text: 'Custom n8n workflow automation', ok: true },
       { text: 'Multi-team routing & escalatie', ok: true },
       { text: 'Dedicated account manager', ok: true },
-      { text: 'SLA met 99.9% uptime garantie', ok: true },
+      { text: 'SLA 99.9% uptime garantie', ok: true },
+      { text: 'Maatwerk CRM/ERP integraties', ok: true },
+      { text: 'Live binnen 14 werkdagen', ok: true },
+      { text: 'Maandelijks optimalisatie-overleg', ok: true },
       { text: 'On-premise of private cloud optie', ok: true },
-      { text: 'SSO / SAML authenticatie', ok: true },
-      { text: 'Custom contracten & verwerking', ok: true },
     ],
   },
 ];
 ---
 
 <BaseLayout
-  title="AI Agent Prijzen Nederland | Starter €997/maand | Aanloop AI"
-  description="Transparante AI agent prijzen voor het Nederlandse MKB. Starter vanaf €997/maand, Growth €2.500/maand, Enterprise op maat. Geen verborgen kosten. KVK: 88606902."
+  title="AI Agent Prijzen Nederland | Starter €597/maand | Aanloop AI"
+  description="Transparante AI agent prijzen voor het Nederlandse MKB. Starter (Marco) vanaf €597/maand, Groei (Marco + Emma) €1.197/maand, Partner op maat. Geen verborgen kosten. KVK: 88606902."
   schema={serviceSchema}
   faqSchema={faqItems}
   canonicalOverride="https://aanloopai.nl/tarieven/"
@@ -94,7 +102,7 @@ const plans = [
           Vaste maandprijzen. Geen kosten per gesprek. Geen ingewikkelde contracten. Maandelijks opzegbaar.
         </p>
         <div class="mt-8 flex flex-wrap gap-6 text-sm text-slate-600 reveal reveal-delay-3">
-          <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Starter vanaf €997/maand</div>
+          <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Starter vanaf €597/maand</div>
           <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Live in 7 werkdagen</div>
           <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Maandelijks opzegbaar</div>
           <div class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>AVG-compliant</div>
@@ -137,8 +145,8 @@ const plans = [
                 </li>
               ))}
             </ul>
-            {plan.id === 'enterprise' ? (
-              <a href="/contact/?type=contact&plan=enterprise" class="btn-outline text-sm w-full justify-center">Neem contact op</a>
+            {plan.id === 'partner' ? (
+              <a href="/contact/?type=offerte&plan=partner" class="btn-outline text-sm w-full justify-center">Offerte aanvragen</a>
             ) : (
               <a href={`/aanvragen/?plan=${plan.id}`} class:list={['text-sm w-full justify-center', plan.badge ? 'btn-primary' : 'btn-outline']}>
                 Start met {plan.name}
@@ -164,31 +172,35 @@ const plans = [
           <thead>
             <tr class="border-b border-slate-200">
               <th class="text-left py-4 pr-6 text-slate-500 font-medium w-1/2">Functie</th>
-              <th class="text-center py-4 px-4 font-bold text-navy">Starter</th>
-              <th class="text-center py-4 px-4 font-bold text-navy bg-navy/5 rounded-t-xl">Growth</th>
-              <th class="text-center py-4 px-4 font-bold text-navy">Enterprise</th>
+              <th class="text-center py-4 px-4 font-bold text-navy">Starter<br/><span class="text-xs font-normal text-slate-400">€597/mnd</span></th>
+              <th class="text-center py-4 px-4 font-bold text-navy bg-navy/5 rounded-t-xl">Groei<br/><span class="text-xs font-normal text-slate-400">€1.197/mnd</span></th>
+              <th class="text-center py-4 px-4 font-bold text-navy">Partner<br/><span class="text-xs font-normal text-slate-400">Op maat</span></th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
             {[
-              ['Gesprekken per maand', '200', 'Onbeperkt', 'Onbeperkt'],
-              ['Callscripts', '1', '5', 'Onbeperkt'],
+              ['Gesprekken per maand', '150', 'Onbeperkt', 'Onbeperkt'],
+              ['Marco — AI Telefoniste', '✓', '✓', '✓'],
+              ['Emma — WhatsApp AI', '—', '✓', '✓'],
+              ['Callscripts', '1', '3', 'Onbeperkt'],
               ['Lead-routering (e-mail)', '✓', '✓', '✓'],
               ['Dashboard + transcripts', '✓', '✓', '✓'],
               ['Gespreksopnames', '—', '✓', '✓'],
               ['CRM-integratie', '—', '✓', '✓'],
               ['Telegram-routering', '—', '✓', '✓'],
+              ['Workflow automation', '—', 'Basis', 'Custom'],
               ['Multi-team routing', '—', '—', '✓'],
               ['SLA 99.9% uptime', '—', '—', '✓'],
               ['Dedicated account manager', '—', '—', '✓'],
               ['On-premise optie', '—', '—', '✓'],
               ['Support reactietijd', '< 24 uur', '< 4 uur', '< 1 uur'],
-            ].map(([feature, starter, growth, enterprise]) => (
+              ['Live binnen', '10 dgn', '7 dgn', '14 dgn'],
+            ].map(([feature, starter, groei, partner]) => (
               <tr>
                 <td class="py-3 pr-6 text-slate-700">{feature}</td>
                 <td class="py-3 px-4 text-center text-slate-500">{starter}</td>
-                <td class="py-3 px-4 text-center text-navy font-medium bg-navy/5">{growth}</td>
-                <td class="py-3 px-4 text-center text-slate-500">{enterprise}</td>
+                <td class="py-3 px-4 text-center text-navy font-medium bg-navy/5">{groei}</td>
+                <td class="py-3 px-4 text-center text-slate-500">{partner}</td>
               </tr>
             ))}
           </tbody>
@@ -246,7 +258,7 @@ const plans = [
       <p class="mt-4 text-slate-300 leading-relaxed reveal reveal-delay-1">Geen creditcard vereist. We berekenen samen de ROI voor uw specifieke situatie. Daarna beslist u rustig.</p>
       <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
         <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
-        <a href="/aanvragen/?plan=growth" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Direct Growth starten</a>
+        <a href="/aanvragen/?plan=groei" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Direct Groei starten</a>
       </div>
     </div>
   </section>
