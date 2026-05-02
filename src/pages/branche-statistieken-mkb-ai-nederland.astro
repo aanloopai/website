@@ -3,17 +3,60 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const pageSchema = {
   '@context': 'https://schema.org',
-  '@type': ['WebPage', 'Dataset'],
-  '@id': 'https://aanloopai.nl/branche-statistieken-mkb-ai-nederland/#dataset',
+  '@type': 'WebPage',
+  '@id': 'https://aanloopai.nl/branche-statistieken-mkb-ai-nederland/#webpage',
   name: 'AI-statistieken Nederlands MKB 2026',
   description: 'Actuele cijfers over AI-adoptie in het Nederlandse MKB. Statistieken per branche, gebruikspatroon, ROI-benchmarks en investerings-trends. Bron-aggregatie van CBS, Aanloop AI klantdata en publieke onderzoeken.',
   url: 'https://aanloopai.nl/branche-statistieken-mkb-ai-nederland/',
   inLanguage: 'nl-NL',
-  creator: { '@id': 'https://aanloopai.nl/#organization' },
+  isPartOf: { '@id': 'https://aanloopai.nl/#website' },
+  datePublished: '2026-05-02',
+  dateModified: '2026-05-02',
+};
+
+const datasetSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  '@id': 'https://aanloopai.nl/branche-statistieken-mkb-ai-nederland/#dataset',
+  name: 'AI-adoptie Nederlands MKB 2026 - sector-, use-case- en investerings-statistieken',
+  alternateName: 'AI-statistieken NL MKB 2026',
+  description: 'Geaggregeerde statistieken over AI-adoptie in het Nederlandse MKB per sector (zakelijke dienstverlening, retail, horeca, zorg, bouw, vastgoed, logistiek, advocatuur), use case (voicebot, WhatsApp-AI, workflow, factuurverwerking, lead-kwalificatie, agenda) en investerings-tier. Bron-aggregatie van CBS-publicaties (2025), Aanloop AI klantdata (n=80) en publieke onderzoeken. Update mei 2026.',
+  url: 'https://aanloopai.nl/branche-statistieken-mkb-ai-nederland/',
+  identifier: 'aanloop-ai-mkb-stats-2026',
+  inLanguage: 'nl-NL',
+  creator: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    url: 'https://aanloopai.nl/',
+  },
+  publisher: { '@id': 'https://aanloopai.nl/#organization' },
   isAccessibleForFree: true,
   license: 'https://creativecommons.org/licenses/by/4.0/',
   datePublished: '2026-05-02',
   dateModified: '2026-05-02',
+  version: '2026.05',
+  keywords: 'AI MKB Nederland, AI adoptie statistieken, AI ROI MKB, no-show reductie AI, WhatsApp AI klantenservice, AI receptionist, AI workflow automation, AI factuurverwerking',
+  spatialCoverage: { '@type': 'Place', name: 'Nederland', address: { '@type': 'PostalAddress', addressCountry: 'NL' } },
+  temporalCoverage: '2025-01/2026-12',
+  variableMeasured: [
+    { '@type': 'PropertyValue', name: 'AI-adoptie per sector', unitText: 'percentage van MKB-bedrijven', description: 'Aandeel MKB-bedrijven per sector dat minimaal 1 AI-tool actief gebruikt' },
+    { '@type': 'PropertyValue', name: 'Year-over-year groeipercentage AI-adoptie', unitText: 'percentage punten YoY', description: 'Toename adoptie ten opzichte van vorig jaar per sector' },
+    { '@type': 'PropertyValue', name: 'AI use-case adoptie', unitText: 'percentage', description: 'Aandeel klanten dat een specifieke use case actief draait (voicebot, WhatsApp, workflow, etc.)' },
+    { '@type': 'PropertyValue', name: 'Investeringsniveau MKB op AI', unitText: 'percentage van klantenbestand', description: 'Verdeling klanten over maandelijkse investeringstiers (<200 / 200-500 / 500-1.500 / 1.500+ EUR/maand)' },
+    { '@type': 'PropertyValue', name: 'No-show reductie via AI', unitText: 'percentage', description: 'Verlaging van no-show op afspraken na AI WhatsApp-herinneringen' },
+    { '@type': 'PropertyValue', name: 'NPS-score AI WhatsApp versus traditionele helpdesk', unitText: 'percentage hoger', description: 'Net Promoter Score-uplift bij overstap naar AI-WhatsApp klantenservice' },
+    { '@type': 'PropertyValue', name: '12-maand ROI multiplier', unitText: 'multiplier', description: 'Gemiddelde ROI-multiplier in eerste 12 maanden bij goede AI-implementatie' },
+  ],
+  distribution: [
+    {
+      '@type': 'DataDownload',
+      name: 'AI-statistieken NL MKB 2026 (HTML)',
+      encodingFormat: 'text/html',
+      contentUrl: 'https://aanloopai.nl/branche-statistieken-mkb-ai-nederland/',
+    },
+  ],
+  citation: 'Aanloop AI (2026). AI-adoptie Nederlands MKB 2026. https://aanloopai.nl/branche-statistieken-mkb-ai-nederland/',
 };
 
 const stats = [
@@ -56,7 +99,7 @@ const investmentTiers = [
 <BaseLayout
   title="AI Statistieken Nederlands MKB 2026 — Adoptie en ROI"
   description="Complete dataset over AI-adoptie in Nederlands MKB 2026. Statistieken per sector, ROI-benchmarks, investerings-tiers. Bron-aggregatie CBS, Aanloop AI klantdata."
-  schema={pageSchema}
+  schema={[pageSchema, datasetSchema]}
 >
   <section class="section">
     <div class="container-page max-w-4xl">
