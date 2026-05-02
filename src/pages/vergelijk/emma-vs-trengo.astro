@@ -1,0 +1,201 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Emma vs Trengo: AI-WhatsApp of NL omnichannel-platform - wat past bij uw MKB?',
+  description: 'Onafhankelijke vergelijking Emma (Aanloop AI) versus Trengo: feature-tabel, prijzen, NL-ondersteuning, integraties, sector-aanbevelingen voor klantcontact.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-02',
+  dateModified: '2026-05-02',
+  mainEntityOfPage: 'https://aanloopai.nl/vergelijk/emma-vs-trengo/',
+  inLanguage: 'nl-NL',
+};
+
+const comparison = [
+  { feature: 'Type oplossing', a: 'AI-WhatsApp-bot done-for-you', b: 'NL omnichannel-inbox + chatbot-platform' },
+  { feature: 'Primaire focus', a: 'Volautomatische AI-conversatie', b: 'Team-inbox voor menselijke agents + AI-add-on' },
+  { feature: 'AI-niveau (uit de doos)', a: 'Generatieve AI met sector-tuning', b: 'Rule-based + GPT-add-on (extra kosten)' },
+  { feature: 'Aantal kanalen', a: 'WhatsApp + handover naar mens', b: 'WhatsApp, e-mail, chat, telefoon, social - 10+' },
+  { feature: 'Telefoon-AI (voice)', a: 'Optioneel: Marco apart', b: 'Voice-channel ja, maar geen voice-AI standaard' },
+  { feature: 'Startprijs per maand', a: '197 euro (Emma Starter)', b: 'Vanaf 39 euro/agent (Pro tier 99 euro/agent)' },
+  { feature: 'Setup-tijd', a: '7-14 werkdagen done-for-you', b: 'Self-service, snel; AI-flows kosten extra weken' },
+  { feature: 'NL HQ', a: 'Ja - Rotterdam', b: 'Ja - Utrecht' },
+  { feature: 'Integraties (CRM)', a: 'HubSpot, Salesforce, Pipedrive, AFAS, Exact, Twinfield', b: 'HubSpot, Salesforce, Pipedrive, Zendesk, ActiveCampaign' },
+  { feature: 'E-commerce', a: 'Shopify, WooCommerce, Magento, Lightspeed', b: 'Shopify, WooCommerce, BigCommerce, Lightspeed' },
+  { feature: 'Beste voor', a: 'MKB dat AI volledig wil laten afhandelen', b: 'Customer support-teams van 5-50 agents' },
+  { feature: 'Maandelijks opzegbaar', a: 'Ja', b: 'Maandelijks of jaarlijks (jaarlijks korting)' },
+  { feature: 'EU-data', a: 'EU-only (Hetzner Frankfurt)', b: 'EU - Trengo is NL-bedrijf' },
+];
+
+const useCases = [
+  { sector: 'E-commerce 1-3 mensen', kies: 'Emma', reden: 'Geen support-team. AI handelt 90 procent af, escalatie naar eigenaar via chat. Trengo prijst per agent, hier zonde.' },
+  { sector: 'E-commerce 5-20 mensen support-team', kies: 'Trengo', reden: 'Inbox-management voor team is Trengo core sterkte. AI als hulp, niet als hoofdspeler.' },
+  { sector: 'Beauty/wellness solo of duo', kies: 'Emma', reden: 'Klanten WhatsAppen voor afspraken. AI plant in agenda, mens hoeft niet aanwezig te zijn.' },
+  { sector: 'Service-bedrijf met monteurs', kies: 'Combineer', reden: 'Trengo voor team-coordinatie + Emma als front-line AI. Beste van beide werelden.' },
+  { sector: 'Restaurant met team van 3-5', kies: 'Emma', reden: 'Reserveringen volautomatisch via AI. Geen agent-licentie-kosten zoals bij Trengo.' },
+  { sector: 'B2B SaaS support-team', kies: 'Trengo', reden: 'Multi-channel (e-mail, chat, ticket) - klassieke Trengo use-case.' },
+  { sector: 'Webshop met seizoenpieken', kies: 'Emma', reden: 'AI schaalt mee, geen tijdelijke agent-licenties nodig in piek.' },
+  { sector: 'Fysieke retail met meerdere vestigingen', kies: 'Trengo', reden: 'Multi-store team-inbox + WhatsApp - Trengo team-routing is sterk.' },
+];
+
+const faqs = [
+  {
+    q: 'Is Trengo niet ook AI?',
+    a: 'Trengo is primair een omnichannel-inbox voor menselijke agents. Ze bieden een AI-add-on (FlowBot/AI Reply), maar de kern blijft menselijke afhandeling. Emma is volledig AI-first - de mens is de uitzondering, niet de regel.',
+  },
+  {
+    q: 'Welke is goedkoper?',
+    a: 'Hangt af van team-grootte. Trengo prijst per agent (39-99 euro). Emma is per gebruik (vanaf 197 euro/maand all-in). Voor 1-2 mensen is Trengo goedkoper. Voor 5+ mensen wint Emma.',
+  },
+  {
+    q: 'Kan Emma ook e-mail en social media?',
+    a: 'Emma is gespecialiseerd in WhatsApp. Voor multi-channel kunt u Marco (telefoon) en custom workflows van Aanloop AI combineren. Trengo dekt out-of-the-box meer kanalen.',
+  },
+  {
+    q: 'Welke is sneller live?',
+    a: 'Trengo self-service kan in dagen. Emma is 7-14 werkdagen done-for-you. Trengo is sneller maar vereist eigen configuratie-werk.',
+  },
+  {
+    q: 'Beide zijn NL-bedrijven - maakt dat verschil?',
+    a: 'Ja. Beide bieden Nederlandstalige support en AVG-conformiteit. Aanloop is in Rotterdam, Trengo in Utrecht. Voor specifieke NL-MKB context: vergelijkbare nabijheid.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const combinedSchema = [articleSchema, faqSchema];
+---
+
+<BaseLayout
+  title="Emma vs Trengo: AI-WhatsApp of NL omnichannel? | Vergelijking 2026"
+  description="Vergelijking Emma (Aanloop AI) versus Trengo: feature-tabel, prijzen, NL-ondersteuning, integraties, sector-aanbevelingen voor klantcontact."
+  schema={combinedSchema}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Vergelijken - Emma vs Trengo</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Emma of Trengo: welke past bij uw klantcontact?
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Twee Nederlandse oplossingen, twee verschillende benaderingen. Emma is een AI-first WhatsApp-bot. Trengo is een team-inbox voor menselijke agents met optionele AI. We zetten ze naast elkaar.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/aanvragen/" class="btn-primary">Gratis adviesgesprek</a>
+          <a href="/diensten/emma/" class="btn-secondary">Meer over Emma</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Feature-tabel</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Feature</th>
+              <th class="text-left p-4 font-semibold text-navy">Emma (Aanloop AI)</th>
+              <th class="text-left p-4 font-semibold text-navy">Trengo</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparison.map((row, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{row.feature}</td>
+                <td class="p-4 text-slate-700">{row.a}</td>
+                <td class="p-4 text-slate-700">{row.b}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-sm text-slate-500">Prijzen op basis van publieke informatie per 2026-05-02. Trengo is een geregistreerd merk van Trengo B.V.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Welke kiezen per use-case?</h2>
+      <div class="space-y-4">
+        {useCases.map((uc) => (
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="flex items-start gap-4">
+              <span class="rounded-full bg-navy text-white text-xs px-3 py-1 font-semibold whitespace-nowrap">{uc.kies}</span>
+              <div>
+                <h3 class="font-bold text-navy">{uc.sector}</h3>
+                <p class="text-sm text-slate-600 mt-1 leading-relaxed">{uc.reden}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Wanneer Emma, wanneer Trengo?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Trengo is op zijn best als u een support-team heeft van 5+ mensen die elkaars werk moeten coordineren over meerdere kanalen. De inbox-functionaliteit, agent-routing en analytics zijn solide.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Emma is op zijn best als u 80 procent van uw WhatsApp-volume volledig automatisch wilt laten afhandelen door AI - zonder agent-licenties per gebruiker, zonder team om in te delen.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Vuistregel: heeft u eigenaar/founders die ook reageren op klantberichten? Emma. Heeft u een dedicated support-team van 5+? Trengo. Heeft u beide nodig? Combineer ze: Emma als eerste-lijn AI, escalatie naar Trengo voor team-werk.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/diensten/emma/" class="btn-secondary">Meer over Emma</a>
+        <a href="/diensten/marco/" class="btn-secondary">Meer over Marco (telefoon-AI)</a>
+        <a href="/aanvragen/" class="btn-primary">Adviesgesprek aanvragen</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Veelgestelde vragen</h2>
+      <div class="space-y-5">
+        {faqs.map((f) => (
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <h3 class="font-semibold text-navy mb-2">{f.q}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder vergelijken</h2>
+      <ul class="space-y-3 text-slate-700">
+        <li><a href="/vergelijk/aanloop-vs-watermelon/" class="text-navy hover:underline">Aanloop AI versus Watermelon</a></li>
+        <li><a href="/vergelijk/aanloop-vs-chatlayer/" class="text-navy hover:underline">Aanloop AI versus Chatlayer (Sinch)</a></li>
+        <li><a href="/vergelijk/marco-vs-emma/" class="text-navy hover:underline">Marco versus Emma</a></li>
+        <li><a href="/vergelijk/" class="text-navy hover:underline">Alle vergelijkingen</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>

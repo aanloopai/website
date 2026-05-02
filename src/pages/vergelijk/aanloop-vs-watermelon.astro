@@ -1,0 +1,202 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Aanloop AI vs Watermelon: welke AI-chatbot past het beste bij uw Nederlandse MKB?',
+  description: 'Onafhankelijke vergelijking Aanloop AI versus Watermelon: feature-tabel, prijzen, integraties, use-cases per sector. Voor Nederlandse MKB-bedrijven die AI-klantcontact zoeken in 2026.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-02',
+  dateModified: '2026-05-02',
+  mainEntityOfPage: 'https://aanloopai.nl/vergelijk/aanloop-vs-watermelon/',
+  inLanguage: 'nl-NL',
+};
+
+const comparison = [
+  { feature: 'Type oplossing', a: 'Full-service AI-bureau (build + run)', b: 'Self-service chatbot-platform' },
+  { feature: 'Kanalen', a: 'Telefoon (Marco), WhatsApp (Emma), web-chat, e-mail, SMS', b: 'Web-chat, WhatsApp, Facebook, Instagram' },
+  { feature: 'Telefoon-AI (voice)', a: 'Ja - Marco met natuurlijk Nederlands accent', b: 'Nee (alleen tekst-kanalen)' },
+  { feature: 'Startprijs per maand', a: '197 euro (Emma Starter)', b: 'Vanaf circa 250 euro (Starter pakket)' },
+  { feature: 'Doorlooptijd live-gang', a: '7-14 werkdagen, volledig opgezet', b: 'Self-service: snel; met expert-hulp 4-6 weken' },
+  { feature: 'Nederlands NLU', a: 'Native NL-tuning per sector', b: 'NL-ondersteund, generiek getraind' },
+  { feature: 'Custom workflows', a: 'Onbeperkt (n8n + Make.com onder de motorkap)', b: 'Beperkt tot platform-templates en flow-builder' },
+  { feature: 'CRM-integraties standaard', a: 'HubSpot, Salesforce, Pipedrive, AFAS, Exact, Twinfield', b: 'HubSpot, Salesforce, Pipedrive (basis)' },
+  { feature: 'Datalokatie', a: 'EU-only (Hetzner/AWS Frankfurt)', b: 'EU-region beschikbaar (op aanvraag)' },
+  { feature: 'AVG/GDPR-conform out-of-the-box', a: 'Ja, verwerkersovereenkomst standaard', b: 'Ja' },
+  { feature: 'NEN 7510 (zorg)', a: 'Ja (zorg-add-on)', b: 'Niet standaard, maatwerk vereist' },
+  { feature: 'Setup-hulp', a: 'Volledig done-for-you door specialist', b: 'Self-service met optionele consultancy' },
+  { feature: 'Beste voor', a: 'MKB dat snel resultaat wil zonder zelf te bouwen', b: 'Bedrijven met eigen tech-team en tijd voor self-build' },
+  { feature: 'Maandelijks opzegbaar', a: 'Ja', b: 'Jaarcontract gangbaar' },
+];
+
+const useCases = [
+  { sector: 'Huisartsenpraktijk', kies: 'Aanloop AI', reden: 'Telefoon (Marco) is het primaire kanaal voor patienten. Watermelon biedt geen voice. Aanloop levert NEN 7510-conforme zorg-implementatie.' },
+  { sector: 'E-commerce / webshop', kies: 'Beide kunnen', reden: 'Watermelon werkt goed voor pure web-chat. Aanloop wint bij hoge volumes WhatsApp + telefoon-combinatie.' },
+  { sector: 'Installatiebedrijf', kies: 'Aanloop AI', reden: 'Spoed komt via telefoon - Marco beantwoordt 24/7. Watermelon mist dit kanaal volledig.' },
+  { sector: 'Reisbureau', kies: 'Aanloop AI', reden: 'Itinerary-vragen en boekingsstatus via WhatsApp + telefoon-spoed. Done-for-you implementatie scheelt weken.' },
+  { sector: 'Restaurant / horeca', kies: 'Aanloop AI', reden: 'Reserveringen en annuleringen verspreid over telefoon en WhatsApp. Watermelon dekt alleen de chat-helft.' },
+  { sector: 'B2B SaaS met eigen developers', kies: 'Watermelon', reden: 'Als er een eigen tech-team is met tijd voor self-build, biedt Watermelon meer controle en lager TCO.' },
+  { sector: 'Notariskantoor / advocatuur', kies: 'Aanloop AI', reden: 'Vertrouwelijke intake via telefoon. Watermelon heeft geen voice; chat ongepast voor juridische zaken.' },
+  { sector: 'Marketingbureau', kies: 'Watermelon', reden: 'Veel klanten met eenvoudige web-chat behoefte; templates volstaan. Lager onboarding-tempo.' },
+];
+
+const faqs = [
+  {
+    q: 'Wat is het belangrijkste verschil tussen Aanloop AI en Watermelon?',
+    a: 'Aanloop AI is een full-service bureau dat de AI voor u bouwt, traint en draait - inclusief telefonie via Marco. Watermelon is een self-service chatbot-platform voor tekst-kanalen waar u zelf de bot configureert.',
+  },
+  {
+    q: 'Heeft Watermelon ook telefoon-AI (voice)?',
+    a: 'Nee. Watermelon richt zich op web-chat, WhatsApp en social messaging. Voor 24/7 telefoonbeantwoording in het Nederlands is Aanloop AI Marco de specifieke oplossing.',
+  },
+  {
+    q: 'Welke kost minder per maand?',
+    a: 'Aanloop AI Emma start vanaf 197 euro per maand inclusief setup en training. Watermelon Starter ligt rond 250 euro per maand exclusief implementatie-uren.',
+  },
+  {
+    q: 'Welke is sneller live?',
+    a: 'Watermelon kan in een paar dagen self-service live, mits u de tijd heeft om zelf te bouwen. Aanloop AI levert volledig opgezet binnen 7-14 werkdagen - zonder eigen werk.',
+  },
+  {
+    q: 'Welke is AVG-proof voor zorg?',
+    a: 'Aanloop AI heeft NEN 7510-conforme zorg-add-on standaard. Watermelon is AVG-conform maar NEN 7510 vereist maatwerk-overeenkomsten.',
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+
+const combinedSchema = [articleSchema, faqSchema];
+---
+
+<BaseLayout
+  title="Aanloop AI vs Watermelon: welke AI-chatbot voor uw MKB? | Vergelijking 2026"
+  description="Onafhankelijke vergelijking Aanloop AI versus Watermelon: feature-tabel, prijzen, integraties, use-cases per sector. Voor Nederlandse MKB-bedrijven in 2026."
+  schema={combinedSchema}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Vergelijken - Aanloop AI vs Watermelon</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Aanloop AI of Watermelon: welke AI-chatbot past bij uw MKB?
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Watermelon is een bekend Nederlands chatbot-platform. Aanloop AI is een full-service AI-bureau met telefoon-, WhatsApp- en web-AI. We zetten de verschillen op een rij - geen marketing-praat, gewoon feature-voor-feature.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/aanvragen/" class="btn-primary">Gratis adviesgesprek</a>
+          <a href="/prijzen/" class="btn-secondary">Bekijk prijzen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Feature-tabel - 14 vergelijkingspunten</h2>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Feature</th>
+              <th class="text-left p-4 font-semibold text-navy">Aanloop AI</th>
+              <th class="text-left p-4 font-semibold text-navy">Watermelon</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparison.map((row, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{row.feature}</td>
+                <td class="p-4 text-slate-700">{row.a}</td>
+                <td class="p-4 text-slate-700">{row.b}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-sm text-slate-500">Prijzen en features op basis van publieke informatie per 2026-05-02. Watermelon is een geregistreerd merk van Watermelon Intelligence B.V.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Welke kiezen per sector?</h2>
+      <div class="space-y-4">
+        {useCases.map((uc) => (
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <div class="flex items-start gap-4">
+              <span class="rounded-full bg-navy text-white text-xs px-3 py-1 font-semibold whitespace-nowrap">{uc.kies}</span>
+              <div>
+                <h3 class="font-bold text-navy">{uc.sector}</h3>
+                <p class="text-sm text-slate-600 mt-1 leading-relaxed">{uc.reden}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Wanneer Aanloop AI, wanneer Watermelon?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Watermelon is een sterke keuze als u al een eigen technisch team heeft en de tijd om zelf een chatbot in te richten - vooral voor pure web-chat use-cases. Hun flow-builder en template-bibliotheek zijn solide.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Aanloop AI is sterker als u (a) telefoon-AI nodig heeft naast chat, (b) snel resultaat wilt zonder zelf te bouwen, of (c) sector-specifieke compliance vereist (NEN 7510 voor zorg, Wwft voor advocatuur).</p>
+      <p class="text-slate-700 leading-relaxed mb-4">In de praktijk: Watermelon dekt 60-70 procent van een MKB-klantcontact-flow goed. Aanloop AI dekt 95 procent inclusief telefoon, voice, en custom workflows.</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="/diensten/marco/" class="btn-secondary">Meer over Marco (telefoon-AI)</a>
+        <a href="/diensten/emma/" class="btn-secondary">Meer over Emma (WhatsApp)</a>
+        <a href="/aanvragen/" class="btn-primary">Adviesgesprek aanvragen</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Veelgestelde vragen</h2>
+      <div class="space-y-5">
+        {faqs.map((f) => (
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <h3 class="font-semibold text-navy mb-2">{f.q}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{f.a}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder vergelijken</h2>
+      <ul class="space-y-3 text-slate-700">
+        <li><a href="/vergelijk/marco-vs-emma/" class="text-navy hover:underline">Marco versus Emma - onze eigen oplossingen</a></li>
+        <li><a href="/vergelijk/ai-receptionist-vs-callcenter/" class="text-navy hover:underline">AI-receptionist versus extern callcenter</a></li>
+        <li><a href="/kennisbank/ai-voicebot-vs-chatbot-mkb-vergelijking/" class="text-navy hover:underline">AI-voicebot versus chatbot - kanaalkeuze MKB</a></li>
+        <li><a href="/vergelijk/" class="text-navy hover:underline">Alle vergelijkingen</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
