@@ -1,0 +1,266 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Make.com vs n8n vs Zapier vs Power Automate — Workflow Automation Vergelijking MKB Nederland 2026",
+  "description": "De vier grootste workflow-automation platforms voor het Nederlandse MKB in 2026 zij-aan-zij vergeleken. Diepteprofielen, 14-criteria scoringskaart, AVG- en datalocatie-analyse, 3-jaars TCO, use-case matching per branche, migratiepaden en het eerlijke advies van Aanloop AI op basis van 30+ klant-implementaties.",
+  "author": {
+    "@type": "Person",
+    "name": "Daan Verhoeven",
+    "@id": "https://aanloopai.nl/team/daan-verhoeven/#person",
+    "url": "https://aanloopai.nl/team/daan-verhoeven/",
+    "sameAs": ["https://www.linkedin.com/company/aanloop-ai", "https://www.linkedin.com/in/daanverhoeven/"],
+    "jobTitle": "Oprichter & CEO Aanloop AI",
+    "worksFor": {
+      "@type": "Organization",
+      "@id": "https://aanloopai.nl/#organization",
+      "name": "Aanloop AI"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://aanloopai.nl/#organization",
+    "name": "Aanloop AI",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aanloopai.nl/logo-mark-light-1024.png"
+    }
+  },
+  "datePublished": "2026-05-02",
+  "dateModified": "2026-05-02",
+  "mainEntityOfPage": "https://aanloopai.nl/kennisbank/make-n8n-zapier-power-automate-vergelijking-mkb-2026/",
+  "inLanguage": "nl-NL"
+};
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Het juiste workflow-automation platform kiezen voor uw MKB-bedrijf',
+  description: 'Stappenplan om in 7 werkdagen het beste platform tussen Make.com, n8n, Zapier en Power Automate te selecteren voor uw specifieke MKB-context.',
+  totalTime: 'P7D',
+  inLanguage: 'nl-NL',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Inventariseer 5 concrete workflows', text: 'Schrijf op welke 5 routinetaken u in 2026 wilt automatiseren — bijvoorbeeld: nieuwe webformulier-leads in CRM zetten, facturen naar boekhouding doorzetten, voorraad-mutaties syncen tussen webshop en magazijn, klantmails categoriseren met AI, of WhatsApp-bevestigingen versturen na afspraak. Zonder concrete workflows is platform-keuze gokwerk.' },
+    { '@type': 'HowToStep', position: 2, name: 'Bepaal datalocatie-eis', text: 'Loopt er persoonsgegevens (BSN, medische data, juridische dossiers) of gevoelige bedrijfsdata door uw workflows? Dan is EU-only datacenter een harde eis. Cloud-only platforms (Zapier VS, Power Automate Microsoft Cloud, Make.com EU/VS) krijgen dan andere weging dan self-hosted (n8n).' },
+    { '@type': 'HowToStep', position: 3, name: 'Schat operatievolume in', text: 'Tel het verwachte aantal workflow-runs per maand. Onder 1.000 ops: gratis tiers volstaan vaak. 1.000-10.000 ops: instap-betaalde tiers. Boven 10.000 ops: kostenstijging exponentieel bij Zapier en Make.com — n8n self-hosted of Power Automate (per-user-license) wordt dan financieel aantrekkelijker.' },
+    { '@type': 'HowToStep', position: 4, name: 'Check bestaande software-stack', text: 'Werkt uw bedrijf al in Microsoft 365 (Outlook, Teams, SharePoint, Dynamics)? Dan biedt Power Automate native integratie. Werkt u in Google Workspace plus losse SaaS? Dan vallen Zapier en Make.com natuurlijker. Self-hosted stack of behoefte aan AI-workflows met LLMs? Dan past n8n.' },
+    { '@type': 'HowToStep', position: 5, name: 'Bouw 1 workflow in 2 platforms parallel', text: 'Kies de simpelste van uw 5 workflows en bouw deze op de 2 meest geschikte platforms in een proof-of-concept van maximaal 1 dag per platform. Meet: bouw-tijd, foutgevoeligheid, log-kwaliteit, herkenbaarheid voor niet-techniek collega.' },
+    { '@type': 'HowToStep', position: 6, name: 'Bereken 3-jaars TCO', text: 'Per platform de volledige cost-of-ownership over 3 jaar berekenen — licentie- of serverkosten, verwachte opschaling, kosten van extra apps of premium-connectoren, plus uw interne uren voor beheer. Vergelijk de 4 cijfers naast elkaar; verschillen lopen van factor 1 tot factor 8.' },
+    { '@type': 'HowToStep', position: 7, name: 'Beslissen en starten met 1 workflow', text: 'Kies platform, start met die ene PoC-workflow als productie-workflow, voeg de andere 4 workflows uitgespreid toe over 6-8 weken. Niet alles tegelijk migreren — eerst leren, dan opschalen. Plan na 6 maanden een TCO-evaluatie.' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/make-n8n-zapier-power-automate-vergelijking-mkb-2026/',
+  inLanguage: 'nl-NL'
+};
+
+const faqItems = [
+  { question: 'Wat is het beste workflow-automation platform voor het Nederlandse MKB in 2026?', answer: 'Voor MKB met persoonsgegevens of AVG-gevoelige data: n8n self-hosted op een Nederlandse VPS (volledige data-soevereiniteit, geen vendor lock-in, vanaf 15 euro per maand serverkosten). Voor MKB volledig in Microsoft 365: Power Automate (native Outlook-Teams-SharePoint integratie, vaak al inbegrepen in M365 Business Premium). Voor snelle eenvoudige automatiseringen tussen losse SaaS-apps zonder gevoelige data: Make.com (EU-datacenter optie, redelijke prijzen). Zapier alleen als u zeer specifieke apps gebruikt die de andere 3 niet ondersteunen.' },
+  { question: 'Wat is het verschil tussen Make.com en n8n?', answer: 'Make.com (voorheen Integromat) is een cloud-only no-code platform met visuele workflow-editor, 1.500+ kant-en-klare connectoren en EU-datacenter optie. n8n is open source, kan self-hosted of cloud-gehost draaien, heeft 400+ connectoren plus de mogelijkheid eigen nodes in JavaScript te schrijven, en is sterker in AI- en LLM-workflows. Make.com is gemakkelijker voor niet-techniek-gebruikers; n8n biedt meer controle, betere AVG-positie via self-hosting en geen vendor lock-in. Voor het Nederlandse MKB met IT-partner of AI-agency: n8n. Voor MKB zonder enige technische ondersteuning die simpel wil starten: Make.com.' },
+  { question: 'Is Zapier nog wel relevant in 2026?', answer: 'Zapier blijft marktleider qua aantal app-integraties (7.000+ in 2026), maar verliest terrein op andere fronten. Tegenover Make.com is het duurder per operatie (vanaf 19,99 dollar per maand voor 750 taken). Tegenover n8n biedt het minder controle en geen self-hosting. Tegenover Power Automate is het duurder voor M365-shops. Zapier blijft de juiste keuze als u (a) workflow-app gebruikt die alleen Zapier ondersteunt, (b) zeer eenvoudige 1-stap-automatiseringen wilt, of (c) een team heeft dat al Zapier-vaardigheid heeft opgebouwd. Voor nieuwe MKB-implementaties in NL zou ik Zapier in 2026 zelden aanraden.' },
+  { question: 'Wanneer is Power Automate de juiste keuze?', answer: 'Power Automate (Microsoft) is de juiste keuze als uw MKB volledig op Microsoft 365 draait — Outlook voor mail, Teams voor chat, SharePoint voor documenten, eventueel Dynamics 365 voor CRM. Native integratie betekent dat workflows direct kunnen reageren op Outlook-mails, Teams-berichten of SharePoint-uploads zonder extra connector-kosten. Power Automate is bovendien vaak al inbegrepen in M365 Business Premium (22 euro per gebruiker per maand) — geen extra licentiekosten. Nadeel: voor connectoren buiten het Microsoft-ecosysteem (premium connectors zoals Salesforce, custom HTTP) heeft u een Premium-licentie nodig (15 dollar per gebruiker per maand extra). Niet de juiste keuze als uw stack juist niet Microsoft-zwaar is.' },
+  { question: 'Wat kost workflow-automation per maand voor MKB?', answer: 'n8n self-hosted: 10-30 euro per maand (alleen VPS-kosten, ongebreidelde workflows en operaties). n8n Cloud Starter: 20 euro per maand voor 2.500 executies. Make.com Core: 9 euro per maand voor 10.000 ops, Pro 16 euro voor 10.000 ops met meer features. Zapier Professional: 19,99 dollar per maand voor 750 taken (oploopt richting 49 dollar voor 2.000 taken). Power Automate Per-User: 15 dollar per maand bovenop M365, of bundeled in M365 E5. Bij 5.000-10.000 maandelijkse operaties: n8n vaak 80-90 procent goedkoper dan Zapier; Make.com is middenmoot; Power Automate alleen rendabel bij M365-only stack.' },
+  { question: 'Welk platform is het meest AVG-conform?', answer: 'Op een schaal van AVG-zekerheid: (1) n8n self-hosted op Nederlandse of Frankfurt VPS — uw data verlaat de EU nooit, u bent als verwerkingsverantwoordelijke volledig in controle. (2) n8n Cloud EU-region — data in Frankfurt, n8n GmbH verwerker in Berlijn, NL recht via SCC. (3) Make.com EU-region — data in EU-datacenters maar Celonis (moederbedrijf) is internationaal, verwerkersovereenkomst noodzakelijk. (4) Power Automate EU-data-residency — Microsoft levert keurmerken en SCCs maar US-CLOUD-Act risico blijft theoretisch. (5) Zapier VS-only — voor persoonsgegevens van EU-burgers vereist DPF-certificering plus aanvullende SCCs en is praktisch lastig conform te krijgen. Voor medisch, juridisch en financieel MKB: alleen optie 1 of 2.' },
+  { question: 'Kan ik later overstappen tussen workflow-automation tools?', answer: 'Technisch: workflows zelf moeten opnieuw gebouwd worden — er is geen industrie-standaard import-export tussen Make.com, n8n, Zapier en Power Automate. Een typische migratie van 20 actieve workflows kost 2-4 weken bouwwerk. Wat wel meekomt: triggers en data-flows zijn meestal 1-op-1 te vertalen omdat alle 4 platforms vergelijkbare logica gebruiken (trigger -> filter -> actie -> conditional). Aanloop AI heeft 8 migratie-trajecten gedraaid (5x Zapier-naar-n8n, 2x Make-naar-n8n, 1x Power-Automate-naar-n8n) en heeft een standaard playbook. Reden tot migratie meestal: kostenstijging Zapier of behoefte aan AI-workflows die n8n beter ondersteunt.' },
+  { question: 'Is n8n geschikt voor MKB zonder eigen IT-afdeling?', answer: 'Ja, mits beheerd door een AI-agency of IT-partner. n8n self-hosted op een VPS (DigitalOcean, Hetzner, Strato) is technisch eenvoudig op te zetten — een ervaren engineer doet dat in een halve dag inclusief HTTPS-certificaat en backup-automatisering. Het bouwen en onderhouden van workflows is daarna no-code via de visuele editor; eindgebruikers zonder code-kennis kunnen workflows ontwerpen en aanpassen. Het verschil met Make.com en Zapier is dat u zelf (of uw partner) de hosting beheert in plaats van betalen voor cloud. Voor MKB zonder enige technische ondersteuning: kies Make.com. Voor MKB met IT-partner of AI-agency: kies n8n.' },
+  { question: 'Wat zijn de verschillen in AI- en LLM-integratie?', answer: 'n8n: native AI-nodes voor OpenAI, Anthropic Claude, Google Gemini, Mistral, Ollama (local), plus LangChain-style chaining. Veruit het krachtigst voor AI-workflows in 2026 — denk aan e-mail-classificatie, document-extractie, RAG-pijplijnen op uw eigen data. Make.com: AI-modules voor OpenAI en Anthropic, beperktere chaining, goede integratie met Watermelon en andere chatbot-tools. Zapier: AI by Zapier en losse OpenAI-stappen, beperkt voor complexe AI-workflows. Power Automate: AI Builder voor document-extractie en sentiment-analyse, plus Copilot Studio voor AI-agents — sterk voor M365-shops maar duurder en minder open dan n8n. Voor AI-zware automatiseringen in 2026 is n8n vrijwel altijd de beste keuze.' },
+  { question: 'Welk platform heeft de minste vendor lock-in?', answer: 'n8n heeft praktisch geen vendor lock-in: open source (Sustainable Use License), self-hosted op uw eigen server, workflows exporteerbaar als JSON, code in eigen Git-repo. U kunt n8n verlaten zonder dat uw automatisering instort. Make.com, Zapier en Power Automate zijn allemaal proprietary cloud-platforms — workflows zijn niet portable, bij contract-einde verliest u uitvoering, exports zijn beperkt of ontbreken. Verschil per platform in commerciele lock-in: Power Automate koppelt aan M365-licenties (hoge switching cost), Zapier aan team-skill-investering, Make.com is van de drie cloud-tools het minst restrictief. Voor MKB die langetermijn-onafhankelijkheid waardeert: n8n.' },
+  { question: 'Welk platform past bij een Nederlandse webshop?', answer: 'Voor een Nederlandse webshop op WooCommerce, Shopify of Lightspeed eCom in 2026: typische workflows zijn order-naar-boekhouding, voorraad-sync, klantmail-bevestigingen, retour-afhandeling, beoordeling-verzoeken. Zonder gevoelige data is Make.com een sterke keus (snelle implementatie, kant-en-klare connectoren voor alle drie de webshop-platforms, BTW-conforme connectoren voor Moneybird, e-Boekhouden, Exact Online). Met groeiend AI-gebruik (productbeschrijvingen genereren, klantmails klasseren, persoonlijke aanbevelingen): overstap naar n8n loont na 6-12 maanden. Zapier alleen als u een niche-app gebruikt die de andere 3 niet ondersteunen.' },
+  { question: 'Wat doet Aanloop AI met deze platforms in eigen klant-implementaties?', answer: 'Aanloop AI bouwt 95 procent van klant-workflows op n8n self-hosted in onze EU-datacenter (Frankfurt en Amsterdam). Reden: volledige AVG-controle, geen kostenstijging bij groei, sterkste AI- en LLM-integratie van alle 4 platforms. We hebben 30+ actieve klanten met n8n-workflows in productie — van tandartsen die agenda-bevestigingen automatiseren tot accountantskantoren die documenten classificeren met AI. Voor klanten die volledig in Microsoft 365 zitten (typisch grotere MKB met 50+ medewerkers) gebruiken we soms Power Automate als parallel-systeem, met n8n als integratie-laag voor AI-stappen. Make.com en Zapier zetten we niet meer nieuw in voor klanten — alleen onderhoud van legacy. Volledig open stack betekent ook: u krijgt alle workflows in n8n-export en Git-historie mee bij contract-einde.' },
+];
+---
+
+<BaseLayout
+  title="Make.com vs n8n vs Zapier vs Power Automate — Workflow Automation Vergelijking MKB 2026 | Aanloop AI"
+  description="De vier grootste workflow-automation platforms voor het Nederlandse MKB in 2026 zij-aan-zij vergeleken. Diepteprofielen, 14-criteria scoringskaart, AVG-analyse, 3-jaars TCO, use-case matching per branche, migratiepaden en het eerlijke advies van Aanloop AI."
+  schema={[articleSchema, howToSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Buyer guide · Workflow automation</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Make.com vs n8n vs Zapier vs Power Automate — Welk Platform Past bij uw MKB in 2026
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          De vier grootste workflow-automation platforms domineren de Nederlandse markt in 2026, maar verschillen radicaal in prijs, AVG-positie, AI-mogelijkheden en vendor lock-in. Deze buyer guide behandelt elk platform in diepteprofielen, vergelijkt op 14 criteria zij-aan-zij, berekent de 3-jaars cost-of-ownership en geeft per branche advies welk platform past. Plus het eerlijke perspectief van Aanloop AI op basis van 30+ klant-implementaties en 8 migratie-trajecten.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-2">Direct antwoord — kort</p>
+        <p class="text-sm text-slate-700"><strong>Voor MKB met persoonsgegevens of AVG-gevoelige workflows: n8n self-hosted</strong> in EU-datacenter — volledige data-soevereiniteit, geen vendor lock-in, sterkste AI-integratie. <strong>Voor MKB volledig in Microsoft 365: Power Automate</strong> — native Outlook-Teams-SharePoint, vaak al in M365 Business Premium licentie. <strong>Voor snelle losse automatiseringen zonder gevoelige data: Make.com EU-region</strong>. <strong>Zapier alleen bij specifieke niche-apps</strong> die de andere 3 missen. De winnaar voor de meeste Nederlandse MKB-bedrijven in 2026: n8n.</p>
+      </div>
+
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat is workflow-automation en waarom belangrijk voor MKB</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Workflow-automation platforms verbinden uw zakelijke applicaties — CRM, boekhouding, mail, agenda, webshop, formulieren — en laten ze automatisch met elkaar praten. Een nieuwe lead in een webformulier verschijnt automatisch in uw CRM, krijgt een welkomstmail, wordt toegewezen aan een verkoper en komt op de agenda voor opvolging. Geen handmatig kopieer-en-plakwerk meer, geen vergeten leads, geen vertraging tussen aanvraag en eerste reactie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor het Nederlandse MKB is workflow-automation in 2026 vrijwel onmisbaar geworden. Routinetaken die voorheen 5-10 uur per week kostten — orderverwerking, factuur-doorzetting, voorraad-mutaties, klantmail-routering, agenda-bevestigingen — gebeuren binnen 1 seconde automatisch. Een typisch MKB van 10-30 medewerkers bespaart 15-30 uur per week op administratieve handelingen door 8-15 workflows te automatiseren. Bij een uurtarief van 35-60 euro betekent dat 25.000-90.000 euro per jaar aan teruggewonnen tijd.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">De keuze van platform bepaalt hoe makkelijk, hoe duur en hoe veilig die automatisering wordt. De vier dominante platforms in 2026 — Make.com, n8n, Zapier en Microsoft Power Automate — verschillen radicaal in datalocatie, kosten-per-operatie, vendor lock-in, AI-mogelijkheden en bouw-complexiteit. Een verkeerde keuze betekent over 3 jaar tussen 5.000 en 50.000 euro extra kosten of een AVG-incident bij audit. Lees ook onze <a href="/kennisbank/ai-workflow-automation/" class="text-brand-indigo hover:underline">algemene introductie tot AI workflow automation</a> voor de basisbegrippen.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">n8n — open source met data-soevereiniteit</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Wat n8n is.</strong> n8n is een open-source workflow-automation platform dat in Berlijn ontwikkeld wordt en sinds 2019 op de markt is. Beschikbaar in twee modellen: zelf hosten op uw eigen server (n8n self-hosted, gratis software, alleen serverkosten) of cloud-gehost door n8n GmbH (n8n Cloud, betaald abonnement). Werkt met een visuele drag-and-drop editor in de browser, maar laat ook eigen JavaScript- of Python-code toe in workflow-stappen. 400+ kant-en-klare connectoren plus open community-nodes voor honderden extra apps.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Sterke punten.</strong> Verreweg de beste AVG-positie van alle 4 platforms — bij self-hosting op een Nederlandse VPS verlaat uw data nooit de EU en bent u zelf de enige verwerker. Geen vendor lock-in: workflows zijn JSON-export, opensource code, kunt u op elk moment migreren naar eigen server of andere cloud. Beste AI-integratie van alle platforms: native nodes voor OpenAI, Anthropic Claude, Google Gemini, Mistral en Ollama (local LLM), plus LangChain-style chaining voor complexe AI-pijplijnen zoals RAG op eigen kennisbank of multi-step agenten. Operatiekosten praktisch ongebreideld bij self-hosting — een VPS van 15 euro per maand draait 100.000+ workflow-runs per maand zonder extra kosten.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Zwakke punten.</strong> Vereist technische beheerder voor self-hosting: server-onderhoud, backups, updates, HTTPS, monitoring. Voor MKB zonder IT-afdeling betekent dat een externe partner of agency. Iets steilere leercurve dan Make.com of Zapier voor de eerste workflow — daarna vergelijkbaar. Connectoren-aantal lager dan Zapier (400 versus 7.000), maar voor de 95 procent meest-gebruikte apps (Google Workspace, M365, Slack, HubSpot, Pipedrive, Mollie, Stripe, Moneybird, e-Boekhouden, WhatsApp Business) is alles aanwezig. Documentatie is goed maar minder uitgebreid dan Zapier.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Kostenstructuur 2026.</strong> Self-hosted: 10-30 euro per maand serverkosten (Hetzner CX22 vanaf 4,51 euro, DigitalOcean Basic vanaf 6 dollar, Strato vanaf 5 euro), ongebreideld qua workflows en executies. n8n Cloud Starter: 20 euro per maand voor 2.500 executies, Pro 50 euro voor 10.000. Voor MKB met 5.000-50.000 maandelijkse executies is self-hosted vrijwel altijd goedkoper. Aanloop AI hostt typisch 1 n8n-instance voor 5-10 klanten samen op een gedeelde server tegen 5-10 euro per klant per maand all-in.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Make.com — cloud-no-code voor non-technische bouwers</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Wat Make.com is.</strong> Make.com (voorheen Integromat) is een Tsjechisch-Amerikaans cloud-only workflow-automation platform, sinds 2022 onderdeel van Celonis. Volledig no-code via een visuele scenario-editor met flow-diagram-stijl. 1.500+ kant-en-klare app-connectoren, EU-datacenter optie standaard sinds 2023. Doelgroep: marketeers, sales-ops, freelancers en MKB die snel automatisering willen zonder code te schrijven of servers te beheren.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Sterke punten.</strong> Visueel het meest intuitieve platform van de 4 — een nieuwe gebruiker bouwt typisch een eerste werkende workflow binnen 30-60 minuten zonder training. EU-datacenter optie maakt AVG redelijk haalbaar voor B2B-data zonder bijzondere persoonsgegevens. Goede prijs-kwaliteit voor middenmoot-volumes (5.000-50.000 ops per maand) — Make.com Pro 16 euro per maand voor 10.000 ops is competitief. Sterke connector-bibliotheek met goede dekking van populaire SaaS-apps. AI-modules voor OpenAI en Anthropic groeien snel.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Zwakke punten.</strong> Cloud-only — geen self-hosting mogelijk, dus geen volledige data-soevereiniteit. Voor medisch, juridisch of financieel MKB met BSN- of dossierdata een dealbreaker. Kostenstijging exponentieel bij groei: bij 100.000 ops per maand betaalt u snel 500-1.000 euro per maand. Vendor lock-in matig — workflows zijn niet portabel naar andere platforms, exports beperkt tot screenshots. AI-mogelijkheden zwakker dan n8n — geen native LangChain, geen local LLMs, beperkte chaining tussen AI-stappen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Kostenstructuur 2026.</strong> Free: 1.000 ops per maand, alleen 2 actieve scenarios. Core 9 euro per maand: 10.000 ops. Pro 16 euro per maand: 10.000 ops plus betere features. Teams 29 euro per maand: 10.000 ops met team-collaboratie. Enterprise op offerte. Bij 50.000 ops per maand: ongeveer 65 euro per maand. Bij 200.000 ops: 235 euro per maand. Mid-volume MKB betaalt typisch 30-100 euro per maand all-in.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Zapier — connector-koning maar duurste optie</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Wat Zapier is.</strong> Zapier is de oudste (sinds 2011) en grootste no-code workflow-automation provider, gevestigd in San Francisco. 7.000+ app-connectoren — verreweg de breedste bibliotheek in de markt. Cloud-only, alleen US-datacenters (Iowa en Virginia in 2026, met EU-region in beperkte beta). Aanvankelijk de standaard-keuze voor SaaS-automatisering, in 2026 echter ingehaald door Make.com qua prijs-kwaliteit en door n8n qua AI- en self-hosting-mogelijkheden.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Sterke punten.</strong> Maximaal app-bereik — als uw bedrijf een niche-applicatie gebruikt (bijvoorbeeld een specifiek Nederlands ERP of een sector-tool), is de kans op Zapier-integratie het hoogst van alle 4 platforms. Beste documentatie en grootste community — antwoorden op vrijwel elke vraag binnen 5 minuten Googlen. Eenvoudige UX voor 1-stap-automatiseringen ("Wanneer X gebeurt in app A, doe Y in app B"). Volwassen ondersteuning voor enterprise-shops met SSO, audit-logs en compliance-rapportages.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Zwakke punten.</strong> Duurste van de 4 platforms per operatie — vanaf 19,99 dollar per maand voor 750 taken (2,7 cent per taak), Make.com en n8n zijn 5-50 keer goedkoper bij vergelijkbaar volume. AVG-positie is het zwakste van de 4: US-datacenters, Schrems II-onzekerheden, DPF-certificering vereist plus aanvullende SCC's, en zelfs dan blijft US CLOUD Act een risico. Beperkte ondersteuning voor complexe logica en multi-step AI-workflows. Geen self-hosting. Vendor lock-in hoog door team-skill-investering en niet-portabele workflows.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Kostenstructuur 2026.</strong> Free: 100 taken per maand. Professional 19,99 dollar per maand: 750 taken. Team 69 dollar per maand: 2.000 taken plus team-features. Company 103,50 dollar per maand: 50.000 taken. Bij 10.000 taken per maand: ongeveer 150 dollar per maand. Bij 50.000 taken: 350+ dollar per maand. Voor de meeste MKB-volumes 5-10 keer duurder dan Make.com voor vergelijkbare functionaliteit.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Microsoft Power Automate — de M365-native keuze</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Wat Power Automate is.</strong> Power Automate is Microsofts workflow-automation platform binnen de Power Platform-suite (samen met Power Apps en Power BI). Native geintegreerd in Microsoft 365 — werkt direct vanuit Outlook, Teams, SharePoint, OneDrive en Dynamics 365 zonder extra connector-kosten. Twee onderdelen: Cloud Flows (vergelijkbaar met de 3 andere platforms hier) en Desktop Flows (RPA voor windows-applicaties). Datacenter-locatie kiesbaar met EU-data-residency.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Sterke punten.</strong> Voor MKB volledig op Microsoft 365: dramatisch beter geintegreerd dan elk ander platform. Outlook-mails, Teams-berichten, SharePoint-uploads en Excel-wijzigingen triggeren workflows zonder enige connector-configuratie. Vaak al inbegrepen in M365 Business Premium licentie (22 euro per gebruiker per maand) — geen extra kosten voor standaard-connectoren. AI Builder voor document-extractie en sentiment-analyse, plus Copilot Studio voor AI-agents (extra licentie). Sterke ondersteuning voor RPA via Desktop Flows — kan oude desktop-applicaties automatiseren waar webhook-API ontbreekt.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Zwakke punten.</strong> Hoge afhankelijkheid van Microsoft-ecosysteem — buiten M365 wordt het snel duur (Premium connectors voor Salesforce, custom HTTP, AWS S3 vereisen Power Automate Premium 15 dollar per gebruiker per maand). UX inconsistent: Cloud Flows en Desktop Flows zijn twee verschillende editors. Vendor lock-in zeer hoog — workflows verlaten Microsoft niet. AI-mogelijkheden goed binnen M365-contour maar minder open dan n8n. Voor MKB op Google Workspace of zonder M365: vrijwel zinloos.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Kostenstructuur 2026.</strong> Vaak al inbegrepen in M365 Business Premium (22 euro per gebruiker per maand) voor standaard connectors. Power Automate Premium: 15 dollar per gebruiker per maand voor premium connectors. Power Automate Process: 150 dollar per bot per maand voor unattended RPA. Per-Flow plan: 100 dollar per flow per maand voor flows die door iedereen gebruikt mogen worden. Bij een M365-shop van 20 gebruikers met basis-flows: praktisch geen extra kosten. Bij gebruik van premium connectors: 300 dollar per maand extra.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Volledige vergelijking — 14 criteria zij-aan-zij</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Onderstaande matrix vergelijkt de 4 platforms op de criteria die voor het Nederlandse MKB in 2026 het meeste tellen. Score per criterium: ✅ uitstekend, ⚠️ acceptabel, ❌ zwak. n8n wint op AVG, vendor lock-in, AI en TCO bij groei. Power Automate wint bij M365-stack. Make.com wint op leercurve en mid-volume prijs. Zapier wint alleen op connector-aantal en community-grootte.</p>
+      <div class="overflow-x-auto mb-8">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b-2 border-slate-200">
+              <th class="text-left py-3 pr-4 font-semibold text-navy w-1/4">Criterium</th>
+              <th class="text-left py-3 px-4 font-semibold text-brand-indigo">n8n</th>
+              <th class="text-left py-3 px-4 font-semibold text-slate-500">Make.com</th>
+              <th class="text-left py-3 px-4 font-semibold text-slate-500">Zapier</th>
+              <th class="text-left py-3 pl-4 font-semibold text-slate-500">Power Automate</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr><td class="py-3 pr-4 font-medium text-slate-700">Self-hosted optie</td><td class="py-3 px-4 text-navy">✅ Ja</td><td class="py-3 px-4 text-slate-500">❌ Nee</td><td class="py-3 px-4 text-slate-500">❌ Nee</td><td class="py-3 pl-4 text-slate-500">❌ Nee</td></tr>
+            <tr><td class="py-3 pr-4 font-medium text-slate-700">EU datacenter</td><td class="py-3 px-4 text-navy">✅ Eigen NL/DE</td><td class="py-3 px-4 text-slate-500">⚠️ EU-region</td><td class="py-3 px-4 text-slate-500">❌ US-only</td><td class="py-3 pl-4 text-slate-500">⚠️ EU residency</td></tr>
+            <tr><td class="py-3 pr-4 font-medium text-slate-700">AVG-positie</td><td class="py-3 px-4 text-navy">✅ Optimaal</td><td class="py-3 px-4 text-slate-500">⚠️ Met DPA</td><td class="py-3 px-4 text-slate-500">❌ Risicovol</td><td class="py-3 pl-4 text-slate-500">⚠️ Met DPA</td></tr>
+            <tr><td class="py-3 pr-4 font-medium text-slate-700">Open source</td><td class="py-3 px-4 text-navy">✅ Ja</td><td class="py-3 px-4 text-slate-500">❌ Nee</td><td class="py-3 px-4 text-slate-500">❌ Nee</td><td class="py-3 pl-4 text-slate-500">❌ Nee</td></tr>
+            <tr><td class="py-3 pr-4 font-medium text-slate-700">Vendor lock-in</td><td class="py-3 px-4 text-navy">✅ Geen</td><td class="py-3 px-4 text-slate-500">⚠️ Beperkt</td><td class="py-3 px-4 text-slate-500">❌ Hoog</td><td class="py-3 pl-4 text-slate-500">❌ Zeer hoog</td></tr>
+            <tr><td class="py-3 pr-4 font-medium text-slate-700">AI/LLM integratie</td><td class="py-3 px-4 text-navy">✅ Beste in markt</td><td class="py-3 px-4 text-slate-500">⚠️ Goed</td><td class="py-3 px-4 text-slate-500">⚠️ Beperkt</td><td class="py-3 pl-4 text-slate-500">⚠️ Binnen M365</td></tr>
+            <tr><td class="py-3 pr-4 font-medium text-slate-700">Connector-aantal</td><td class="py-3 px-4 text-navy">400+ plus custom</td><td class="py-3 px-4 text-slate-500">1.500+</td><td class="py-3 px-4 text-slate-500">7.000+</td><td class="py-3 pl-4 text-slate-500">600+ (M365 native)</td></tr>
+            <tr><td class="py-3 pr-4 font-medium text-slate-700">Leercurve</td><td class="py-3 px-4 text-navy">⚠️ Matig</td><td class="py-3 px-4 text-slate-500">✅ Eenvoudig</td><td class="py-3 px-4 text-slate-500">✅ Zeer eenvoudig</td><td class="py-3 pl-4 text-slate-500">⚠️ M365-kenners</td></tr>
+            <tr><td class="py-3 pr-4 font-medium text-slate-700">Instap-prijs</td><td class="py-3 px-4 text-navy">€10/mnd VPS</td><td class="py-3 px-4 text-slate-500">€9/mnd</td><td class="py-3 px-4 text-slate-500">$19,99/mnd</td><td class="py-3 pl-4 text-slate-500">In M365 Business</td></tr>
+            <tr><td class="py-3 pr-4 font-medium text-slate-700">Prijs bij 50K ops</td><td class="py-3 px-4 text-navy">€10-30/mnd</td><td class="py-3 px-4 text-slate-500">€65/mnd</td><td class="py-3 px-4 text-slate-500">$350/mnd</td><td class="py-3 pl-4 text-slate-500">Variabel</td></tr>
+            <tr><td class="py-3 pr-4 font-medium text-slate-700">Workflow export</td><td class="py-3 px-4 text-navy">✅ JSON portable</td><td class="py-3 px-4 text-slate-500">⚠️ Blueprint</td><td class="py-3 px-4 text-slate-500">⚠️ Beperkt</td><td class="py-3 pl-4 text-slate-500">⚠️ Solution-pkg</td></tr>
+            <tr><td class="py-3 pr-4 font-medium text-slate-700">Beheer-overhead</td><td class="py-3 px-4 text-navy">⚠️ Server beheer</td><td class="py-3 px-4 text-slate-500">✅ Beheerd</td><td class="py-3 px-4 text-slate-500">✅ Beheerd</td><td class="py-3 pl-4 text-slate-500">✅ Microsoft</td></tr>
+            <tr><td class="py-3 pr-4 font-medium text-slate-700">RPA / desktop</td><td class="py-3 px-4 text-navy">⚠️ Via puppeteer</td><td class="py-3 px-4 text-slate-500">❌ Nee</td><td class="py-3 px-4 text-slate-500">❌ Nee</td><td class="py-3 pl-4 text-slate-500">✅ Desktop Flows</td></tr>
+            <tr><td class="py-3 pr-4 font-medium text-slate-700">Community/support</td><td class="py-3 px-4 text-navy">✅ Actief</td><td class="py-3 px-4 text-slate-500">✅ Goed</td><td class="py-3 px-4 text-slate-500">✅ Grootste</td><td class="py-3 pl-4 text-slate-500">✅ Microsoft</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">3-jaars cost-of-ownership — concrete cijfers</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De licentie- of serverkosten zijn maar een deel van de TCO. Voor een eerlijke vergelijking moet u ook beheer-uren, opschaling, premium-connectoren en migratiekosten meerekenen. Onderstaande scenario is gebaseerd op een typisch Nederlands MKB-bedrijf van 25 medewerkers met 12 actieve workflows en gemiddeld 25.000 operaties per maand in jaar 1, doorgroeiend naar 75.000 in jaar 3.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">n8n self-hosted (beheerd door agency):</strong> serverkosten 25 euro per maand (Hetzner CX32) plus agency-beheer 100 euro per maand all-in voor onderhoud, backups, updates en monitoring. Jaar 1: 1.500 euro. Jaar 2: 1.500 euro (geen extra kosten bij groei). Jaar 3: 1.500 euro. <strong class="text-navy">Totaal 3 jaar: 4.500 euro.</strong></p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Make.com Pro:</strong> jaar 1 met 25.000 ops valt in 16 euro per maand tier (192 euro per jaar). Jaar 2 met 50.000 ops: ongeveer 35 euro per maand (420 euro per jaar). Jaar 3 met 75.000 ops: ongeveer 80 euro per maand (960 euro per jaar). Plus 25 uur per jaar interne bouw en onderhoud (a 50 euro: 1.250 euro). <strong class="text-navy">Totaal 3 jaar: ongeveer 5.400 euro plus 1 uur waardeverlies bij vendor lock-in audit.</strong></p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Zapier Professional plus Team:</strong> jaar 1 met 25.000 taken in Team-tier 69 dollar per maand (760 euro per jaar). Jaar 2 met 50.000: 103,50 dollar per maand Company-tier (1.150 euro). Jaar 3 met 75.000: ongeveer 200 dollar per maand (2.220 euro). Plus 25 uur intern beheer (1.250 euro). <strong class="text-navy">Totaal 3 jaar: ongeveer 6.630 euro.</strong></p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Power Automate (M365 Business Premium plus Premium licentie voor 5 power-users):</strong> M365 Business Premium 22 euro per gebruiker per maand voor 25 gebruikers (6.600 euro per jaar — vaak al aanwezig dus marginale kosten 0). Power Automate Premium 15 dollar per gebruiker per maand voor 5 power-users (810 euro per jaar). 25 uur intern beheer (1.250 euro per jaar). <strong class="text-navy">Totaal 3 jaar incrementeel: ongeveer 6.180 euro.</strong></p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Conclusie TCO 3 jaar:</strong> n8n self-hosted is in dit middenmoot-scenario 1.000-2.000 euro goedkoper dan de cloud-platforms. Bij hogere volumes (>100.000 ops per maand) loopt het verschil op tot 5.000-10.000 euro. Bij volumes onder 5.000 ops per maand zijn alle 4 platforms ongeveer gelijk in TCO. Belangrijk: TCO is geen losstaand criterium — bij gelijke prijzen wint AVG plus AI-mogelijkheden plus exit-vrijheid de doorslag.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Use-case matching per Nederlandse MKB-branche</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Tandartspraktijk, huisarts, fysiotherapeut.</strong> Persoonsgegevens met BSN, BIG-nummers, medische dossiers — strikte AVG. n8n self-hosted met EU-VPS is praktisch de enige verantwoorde keuze. Workflows: agenda-bevestigingen via WhatsApp, no-show preventie, intake-formulier-doorzetting naar EPD, herinneringen voor controle-afspraken. Integratie met Promedico, Intramed of Anios via custom HTTP-nodes mogelijk.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Accountantskantoor en boekhouder.</strong> Klantdata met financieel-fiscale gevoeligheid plus AVG. n8n eerste keuze; Power Automate geschikt als kantoor M365-only is. Workflows: factuur-doorzetting van Mollie naar Moneybird, BTW-aangifte-reminders, document-OCR via AI met categorisatie, klantmail-routering, BTW-grenscontrole. AI-stappen voor document-extractie maken n8n vrijwel onmisbaar.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Webshop (WooCommerce, Shopify, Lightspeed).</strong> Geen extreem gevoelige data, snelheid van implementatie telt. Make.com goede instap voor 1.000-25.000 ops per maand; bij groei naar 75.000+ migratie naar n8n loont. Workflows: order-naar-boekhouding, voorraad-sync, klantmail-bevestigingen, retour-afhandeling, beoordeling-verzoeken via e-mail of WhatsApp, dynamische korting-trigger op basis van segment.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Marketing- en designbureau.</strong> Project-data, klant-briefings, conceptmateriaal — gemiddelde gevoeligheid. Make.com werkt prima voor de meeste workflows; n8n als bureau ook AI-diensten levert (waar workflow-stappen LLM-aanroepen bevatten). Workflows: lead-formulier-naar-CRM, klant-onboarding-mailsequenties, project-updates naar Slack of Teams, factuur-doorzetting, social-media-publicatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Maakindustrie en groothandel.</strong> ERP-integraties (Exact Globe, AFAS, Microsoft Dynamics) plus operationele data. Power Automate uitstekend bij Dynamics-stack of M365-only kantoor; n8n bij heterogene stack of behoefte aan AI-stappen voor voorraad-voorspelling of inkoop-automation. Workflows: ordervoortgang naar klant via mail of portaal, voorraad-mutaties, productie-planning-updates, leveranciersfactuur-validatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Juridisch advocatenkantoor en notaris.</strong> Hoog-vertrouwelijke dossiers, geheimhoudingsplicht. n8n self-hosted op eigen Nederlandse server vrijwel verplichte keuze. Workflows: dossier-aanmaak in Cleopatra of Basenet, agenda-bevestigingen, factuur-doorzetting, intake-formulier-routering, AI-document-classificatie binnen eigen kantoorservers.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor branche-specifiek advies, lees onze pagina's voor <a href="/sectoren/zorg/" class="text-brand-indigo hover:underline">zorgsector AI</a>, <a href="/sectoren/horeca/" class="text-brand-indigo hover:underline">horeca AI</a>, <a href="/kennisbank/ai-makelaar-software/" class="text-brand-indigo hover:underline">makelaars-AI</a> en <a href="/kennisbank/ai-voor-verzekeringsmakelaar-financieel-adviseur/" class="text-brand-indigo hover:underline">financieel adviseurs</a>.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Migratie-paden tussen platforms</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Zapier naar n8n.</strong> Veruit de meest voorkomende migratie in 2026, gedreven door kostenstijging Zapier en AVG-zorgen. Aanloop AI heeft 5 trajecten gedraaid; gemiddelde inspanning 12-25 uur voor 15-25 actieve workflows. Concept-mapping is 1-op-1: Zapier-trigger wordt n8n-trigger, Zapier-action wordt n8n-action, filter en code-stappen vertalen direct. Connector-dekking is meestal geen probleem (alle populaire SaaS bestaan in beide). Bouw fase-gewijs: eerste workflow als pilot, na akkoord rest in 2-3 weken.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Make.com naar n8n.</strong> Eenvoudiger dan Zapier-naar-n8n omdat Make's scenario-flow conceptueel dichterbij n8n's workflow-structuur ligt. 8-15 uur voor 10-20 workflows. Reden tot migratie meestal: AI-uitbreiding (n8n's LangChain-integraties), AVG-verscherping (self-hosting eis), of TCO-besparing bij groeiende volumes. Make.com Blueprint export is bruikbaar als documentatie maar niet importeerbaar in n8n.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Power Automate naar n8n.</strong> Lastiger door diepe M365-integratie; meestal hybride oplossing: Power Automate blijft voor M365-native flows, n8n erbij voor AI-stappen en niet-Microsoft-integraties. 1 traject gedraaid, 30 uur voor 12 workflows. Reden meestal: AI-mogelijkheden of exit-strategie weg van Microsoft-stack.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">n8n naar cloud-platform.</strong> Theoretisch mogelijk maar in de praktijk niet voorgekomen — bedrijven die n8n self-hosted runnen kiezen het juist voor de kenmerken die cloud-platforms missen. Geen klant in 2 jaar gemigreerd weg van n8n.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Migratie-strategie.</strong> Niet alles tegelijk, fase-gewijs over 2-6 weken. Behoud oude platform parallel actief tot nieuwe workflow geverifieerd in productie. Gebruik dubbel-loggen tijdens overgang om data-verlies te voorkomen. Eindig met afsluiten oude account, downloaden van logs en blueprint-exports voor audit-trail.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Aanloop AI's standaard-stack en advies</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI bouwt 95 procent van klant-workflows op n8n self-hosted in onze EU-datacenter (Frankfurt en Amsterdam). De resterende 5 procent is Power Automate voor klanten die volledig in Microsoft 365 zitten en alleen M365-native flows nodig hebben. Make.com en Zapier zetten we niet meer nieuw in voor klanten — alleen voor onderhoud van legacy-implementaties die we van vorige bureaus hebben overgenomen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Waarom n8n als hoofdkeuze.</strong> Vier redenen: (1) <strong>AVG-zekerheid</strong> — onze klanten in zorg, juridisch en financieel kunnen niet schipperen met datalocatie. n8n self-hosted op onze EU-VPS geeft die garantie. (2) <strong>AI-mogelijkheden</strong> — 70 procent van onze workflows in 2026 bevat tenminste 1 LLM-stap (classificatie, samenvatting, extractie, antwoord-generatie). n8n's LangChain-integraties zijn ongeevenaard. (3) <strong>Geen vendor lock-in</strong> — bij contract-einde krijgt elke klant n8n-export plus complete Git-historie. Geen klant is gegijzeld. (4) <strong>Schaalvoordeel</strong> — 1 n8n-instance hostt 5-10 klanten op gedeelde server tegen lage marginale kosten. Wij geven dat door als 5-10 euro per klant per maand i.p.v. 50-200 euro bij cloud-platforms.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Wanneer wij Power Automate adviseren.</strong> Voor MKB met 25+ medewerkers volledig op M365 (Outlook, Teams, SharePoint, Dynamics 365) en zonder gevoelige persoonsgegevens. De native integratie en al-betaalde licentie maken het in dit specifieke geval moeilijk te verslaan. Bij behoefte aan AI-stappen koppelen we n8n als integratie-laag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Wanneer wij Make.com nog acceptabel vinden.</strong> Voor MKB-eigenaar die zelf wil bouwen, geen agency-beheer wil, geen gevoelige data heeft en onder 25.000 ops per maand blijft. Make.com Pro 16 euro per maand is in dit scenario een redelijke DIY-keuze. Wij begeleiden met setup als second-line support, maar bouwen zelf liever direct in n8n.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Wanneer wij Zapier afraden.</strong> Voor vrijwel alle nieuwe MKB-implementaties in 2026. Te duur, te US-gefocust voor AVG, te zwak voor AI-workflows. Zapier blijft alleen acceptabel als specifieke niche-app uitsluitend Zapier ondersteunt en migratie naar alternatieve apps niet haalbaar is.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat te doen na het lezen — concrete vervolgstappen</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Stap 1: maak een lijst van uw 5 belangrijkste handmatige routinetaken die u zou willen automatiseren in 2026. Schrijf per taak op: trigger (wat start de taak), data (welke informatie verplaatst), eindbestemming (waar moet het naartoe), volume (hoe vaak per maand). Zonder deze lijst is platform-keuze pure speculatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Stap 2: beantwoord de 3 keuzevragen. (a) Loopt er gevoelige data door? Ja -> n8n self-hosted. Nee -> volgende vraag. (b) Werkt uw bedrijf volledig op Microsoft 365? Ja -> Power Automate. Nee -> volgende vraag. (c) Wilt u zelf bouwen zonder externe partner? Ja en onder 25K ops -> Make.com. Nee of meer ops -> n8n via agency.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Stap 3: bouw 1 proof-of-concept workflow op het gekozen platform. Niet de moeilijkste, ook niet de simpelste — kies een typische workflow die representatief is voor uw 5 prioriteiten. Meet bouw-tijd, foutgevoeligheid en herkenbaarheid voor collega's. Bij twijfel: bouw dezelfde workflow op 2 platforms parallel om verschil zelf te ervaren.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Stap 4: berekenen TCO over 3 jaar inclusief opschaling, externe partner-kosten en interne uren. Vergelijk met de waarde van teruggewonnen tijd (bespaarde uren x intern uurtarief). Een workflow-automation investering die binnen 6 maanden ROI heeft, is in 2026 vrijwel altijd haalbaar. Twijfelt u: vraag een <a href="/gratis-ai-scan/" class="text-brand-indigo hover:underline">gratis AI-scan</a> aan, dan beoordelen wij uw 5 workflows en geven eerlijk advies welk platform in uw specifieke situatie past — ook als wij niet de juiste partij blijken te zijn.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Wilt u Aanloop AI een offerte laten maken voor een n8n-stack inclusief beheer? Bel direct <a href="tel:+31624741597" class="text-brand-indigo hover:underline">+31 6 247 415 97</a> of mail naar <a href="mailto:hello@aanloopai.nl" class="text-brand-indigo hover:underline">hello@aanloopai.nl</a>. We reageren binnen 1 werkdag met indicatieve prijzen, doorlooptijd en 3 referent-klanten in uw branche die u direct kunt bellen.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Aanverwante kennisbank</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Verder lezen voor MKB-ondernemers</h2>
+      <ul class="text-slate-600 leading-relaxed space-y-3 list-disc pl-5">
+        <li><a href="/kennisbank/ai-workflow-automation/" class="text-brand-indigo hover:underline">AI Workflow Automation — complete uitleg voor beginners</a></li>
+        <li><a href="/kennisbank/n8n-vs-make-com/" class="text-brand-indigo hover:underline">n8n vs Make.com — open standaard versus vendor lock-in</a></li>
+        <li><a href="/kennisbank/n8n-automatisering-mkb/" class="text-brand-indigo hover:underline">n8n automatisering voor MKB — praktische scenario's</a></li>
+        <li><a href="/vergelijk/n8n-vs-zapier/" class="text-brand-indigo hover:underline">n8n vs Zapier — directe productvergelijking</a></li>
+        <li><a href="/kennisbank/ai-prijzen-vergelijking-mkb-2026/" class="text-brand-indigo hover:underline">AI prijzen vergelijking 2026 — wat kost AI echt voor Nederlands MKB</a></li>
+        <li><a href="/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/" class="text-brand-indigo hover:underline">AVG en GDPR compliance bij AI-implementatie voor MKB</a></li>
+        <li><a href="/kennisbank/eu-ai-act-mkb-nederland-2026/" class="text-brand-indigo hover:underline">EU AI Act voor MKB Nederland 2026 — wat moet u nu regelen</a></li>
+        <li><a href="/tarieven/" class="text-brand-indigo hover:underline">Aanloop AI tarieven — transparant en publiek</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
