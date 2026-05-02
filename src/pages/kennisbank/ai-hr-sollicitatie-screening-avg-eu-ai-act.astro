@@ -1,0 +1,218 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "AI in HR sollicitatie-screening — wat mag wel onder AVG en EU AI Act (MKB Nederland 2026)",
+  "description": "AI-gestuurde sollicitatie-screening (CV-parsing, video-interview-analyse, kandidaat-matching) valt onder Annex III van de EU AI Act als high-risk en onder AVG artikel 22 over automatische besluitvorming. Wat mag wel, wat moet u regelen, welke tools zijn AVG-conform en hoe haalt u 80 procent tijdwinst zonder boete-risico.",
+  "author": {
+    "@type": "Person",
+    "name": "Daan Verhoeven",
+    "@id": "https://aanloopai.nl/team/daan-verhoeven/#person",
+    "url": "https://aanloopai.nl/team/daan-verhoeven/",
+    "sameAs": ["https://www.linkedin.com/company/aanloop-ai", "https://www.linkedin.com/in/daanverhoeven/"],
+    "jobTitle": "Oprichter & CEO Aanloop AI",
+    "worksFor": {
+      "@type": "Organization",
+      "@id": "https://aanloopai.nl/#organization",
+      "name": "Aanloop AI"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://aanloopai.nl/#organization",
+    "name": "Aanloop AI",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aanloopai.nl/logo-mark-light-1024.png"
+    }
+  },
+  "datePublished": "2026-05-02",
+  "dateModified": "2026-05-02",
+  "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-hr-sollicitatie-screening-avg-eu-ai-act/",
+  "inLanguage": "nl-NL"
+};
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'AI sollicitatie-screening AVG en EU AI Act conform implementeren in 8 stappen',
+  description: 'Stappenplan voor AVG en EU AI Act-conforme AI-gestuurde CV-screening en kandidaat-matching in een MKB HR-team. Doorlooptijd 14 werkdagen voor een lichte high-risk implementatie.',
+  totalTime: 'P14D',
+  inLanguage: 'nl-NL',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Use-case afbakenen en risico-scope vaststellen', text: 'Bepaal exact welke deeltaak de AI doet: alleen CV-parsing en sortering, of ook scoring en afwijzing. Hoe meer zelfstandige beslissing, hoe zwaarder de high-risk plichten. Voor MKB raden we aan AI alleen ondersteunend (parsing, eerste filtering, samenvatting) in te zetten en de definitieve shortlist altijd door een mens te laten bevestigen.' },
+    { '@type': 'HowToStep', position: 2, name: 'DPIA uitvoeren (AVG-verplicht)', text: 'Bij geautomatiseerde verwerking van sollicitatie-data is een Data Protection Impact Assessment verplicht onder AVG artikel 35. Documenteer doelbinding, rechtsgrond (gerechtvaardigd belang met afweging), datacategorieen, bewaartermijn (4 weken na sluiting vacature, 1 jaar bij toestemming), beveiligingsmaatregelen en restrisico.' },
+    { '@type': 'HowToStep', position: 3, name: 'Bias-audit en data governance inrichten', text: 'EU AI Act eist data governance op high-risk AI. Vraag uw leverancier om een bias-rapport (gender, leeftijd, etniciteit, beperking) of laat een onafhankelijke audit uitvoeren. Test op 200 historische sollicitaties: wijken AI-scores significant af tussen demografische groepen? Documenteer bevindingen en mitigaties.' },
+    { '@type': 'HowToStep', position: 4, name: 'Human-in-the-loop hard configureren', text: 'AVG artikel 22 verbiedt uitsluitend geautomatiseerde besluiten met aanmerkelijke gevolgen. Bij elke afwijzing of doorzet naar shortlist moet een mens de uiteindelijke beslissing nemen. Concreet: AI levert score plus toelichting, recruiter klikt expliciet bevestigen of overrulen voor elke beslissing. Geen bulk-afwijzing zonder review.' },
+    { '@type': 'HowToStep', position: 5, name: 'Transparantie naar kandidaten regelen', text: 'In de vacaturetekst en sollicitatie-bevestiging vermelden dat AI wordt gebruikt voor een eerste selectie. Bij afwijzing op basis van AI-input: geef de mogelijkheid tot menselijke heroverweging (AVG artikel 22 lid 3) en een toelichting op hoofdcriteria. Aanloop AI levert NL-talige template-teksten.' },
+    { '@type': 'HowToStep', position: 6, name: 'Logging en audit-trail (EU AI Act vereiste)', text: 'Elke AI-beslissing wordt automatisch gelogd: kandidaat-id (gepseudonimiseerd), AI-input (geanonimiseerde CV-data), AI-output (score plus reden), recruiter-actie (bevestigd of overrulled), modelversie, timestamp. Bewaartermijn minimaal 6 maanden voor audit, conform AI Act artikel 12.' },
+    { '@type': 'HowToStep', position: 7, name: 'Conformity assessment en CE-markering plannen', text: 'Vanaf 2 augustus 2026 is voor high-risk AI een conformity assessment verplicht voordat het systeem in gebruik wordt genomen. Voor MKB met ingekochte oplossingen: vraag de leverancier om de EU-verklaring van overeenstemming en CE-markering. Voor zelfgebouwde n8n-workflows: documenteer interne assessment of kies voor light-versie zonder eindbeslissing.' },
+    { '@type': 'HowToStep', position: 8, name: 'EU-database registratie en lopend beheer', text: 'Vanaf augustus 2026 moeten high-risk AI-systemen in werving worden geregistreerd in de EU-database (artikel 71). Wijs een verantwoordelijke aan voor lopend beheer: kwartaal-monitoring op bias-drift, jaarlijkse herziening DPIA, update van AI-disclaimer bij modelwijzigingen, training nieuwe HR-medewerkers in AI-literacy.' },
+  ],
+};
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-hr-sollicitatie-screening-avg-eu-ai-act/', inLanguage: 'nl-NL' };
+
+const faqItems = [
+  { question: 'Mag ik als werkgever in Nederland AI gebruiken voor sollicitatie-screening?', answer: 'Ja, mits AVG en EU AI Act-conform. AI mag CV-parsing, eerste filtering en samenvatting doen. De definitieve afwijs- of doorzet-beslissing moet altijd door een mens genomen worden (AVG artikel 22). Vanaf 2 augustus 2026 valt sollicitatie-AI onder de high-risk categorie van de EU AI Act met aanvullende eisen voor risk management, logging, transparantie en conformity assessment.' },
+  { question: 'Waarom is AI in werving en selectie high-risk onder de EU AI Act?', answer: 'Omdat het direct invloed heeft op iemands toegang tot werk en inkomen. Annex III van de EU AI Act benoemt expliciet AI-systemen voor het filteren van sollicitaties, evalueren van kandidaten of plaatsen van gerichte vacatures als high-risk. Bewezen bias-incidenten (Amazon CV-tool 2018, HireVue facial-analysis 2021) hebben deze classificatie gerechtvaardigd. Gevolg: zware compliance-stack vereist voor elke MKB die AI inzet in HR-screening.' },
+  { question: 'Wat zegt AVG artikel 22 over automatische sollicitatie-afwijzing?', answer: 'AVG artikel 22 verbiedt uitsluitend geautomatiseerde besluitvorming met aanmerkelijke of rechtelijke gevolgen, behalve bij contractuele noodzaak, expliciete toestemming of wettelijke grondslag. Sollicitatie-afwijzing valt hieronder. Praktisch: AI mag ondersteunen, maar elke afwijzing moet door een mens worden bevestigd. De kandidaat heeft het recht op uitleg, menselijke heroverweging en bezwaar.' },
+  { question: 'Welke AI-tools voor recruitment zijn AVG en AI Act-conform in Nederland?', answer: 'Textkernel (Nederlands, Tilburg) is het meest gevestigde AVG-conforme platform voor CV-parsing en kandidaat-matching met EU-datacenter en bias-audit-rapporten. Recruitee biedt AI-functies binnen ATS met EU-hosting. HireVue (video-interview AI) is alleen aan te raden mits bias-audit en human-in-the-loop strikt zijn ingericht. Een zelfgebouwde n8n + LLM-pijplijn (Aanloop AI) biedt volledige controle, EU-only verwerking en aanpasbare audit-logging — geschikt voor MKB met 50 tot 500 sollicitaties per maand.' },
+  { question: 'Wat is de boete als ik AI Act niet naleef bij sollicitatie-screening?', answer: 'High-risk AI zonder conformity assessment, logging of human oversight valt onder categorie 2 boetes: tot 15 miljoen euro of 3 procent wereldwijde jaaromzet. Voor MKB realistisch: 25.000 tot 250.000 euro afhankelijk van overtreding en grootte. Daarnaast civiele aansprakelijkheid bij gediscrimineerde kandidaten (College voor de Rechten van de Mens) en reputatieschade.' },
+  { question: 'Hoeveel tijd bespaart AI bij sollicitatie-screening realistisch?', answer: 'Handmatige CV-screening kost gemiddeld 12 tot 18 minuten per CV, inclusief LinkedIn-check en eerste indruk. AI met human-in-the-loop reduceert dit naar 2 tot 4 minuten per CV (AI parseert en pre-scoort, recruiter bevestigt of overrulet). Bij 100 sollicitanten per vacature: van 25 uur naar 5 uur. Belangrijk: time-to-hire korter, niet de eindbeslissing geautomatiseerd.' },
+  { question: 'Moet ik kandidaten informeren dat ik AI gebruik in de sollicitatieprocedure?', answer: 'Ja. AVG artikel 13 vereist transparantie over het bestaan van geautomatiseerde besluitvorming, de logica daarachter en de gevolgen. Praktisch: in de vacaturetekst opnemen Wij gebruiken AI-ondersteunde screening voor een eerste selectie; uw uiteindelijke beoordeling is altijd door een recruiter. Bij afwijzing: kandidaat heeft recht op een toelichting plus mogelijkheid tot menselijke heroverweging.' },
+  { question: 'Mag AI video-interviews analyseren op stem en gezichtsuitdrukking?', answer: 'Zeer beperkt en met grote risicos. Sinds februari 2025 verbiedt de EU AI Act emotie-herkenning op de werkvloer en in onderwijs (Annex II). Bij sollicitatie geldt dit grijs gebied: HireVue heeft in 2021 facial-analysis-features uitgeschakeld na bias-klachten. Ons advies: gebruik geen emotie- of gezichtsanalyse, alleen transcriptie en inhoudelijke evaluatie van antwoorden. Aanloop AIs implementatie omzeilt elke vorm van biometrische analyse.' },
+  { question: 'Kan ik AI gebruiken om alle CVs onder een bepaalde score automatisch af te wijzen?', answer: 'Nee, niet zonder menselijke bevestiging. Onder AVG artikel 22 mag een afwijzing met aanmerkelijke gevolgen niet uitsluitend op AI-output gebaseerd zijn. Wel toegestaan: AI sorteert op score, recruiter ziet de bottom 70 procent met label lage match en kan in 1 klik bulk-overrulen of bulk-afwijzen na visuele review (gemiddeld 30 seconden per CV in plaats van 15 minuten). De mens beslist, AI optimaliseert workflow.' },
+  { question: 'Heeft een sollicitant recht op uitleg waarom AI hem heeft afgewezen?', answer: 'Ja, AVG artikel 22 lid 3 plus artikel 15 geven recht op betekenisvolle informatie over de logica van de besluitvorming. Praktisch: leg uit op welke hoofdcriteria de AI heeft gescoord (bijv. ervaringsjaren, specifieke skills, opleiding) zonder de algoritme-details prijs te geven. Bied de mogelijkheid tot menselijke heroverweging binnen 14 dagen. Aanloop AI levert standaard NL-talige uitleg-templates die EU AI Act-compliant zijn.' },
+];
+---
+
+<BaseLayout
+  title="AI sollicitatie-screening AVG en EU AI Act conform | MKB Nederland 2026"
+  description="AI in HR-screening (CV-parsing, kandidaat-matching, video-interview-analyse) is high-risk onder de EU AI Act. Wat mag wel, hoe blijft u AVG-conform, welke tools zijn geschikt en hoe haalt u 80 procent tijdwinst zonder boete-risico. 8-stappen compliance-checklist voor MKB."
+  schema={[articleSchema, howToSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · AI in HR + EU AI Act</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI in HR sollicitatie-screening — wat mag wel onder AVG en EU AI Act
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          AI-gestuurde CV-screening en kandidaat-matching halen tot 80 procent tijdwinst uit een gemiddelde MKB-vacature, maar vallen sinds 2 augustus 2026 onder de high-risk categorie van de EU AI Act en onder AVG artikel 22 over automatische besluitvorming. In dit artikel: wat u wel mag automatiseren, wat altijd menselijk moet blijven, welke tools (Textkernel, Recruitee, HireVue, custom n8n) AVG-conform zijn, een 8-stappen compliance-checklist, en de boetes tot 15 miljoen euro of 3 procent omzet bij niet-naleving.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-2">Direct antwoord</p>
+        <p class="text-sm text-slate-700">AI mag in NL HR-screening worden ingezet voor CV-parsing, samenvatting en pre-scoring — mits (1) een mens elke afwijs- of doorzet-beslissing bevestigt, (2) de DPIA is gedaan, (3) bias-audit is uitgevoerd, (4) kandidaten transparant worden geinformeerd, (5) elke AI-beslissing wordt gelogd, en (6) high-risk conformity assessment is geregeld. Tijdwinst typisch 70 tot 80 procent op screening-fase. Boete bij niet-naleving: tot 15 miljoen euro of 3 procent omzet onder EU AI Act.</p>
+      </div>
+
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Waarom AI in HR-screening high-risk is</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De EU AI Act benoemt in Annex III expliciet AI-systemen die worden gebruikt voor het werven of selecteren van natuurlijke personen — in het bijzonder voor het plaatsen van gerichte vacatures, het filteren van sollicitaties of het evalueren van kandidaten — als high-risk. De redenering: zulke AI heeft directe invloed op iemands toegang tot werk, inkomen en maatschappelijke kansen. Eerdere incidenten (Amazon trok in 2018 een interne CV-tool terug die vrouwen systematisch lager scoorde, HireVue schakelde in 2021 zijn facial-analysis-feature uit na klachten over discriminatie van mensen met een beperking) hebben deze classificatie gerechtvaardigd.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">High-risk classificatie betekent dat MKB-bedrijven die zulke AI inzetten een volledige compliance-stack moeten inrichten: risk management systeem, data governance, technische documentatie, automatische logging van elke beslissing, transparantie naar gebruikers en kandidaten, betekenisvolle menselijke supervisie, accuracy-monitoring, cybersecurity-maatregelen en — voor elk nieuw systeem na 2 augustus 2026 — een conformity assessment plus EU-database-registratie. Dit lijkt zwaar, maar voor de meeste MKB is het haalbaar als u AI alleen ondersteunend inzet en de eindbeslissing menselijk houdt.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Naast de EU AI Act geldt de AVG, die al sinds 2018 van kracht is. AVG artikel 22 verbiedt uitsluitend geautomatiseerde besluitvorming met aanmerkelijke of rechtelijke gevolgen — sollicitatie-afwijzing valt hier onomstreden onder. AVG artikel 13 en 15 vereisen transparantie naar de kandidaat over het bestaan en de logica van de AI-beoordeling. AVG artikel 35 vereist een Data Protection Impact Assessment (DPIA) voorafgaand aan grootschalige geautomatiseerde verwerking van sollicitatiedata. Deze AVG-eisen gelden NU al; de EU AI Act komt daar bovenop vanaf augustus 2026.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat mag AI wel en wat mag absoluut niet</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Wel toegestaan (mits compliance-stack rond):</strong> CV-parsing en datastructurering (extractie van naam, opleiding, ervaring, skills uit ongestructureerde PDF), automatische samenvatting van motivatiebrief in 3 zinnen, skill-matching tegen vacature-eisen, pre-scoring met toelichting (kandidaat A scoort hoog op Java en cloud-ervaring), sortering van shortlist op gewogen criteria, en automatische routering binnen het ATS naar de juiste recruiter. AI mag tijd besparen op repetitieve administratieve taken — dat is exact waar 80 procent van de tijdwinst zit.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Wel toegestaan met expliciete menselijke bevestiging:</strong> AI mag een voorstel doen om kandidaat X af te wijzen of door te zetten, mits een recruiter dit binnen het ATS expliciet bevestigt of overrulet. Bij bulk-acties (afwijzing van 70 lage-score-kandidaten in 1 klik) moet de recruiter een visuele review uitvoeren — gemiddeld 30 seconden per CV is voldoende, maar pure auto-rejection is niet toegestaan onder AVG artikel 22.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Niet toegestaan zonder zware aanvullende compliance:</strong> volledig geautomatiseerde afwijzingen met aanmerkelijke gevolgen voor de kandidaat (zonder menselijke tussenkomst), AI-scoring op basis van demografische kenmerken (leeftijd, geslacht, etniciteit, geloofsovertuiging, beperking), gebruik van bronnen die de kandidaat niet zelf heeft aangeleverd (bijv. social-media scraping zonder toestemming), en geheime profiling-modellen waarvan de logica niet uit te leggen is.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Verboden sinds februari 2025 (AI Act Annex II):</strong> emotie-herkenning op de werkvloer (en in interview-context grijs gebied — wij raden af). Real-time biometrische identificatie. Manipulatieve AI gericht op kwetsbare groepen. Social scoring. Praktisch voor HR: gebruik geen tools die op basis van stem-toon of gezichtsuitdrukking een score geven. Beperk u tot inhoudelijke evaluatie van antwoorden in geschreven of getranscribeerde vorm.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Vergelijking AI HR-tools voor Nederlandse MKB</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Textkernel (Tilburg, Nederland):</strong> marktleider voor CV-parsing en kandidaat-matching met EU-datacenters en gepubliceerde bias-rapporten. Werkt als API achter elk ATS (Carerix, Bullhorn, Recruitee, Salesforce). Nauwkeurigheid van CV-parsing typisch 95 procent op Nederlandse cvs. Prijsindicatie: 0,15 tot 0,40 euro per CV-parse. AVG-conform met SOC2 + ISO27001. Bias-audit per tool publiek beschikbaar. Sterk aan te raden voor MKB die volume-screening doen (50+ vacatures per jaar).</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Recruitee + ATS-AI (Amsterdam, Nederland):</strong> Nederlandse ATS met ingebouwde AI-features voor CV-samenvatting, kandidaat-scoring en e-mail-template-generatie. EU-hosting, AVG-conform standaard. Prijs: vanaf 199 euro per maand voor 10 actieve vacatures. Bias-audit beperkt — vraag specifiek om documentatie. Geschikt voor MKB met 5 tot 50 vacatures per jaar die geen losse tooling-stack willen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">HireVue (US):</strong> video-interview platform met AI-gebaseerde kandidaat-scoring. Sinds 2021 zijn de facial-analysis-features uitgeschakeld na bias-klachten; alleen transcriptie en inhoudelijke evaluatie blijft. Voor NL gebruik: vereist DPA-aanvulling met EU-data-clausules en zorgvuldige consent. Bias-audits beschikbaar maar in het Engels. Niet onze eerste keuze voor NL MKB — alternatief is een NL-talige LLM-transcriptie via Aanloop AI custom build.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Carerix + AI add-ons (Nederland):</strong> bekende NL-recruitment-software met groeiende AI-functionaliteit. EU-hosting, NL-talige interface. AI-features (CV-parsing via Textkernel-integratie, score-suggesties) zijn modulair uit- en in-schakelbaar. Geschikt voor recruitment-bureaus en grote MKB met eigen recruitment-team van 3+ personen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Aanloop AI custom build (n8n + GPT-4o op EU):</strong> zelfgebouwde workflow die CVs uit een mailbox of upload-folder ophaalt, parseert via OCR plus LLM, scoort tegen vacature-criteria, en de score plus toelichting in het bestaande ATS schrijft. Volledige controle op data (EU-only verwerking, geen modeltraining), aanpasbare logging-laag voor AI Act compliance, NL-talige rapportage. Eenmalig 4.500 tot 8.500 euro implementatie, maandelijks 297 tot 597 euro beheer afhankelijk van volume. Geschikt voor MKB met 100+ sollicitaties per maand of specifieke compliance-wensen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor de meeste Nederlandse MKB-bedrijven met 5 tot 50 vacatures per jaar is Recruitee plus Textkernel-koppeling de meest pragmatische keuze: gevestigde tools, NL-hosting, redelijke prijs, en compliance-documentatie standaard beschikbaar. Bij specifieke compliance-eisen of >100 vacatures per jaar wordt een Aanloop AI custom build pas economisch interessant.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">8-stappen compliance-checklist</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">(1) <strong class="text-navy">Use-case afbakenen:</strong> bepaal exact wat de AI wel en niet mag. Voor MKB raden we aan: AI parseert en pre-scoort, mens beslist. Hoe smaller de scope, hoe lichter de high-risk plichten. Doorlooptijd: 1 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(2) <strong class="text-navy">DPIA uitvoeren:</strong> verplicht onder AVG artikel 35. Documenteer doelbinding, rechtsgrond, datacategorieen, bewaartermijn (4 weken na sluiting vacature standaard, 1 jaar bij toestemming kandidaat), beveiligingsmaatregelen en restrisico. Aanloop AI levert een NL-talige DPIA-template (15 paginas, in te vullen in 4 uur). Doorlooptijd: 1 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(3) <strong class="text-navy">Bias-audit en data governance:</strong> EU AI Act eist data governance op high-risk AI. Vraag uw leverancier om een bias-rapport of laat een onafhankelijke audit uitvoeren op gender, leeftijd, etniciteit en beperking. Test op 200 historische sollicitaties. Documenteer bevindingen en mitigaties. Doorlooptijd: 3 tot 5 dagen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(4) <strong class="text-navy">Human-in-the-loop hard configureren:</strong> elke afwijzing of doorzet vereist menselijke bevestiging in het ATS. Geen bulk-auto-reject. Configureer de UI zo dat de recruiter expliciet moet klikken op bevestigen of overrulen voor elke AI-suggestie. Doorlooptijd: 1 dag voor configuratie, 0,5 dag voor team-training.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(5) <strong class="text-navy">Transparantie naar kandidaten:</strong> in vacaturetekst en bevestigings-mail vermelden dat AI wordt gebruikt voor een eerste selectie. Bij afwijzing op basis van AI-input: toelichting plus mogelijkheid tot menselijke heroverweging binnen 14 dagen. Aanloop AI levert NL-talige template-teksten conform AVG artikel 13 en 22. Doorlooptijd: 0,5 dag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(6) <strong class="text-navy">Logging en audit-trail:</strong> elke AI-beslissing automatisch loggen — kandidaat-id (gepseudonimiseerd), AI-input, AI-output, recruiter-actie, modelversie, timestamp. Bewaartermijn minimaal 6 maanden conform AI Act artikel 12. Aanloop AIs custom builds loggen standaard in een gestructureerde database, exporteerbaar voor toezichthouder-audit. Doorlooptijd: 0 (Aanloop-klanten), 2 dagen (eigen build).</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(7) <strong class="text-navy">Conformity assessment plannen:</strong> voor systemen in productie na 2 augustus 2026 is een conformity assessment verplicht. Voor ingekochte tools: vraag de leverancier om de EU-verklaring van overeenstemming en CE-markering. Voor zelfgebouwde n8n-workflows: documenteer de interne assessment of kies voor de light-versie zonder eindbeslissing (dan vervalt de high-risk-classificatie). Doorlooptijd: 2 tot 4 dagen voor documentatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">(8) <strong class="text-navy">EU-database registratie en lopend beheer:</strong> high-risk HR-AI in productie na augustus 2026 moet in de EU-database worden geregistreerd (artikel 71). Wijs een verantwoordelijke aan voor lopend beheer: kwartaal-monitoring op bias-drift, jaarlijkse herziening DPIA, update van AI-disclaimer bij modelwijzigingen, training nieuwe HR-medewerkers in AI-literacy (verplicht onder AI Act sinds februari 2025). Doorlooptijd: 0,5 dag voor registratie, lopend 4 uur per kwartaal.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Totale doorlooptijd voor MKB met ingekochte tool en team van 1 tot 3 recruiters: 8 tot 12 werkdagen verdeeld over 4 tot 6 weken. Voor zelfgebouwde Aanloop AI custom build: 14 tot 21 werkdagen inclusief eerste implementatie.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">ROI — concrete tijdwinst en kosten</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Uitgangssituatie zonder AI:</strong> een typische MKB-vacature trekt 50 tot 150 sollicitanten. Handmatige eerste screening kost gemiddeld 12 tot 18 minuten per CV (lezen, LinkedIn-check, eerste indruk vastleggen, e-mail-template kiezen). Bij 100 sollicitanten: 20 tot 30 uur recruiter-tijd per vacature. Voor MKB met 20 vacatures per jaar: 400 tot 600 uur per jaar — equivalent aan 0,3 FTE puur op screening.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Met AI plus human-in-the-loop:</strong> AI parseert, scoort en sorteert in 30 seconden per CV. Recruiter ziet de top 30 procent direct, doet diepe review (5 tot 8 minuten per CV), en bevestigt of overrulet de AI-suggestie voor de overige 70 procent in 30 tot 60 seconden per CV. Bij 100 sollicitanten: 3 tot 5 uur in plaats van 20 tot 30 uur. Tijdwinst 75 tot 85 procent op screening-fase.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Concrete kosten en terugverdientijd:</strong> Recruitee Pro plus Textkernel-koppeling kost 199 tot 499 euro per maand (afhankelijk van volume) — 2.400 tot 6.000 euro per jaar. Compliance-investering eenmalig (DPIA, bias-audit, training): 4.000 tot 8.000 euro. Aanloop AI custom build: 4.500 tot 8.500 euro implementatie + 297 tot 597 euro per maand. Met een uurtarief van 65 euro voor recruiter-tijd en 400 uur besparing per jaar: 26.000 euro besparing — terugverdientijd 3 tot 6 maanden.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Indirecte ROI:</strong> kortere time-to-hire (gemiddeld 28 dagen naar 14 dagen) reduceert kandidaat-uitval met circa 30 procent. Betere shortlist-kwaliteit door consistent gewogen criteria verbetert hire-quality (lagere turnover in eerste jaar). Hogere recruiter-satisfaction door minder repetitief CV-werk reduceert recruiter-turnover (gemiddeld 22 procent in NL HR-sector).</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Veelgemaakte fouten en hoe ze te vermijden</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 1: AI volledig laten beslissen.</strong> Bulk-auto-reject van alle kandidaten onder een score-drempel zonder menselijke review schendt AVG artikel 22. Mitigatie: configureer ATS zo dat elke afwijzing een expliciete recruiter-bevestiging vereist (kan in 30 seconden per CV in batch).</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 2: bias-audit overslaan.</strong> Veel MKB nemen aan dat een ingekochte tool wel bias-vrij zal zijn. EU AI Act eist documentatie. Mitigatie: vraag bij elke leverancier om het bias-rapport, of laat een interne audit doen op 200 historische sollicitaties (kost 1 dag, levert publiceerbare documentatie).</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 3: gevoelige data meesturen naar de AI.</strong> Foto, geboortedatum, postcode (postcode-discriminatie bestaat) en burgerlijke staat horen niet in de AI-input. Mitigatie: configureer een pre-processing stap die deze velden filtert voordat de AI scoring krijgt. Aanloop AIs custom build doet dit standaard.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 4: kandidaten niet informeren.</strong> Vacaturetekst zonder AI-disclosure is een AVG artikel 13-overtreding. Mitigatie: 1 zin in elke vacaturetekst plus 1 zin in bevestigings-mail. Template levert Aanloop AI gratis.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 5: geen logging.</strong> Bij toezichthouder-onderzoek of klacht van een afgewezen kandidaat moet u kunnen aantonen welke beslissing op welke gronden is genomen. Mitigatie: kies een tool met ingebouwde audit-logging of bouw logging-laag in custom workflow.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 6: emotie- of gezichts-analyse gebruiken.</strong> Sinds februari 2025 verboden of zwaar gereguleerd. Mitigatie: werk alleen met inhoudelijke evaluatie van geschreven of getranscribeerde antwoorden. Geen video-AI met facial-coding.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Hoe Aanloop AI het invult voor MKB-klanten</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI levert een end-to-end AVG en EU AI Act-conforme HR-screening voor Nederlandse MKB met 50 tot 500 sollicitanten per maand. De architectuur: CVs binnenkomend in mailbox of upload-folder worden door een n8n-workflow opgehaald, gepseudonimiseerd (foto, geboortedatum, postcode gefilterd), via een EU-only LLM-laag (GPT-4o op Microsoft Azure EU of Claude via Anthropic EU) geparseerd en gescoord tegen vacature-criteria, en de score plus toelichting wordt automatisch in het bestaande ATS (Recruitee, Carerix, Bullhorn) geschreven.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Compliance-stack standaard inbegrepen: NL-talige DPIA-template, bias-audit op 200 historische CVs voor go-live, audit-logging van elke beslissing in een gestructureerde database, NL-talige template-teksten voor vacatureteksten en kandidaat-communicatie, en een 1-uurs AI-literacy training met certificaten voor uw HR-team. Bij modelupdates (bijv. GPT-5 release): refresh-training en bias-revalidatie inbegrepen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Kostenmodel: eenmalig 4.500 tot 8.500 euro implementatie afhankelijk van volume en aantal vacaturetypen. Maandelijks 297 tot 597 euro beheer (logging, monitoring, kleine aanpassingen). Voor MKB met >100 sollicitaties per maand is dit binnen 4 tot 6 maanden terugverdiend door tijdwinst op recruiter-uren. Eerste implementatie typisch live binnen 14 werkdagen na akkoord.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Plan een 30-minuten gesprek via onze <a href="/gratis-ai-scan/" class="text-brand-indigo hover:underline">gratis AI-scan</a> om uw HR-volume, ATS en compliance-staat door te nemen. Of bel direct met <a href="tel:+31624741597" class="text-brand-indigo hover:underline">+31 6 247 415 97</a> voor een snelle check of AI HR-screening voor uw MKB economisch en juridisch zinvol is.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Ondersteunende dienst</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">AI HR-recruitment als kant-en-klare dienst</h2>
+      <p class="text-slate-600 leading-relaxed">Onze <a href="/diensten/ai-hr-recruitment/" class="text-brand-indigo hover:underline">AI HR-recruitment dienst</a> levert een EU AI Act en AVG-conform pakket: CV-parsing, kandidaat-matching, bias-audit, compliance-documentatie, audit-logging, NL-talige communicatie-templates en AI-literacy training. Inclusief integratie met Recruitee, Carerix of een ander Nederlands ATS. Vanaf 297 euro per maand bovenop een eenmalige implementatie van 4.500 tot 8.500 euro.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Veelgestelde vragen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-8">FAQ AI HR-screening</h2>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="group card cursor-pointer">
+            <summary class="flex items-start justify-between gap-4 list-none">
+              <h3 class="text-base font-semibold text-navy pr-4">{item.question}</h3>
+              <svg class="w-5 h-5 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight border-t border-slate-200">
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow mb-3">Verder lezen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy text-balance mb-6">Verder verdiepen.</h2>
+      <div class="flex flex-wrap gap-2">
+        <a href="/kennisbank/eu-ai-act-mkb-nederland-2026/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">EU AI Act voor MKB →</a>
+        <a href="/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI en AVG-compliance →</a>
+        <a href="/kennisbank/ai-voor-uitzendbureau-recruitment-nederland/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI voor uitzendbureaus →</a>
+        <a href="/diensten/ai-hr-recruitment/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI HR-recruitment dienst →</a>
+        <a href="/avg-checklist-ai-mkb/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">25-punts AVG-checklist →</a>
+        <a href="/gratis-ai-scan/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">Gratis compliance-scan →</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
