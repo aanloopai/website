@@ -58,6 +58,28 @@ const quotes = [
     role: 'Oprichter & CEO Aanloop AI',
   },
 ];
+
+const missionStatement = 'Aanloop AI maakt enterprise-grade AI toegankelijk voor het Nederlandse MKB. Wij geloven dat AI alleen waarde toevoegt als het meetbaar werk uit handen neemt — vanaf de eerste week, niet over twee jaar. Onze drie productlijnen (Marco, Emma en AI-document automation) zijn ontworpen om binnen 7 werkdagen live te gaan, EU-only data te garanderen en maandelijks opzegbaar te zijn. Geen lock-in, geen pilot-budgets, wel resultaat.';
+
+const brandColors = [
+  { name: 'Midnight', hex: '#0B1220', usage: 'Primaire achtergrond, footer, dark surfaces' },
+  { name: 'Navy', hex: '#0F1E3D', usage: 'Headlines, primaire tekst, navigatie' },
+  { name: 'Pearl', hex: '#F4F6FA', usage: 'Tekst op donkere achtergrond, light surfaces' },
+  { name: 'Slate-600', hex: '#475569', usage: 'Body-tekst, secundaire informatie' },
+  { name: 'Slate-200', hex: '#E2E8F0', usage: 'Borders, subtle dividers' },
+  { name: 'Indigo (accent)', hex: '#4F46E5', usage: 'Call-to-action, links, accent-band' },
+];
+
+const factsheetLines = [
+  'Aanloop AI B.V. - KvK 88606902 - opgericht 2024 in Rotterdam.',
+  'Drie productlijnen: Marco (AI-receptionist telefoon), Emma (AI WhatsApp), AI-document automation.',
+  'Vanaf 197 euro per maand (Emma Starter); 297 euro (Marco Starter); 497 euro (Marco Groei).',
+  '7 werkdagen tot live-gang, 99,9 procent SLA, EU-only datacentra (Frankfurt/Amsterdam).',
+  'AVG-DPA in 1 dag ondertekend; NEN 7510 add-on voor zorgsector beschikbaar.',
+  '80+ klanten in zorg, juridisch, automotive, hospitality, retail, bouw, recruitment.',
+  'Stack: ElevenLabs voice, GPT-4o + Claude 3.5 + Mistral LLM, n8n self-hosted, Dify RAG.',
+  'Founder: Daan Verhoeven - daan@aanloopai.nl - LinkedIn /in/daanverhoeven/',
+];
 ---
 
 <BaseLayout
@@ -76,6 +98,13 @@ const quotes = [
         <a href="mailto:pers@aanloopai.nl" class="btn-primary">Mail pers@aanloopai.nl</a>
         <a href="https://wa.me/31624741597" class="btn-outline">WhatsApp Daan direct</a>
       </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-6">Onze missie</h2>
+      <p class="text-lg text-slate-700 leading-relaxed">{missionStatement}</p>
     </div>
   </section>
 
@@ -160,6 +189,34 @@ const quotes = [
         </div>
       </div>
       <p class="text-xs text-slate-500 mt-6">Gebruik onze logos zoals geleverd, zonder kleurwijzigingen of vervorming. Voor verdere merkvragen: pers@aanloopai.nl.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl">
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-6">Brand-kleuren</h2>
+      <p class="text-slate-600 mb-6 text-sm">Gebruik onze huiskleuren wanneer u Aanloop AI in een artikel of presentatie afbeeldt. Geen alternatieve hex-codes; geen gradients gemixt met andere brand-elementen.</p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {brandColors.map((c) => (
+          <div class="card p-5 bg-white border border-slate-200">
+            <div class="rounded-lg h-16 mb-3 border border-slate-200" style={`background:${c.hex}`}></div>
+            <p class="font-semibold text-navy text-sm">{c.name}</p>
+            <p class="font-mono text-xs text-slate-500 mb-2">{c.hex}</p>
+            <p class="text-xs text-slate-600 leading-snug">{c.usage}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-6">Factsheet (kopieerbaar)</h2>
+      <p class="text-slate-600 text-sm mb-4">Acht bullet-feiten voor in een artikel-sidebar of factsheet-rij. Vrij te citeren met bronvermelding "Aanloop AI".</p>
+      <ul class="space-y-2 list-disc pl-5 text-slate-700 text-sm leading-relaxed">
+        {factsheetLines.map((line) => (<li>{line}</li>))}
+      </ul>
+      <p class="text-xs text-slate-500 mt-6">Een uitgebreide PDF-versie sturen wij op aanvraag — mail <a href="mailto:pers@aanloopai.nl" class="text-brand-indigo underline">pers@aanloopai.nl</a>.</p>
     </div>
   </section>
 
