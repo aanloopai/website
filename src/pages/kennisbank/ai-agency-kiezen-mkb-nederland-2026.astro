@@ -1,0 +1,212 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "AI Agency Kiezen Nederland 2026 — 12 Selectiecriteria voor MKB",
+  "description": "Een AI partner kiezen voor uw MKB in 2026? Deze buyer guide behandelt de 12 belangrijkste selectiecriteria — van AVG-compliance en EU datacenter tot transparante tarieven, vendor lock-in en SLA. Met 12 red flags, scoringskaart per kandidaat en het volledige antwoord van Aanloop AI op elk criterium.",
+  "author": {
+    "@type": "Person",
+    "name": "Daan Verhoeven",
+    "@id": "https://aanloopai.nl/team/daan-verhoeven/#person",
+    "url": "https://aanloopai.nl/team/daan-verhoeven/",
+    "sameAs": ["https://www.linkedin.com/company/aanloop-ai", "https://www.linkedin.com/in/daanverhoeven/"],
+    "jobTitle": "Oprichter & CEO Aanloop AI",
+    "worksFor": {
+      "@type": "Organization",
+      "@id": "https://aanloopai.nl/#organization",
+      "name": "Aanloop AI"
+    }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://aanloopai.nl/#organization",
+    "name": "Aanloop AI",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aanloopai.nl/logo-mark-light-1024.png"
+    }
+  },
+  "datePublished": "2026-05-02",
+  "dateModified": "2026-05-02",
+  "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-agency-kiezen-mkb-nederland-2026/",
+  "inLanguage": "nl-NL"
+};
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'AI agency selecteren voor uw MKB-bedrijf',
+  description: 'Stappenplan om in maximaal 5 werkdagen de juiste AI partner voor uw MKB te selecteren — van shortlist tot ondertekende overeenkomst.',
+  totalTime: 'P5D',
+  inLanguage: 'nl-NL',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Doel scherp formuleren', text: 'Schrijf in 1 zin het concrete probleem op dat AI moet oplossen — bijvoorbeeld 24/7 telefoon aannemen, no-shows verminderen of WhatsApp 100 dagelijkse vragen automatiseren. Zonder scherp doel kiest u op marketing-praatjes.' },
+    { '@type': 'HowToStep', position: 2, name: 'Shortlist van 3 tot 5 partijen', text: 'Verzamel kandidaten via Google, branche-verenigingen, LinkedIn en collega-MKB. Eis: KvK-registratie in Nederland, minimaal 2 jaar actief, openbare cases binnen uw sector. Sluit consumenten-tools en internationale resellers uit.' },
+    { '@type': 'HowToStep', position: 3, name: 'Tarieven-transparantie toetsen', text: 'Per kandidaat de volledige cost-of-ownership opvragen: maandtarief, setup, telefonie, API-fees, jaarlijkse stijging, kosten van uitbreiding. Wantrouw partijen die geen volledig bedrag op offerte willen zetten.' },
+    { '@type': 'HowToStep', position: 4, name: 'AVG en datalocatie verifieren', text: 'Eis schriftelijk waar klantdata wordt verwerkt en opgeslagen — Frankfurt, Amsterdam of niet-EU. Controleer verwerkersovereenkomst (DPA) op clausules over modeltraining (mag niet zonder toestemming) en sub-processors.' },
+    { '@type': 'HowToStep', position: 5, name: 'EU AI Act compliance vragen', text: 'Vraag per kandidaat naar risico-classificatie van de geleverde AI, transparantie-disclaimers, logging-policy en AI-literacy training. Geen antwoord betekent geen compliance — pas op voor reputatie- en handhavingsrisico vanaf 2026.' },
+    { '@type': 'HowToStep', position: 6, name: 'Cases en referenties opvragen', text: 'Eis minimaal 3 referent-klanten waarvan 1 binnen uw branche. Bel die klanten direct — niet alleen e-mail. Vraag naar onverwachte issues, snelheid van support en wat ze achteraf anders zouden doen.' },
+    { '@type': 'HowToStep', position: 7, name: 'Pilot of proefperiode afspreken', text: 'Geen pilot, geen handtekening. Minimaal 2 weken proeftijd waarin u zonder kosten of met beperkte kosten kunt opzeggen als de techniek of samenwerking niet bevalt. Vermijd jaarcontracten zonder pilot-clausule.' },
+    { '@type': 'HowToStep', position: 8, name: 'SLA en supporturen vastleggen', text: 'Schriftelijk: uptime-garantie minimaal 99,5 procent, response-tijd op kritieke issues binnen 1 uur kantoortijd, contact-kanalen (telefoon plus e-mail plus chat) en escalatie-pad bij downtime.' },
+    { '@type': 'HowToStep', position: 9, name: 'Open standaarden boven vendor lock-in', text: 'Vraag of de oplossing draait op open standaarden zoals n8n self-hosted of een proprietary platform. Bij vendor lock-in kunt u niet zomaar wisselen — u betaalt voor de rest van de levensduur het tarief van die ene leverancier.' },
+    { '@type': 'HowToStep', position: 10, name: 'Implementatie-tijdpad inschatten', text: 'Realistisch voor MKB: 7 tot 14 werkdagen tot live met klantgesprek-AI. Wees alert bij beloften van same-day go-live (vaak suggereert dat de leverancier geen serieuze training of testperiode doet).' },
+    { '@type': 'HowToStep', position: 11, name: 'Schaalbaarheid en upgrade-pad checken', text: 'Vraag naar upgrade-route binnen het portfolio (bijv. van 1-kanaal AI naar omnichannel, van Starter naar Growth). Kosten voor migratie moeten 0 of minimaal zijn. Een AI partner moet meegroeien zonder dat u opnieuw moet aanbesteden.' },
+    { '@type': 'HowToStep', position: 12, name: 'Beslissing en ondertekening', text: 'Vergelijk uw 3 tot 5 kandidaten op een scoringskaart per criterium. Kies de partij die op AVG, transparantie, branchecases en SLA het hoogst scoort — niet de goedkoopste. Onderteken pas na schriftelijke pilot-clausule en compliance-pakket.' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/ai-agency-kiezen-mkb-nederland-2026/',
+  inLanguage: 'nl-NL'
+};
+
+const faqItems = [
+  { question: 'Wat is een AI agency en waarin verschilt het van een softwareleverancier?', answer: 'Een AI agency is een gespecialiseerd bureau dat AI-toepassingen ontwerpt, implementeert en beheert voor uw bedrijf — typisch klantgesprek-AI, document-automatisering of workflow-automatisering. Een softwareleverancier verkoopt een product (SaaS), een AI agency levert een ingerichte oplossing inclusief integratie, training, monitoring en doorontwikkeling. Voor MKB met beperkte interne IT-kennis is een AI agency vaak passender.' },
+  { question: 'Welke vragen stel ik bij een eerste gesprek met een AI agency?', answer: 'Vier kern-vragen: (1) Waar staat onze klantdata fysiek opgeslagen? (Antwoord moet zijn: Frankfurt of Amsterdam, niet VS of Azie.) (2) Wordt onze data gebruikt voor modeltraining? (Antwoord moet zijn: nee, contractueel uitgesloten.) (3) Welke prijs is volledig — inclusief setup, telefonie, API-kosten, support en jaarlijkse stijging? (Antwoord moet 1 bedrag zijn, geen vanaf-prijs.) (4) Mag ik 3 referent-klanten direct bellen? (Antwoord moet zijn: ja, hier zijn de telefoonnummers.) Als 1 van deze 4 vragen ontwijkend wordt beantwoord: ander bureau bellen.' },
+  { question: 'Hoe herken ik een onbetrouwbaar AI agency?', answer: 'Acht red flags: (1) Geen KvK-registratie in Nederland of UBO niet zichtbaar. (2) Vanaf-prijzen zonder all-in offerte. (3) Geen openbare cases of referenties. (4) Datacenter buiten EU of vaag over locatie. (5) Geen verwerkersovereenkomst standaard meegeleverd. (6) Beloofde same-day go-live zonder pilot. (7) Jaarcontract verplicht zonder opzegmogelijkheid bij niet-presteren. (8) Generieke verkooppraatjes zonder specifieke kennis van uw branche. Een of twee red flags is geel, drie of meer is rood.' },
+  { question: 'Wat is een redelijke maandprijs voor een AI partner in Nederland?', answer: 'Voor MKB met 1 klantgesprek-AI (telefoon of WhatsApp): 200 tot 600 euro per maand all-in. Voor omnichannel (telefoon plus WhatsApp plus chat plus document-AI): 800 tot 1.500 euro per maand. Setup: 0 tot 800 euro eenmalig. Wat u meer betaalt is meestal verkoopkosten of marge — niet meer functionaliteit. Tarieven onder 100 euro per maand wijzen op een consumenten-tool of een leverancier die nauwelijks bestaansrecht heeft (sluit binnen jaar). Tarieven boven 2.000 euro per maand voor MKB-omvang zijn meestal enterprise-pakketten verkocht aan de verkeerde doelgroep.' },
+  { question: 'Moet een AI agency in Nederland gevestigd zijn?', answer: 'Niet wettelijk, wel sterk aanbevolen voor het MKB. Voordelen: AVG-compliance is gemakkelijker te toetsen, juridische geschillen worden afgehandeld in NL recht, communicatie in moedertaal vermindert misverstanden, lokale referenties uit dezelfde markt, en tijdzone-overlap voor real-time support. Internationale platforms (Synthflow, Vapi, Voiceflow) kunt u zelf inrichten als u technisch onderlegd bent — voor MKB met beperkte IT-kennis is een NL agency 80 procent van de tijd de betere keuze.' },
+  { question: 'Hoe lang duurt een gemiddelde AI implementatie?', answer: 'Voor klantgesprek-AI (telefoon of WhatsApp) bij MKB: 7 tot 14 werkdagen tot live. Eerste 2 dagen: intake en kennis-uittreksel. Dag 3 tot 7: configuratie en eerste training-loop. Dag 8 tot 10: testperiode met begeleiding. Dag 11 tot 14: go-live en monitoring. Beloven van same-day go-live betekent dat de leverancier de training-stap overslaat — kwaliteit valt dan tegen. Voor complexere oplossingen (omnichannel plus integraties met bestaande CRM): 4 tot 8 weken realistisch.' },
+  { question: 'Wat is vendor lock-in en waarom belangrijk?', answer: 'Vendor lock-in betekent dat u na implementatie technisch of commercieel niet kunt overstappen naar een andere leverancier zonder volledig opnieuw te bouwen. Symptomen: proprietary platform zonder export, kennisbank in gesloten formaat, AI-modellen die alleen bij die provider draaien, jaartariefen die niet kunnen worden afgesplitst. Gevolg: u bent gevangen aan tarief-stijgingen en kwaliteitsverlies. Open alternatief: oplossingen op n8n self-hosted plus standaard LLM-providers (OpenAI, Anthropic) waarvan u zelf de API-keys bezit. Aanloop AI gebruikt deze open stack — uw kennisbank en workflows zijn altijd portabel.' },
+  { question: 'Welke garanties moet een AI agency contractueel bieden?', answer: 'Vijf must-haves in het contract: (1) Uptime-SLA minimaal 99,5 procent met financiele kortingsregeling bij overschrijding. (2) Klantdata blijft uw eigendom, exporteerbaar bij contract-einde, geen modeltraining zonder schriftelijke toestemming. (3) Datacenter binnen EU (Frankfurt of Amsterdam expliciet vastgelegd). (4) Maandelijks opzegbaar na initiele pilot-periode (dus geen jaarcontract dat u 11 maanden gevangen houdt). (5) AVG-conforme verwerkersovereenkomst standaard meegeleverd. Ontbreken van 1 van deze 5: niet tekenen.' },
+  { question: 'Wat is het verschil tussen een AI agency en een no-code builder?', answer: 'Een no-code platform (Voiceflow, Botpress, Watermelon) levert een tool waarmee u zelf chatbots of voicebots bouwt — u betaalt licentie, u doet het werk. Een AI agency neemt de volledige inrichting, training en doorontwikkeling op zich — u betaalt managed service, het werk wordt voor u gedaan. Voor MKB met sterke IT-afdeling: no-code kan goedkoper. Voor MKB zonder dedicated AI-resources: een agency levert betere kwaliteit per euro omdat u niet leert wat u nooit meer hoeft te doen. Aanloop AI hanteert een hybride model: open n8n-stack die u in theorie zelf zou kunnen overnemen, gecombineerd met volledig managed service.' },
+  { question: 'Hoe weeg ik prijs versus kwaliteit bij AI agencies?', answer: 'Niet de goedkoopste kiezen, ook niet de duurste. Beste-value-zone voor MKB: middenmoot van uw shortlist op prijs, hoogste score op AVG plus referenties plus SLA. Een AI partner kost u over 3 jaar typisch 15.000 tot 60.000 euro all-in — een verschil van 50 euro per maand op tariefen weegt totaal niet op tegen een verschil van 10 procent in kwaliteit, downtime of klantbeleving. De duurste verstrekkers zijn vaak buitenlandse enterprise-platforms die hun MKB-tier onderverkopen; de goedkoopste zijn vaak ZZP-bouwers zonder business continuity.' },
+  { question: 'Kan ik later wisselen van AI agency als het niet bevalt?', answer: 'Technisch: alleen als uw kennisbank, workflows en kanalen op open standaarden draaien (n8n plus standaard API-providers). Bij vendor lock-in (proprietary platform): u moet vrijwel volledig opnieuw bouwen. Commercieel: maandelijks opzegbaar contracten geven u maandelijks de keuze. Aanloop AI ontwerpt zo dat data-exit binnen 5 werkdagen mogelijk is — uw kennisbank wordt opgeleverd in markdown plus JSON, uw workflows in n8n-export, uw historische logs in CSV. Geen klant is gegijzeld.' },
+  { question: 'Wat doet Aanloop AI anders dan andere Nederlandse AI agencies?', answer: 'Vier punten: (1) 100 procent open stack (n8n plus standaard LLM-providers) — geen vendor lock-in. (2) All-in transparant tarief op tarieven-pagina, geen vanaf-prijzen. (3) EU-only data verwerking met expliciete clausule tegen modeltraining. (4) EU AI Act compliance-pakket standaard meegeleverd inclusief AI-literacy e-learning. KvK 88606902, Rotterdam-gevestigd, oprichter publiek aanspreekbaar (LinkedIn). Maandelijks opzegbaar na 2-weken pilot. Heeft u verifieerbare cases nodig: vraag een referent-klant uit uw branche aan via hello@aanloopai.nl en u kunt direct bellen.' },
+];
+---
+
+<BaseLayout
+  title="AI Agency Kiezen Nederland 2026 — 12 Selectiecriteria voor MKB | Aanloop AI"
+  description="Buyer guide voor MKB-ondernemers die een AI partner zoeken in 2026. 12 selectiecriteria, 8 red flags, scoringskaart en het volledige antwoord van Aanloop AI op elk criterium. AVG-compliance, EU datacenter, transparante tarieven en geen vendor lock-in."
+  schema={[articleSchema, howToSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Buyer guide</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI Agency Kiezen Nederland 2026 — 12 Selectiecriteria voor MKB
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Het Nederlandse MKB-landschap telt in 2026 ruim 200 partijen die zich AI agency, AI bureau of AI consultant noemen. Voor een ondernemer zonder AI-achtergrond is het bijna onmogelijk om kwaliteit van marketing-praatjes te onderscheiden. Deze buyer guide behandelt de 12 selectiecriteria die er echt toe doen — van AVG-compliance en EU datacenter tot transparante tarieven, vendor lock-in en SLA. Met 8 red flags, een scoringskaart per kandidaat en het volledige antwoord van Aanloop AI op elk criterium.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat is een AI agency precies</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI agency is een gespecialiseerd bureau dat AI-toepassingen ontwerpt, implementeert en beheert voor uw bedrijf. De typische scope: een AI receptionist die 24/7 telefoon aanneemt, een WhatsApp bot die routine-vragen afhandelt, document-automatisering voor offertes of facturen, of workflow-automation tussen uw bestaande systemen. Het verschil met een softwareleverancier: een softwareleverancier verkoopt een product (SaaS-licentie) waar u zelf mee aan de slag gaat; een AI agency levert een complete dienstverlening inclusief intake, training, integratie, monitoring en doorontwikkeling.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor het Nederlandse MKB is een AI agency vaak passender dan een SaaS-tool of een freelance ontwikkelaar. Een SaaS-tool vereist dat u zelf alle inrichting doet — voor een kapsalon, garage of accountantskantoor zonder dedicated AI-resources is dat niet haalbaar. Een freelance ontwikkelaar levert een eenmalige bouw, maar voor AI is doorontwikkeling cruciaal: nieuwe modellen, veranderende klantvragen, kennisbank-updates. Een AI agency neemt die continuiteit op zich.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">In Nederland zijn er drie typen aanbieders die zich AI agency noemen: (1) gespecialiseerde AI-bureaus met eigen technologie en doorlopende dienstverlening — zoals Aanloop AI. (2) Brede digital agencies die AI als aanvullende dienst verkopen — vaak op basis van witgelabelde internationale platforms. (3) ZZP-AI-bouwers die zelfstandig op aanvraag chatbots opleveren. Voor MKB met operationele afhankelijkheid van AI (klantgesprek-AI staat altijd aan, valt deze uit dan staat uw bedrijf stil) is type 1 vrijwel altijd de juiste keuze. Type 2 levert oppervlakkige kennis, type 3 ontbreekt business continuity.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">De 12 selectiecriteria — wat echt telt</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">1. AVG-compliance en EU datacenter.</strong> Klantdata moet binnen de EU verwerkt en opgeslagen worden — Frankfurt of Amsterdam zijn de standaard-locaties. Vraag schriftelijk om de verwerkings-locatie en eis een verwerkersovereenkomst die expliciet uitsluit dat uw data wordt gebruikt voor modeltraining zonder toestemming. Bij twijfel over de locatie van sub-processors (LLM-provider, telefonie, hosting): doorlopen tot u bevestiging hebt op elke laag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">2. KvK-registratie en juridische vestiging in Nederland.</strong> Eis een Nederlandse rechtspersoon (BV of eenmanszaak) met geldige KvK-inschrijving. Voordeel: bij juridische geschillen geldt Nederlands recht en kunt u via NL rechtsbijstand incasseren. UBO-register raadplegen om eigenaar-structuur te zien — anonieme of buitenlandse holding-constructies wijzen vaak op vluchtige aanbieders. Aanloop AI: KvK 88606902, Rotterdam-vestiging, UBO publiekelijk inzichtelijk.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">3. Transparante tarieven zonder verborgen kosten.</strong> Een betrouwbaar AI agency publiceert standaard-tarieven op de website — geen vanaf-prijzen of altijd in gesprek-formuleringen. Vraag bij offerte expliciet naar setup-fee, telefonie-kosten naar mobiel of buitenland, API-kosten LLM-provider, jaarlijkse tariefstijging en kosten voor extra integraties. Een eerlijke offerte heeft 1 totaalbedrag voor 12 maanden inclusief alles. <a href="/tarieven/" class="text-brand-indigo hover:underline">Aanloop AI tarieven-pagina</a> toont alle tarieven publiek.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">4. Concrete cases en referenties in uw branche.</strong> Eis minimaal 3 verifieerbare referent-klanten waarvan minimaal 1 binnen uw branche. Bel die klanten direct op — niet alleen e-mail. Vraag naar onverwachte issues, snelheid van support, en wat ze achteraf anders zouden doen. Een AI agency dat geen klanten kan noemen of weigert telefoon-contact, heeft geen substantiele klantenbasis.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">5. Eigendom van data en geen modeltraining op uw data.</strong> Uw klantgesprekken, kennisbank en historische data blijven uw eigendom. Verwerkersovereenkomst moet expliciet vastleggen dat de provider deze data niet gebruikt voor het trainen van eigen modellen, niet deelt met derden buiten contractueel toegestane sub-processors, en bij contract-einde volledig exporteert in een open formaat. Geen of vage clausule: niet tekenen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">6. Nederlandse taal-kwaliteit en culturele context.</strong> Voor klantgesprek-AI in NL is moedertaal-niveau-Nederlands essentieel. Test bij elke kandidaat live: vraag een demo waarin de AI Nederlands praat met regionale accenten, omgangsvormen (u versus je), Nederlandse adres-notatie en betalings-praktijk (factuur 14 dagen, IBAN, KvK). AI die op Engelse modellen draait zonder Nederlandse fine-tuning klinkt vaak fout — en uw klanten merken dat direct.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">7. EU AI Act compliance ingebouwd.</strong> Sinds februari 2025 verplicht: transparantie-disclaimer (AI maakt zichzelf bekend bij elk gesprek), logging van AI-interacties, AI-literacy training voor uw medewerkers, en risico-classificatie. Een AI agency dat hier vragen niet kan beantwoorden, levert geen AI Act compliante implementatie. Boetes lopen op tot 35 miljoen euro of 7 procent omzet — zie ook ons artikel <a href="/kennisbank/eu-ai-act-mkb-nederland-2026/" class="text-brand-indigo hover:underline">EU AI Act voor MKB Nederland 2026</a>.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">8. Open standaarden boven vendor lock-in.</strong> Vraag op welk technologie-platform de oplossing draait. Antwoord moet open standaarden bevatten: n8n self-hosted of cloud (workflow), standaard LLM-providers (OpenAI of Anthropic of Google met expliciete API-keys), open kanaal-integraties. Proprietary platforms zonder export-mogelijkheid betekenen dat u na 2 jaar dezelfde leverancier moet houden — of opnieuw bouwen. <a href="/kennisbank/n8n-vs-make-com/" class="text-brand-indigo hover:underline">Onze vergelijking n8n vs Make vs Zapier</a> behandelt dit verder.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">9. SLA, uptime-garantie en support-uren.</strong> Schriftelijk in contract: uptime-garantie minimaal 99,5 procent met kortingsregeling bij overschrijding (bijv. 10 procent korting per uur downtime), response-tijd op kritieke issues binnen 1 uur kantoortijd, contact-kanalen (telefoon plus e-mail plus chat) en escalatie-pad bij downtime. Eis een named contact persoon plus een 24/7 escalatie-nummer voor harde uitval. Zonder SLA bent u machteloos bij downtime.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">10. Tijd-tot-go-live en pilot-mogelijkheid.</strong> Realistisch voor klantgesprek-AI in MKB: 7 tot 14 werkdagen. Beloven van same-day go-live betekent vaak dat de training-stap wordt overgeslagen — kwaliteit valt dan tegen. Eis een pilot-clausule: minimaal 2 weken proeftijd waarin u zonder kosten of met beperkte kosten kunt opzeggen als techniek of samenwerking niet bevalt. Vermijd jaarcontracten zonder pilot-clausule — dat is contractueel risicopapier.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">11. Schaalbaarheid en upgrade-pad.</strong> Vraag naar upgrade-route binnen het portfolio: van 1-kanaal AI (alleen telefoon of alleen WhatsApp) naar omnichannel, van Starter-pakket naar Growth, van standalone naar geintegreerd met uw CRM of agenda-systeem. Migratie-kosten moeten 0 of minimaal zijn — een AI partner moet meegroeien zonder dat u opnieuw moet aanbesteden. Aanloop AI: alle pakketten upgradebaar zonder data-migratie, alleen het verschil in maandtarief.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">12. Eigenaar-betrokkenheid en team-kwaliteit.</strong> Bij MKB-omvang heeft u directe lijnen met de oprichter of CTO nodig — geen account managers die boodschappen doorgeven. Test op LinkedIn: is de oprichter publiek aanspreekbaar, post hij of zij over technische details, schrijft het team artikelen of geeft webinars? Onzichtbaar of pure-marketing oprichter wijst op een dunne organisatie of doorverkoper. Aanloop AI: oprichter <a href="/team/daan-verhoeven/" class="text-brand-indigo hover:underline">Daan Verhoeven</a> direct bereikbaar via LinkedIn en telefoon.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">8 red flags — wijs hierop af</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Red flag 1: vanaf-prijzen zonder all-in offerte.</strong> Vanaf 99 euro per maand betekent dat het werkelijke tarief in praktijk hoger ligt door add-ons. Eis 1 totaalbedrag voor 12 maanden of een dichtbeprijsd menu zoals op onze <a href="/tarieven/" class="text-brand-indigo hover:underline">tarieven-pagina</a>.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Red flag 2: datacenter buiten EU of vaag over locatie.</strong> Veel internationale platforms hebben standaard VS-datacenter of multi-region zonder garantie. Voor MKB met persoonsgegevens of medisch-juridische data is dat een AVG-risico.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Red flag 3: geen openbare cases of referenties.</strong> Een agency dat 3 jaar bestaat moet minimaal 5 publiceerbare cases hebben. Geen cases betekent: geen klanten, of klanten die niet tevreden willen zijn met publieke vermelding.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Red flag 4: same-day go-live beloften.</strong> Een serieuze AI implementatie vraagt training, testing en kennisbank-validatie. Wie binnen een dag wil leveren, slaat de training-stap over en levert sub-par kwaliteit.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Red flag 5: jaarcontract zonder opzegmogelijkheid bij niet-presteren.</strong> Marktconform: maandelijks opzegbaar na pilot. Eis-jaar-contract is een vlucht-voor-verantwoording.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Red flag 6: generieke verkooppraatjes zonder specifieke branche-kennis.</strong> Een AI partner voor een huisartsenpraktijk moet WID-protocollen kennen, voor een advocatenkantoor de geheimhouding van persoonsgegevens, voor een webshop de Wet Koop op afstand. Geen branche-kennis betekent generieke configuratie en kwaliteitsverlies.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Red flag 7: geen verwerkersovereenkomst standaard meegeleverd.</strong> Onder AVG verplicht. Een agency dat een DPA per offerte moet samenstellen, heeft geen volwassen process. Een goede agency heeft een standaard-DPA op de website.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Red flag 8: KvK-registratie ontbreekt of UBO niet zichtbaar.</strong> Anonieme of buitenlandse holding-constructies maken juridisch verhaal halen vrijwel onmogelijk. Eis een Nederlandse BV of eenmanszaak met inzichtelijke eigenaar-structuur.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Drempel-regel:</strong> 1 of 2 red flags is geel — vragen stellen tot u een goed antwoord krijgt. 3 of meer is rood — ander bureau bellen. De Nederlandse markt heeft genoeg betrouwbare alternatieven; u hoeft geen risico te nemen.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Realistische tarieven en cost-of-ownership over 3 jaar</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De Nederlandse MKB-markt voor AI agency-diensten heeft drie prijssegmenten in 2026. <strong class="text-navy">Instap-segment (200 tot 500 euro per maand):</strong> 1 AI-kanaal, beperkte integraties, kleinere kennisbank, basis-SLA. Geschikt voor ZZP en MKB met enkele telefoon- of WhatsApp-flow. <strong class="text-navy">Midden-segment (500 tot 1.200 euro per maand):</strong> 2 tot 3 kanalen plus standaard integraties (CRM, agenda, telefonie), uitgebreide kennisbank, robuuste SLA, named support. Geschikt voor MKB met operationele afhankelijkheid van AI. <strong class="text-navy">Enterprise-segment (1.200 tot 5.000 euro per maand):</strong> omnichannel, custom integraties, dedicated team, premium SLA. Geschikt voor mid-corp en grote MKB.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor de meeste MKB-bedrijven (5 tot 50 medewerkers) is het midden-segment de optimale prijs-kwaliteit zone. Daar betaalt u voor robuuste implementatie zonder overkill. Cost-of-ownership over 3 jaar in dit segment: 25.000 tot 50.000 euro all-in voor een omnichannel AI partner. Vergelijk dit met de kosten van 1 fulltime medewerker (60.000 tot 90.000 euro per jaar) — AI is meestal financieel aantrekkelijker en levert 24/7 capaciteit waar een medewerker 40 uur per week dekt.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk: de duurste leverancier is meestal niet de beste, en de goedkoopste vrijwel nooit. Goedkoopste leveranciers zijn typisch ZZP-bouwers of internationale resellers met witlabel-platforms — beide hebben dunne organisatie en business continuity-risico. Duurste leveranciers zijn vaak grote consultancies of internationale enterprise-platforms die hun MKB-tier onder-investeren. Best-value-zone: middenmoot van uw shortlist op prijs, hoogste score op AVG plus referenties plus SLA. Zie ook <a href="/kennisbank/ai-prijzen-vergelijking-mkb-2026/" class="text-brand-indigo hover:underline">complete prijsvergelijking 2026</a>.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Scoringskaart — vergelijk uw 3 tot 5 kandidaten</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De praktische methode is een eenvoudig spreadsheet met de 12 criteria als rijen en uw kandidaten als kolommen. Per criterium een score van 1 (slecht) tot 5 (uitstekend). Maximum-score: 60 punten. Onder de 40 punten: niet tekenen. 40 tot 50: acceptabel maar onderhandel op zwakke punten. 50 of hoger: solide partner. Aanloop AI scoort op deze kaart consistent 55 plus, en publiceert eigen self-assessment op verzoek.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Wegingsfactoren:</strong> niet alle criteria zijn even belangrijk. Voor klantgesprek-AI met persoonsgegevens (medisch, juridisch, financieel): AVG-compliance plus EU datacenter plus EU AI Act tellen dubbel. Voor commerciele klantenservice zonder gevoelige data: nederlandse taal-kwaliteit plus referenties plus SLA tellen dubbel. Pas de wegingsfactor aan op uw specifieke risico-profiel — een tandartspraktijk weegt anders dan een webshop.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Beslis-regel:</strong> kies de partij die op AVG plus referenties plus SLA het hoogst scoort, niet de goedkoopste. Een AI partner kost u over 3 jaar typisch 25.000 tot 50.000 euro — een verschil van 50 euro per maand op tariefen weegt totaal niet op tegen een verschil van 10 procent in kwaliteit, downtime of klantbeleving. De goedkoopste optie wordt regelmatig de duurste ervaring.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Aanloop AIs antwoord op de 12 criteria</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">1. AVG-compliance en EU datacenter:</strong> alle klantdata wordt verwerkt en opgeslagen in Frankfurt of Amsterdam. Verwerkersovereenkomst standaard, expliciete clausule tegen modeltraining, sub-processors openbaar inzichtelijk.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">2. KvK en vestiging in Nederland:</strong> KvK 88606902, Rotterdam-vestiging, oprichter Daan Verhoeven publiekelijk inzichtelijk via UBO-register en LinkedIn.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">3. Transparante tarieven:</strong> alle tarieven op de <a href="/tarieven/" class="text-brand-indigo hover:underline">tarieven-pagina</a>. Starter 597 euro per maand all-in, Growth 1.197 euro per maand all-in, Partner op offerte. Setup 495 of 795 euro eenmalig. Geen verborgen API-kosten, telefonie inbegrepen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">4. Cases en referenties:</strong> meer dan 30 actieve klanten in 2026 verspreid over horeca, zorg, juridisch, finance, retail. Op verzoek 3 referent-klanten in uw specifieke branche, telefonisch bereikbaar.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">5. Eigendom van data en geen modeltraining:</strong> contractueel uitgesloten, data exporteerbaar in markdown plus JSON plus CSV bij contract-einde, retentie-policy openbaar.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">6. Nederlandse taal-kwaliteit:</strong> alle voicebots en chatbots gefinetuned op Nederlandstalige conversaties met regionale variaties, u-vorm-default voor zakelijk, NL adres-notatie en betalings-praktijk. Live demo op aanvraag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">7. EU AI Act compliance:</strong> standaard meegeleverd compliance-pakket (transparantie-disclaimer, logging, AI-literacy e-learning met certificaten, risico-classificatie-document).</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">8. Open standaarden:</strong> 100 procent gebouwd op n8n self-hosted plus standaard LLM-providers (Anthropic Claude, OpenAI GPT-4o). Geen vendor lock-in, exit-pakket binnen 5 werkdagen leverbaar.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">9. SLA en support:</strong> 99,7 procent uptime-garantie, response binnen 1 uur kantoortijd op kritiek, named-contact bij onboarding, 24/7 escalatie-nummer.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">10. Tijd-tot-go-live en pilot:</strong> Starter gemiddeld 10 werkdagen, Growth 7 werkdagen, Partner 14 werkdagen. Standaard 2-weken pilot-clausule met opzeggen bij niet-presteren zonder boete.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">11. Schaalbaarheid:</strong> upgrade van Starter naar Growth zonder data-migratie, alleen verschil in maandtarief. Custom integraties op aanvraag binnen Partner-pakket.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">12. Eigenaar-betrokkenheid:</strong> oprichter <a href="/team/daan-verhoeven/" class="text-brand-indigo hover:underline">Daan Verhoeven</a> direct bereikbaar via LinkedIn, e-mail en telefoon. Wekelijkse kennisbank-publicatie. Klant-onboarding gebeurt door oprichter persoonlijk bij Partner-tier.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat te doen na het lezen — concrete vervolgstappen</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Stap 1: schrijf in 1 zin het probleem op dat AI moet oplossen voor uw bedrijf. Bijvoorbeeld: 24/7 telefoon aannemen voor de tandartspraktijk, of 50 procent van de WhatsApp-vragen automatisch afhandelen. Zonder scherp doel kiest u op marketing-praatjes. Lees ook ons <a href="/kennisbank/ai-implementatie-stappen-mkb-nederland/" class="text-brand-indigo hover:underline">stappenplan AI-implementatie</a> voor verdere structuur.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Stap 2: stel een shortlist op van 3 tot 5 NL-AI-agencies. Bronnen: Google-zoekopdracht AI agency Nederland of AI bureau MKB, branchevereniging-aanbevelingen, LinkedIn-zoekopdrachten, collega-MKB. Sluit consumenten-tools (Bol-bots, gratis Watermelon-tier) en internationale resellers (witlabel-Voiceflow) uit voor MKB met operationele afhankelijkheid.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Stap 3: vraag van elke kandidaat een offerte plus een 30-minuten-demo. Tijdens de demo de 4 kernvragen stellen: datacenter-locatie, modeltraining-clausule, all-in tarief, referent-bel-mogelijkheid. Op basis daarvan reduceren tot 2 finalisten.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Stap 4: voor de 2 finalisten een 2-weken pilot starten met dezelfde meet-criteria (responsetijd, oplos-percentage, klant-tevredenheid). Na pilot: scoringskaart invullen, contract tekenen bij de winnaar, andere finalist netjes informeren. Meestal kunt u na 4 weken vanaf nul live zijn met een AI partner — maar de selectie zelf verdient deze 4 weken aandacht.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Wilt u Aanloop AI op uw shortlist? Vraag een gratis 30-minuten-scan aan via onze <a href="/gratis-ai-scan/" class="text-brand-indigo hover:underline">gratis AI-scan</a> of bel direct <a href="tel:+31624741597" class="text-brand-indigo hover:underline">+31 6 247 415 97</a>. We bespreken uw situatie, doen een eerste haalbaarheidstoets en geven een eerlijk advies — ook als wij niet de juiste partij blijken te zijn.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Aanverwante kennisbank</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Verder lezen voor MKB-ondernemers</h2>
+      <ul class="text-slate-600 leading-relaxed space-y-3 list-disc pl-5">
+        <li><a href="/kennisbank/ai-prijzen-vergelijking-mkb-2026/" class="text-brand-indigo hover:underline">AI prijzen vergelijking 2026 — wat kost AI echt voor Nederlands MKB</a></li>
+        <li><a href="/kennisbank/eu-ai-act-mkb-nederland-2026/" class="text-brand-indigo hover:underline">EU AI Act voor MKB Nederland 2026 — wat moet u nu regelen</a></li>
+        <li><a href="/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/" class="text-brand-indigo hover:underline">AVG en GDPR compliance bij AI-implementatie voor MKB</a></li>
+        <li><a href="/kennisbank/ai-implementatie-stappen-mkb-nederland/" class="text-brand-indigo hover:underline">Stappenplan AI-implementatie voor het Nederlandse MKB</a></li>
+        <li><a href="/kennisbank/ai-roi-berekenen-mkb-nederland-2026/" class="text-brand-indigo hover:underline">AI ROI berekenen voor uw MKB — rekenvoorbeelden 2026</a></li>
+        <li><a href="/kennisbank/n8n-vs-make-com/" class="text-brand-indigo hover:underline">n8n vs Make vs Zapier — open standaard versus vendor lock-in</a></li>
+        <li><a href="/tarieven/" class="text-brand-indigo hover:underline">Aanloop AI tarieven — transparant en publiek</a></li>
+        <li><a href="/team/daan-verhoeven/" class="text-brand-indigo hover:underline">Over Daan Verhoeven — oprichter Aanloop AI</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
