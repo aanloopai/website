@@ -53,6 +53,8 @@ const howToSchema = {
   ],
 };
 
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-implementatie-stappen-mkb-nederland/', inLanguage: 'nl-NL' };
+
 const faqItems = [
   { question: 'Hoe lang duurt complete AI-implementatie?', answer: '7 werkdagen voor solo-praktijk, 14 werkdagen voor klein-MKB, 21-30 dagen voor multi-vestiging.' },
   { question: 'Wat is de grootste valkuil?', answer: 'Te veel tegelijk willen automatiseren. Begin met een pijnpunt en breid pas uit nadat eerste implementatie stabiel draait.' },
@@ -68,7 +70,7 @@ const faqItems = [
 <BaseLayout
   title="AI Implementatie voor MKB Nederland — De 7 Stappen voor Succesvolle Adoptie | Aanloop AI"
   description="Complete implementatiegids: 7 stappen voor succesvolle AI-adoptie in het Nederlandse MKB. Van scoping tot live-gang, KPI-monitoring en compliance."
-  schema={[articleSchema, howToSchema]}
+  schema={[articleSchema, howToSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

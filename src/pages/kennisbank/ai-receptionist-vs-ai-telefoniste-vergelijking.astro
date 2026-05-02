@@ -44,12 +44,14 @@ const faqItems = [
   { question: 'Kan ik combineren?', answer: 'Ja. Veel MKB-bedrijven kiezen Marco (afspraken) plus Emma (WhatsApp klantenservice) voor 494-894 euro per maand totaal.' },
   { question: 'Hoe lang duurt implementatie per categorie?', answer: 'AI receptionist: 7 werkdagen. AI telefoniste: 7 werkdagen. AI telefoonassistent: 14-21 werkdagen.' },
 ];
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-receptionist-vs-ai-telefoniste-vergelijking/', inLanguage: 'nl-NL' };
 ---
 
 <BaseLayout
   title="AI Receptionist vs AI Telefoniste — Wat is het Verschil? Nederland 2026 | Aanloop AI"
   description="Complete vergelijking: AI receptionist vs AI telefoniste vs AI telefoonassistent. Verschillen in functionaliteit, prijs, sectorpasvorm en use cases."
-  schema={articleSchema}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

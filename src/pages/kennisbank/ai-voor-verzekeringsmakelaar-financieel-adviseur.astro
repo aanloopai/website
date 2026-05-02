@@ -44,12 +44,14 @@ const faqItems = [
   { question: 'Hoe lang bewaart AI klantgesprekken?', answer: 'Minimaal 7 jaar voor Wft-conformiteit, optioneel langer.' },
   { question: 'Hoe snel ben ik live?', answer: '14-21 werkdagen voor solo-intermediair tot multi-FTE kantoor.' },
 ];
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-voor-verzekeringsmakelaar-financieel-adviseur/', inLanguage: 'nl-NL' };
 ---
 
 <BaseLayout
   title="AI voor Verzekeringsmakelaar en Financieel Adviseur Nederland | Aanloop AI"
   description="AI voor Nederlandse verzekeringsmakelaars en financieel adviseurs: 24/7 intake, schadeclaim-status, premieoffertes en compliance-controle. AVG en Wft-conform."
-  schema={articleSchema}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

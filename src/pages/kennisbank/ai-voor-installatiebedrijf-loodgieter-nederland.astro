@@ -53,6 +53,8 @@ const howToSchema = {
   ],
 };
 
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-voor-installatiebedrijf-loodgieter-nederland/', inLanguage: 'nl-NL' };
+
 const faqItems = [
   { question: 'Werkt een AI receptionist met mijn bestaande planningsysteem?', answer: 'Ja. We hebben standaard-koppelingen met Bouw7, InstallerNet, Topdesk, Simplicate en AFAS Profit. Voor andere systemen werken we via API, webhook of Make.com — integratie kost meestal 1-3 werkdagen.' },
   { question: 'Begrijpt de AI Nederlandse vakterminologie zoals lekkende verwarmingsketel of overstort?', answer: 'Ja. We trainen de AI specifiek op Nederlandse installatie-terminologie tijdens de onboarding-fase. U levert ons 50-100 voorbeeld-conversaties uit uw verleden, daar leert de AI van.' },
@@ -65,7 +67,7 @@ const faqItems = [
 <BaseLayout
   title="AI voor installatiebedrijf en loodgieter Nederland 2026 | Spoedoproep, agenda en planning automatiseren"
   description="Hoe een AI receptionist en WhatsApp-assistent spoedoproepen, afspraakplanning en offertes voor installatiebedrijven en loodgieters in Nederland automatiseren. Met integraties, prijzen en concrete ROI."
-  schema={[articleSchema, howToSchema]}
+  schema={[articleSchema, howToSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

@@ -35,12 +35,14 @@ const faqItems = [
   { question: 'Hoe snel ben ik live?', answer: '7-10 werkdagen voor 1-3 vestiging detaillist.' },
   { question: 'Voldoet AI aan AVG voor klantkaart-data?', answer: 'Ja. Aanloop AI is een Nederlandse B.V. (KVK 88606902), data uitsluitend binnen de EU verwerkt.' },
 ];
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-voor-detailhandel-klantcontact-voorraad/', inLanguage: 'nl-NL' };
 ---
 
 <BaseLayout
   title="AI voor Detailhandel Nederland — Klantcontact, Voorraad & Click-and-Collect | Aanloop AI"
   description="AI voor Nederlandse detailhandel en winkels: 24/7 klantvragen via WhatsApp, realtime voorraadcheck per vestiging, click-and-collect bevestiging."
-  schema={articleSchema}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

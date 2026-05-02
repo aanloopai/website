@@ -44,6 +44,8 @@ const howToSchema = {
   ],
 };
 
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-whatsapp-business-mkb-nederland/', inLanguage: 'nl-NL' };
+
 const faqItems = [
   { question: 'Heb ik een WhatsApp Business account nodig?', answer: 'Ja, u krijgt automatisch de WhatsApp Business API. Aanloop AI regelt de complete aanmelding bij Meta via 360dialog of Twilio.' },
   { question: 'Kan ik mijn bestaande nummer gebruiken?', answer: 'Ja. We migreren uw bestaande nummer naar de API zonder dat het nummer wijzigt.' },
@@ -59,7 +61,7 @@ const faqItems = [
 <BaseLayout
   title="AI WhatsApp Business voor MKB Nederland — Setup, Use Cases & Prijzen 2026 | Aanloop AI"
   description="Complete gids: AI op WhatsApp Business voor het Nederlandse MKB. Meta API setup, gebruikscases per sector, conversational flow design en prijzen vanaf 197 euro per maand."
-  schema={[articleSchema, howToSchema]}
+  schema={[articleSchema, howToSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

@@ -39,12 +39,14 @@ const faqItems = [
   { question: 'Wat als de dierenarts midden in de nacht een spoed-call wil afslaan?', answer: 'AI escaleert volgens uw wachtdienstrooster. Bij geen-respons binnen 5 minuten gaat de call naar de tweede dierenarts; bij geen-respons na 10 minuten naar Dier-Zorg-Lijn 088 of 112-doorverwijzing.' },
   { question: 'Hoe wordt patient-data beschermd onder AVG?', answer: 'EU-only verwerking, encrypted data-at-rest, geen modeltraining op klantdata. Aanloop AI levert verwerkersovereenkomst standaard. Data van diergegevens wordt 730 dagen bewaard (voor klinische continuiteit), daarna automatisch verwijderd.' },
 ];
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-voor-dierenarts-spoedlijn-triage-nederland/', inLanguage: 'nl-NL' };
 ---
 
 <BaseLayout
   title="AI voor dierenartspraktijk Nederland 2026 | Spoedlijn-triage, afspraken en herinneringen"
   description="Hoe een AI receptionist en WhatsApp-assistent spoedlijn-triage, afspraakplanning en vaccinatieherinneringen voor Nederlandse dierenartspraktijken automatiseren. KNMvD-bewust."
-  schema={articleSchema}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

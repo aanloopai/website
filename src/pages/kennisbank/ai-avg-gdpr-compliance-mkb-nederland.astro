@@ -52,6 +52,8 @@ const howToSchema = {
   ],
 };
 
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/', inLanguage: 'nl-NL' };
+
 const faqItems = [
   { question: 'Werkt Aanloop AI met OpenAI of Anthropic? Is dat AVG-compliant?', answer: 'Ja, we gebruiken Claude (Anthropic) en GPT (OpenAI) voor sommige verwerkingen — beide via EU-DPF en met expliciete no-training-toezegging. Verwerking gebeurt op EU-servers met juiste DPA. AVG-compliant.' },
   { question: 'Mag ik in mijn privacystatement zeggen wij gebruiken AI?', answer: 'Ja, en u moet dit zelfs volgens AVG. We leveren u een template-paragraaf voor uw privacystatement bij onboarding.' },
@@ -64,7 +66,7 @@ const faqItems = [
 <BaseLayout
   title="AI en AVG-compliance voor MKB Nederland 2026 | Verwerkersovereenkomst, datalokatie en risicos"
   description="Hoe u als Nederlands MKB-bedrijf AI-tools (WhatsApp-assistent, voicebot, chatbot) inzet binnen AVG-eisen. Met checklist, leverancierscriteria en concrete risicos."
-  schema={[articleSchema, howToSchema]}
+  schema={[articleSchema, howToSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

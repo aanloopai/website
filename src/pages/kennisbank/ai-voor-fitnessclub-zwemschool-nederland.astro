@@ -44,12 +44,14 @@ const faqItems = [
   { question: 'Hoe snel ben ik live?', answer: '7-14 werkdagen voor 1-vestiging fitness. 14-28 dagen voor multi-vestiging keten.' },
   { question: 'Doet AI ook lid-onboarding?', answer: 'Ja. AI begeleidt complete onboarding via WhatsApp. Reduceert onboarding van 1-2 weken naar 24 uur.' },
 ];
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-voor-fitnessclub-zwemschool-nederland/', inLanguage: 'nl-NL' };
 ---
 
 <BaseLayout
   title="AI voor Fitnessclub en Zwemschool Nederland — Lid-onboarding, Lessen & Communicatie | Aanloop AI"
   description="AI voor Nederlandse fitnessclubs, sportscholen en zwemscholen: 24/7 lid-onboarding, lesreserveringen, no-show reductie en proefles-conversie."
-  schema={articleSchema}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

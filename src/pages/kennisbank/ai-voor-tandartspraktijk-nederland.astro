@@ -35,12 +35,14 @@ const faqItems = [
   { question: 'Hoe snel ben ik live?', answer: '10-14 werkdagen voor solo-praktijk. 21-30 dagen voor multi-stoel praktijk.' },
   { question: 'Voldoet de AI aan AVG?', answer: 'Ja. Aanloop AI is een Nederlandse B.V. (KVK 88606902), data uitsluitend binnen de EU verwerkt.' },
 ];
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-voor-tandartspraktijk-nederland/', inLanguage: 'nl-NL' };
 ---
 
 <BaseLayout
   title="AI voor Tandartspraktijk Nederland — Afspraken, Behandelplannen & No-Show Reductie | Aanloop AI"
   description="AI voor Nederlandse tandartspraktijken: afspraakbevestiging via WhatsApp, no-show reductie 50%, behandelplan-prijsindicatie en urgentie-triage. AVG-compliant."
-  schema={articleSchema}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

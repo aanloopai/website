@@ -35,12 +35,14 @@ const faqItems = [
   { question: 'Hoe lang duurt implementatie?', answer: 'Single-channel: 2-4 weken. Multi-channel omnichannel: 8-12 weken inclusief pilot-fase.' },
   { question: 'Wat als AI klantenservice slechte ervaringen oplevert?', answer: 'Voorkomen door duidelijke escalatie-regels, continu monitoring van CSAT, en wekelijkse iteratie op basis van handover-data.' },
 ];
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-klantenservice-voor-mkb-2026/', inLanguage: 'nl-NL' };
 ---
 
 <BaseLayout
   title="AI Klantenservice voor MKB Nederland — Complete Gids 2026 | Aanloop AI"
   description="Complete gids voor AI klantenservice in het Nederlandse MKB: omnichannel strategie (telefoon, WhatsApp, chat, e-mail), KPIs, escalatie-protocollen en kosten."
-  schema={articleSchema}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

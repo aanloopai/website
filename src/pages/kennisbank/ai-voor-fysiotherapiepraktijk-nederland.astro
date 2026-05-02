@@ -44,12 +44,14 @@ const faqItems = [
   { question: 'Hoe snel ben ik live?', answer: '10-14 werkdagen voor 1-vestiging praktijk. 21-30 dagen voor multi-vestiging keten.' },
   { question: 'Routeert AI naar juiste fysiotherapeut?', answer: 'Ja. Op basis van klacht-keywords route AI patienten naar juiste specialist (manueel, sport, oedeem, kinderfysio).' },
 ];
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-voor-fysiotherapiepraktijk-nederland/', inLanguage: 'nl-NL' };
 ---
 
 <BaseLayout
   title="AI voor Fysiotherapiepraktijk Nederland — Afspraken, No-Show & EPD-Koppeling | Aanloop AI"
   description="AI voor Nederlandse fysiotherapiepraktijken: 24/7 afspraken inplannen, no-show reductie via WhatsApp, behandelplan-communicatie en zorgverzekering-vragen. AVG-compliant."
-  schema={articleSchema}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

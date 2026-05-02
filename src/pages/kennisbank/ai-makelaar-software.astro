@@ -24,12 +24,14 @@ const faqItems = [
   { question: 'Hoe snel ben ik live met AI makelaar software?', answer: 'Standaard 7 werkdagen voor het basispakket: vragenlijst (1 dag), training met scoringsregels en CRM-mapping (2-3 dagen), nummerverbinding (3 dagen), testronde (1 dag).' },
   { question: 'Is mijn klantdata veilig en AVG-compliant?', answer: 'Ja. Aanloop AI is een Nederlandse B.V. (KVK 88606902). Data binnen de EU verwerkt, encryption at-rest en in-transit, configureerbare bewaartermijn (default 90 dagen), recht op verwijdering binnen 24 uur.' },
 ];
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-makelaar-software/', inLanguage: 'nl-NL' };
 ---
 
 <BaseLayout
   title="AI Makelaar Software 2026 — Lead Kwalificatie, Bezichtigingen & CRM-Integratie | Aanloop AI"
   description="AI software voor Nederlandse makelaars die inkomende leads automatisch kwalificeert, bezichtigingen plant en synchroniseert met uw CRM (HubSpot, Pipedrive, custom). Live in 7 dagen."
-  schema={articleSchema}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

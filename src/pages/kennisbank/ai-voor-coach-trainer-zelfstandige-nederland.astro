@@ -41,12 +41,14 @@ const faqItems = [
   { question: 'Wat als een klant een gevoelig of emotioneel bericht stuurt?', answer: 'De AI herkent emotionele en crisis-keywords en escaleert direct naar u via SMS-alert. U bepaalt zelf de gevoeligheidsregels tijdens onboarding.' },
   { question: 'Hoeveel tijd kost de onboarding?', answer: 'Voor een 1-persoons-praktijk gemiddeld 4-6 uur verspreid over 1-2 weken. We doen 80 procent van het werk; u levert alleen voorbeeld-conversaties en goedkeuringen.' },
 ];
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-voor-coach-trainer-zelfstandige-nederland/', inLanguage: 'nl-NL' };
 ---
 
 <BaseLayout
   title="AI voor coach, trainer en zelfstandige in Nederland 2026 | Intake, agenda en follow-up automatiseren"
   description="Hoe een AI assistent intake-gesprekken, sessie-planning en follow-up berichten voor zelfstandige coaches en trainers in Nederland automatiseert. Met praktijkvoorbeelden en prijzen vanaf 197 euro."
-  schema={articleSchema}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

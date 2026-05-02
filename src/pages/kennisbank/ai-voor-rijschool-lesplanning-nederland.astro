@@ -51,6 +51,8 @@ const howToSchema = {
   ],
 };
 
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-voor-rijschool-lesplanning-nederland/', inLanguage: 'nl-NL' };
+
 const faqItems = [
   { question: 'Werkt dit met onze rijschool-software (DriveLogic, Lesgever, RijLesPro)?', answer: 'Ja. We hebben directe koppelingen met DriveLogic en Lesgever; voor andere systemen via API of CSV-import. Onboarding 1-2 weken.' },
   { question: 'Mag de AI op WhatsApp namens de instructeur communiceren?', answer: 'Ja, mits transparant gecommuniceerd in algemene voorwaarden. Leerling weet dat AI eerstelijns vragen verwerkt en mens-instructeur de daadwerkelijke les geeft.' },
@@ -63,7 +65,7 @@ const faqItems = [
 <BaseLayout
   title="AI voor rijschool en rijinstructeur Nederland 2026 | Lesplanning, examens en betalingen"
   description="Hoe een AI assistent lesplanning, examenaanvragen en lesgeld-administratie voor Nederlandse rijscholen automatiseert. CBR-koppeling, WhatsApp-flow, no-show reductie 70%."
-  schema={[articleSchema, howToSchema]}
+  schema={[articleSchema, howToSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

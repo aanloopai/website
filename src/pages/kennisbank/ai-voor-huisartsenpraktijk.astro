@@ -35,12 +35,14 @@ const faqItems = [
   { question: 'Kan de AI ook herhaalrecepten verwerken?', answer: 'Ja. AI controleert dossier op laatste voorschrift, valideert herhaal-criteria en zet aanvraag klaar voor arts-controle.' },
   { question: 'Werkt AI ook tijdens ANW-tijden?', answer: 'Ja. Tijdens ANW-tijden routeert de AI automatisch naar de huisartsenpost (HAP) met behoud van triage-protocol.' },
 ];
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-voor-huisartsenpraktijk/', inLanguage: 'nl-NL' };
 ---
 
 <BaseLayout
   title="AI voor Huisartsenpraktijk Nederland — Triage, Afspraken & EPD-Koppeling | Aanloop AI"
   description="AI voor Nederlandse huisartsenpraktijken: triage volgens NHG-protocol, afspraken inplannen in EPD, no-show reductie via WhatsApp. NEN 7510 plus AVG compliant."
-  schema={articleSchema}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

@@ -35,12 +35,14 @@ const faqItems = [
   { question: 'Kan de AI complexere fiscale vragen beantwoorden?', answer: 'Nee. De AI is bewust beperkt tot routinetaken. Inhoudelijke fiscale advisering escaleert altijd naar een gekwalificeerde partner.' },
   { question: 'Werkt de AI ook in het hoogseizoen?', answer: 'Juist dan. Tijdens piekweken vangt de AI 60-70% van eerstelijns-vragen op.' },
 ];
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-voor-accountantskantoor-nederland/', inLanguage: 'nl-NL' };
 ---
 
 <BaseLayout
   title="AI voor Accountantskantoor Nederland — Factuurverwerking, Klantintake & Compliance | Aanloop AI"
   description="AI voor het Nederlandse accountantskantoor: factuurverwerking automatiseren, klantintakes 24/7 aannemen, deadline-week piek opvangen. AVG-compliant, NBA-conform."
-  schema={articleSchema}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

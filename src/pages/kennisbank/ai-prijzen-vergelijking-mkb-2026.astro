@@ -44,12 +44,14 @@ const faqItems = [
   { question: 'Zijn er verborgen kosten bij Aanloop AI?', answer: 'Nee. Setup, training, hosting, monitoring, support en updates zijn allemaal inbegrepen.' },
   { question: 'Kan ik schalen naar duurder pakket later?', answer: 'Ja. Bij Aanloop AI altijd opwaarts schalen mogelijk zonder migratie-kosten.' },
 ];
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-prijzen-vergelijking-mkb-2026/', inLanguage: 'nl-NL' };
 ---
 
 <BaseLayout
   title="AI Prijzen Vergelijking 2026 — Wat Kost AI Echt voor Nederlands MKB? | Aanloop AI"
   description="Complete prijsvergelijking 2026: AI receptionist, WhatsApp bot, document processing, klantenservice omnichannel. Inclusief verborgen kosten en realistische ROI."
-  schema={articleSchema}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

@@ -52,6 +52,8 @@ const howToSchema = {
   ],
 };
 
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-no-show-reductie-mkb-nederland/', inLanguage: 'nl-NL' };
+
 const faqItems = [
   { question: 'Werkt dit ook als ik geen WhatsApp Business gebruik?', answer: 'We helpen u met de gratis activatie van WhatsApp Business via 360dialog, Twilio of CM.com (afhankelijk van uw situatie). Onboarding circa 5-10 werkdagen.' },
   { question: 'Hoe gaat de AI om met klanten die de herinnering negeren?', answer: 'Bij geen reactie volgt automatisch een telefonische herinnering 24u vooraf, daarna 2u vooraf nogmaals WhatsApp. Voor risico-klanten: vooraf-betaling-aanbod.' },
@@ -64,7 +66,7 @@ const faqItems = [
 <BaseLayout
   title="AI no-show reductie voor MKB Nederland 2026 | Tot 70 procent minder gemiste afspraken"
   description="Hoe AI no-show percentages voor MKB-bedrijven in Nederland verlaagt van 15-30 procent naar 4-9 procent. Met praktijkdata, herinneringsstrategieen en sectorspecifieke aanpak."
-  schema={[articleSchema, howToSchema]}
+  schema={[articleSchema, howToSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">
