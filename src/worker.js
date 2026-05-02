@@ -6,7 +6,10 @@
 // Required binding (wrangler.toml [assets] block):
 //   binding = "ASSETS"
 
-const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
+// NOTIFICATION_EMAIL: temporarily routed to gmail because hello@aanloopai.nl
+// mailbox at mijn.host silently drops all external inbound mail. Restore to
+// 'hello@aanloopai.nl' once mijn.host fixes inbound routing for that mailbox.
+const NOTIFICATION_EMAIL = 'doganagahm@gmail.com';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
 const SENDER_NAME = 'Aanloop AI';
 
