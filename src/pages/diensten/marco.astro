@@ -38,7 +38,7 @@ const comparison = [
   { feature: 'Kwalificeert leads volgens uw criteria', marco: true, mens: 'Variabel', voicemail: false, antwoorddienst: false },
   { feature: 'CRM-integratie native', marco: true, mens: 'Handmatig', voicemail: false, antwoorddienst: false },
   { feature: 'Vertrekkosten / wervingskosten', marco: 'Geen', mens: '€8-15k', voicemail: 'Geen', antwoorddienst: 'Setup-fee' },
-  { feature: 'Maandelijkse kosten', marco: 'Vanaf €297', mens: '€3.500+', voicemail: '€0-50', antwoorddienst: '€500-2.000' },
+  { feature: 'Maandelijkse kosten', marco: 'Vanaf €597', mens: '€3.500+', voicemail: '€0-50', antwoorddienst: '€500-2.000' },
   { feature: 'Schaalt mee met groei zonder herinrichten', marco: true, mens: false, voicemail: true, antwoorddienst: false },
   { feature: 'AVG/GDPR-compliant + EU-data', marco: true, mens: true, voicemail: 'Variabel', antwoorddienst: 'Variabel' },
 ];
@@ -49,12 +49,12 @@ const faqItems = [
   { question: 'Wat doet Marco als hij een vraag niet kan beantwoorden?', answer: 'Marco volgt uw escalatieprotocol: doorverbinden naar een specifiek teamlid, een SMS-notificatie sturen, een terugbelafspraak inplannen of een ticket openen in uw helpdesk. U bepaalt zelf wat er bij welke situatie gebeurt.' },
   { question: 'Kan Marco mijn bestaande telefoonnummer gebruiken?', answer: 'Ja. We porten uw bestaande NL-nummer naar onze telefonie-infrastructuur of plaatsen een doorschakeling vanaf uw huidige operator. U houdt hetzelfde nummer en uw klanten merken niets van de wisseling.' },
   { question: 'Worden gesprekken opgenomen en zo ja, waar staan ze opgeslagen?', answer: 'Standaard worden opnames bewaard in EU-datacenters (Frankfurt of Amsterdam) met encryptie at-rest en in-transit. De bewaartermijn is configureerbaar (default 90 dagen). Op aanvraag kunnen we opnames uitschakelen of korte termijn bewaren.' },
-  { question: 'Wat kost Marco precies — zijn er verborgen kosten?', answer: 'Nee. Starter is €297/maand all-in (tot 200 gesprekken), Groei is €497/maand met onbeperkte gesprekken. Onboarding, training, hosting, monitoring en updates zijn inbegrepen. Enterprise is op maat geprijsd. Bij jaarlijkse betaling krijgt u circa 16% korting.' },
+  { question: 'Wat kost Marco precies — zijn er verborgen kosten?', answer: 'Nee. Starter is €597/maand all-in (Marco AI-telefoniste, tot 150 gesprekken), Groei is €1.197/maand met onbeperkte gesprekken plus Emma WhatsApp. Onboarding, training, hosting, monitoring en updates zijn inbegrepen. Partner is op maat geprijsd. Bij jaarlijkse betaling krijgt u circa 16% korting.' },
   { question: 'Hoe wordt Marco getraind voor mijn specifieke bedrijf?', answer: 'Tijdens onboarding leveren we een gestructureerde vragenlijst (1-2 uur invullen). Op basis daarvan trainen we Marco op uw diensten, FAQs, prijslijst, openingstijden, escalatieregels en huisstijl. Daarna doen we minimaal twee testrondes met u voordat Marco live gaat.' },
   { question: 'Is Marco AVG/GDPR-compliant?', answer: 'Ja. Aanloop AI is een Nederlandse B.V. (KVK 88606902) met een verwerkersovereenkomst-template, ISO 27001-gecertificeerde cloudinfrastructuur en alle data wordt binnen de EU verwerkt. Voor zorg- en juridische klanten leveren we ook een NEN 7510-compatibele opzet.' },
   { question: 'Wat als Marco een fout maakt of klanten klagen over de AI-stem?', answer: 'Iedere klant krijgt een dashboard met live transcripts. Bij opmerkingen passen we het script binnen 24 uur aan. Daarnaast kunt u Marco automatisch laten doorverbinden zodra een beller "menselijke medewerker" of vergelijkbare termen gebruikt — kun u zelf instellen.' },
   { question: 'Kan ik Marco testen voordat ik teken?', answer: 'Ja, tijdens een gratis demo van 30 minuten laten we Marco een echt scenario uit uw branche afhandelen. U mag bellen, lastige vragen stellen en sturen op het script. Pas daarna beslist u of u verder wilt.' },
-  { question: 'Marco vs een echte receptionist of antwoorddienst — wat is het verschil?', answer: 'Marco is altijd beschikbaar (24/7), schaalt automatisch en kost een fractie van een fulltime receptionist (€297-497/maand vs €3.500+). Vergeleken met een antwoorddienst kwalificeert Marco leads, plant agenda-afspraken en integreert direct met uw CRM. Voor 80% van de MKB-vraagstukken is Marco de meer betrouwbare en goedkopere keuze.' },
+  { question: 'Marco vs een echte receptionist of antwoorddienst — wat is het verschil?', answer: 'Marco is altijd beschikbaar (24/7), schaalt automatisch en kost een fractie van een fulltime receptionist (€597-1.197/maand vs €3.500+). Vergeleken met een antwoorddienst kwalificeert Marco leads, plant agenda-afspraken en integreert direct met uw CRM. Voor 80% van de MKB-vraagstukken is Marco de meer betrouwbare en goedkopere keuze.' },
   { question: 'Wat gebeurt er als ik Marco wil opzeggen?', answer: 'Maandelijkse abonnementen zijn opzegbaar met één maand opzegtermijn. Bij opzegging porten we uw nummer terug naar uw oude operator of behoudt u het via ons als overdrachtsabonnement. Geen exit-kosten, geen lock-in.' },
 ];
 
@@ -70,8 +70,8 @@ const schema = {
   offers: {
     '@type': 'AggregateOffer',
     priceCurrency: 'EUR',
-    lowPrice: '297',
-    highPrice: '2500',
+    lowPrice: '597',
+    highPrice: '5000',
     offerCount: '3',
     availability: 'https://schema.org/InStock',
     seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
@@ -81,7 +81,7 @@ const schema = {
 
 <BaseLayout
   title="Marco — AI Receptionist & AI Telefoniste voor MKB Nederland | Aanloop AI"
-  description="Marco is uw AI-receptionist die 24/7 telefoon aanneemt in vloeiend Nederlands, afspraken plant en leads direct naar uw inbox stuurt. Onbeperkte gesprekken vanaf €297/mnd. Live binnen 7 dagen."
+  description="Marco is uw AI-receptionist die 24/7 telefoon aanneemt in vloeiend Nederlands, afspraken plant en leads direct naar uw inbox stuurt. Vanaf €597/mnd in Starter, onbeperkte gesprekken in Groei. Live binnen 7 dagen."
   schema={schema}
   faqSchema={faqItems}
 >
@@ -115,7 +115,7 @@ const schema = {
             { value: '70%', label: 'minder gemiste gesprekken', color: 'text-brand-indigo' },
             { value: '24/7', label: 'beschikbaar, ook in het weekend', color: 'text-brand-rose' },
             { value: '7 dgn', label: 'gemiddelde time-to-live', color: 'text-brand-amber' },
-            { value: '€297', label: 'vanaf per maand all-in', color: 'text-brand-emerald' },
+            { value: '€597', label: 'vanaf per maand all-in', color: 'text-brand-emerald' },
           ].map(s => (
             <div class="card text-center">
               <div class={`text-3xl font-bold ${s.color}`}>{s.value}</div>
@@ -216,9 +216,9 @@ const schema = {
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {[
-          { name: 'Starter', price: '€297', freq: '/maand', features: ['Tot 200 gesprekken/maand', '1 callscript', 'E-mail lead-routering', 'Dashboard toegang'] },
-          { name: 'Groei', price: '€497', freq: '/maand', highlight: true, features: ['Onbeperkte gesprekken', 'Tot 5 callscripts', 'CRM-integratie + Telegram', 'Prioriteit support'] },
-          { name: 'Enterprise', price: 'Op maat', freq: '', features: ['Multi-team routing', 'Dedicated account manager', 'SLA + 99.9% uptime', 'On-premise optie'] },
+          { name: 'Starter', price: '€597', freq: '/maand', features: ['Tot 150 gesprekken/maand', '1 callscript', 'E-mail lead-routering', 'Dashboard toegang'] },
+          { name: 'Groei', price: '€1.197', freq: '/maand', highlight: true, features: ['Onbeperkte gesprekken', 'Tot 3 callscripts + Emma WhatsApp', 'CRM-integratie + Telegram', 'Prioriteit support'] },
+          { name: 'Partner', price: 'Op maat', freq: '', features: ['Multi-team routing', 'Dedicated account manager', 'SLA + 99.9% uptime', 'On-premise optie'] },
         ].map(p => (
           <div class:list={['card relative reveal', p.highlight && 'border-2 border-navy shadow-xl']}>
             {p.highlight && <span class="absolute -top-3 left-6 px-2.5 py-0.5 bg-navy text-white text-[11px] font-medium tracking-wide uppercase rounded">Aanbevolen</span>}
