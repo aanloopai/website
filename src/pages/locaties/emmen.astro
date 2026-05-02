@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const city = "Emmen";
+const region = "Drenthe";
+const localSchema = {
+  '@context': 'https://schema.org', '@type': 'ProfessionalService',
+  name: 'Aanloop AI — AI Agency Emmen',
+  url: 'https://aanloopai.nl/locaties/emmen/',
+  image: 'https://aanloopai.nl/logo-mark-light-1024.png',
+  address: { '@type': 'PostalAddress', addressLocality: 'Emmen', addressRegion: 'Drenthe', addressCountry: 'NL', postalCode: '7800-7833' },
+  geo: { '@type': 'GeoCoordinates', latitude: '52.7858', longitude: '6.8973' },
+  areaServed: { '@type': 'City', name: 'Emmen' },
+  priceRange: '€€',
+  telephone: '+31624741597',
+  email: 'hello@aanloopai.nl',
+  openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '17:00' },
+  sameAs: ['https://aanloopai.nl/'],
+  author: { '@type': 'Person', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', name: 'Daan Verhoeven' },
+};
+const faqItems = [
+  { question: 'Werkt Aanloop AI voor bedrijven in Emmen?', answer: 'Ja. Wij bedienen MKB in Emmen, Klazienaveen, Coevorden en de Drentse Veenkoloniën. Vanaf Rotterdam circa 2 uur 30 via A28/A37. Implementatie verloopt remote — geografische afstand is geen beperking.' },
+  { question: 'Welke Emmer sectoren zijn relevant voor AI?', answer: 'Emmen heeft een sterk profiel in maakindustrie (Bedrijvenpark A37), kunststof- en chemieverwerking, agrarisch (akkerbouw Veenkoloniën), zorg (Treant Ziekenhuis) en groothandel. Wij implementeren AI voor klantcommunicatie, supply-chain workflows en administratieve automatisering.' },
+  { question: 'Werkt AI voor de Drentse Veenkoloniën agrarisch?', answer: 'Ja. Veenkoloniale akkerbouw (zetmeelaardappel, suikerbiet, graan) heeft veel administratie rond RVO, contracten en levering. Onze workflow-automatisering doet die taken zonder dat de boer een nieuw systeem moet leren.' },
+  { question: 'Wat kost AI voor een Drents MKB-bedrijf?', answer: 'Tarieven landelijk uniform: Starter €997/maand, Growth €2.500/maand. Geen toeslag voor Drenthe. Voor agrarische bedrijven seizoenflexibele opties.' },
+  { question: 'Werkt remote-implementatie ook voor Drentse bedrijven?', answer: 'Uitstekend. Onze 7-werkdagen-implementatie is volledig remote. Voor strategische workshops of complexe industriële integraties komen wij naar Emmen.' },
+];
+---
+<BaseLayout
+  title="AI Agency Emmen — AI Agents voor MKB Drenthe en Veenkoloniën | Aanloop AI"
+  description="Aanloop AI helpt MKB in Emmen, Klazienaveen en Coevorden met AI agents, voice AI en workflow automation. Voor maakindustrie, agrarisch, zorg en groothandel. Live in 7 werkdagen."
+  schema={localSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Locatie - {city} - {region}</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">AI Agency {city}:<br/>AI voor Drents MKB en Veenkoloniën</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Aanloop AI bedient MKB-bedrijven in {city} en Zuidoost-Drenthe met AI agents, voice AI en workflow automation. Drenthe-hoofdstad voor maakindustrie, kunststof, agrarisch en zorg — pragmatische AI die past bij Drentse nuchterheid.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 reveal reveal-delay-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI Scan voor {city}<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/prijzen/" class="btn-outline">Bekijk prijzen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <h2 class="text-2xl font-bold text-navy">AI voor Emmer bedrijven</h2>
+        <p class="mt-3 text-slate-600">Emmen is naar inwoneraantal de grootste gemeente van Drenthe en economisch centrum voor de Veenkoloniën en Zuidoost-Drenthe. Het MKB-landschap is opvallend industrieel: Bedrijvenpark A37 herbergt kunststof-, chemie- en maakindustrie, terwijl het buitengebied klassiek agrarisch is (zetmeelaardappel, suikerbiet, graan). Daarnaast Treant Ziekenhuis als belangrijke zorg-werkgever, een groeiend toeristisch cluster (Wildlands), retail rond het Mercurium-centrum en regionale dienstverlening.</p>
+        <p class="mt-3 text-slate-600">Postcoderegio 7800-7833 valt binnen ons standaard servicegebied. Onze remote-implementatie betekent dat de afstand tot Rotterdam geen vertraging oplevert. Voor Drents MKB ligt de AI-winst in: workflow-automatisering die past op bestaande werkwijzen, AVG-compliant zorg-flows en agrarische administratie zonder dat operators een nieuw systeem moeten leren.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        {[
+          { title: 'Maakindustrie A37', desc: 'AI-receptionist voor offerte-aanvragen en orderintake. ERP-koppeling.', link: '/sectoren/bouw/' },
+          { title: 'Kunststof / Chemie MKB', desc: 'n8n-workflow voor compliance-rapportages, supplier-communicatie en HACCP-logging.', link: '/diensten/custom/' },
+          { title: 'Agrarisch Veenkoloniën', desc: 'Workflow voor RVO-registratie, leveringen en contracten. Koppeling agrarische ERP.', link: '/diensten/custom/' },
+          { title: 'Zorg Emmen / Treant', desc: 'Voice-AI voor huisartsenpraktijken en specialisten. AVG-compliant intake.', link: '/sectoren/zorg/' },
+          { title: 'Toerisme & Horeca', desc: 'WhatsApp AI voor reserveringen rond Wildlands en Veenpark. 24/7 bereikbaar.', link: '/sectoren/horeca/' },
+          { title: 'ZZP Drenthe', desc: 'Betaalbare AI vanaf €997/maand. Starter-pakket inclusief setup.', link: '/sectoren/ai-voor-zzp/' },
+        ].map(s => (
+          <div class="card reveal">
+            <h3 class="font-bold text-navy text-sm mb-2">{s.title}</h3>
+            <p class="text-xs text-slate-600 mb-4">{s.desc}</p>
+            <a href={s.link} class="text-xs font-medium text-brand-indigo hover:underline">AI in {city} bekijken →</a>
+          </div>
+        ))}
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-8 mb-12 reveal">
+        <h3 class="text-xl font-bold text-navy mb-4">Wij rijden naar Emmen</h3>
+        <p class="text-sm text-slate-600">Vanaf Rotterdam circa 2 uur 30 via A28/A37. Voor industriële kick-offs op Bedrijvenpark A37, agrarische workshops in de Veenkoloniën of zorg-implementaties komen wij ter plaatse. Klazienaveen, Coevorden, Borger-Odoorn, Schoonebeek en Erica vallen onder hetzelfde servicegebied.</p>
+      </div>
+
+      <div class="bg-brand-indigo/5 border border-brand-indigo/20 rounded-2xl p-6 mb-10 reveal">
+        <p class="font-bold text-navy mb-2">Lokale AI use cases — Emmen</p>
+        <ul class="text-sm text-slate-600 space-y-2 mt-3">
+          <li><strong>Kunststof-MKB Bedrijvenpark A37:</strong> n8n synchroniseert orders met ERP, kwaliteitscontrole-logs automatisch.</li>
+          <li><strong>Akkerbouwbedrijf Veenkoloniën:</strong> RVO-registratie, leveringen en facturen automatisch verwerkt, agrariër bespaart 12 uur administratie per week.</li>
+          <li><strong>Huisartsenpraktijk Emmer-Compascuum:</strong> voice-AI vangt 70% van standaardvragen op, AVG-compliant.</li>
+          <li><strong>Maakindustrie Klazienaveen:</strong> AI-receptionist beantwoordt offerte-aanvragen 24/7, conversie 35% hoger.</li>
+        </ul>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde Vragen — AI Agency {city}</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
+        <p class="text-sm font-bold text-navy mb-3">Andere locaties</p>
+        <div class="flex flex-wrap gap-3 text-sm">
+          <a href="/locaties/groningen/" class="text-brand-indigo hover:underline">Groningen</a>
+          <a href="/locaties/zwolle/" class="text-brand-indigo hover:underline">Zwolle</a>
+          <a href="/locaties/leeuwarden/" class="text-brand-indigo hover:underline">Leeuwarden</a>
+          <a href="/locaties/enschede/" class="text-brand-indigo hover:underline">Enschede</a>
+          <a href="/locaties/lelystad/" class="text-brand-indigo hover:underline">Lelystad</a>
+          <a href="/locaties/apeldoorn/" class="text-brand-indigo hover:underline">Apeldoorn</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Drents MKB? Start gratis.</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Gratis AI scan van 30 minuten. EU-data, AVG-compliant. Pragmatische AI voor maakindustrie, agrarisch en zorg.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/diensten/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk diensten</a>
+        <a href="/prijzen/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk prijzen</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

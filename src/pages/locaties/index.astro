@@ -2,24 +2,36 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const cities = [
-  { name: 'Amsterdam', slug: 'amsterdam', region: 'Noord-Holland', focus: 'Tech-MKB en e-commerce' },
-  { name: 'Rotterdam', slug: 'rotterdam', region: 'Zuid-Holland', focus: 'Maritiem, logistiek en industrie' },
-  { name: 'Den Haag', slug: 'den-haag', region: 'Zuid-Holland', focus: 'Juridisch en publieke sector' },
-  { name: 'Utrecht', slug: 'utrecht', region: 'Utrecht', focus: 'Zakelijke dienstverlening en zorg' },
-  { name: 'Eindhoven', slug: 'eindhoven', region: 'Noord-Brabant', focus: 'Tech, industrie en design' },
-  { name: 'Tilburg', slug: 'tilburg', region: 'Noord-Brabant', focus: 'Logistiek en industrie' },
+  { name: 'Alkmaar', slug: 'alkmaar', region: 'Noord-Holland', focus: 'Retail, agrarisch en kantoor-MKB' },
   { name: 'Almere', slug: 'almere', region: 'Flevoland', focus: 'MKB en e-commerce' },
-  { name: 'Breda', slug: 'breda', region: 'Noord-Brabant', focus: 'MKB en zakelijke dienstverlening' },
-  { name: 'Groningen', slug: 'groningen', region: 'Groningen', focus: 'Zorg en universitair MKB' },
-  { name: 'Nijmegen', slug: 'nijmegen', region: 'Gelderland', focus: 'Zorg en zakelijke dienstverlening' },
-  { name: 'Enschede', slug: 'enschede', region: 'Overijssel', focus: 'Tech, productie en grensverkeer' },
-  { name: 'Haarlem', slug: 'haarlem', region: 'Noord-Holland', focus: 'Retail en cultuur-MKB' },
-  { name: 'Leiden', slug: 'leiden', region: 'Zuid-Holland', focus: 'Medisch, academisch en juridisch' },
-  { name: 'Zwolle', slug: 'zwolle', region: 'Overijssel', focus: 'Logistiek en regionaal MKB' },
-  { name: 'Arnhem', slug: 'arnhem', region: 'Gelderland', focus: 'Energie, utility en zorg' },
+  { name: 'Amersfoort', slug: 'amersfoort', region: 'Utrecht', focus: 'Verzekeringen, IT en groothandel' },
+  { name: 'Amsterdam', slug: 'amsterdam', region: 'Noord-Holland', focus: 'Tech-MKB en e-commerce' },
   { name: 'Apeldoorn', slug: 'apeldoorn', region: 'Gelderland', focus: 'Zorg, kantoor en accountancy' },
+  { name: 'Arnhem', slug: 'arnhem', region: 'Gelderland', focus: 'Energie, utility en zorg' },
+  { name: 'Breda', slug: 'breda', region: 'Noord-Brabant', focus: 'MKB en zakelijke dienstverlening' },
+  { name: 'Delft', slug: 'delft', region: 'Zuid-Holland', focus: 'Tech-MKB, TU-spinouts en ingenieurs' },
+  { name: 'Den Bosch', slug: 'den-bosch', region: 'Noord-Brabant', focus: 'Financieel, juridisch en familiebedrijven' },
+  { name: 'Den Haag', slug: 'den-haag', region: 'Zuid-Holland', focus: 'Juridisch en publieke sector' },
   { name: 'Dordrecht', slug: 'dordrecht', region: 'Zuid-Holland', focus: 'Maritiem en juridische dienstverlening' },
+  { name: 'Eindhoven', slug: 'eindhoven', region: 'Noord-Brabant', focus: 'Tech, industrie en design' },
+  { name: 'Emmen', slug: 'emmen', region: 'Drenthe', focus: 'Maakindustrie, agrarisch en zorg' },
+  { name: 'Enschede', slug: 'enschede', region: 'Overijssel', focus: 'Tech, productie en grensverkeer' },
+  { name: 'Groningen', slug: 'groningen', region: 'Groningen', focus: 'Zorg en universitair MKB' },
+  { name: 'Haarlem', slug: 'haarlem', region: 'Noord-Holland', focus: 'Retail en cultuur-MKB' },
+  { name: 'Heerlen', slug: 'heerlen', region: 'Limburg', focus: 'Financieel, zorg en grensregio' },
   { name: 'Hilversum', slug: 'hilversum', region: 'Noord-Holland', focus: 'Media, productiehuizen en marketing' },
+  { name: 'Leeuwarden', slug: 'leeuwarden', region: 'Friesland', focus: 'Financieel, melkveehouderij en water' },
+  { name: 'Leiden', slug: 'leiden', region: 'Zuid-Holland', focus: 'Medisch, academisch en juridisch' },
+  { name: 'Lelystad', slug: 'lelystad', region: 'Flevoland', focus: 'Agrarisch, logistiek en provincie-MKB' },
+  { name: 'Maastricht', slug: 'maastricht', region: 'Limburg', focus: 'Medisch, juridisch en hospitality' },
+  { name: 'Nijmegen', slug: 'nijmegen', region: 'Gelderland', focus: 'Zorg en zakelijke dienstverlening' },
+  { name: 'Rotterdam', slug: 'rotterdam', region: 'Zuid-Holland', focus: 'Maritiem, logistiek en industrie' },
+  { name: 'Sittard-Geleen', slug: 'sittard-geleen', region: 'Limburg', focus: 'Chemelot-toeleveranciers en industrie' },
+  { name: 'Tilburg', slug: 'tilburg', region: 'Noord-Brabant', focus: 'Logistiek en industrie' },
+  { name: 'Utrecht', slug: 'utrecht', region: 'Utrecht', focus: 'Zakelijke dienstverlening en zorg' },
+  { name: 'Venlo', slug: 'venlo', region: 'Limburg', focus: 'Logistiek, Greenport en grenshandel' },
+  { name: 'Zaanstad', slug: 'zaanstad', region: 'Noord-Holland', focus: 'Voedingsmiddelen, industrie en e-commerce' },
+  { name: 'Zwolle', slug: 'zwolle', region: 'Overijssel', focus: 'Logistiek en regionaal MKB' },
 ];
 
 const collectionSchema = {
@@ -41,13 +53,13 @@ const collectionSchema = {
 const faqItems = [
   { question: 'In welke Nederlandse steden werkt Aanloop AI?', answer: `Aanloop AI bedient bedrijven in ${cities.length} grote Nederlandse steden waaronder ${cities.slice(0, 6).map((c) => c.name).join(', ')} en meer. Alle trajecten verlopen remote, dus locatie is geen beperking — wij werken voor MKB-bedrijven in heel Nederland.` },
   { question: 'Werkt Aanloop AI alleen voor de grote vier steden?', answer: 'Nee. Naast Amsterdam, Rotterdam, Den Haag en Utrecht bedienen we MKB-bedrijven in middelgrote steden (Eindhoven, Tilburg, Groningen, Nijmegen) en regio-hubs (Zwolle, Arnhem, Dordrecht, Hilversum). Onze remote-aanpak maakt locatie irrelevant voor de implementatie.' },
-  { question: 'Wat als mijn stad er niet bij staat?', answer: 'We helpen ook bedrijven buiten deze 18 stadspagina-locaties. De pagina-lijst is voor SEO en regio-specifieke voorbeelden — als u in Sittard, Maastricht, Lelystad of een andere plaats zit, plan een gratis AI-scan en we starten direct.' },
+  { question: 'Wat als mijn stad er niet bij staat?', answer: 'We helpen ook bedrijven buiten deze 30 stadspagina-locaties. De pagina-lijst is voor SEO en regio-specifieke voorbeelden — als u in Doetinchem, Roermond, Helmond of een andere plaats zit, plan een gratis AI-scan en we starten direct.' },
   { question: 'Hoe verschilt AI-implementatie per regio?', answer: 'De technische implementatie is identiek (we werken remote), maar de sectorfocus verschilt per stad: Hilversum-mediabedrijven, Eindhoven-tech, Dordrecht-maritiem, Apeldoorn-zorg. Onze regio-pagina toont voorbeelden uit uw lokale economie.' },
 ];
 ---
 
 <BaseLayout
-  title="AI Agency Nederland — 18 stadspagina's voor MKB | Aanloop AI"
+  title="AI Agency Nederland — 30 stadspagina's voor MKB | Aanloop AI"
   description={`Aanloop AI helpt MKB-bedrijven in ${cities.length} grote Nederlandse steden met AI automatisering. Bekijk onze locatie-pagina's voor regionale voorbeelden en sectorfocus.`}
   schema={collectionSchema}
   faqSchema={faqItems}

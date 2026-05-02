@@ -1,0 +1,127 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const city = "'s-Hertogenbosch";
+const cityShort = "Den Bosch";
+const region = "Noord-Brabant";
+const localSchema = {
+  '@context': 'https://schema.org', '@type': 'ProfessionalService',
+  name: "Aanloop AI — AI Agency 's-Hertogenbosch (Den Bosch)",
+  url: 'https://aanloopai.nl/locaties/den-bosch/',
+  image: 'https://aanloopai.nl/logo-mark-light-1024.png',
+  address: { '@type': 'PostalAddress', addressLocality: "'s-Hertogenbosch", addressRegion: 'Noord-Brabant', addressCountry: 'NL', postalCode: '5200-5249' },
+  geo: { '@type': 'GeoCoordinates', latitude: '51.6978', longitude: '5.3037' },
+  areaServed: { '@type': 'City', name: "'s-Hertogenbosch" },
+  priceRange: '€€',
+  telephone: '+31624741597',
+  email: 'hello@aanloopai.nl',
+  openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '17:00' },
+  sameAs: ['https://aanloopai.nl/'],
+  author: { '@type': 'Person', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', name: 'Daan Verhoeven' },
+};
+const faqItems = [
+  { question: "Werkt Aanloop AI voor bedrijven in 's-Hertogenbosch?", answer: 'Ja. Wij bedienen MKB in Den Bosch, Vught, Rosmalen en de gehele regio Noordoost-Brabant. Vanaf Rotterdam is Den Bosch in circa 1 uur 30 minuten te bereiken via de A2/A59 — voor strategische sessies komen we ter plaatse.' },
+  { question: 'Welke Bossche sectoren zijn relevant voor AI?', answer: 'Den Bosch heeft een sterke financiële sector (Rabobank, AAB), provinciaal bestuur (Provinciehuis), zakelijke dienstverlening rond Paleiskwartier en horeca rond de Markt en Korte Putstraat. Wij implementeren AI voor klantenservice, document-automatisering en CRM-koppeling.' },
+  { question: 'Werkt AI ook voor het Brabantse familiebedrijf?', answer: 'Juist daar. Brabantse familiebedrijven kennen vaak generatie-overstijgende processen die hand-werk vragen. AI-agents nemen de repeterende taken over zonder dat de menselijke kant verloren gaat — wij bouwen op uw huidige werkwijze, niet eroverheen.' },
+  { question: 'Wat kost een AI-agent voor een Bosch MKB-bedrijf?', answer: 'Tarieven zijn landelijk uniform: Starter €997/maand, Growth €2.500/maand. Voor familiebedrijven met meerdere vestigingen bieden wij maatwerk-trajecten via onze custom-route.' },
+  { question: 'Hoe verloopt de gratis AI scan voor Den Bosch?', answer: '30 minuten remote videocall. Wij analyseren uw processen, identificeren AI-kansen en geven concrete aanbevelingen — geen verkoop-pitch, wel direct toepasbare inzichten.' },
+];
+---
+<BaseLayout
+  title="AI Agency Den Bosch — AI Agents en Workflow Automation Brabant | Aanloop AI"
+  description="Aanloop AI helpt MKB in 's-Hertogenbosch, Vught en Rosmalen met AI agents, voice AI en workflow automation. Live in 7 werkdagen, AVG-compliant, EU-data only. Gratis AI scan."
+  schema={localSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Locatie - {cityShort} - {region}</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">AI Agency {cityShort}:<br/>AI Automatisering voor Brabants MKB</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Aanloop AI bedient MKB-bedrijven in {city} en de Meierij met AI agents, voice AI en workflow automation. Brabantse pragmatiek ontmoet AI: praktische oplossingen voor familiebedrijven, financiële dienstverleners en regionale industrie.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 reveal reveal-delay-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI Scan voor {cityShort}<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/prijzen/" class="btn-outline">Bekijk prijzen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <h2 class="text-2xl font-bold text-navy">AI voor Bossche bedrijven</h2>
+        <p class="mt-3 text-slate-600">'s-Hertogenbosch is hoofdstad van Noord-Brabant en knooppunt voor zowel financiële dienstverlening (Rabobank-hoofdkantoor, AAB), provinciale overheid als regionaal MKB. Het Paleiskwartier huisvest zakelijke dienstverleners en advocatenkantoren, terwijl de binnenstad rond de Markt en Korte Putstraat een levendige horeca- en retailsector telt. De Meierij rondom (Vught, Rosmalen, Boxtel, Sint-Michielsgestel) levert traditionele familiebedrijven en agro-MKB.</p>
+        <p class="mt-3 text-slate-600">Postcoderegio 5200-5249 valt binnen ons standaard servicegebied. Implementaties verlopen remote, met optionele on-site sessies voor strategische workshops. Onze focus voor Bossche bedrijven ligt op pragmatische workflow-automatisering die respect heeft voor bestaande werkwijzen — geen omverwerping, wel meetbare tijdwinst.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        {[
+          { title: 'Financiële Dienstverlening', desc: 'AI-intake voor klantvragen, kredietaanvraag-screening en CRM-synchronisatie.', link: '/sectoren/accountancy/' },
+          { title: 'Advocatenkantoren Paleiskwartier', desc: 'AI-document agent voor contract-analyse, dossier-intake en agendabeheer.', link: '/sectoren/ai-voor-advocaten/' },
+          { title: 'Brabantse Familiebedrijven', desc: 'Workflow automation die past op generatie-overstijgende processen. Custom n8n.', link: '/diensten/custom/' },
+          { title: 'Horeca Markt & Korte Putstraat', desc: 'WhatsApp AI voor reserveringen. Geen overboeking, automatische bevestiging.', link: '/sectoren/horeca/' },
+          { title: 'Bouw & Installatie regio', desc: 'AI-receptionist voor offerte-aanvragen en planning. 24/7 bereikbaar.', link: '/sectoren/bouw/' },
+          { title: 'Provincie & overheids-MKB', desc: 'AI voor leverancier-helpdesks en aanbestedings-administratie. AVG-compliant.', link: '/diensten/marco/' },
+        ].map(s => (
+          <div class="card reveal">
+            <h3 class="font-bold text-navy text-sm mb-2">{s.title}</h3>
+            <p class="text-xs text-slate-600 mb-4">{s.desc}</p>
+            <a href={s.link} class="text-xs font-medium text-brand-indigo hover:underline">AI in Den Bosch bekijken →</a>
+          </div>
+        ))}
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-8 mb-12 reveal">
+        <h3 class="text-xl font-bold text-navy mb-4">Wij rijden naar Den Bosch</h3>
+        <p class="text-sm text-slate-600">Vanaf Rotterdam bereikt u Den Bosch in circa 1 uur 30 minuten via A2 of A59. Voor kick-off workshops, on-site integratie of complexe stakeholder-sessies komen wij naar uw vestiging. Vught, Rosmalen, Boxtel, Sint-Michielsgestel en Heusden vallen onder hetzelfde servicegebied.</p>
+      </div>
+
+      <div class="bg-brand-indigo/5 border border-brand-indigo/20 rounded-2xl p-6 mb-10 reveal">
+        <p class="font-bold text-navy mb-2">Lokale AI use cases — Den Bosch</p>
+        <ul class="text-sm text-slate-600 space-y-2 mt-3">
+          <li><strong>Financieel adviesbureau Paleiskwartier:</strong> AI-intake screent kredietaanvragen, doorlooptijd 50% korter en compliance-trail automatisch gelogd.</li>
+          <li><strong>Familiebedrijf Meierij:</strong> n8n-workflow integreert orderverwerking met derde-generatie ERP zonder de bestaande werkwijze te breken.</li>
+          <li><strong>Advocatenkantoor Vughterstraat:</strong> AI-document agent classificeert binnenkomende stukken, partners besparen 10 uur per week.</li>
+          <li><strong>Horeca Markt:</strong> WhatsApp-bot beheert reserveringen voor 3 vestigingen, no-show daalt 80%.</li>
+        </ul>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde Vragen — AI Agency {cityShort}</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
+        <p class="text-sm font-bold text-navy mb-3">Andere locaties</p>
+        <div class="flex flex-wrap gap-3 text-sm">
+          <a href="/locaties/eindhoven/" class="text-brand-indigo hover:underline">Eindhoven</a>
+          <a href="/locaties/tilburg/" class="text-brand-indigo hover:underline">Tilburg</a>
+          <a href="/locaties/breda/" class="text-brand-indigo hover:underline">Breda</a>
+          <a href="/locaties/nijmegen/" class="text-brand-indigo hover:underline">Nijmegen</a>
+          <a href="/locaties/utrecht/" class="text-brand-indigo hover:underline">Utrecht</a>
+          <a href="/locaties/venlo/" class="text-brand-indigo hover:underline">Venlo</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Bedrijf in Den Bosch? Start gratis.</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Gratis AI scan van 30 minuten. Brabantse pragmatiek, EU-data, AVG-compliant. Concreet inzicht in tijds- en kostenbesparing.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/diensten/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk diensten</a>
+        <a href="/prijzen/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk prijzen</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

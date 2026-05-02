@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const city = "Delft";
+const region = "Zuid-Holland";
+const localSchema = {
+  '@context': 'https://schema.org', '@type': 'ProfessionalService',
+  name: 'Aanloop AI — AI Agency Delft',
+  url: 'https://aanloopai.nl/locaties/delft/',
+  image: 'https://aanloopai.nl/logo-mark-light-1024.png',
+  address: { '@type': 'PostalAddress', addressLocality: 'Delft', addressRegion: 'Zuid-Holland', addressCountry: 'NL', postalCode: '2600-2629' },
+  geo: { '@type': 'GeoCoordinates', latitude: '52.0116', longitude: '4.3571' },
+  areaServed: { '@type': 'City', name: 'Delft' },
+  priceRange: '€€',
+  telephone: '+31624741597',
+  email: 'hello@aanloopai.nl',
+  openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '17:00' },
+  sameAs: ['https://aanloopai.nl/'],
+  author: { '@type': 'Person', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', name: 'Daan Verhoeven' },
+};
+const faqItems = [
+  { question: 'Werkt Aanloop AI voor bedrijven in Delft?', answer: 'Ja. Wij bedienen MKB in Delft, Pijnacker-Nootdorp, Rijswijk en Den Hoorn. Vanaf Rotterdam zijn we in 25 minuten via A13 in Delft — een van onze dichtstbijzijnde locaties.' },
+  { question: 'Welke Delftse sectoren zijn populair voor AI?', answer: 'Delft heeft een sterk tech-cluster rond TU Delft (YES!Delft, Technopolis), advocatenkantoren, ingenieursbureaus, en een levendige horeca rond de Markt en Beestenmarkt. Wij implementeren AI voor klantenservice, R&D-administratie en CRM-automatisering.' },
+  { question: 'Bedient Aanloop AI ook startups uit YES!Delft?', answer: 'Ja. TU Delft-spinouts en YES!Delft startups krijgen vaak snel klantcontact-vragen en hebben weinig tijd voor administratie. Onze Starter-pakketten (€997/maand) zijn juist daarvoor geschikt — geen lange contracten, opzegbaar per maand.' },
+  { question: 'Wat kost AI voor een Delfts MKB-bedrijf?', answer: 'Landelijk uniform: Starter €997/maand, Growth €2.500/maand. Voor TU-spinouts en hightech-startups bieden wij optionele scale-up routes via custom-trajecten.' },
+  { question: 'Hoe snel kan AI live zijn in Delft?', answer: '7 werkdagen na de gratis AI scan. Voor Delftse bedrijven kunnen wij desgewenst snel ter plaatse zijn voor on-site kick-off.' },
+];
+---
+<BaseLayout
+  title="AI Agency Delft — AI Agents voor Tech-MKB en TU-spinouts | Aanloop AI"
+  description="Aanloop AI helpt MKB in Delft, Rijswijk en Pijnacker-Nootdorp met AI agents, voice AI en workflow automation. TU Delft-omgeving, ingenieursbureaus, horeca. Live in 7 werkdagen."
+  schema={localSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Locatie - {city} - {region}</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">AI Agency {city}:<br/>AI voor Tech-MKB en TU-spinouts</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Aanloop AI bedient MKB-bedrijven in {city} en omgeving met AI agents, voice AI en workflow automation. Stad van TU Delft, YES!Delft startups en ingenieursbureaus — een natuurlijke match voor pragmatische AI-adoptie.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 reveal reveal-delay-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI Scan voor {city}<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/prijzen/" class="btn-outline">Bekijk prijzen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <h2 class="text-2xl font-bold text-navy">AI voor Delftse bedrijven</h2>
+        <p class="mt-3 text-slate-600">Delft is een uniek MKB-ecosysteem: het YES!Delft incubator-programma en Technopolis-bedrijventerrein leveren een continue stroom hightech-startups (deeptech, robotica, biotech), terwijl de historische binnenstad rond Markt en Oude Kerk een levendige horeca, retail en zakelijke dienstverlening huisvest. Daarnaast veel ingenieurs- en architectenbureaus die TU Delft-talent absorberen, plus een groeiende AVG/security-consultancy markt.</p>
+        <p class="mt-3 text-slate-600">Postcoderegio 2600-2629 valt binnen ons servicegebied — en met 25 minuten reistijd is Delft een van onze dichtstbijzijnde locaties. Wij combineren snelle on-site sessies waar gewenst met efficiënte remote-implementatie. Onze AI-toepassingen passen op zowel de hightech-startup als het traditionele Delftse bedrijf.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        {[
+          { title: 'TU-spinouts & Startups', desc: 'AI klantenservice voor early-stage tech. Schaalbaar Starter-pakket vanaf €997/maand.', link: '/sectoren/ai-voor-zzp/' },
+          { title: 'Ingenieursbureaus', desc: 'AI-document agent voor offertes en projectadministratie. CRM-koppeling.', link: '/diensten/custom/' },
+          { title: 'Advocatenkantoren Delft', desc: 'AI-intake voor cliëntdossiers en contract-classificatie.', link: '/sectoren/ai-voor-advocaten/' },
+          { title: 'Horeca Markt & Beestenmarkt', desc: 'WhatsApp AI voor reserveringen. Toeristisch en student-publiek, 90% no-show reductie.', link: '/sectoren/horeca/' },
+          { title: 'Architecten & Bouw', desc: 'AI-receptionist voor offerte-aanvragen en planning. 24/7 bereikbaar.', link: '/sectoren/bouw/' },
+          { title: 'Accountants Delft', desc: 'Automatische factuurverwerking. Bespaar 85% tijd op administratie.', link: '/sectoren/accountancy/' },
+        ].map(s => (
+          <div class="card reveal">
+            <h3 class="font-bold text-navy text-sm mb-2">{s.title}</h3>
+            <p class="text-xs text-slate-600 mb-4">{s.desc}</p>
+            <a href={s.link} class="text-xs font-medium text-brand-indigo hover:underline">AI in {city} bekijken →</a>
+          </div>
+        ))}
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-8 mb-12 reveal">
+        <h3 class="text-xl font-bold text-navy mb-4">Wij rijden naar Delft</h3>
+        <p class="text-sm text-slate-600">Vanaf ons hoofdkantoor Rotterdam zijn we in 25 minuten via A13 in Delft. Voor TU-spinouts, snelle kick-offs en strategische sessies komen wij makkelijk ter plaatse. Pijnacker-Nootdorp, Rijswijk, Den Hoorn en Schipluiden vallen onder hetzelfde servicegebied.</p>
+      </div>
+
+      <div class="bg-brand-indigo/5 border border-brand-indigo/20 rounded-2xl p-6 mb-10 reveal">
+        <p class="font-bold text-navy mb-2">Lokale AI use cases — Delft</p>
+        <ul class="text-sm text-slate-600 space-y-2 mt-3">
+          <li><strong>YES!Delft startup:</strong> AI klantenservice handelt 70% van support-tickets autonoom af, founder bespaart 15 uur per week voor R&D.</li>
+          <li><strong>Ingenieursbureau Technopolis:</strong> AI-document agent classificeert offerte-aanvragen, doorlooptijd 50% korter.</li>
+          <li><strong>Architectenbureau centrum:</strong> n8n-workflow synchroniseert projectdata tussen Revit, MS-Project en facturatie.</li>
+          <li><strong>Restaurant Markt:</strong> WhatsApp-bot beheert reserveringen ook tijdens drukke universiteits-evenementen.</li>
+        </ul>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde Vragen — AI Agency {city}</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
+        <p class="text-sm font-bold text-navy mb-3">Andere locaties</p>
+        <div class="flex flex-wrap gap-3 text-sm">
+          <a href="/locaties/rotterdam/" class="text-brand-indigo hover:underline">Rotterdam</a>
+          <a href="/locaties/den-haag/" class="text-brand-indigo hover:underline">Den Haag</a>
+          <a href="/locaties/leiden/" class="text-brand-indigo hover:underline">Leiden</a>
+          <a href="/locaties/dordrecht/" class="text-brand-indigo hover:underline">Dordrecht</a>
+          <a href="/locaties/utrecht/" class="text-brand-indigo hover:underline">Utrecht</a>
+          <a href="/locaties/breda/" class="text-brand-indigo hover:underline">Breda</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Bedrijf in Delft? Start gratis.</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Gratis AI scan van 30 minuten. EU-data, AVG-compliant. Geschikt voor TU-spinouts en gevestigd Delfts MKB.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/diensten/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk diensten</a>
+        <a href="/prijzen/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk prijzen</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

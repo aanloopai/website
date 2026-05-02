@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+const city = "Venlo";
+const region = "Limburg";
+const localSchema = {
+  '@context': 'https://schema.org', '@type': 'ProfessionalService',
+  name: 'Aanloop AI — AI Agency Venlo',
+  url: 'https://aanloopai.nl/locaties/venlo/',
+  image: 'https://aanloopai.nl/logo-mark-light-1024.png',
+  address: { '@type': 'PostalAddress', addressLocality: 'Venlo', addressRegion: 'Limburg', addressCountry: 'NL', postalCode: '5900-5928' },
+  geo: { '@type': 'GeoCoordinates', latitude: '51.3704', longitude: '6.1724' },
+  areaServed: { '@type': 'City', name: 'Venlo' },
+  priceRange: '€€',
+  telephone: '+31624741597',
+  email: 'hello@aanloopai.nl',
+  openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '17:00' },
+  sameAs: ['https://aanloopai.nl/'],
+  author: { '@type': 'Person', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', name: 'Daan Verhoeven' },
+};
+const faqItems = [
+  { question: 'Werkt Aanloop AI voor bedrijven in Venlo?', answer: 'Ja. Wij bedienen MKB in Venlo, Tegelen, Blerick, Velden en de gehele Noord-Limburgse regio. Vanaf Rotterdam circa 1 uur 45 minuten via A15/A73. Onze voice-AI ondersteunt Nederlands en Duits — relevant voor de Venlose grenshandel.' },
+  { question: 'Welke Venlose sectoren bedient Aanloop AI?', answer: 'Venlo is logistieke hoofdstad: Trade Port Noord, Greenport Venlo, Veiling ZON. Daarnaast sterke food & agri (Limburgse glastuinbouw), grensoverschrijdende handel (DE/BE), maakindustrie en regionale dienstverlening. Wij implementeren AI voor supply-chain, klantcommunicatie en orderverwerking.' },
+  { question: 'Werkt AI voor logistieke bedrijven op Trade Port Noord?', answer: 'Zeker. Logistieke hubs hebben veel repetitieve administratie (vrachtbrieven, douaneformulieren, ETA-communicatie). Onze n8n-workflows automatiseren orderintake, documentstroom en ETA-updates richting eindklant.' },
+  { question: 'Wat kost AI voor een Venloos MKB-bedrijf?', answer: 'Landelijk uniform: Starter €997/maand, Growth €2.500/maand. Voor logistieke bedrijven met meerdere vestigingen of multilingual klantcontact bieden wij custom-trajecten.' },
+  { question: 'Hoe snel kan AI live zijn in Venlo?', answer: '7 werkdagen na de gratis AI scan. Implementatie remote, voor on-site sessies in Trade Port Noord komen wij ter plaatse.' },
+];
+---
+<BaseLayout
+  title="AI Agency Venlo — AI Agents voor Logistiek en Greenport Limburg | Aanloop AI"
+  description="Aanloop AI helpt MKB in Venlo, Tegelen en Blerick met AI agents, voice AI en workflow automation. Voor logistiek (Trade Port Noord), Greenport, food & agri. Live in 7 werkdagen."
+  schema={localSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Locatie - {city} - {region}</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">AI Agency {city}:<br/>AI voor Logistiek en Greenport-MKB</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Aanloop AI bedient MKB-bedrijven in {city} en Noord-Limburg met AI agents, voice AI en workflow automation. Logistieke hoofdstad van Nederland — natuurlijk terrein voor supply-chain automatisering en grensoverschrijdende klantcommunicatie.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 reveal reveal-delay-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI Scan voor {city}<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/prijzen/" class="btn-outline">Bekijk prijzen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <h2 class="text-2xl font-bold text-navy">AI voor Venlose bedrijven</h2>
+        <p class="mt-3 text-slate-600">Venlo is een onmiskenbaar logistiek-economisch zwaartepunt: Trade Port Noord, Greenport Venlo (food & agri-cluster), Veiling ZON en de directe ligging aan de Duitse grens vormen de kern. Daaromheen sterke maakindustrie, food-verwerking, glastuinbouw richting Maasdorpen, plus een levendig regionaal MKB in zakelijke dienstverlening, retail en horeca rondom de Maas.</p>
+        <p class="mt-3 text-slate-600">Postcoderegio 5900-5928 valt binnen ons standaard servicegebied. Voor Venlose MKB ligt de AI-winst vooral in: supply-chain workflow-automatisering (n8n + ERP-koppeling), tweetalige voice-AI (NL/DE) voor grensklanten, AVG-compliant document-stroom en realtime orderstatus-updates richting eindklant.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-12">
+        {[
+          { title: 'Logistiek Trade Port Noord', desc: 'n8n-workflow voor vrachtbrieven, douaneformulieren en ETA-updates. Koppeling TMS.', link: '/sectoren/logistiek/' },
+          { title: 'Greenport / Food & Agri', desc: 'AI-document agent voor leverbonnen, kwaliteitscertificaten en HACCP-rapportages.', link: '/diensten/custom/' },
+          { title: 'Glastuinbouw Maasdorpen', desc: 'Workflow automation voor orderverwerking, transportplanning en supplier-communicatie.', link: '/diensten/custom/' },
+          { title: 'Grensoverschrijdend MKB', desc: 'Tweetalige voice-AI (NL/DE). Voor klanten in NRW (Krefeld, Düsseldorf, Mönchengladbach).', link: '/diensten/marco/' },
+          { title: 'Maakindustrie Venlo', desc: 'AI-receptionist voor offerte-aanvragen en orderintake. 24/7 bereikbaar.', link: '/sectoren/bouw/' },
+          { title: 'Horeca centrum / Maas', desc: 'WhatsApp AI voor reserveringen. Geen overboeking, automatische bevestiging.', link: '/sectoren/horeca/' },
+        ].map(s => (
+          <div class="card reveal">
+            <h3 class="font-bold text-navy text-sm mb-2">{s.title}</h3>
+            <p class="text-xs text-slate-600 mb-4">{s.desc}</p>
+            <a href={s.link} class="text-xs font-medium text-brand-indigo hover:underline">AI in {city} bekijken →</a>
+          </div>
+        ))}
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-2xl p-8 mb-12 reveal">
+        <h3 class="text-xl font-bold text-navy mb-4">Wij rijden naar Venlo</h3>
+        <p class="text-sm text-slate-600">Vanaf Rotterdam circa 1 uur 45 via A15/A73. Voor logistieke kick-offs op Trade Port Noord, Greenport-implementaties of complexe ERP-integraties komen wij ter plaatse. Tegelen, Blerick, Velden, Belfeld en Maasbree vallen onder hetzelfde servicegebied.</p>
+      </div>
+
+      <div class="bg-brand-indigo/5 border border-brand-indigo/20 rounded-2xl p-6 mb-10 reveal">
+        <p class="font-bold text-navy mb-2">Lokale AI use cases — Venlo</p>
+        <ul class="text-sm text-slate-600 space-y-2 mt-3">
+          <li><strong>Logistiek Trade Port Noord:</strong> n8n synchroniseert vrachtbrieven met TMS, douaneformulieren auto-gegenereerd, ETA-updates real-time naar eindklant.</li>
+          <li><strong>Greenport Venlo glastuinbouw:</strong> AI-document agent verwerkt leverbonnen en kwaliteitscertificaten direct in ERP.</li>
+          <li><strong>Maakindustrie Tegelen:</strong> tweetalige voice-AI (NL/DE) vangt offerte-aanvragen op, conversie 35% hoger.</li>
+          <li><strong>Food-verwerker Blerick:</strong> HACCP-logs en supplier-communicatie geautomatiseerd, kwaliteitsmanager bespaart 12 uur per week.</li>
+        </ul>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde Vragen — AI Agency {city}</h2>
+      <div class="space-y-3 mb-8">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6">
+        <p class="text-sm font-bold text-navy mb-3">Andere locaties</p>
+        <div class="flex flex-wrap gap-3 text-sm">
+          <a href="/locaties/maastricht/" class="text-brand-indigo hover:underline">Maastricht</a>
+          <a href="/locaties/heerlen/" class="text-brand-indigo hover:underline">Heerlen</a>
+          <a href="/locaties/sittard-geleen/" class="text-brand-indigo hover:underline">Sittard-Geleen</a>
+          <a href="/locaties/eindhoven/" class="text-brand-indigo hover:underline">Eindhoven</a>
+          <a href="/locaties/nijmegen/" class="text-brand-indigo hover:underline">Nijmegen</a>
+          <a href="/locaties/den-bosch/" class="text-brand-indigo hover:underline">Den Bosch</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Venlose logistiek of MKB? Start gratis.</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Gratis AI scan van 30 minuten. Tweetalige flows (NL/DE), EU-data, AVG-compliant. Concreet voor logistiek, food & agri en grenshandel.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/diensten/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk diensten</a>
+        <a href="/prijzen/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk prijzen</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
