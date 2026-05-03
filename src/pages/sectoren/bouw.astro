@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import sectorImage from '../../assets/images/sectoren/bouw.jpg';
 
 const faqSchema = [
   {
@@ -50,20 +52,28 @@ const articleSchema = {
   <section class="relative overflow-hidden bg-navy text-white">
     <div class="absolute inset-0 bg-gradient-to-br from-navy via-[#0f2040] to-brand-indigo/20"></div>
     <div class="container-page py-24 lg:py-36 relative">
-      <div class="max-w-4xl">
-        <div class="flex items-center gap-3 mb-6">
-          <span class="text-4xl">🏗️</span>
-          <span class="eyebrow text-brand-indigo">Bouw & Installatie</span>
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+        <div class="max-w-4xl">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="text-4xl">🏗️</span>
+            <span class="eyebrow text-brand-indigo">Bouw & Installatie</span>
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-white text-balance leading-[1.05] mb-6">
+            Nooit meer een offerte-aanvraag missen.
+          </h1>
+          <p class="text-lg lg:text-xl text-slate-300 leading-relaxed max-w-2xl mb-10">
+            Uw telefoon rinkelt terwijl uw team op de steiger staat. De AI-assistent neemt aan, registreert de aanvraag en plant de afspraak in — terwijl u doorwerkt.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a href="/demo-aanvragen/" class="btn-primary text-base px-8 py-4">Boek een gratis demo →</a>
+            <a href="/tarieven/" class="inline-flex items-center gap-2 px-8 py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/10 transition-all">Bekijk tarieven</a>
+          </div>
         </div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-white text-balance leading-[1.05] mb-6">
-          Nooit meer een offerte-aanvraag missen.
-        </h1>
-        <p class="text-lg lg:text-xl text-slate-300 leading-relaxed max-w-2xl mb-10">
-          Uw telefoon rinkelt terwijl uw team op de steiger staat. De AI-assistent neemt aan, registreert de aanvraag en plant de afspraak in — terwijl u doorwerkt.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4">
-          <a href="/demo-aanvragen/" class="btn-primary text-base px-8 py-4">Boek een gratis demo →</a>
-          <a href="/tarieven/" class="inline-flex items-center gap-2 px-8 py-4 border border-white/20 rounded-2xl text-white font-semibold hover:bg-white/10 transition-all">Bekijk tarieven</a>
+        <div class="relative">
+          <div class="absolute -inset-6 -z-0 bg-gradient-to-br from-brand-indigo/20 via-transparent to-brand-amber/10 blur-3xl"></div>
+          <div class="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-white/10">
+            <Image src={sectorImage} alt="Bouwprofessional bekijkt blauwdrukken — AI voor bouw- en installatiebedrijven Nederland" class="w-full h-auto object-cover aspect-[4/3]" loading="eager" decoding="async" fetchpriority="high" widths={[480, 800, 1200, 1400]} sizes="(min-width: 1024px) 600px, 100vw" format="webp" quality={82} />
+          </div>
         </div>
       </div>
     </div>

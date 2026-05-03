@@ -4,7 +4,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import SectorCard from '../components/SectorCard.astro';
-import workflowGraphic from '../assets/images/workflow-graphic.png';
+import dashboardMockup from '../assets/images/dashboard-mockup.png';
 
 const services = [
   { href: '/diensten/marco/', title: 'Marco — AI Sekreter', description: 'Neemt uw telefoon 24/7 aan, plant afspraken, levert leads direct in uw inbox. Vloeiend Nederlands.', badge: 'Meest gekozen', accent: 'indigo' as const, features: ['Onbeperkte gesprekken', 'Lead-routering via Telegram of e-mail', 'Live binnen 7 dagen'] },
@@ -311,18 +311,26 @@ const homeSchema = [
         ))}
       </ol>
 
-      <!-- Workflow visual -->
+      <!-- Live dashboard preview — wat onze klanten zien na live-gang -->
       <div class="mt-16 reveal">
-        <Image
-          src={workflowGraphic}
-          alt="AI automatisering workflow: klant belt, AI verwerkt, resultaat direct zichtbaar"
-          class="w-full max-w-3xl mx-auto rounded-xl"
-          loading="lazy"
-          decoding="async"
-          widths={[480, 800, 1200]}
-          sizes="(min-width: 1024px) 768px, 100vw"
-          format="webp"
-        />
+        <div class="relative max-w-4xl mx-auto">
+          <!-- Decorative glow behind the laptop -->
+          <div class="absolute inset-0 -z-10 bg-gradient-to-br from-brand-indigo/15 via-transparent to-brand-rose/10 blur-3xl"></div>
+          <div class="rounded-2xl overflow-hidden border border-slate-200/60 shadow-2xl shadow-slate-900/10 bg-midnight">
+            <Image
+              src={dashboardMockup}
+              alt="Aanloop AI klant-dashboard: realtime gespreksmetrics, leads, response-tijd en conversie-rate van uw AI-assistent"
+              class="w-full h-auto"
+              loading="lazy"
+              decoding="async"
+              widths={[480, 800, 1200, 1600]}
+              sizes="(min-width: 1024px) 1024px, 100vw"
+              format="webp"
+              quality={85}
+            />
+          </div>
+          <p class="text-center text-xs text-slate-500 mt-4">Klant-dashboard: gesprekken, leads en conversie in één overzicht — beschikbaar vanaf dag 1.</p>
+        </div>
       </div>
     </div>
   </section>
