@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import pageImage from '../assets/images/pages/receptionist.jpg';
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -66,6 +68,7 @@ const faqItems = [
 >
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
       <div class="max-w-3xl">
         <div class="flex items-center gap-3 mb-6">
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
@@ -81,6 +84,10 @@ const faqItems = [
           <a href="/diensten/marco/" class="btn-primary">Bekijk Marco — vanaf €597 per maand</a>
           <a href="/gratis-ai-scan/" class="btn-secondary">Gratis 30-min AI scan</a>
         </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <Image src={pageImage} alt="Professional aan het werk met laptop op licht kantoor — AI receptionist voor Nederlandse MKB-bedrijven" class="w-full rounded-2xl shadow-xl object-cover aspect-[4/3]" loading="eager" decoding="async" fetchpriority="high" widths={[480, 800, 1200, 1400]} sizes="(min-width: 1024px) 600px, 100vw" format="webp" quality={82} />
+      </div>
       </div>
     </div>
   </section>

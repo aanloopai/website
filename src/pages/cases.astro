@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import pageImage from '../assets/images/pages/cases.jpg';
 
 const cases = [
   {
@@ -76,6 +78,7 @@ const aggregateRating = {
 >
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
       <div class="max-w-3xl">
         <div class="flex items-center gap-4 mb-6">
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
@@ -87,6 +90,10 @@ const aggregateRating = {
         <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl">
           Geen hype, geen beloftes — concrete voorbeelden van MKB-ondernemers die AI al succesvol inzetten. Lees hoe zij de stap zetten en wat het hen oplevert.
         </p>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <Image src={pageImage} alt="Zakelijke teampresentatie in vergaderzaal — case studies van Aanloop AI klanten" class="w-full rounded-2xl shadow-xl object-cover aspect-[4/3]" loading="eager" decoding="async" fetchpriority="high" widths={[480, 800, 1200, 1400]} sizes="(min-width: 1024px) 600px, 100vw" format="webp" quality={82} />
+      </div>
       </div>
     </div>
   </section>

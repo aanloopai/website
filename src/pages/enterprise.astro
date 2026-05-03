@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import enterpriseImage from '../assets/images/pages/enterprise.jpg';
 
 const faqSchema = [
   {
@@ -55,6 +57,7 @@ const serviceSchema = {
       <div class="w-full h-full bg-gradient-to-l from-brand-indigo to-transparent"></div>
     </div>
     <div class="container-page py-24 lg:py-36 relative">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
       <div class="max-w-4xl">
         <div class="flex items-center gap-3 mb-6">
           <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-indigo/20 border border-brand-indigo/40 text-brand-indigo text-xs font-medium tracking-wide uppercase">
@@ -76,6 +79,13 @@ const serviceSchema = {
             📅 Plan discovery call
           </a>
         </div>
+      </div>
+      <div class="relative">
+        <div class="absolute -inset-6 -z-0 bg-gradient-to-br from-brand-indigo/20 via-transparent to-brand-rose/10 blur-3xl"></div>
+        <div class="relative rounded-3xl overflow-hidden shadow-2xl ring-1 ring-white/10">
+          <Image src={enterpriseImage} alt="Modern enterprise kantoor met team-werkruimte — Aanloop AI voor organisaties met 200+ medewerkers" class="w-full h-auto object-cover aspect-[4/3]" loading="eager" decoding="async" fetchpriority="high" widths={[480, 800, 1200, 1400]} sizes="(min-width: 1024px) 600px, 100vw" format="webp" quality={85} />
+        </div>
+      </div>
       </div>
     </div>
   </section>
