@@ -1,0 +1,154 @@
+name: Daily Site Audit
+
+# Autonomous-agent V1 — daily monitoring layer.
+# Runt scripts/agent/audit-live-site.cjs tegen production aanloopai.nl,
+# opent een GitHub issue bij regressie (deduplicate via 'autonomous-audit'
+# label), of sluit de open audit-issue als alle checks weer pass zijn.
+
+on:
+  schedule:
+    # 06:00 NL = 04:00 UTC (winter) / 05:00 UTC (zomer). Use 04:00 UTC fixed.
+    - cron: '0 4 * * *'
+  workflow_dispatch: # Manuele trigger via GitHub UI
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  audit:
+    name: Audit live site
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run live-site audit
+        id: audit
+        continue-on-error: true
+        run: |
+          set +e
+          node scripts/agent/audit-live-site.cjs > audit-output.txt 2>&1
+          EXIT_CODE=$?
+          set -e
+          echo "exit_code=$EXIT_CODE" >> $GITHUB_OUTPUT
+          echo "--- Audit output ---"
+          cat audit-output.txt
+          # Persist JSON summary (laatste JSON-blok in output) voor parsing
+          node -e "const fs=require('fs');const t=fs.readFileSync('audit-output.txt','utf8');const m=t.match(/\{[\s\S]*\}\s*\$/);fs.writeFileSync('audit-summary.json',m?m[0]:'{}');"
+
+      - name: Upload audit artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-output
+          path: |
+            audit-output.txt
+            audit-summary.json
+          retention-days: 30
+
+      - name: Open or update regression issue
+        if: steps.audit.outputs.exit_code != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summary = JSON.parse(fs.readFileSync('audit-summary.json', 'utf8'));
+            const output = fs.readFileSync('audit-output.txt', 'utf8');
+            const today = new Date().toISOString().slice(0, 10);
+            const title = `[auto] Site-audit regressie ${today}`;
+
+            // Vermijd duplicate issues: zoek bestaand open issue met label autonomous-audit
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'autonomous-audit',
+              per_page: 5,
+            });
+
+            const failureList = (summary.failures || []).map((f, i) =>
+              `${i + 1}. **[${f.category}]** ${f.msg}`
+            ).join('\n');
+
+            const body = [
+              `## Site-audit regressie gedetecteerd op ${today}`,
+              ``,
+              `**Target:** ${summary.base_url || 'https://aanloopai.nl'}`,
+              `**Timestamp:** ${summary.timestamp || 'unknown'}`,
+              `**Duration:** ${summary.duration_seconds || '?'}s`,
+              `**Passes:** ${summary.pass_count || 0}, **Failures:** ${summary.fail_count || 0}`,
+              ``,
+              `### Regressies`,
+              ``,
+              failureList || '(geen detail)',
+              ``,
+              `### Volledige output`,
+              ``,
+              '```',
+              output.slice(0, 5000),
+              '```',
+              ``,
+              `---`,
+              `_Dit issue is automatisch geopend door [.github/workflows/daily-site-audit.yml](https://github.com/${context.repo.owner}/${context.repo.repo}/blob/master/.github/workflows/daily-site-audit.yml). De V2 autonomous agent picks dit up voor triage en (indien scope toegestaan) fix-PR._`,
+            ].join('\n');
+
+            if (existing.data.length > 0) {
+              const issueNumber = existing.data[0].number;
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issueNumber,
+                body: `## Update ${today}\n\n${body.slice(body.indexOf('### Regressies'))}`,
+              });
+              console.log(`Comment toegevoegd aan bestaand issue #${issueNumber}`);
+            } else {
+              const created = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: ['autonomous-audit', 'regression'],
+              });
+              console.log(`Nieuw issue geopend: #${created.data.number}`);
+            }
+
+      - name: Close audit issue if all checks pass
+        if: steps.audit.outputs.exit_code == '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const today = new Date().toISOString().slice(0, 10);
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'autonomous-audit',
+              per_page: 10,
+            });
+            for (const issue of existing.data) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: `## Resolved ${today}\n\nAlle checks pass — sluiten via auto-resolve.`,
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+              });
+              console.log(`Issue #${issue.number} gesloten — alle checks pass`);
+            }
+
+      - name: Fail job if regressies (after issue creation)
+        if: steps.audit.outputs.exit_code != '0'
+        run: exit 1
