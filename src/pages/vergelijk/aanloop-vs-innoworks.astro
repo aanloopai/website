@@ -1,0 +1,268 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Comparison page: Aanloop AI vs Innoworks
+// Bron: innoworks.ai publieke website per mei 2026 (homepage + audit + pricing-secties).
+// Aanloop data: tarieven.astro / diensten/marco.astro / diensten/audit.astro / over.astro.
+// Fair-compare format: alleen publiek geverifieerde feiten, expliciete disclaimer,
+// neutraal taal en bron-attribution. Reclame Code conform.
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Aanloop AI vs Innoworks: welke past bij uw MKB?',
+  description: 'Eerlijke vergelijking tussen Aanloop AI (productized AI-receptionist Marco + WhatsApp-agent Emma + €1.950 audit) en Innoworks (custom AI build-agency met €2.250 audit) voor Nederlandse MKB-bedrijven. Prijs, doorlooptijd, type service, datalocatie en compliance vergeleken op publieke gegevens per mei 2026.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-03',
+  dateModified: '2026-05-03',
+  mainEntityOfPage: 'https://aanloopai.nl/vergelijk/aanloop-vs-innoworks/',
+  inLanguage: 'nl-NL',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Wat is het belangrijkste verschil tussen Aanloop AI en Innoworks?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Innoworks is een custom build-agency: zij bouwen op maat AI-toepassingen voor uw bedrijf, met instapprijzen voor agents vanaf enkele duizenden euro en custom builds tussen 6.000 en 40.000 euro plus retainers. Aanloop AI is productized: wij leveren kant-en-klaar Marco AI-receptionist (vanaf 597 euro per maand) en Emma WhatsApp-agent (vanaf 1.197 euro per maand inclusief CRM), plus een productized AI-audit van 1.950 euro in 14 dagen. Beide hebben een AI-audit (Innoworks 2.250 euro / 14 dagen, Aanloop 1.950 euro / 14 dagen) — daarna divergeren de modellen.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Welke is sneller live met een werkende AI?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Aanloop AI Marco is typisch 7 tot 14 werkdagen live (productized — uw kennisbank, agenda en CRM-koppeling worden in onze bestaande infrastructuur ingericht). Innoworks belooft 2 tot 4 weken voor een agent-traject, en custom builds 4 tot 12 weken afhankelijk van scope. Voor MKB-bedrijven die binnen twee weken een 24/7 telefoonbereikbaarheid willen hebben is een productized aanpak structureel sneller dan custom build.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Beide hebben een AI-audit van rond de 2.000 euro — wat is het verschil?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Innoworks AI-audit (2.250 euro, 14 dagen) richt zich op een AI-roadmap en custom build-aanbevelingen. Aanloop AI-audit (1.950 euro, 14 dagen) richt zich op concrete implementatie van Marco / Emma binnen onze productized stack — dus uw audit-investering wordt verrekend met de eerste maandfactuur als u doorgaat (1.000 euro doorgangs-korting). Beide audits zijn vergelijkbaar in scope en doorlooptijd; het verschil zit in wat erna komt: Innoworks bouwt custom, Aanloop integreert Marco / Emma.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Welke past bij MKB-bedrijven met sector-specifieke compliance (zorg, juridisch, overheid)?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Aanloop AI vermeldt expliciet EU-only datalocaties (Frankfurt en Amsterdam), AVG-conforme verwerkers­overeenkomst standaard, en NEN 7510 op aanvraag voor zorg. Voor Innoworks is de exacte datalocatie en NEN-conformiteit niet expliciet publiek vermeld op de homepage per mei 2026 — vraag dit op tijdens uw evaluatie als sector-specifieke compliance kritisch is. Aanloop AI heeft daarnaast 11 sectorpages en 67 kennisbank-artikelen waaronder gespecialiseerde gidsen voor huisartsenpraktijken, fysiotherapie, advocatenkantoren, notariaten en accountancy.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Welke is voordeliger over een periode van 12 maanden?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Voor MKB-bedrijven die een productized AI-receptionist met WhatsApp-agent zoeken: Aanloop AI Marco Starter (597 euro per maand) komt op circa 7.164 euro voor 12 maanden, Groei (1.197 euro per maand) op 14.364 euro inclusief Emma WhatsApp en CRM-integratie. Een Innoworks custom build start vanaf circa 6.000 euro eenmalig + retainer (typisch 500-1.500 euro per maand voor onderhoud) — dus 12.000 tot 24.000 euro voor jaar 1. Bij vergelijkbare functionaliteit is productized vaak 30 tot 50 procent goedkoper én sneller live; bij echt unieke custom toepassingen die niet als product bestaan is Innoworks de juiste keuze.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Kan ik later van Aanloop AI naar custom build (zoals Innoworks) overstappen, of andersom?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Ja. Aanloop AI hanteert maandelijkse opzegbaarheid (1 maand opzegtermijn) en levert volledige data-export bij contract-einde — uw kennisbank, gespreksdata en escalatie-logica kunt u meenemen naar een custom build elders. Andersom: veel Innoworks-klanten kiezen na een custom traject voor een productized vervolg-aanbod waarbij Aanloop AI Marco / Emma de standaard-componenten leveren en custom-stukken uit het Innoworks-traject aanvullend blijven draaien. Beide modellen zijn niet wederzijds uitsluitend.',
+      },
+    },
+  ],
+};
+
+// Side-by-side comparison — alleen publiek geverifieerde feiten per mei 2026.
+// Aanloop data: tarieven.astro + diensten/marco.astro + diensten/audit.astro + over.astro.
+// Innoworks data: innoworks.ai homepage + audit + pricing-secties (per mei 2026).
+const comparison = [
+  { feature: 'Type service',                     aanloop: 'Productized AI-stack (managed)',                       innoworks: 'Custom AI-build agency' },
+  { feature: 'Hoofdproduct',                     aanloop: 'Marco AI-receptionist + Emma WhatsApp-agent',          innoworks: 'AI Operating System (custom op maat)' },
+  { feature: 'Instapprijs (recurring)',          aanloop: '€597/mnd Starter (Marco, 150 gesprekken)',             innoworks: 'Agents vanaf enkele duizenden euro (eenmalig)' },
+  { feature: 'Bundel prijs',                     aanloop: '€1.197/mnd Groei (Marco + Emma + CRM, onbeperkt)',     innoworks: 'Custom builds €6.000-€40.000 + retainer' },
+  { feature: 'AI-audit prijs',                   aanloop: '€1.950 / 14 dagen (productized)',                      innoworks: '€2.250 / 14 dagen' },
+  { feature: 'Audit verrekening bij vervolg',    aanloop: '€1.000 doorgangs-korting bij implementatie',           innoworks: 'Niet expliciet vermeld' },
+  { feature: 'Doorlooptijd live-gang',           aanloop: '7-14 werkdagen voor Marco',                            innoworks: '2-4 weken voor agent / 4-12 weken custom build' },
+  { feature: 'AI-receptionist productnaam',      aanloop: 'Marco (branded, named entity)',                        innoworks: 'Geen named receptionist-product (custom per klant)' },
+  { feature: 'WhatsApp-agent',                   aanloop: 'Emma (branded, named entity)',                         innoworks: 'Custom build mogelijk, geen branded product' },
+  { feature: 'Datalocatie',                      aanloop: 'EU-only (Frankfurt, Amsterdam) expliciet vermeld',     innoworks: 'Niet expliciet publiek vermeld' },
+  { feature: 'AVG-verwerkers­overeenkomst',     aanloop: 'Standaard inbegrepen, NEN 7510 op aanvraag',           innoworks: 'Op aanvraag tijdens audit' },
+  { feature: 'Sectoren-specifieke content',      aanloop: '11 sectorpages + 67 kennisbank-artikelen',             innoworks: 'Niet sector-georganiseerd op website' },
+  { feature: 'Persoonlijke author / founder',    aanloop: 'Daan Verhoeven (publiek profiel + Person schema)',      innoworks: 'Innoworks als merk; founder minder prominent' },
+  { feature: 'Customer cases publiek',           aanloop: 'Illustratieve sector-scenarios (geen echte logos)',     innoworks: 'Heeft case studies op website' },
+  { feature: 'Maandelijks opzegbaar',            aanloop: 'Ja, 1 maand opzegtermijn',                             innoworks: 'Custom contract per traject' },
+  { feature: 'Doelgroep best fit',               aanloop: 'MKB die snel productized AI willen + AVG-strict (zorg, juridisch, overheid)', innoworks: 'MKB met unieke proces-uitdaging die custom build vereist' },
+];
+
+const whenAanloop = [
+  'U wilt productized AI-receptionist en WhatsApp-bot, geen custom build vanaf nul',
+  'Vaste maandprijs heeft uw voorkeur boven project-prijs van €6.000 tot €40.000',
+  'AVG-conformiteit is wettelijk vereist (zorg, juridisch, overheid, financieel) — onze EU-only is expliciet',
+  'U wilt binnen 7-14 werkdagen live, niet 4-12 weken custom traject',
+  'Sector-specifieke kennis (11 sectoren, 67 kennisbank-artikelen) past bij uw branche',
+  'U waardeert maandelijkse opzegbaarheid boven custom contracten',
+];
+
+const whenInnoworks = [
+  'U heeft een unieke AI-toepassing nodig die niet als product bestaat (bijvoorbeeld interne workflow-automatisering)',
+  'Budget van €6.000-€40.000 eenmalig + retainer is binnen uw mogelijkheden',
+  '"AI Operating System"-framing past bij uw organisatie-volwassenheid',
+  'U heeft technische capaciteit om custom integraties mee te beheren',
+  'U zoekt agency-engagement met dieper consultancy-traject dan productized stack biedt',
+];
+---
+
+<BaseLayout
+  title="Aanloop AI vs Innoworks (mei 2026) — Eerlijke Vergelijking | Aanloop AI"
+  description="Vergelijking Aanloop AI (productized Marco + Emma + €1.950 audit) versus Innoworks (custom AI build-agency + €2.250 audit) voor MKB Nederland: prijs, doorlooptijd, datalocatie, AVG, doelgroep — op publieke gegevens per mei 2026."
+  schema={articleSchema}
+  faqSchema={faqSchema.mainEntity.map(q => ({ question: q.name, answer: q.acceptedAnswer.text }))}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-4xl">
+        <div class="flex items-center gap-4 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Vergelijking · mei 2026</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          Aanloop AI <span class="text-slate-400">vs</span> Innoworks
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed text-pretty max-w-3xl reveal reveal-delay-2">
+          Beide zijn Nederlandse AI-aanbieders voor het MKB met een productized AI-audit van rond de €2.000 in 14 dagen. Daarna divergeren de modellen: Aanloop AI is <strong>productized</strong> (Marco + Emma + recurring maandprijs vanaf €597/mnd), Innoworks is een <strong>custom build-agency</strong> (project-prijs €6.000-€40.000 + retainer). Hieronder een eerlijke vergelijking op publieke gegevens.
+        </p>
+
+        <div class="mt-8 p-4 bg-amber-50/50 border border-amber-200 rounded-xl text-sm text-slate-700 reveal reveal-delay-3">
+          <p class="font-semibold text-amber-900 mb-1">Bron-disclaimer</p>
+          <p>Innoworks-data afkomstig van publieke innoworks.ai-website per mei 2026 (homepage en audit-/pricing-secties). Aanloop AI-data afkomstig van eigen tarieven en productpagina's. Beide leveranciers updaten hun aanbod regelmatig — controleer de huidige stand op beide websites voor uw definitieve evaluatie.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-6xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Side-by-side</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">16 punten naast elkaar.</h2>
+      </div>
+
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-5 text-slate-500 font-medium w-[28%]">Criterium</th>
+              <th class="text-left py-4 px-4 font-bold text-navy bg-brand-emerald/5 w-[36%]">Aanloop AI<br/><span class="text-xs font-normal text-brand-emerald">Productized stack + audit</span></th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[36%]">Innoworks<br/><span class="text-xs font-normal text-slate-500">Custom build-agency</span></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {comparison.map(row => (
+              <tr>
+                <td class="py-3 px-5 text-slate-700 font-medium">{row.feature}</td>
+                <td class="py-3 px-4 text-navy bg-brand-emerald/5 text-xs">{row.aanloop}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{row.innoworks}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Welke past bij u?</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Doelgroep-fit per aanbieder.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Geen "wij zijn beter" framing — beide modellen hebben hun eigen ideale klant. Hieronder per aanbieder de profielen waar ze het sterkst voor zijn.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div class="bg-white border-2 border-brand-emerald/30 rounded-2xl p-6 reveal">
+          <p class="text-xs font-semibold uppercase tracking-widest text-brand-emerald mb-2">Kies Aanloop AI als</p>
+          <ul class="space-y-3 mt-4">
+            {whenAanloop.map(p => (
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {p}
+              </li>
+            ))}
+          </ul>
+          <a href="/diensten/marco/" class="inline-flex items-center gap-2 mt-6 text-sm font-semibold text-brand-emerald hover:underline">
+            Lees meer over Marco
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 reveal reveal-delay-1">
+          <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Kies Innoworks als</p>
+          <ul class="space-y-3 mt-4">
+            {whenInnoworks.map(p => (
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {p}
+              </li>
+            ))}
+          </ul>
+          <p class="mt-6 text-xs text-slate-400 italic">Innoworks is een onafhankelijke aanbieder — wij verwijzen u door naar innoworks.ai voor hun actuele aanbod.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Aanloop AI vs Innoworks — antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqSchema.mainEntity.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.name}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.acceptedAnswer.text}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Eerst zien hoe productized AI werkt voor uw bedrijf?
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Boek een gratis 30-minuten AI-scan of bekijk onze €1.950 productized AI-audit (14 dagen, met €1.000 doorgangs-korting bij implementatie). Geen creditcard, geen verplichting.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/diensten/audit/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Bekijk de AI-audit
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bekijk tarieven
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
