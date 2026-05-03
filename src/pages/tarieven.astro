@@ -119,19 +119,101 @@ const vergelijkRows = [
   ['Live binnen', '10 dgn', '7 dgn', '14 dgn'],
 ];
 
-const priceSchema = {
+// Product + Offer schema per tier — AI Overview citation trigger (P1 audit fix)
+const productOfferGraph = {
   '@context': 'https://schema.org',
-  '@type': 'PriceSpecification',
-  name: 'Aanloop AI Tarieven',
-  description: 'Transparante maandelijkse abonnementsprijzen voor AI agents en workflow automatisering voor het Nederlandse MKB.',
-  priceCurrency: 'EUR',
+  '@graph': [
+    {
+      '@type': 'Product',
+      '@id': 'https://aanloopai.nl/tarieven/#starter',
+      name: 'Aanloop AI — Starter',
+      description: 'AI telefoniste Marco voor Nederlandse MKB. 150 gesprekken per maand, 1 callscript op maat, agenda-integratie en dashboard. Live binnen 10 werkdagen.',
+      brand: { '@type': 'Brand', name: 'Aanloop AI' },
+      category: 'AI Voice Agent / AI Receptionist',
+      offers: {
+        '@type': 'Offer',
+        price: '597',
+        priceCurrency: 'EUR',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '597',
+          priceCurrency: 'EUR',
+          unitText: 'maand',
+          referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
+        },
+        availability: 'https://schema.org/InStock',
+        url: 'https://aanloopai.nl/aanvragen/?plan=starter',
+        seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
+        priceValidUntil: '2026-12-31',
+      },
+    },
+    {
+      '@type': 'Product',
+      '@id': 'https://aanloopai.nl/tarieven/#groei',
+      name: 'Aanloop AI — Groei',
+      description: 'Marco AI telefoniste + Emma WhatsApp AI agent voor Nederlandse MKB. Onbeperkte gesprekken, CRM-integratie (HubSpot/Pipedrive), dashboard met opnames, prioriteit support. Live binnen 7 werkdagen.',
+      brand: { '@type': 'Brand', name: 'Aanloop AI' },
+      category: 'AI Voice + WhatsApp Agent Bundle',
+      offers: {
+        '@type': 'Offer',
+        price: '1197',
+        priceCurrency: 'EUR',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '1197',
+          priceCurrency: 'EUR',
+          unitText: 'maand',
+          referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
+        },
+        availability: 'https://schema.org/InStock',
+        url: 'https://aanloopai.nl/aanvragen/?plan=groei',
+        seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
+        priceValidUntil: '2026-12-31',
+      },
+    },
+    {
+      '@type': 'Product',
+      '@id': 'https://aanloopai.nl/tarieven/#partner',
+      name: 'Aanloop AI — Partner',
+      description: 'Volledige AI automatisering op maat met dedicated account manager, custom n8n workflows, multi-team routing, SLA 99.9%, on-premise/private cloud optie en maatwerk CRM/ERP integraties.',
+      brand: { '@type': 'Brand', name: 'Aanloop AI' },
+      category: 'Enterprise AI Agent Suite',
+      offers: {
+        '@type': 'Offer',
+        priceSpecification: {
+          '@type': 'PriceSpecification',
+          priceCurrency: 'EUR',
+          description: 'Op maat — offerte binnen 24 uur',
+        },
+        availability: 'https://schema.org/InStock',
+        url: 'https://aanloopai.nl/contact/?type=offerte&plan=partner',
+        seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
+      },
+    },
+  ],
 };
+
+// Aanloop vs zelf-service AI-tools — fair compare (no rival names) value-justification
+const valueCompareRows = [
+  { feature: 'Implementatie + training inbegrepen', selfService: 'Nee — zelf prompts, scripts, koppelingen', aanloop: 'Ja — wij brengen u live binnen 7-10 werkdagen' },
+  { feature: 'Nederlandstalige NL-native voice', selfService: 'Vaak Engels accent of beperkte stemmen', aanloop: 'ElevenLabs NL — natuurlijke intonatie' },
+  { feature: 'Data uitsluitend in EU + AVG-strict', selfService: 'Vaak US/global cloud', aanloop: 'EU-only datacenters, AVG art. 28 verwerkers­overeenkomst' },
+  { feature: 'KvK-geregistreerd Nederlands bedrijf', selfService: 'Vaak buitenlandse vendor', aanloop: 'KVK 88606902, Rotterdam — NL-aansprakelijk' },
+  { feature: 'CRM-integratie (HubSpot/Pipedrive)', selfService: 'Tegen meerprijs of zelf bouwen', aanloop: 'Inbegrepen vanaf Groei' },
+  { feature: 'Maandelijkse optimalisatie + script-updates', selfService: 'Doet u zelf', aanloop: 'Wij verbeteren Marco elke maand op uw data' },
+  { feature: 'Geen extra kosten per gesprek of minuut', selfService: 'Vaak per minuut/credit', aanloop: 'Vast bedrag, voorspelbaar' },
+  { feature: 'Dedicated NL support', selfService: 'E-mail tickets, vaak Engels', aanloop: 'Direct contact NL implementatie-team' },
+  { feature: 'Maandelijks opzegbaar', selfService: 'Wisselend', aanloop: 'Ja — geen jaarcontract verplicht' },
+];
 ---
 
 <BaseLayout
   title="Tarieven — AI Agents & Automatisering voor MKB | Aanloop AI"
   description="Transparante tarieven voor Aanloop AI. Starter vanaf €597/mnd, Groei (Marco + Emma) €1.197/mnd. Geen verborgen kosten. Maandelijks opzegbaar. KVK: 88606902."
-  schema={priceSchema}
+  schema={productOfferGraph}
   faqSchema={faqs.map(f => ({ question: f.q, answer: f.a }))}
 >
 
@@ -267,6 +349,61 @@ const priceSchema = {
           ))}
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Aanloop vs zelf-service AI-tools — value justification (Voicelabs-class counter) -->
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 text-center reveal">
+        <p class="eyebrow mb-3">Waarom Aanloop AI?</p>
+        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tightest text-navy text-balance">
+          €597 managed service vs €99–€299 zelf-service tools.
+        </h2>
+        <p class="mt-4 text-slate-600 leading-relaxed max-w-2xl mx-auto">
+          Er zijn AI-receptionist tools vanaf €99/mnd. Op papier voordeliger. In de praktijk betaalt u tijd, integratiewerk en compliance-risico. Hier is wat onze prijs precies dekt.
+        </p>
+      </div>
+
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-4 px-5 text-slate-500 font-medium">Wat krijgt u?</th>
+              <th class="text-center py-4 px-4 font-bold text-slate-500 w-[26%]">Zelf-service tools<br/><span class="text-xs font-normal">€99–€299/mnd</span></th>
+              <th class="text-center py-4 px-4 font-bold text-navy bg-brand-emerald/5 w-[26%]">Aanloop AI<br/><span class="text-xs font-normal text-brand-emerald">vanaf €597/mnd managed</span></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {valueCompareRows.map(row => (
+              <tr>
+                <td class="py-3 px-5 text-slate-700 font-medium">{row.feature}</td>
+                <td class="py-3 px-4 text-center text-slate-500 text-xs">{row.selfService}</td>
+                <td class="py-3 px-4 text-center text-navy bg-brand-emerald/5 text-xs font-medium">{row.aanloop}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="mt-10 grid sm:grid-cols-3 gap-4 reveal reveal-delay-2">
+        <div class="bg-amber-50/40 border border-amber-100 rounded-xl p-5">
+          <p class="text-xs font-semibold uppercase tracking-widest text-amber-700 mb-2">Verborgen kosten zelf-service</p>
+          <p class="text-sm text-slate-700">Een AVG-implementatie + script-tuning + CRM-koppeling kost gemiddeld 30–60 uur intern werk. Tegen €30–€50/uur is dat €900–€3.000 eenmalig — bovenop het abonnement.</p>
+        </div>
+        <div class="bg-rose-50/40 border border-rose-100 rounded-xl p-5">
+          <p class="text-xs font-semibold uppercase tracking-widest text-rose-700 mb-2">AVG-risico zelf-service</p>
+          <p class="text-sm text-slate-700">Voice-AI vendors buiten EU vereisen vaak SCC + DPIA. Voor zorg- en juridisch-praktijken is dit géén optie — Autoriteit Persoonsgegevens (AP) handhaaft actief.</p>
+        </div>
+        <div class="bg-emerald-50/40 border border-emerald-100 rounded-xl p-5">
+          <p class="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">Aanloop dekt dit</p>
+          <p class="text-sm text-slate-700">EU-only data, AVG-conforme verwerkers­overeenkomst, KvK-aansprakelijk in NL, ElevenLabs NL voice — bij ELKE pakket inbegrepen, geen meerprijs.</p>
+        </div>
+      </div>
+
+      <p class="mt-8 text-center text-xs text-slate-500">
+        Vergelijking gebaseerd op publiek vermelde features van toonaangevende NL/EU AI-receptionist tools per mei 2026. Specifieke producten verschillen — vraag voor uw situatie een vergelijking aan via <a href="/contact/" class="underline hover:text-navy">contact</a>.
+      </p>
     </div>
   </section>
 
