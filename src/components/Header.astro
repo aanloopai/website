@@ -1,15 +1,158 @@
 ---
-// Header component — sticky, glassmorphism, with mobile menu
+// Header — corporate-grade sticky header with mega-menu, SEO SiteNavigationElement schema,
+// glassmorphism, and accessible keyboard/touch interactions.
+
+const dienstenGroups = [
+  {
+    title: 'Voice & telefonie',
+    items: [
+      { label: 'Marco — AI Receptionist', href: '/diensten/marco/', desc: '24/7 telefoon aanneemt, plant afspraken in', badge: 'Meest gekozen' },
+      { label: 'AI Telefoon Assistent', href: '/diensten/telefoon-assistent/', desc: 'Inkomende calls automatisch verwerken' },
+      { label: 'AI Afspraken Inplannen', href: '/diensten/ai-afspraken-inplannen/', desc: 'Direct in Google / Outlook agenda' },
+      { label: 'AI Verkoopagent Outbound', href: '/diensten/ai-verkoopagent-outbound/', desc: 'Cold calling en lead-followup' },
+    ],
+  },
+  {
+    title: 'Chat & messaging',
+    items: [
+      { label: 'Emma — WhatsApp Agent', href: '/diensten/emma/', desc: 'Klantvragen op WhatsApp in seconden' },
+      { label: 'AI Chatbot voor Website', href: '/diensten/ai-chatbot-website/', desc: 'Lead-qualification + 24/7 support' },
+      { label: 'AI Klantenservice Omnichannel', href: '/diensten/ai-klantenservice-omnichannel/', desc: 'Telefoon, chat, WhatsApp én e-mail' },
+      { label: 'AI E-mail Assistent', href: '/diensten/ai-email-assistent/', desc: 'Auto-sortering en antwoorden Gmail/Outlook' },
+    ],
+  },
+  {
+    title: 'Workflow automatisering',
+    items: [
+      { label: 'AI Document Processing', href: '/diensten/ai-document-processing/', desc: 'Facturen + contracten automatisch uitlezen' },
+      { label: 'AI Lead Qualification', href: '/diensten/ai-lead-qualification/', desc: 'BANT-screening van elke aanvraag' },
+      { label: 'AI HR & Recruitment', href: '/diensten/ai-hr-recruitment/', desc: 'CV-screening en intake-gesprekken' },
+      { label: 'AI SEO Content Generator', href: '/diensten/ai-seo-content-generator/', desc: 'Nederlandse content op schaal' },
+      { label: 'AI Social Media Agent', href: '/diensten/ai-social-media-agent/', desc: 'Posts, replies en planning' },
+    ],
+  },
+];
+
+const sectoren = [
+  { label: 'Horeca & restaurants',         href: '/sectoren/horeca/',           emoji: '🍽️' },
+  { label: 'Logistiek & Transport',        href: '/sectoren/logistiek/',        emoji: '🚚' },
+  { label: 'Vastgoed & Makelaars',         href: '/sectoren/vastgoed/',         emoji: '🏠' },
+  { label: 'Detailhandel & E-commerce',    href: '/sectoren/detailhandel/',     emoji: '🛍️' },
+  { label: 'Zakelijke dienstverlening',    href: '/sectoren/zakelijk/',         emoji: '💼' },
+  { label: 'Zorg & Welzijn',               href: '/sectoren/zorg/',             emoji: '🏥' },
+  { label: 'Accountancy & Financieel',     href: '/sectoren/accountancy/',      emoji: '📊' },
+  { label: 'Bouw & Installatie',           href: '/sectoren/bouw/',             emoji: '🏗️' },
+  { label: 'Juridisch & Advocatuur',       href: '/sectoren/ai-voor-advocaten/', emoji: '⚖️' },
+  { label: 'ZZP & Freelancers',            href: '/sectoren/ai-voor-zzp/',      emoji: '👤' },
+  { label: 'Webshops & Online Retail',     href: '/sectoren/ai-voor-webshops/', emoji: '🛒' },
+];
+
+const kennisbank = [
+  {
+    title: 'Pillar gidsen',
+    items: [
+      { label: 'AI Receptionist Nederland',   href: '/ai-receptionist-nederland/' },
+      { label: 'AI Telefonie Compleet 2026',  href: '/ai-telefonie-compleet-gids-nederland-2026/' },
+      { label: 'AI voor Administratie',       href: '/ai-voor-administratie-boekhouding-mkb-nederland/' },
+      { label: 'AI voor Zorg MKB',            href: '/ai-voor-zorg-mkb-nederland/' },
+    ],
+  },
+  {
+    title: 'Vergelijkingen',
+    items: [
+      { label: 'Marco vs Voiceflow',          href: '/vergelijk/marco-vs-voiceflow/' },
+      { label: 'Emma vs Trengo',              href: '/vergelijk/emma-vs-trengo/' },
+      { label: 'AI vs callcenter',            href: '/vergelijk/ai-receptionist-vs-callcenter/' },
+      { label: 'Marco vs Make.com Voice',     href: '/vergelijk/marco-vs-make-com-voice/' },
+    ],
+  },
+  {
+    title: 'Tools & resources',
+    items: [
+      { label: 'Glossarium · 80+ AI termen',   href: '/glossarium/' },
+      { label: 'AI ROI Calculator',            href: '/ai-roi-calculator/' },
+      { label: 'AVG-checklist AI MKB',         href: '/avg-checklist-ai-mkb/' },
+      { label: 'Veelgestelde vragen',          href: '/veelgestelde-vragen/' },
+    ],
+  },
+];
+
+const overItems = [
+  { label: 'Over Aanloop AI',  href: '/over/',          desc: 'Founder, missie, KvK 88606902' },
+  { label: 'Werkwijze',        href: '/werkwijze/',     desc: 'Van adviesgesprek tot live in 14 dagen' },
+  { label: 'Cases',            href: '/cases/',         desc: 'Voorbeeldscenario per sector' },
+  { label: 'Locaties',         href: '/locaties/',      desc: '18 steden in heel Nederland' },
+  { label: 'Pers & nieuws',    href: '/pers/',          desc: 'Press kit en updates' },
+  { label: 'Contact',          href: '/contact/',       desc: 'Rotterdam · WhatsApp · e-mail' },
+  { label: 'Vacatures',        href: '/vacatures/',     desc: 'Werken bij Aanloop AI' },
+];
+
+// SEO: SiteNavigationElement schema for Google nav understanding
+const navSchema = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'SiteNavigationElement', position: 1, name: 'Diensten', url: 'https://aanloopai.nl/diensten/' },
+    { '@type': 'SiteNavigationElement', position: 2, name: 'Sectoren', url: 'https://aanloopai.nl/sectoren/' },
+    { '@type': 'SiteNavigationElement', position: 3, name: 'Kennisbank', url: 'https://aanloopai.nl/kennisbank/' },
+    { '@type': 'SiteNavigationElement', position: 4, name: 'Tarieven', url: 'https://aanloopai.nl/tarieven/' },
+    { '@type': 'SiteNavigationElement', position: 5, name: 'Cases', url: 'https://aanloopai.nl/cases/' },
+    { '@type': 'SiteNavigationElement', position: 6, name: 'Over ons', url: 'https://aanloopai.nl/over/' },
+    { '@type': 'SiteNavigationElement', position: 7, name: 'Contact', url: 'https://aanloopai.nl/contact/' },
+  ],
+};
 ---
+
+<!-- Skip to main content (a11y, WCAG 2.4.1) -->
+<a href="#main" class="skip-link">Direct naar hoofdinhoud</a>
 
 <!-- Scroll progress bar -->
 <div id="scroll-progress" aria-hidden="true"></div>
 
-<header id="site-header" class="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-slate-200/80 transition-all duration-300">
+<!-- Top utility bar — corporate trust signals (lg+ only) -->
+<div class="hidden lg:block bg-midnight text-pearl text-xs">
   <div class="container-page">
-    <div class="flex items-center justify-between h-18 py-4">
+    <div class="flex items-center justify-between h-8">
+      <div class="flex items-center gap-5 text-slate-300">
+        <a href="tel:+31624741597" class="flex items-center gap-1.5 hover:text-pearl transition-colors">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+          <span class="font-medium">+31 6 24 74 15 97</span>
+        </a>
+        <span class="text-slate-500">·</span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-brand-emerald" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          <span>AVG-compliant · EU-only data</span>
+        </span>
+        <span class="text-slate-500">·</span>
+        <span>KvK 88606902 · Rotterdam</span>
+      </div>
+      <div class="flex items-center gap-4 text-slate-300">
+        <a href="/gratis-ai-scan/" class="hover:text-pearl transition-colors flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+          <span>Gratis AI-scan</span>
+        </a>
+        <a href="https://wa.me/31624741597" class="hover:text-pearl transition-colors flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          <span>WhatsApp</span>
+        </a>
+        <span class="text-slate-500">·</span>
+        <span class="flex items-center gap-1.5">
+          <span class="relative flex h-2 w-2">
+            <span class="absolute inline-flex h-full w-full rounded-full bg-brand-emerald opacity-75 animate-ping"></span>
+            <span class="relative inline-flex h-2 w-2 rounded-full bg-brand-emerald"></span>
+          </span>
+          <span>Live in 14 dagen</span>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
 
-      <!-- Logo (larger for stronger brand presence) -->
+<!-- Main header -->
+<header id="site-header" class="sticky top-0 z-40 bg-white/85 backdrop-blur-lg border-b border-slate-200/80 transition-all duration-300">
+  <div class="container-page">
+    <div class="flex items-center justify-between h-18 py-3 gap-4">
+
+      <!-- Logo -->
       <a href="/" class="flex items-center group flex-shrink-0" aria-label="Aanloop AI — naar de homepagina">
         <img
           src="/brand/logo-horizontal-light.svg"
@@ -22,97 +165,360 @@
         />
       </a>
 
-      <!-- Desktop nav (5 strategic top-level pages — clean single-line, no wrapping) -->
-      <nav class="hidden lg:flex items-center gap-1" aria-label="Hoofdnavigatie">
-        <a href="/diensten/" class="nav-link">Diensten</a>
-        <a href="/sectoren/" class="nav-link">Sectoren</a>
-        <a href="/kennisbank/" class="nav-link">Kennisbank</a>
+      <!-- Desktop nav -->
+      <nav class="hidden lg:flex items-center gap-0.5 flex-1 justify-center" aria-label="Hoofdnavigatie">
+
+        <!-- Diensten mega-menu -->
+        <div class="nav-group" data-nav-trigger>
+          <button class="nav-link with-arrow" aria-expanded="false" aria-haspopup="true" aria-controls="megamenu-diensten">
+            Diensten
+            <svg class="w-3.5 h-3.5 nav-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div id="megamenu-diensten" class="megamenu" role="menu" aria-label="Diensten submenu">
+            <div class="megamenu-inner grid lg:grid-cols-[2fr_1fr] gap-10">
+              <div class="grid grid-cols-3 gap-8">
+                {dienstenGroups.map((group) => (
+                  <div>
+                    <p class="megamenu-eyebrow">{group.title}</p>
+                    <ul class="space-y-1">
+                      {group.items.map((item) => (
+                        <li>
+                          <a href={item.href} class="megamenu-link group" role="menuitem">
+                            <div class="flex items-start justify-between gap-2">
+                              <span class="font-semibold text-navy text-sm group-hover:text-brand-indigo transition-colors">{item.label}</span>
+                              {item.badge && <span class="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-brand-indigo/10 text-brand-indigo whitespace-nowrap">{item.badge}</span>}
+                            </div>
+                            <p class="text-xs text-slate-500 mt-0.5 leading-snug">{item.desc}</p>
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              <aside class="bg-gradient-to-br from-navy to-midnight text-pearl rounded-xl p-6 flex flex-col">
+                <p class="text-[11px] font-semibold uppercase tracking-widest text-brand-indigo mb-2">Niet zeker welke?</p>
+                <p class="text-lg font-bold leading-tight mb-2">Gratis AI-scan voor uw bedrijf</p>
+                <p class="text-sm text-slate-300 mb-5 leading-relaxed">In 30 min advies: welke 1-3 AI-agents leveren uw MKB direct ROI op.</p>
+                <ul class="space-y-1.5 text-xs text-slate-300 mb-6">
+                  <li class="flex items-center gap-2"><svg class="w-3.5 h-3.5 text-brand-emerald flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Geen verplichtingen</li>
+                  <li class="flex items-center gap-2"><svg class="w-3.5 h-3.5 text-brand-emerald flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Branche-specifiek advies</li>
+                  <li class="flex items-center gap-2"><svg class="w-3.5 h-3.5 text-brand-emerald flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>Concrete ROI-berekening</li>
+                </ul>
+                <div class="mt-auto flex flex-col gap-2">
+                  <a href="/gratis-ai-scan/" class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg bg-pearl text-navy text-sm font-semibold hover:bg-white transition-colors">Plan AI-scan →</a>
+                  <a href="/diensten/" class="text-center text-xs text-slate-300 hover:text-pearl transition-colors">Alle 15 diensten bekijken →</a>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sectoren mega-menu -->
+        <div class="nav-group" data-nav-trigger>
+          <button class="nav-link with-arrow" aria-expanded="false" aria-haspopup="true" aria-controls="megamenu-sectoren">
+            Sectoren
+            <svg class="w-3.5 h-3.5 nav-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div id="megamenu-sectoren" class="megamenu" role="menu" aria-label="Sectoren submenu">
+            <div class="megamenu-inner grid lg:grid-cols-[2fr_1fr] gap-10">
+              <div>
+                <p class="megamenu-eyebrow">11 sectoren · Nederlandse MKB</p>
+                <div class="grid grid-cols-3 gap-x-6 gap-y-1">
+                  {sectoren.map((s) => (
+                    <a href={s.href} class="sector-tile group" role="menuitem">
+                      <span class="text-xl flex-shrink-0">{s.emoji}</span>
+                      <span class="font-medium text-navy text-sm group-hover:text-brand-indigo transition-colors">{s.label}</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+              <aside class="bg-slate-50 border border-slate-200 rounded-xl p-6 flex flex-col">
+                <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 mb-2">Uw branche staat er niet bij?</p>
+                <p class="text-base font-bold text-navy leading-tight mb-3">Custom AI workflows op maat</p>
+                <p class="text-sm text-slate-600 mb-5 leading-relaxed">We bouwen voor elke MKB-sector. n8n &amp; Make.com integraties, audit + roadmap inbegrepen.</p>
+                <div class="mt-auto flex flex-col gap-2">
+                  <a href="/diensten/custom/" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-navy text-white text-sm font-semibold hover:bg-midnight transition-colors">Custom AI →</a>
+                  <a href="/sectoren/" class="text-center text-xs text-slate-500 hover:text-navy transition-colors">Alle 11 sectoren →</a>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kennisbank mega-menu -->
+        <div class="nav-group" data-nav-trigger>
+          <button class="nav-link with-arrow" aria-expanded="false" aria-haspopup="true" aria-controls="megamenu-kennisbank">
+            Kennisbank
+            <svg class="w-3.5 h-3.5 nav-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div id="megamenu-kennisbank" class="megamenu" role="menu" aria-label="Kennisbank submenu">
+            <div class="megamenu-inner grid lg:grid-cols-[2fr_1fr] gap-10">
+              <div class="grid grid-cols-3 gap-8">
+                {kennisbank.map((cat) => (
+                  <div>
+                    <p class="megamenu-eyebrow">{cat.title}</p>
+                    <ul class="space-y-1">
+                      {cat.items.map((item) => (
+                        <li><a href={item.href} class="megamenu-link-compact" role="menuitem">{item.label}</a></li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              <aside class="bg-slate-50 border border-slate-200 rounded-xl p-6 flex flex-col">
+                <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 mb-2">54+ artikelen · 80+ termen</p>
+                <p class="text-base font-bold text-navy leading-tight mb-3">Alles over AI voor MKB</p>
+                <p class="text-sm text-slate-600 mb-5 leading-relaxed">Pillar-gidsen, vergelijkingen, EU AI Act, AVG-compliance — voor MKB-ondernemers en technische beslissers.</p>
+                <div class="mt-auto flex flex-col gap-2">
+                  <a href="/kennisbank/" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-navy text-white text-sm font-semibold hover:bg-midnight transition-colors">Alle artikelen →</a>
+                  <a href="/glossarium/" class="text-center text-xs text-slate-500 hover:text-navy transition-colors">Glossarium openen →</a>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarieven (plain link) -->
         <a href="/tarieven/" class="nav-link">Tarieven</a>
-        <a href="/over/" class="nav-link">Over ons</a>
+
+        <!-- Cases (plain link) -->
+        <a href="/cases/" class="nav-link">Cases</a>
+
+        <!-- Over dropdown (compact) -->
+        <div class="nav-group" data-nav-trigger>
+          <button class="nav-link with-arrow" aria-expanded="false" aria-haspopup="true" aria-controls="dropdown-over">
+            Over
+            <svg class="w-3.5 h-3.5 nav-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </button>
+          <div id="dropdown-over" class="megamenu megamenu-compact" role="menu" aria-label="Over submenu">
+            <div class="dropdown-inner p-3 w-[320px]">
+              <ul class="space-y-0.5">
+                {overItems.map((item) => (
+                  <li>
+                    <a href={item.href} class="block px-3 py-2.5 rounded-lg hover:bg-slate-50 transition-colors group" role="menuitem">
+                      <p class="font-semibold text-navy text-sm group-hover:text-brand-indigo transition-colors">{item.label}</p>
+                      <p class="text-xs text-slate-500 mt-0.5">{item.desc}</p>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
       </nav>
 
-      <!-- CTA group (simplified: WhatsApp icon + primary CTA) -->
+      <!-- CTA group -->
       <div class="flex items-center gap-2 flex-shrink-0">
         <a href="https://wa.me/31624741597" class="hidden md:inline-flex items-center justify-center w-10 h-10 rounded-xl text-slate-600 hover:text-green-700 hover:bg-green-50 transition-all" aria-label="WhatsApp ons" title="WhatsApp">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         </a>
         <a href="/demo-aanvragen/" class="btn-primary text-sm" id="header-demo-cta">
           Gratis demo
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </a>
 
         <!-- Hamburger -->
-        <button
-          id="mobile-menu-toggle"
-          class="lg:hidden p-2 text-slate-700 hover:text-navy hover:bg-slate-100 rounded-lg transition-colors"
-          aria-label="Menu openen"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
-        >
-          <svg id="icon-menu" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-          <svg id="icon-close" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+        <button id="mobile-menu-toggle" class="lg:hidden p-2 text-slate-700 hover:text-navy hover:bg-slate-100 rounded-lg transition-colors" aria-label="Menu openen" aria-expanded="false" aria-controls="mobile-menu">
+          <svg id="icon-menu" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          <svg id="icon-close" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
     </div>
   </div>
 
-  <!-- Mobile menu -->
-  <div
-    id="mobile-menu"
-    class="hidden lg:hidden border-t border-slate-200 bg-white/95 backdrop-blur-lg"
-    aria-label="Mobiele navigatie"
-  >
+  <!-- Mobile menu — accordion-style -->
+  <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white max-h-[calc(100vh-72px)] overflow-y-auto" aria-label="Mobiele navigatie">
     <nav class="container-page py-4 flex flex-col gap-1">
-      <!-- Primary nav (matches desktop) -->
-      <a href="/diensten/" class="mobile-nav-link">Diensten</a>
-      <a href="/sectoren/" class="mobile-nav-link">Sectoren</a>
-      <a href="/kennisbank/" class="mobile-nav-link">Kennisbank</a>
-      <a href="/tarieven/" class="mobile-nav-link">Tarieven</a>
-      <a href="/over/" class="mobile-nav-link">Over ons</a>
+      <!-- Diensten accordion -->
+      <details class="mobile-accordion">
+        <summary class="mobile-accordion-summary">Diensten<svg class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
+        <div class="pl-3 pb-2 pt-1 space-y-3">
+          {dienstenGroups.map((group) => (
+            <div>
+              <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 px-3 mb-1">{group.title}</p>
+              {group.items.map((item) => (
+                <a href={item.href} class="mobile-sub-link">{item.label}</a>
+              ))}
+            </div>
+          ))}
+          <a href="/diensten/" class="block px-3 py-2 text-sm font-semibold text-brand-indigo hover:bg-slate-50 rounded-lg">Alle 15 diensten →</a>
+        </div>
+      </details>
 
-      <!-- Secondary (header'dan kaldırıldı maar mobile-only zichtbaar) -->
-      <div class="pt-2 mt-2 border-t border-slate-100">
-        <p class="px-4 py-1 text-[10px] font-semibold uppercase tracking-widest text-slate-400">Meer</p>
-        <a href="/locaties/" class="mobile-nav-link">Locaties (18 steden)</a>
-        <a href="/cases/" class="mobile-nav-link">Cases</a>
-        <a href="/enterprise/" class="mobile-nav-link text-brand-indigo font-semibold">Enterprise</a>
-        <a href="/werkwijze/" class="mobile-nav-link">Werkwijze</a>
-        <a href="/contact/" class="mobile-nav-link">Contact</a>
+      <!-- Sectoren accordion -->
+      <details class="mobile-accordion">
+        <summary class="mobile-accordion-summary">Sectoren<svg class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
+        <div class="pl-3 pb-2 pt-1 grid grid-cols-2 gap-1">
+          {sectoren.map((s) => (
+            <a href={s.href} class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 text-sm text-navy transition-colors">
+              <span>{s.emoji}</span><span class="truncate">{s.label}</span>
+            </a>
+          ))}
+        </div>
+      </details>
+
+      <!-- Kennisbank accordion -->
+      <details class="mobile-accordion">
+        <summary class="mobile-accordion-summary">Kennisbank<svg class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
+        <div class="pl-3 pb-2 pt-1 space-y-3">
+          {kennisbank.map((cat) => (
+            <div>
+              <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 px-3 mb-1">{cat.title}</p>
+              {cat.items.map((item) => (
+                <a href={item.href} class="mobile-sub-link">{item.label}</a>
+              ))}
+            </div>
+          ))}
+          <a href="/kennisbank/" class="block px-3 py-2 text-sm font-semibold text-brand-indigo hover:bg-slate-50 rounded-lg">Alle artikelen →</a>
+        </div>
+      </details>
+
+      <a href="/tarieven/" class="mobile-nav-link">Tarieven</a>
+      <a href="/cases/" class="mobile-nav-link">Cases</a>
+
+      <!-- Over accordion -->
+      <details class="mobile-accordion">
+        <summary class="mobile-accordion-summary">Over<svg class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
+        <div class="pl-3 pb-2 pt-1">
+          {overItems.map((item) => (
+            <a href={item.href} class="mobile-sub-link">{item.label}</a>
+          ))}
+        </div>
+      </details>
+
+      <!-- Trust strip -->
+      <div class="mt-3 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs text-slate-500 px-3 py-2">
+        <a href="tel:+31624741597" class="flex items-center gap-1.5 hover:text-navy">
+          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+          +31 6 24 74 15 97
+        </a>
+        <span>KvK 88606902</span>
       </div>
 
       <div class="pt-3 border-t border-slate-100 mt-2">
         <a href="/demo-aanvragen/" class="btn-primary w-full text-center justify-center">
           Gratis demo aanvragen
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </a>
       </div>
     </nav>
   </div>
 </header>
 
+<!-- SEO: SiteNavigationElement schema -->
+<script type="application/ld+json" set:html={JSON.stringify(navSchema)}></script>
+
 <style>
+  .skip-link {
+    @apply absolute left-4 top-4 z-50 px-4 py-2 bg-navy text-white rounded-lg text-sm font-medium opacity-0 -translate-y-12 transition-all;
+  }
+  .skip-link:focus {
+    @apply opacity-100 translate-y-0;
+  }
+
   .nav-link {
-    @apply px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-600 hover:text-navy hover:bg-slate-50 relative;
+    @apply px-3.5 py-2 rounded-lg text-sm font-medium transition-all duration-200 text-slate-700 hover:text-navy hover:bg-slate-100/70 inline-flex items-center gap-1;
   }
-  /* Active state — highlight current page */
   .nav-link[aria-current="page"] {
-    @apply text-navy bg-slate-50;
+    @apply text-navy bg-slate-100/80;
   }
+  .nav-link.with-arrow .nav-chevron {
+    @apply transition-transform duration-200 text-slate-400;
+  }
+  .nav-group[data-open="true"] > .nav-link .nav-chevron,
+  .nav-group:hover > .nav-link .nav-chevron {
+    @apply rotate-180 text-navy;
+  }
+  .nav-group[data-open="true"] > .nav-link,
+  .nav-group:hover > .nav-link {
+    @apply text-navy bg-slate-100/70;
+  }
+
+  .nav-group {
+    position: relative;
+  }
+  .megamenu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%) translateY(-4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 160ms ease-out, transform 160ms ease-out;
+    z-index: 50;
+    width: max-content;
+    max-width: min(1100px, calc(100vw - 32px));
+  }
+  .nav-group:hover > .megamenu,
+  .nav-group:focus-within > .megamenu,
+  .nav-group[data-open="true"] > .megamenu {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .megamenu-inner {
+    @apply bg-white border border-slate-200 rounded-2xl shadow-2xl shadow-slate-900/10 p-7;
+    width: 100%;
+  }
+  .megamenu-compact .dropdown-inner {
+    @apply bg-white border border-slate-200 rounded-2xl shadow-2xl shadow-slate-900/10;
+  }
+
+  .megamenu-eyebrow {
+    @apply text-[10px] font-bold uppercase tracking-[0.12em] text-slate-400 mb-3;
+  }
+  .megamenu-link {
+    @apply block px-3 py-2 -mx-3 rounded-lg hover:bg-slate-50 transition-colors;
+  }
+  .megamenu-link-compact {
+    @apply block px-3 py-2 -mx-3 rounded-lg text-sm text-slate-700 hover:text-navy hover:bg-slate-50 transition-colors font-medium;
+  }
+  .sector-tile {
+    @apply flex items-center gap-3 px-3 py-2.5 -mx-3 rounded-lg hover:bg-slate-50 transition-colors;
+  }
+
   .mobile-nav-link {
     @apply px-4 py-3 rounded-lg text-sm font-medium transition-colors text-slate-700 hover:bg-slate-50 hover:text-navy;
+  }
+  .mobile-sub-link {
+    @apply block px-3 py-2 rounded-lg text-sm text-slate-600 hover:bg-slate-50 hover:text-navy transition-colors;
+  }
+  .mobile-accordion {
+    @apply rounded-lg;
+  }
+  .mobile-accordion-summary {
+    @apply flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-navy transition-colors cursor-pointer list-none;
+  }
+  .mobile-accordion-summary::-webkit-details-marker {
+    display: none;
+  }
+  .mobile-accordion[open] .mobile-accordion-summary svg {
+    transform: rotate(180deg);
+  }
+  .mobile-accordion[open] .mobile-accordion-summary {
+    @apply text-navy bg-slate-50;
+  }
+
+  #scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    width: 0;
+    background: linear-gradient(90deg, #4338CA, #E11D48);
+    z-index: 50;
+    transition: width 80ms linear;
+  }
+
+  .h-18 { height: 4.5rem; }
+
+  @media (max-width: 1023px) {
+    .megamenu { display: none; }
   }
 </style>
 
 <script>
-  // ─── Scroll progress bar ───
   const progressBar = document.getElementById('scroll-progress') as HTMLElement;
   function updateProgress() {
     const scrollTop = window.scrollY;
@@ -122,19 +528,14 @@
   }
   window.addEventListener('scroll', updateProgress, { passive: true });
 
-  // ─── Header shadow on scroll ───
   const header = document.getElementById('site-header') as HTMLElement;
   window.addEventListener('scroll', () => {
     if (header) {
-      if (window.scrollY > 8) {
-        header.classList.add('shadow-sm');
-      } else {
-        header.classList.remove('shadow-sm');
-      }
+      if (window.scrollY > 8) header.classList.add('shadow-sm');
+      else header.classList.remove('shadow-sm');
     }
   }, { passive: true });
 
-  // ─── Mobile menu ───
   const toggle = document.getElementById('mobile-menu-toggle') as HTMLButtonElement;
   const menu = document.getElementById('mobile-menu') as HTMLElement;
   const iconMenu = document.getElementById('icon-menu') as SVGElement;
@@ -147,33 +548,77 @@
       toggle.setAttribute('aria-expanded', 'false');
       iconMenu?.classList.remove('hidden');
       iconClose?.classList.add('hidden');
+      document.body.style.overflow = '';
     } else {
       menu.classList.remove('hidden');
       toggle.setAttribute('aria-expanded', 'true');
       iconMenu?.classList.add('hidden');
       iconClose?.classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
     }
   });
 
-  // ─── Active nav link ───
   const currentPath = window.location.pathname;
-  document.querySelectorAll('.nav-link, .mobile-nav-link').forEach((link) => {
+  document.querySelectorAll('.nav-link, .mobile-nav-link, .mobile-sub-link').forEach((link) => {
     const href = link.getAttribute('href');
-    if (href && currentPath.startsWith(href) && href !== '/') {
+    if (href && currentPath === href) {
       link.setAttribute('aria-current', 'page');
-      link.classList.add('text-navy', 'bg-slate-50');
-    } else if (href === '/' && currentPath === '/') {
+    } else if (href && href !== '/' && href.length > 1 && currentPath.startsWith(href)) {
       link.setAttribute('aria-current', 'page');
     }
   });
 
-  // ─── Close mobile menu when clicking outside ───
+  document.querySelectorAll('#mobile-menu a').forEach((a) => {
+    a.addEventListener('click', () => {
+      menu?.classList.add('hidden');
+      toggle?.setAttribute('aria-expanded', 'false');
+      iconMenu?.classList.remove('hidden');
+      iconClose?.classList.add('hidden');
+      document.body.style.overflow = '';
+    });
+  });
+
+  document.querySelectorAll('[data-nav-trigger]').forEach((group) => {
+    const button = group.querySelector('button[aria-haspopup="true"]') as HTMLButtonElement | null;
+    const panel = group.querySelector('.megamenu') as HTMLElement | null;
+    if (!button || !panel) return;
+
+    button.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = group.getAttribute('data-open') === 'true';
+      document.querySelectorAll('[data-nav-trigger][data-open="true"]').forEach((other) => {
+        if (other !== group) {
+          other.setAttribute('data-open', 'false');
+          (other.querySelector('button') as HTMLButtonElement)?.setAttribute('aria-expanded', 'false');
+        }
+      });
+      group.setAttribute('data-open', isOpen ? 'false' : 'true');
+      button.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+    });
+
+    panel.addEventListener('keydown', (e) => {
+      if ((e as KeyboardEvent).key === 'Escape') {
+        group.setAttribute('data-open', 'false');
+        button.setAttribute('aria-expanded', 'false');
+        button.focus();
+      }
+    });
+  });
+
   document.addEventListener('click', (e) => {
+    document.querySelectorAll('[data-nav-trigger][data-open="true"]').forEach((group) => {
+      if (!group.contains(e.target as Node)) {
+        group.setAttribute('data-open', 'false');
+        (group.querySelector('button') as HTMLButtonElement)?.setAttribute('aria-expanded', 'false');
+      }
+    });
+
     if (!header?.contains(e.target as Node) && !menu?.classList.contains('hidden')) {
       menu.classList.add('hidden');
       toggle?.setAttribute('aria-expanded', 'false');
       iconMenu?.classList.remove('hidden');
       iconClose?.classList.add('hidden');
+      document.body.style.overflow = '';
     }
   });
 </script>
