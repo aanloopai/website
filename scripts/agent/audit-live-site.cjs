@@ -101,10 +101,21 @@ function extractJsonLd(html) {
 }
 
 function getTypes(jsonld) {
-  const t = jsonld['@type'];
-  if (!t) return [];
-  if (Array.isArray(t)) return t;
-  return [t];
+  // Recursive walk — verzamel alle @type-velden in hele tree, ook genest
+  // (bijv. Product binnen ItemList.mainEntity, of Question binnen FAQPage.mainEntity).
+  const types = new Set();
+  function walk(node) {
+    if (!node || typeof node !== 'object') return;
+    if (Array.isArray(node)) { node.forEach(walk); return; }
+    const t = node['@type'];
+    if (Array.isArray(t)) t.forEach(x => types.add(x));
+    else if (t) types.add(t);
+    for (const v of Object.values(node)) {
+      if (v && typeof v === 'object') walk(v);
+    }
+  }
+  walk(jsonld);
+  return [...types];
 }
 
 async function checkSchema() {
