@@ -39,7 +39,30 @@ const AUTORESPONSE_TEMPLATES = {
     intro: 'Bedankt voor uw aanmelding voor onze nieuwsbrief.',
     body: 'U ontvangt maandelijks een mail met praktische AI-tips, sector-cases en nieuwe gidsen uit onze kennisbank. Geen spam — altijd direct afmeldbaar via de link onderaan elke mail.',
   },
+  roi_calculator: {
+    subject: 'Uw ROI-rapport — Aanloop AI',
+    intro: 'Bedankt voor het gebruik van onze ROI-calculator.',
+    body: 'Hieronder vindt u uw persoonlijke ROI-berekening. We nemen binnen 14 dagen vrijblijvend contact op om te kijken of een gratis 30-min AI-scan zinvol is voor uw situatie.',
+  },
 };
+
+const ROI_REPORT_KEYS = [
+  ['sector', 'Sector'],
+  ['calls_per_day', 'Inkomende calls per dag'],
+  ['missed_percentage', 'Gemiste / slecht-afgehandeld'],
+  ['client_value', 'Gemiddelde klantwaarde'],
+  ['manual_hours_per_week', 'Handmatig werk'],
+  ['hourly_rate', 'Uurtarief medewerkers'],
+];
+
+const ROI_RESULT_KEYS = [
+  ['annual_saving', 'Geschatte jaarlijkse besparing'],
+  ['recommended_tier', 'Aanbevolen Aanloop AI pakket'],
+  ['payback_months', 'Terugverdientijd'],
+  ['fte_equivalent', 'FTE-equivalent bespaard'],
+  ['extra_appointments_per_month', 'Extra afspraken/maand'],
+  ['net_roi_year1', 'Netto ROI jaar 1'],
+];
 
 const FOOTER_HTML = `
 <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0">
@@ -79,6 +102,48 @@ function buildAutoresponseHtml(template, userName) {
     <p>${escapeHtml(template.intro)}</p>
     <p>${escapeHtml(template.body)}</p>
     <p>Met vriendelijke groet,<br>Het team van Aanloop AI</p>
+    ${FOOTER_HTML}
+  </body></html>`;
+}
+
+function buildRoiReportRows(fields, keyPairs) {
+  return keyPairs
+    .filter(([k]) => fields[k])
+    .map(([k, label]) => `<tr><td style="padding:10px 14px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:600;width:55%">${escapeHtml(label)}</td><td style="padding:10px 14px;border:1px solid #e2e8f0;text-align:right;font-weight:600;color:#0f172a">${escapeHtml(fields[k])}</td></tr>`)
+    .join('');
+}
+
+function buildRoiAutoresponseHtml(template, userName, fields) {
+  const inputRows = buildRoiReportRows(fields, ROI_REPORT_KEYS);
+  const resultRows = buildRoiReportRows(fields, ROI_RESULT_KEYS);
+  const headlineSaving = escapeHtml(fields.annual_saving || '—');
+  const headlineTier = escapeHtml(fields.recommended_tier || 'Op aanvraag');
+
+  return `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#0f172a">
+    <p style="margin:0 0 16px">Hallo ${escapeHtml(userName)},</p>
+    <p style="margin:0 0 16px">${escapeHtml(template.intro)}</p>
+
+    <div style="background:#0f172a;color:#fff;padding:24px;border-radius:16px;margin:24px 0">
+      <p style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:#94a3b8;margin:0 0 6px">Geschatte jaarlijkse besparing</p>
+      <p style="font-size:36px;font-weight:700;margin:0;color:#fff">${headlineSaving}</p>
+      <p style="font-size:12px;color:#94a3b8;margin:8px 0 0">Bij ${headlineTier}</p>
+    </div>
+
+    <h2 style="font-size:14px;color:#0f172a;margin:24px 0 8px">Uw resultaten</h2>
+    <table style="border-collapse:collapse;width:100%;font-size:13px">${resultRows}</table>
+
+    <h2 style="font-size:14px;color:#0f172a;margin:24px 0 8px">Uw invoer</h2>
+    <table style="border-collapse:collapse;width:100%;font-size:13px">${inputRows}</table>
+
+    <p style="margin:24px 0 16px;color:#475569;font-size:14px;line-height:1.6">${escapeHtml(template.body)}</p>
+
+    <p style="margin:24px 0">
+      <a href="https://aanloopai.nl/gratis-ai-scan/" style="display:inline-block;background:#4f46e5;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px">Gratis AI Scan aanvragen →</a>
+    </p>
+
+    <p style="font-size:12px;color:#64748b;margin:16px 0">Berekeningen zijn schattingen op basis van gemiddelden bij 80+ live MKB-implementaties. Werkelijke resultaten kunnen afwijken — een gratis AI-scan levert een nauwkeurige op-maat berekening.</p>
+
+    <p style="margin:24px 0 0">Met vriendelijke groet,<br>Het team van Aanloop AI</p>
     ${FOOTER_HTML}
   </body></html>`;
 }
@@ -158,12 +223,16 @@ export async function onRequestPost(context) {
     }, 'notification');
 
     // 2. Autoresponse to user
+    const autoresponseHtml = formType === 'roi_calculator'
+      ? buildRoiAutoresponseHtml(template, firstName, fields)
+      : buildAutoresponseHtml(template, firstName);
+
     await sendBrevoEmail(env.BREVO_API_KEY, {
       sender: { name: SENDER_NAME, email: SENDER_EMAIL },
       to: [{ email: userEmail, name: fullName }],
       replyTo: { email: NOTIFICATION_EMAIL, name: 'Aanloop AI' },
       subject: template.subject,
-      htmlContent: buildAutoresponseHtml(template, firstName),
+      htmlContent: autoresponseHtml,
     }, 'autoresponse');
 
     return new Response(JSON.stringify({ success: true, message: 'Verzonden' }), {

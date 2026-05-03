@@ -186,6 +186,64 @@ const faqItems = [
             </div>
           </div>
 
+          <!-- Email-capture: stuur dit rapport naar uzelf -->
+          <div class="card border-2 border-brand-emerald/30 bg-brand-emerald/5">
+            <div class="flex items-start gap-3 mb-4">
+              <div class="w-10 h-10 rounded-xl bg-brand-emerald/15 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+                <svg class="w-5 h-5 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+              </div>
+              <div>
+                <p class="font-bold text-navy text-sm mb-1">Stuur dit rapport naar mijn e-mail</p>
+                <p class="text-xs text-slate-600">Ontvang uw ROI-berekening + aanbevolen pakket per mail. Geen verplichtingen.</p>
+              </div>
+            </div>
+
+            <form id="roi-email-form" class="space-y-3" novalidate>
+              <input type="hidden" name="form_type" value="roi_calculator" />
+              <input type="hidden" name="subject" value="ROI-rapport aanvraag via aanloopai.nl" />
+              <input type="hidden" name="source" value="ai-roi-calculator" />
+              <!-- Honeypot — bots vullen dit, mensen zien het niet -->
+              <input type="text" name="botcheck" tabindex="-1" autocomplete="off"
+                style="position:absolute;left:-9999px;opacity:0;height:0;width:0" aria-hidden="true" />
+
+              <!-- Hidden berekening-velden — automatisch gevuld door updateCalc() -->
+              <input type="hidden" name="sector" id="hf-sector" value="" />
+              <input type="hidden" name="calls_per_day" id="hf-calls" value="" />
+              <input type="hidden" name="missed_percentage" id="hf-missed" value="" />
+              <input type="hidden" name="client_value" id="hf-cv" value="" />
+              <input type="hidden" name="manual_hours_per_week" id="hf-hours" value="" />
+              <input type="hidden" name="hourly_rate" id="hf-rate" value="" />
+              <input type="hidden" name="annual_saving" id="hf-saving" value="" />
+              <input type="hidden" name="recommended_tier" id="hf-tier" value="" />
+              <input type="hidden" name="payback_months" id="hf-payback" value="" />
+              <input type="hidden" name="fte_equivalent" id="hf-fte" value="" />
+              <input type="hidden" name="net_roi_year1" id="hf-roi" value="" />
+              <input type="hidden" name="extra_appointments_per_month" id="hf-apps" value="" />
+
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input type="text" name="voornaam" required placeholder="Voornaam"
+                  class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-emerald focus:outline-none" />
+                <input type="email" name="email" required placeholder="E-mailadres"
+                  class="px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-emerald focus:outline-none" />
+              </div>
+
+              <label class="flex items-start gap-2 text-xs text-slate-600 leading-relaxed cursor-pointer">
+                <input type="checkbox" name="consent" required
+                  class="mt-0.5 w-4 h-4 accent-brand-emerald flex-shrink-0" />
+                <span>
+                  Ik ga akkoord dat Aanloop AI mijn gegevens gebruikt om mij dit ROI-rapport te sturen en eventueel binnen 14 dagen contact op te nemen voor een gratis vervolggesprek. Zie het <a href="/privacy/" class="text-brand-indigo hover:underline">privacybeleid</a>.
+                </span>
+              </label>
+
+              <button type="submit" id="roi-email-btn"
+                class="btn-primary text-sm w-full justify-center bg-brand-emerald hover:bg-brand-emerald/90">
+                <span id="roi-email-btn-text">Stuur rapport per e-mail →</span>
+              </button>
+
+              <p id="roi-email-msg" class="text-xs text-center hidden" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+
           <!-- CTA -->
           <div class="bg-brand-indigo/5 border border-brand-indigo/20 rounded-2xl p-5">
             <p class="font-bold text-navy text-sm mb-1">Wilt u een nauwkeurige berekening op maat?</p>
@@ -373,8 +431,78 @@ const faqItems = [
     (document.getElementById('result-tier-label') as HTMLElement).textContent = tierLabel;
     (document.getElementById('result-payback') as HTMLElement).textContent =
       paybackMonths < 1 ? '< 1 maand' : `${Math.round(paybackMonths)} maanden`;
+
+    // Sync hidden form inputs voor email-capture (lees-route, geen UI-impact)
+    const sectorEl = document.getElementById('sector') as HTMLSelectElement;
+    const sectorLabel = sectorEl.options[sectorEl.selectedIndex]?.textContent || '';
+    const setHidden = (id: string, val: string): void => {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      if (el) el.value = val;
+    };
+    setHidden('hf-sector', sectorLabel);
+    setHidden('hf-calls', String(calls));
+    setHidden('hf-missed', `${Math.round(missedPct * 100)}%`);
+    setHidden('hf-cv', `€${clientValue.toLocaleString('nl-NL')}`);
+    setHidden('hf-hours', `${manualHours} uur/week`);
+    setHidden('hf-rate', `€${hourlyRate}/uur`);
+    setHidden('hf-saving', fmt(totalSaving) + '/jaar');
+    setHidden('hf-tier', tierLabel);
+    setHidden('hf-payback', paybackMonths < 1 ? '< 1 maand' : `${Math.round(paybackMonths)} maanden`);
+    setHidden('hf-fte', fteFormatted);
+    setHidden('hf-roi', fmt(netROI) + '/jaar');
+    setHidden('hf-apps', Math.round(extraAppointmentsPerMonth) + '/maand');
   }
 
   // Initialize on load
-  document.addEventListener('DOMContentLoaded', updateCalc);
+  document.addEventListener('DOMContentLoaded', () => {
+    updateCalc();
+
+    // Email-capture form submit handler
+    const form = document.getElementById('roi-email-form') as HTMLFormElement | null;
+    if (!form) return;
+
+    const btn = document.getElementById('roi-email-btn') as HTMLButtonElement;
+    const btnText = document.getElementById('roi-email-btn-text') as HTMLElement;
+    const msg = document.getElementById('roi-email-msg') as HTMLElement;
+
+    const showMsg = (text: string, kind: 'success' | 'error'): void => {
+      msg.textContent = text;
+      msg.classList.remove('hidden', 'text-brand-emerald', 'text-red-600');
+      msg.classList.add(kind === 'success' ? 'text-brand-emerald' : 'text-red-600');
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // HTML5 validity check (required, email format, consent checkbox)
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      btn.disabled = true;
+      btnText.textContent = 'Versturen…';
+      msg.classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/submit', {
+          method: 'POST',
+          body: new FormData(form),
+        });
+        const data = await res.json().catch(() => ({ success: false, message: 'Ongeldig antwoord' }));
+
+        if (res.ok && data.success) {
+          showMsg('✓ Rapport onderweg — controleer uw inbox.', 'success');
+          form.reset();
+        } else {
+          showMsg(data.message || 'Versturen mislukt — probeer opnieuw.', 'error');
+        }
+      } catch {
+        showMsg('Netwerkfout — probeer opnieuw.', 'error');
+      } finally {
+        btn.disabled = false;
+        btnText.textContent = 'Stuur rapport per e-mail →';
+      }
+    });
+  });
 </script>
