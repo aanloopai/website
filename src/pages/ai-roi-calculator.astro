@@ -21,7 +21,24 @@ const toolSchema = {
     'FTE-equivalent en terugverdientijd in maanden',
     'Methodologie en sector-benchmarks transparant',
   ],
+  // Google Assistant + spraak-zoekassistenten kunnen deze elementen voorlezen
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['#result-total', '#result-tier-label', '#result-payback', '[data-speakable]'],
+  },
 };
+
+// 1-click preset profielen — zet de 5 sliders + sector dropdown in één keer op realistische defaults
+// per sector. Calls / missedPct / clientValue / hours / hourlyRate / sectorIndex (0-based: zakelijk, bouw,
+// horeca, vastgoed, logistiek, zorg, accountancy, e-commerce).
+const presetProfiles = [
+  { id: 'huisarts', label: 'Huisartsenpraktijk', icon: '🩺', calls: 80, missed: 30, cv: 1200, hours: 18, rate: 35, sectorIdx: 5 },
+  { id: 'installateur', label: 'Installateur / Loodgieter', icon: '🔧', calls: 35, missed: 35, cv: 3500, hours: 12, rate: 30, sectorIdx: 1 },
+  { id: 'notaris', label: 'Notariskantoor', icon: '⚖️', calls: 25, missed: 20, cv: 2800, hours: 15, rate: 45, sectorIdx: 6 },
+  { id: 'rijschool', label: 'Rijschool', icon: '🚗', calls: 40, missed: 40, cv: 1800, hours: 14, rate: 25, sectorIdx: 0 },
+  { id: 'webshop', label: 'E-commerce / Webshop', icon: '🛒', calls: 50, missed: 25, cv: 180, hours: 20, rate: 25, sectorIdx: 7 },
+  { id: 'dierenarts', label: 'Dierenartspraktijk', icon: '🐾', calls: 55, missed: 30, cv: 350, hours: 16, rate: 30, sectorIdx: 5 },
+];
 
 const howToSchema = {
   '@context': 'https://schema.org',
@@ -71,6 +88,30 @@ const faqItems = [
 
   <section class="section">
     <div class="container-page max-w-5xl mx-auto">
+
+      <!-- Preset profile cards — 1-click sector defaults -->
+      <div class="mb-8">
+        <p class="text-sm font-semibold text-navy mb-3">Snelstart — kies uw situatie:</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2" id="preset-cards">
+          {presetProfiles.map(p => (
+            <button
+              type="button"
+              class="preset-card text-left p-3 rounded-xl border border-slate-200 bg-white hover:border-brand-indigo hover:bg-brand-indigo/5 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-indigo"
+              data-preset={p.id}
+              data-calls={p.calls}
+              data-missed={p.missed}
+              data-cv={p.cv}
+              data-hours={p.hours}
+              data-rate={p.rate}
+              data-sector-idx={p.sectorIdx}
+            >
+              <span class="text-xl block mb-1" aria-hidden="true">{p.icon}</span>
+              <span class="text-xs font-semibold text-navy leading-tight block">{p.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div class="grid lg:grid-cols-2 gap-10">
 
         <!-- Calculator Input -->
@@ -145,8 +186,8 @@ const faqItems = [
         <!-- Results -->
         <div class="space-y-4">
 
-          <!-- Main result card -->
-          <div class="card bg-navy text-pearl relative overflow-hidden">
+          <!-- Main result card (sticky on mobile zodra slider sectie buiten viewport) -->
+          <div id="result-main" class="card bg-navy text-pearl relative overflow-hidden lg:static" data-speakable>
             <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
             <div class="relative">
               <p class="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">Geschatte jaarlijkse besparing</p>
@@ -185,6 +226,18 @@ const faqItems = [
               </div>
             </div>
           </div>
+
+          <!-- PDF download — direct, geen email vereist -->
+          <button
+            type="button"
+            id="roi-pdf-btn"
+            class="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 bg-white text-sm font-semibold text-navy hover:border-brand-indigo hover:bg-brand-indigo/5 transition-colors focus:outline-none focus:ring-2 focus:ring-brand-indigo"
+          >
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <span id="roi-pdf-btn-text">Download als PDF</span>
+          </button>
 
           <!-- Email-capture: stuur dit rapport naar uzelf -->
           <div class="card border-2 border-brand-emerald/30 bg-brand-emerald/5">
@@ -453,9 +506,170 @@ const faqItems = [
     setHidden('hf-apps', Math.round(extraAppointmentsPerMonth) + '/maand');
   }
 
+  function applyPreset(card: HTMLElement): void {
+    const get = (k: string): string => card.getAttribute(`data-${k}`) || '';
+    const setSlider = (id: string, val: string): void => {
+      const el = document.getElementById(id) as HTMLInputElement | null;
+      if (el && val) el.value = val;
+    };
+    setSlider('calls-per-day', get('calls'));
+    setSlider('missed-pct', get('missed'));
+    setSlider('client-value', get('cv'));
+    setSlider('manual-hours', get('hours'));
+    setSlider('hourly-rate', get('rate'));
+    const sectorEl = document.getElementById('sector') as HTMLSelectElement | null;
+    if (sectorEl) {
+      const idx = parseInt(get('sector-idx') || '0', 10);
+      if (idx >= 0 && idx < sectorEl.options.length) sectorEl.selectedIndex = idx;
+    }
+    document.querySelectorAll('.preset-card').forEach(b => {
+      b.classList.remove('border-brand-indigo', 'bg-brand-indigo/5', 'ring-2', 'ring-brand-indigo');
+    });
+    card.classList.add('border-brand-indigo', 'bg-brand-indigo/5', 'ring-2', 'ring-brand-indigo');
+    if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
+    updateCalc();
+    // Smooth scroll naar resultaat-kaart op mobile (preset = directe sector-keuze, user wil zien wat het oplevert)
+    if (window.innerWidth < 1024) {
+      document.getElementById('result-main')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  async function downloadPdf(): Promise<void> {
+    const btnText = document.getElementById('roi-pdf-btn-text') as HTMLElement;
+    const btn = document.getElementById('roi-pdf-btn') as HTMLButtonElement;
+    const orig = btnText.textContent || 'Download als PDF';
+    btn.disabled = true;
+    btnText.textContent = 'PDF wordt gegenereerd…';
+
+    try {
+      // jsPDF via CDN ESM — geen npm dependency, geen bundle bloat
+      const mod = await import(/* @vite-ignore */ 'https://cdn.jsdelivr.net/npm/jspdf@2.5.2/+esm') as any;
+      const jsPDF = mod.jsPDF || mod.default?.jsPDF || mod.default;
+      const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+
+      const sectorSel = document.getElementById('sector') as HTMLSelectElement;
+      const sectorLabel = sectorSel.options[sectorSel.selectedIndex]?.textContent || '';
+      const total = (document.getElementById('result-total') as HTMLElement).textContent || '';
+      const tier = (document.getElementById('result-tier-label') as HTMLElement).textContent || '';
+      const payback = (document.getElementById('result-payback') as HTMLElement).textContent || '';
+      const fte = (document.getElementById('result-fte') as HTMLElement).textContent || '';
+      const leads = (document.getElementById('result-leads') as HTMLElement).textContent || '';
+      const time = (document.getElementById('result-time') as HTMLElement).textContent || '';
+      const apps = (document.getElementById('result-appointments') as HTMLElement).textContent || '';
+      const roi = (document.getElementById('result-roi') as HTMLElement).textContent || '';
+
+      const today = new Date().toLocaleDateString('nl-NL', { day: '2-digit', month: 'long', year: 'numeric' });
+
+      // Header
+      doc.setFillColor(15, 23, 42); // navy
+      doc.rect(0, 0, 210, 35, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(18);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Aanloop AI — ROI Rapport', 15, 18);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Gegenereerd op ${today}  ·  Sector: ${sectorLabel}`, 15, 27);
+
+      // Headline besparing
+      doc.setTextColor(15, 23, 42);
+      doc.setFontSize(11);
+      doc.text('Geschatte jaarlijkse besparing', 15, 50);
+      doc.setFontSize(28);
+      doc.setFont('helvetica', 'bold');
+      doc.text(total, 15, 62);
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100, 116, 139);
+      doc.text(`Aanbevolen pakket: ${tier}`, 15, 70);
+
+      // Resultaten tabel
+      doc.setTextColor(15, 23, 42);
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Uw resultaten', 15, 90);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(10);
+
+      const rows: [string, string][] = [
+        ['Terugverdientijd', payback],
+        ['Teruggewonnen leads', leads],
+        ['Tijdsbesparing', time],
+        ['Extra afspraken/maand', apps],
+        ['FTE-equivalent bespaard', fte],
+        ['Netto ROI jaar 1', roi],
+      ];
+      let y = 100;
+      rows.forEach((row, i) => {
+        if (i % 2 === 0) {
+          doc.setFillColor(248, 250, 252);
+          doc.rect(15, y - 5, 180, 8, 'F');
+        }
+        doc.setTextColor(71, 85, 105);
+        doc.text(row[0], 18, y);
+        doc.setTextColor(15, 23, 42);
+        doc.setFont('helvetica', 'bold');
+        doc.text(row[1], 192, y, { align: 'right' });
+        doc.setFont('helvetica', 'normal');
+        y += 8;
+      });
+
+      // CTA
+      y += 10;
+      doc.setFillColor(79, 70, 229);
+      doc.roundedRect(15, y, 180, 14, 2, 2, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Gratis 30-min AI-scan: aanloopai.nl/gratis-ai-scan/', 105, y + 9, { align: 'center' });
+
+      // Disclaimer
+      doc.setTextColor(100, 116, 139);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      const disclaimer = 'Berekeningen zijn schattingen op basis van gemiddelden bij 80+ live MKB-implementaties bij Aanloop AI. Werkelijke resultaten kunnen afwijken. Een gratis AI-scan levert een nauwkeurige op-maat berekening.';
+      const wrapped = doc.splitTextToSize(disclaimer, 180);
+      doc.text(wrapped, 15, y + 25);
+
+      // Footer
+      doc.setFontSize(8);
+      doc.text('Aanloop AI · hello@aanloopai.nl · aanloopai.nl · KvK 88606902', 105, 285, { align: 'center' });
+
+      const stamp = new Date().toISOString().split('T')[0];
+      doc.save(`aanloop-roi-rapport-${stamp}.pdf`);
+      if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(20);
+    } catch (err) {
+      console.error('PDF generation failed:', err);
+      alert('PDF kon niet gegenereerd worden — probeer opnieuw of gebruik de e-mail optie.');
+    } finally {
+      btn.disabled = false;
+      btnText.textContent = orig;
+    }
+  }
+
   // Initialize on load
   document.addEventListener('DOMContentLoaded', () => {
     updateCalc();
+
+    // Preset cards click handlers
+    document.querySelectorAll<HTMLElement>('.preset-card').forEach(btn => {
+      btn.addEventListener('click', () => applyPreset(btn));
+    });
+
+    // PDF download handler
+    document.getElementById('roi-pdf-btn')?.addEventListener('click', () => { void downloadPdf(); });
+
+    // Subtle haptic on slider input (mobile only — desktop browsers ignore vibrate)
+    document.querySelectorAll<HTMLInputElement>('input[type="range"]').forEach(slider => {
+      let last = 0;
+      slider.addEventListener('input', () => {
+        const now = Date.now();
+        if (now - last > 80 && navigator.vibrate) {
+          navigator.vibrate(5);
+          last = now;
+        }
+      });
+    });
 
     // Email-capture form submit handler
     const form = document.getElementById('roi-email-form') as HTMLFormElement | null;
