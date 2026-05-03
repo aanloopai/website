@@ -32,6 +32,71 @@ const articleSchema = {
   },
 };
 
+// HowTo schema — implementatie-stappenplan voor AI-telefonie in NL MKB.
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'AI-telefonie implementeren in 6 stappen voor MKB Nederland',
+  description: 'Praktisch stappenplan om AI-telefonie (voice agent) te implementeren bij een Nederlandse MKB-organisatie: van use-case selectie tot productie go-live, inclusief TTS-keuze, SIP-trunk, LLM-pipeline en CRM-integratie.',
+  totalTime: 'P14D',
+  inLanguage: 'nl-NL',
+  estimatedCost: { '@type': 'MonetaryAmount', currency: 'EUR', value: '597' },
+  supply: [
+    { '@type': 'HowToSupply', name: 'Bestaand telefoonnummer (port of doorschakeling)' },
+    { '@type': 'HowToSupply', name: 'CRM-toegang (HubSpot, Salesforce, Pipedrive of vergelijkbaar)' },
+    { '@type': 'HowToSupply', name: 'Agenda-systeem (Google Workspace of Microsoft 365)' },
+  ],
+  tool: [
+    { '@type': 'HowToTool', name: 'TTS-provider (ElevenLabs, Cartesia of Azure)' },
+    { '@type': 'HowToTool', name: 'SIP-trunk provider (Vonage, Twilio of Telnyx)' },
+    { '@type': 'HowToTool', name: 'LLM-orchestratielaag (Aanloop AI agent platform)' },
+  ],
+  step: [
+    {
+      '@type': 'HowToStep',
+      position: 1,
+      name: 'Use-case en call-volume in kaart brengen',
+      text: 'Inventariseer dagvolume inkomende gesprekken, percentage gemiste calls, gemiddelde gespreksduur en seizoenspieken. Bepaal welke vragen eerstelijns zijn (FAQ, openingstijden, afspraken inplannen) versus tweedelijns (offerte, klacht, complex advies). Eerstelijns 70-80% is geschikt voor AI-overname.',
+      url: 'https://aanloopai.nl/ai-telefonie-compleet-gids-nederland-2026/#use-case',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 2,
+      name: 'TTS-provider selecteren op latency en NL-stem',
+      text: 'Kies een TTS die natuurlijk Nederlands spreekt met latency onder 280 ms. ElevenLabs Multilingual v2 (180-280 ms) is marktstandaard voor kwaliteit; Cartesia Sonic (90-150 ms) is sneller maar minder natuurlijk; Azure Neural Voice (250-400 ms) biedt Vlaams plus Nederlands. EU-cluster bevestigen voor AVG.',
+      url: 'https://aanloopai.nl/ai-telefonie-compleet-gids-nederland-2026/#tts',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 3,
+      name: 'SIP-trunk regelen met EU data-residency',
+      text: 'Selecteer een SIP-trunk-provider met EU-routing voor AVG-conformiteit. Vonage (Nexmo) en Telnyx hebben native EU-presence. Twilio biedt EDGE-locatie EU-Frankfurt. Regel een Nederlands telefoonnummer (port of nieuw) en configureer de doorschakeling vanuit uw bestaande telefoniestack.',
+      url: 'https://aanloopai.nl/ai-telefonie-compleet-gids-nederland-2026/#sip',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 4,
+      name: 'LLM-pipeline opzetten met latency-budget < 1.5s',
+      text: 'Bouw of kies een orchestratielaag die ASR (Whisper streaming, 150-300 ms), LLM (GPT-4o of Claude met first-token < 800 ms) en TTS aan elkaar knoopt. Streaming op alle drie niveaus is verplicht voor sub-2s totale latency. Implementeer barge-in (klant kan AI onderbreken) en interruption-handling.',
+      url: 'https://aanloopai.nl/ai-telefonie-compleet-gids-nederland-2026/#latency',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 5,
+      name: 'Integraties met CRM, agenda en escalatie configureren',
+      text: 'Koppel de AI agent aan uw CRM (HubSpot, Salesforce, Pipedrive) via REST API of native integratie zodat lead-data direct in het juiste record landt. Verbind agenda (Google/Outlook/Calendly) voor afsprakenplanning. Definieer escalatieregels: doorverbinden, terugbelnotitie, ticket openen of SMS naar dienstdoende.',
+      url: 'https://aanloopai.nl/ai-telefonie-compleet-gids-nederland-2026/#integratie',
+    },
+    {
+      '@type': 'HowToStep',
+      position: 6,
+      name: 'Pilot draaien, monitoren en geleidelijk uitrollen',
+      text: 'Start met een pilot op één afdeling of buiten kantooruren. Monitor 4 KPIs: containment-rate (% volledig door AI afgehandeld), CSAT, escalatie-percentage en latency-p95. Stuur scripts en kennisbank wekelijks bij op basis van transcripten. Schaal pas op naar 24/7 productie zodra containment > 70% en CSAT > 4.0/5.',
+      url: 'https://aanloopai.nl/ai-telefonie-compleet-gids-nederland-2026/#pilot',
+    },
+  ],
+};
+
 const ttsProviders = [
   { naam: 'ElevenLabs Multilingual v2', stem: 'Zeer natuurlijk, brede stem-bibliotheek, custom voice-clone', nederlands: 'Excellent (native NL stemmen)', latency: '180-280 ms', kosten: 'Vanaf 0,18 EUR per minuut', ehv: 'EU-cluster (Frankfurt)' },
   { naam: 'OpenAI Voice (GPT-4o Realtime)', stem: 'Zeer goed, geintegreerd met LLM', nederlands: 'Goed (geaccentueerd)', latency: '300-500 ms', kosten: 'Vanaf 0,30 EUR per minuut', ehv: 'EU-region beschikbaar' },
@@ -119,7 +184,7 @@ const verderLezen = [
 <BaseLayout
   title="AI-Telefonie Compleet Gids Nederland 2026 — Voice AI, SIP, Latency, Stem | Aanloop AI"
   description="Volledige technische gids voor AI-telefonie Nederland: ElevenLabs versus OpenAI Voice versus Cartesia versus Azure, SIP via Twilio, Vonage en Retell, latency-budget, Nederlands accent en dialecten."
-  schema={articleSchema}
+  schema={[articleSchema, howToSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

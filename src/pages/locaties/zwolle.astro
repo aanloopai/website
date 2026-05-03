@@ -3,13 +3,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const city = "Zwolle";
 const region = "Overijssel";
 const localSchema = {
-  '@context': 'https://schema.org', '@type': 'ProfessionalService',
+  '@context': 'https://schema.org', '@type': 'LocalBusiness',
   name: 'Aanloop AI — AI Agency Zwolle',
   url: 'https://aanloopai.nl/locaties/zwolle/',
   image: 'https://aanloopai.nl/logo-mark-light-1024.png',
   address: { '@type': 'PostalAddress', addressLocality: 'Zwolle', addressRegion: 'Overijssel', addressCountry: 'NL' },
   geo: { '@type': 'GeoCoordinates', latitude: '52.5168', longitude: '6.0830' },
   areaServed: { '@type': 'City', name: 'Zwolle' },
+  openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '17:00' },
   priceRange: '€€',
   telephone: '+31624741597',
   email: 'hello@aanloopai.nl',

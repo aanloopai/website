@@ -63,12 +63,47 @@ const schema = {
     seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
   },
 };
+
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Emma — AI WhatsApp Bot',
+  description: 'Cloud-gebaseerde AI WhatsApp Business agent voor MKB Nederland: 24/7 klantvragen, getraind op eigen kennisbank, native koppeling met Shopify/WooCommerce/HubSpot, multilingual auto-detect, EU-only data.',
+  url: 'https://aanloopai.nl/diensten/emma/',
+  applicationCategory: 'BusinessApplication',
+  applicationSubCategory: 'AI Chatbot / WhatsApp Business Agent',
+  operatingSystem: 'Cloud (WhatsApp Business API + browser dashboard)',
+  inLanguage: ['nl-NL', 'en', 'de', 'fr', 'es', 'it', 'pl'],
+  isAccessibleForFree: false,
+  creator: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  offers: {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'EUR',
+    lowPrice: '197',
+    highPrice: '2500',
+    offerCount: '3',
+    availability: 'https://schema.org/InStock',
+  },
+  featureList: [
+    'WhatsApp Business API officieel Meta-verified',
+    '24/7 klantvragen automatisch beantwoorden',
+    'Getraind op eigen FAQ + productcatalogus + interne documenten',
+    'Realtime productdata via Shopify, WooCommerce, Magento, Lightspeed, PrestaShop',
+    'Native CRM-koppeling (HubSpot, Pipedrive, Salesforce, Microsoft Dynamics)',
+    'Helpdesk integratie (Zendesk, Freshdesk, Intercom, Crisp)',
+    'Multilingual auto-detection (NL/EN/FR/DE standaard, ES/IT/PL op aanvraag)',
+    'Naadloze handover naar uw team met conversatie-history',
+    'AVG/GDPR-compliant — EU datacenters, encryptie at-rest + in-transit',
+    'Conversatie-bewaartermijn configureerbaar (default 90 dagen)',
+  ],
+  audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
+};
 ---
 
 <BaseLayout
   title="Emma — AI WhatsApp Bot voor MKB Nederland: Klantvragen in Seconden | Aanloop AI"
   description="Emma is uw AI WhatsApp Business bot die klantvragen 24/7 in seconden beantwoordt. Getraind op uw eigen kennisbank, naadloze handover naar uw team. Vanaf €197/mnd. Live binnen 7 dagen."
-  schema={schema}
+  schema={[schema, softwareSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

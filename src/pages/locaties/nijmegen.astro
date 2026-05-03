@@ -3,13 +3,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const city = "Nijmegen";
 const region = "Gelderland";
 const localSchema = {
-  '@context': 'https://schema.org', '@type': 'ProfessionalService',
+  '@context': 'https://schema.org', '@type': 'LocalBusiness',
   name: 'Aanloop AI — AI Agency Nijmegen',
   url: 'https://aanloopai.nl/locaties/nijmegen/',
   image: 'https://aanloopai.nl/logo-mark-light-1024.png',
   address: { '@type': 'PostalAddress', addressLocality: 'Nijmegen', addressRegion: 'Gelderland', addressCountry: 'NL' },
   geo: { '@type': 'GeoCoordinates', latitude: '51.8426', longitude: '5.8546' },
   areaServed: { '@type': 'City', name: 'Nijmegen' },
+  openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '17:00' },
   priceRange: '€€',
   telephone: '+31624741597',
   email: 'hello@aanloopai.nl',

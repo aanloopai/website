@@ -80,12 +80,36 @@ const schema = {
     seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
   },
 };
+
+const softwareSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'Marco — AI Receptionist',
+  description: 'Cloud-gebaseerde AI-telefoniste voor MKB Nederland: 24/7 vloeiend Nederlands, agenda-integratie (Google/Outlook), CRM-koppeling (HubSpot/Salesforce/Pipedrive), live transcripts en EU-only datalokatie.',
+  url: 'https://aanloopai.nl/diensten/marco/',
+  applicationCategory: 'BusinessApplication',
+  applicationSubCategory: 'AI Voice Agent / AI Receptionist',
+  operatingSystem: 'Cloud (telephony + browser dashboard)',
+  inLanguage: ['nl-NL', 'en', 'de', 'fr', 'es'],
+  isAccessibleForFree: false,
+  creator: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  offers: {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'EUR',
+    lowPrice: '597',
+    highPrice: '5000',
+    offerCount: '3',
+    availability: 'https://schema.org/InStock',
+  },
+  featureList: features,
+  audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
+};
 ---
 
 <BaseLayout
   title="Marco — AI Receptionist & AI Telefoniste voor MKB Nederland | Aanloop AI"
   description="Marco is uw AI-receptionist die 24/7 telefoon aanneemt in vloeiend Nederlands, afspraken plant en leads direct naar uw inbox stuurt. Vanaf €597/mnd in Starter, onbeperkte gesprekken in Groei. Live binnen 7 dagen."
-  schema={schema}
+  schema={[schema, softwareSchema]}
   faqSchema={faqItems}
 >
   <!-- Hero -->

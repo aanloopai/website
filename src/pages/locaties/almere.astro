@@ -3,13 +3,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const city = "Almere";
 const region = "Flevoland";
 const localSchema = {
-  '@context': 'https://schema.org', '@type': 'ProfessionalService',
+  '@context': 'https://schema.org', '@type': 'LocalBusiness',
   name: 'Aanloop AI — AI Agency Almere',
   url: 'https://aanloopai.nl/locaties/almere/',
   image: 'https://aanloopai.nl/logo-mark-light-1024.png',
   address: { '@type': 'PostalAddress', addressLocality: 'Almere', addressRegion: 'Flevoland', addressCountry: 'NL' },
   geo: { '@type': 'GeoCoordinates', latitude: '52.3508', longitude: '5.2647' },
   areaServed: { '@type': 'City', name: 'Almere' },
+  openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '17:00' },
   priceRange: '€€',
   telephone: '+31624741597',
   email: 'hello@aanloopai.nl',

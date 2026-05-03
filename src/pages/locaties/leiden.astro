@@ -3,13 +3,14 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const city = "Leiden";
 const region = "Zuid-Holland";
 const localSchema = {
-  '@context': 'https://schema.org', '@type': 'ProfessionalService',
+  '@context': 'https://schema.org', '@type': 'LocalBusiness',
   name: 'Aanloop AI — AI Agency Leiden',
   url: 'https://aanloopai.nl/locaties/leiden/',
   image: 'https://aanloopai.nl/logo-mark-light-1024.png',
   address: { '@type': 'PostalAddress', addressLocality: 'Leiden', addressRegion: 'Zuid-Holland', addressCountry: 'NL' },
   geo: { '@type': 'GeoCoordinates', latitude: '52.1601', longitude: '4.4970' },
   areaServed: { '@type': 'City', name: 'Leiden' },
+  openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '17:00' },
   priceRange: '€€',
   telephone: '+31624741597',
   email: 'hello@aanloopai.nl',

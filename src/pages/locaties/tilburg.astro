@@ -5,13 +5,14 @@ const region = 'Noord-Brabant';
 const lat = '51.5555';
 const lon = '5.0913';
 const localSchema = {
-  '@context': 'https://schema.org', '@type': 'ProfessionalService',
+  '@context': 'https://schema.org', '@type': 'LocalBusiness',
   name: `Aanloop AI — AI Agency ${city}`,
   url: `https://aanloopai.nl/locaties/${city.toLowerCase()}/`,
   image: 'https://aanloopai.nl/logo-mark-light-1024.png',
   address: { '@type': 'PostalAddress', addressLocality: city, addressRegion: region, addressCountry: 'NL' },
   geo: { '@type': 'GeoCoordinates', latitude: lat, longitude: lon },
   areaServed: { '@type': 'City', name: city },
+  openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '17:00' },
   priceRange: '€€',
   telephone: '+31624741597',
   email: 'hello@aanloopai.nl',
