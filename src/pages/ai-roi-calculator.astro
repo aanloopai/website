@@ -406,6 +406,14 @@ const faqItems = [
 </BaseLayout>
 
 <script>
+  import { initGrowthBook, getFeatureValue } from '../lib/growthbook';
+
+  // Feature-flag config voor email-CTA experiment (Sprint A v3.5).
+  // Default = control variant; B-variant ('Ontvang mijn ROI-rapport (gratis)')
+  // wordt vanuit GrowthBook gepusht zodra dashboard-experiment actief is.
+  const ROI_EMAIL_CTA_KEY = 'roi-email-cta-button-text';
+  const ROI_EMAIL_CTA_DEFAULT = 'Stuur rapport per e-mail →';
+
   function fmt(n: number): string {
     return '€ ' + Math.round(n).toLocaleString('nl-NL');
   }
