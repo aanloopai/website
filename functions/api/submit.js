@@ -44,6 +44,11 @@ const AUTORESPONSE_TEMPLATES = {
     intro: 'Bedankt voor het gebruik van onze ROI-calculator.',
     body: 'Hieronder vindt u uw persoonlijke ROI-berekening. We nemen binnen 14 dagen vrijblijvend contact op om te kijken of een gratis 30-min AI-scan zinvol is voor uw situatie.',
   },
+  ai_readiness_scan: {
+    subject: 'Uw AI-Readiness rapport — Aanloop AI',
+    intro: 'Bedankt voor het invullen van onze AI-Readiness Scan.',
+    body: 'Hieronder vindt u uw persoonlijke AI-Readiness rapport met score, tier-classificatie en concrete aanbevelingen. We nemen binnen 14 dagen vrijblijvend contact op om te kijken of een gratis 30-min strategiegesprek zinvol is voor uw situatie.',
+  },
 };
 
 const ROI_REPORT_KEYS = [
@@ -62,6 +67,21 @@ const ROI_RESULT_KEYS = [
   ['fte_equivalent', 'FTE-equivalent bespaard'],
   ['extra_appointments_per_month', 'Extra afspraken/maand'],
   ['net_roi_year1', 'Netto ROI jaar 1'],
+];
+
+// AI-Readiness Scan — antwoord-keys voor email-rapport
+const SCAN_ANSWER_KEYS = [
+  ['scan_sector', 'Sector'],
+  ['scan_company_size', 'Bedrijfsgrootte'],
+  ['scan_tools', 'Huidige tools'],
+  ['scan_pains', 'Pijnpunten'],
+  ['scan_phone_volume', 'Telefoon-volume per dag'],
+  ['scan_manual_hours', 'Handmatige uren per week'],
+  ['scan_budget', 'Maandelijks AI-budget'],
+  ['scan_urgency', 'Urgentie'],
+  ['scan_avg', 'AVG / GDPR-status'],
+  ['scan_ai_exp', 'Eerdere AI-ervaring'],
+  ['scan_data_quality', 'Datakwaliteit'],
 ];
 
 const FOOTER_HTML = `
@@ -148,6 +168,53 @@ function buildRoiAutoresponseHtml(template, userName, fields) {
   </body></html>`;
 }
 
+function buildScanAutoresponseHtml(template, userName, fields) {
+  const answerRows = SCAN_ANSWER_KEYS
+    .filter(([k]) => fields[k])
+    .map(([k, label]) => `<tr><td style="padding:10px 14px;border:1px solid #e2e8f0;background:#f8fafc;font-weight:600;width:45%">${escapeHtml(label)}</td><td style="padding:10px 14px;border:1px solid #e2e8f0;color:#0f172a">${escapeHtml(fields[k])}</td></tr>`)
+    .join('');
+  const score = escapeHtml(fields.scan_score || '—');
+  const tier = escapeHtml(fields.scan_tier || '—');
+  const headline = escapeHtml(fields.scan_headline || '—');
+  const actionsList = (fields.scan_actions || '').split('|').map(s => s.trim()).filter(Boolean);
+  const actionsHtml = actionsList.length
+    ? actionsList.map((a, i) => `<li style="margin:8px 0;padding-left:8px"><strong style="color:#4f46e5">${i + 1}.</strong> ${escapeHtml(a)}</li>`).join('')
+    : '<li>Geen specifieke acties.</li>';
+  const sectorAdv = fields.scan_sector_advice && fields.scan_sector_advice !== '—'
+    ? `<p style="margin:16px 0;padding:12px 16px;background:#eef2ff;border-left:3px solid #4f46e5;border-radius:6px;font-size:13px;color:#475569"><strong style="color:#0f172a">Voor uw sector:</strong> ${escapeHtml(fields.scan_sector_advice)}.</p>`
+    : '';
+
+  return `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#0f172a">
+    <p style="margin:0 0 16px">Hallo ${escapeHtml(userName)},</p>
+    <p style="margin:0 0 16px">${escapeHtml(template.intro)}</p>
+
+    <div style="background:#0f172a;color:#fff;padding:24px;border-radius:16px;margin:24px 0">
+      <p style="font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:#94a3b8;margin:0 0 6px">Uw AI-Readiness Score</p>
+      <p style="font-size:42px;font-weight:700;margin:0;color:#fff;line-height:1">${score}</p>
+      <p style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:#34d399;margin:12px 0 4px;font-weight:600">${tier} tier</p>
+      <p style="font-size:16px;font-weight:600;color:#fff;margin:0">${headline}</p>
+    </div>
+
+    <h2 style="font-size:14px;color:#0f172a;margin:24px 0 12px;text-transform:uppercase;letter-spacing:1px">Aanbevolen volgende stappen</h2>
+    <ol style="padding-left:20px;margin:0;font-size:14px;color:#334155;line-height:1.6">${actionsHtml}</ol>
+    ${sectorAdv}
+
+    <h2 style="font-size:14px;color:#0f172a;margin:32px 0 8px;text-transform:uppercase;letter-spacing:1px">Uw antwoorden</h2>
+    <table style="border-collapse:collapse;width:100%;font-size:13px">${answerRows}</table>
+
+    <p style="margin:24px 0 16px;color:#475569;font-size:14px;line-height:1.6">${escapeHtml(template.body)}</p>
+
+    <p style="margin:24px 0">
+      <a href="https://aanloopai.nl/contact/" style="display:inline-block;background:#4f46e5;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px">Plan een 30-min strategiegesprek →</a>
+    </p>
+
+    <p style="font-size:12px;color:#64748b;margin:16px 0">De score is gebaseerd op gewogen criteria die we bij 80+ live MKB-implementaties effectief vonden. Voor een nauwkeurige op-maat analyse adviseren we onze 30-min videocall AI-scan.</p>
+
+    <p style="margin:24px 0 0">Met vriendelijke groet,<br>Het team van Aanloop AI</p>
+    ${FOOTER_HTML}
+  </body></html>`;
+}
+
 async function sendBrevoEmail(apiKey, payload, label) {
   const res = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
@@ -223,9 +290,14 @@ export async function onRequestPost(context) {
     }, 'notification');
 
     // 2. Autoresponse to user
-    const autoresponseHtml = formType === 'roi_calculator'
-      ? buildRoiAutoresponseHtml(template, firstName, fields)
-      : buildAutoresponseHtml(template, firstName);
+    let autoresponseHtml;
+    if (formType === 'roi_calculator') {
+      autoresponseHtml = buildRoiAutoresponseHtml(template, firstName, fields);
+    } else if (formType === 'ai_readiness_scan') {
+      autoresponseHtml = buildScanAutoresponseHtml(template, firstName, fields);
+    } else {
+      autoresponseHtml = buildAutoresponseHtml(template, firstName);
+    }
 
     await sendBrevoEmail(env.BREVO_API_KEY, {
       sender: { name: SENDER_NAME, email: SENDER_EMAIL },

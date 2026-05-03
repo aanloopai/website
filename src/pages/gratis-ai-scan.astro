@@ -1,29 +1,229 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const faqItems = [
-  { question: 'Wat kost de AI scan?', answer: 'De AI scan is volledig gratis en vrijblijvend. We vragen geen creditcard en sturen geen factuur. Het is ons kennismakingsgesprek.' },
-  { question: 'Hoe lang duurt de AI scan?', answer: 'Het videogesprek duurt 20-30 minuten. U ontvangt daarna binnen 2 werkdagen een rapport met bevindingen en aanbevelingen.' },
-  { question: 'Wie voert de AI scan uit?', answer: 'De scan wordt uitgevoerd door een van onze AI-specialisten — geen verkopers. We kijken eerlijk naar uw situatie en adviseren alleen als AI ook echt waarde toevoegt.' },
-  { question: 'Wat gebeurt er na de scan?', answer: 'U ontvangt een rapport met concrete aanbevelingen en een ROI-berekening. Er is geen verplichting tot afname van onze diensten.' },
-  { question: 'Is mijn data veilig?', answer: 'Ja. We verwerken uw gegevens conform de AVG. Uw bedrijfsinformatie wordt niet gedeeld met derden en niet gebruikt voor commerciële doeleinden.' },
+// Wizard-questions: 11 stappen totaal. Q1 = sector (context, geen score). Q2-Q11 = scoring (max 100pt totaal).
+const questions = [
+  {
+    id: 'sector',
+    type: 'radio',
+    label: 'In welke sector bent u actief?',
+    helper: 'We gebruiken dit om sector-specifieke aanbevelingen te geven.',
+    score: false,
+    options: [
+      { value: 'horeca', label: 'Horeca & Restaurant' },
+      { value: 'vastgoed', label: 'Vastgoed & Makelaars' },
+      { value: 'advocatuur', label: 'Juridisch & Advocatuur' },
+      { value: 'accountancy', label: 'Accountancy & Administratie' },
+      { value: 'bouw', label: 'Bouw & Installatie' },
+      { value: 'logistiek', label: 'Logistiek & Transport' },
+      { value: 'zorg', label: 'Zorg & Welzijn' },
+      { value: 'zzp', label: 'ZZP / Freelance' },
+      { value: 'ecommerce', label: 'E-commerce & Detailhandel' },
+      { value: 'overig', label: 'Anders / Overig' },
+    ],
+  },
+  {
+    id: 'size',
+    type: 'radio',
+    label: 'Wat is uw bedrijfsgrootte?',
+    helper: 'Aantal medewerkers (FTE).',
+    score: true,
+    options: [
+      { value: 'zzp', label: 'ZZP / alleen', points: 2 },
+      { value: '2-5', label: '2–5 medewerkers', points: 4 },
+      { value: '6-20', label: '6–20 medewerkers', points: 7 },
+      { value: '21-50', label: '21–50 medewerkers', points: 10 },
+      { value: '50+', label: 'Meer dan 50 medewerkers', points: 10 },
+    ],
+  },
+  {
+    id: 'tools',
+    type: 'checkbox',
+    label: 'Welke tools gebruikt u nu? (meerkeuzes mogelijk)',
+    helper: 'Goede digitale fundering = AI sneller te koppelen.',
+    score: true,
+    maxPoints: 6,
+    options: [
+      { value: 'crm', label: 'CRM (HubSpot, Salesforce, Pipedrive, etc.)', points: 2 },
+      { value: 'erp', label: 'ERP / boekhouding (Exact, AFAS, Twinfield)', points: 2 },
+      { value: 'helpdesk', label: 'Helpdesk (Zendesk, Freshdesk, Intercom)', points: 2 },
+      { value: 'voip', label: 'VoIP / cloudtelefonie (Voys, Belfabriek)', points: 2 },
+      { value: 'agenda', label: 'Online agenda (Outlook 365, Google Workspace)', points: 2 },
+    ],
+  },
+  {
+    id: 'pains',
+    type: 'checkbox',
+    label: 'Wat zijn uw 3 grootste pijnpunten? (max 3)',
+    helper: 'Concrete pijn = AI levert direct waarde.',
+    score: true,
+    maxPick: 3,
+    maxPoints: 12,
+    options: [
+      { value: 'missed_calls', label: 'Gemiste oproepen / lange wachttijden', points: 4 },
+      { value: 'repetitive_email', label: 'Repetitieve klantvragen via mail/WhatsApp', points: 4 },
+      { value: 'planning', label: 'Handmatig afspraken inplannen', points: 4 },
+      { value: 'invoices', label: 'Factuur- of offerteverwerking', points: 4 },
+      { value: 'reporting', label: 'Rapportages / handmatige administratie', points: 4 },
+      { value: 'no_overview', label: 'Geen overzicht over leads of klantcontact', points: 4 },
+    ],
+  },
+  {
+    id: 'phoneVolume',
+    type: 'radio',
+    label: 'Hoeveel inkomende telefoongesprekken ontvangt u per dag?',
+    helper: 'Schatting volstaat — KPN/VoIP-rapportage of teaminschatting.',
+    score: true,
+    options: [
+      { value: 'lt5', label: 'Minder dan 5', points: 2 },
+      { value: '5-20', label: '5–20 calls per dag', points: 5 },
+      { value: '20-50', label: '20–50 calls per dag', points: 8 },
+      { value: 'gt50', label: 'Meer dan 50 calls per dag', points: 10 },
+    ],
+  },
+  {
+    id: 'manualHours',
+    type: 'radio',
+    label: 'Hoeveel uur per week besteedt uw team aan handmatige, repetitieve taken?',
+    helper: 'Administratie, planning, FAQ, follow-ups, factuurverwerking.',
+    score: true,
+    options: [
+      { value: 'lt5', label: 'Minder dan 5 uur per week', points: 2 },
+      { value: '5-15', label: '5–15 uur per week', points: 6 },
+      { value: '15-30', label: '15–30 uur per week', points: 10 },
+      { value: 'gt30', label: 'Meer dan 30 uur per week', points: 12 },
+    ],
+  },
+  {
+    id: 'budget',
+    type: 'radio',
+    label: 'Welk maandelijks budget heeft u beschikbaar voor AI-automatisering?',
+    helper: 'Indicatief — onze pakketten starten vanaf €597/mnd.',
+    score: true,
+    options: [
+      { value: 'unsure', label: 'Nog niet bepaald', points: 2 },
+      { value: 'lt500', label: 'Minder dan €500 per maand', points: 4 },
+      { value: '500-1500', label: '€500 – €1.500 per maand', points: 8 },
+      { value: 'gt1500', label: 'Meer dan €1.500 per maand', points: 10 },
+    ],
+  },
+  {
+    id: 'urgency',
+    type: 'radio',
+    label: 'Hoe urgent is dit voor uw bedrijf?',
+    helper: 'Tijdslijn voor implementatie.',
+    score: true,
+    options: [
+      { value: 'explore', label: 'Verkennen — ik oriënteer me', points: 2 },
+      { value: 'quarter', label: 'Binnen dit kwartaal', points: 6 },
+      { value: 'now', label: 'Deze maand — we zoeken een oplossing', points: 10 },
+    ],
+  },
+  {
+    id: 'avg',
+    type: 'radio',
+    label: 'Hoe staat het met uw AVG / GDPR-bewustzijn?',
+    helper: 'Voor AI is een DPIA (Data Protection Impact Assessment) vaak verplicht.',
+    score: true,
+    options: [
+      { value: 'noidea', label: 'Geen idee — we zijn er niet mee bezig', points: 0 },
+      { value: 'should', label: 'We weten dat we het moeten regelen', points: 3 },
+      { value: 'know', label: 'We kennen de basis (verwerkersovereenkomsten)', points: 6 },
+      { value: 'dpia', label: 'DPIA gedaan / FG aangewezen', points: 10 },
+    ],
+  },
+  {
+    id: 'aiExp',
+    type: 'radio',
+    label: 'Wat is uw eerdere ervaring met AI?',
+    helper: 'ChatGPT, AI-tools, eigen experimenten.',
+    score: true,
+    options: [
+      { value: 'none', label: 'Geen ervaring', points: 0 },
+      { value: 'orienting', label: 'Aan het oriënteren / lezen', points: 4 },
+      { value: 'tested', label: 'Tools getest (ChatGPT, Copilot)', points: 7 },
+      { value: 'productive', label: 'AI is productief in gebruik bij ons', points: 10 },
+    ],
+  },
+  {
+    id: 'dataQuality',
+    type: 'radio',
+    label: 'Hoe digitaal is uw bedrijfsdata?',
+    helper: 'Klantdata, planning, voorraad, financiën.',
+    score: true,
+    options: [
+      { value: 'paper', label: 'Veel nog op papier of in losse bestanden', points: 0 },
+      { value: 'excel', label: 'Voornamelijk Excel-sheets', points: 4 },
+      { value: 'mixed', label: 'Deels digitaal (sommige systemen, deels Excel)', points: 8 },
+      { value: 'digital', label: 'Volledig digitaal (CRM/ERP centraal)', points: 10 },
+    ],
+  },
 ];
 
-const serviceSchema = {
+// Wizard-tool schema
+const toolSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Service',
-  serviceType: 'Gratis AI Scan voor MKB',
-  provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
-  areaServed: { '@type': 'Country', name: 'Nederland' },
-  description: 'Gratis AI scan van 20-30 minuten: ontdek waar AI tijd en geld bespaart in uw bedrijf.',
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
+  '@type': 'SoftwareApplication',
+  name: 'AI-Readiness Scan voor Nederlandse MKB — gratis interactieve scan',
+  description: 'Gratis online AI-readiness scan voor Nederlandse MKB-bedrijven. 11 vragen, 3 minuten — krijg uw AI-volwassenheidsscore (0–100), tier-classificatie en sector-specifieke aanbevelingen op basis van 80+ live MKB-implementaties.',
+  url: 'https://aanloopai.nl/gratis-ai-scan/',
+  applicationCategory: 'BusinessApplication',
+  applicationSubCategory: 'AI Readiness Assessment',
+  operatingSystem: 'All (browser-based)',
+  inLanguage: 'nl-NL',
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+  creator: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  featureList: [
+    '11 gerichte vragen over uw bedrijfssituatie',
+    'Score 0–100 op AI-volwassenheid',
+    '3 tier-classificaties (Verkenner / Klaar / Vergevorderd)',
+    'Sector-specifieke quick-win aanbevelingen',
+    'Gratis rapport per e-mail',
+    'AVG- en EU AI Act-bewust scoring-model',
+  ],
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['#scan-result-score', '#scan-result-tier', '#scan-result-headline', '[data-speakable]'],
+  },
 };
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'AI-readiness van uw MKB-bedrijf bepalen in 11 stappen',
+  description: 'Stappenplan om de AI-readiness van uw Nederlandse MKB-bedrijf te bepalen via de Aanloop AI-Readiness Scan. Doorlooptijd circa 3 minuten.',
+  totalTime: 'PT3M',
+  inLanguage: 'nl-NL',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Sector kiezen', text: 'Selecteer uw sector zodat sector-specifieke aanbevelingen mogelijk zijn.' },
+    { '@type': 'HowToStep', position: 2, name: 'Bedrijfsgrootte aangeven', text: 'Geef het aantal medewerkers (FTE) op — bepaalt de schaalbaarheid van AI-oplossingen.' },
+    { '@type': 'HowToStep', position: 3, name: 'Huidige tools selecteren', text: 'Kies welke tools u al gebruikt (CRM, ERP, helpdesk, VoIP, agenda) — bepaalt de digitale fundering.' },
+    { '@type': 'HowToStep', position: 4, name: 'Pijnpunten selecteren', text: 'Markeer uw 3 grootste pijnpunten waarbij AI direct waarde kan toevoegen.' },
+    { '@type': 'HowToStep', position: 5, name: 'Telefoon-volume opgeven', text: 'Schat uw dagelijks volume aan inkomende telefoongesprekken.' },
+    { '@type': 'HowToStep', position: 6, name: 'Handmatige uren opgeven', text: 'Schat hoeveel uur per week uw team besteedt aan repetitieve handmatige taken.' },
+    { '@type': 'HowToStep', position: 7, name: 'Budget aangeven', text: 'Geef uw maandelijks AI-budget op (indicatief — pakketten vanaf €597/mnd).' },
+    { '@type': 'HowToStep', position: 8, name: 'Urgentie aangeven', text: 'Geef de tijdslijn aan: verkennen / dit kwartaal / deze maand.' },
+    { '@type': 'HowToStep', position: 9, name: 'AVG-bewustzijn aangeven', text: 'Geef uw AVG-niveau aan (van geen idee tot DPIA gedaan).' },
+    { '@type': 'HowToStep', position: 10, name: 'AI-ervaring aangeven', text: 'Geef uw eerdere ervaring met AI-tools aan.' },
+    { '@type': 'HowToStep', position: 11, name: 'Datakwaliteit aangeven en resultaat aflezen', text: 'Geef aan hoe digitaal uw bedrijfsdata is. De scan berekent uw score (0–100), tier en sector-specifieke aanbevelingen.' },
+  ],
+};
+
+const faqItems = [
+  { question: 'Wat is een AI-Readiness Scan?', answer: 'Een AI-Readiness Scan is een gestructureerde beoordeling van hoe klaar uw bedrijf is om AI-automatisering succesvol in te voeren. Onze gratis scan stelt 11 vragen over bedrijfsgrootte, tools, pijnpunten, AVG-status en datakwaliteit en geeft een score van 0–100 met concrete aanbevelingen.' },
+  { question: 'Hoe lang duurt de AI scan?', answer: 'De interactieve scan duurt circa 3 minuten — 11 vragen die u op uw eigen tempo invult. Direct na de laatste vraag ziet u uw score, tier en aanbevelingen.' },
+  { question: 'Is mijn data veilig tijdens de scan?', answer: 'Ja. De scan-antwoorden worden alleen verwerkt om uw rapport te genereren en u te kunnen mailen. We delen uw gegevens niet met derden en gebruiken ze niet voor commerciële doeleinden van anderen. Zie onze privacyverklaring voor de volledige uitleg.' },
+  { question: 'Wat gebeurt er na de scan?', answer: 'U ziet direct uw AI-readiness score (0–100) plus een per-tier rapport met concrete aanbevelingen. Optioneel sturen we het rapport per e-mail. Binnen 14 dagen nemen we vrijblijvend contact op om te kijken of een 30-min strategiesessie zinvol is — zonder verplichtingen.' },
+  { question: 'Wat als mijn score laag is?', answer: 'Een lage score (Verkenner-tier, 0–40) betekent niet dat u niets kunt — het betekent dat u eerst een paar fundament-stappen moet zetten (proces-documentatie, basis-tooling) voordat AI rendabel wordt. Een te vroege AI-implementatie zou risico op teleurstelling geven, en dat willen we voorkomen.' },
+  { question: 'Hoe nauwkeurig is de score?', answer: 'De score is gebaseerd op gewogen criteria die we bij 80+ live MKB-implementaties effectief vonden voor het voorspellen van AI-succes. Het is een indicator, geen exacte voorspelling. Voor een nauwkeurige op-maat analyse adviseren we onze 30-min videocall AI-scan.' },
+];
 ---
 
 <BaseLayout
-  title="Gratis AI Scan voor Uw Bedrijf | Aanloop AI"
-  description="Ontdek in 30 minuten waar AI tijd en geld bespaart in uw bedrijf. Gratis AI scan door Aanloop AI — persoonlijk advies, concrete ROI-berekening. Geen verplichting."
-  schema={serviceSchema}
+  title="Gratis AI-Readiness Scan — Bepaal uw AI-volwassenheid in 3 minuten | Aanloop AI"
+  description="Gratis interactieve AI-Readiness Scan voor Nederlandse MKB. 11 vragen, 3 minuten — krijg uw score 0–100, tier-classificatie en sector-specifieke aanbevelingen. Door Aanloop AI."
+  schema={[toolSchema, howToSchema]}
   faqSchema={faqItems}
 >
   <!-- Hero -->
@@ -32,20 +232,20 @@ const serviceSchema = {
       <div class="max-w-3xl">
         <div class="flex items-center gap-4 mb-6 reveal">
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
-          <span class="eyebrow">Gratis &amp; Vrijblijvend</span>
+          <span class="eyebrow">Gratis Tool · 3 minuten</span>
         </div>
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
-          Gratis AI Scan<br />voor Uw Bedrijf
+          Gratis AI-Readiness<br />Scan voor uw Bedrijf
         </h1>
         <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty max-w-2xl reveal reveal-delay-2">
-          In 30 minuten ontdekken we samen waar AI direct waarde toevoegt in uw bedrijf — met een concrete ROI-berekening en een implementatieplan. Helemaal gratis, geen verplichtingen.
+          Bepaal in 3 minuten hoe klaar uw MKB-bedrijf is voor AI-automatisering. 11 gerichte vragen, score 0–100, sector-specifieke aanbevelingen — gebaseerd op 80+ live implementaties.
         </p>
         <div class="mt-8 flex flex-wrap gap-6 text-sm text-slate-600 reveal reveal-delay-3">
           {[
-            'Gratis en vrijblijvend',
-            'Persoonlijk advies door specialist',
-            'Concrete ROI-berekening',
-            'AVG-compliant',
+            'Direct resultaat — geen wachten',
+            'Sector-specifieke aanbevelingen',
+            'Optioneel rapport per e-mail',
+            'AVG-compliant — data blijft in NL',
           ].map(t => (
             <div class="flex items-center gap-2">
               <svg class="w-5 h-5 text-brand-emerald flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
@@ -57,160 +257,209 @@ const serviceSchema = {
     </div>
   </section>
 
+  <!-- Wizard -->
+  <section class="section bg-slate-50 border-b border-slate-200" id="scan">
+    <div class="container-page max-w-3xl mx-auto">
+
+      <!-- Wizard container -->
+      <div id="scan-wizard" class="bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm reveal" aria-live="polite">
+
+        <!-- Progress bar -->
+        <div class="mb-6">
+          <div class="flex justify-between items-center text-xs font-medium text-slate-500 mb-2">
+            <span><span id="scan-step-current">1</span> van <span id="scan-step-total">{questions.length}</span></span>
+            <span id="scan-progress-label">9% afgerond</span>
+          </div>
+          <div class="w-full h-2 rounded-full bg-slate-100 overflow-hidden">
+            <div id="scan-progress-bar" class="h-full rounded-full bg-brand-indigo transition-all duration-300" style="width: 9%"></div>
+          </div>
+        </div>
+
+        <!-- Steps -->
+        <div id="scan-steps">
+          {questions.map((q, idx) => (
+            <fieldset
+              class={`scan-step ${idx === 0 ? '' : 'hidden'}`}
+              data-step={idx + 1}
+              data-qid={q.id}
+              data-type={q.type}
+              data-score={q.score ? '1' : '0'}
+              data-max-pick={q.maxPick || ''}
+            >
+              <legend class="block text-lg sm:text-xl font-bold text-navy mb-2">{q.label}</legend>
+              {q.helper && <p class="text-sm text-slate-500 mb-5">{q.helper}</p>}
+              <div class="space-y-2">
+                {q.options.map(opt => (
+                  <label class="flex items-start gap-3 p-3 sm:p-4 rounded-xl border border-slate-200 bg-white hover:border-brand-indigo hover:bg-brand-indigo/5 cursor-pointer transition-colors has-[:checked]:border-brand-indigo has-[:checked]:bg-brand-indigo/5 has-[:checked]:ring-2 has-[:checked]:ring-brand-indigo/30">
+                    <input
+                      type={q.type === 'checkbox' ? 'checkbox' : 'radio'}
+                      name={q.id}
+                      value={opt.value}
+                      data-points={'points' in opt ? String(opt.points) : '0'}
+                      class="mt-0.5 w-4 h-4 accent-brand-indigo flex-shrink-0"
+                    />
+                    <span class="text-sm text-navy leading-relaxed">{opt.label}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          ))}
+        </div>
+
+        <!-- Validation message -->
+        <p id="scan-validation" class="hidden mt-4 text-sm text-red-600" role="alert"></p>
+
+        <!-- Navigation -->
+        <div class="mt-8 flex items-center justify-between">
+          <button
+            type="button"
+            id="scan-prev-btn"
+            class="text-sm font-semibold text-slate-500 hover:text-navy disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            disabled
+          >
+            ← Vorige
+          </button>
+          <button
+            type="button"
+            id="scan-next-btn"
+            class="btn-primary text-sm justify-center px-6 py-3"
+          >
+            <span id="scan-next-label">Volgende</span>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Result section (initially hidden, becomes visible after wizard completion) -->
+      <div id="scan-result" class="hidden mt-8">
+
+        <!-- Score gauge + tier card -->
+        <div id="scan-result-main" class="bg-navy text-pearl rounded-2xl p-8 sm:p-10 shadow-lg relative overflow-hidden" data-speakable>
+          <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+          <div class="relative">
+            <p class="text-xs font-semibold uppercase tracking-widest text-slate-400 mb-2">Uw AI-Readiness Score</p>
+            <div class="flex items-baseline gap-4 mb-4">
+              <p id="scan-result-score" class="text-6xl sm:text-7xl font-bold text-pearl">—</p>
+              <p class="text-2xl text-slate-400">/ 100</p>
+            </div>
+            <p id="scan-result-tier" class="text-sm font-semibold uppercase tracking-wider mb-2 text-brand-emerald">— tier</p>
+            <p id="scan-result-headline" class="text-xl sm:text-2xl font-bold text-pearl mb-3">—</p>
+            <p id="scan-result-description" class="text-slate-300 text-sm leading-relaxed">—</p>
+          </div>
+        </div>
+
+        <!-- Recommendations -->
+        <div class="mt-6 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8">
+          <p class="text-sm font-bold uppercase tracking-widest text-slate-500 mb-4">Uw aanbevolen volgende stappen</p>
+          <ol id="scan-result-actions" class="space-y-3">
+          </ol>
+          <p id="scan-result-sector" class="hidden mt-6 p-4 bg-brand-indigo/5 border border-brand-indigo/20 rounded-xl text-sm text-slate-700 leading-relaxed"></p>
+        </div>
+
+        <!-- Email-capture form -->
+        <div class="mt-6 bg-emerald-50 border-2 border-brand-emerald/40 rounded-2xl p-6 sm:p-8">
+          <div class="flex items-start gap-3 mb-5">
+            <div class="w-10 h-10 rounded-xl bg-brand-emerald/15 flex items-center justify-center flex-shrink-0" aria-hidden="true">
+              <svg class="w-5 h-5 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </div>
+            <div>
+              <p class="font-bold text-navy mb-1">Stuur dit rapport naar mijn e-mail</p>
+              <p class="text-xs text-slate-600">Ontvang uw volledige AI-Readiness rapport met aanbevelingen per mail. Geen verplichtingen.</p>
+            </div>
+          </div>
+
+          <form id="scan-email-form" class="space-y-3" novalidate>
+            <input type="hidden" name="form_type" value="ai_readiness_scan" />
+            <input type="hidden" name="subject" value="AI-Readiness Scan rapport via aanloopai.nl" />
+            <input type="hidden" name="source" value="ai-readiness-scan" />
+            <input type="text" name="botcheck" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;height:0;width:0" aria-hidden="true" />
+
+            <!-- Hidden inputs auto-gevuld door wizard -->
+            <input type="hidden" name="scan_score" id="hf-scan-score" value="" />
+            <input type="hidden" name="scan_tier" id="hf-scan-tier" value="" />
+            <input type="hidden" name="scan_headline" id="hf-scan-headline" value="" />
+            <input type="hidden" name="scan_sector" id="hf-scan-sector" value="" />
+            <input type="hidden" name="scan_company_size" id="hf-scan-size" value="" />
+            <input type="hidden" name="scan_tools" id="hf-scan-tools" value="" />
+            <input type="hidden" name="scan_pains" id="hf-scan-pains" value="" />
+            <input type="hidden" name="scan_phone_volume" id="hf-scan-phone" value="" />
+            <input type="hidden" name="scan_manual_hours" id="hf-scan-hours" value="" />
+            <input type="hidden" name="scan_budget" id="hf-scan-budget" value="" />
+            <input type="hidden" name="scan_urgency" id="hf-scan-urgency" value="" />
+            <input type="hidden" name="scan_avg" id="hf-scan-avg" value="" />
+            <input type="hidden" name="scan_ai_exp" id="hf-scan-aiexp" value="" />
+            <input type="hidden" name="scan_data_quality" id="hf-scan-data" value="" />
+            <input type="hidden" name="scan_actions" id="hf-scan-actions" value="" />
+            <input type="hidden" name="scan_sector_advice" id="hf-scan-secadv" value="" />
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <input type="text" name="voornaam" required placeholder="Voornaam"
+                class="px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-emerald focus:outline-none" />
+              <input type="email" name="email" required placeholder="E-mailadres"
+                class="px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-emerald focus:outline-none" />
+            </div>
+            <input type="text" name="bedrijf" placeholder="Bedrijfsnaam (optioneel)"
+              class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-emerald focus:outline-none" />
+
+            <label class="flex items-start gap-2 text-xs text-slate-600 leading-relaxed cursor-pointer">
+              <input type="checkbox" name="consent" required class="mt-0.5 w-4 h-4 accent-brand-emerald flex-shrink-0" />
+              <span>
+                Ik ga akkoord dat Aanloop AI mijn gegevens gebruikt om mij dit AI-Readiness rapport te sturen en eventueel binnen 14 dagen contact op te nemen voor een gratis vervolggesprek. Zie het <a href="/privacy/" class="text-brand-indigo hover:underline">privacybeleid</a>.
+              </span>
+            </label>
+
+            <button type="submit" id="scan-email-btn"
+              class="btn-primary text-sm w-full justify-center bg-brand-emerald hover:bg-brand-emerald/90 py-3">
+              <span id="scan-email-btn-text">Stuur rapport per e-mail →</span>
+            </button>
+
+            <p id="scan-email-msg" class="text-xs text-center hidden" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+
+        <!-- CTA -->
+        <div class="mt-6 bg-brand-indigo/5 border border-brand-indigo/20 rounded-2xl p-6 text-center">
+          <p id="scan-result-cta" class="font-bold text-navy mb-1">—</p>
+          <p class="text-xs text-slate-600 mb-4">Onze gratis 30-min videocall geeft een nauwkeurige op-maat analyse van uw situatie.</p>
+          <a href="/contact/" class="btn-primary text-sm justify-center inline-flex">Plan een gesprek →</a>
+        </div>
+
+        <button type="button" id="scan-restart-btn"
+          class="mt-6 w-full text-sm font-semibold text-slate-500 hover:text-navy py-3 transition-colors">
+          ↻ Scan opnieuw doen
+        </button>
+      </div>
+
+      <!-- noscript fallback -->
+      <noscript>
+        <div class="mt-6 bg-amber-50 border border-amber-200 rounded-2xl p-6 text-sm text-slate-700">
+          <p class="font-bold text-navy mb-2">JavaScript is uitgeschakeld</p>
+          <p>De interactieve scan vereist JavaScript. Stuur ons in plaats daarvan een mail naar <a href="mailto:hello@aanloopai.nl" class="text-brand-indigo underline">hello@aanloopai.nl</a> of bel <a href="tel:+31624741597" class="text-brand-indigo underline">+31 6 24 74 15 97</a> voor een persoonlijke AI-scan.</p>
+        </div>
+      </noscript>
+    </div>
+  </section>
+
   <!-- What you get -->
-  <section class="section bg-slate-50 border-b border-slate-200">
+  <section class="section border-b border-slate-200">
     <div class="container-page">
-      <div class="max-w-3xl mb-12 reveal">
+      <div class="max-w-3xl mb-12 reveal mx-auto text-center">
         <p class="eyebrow mb-2">Wat u ontvangt</p>
         <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Wat zit er in de gratis AI scan?</h2>
-        <p class="mt-3 text-slate-600">Geen verkooppraatje. Gewoon een eerlijk gesprek met een AI-specialist die meekijkt in uw bedrijf.</p>
+        <p class="mt-3 text-slate-600">Direct na de 11 vragen ziet u uw resultaat — geen wachten, geen verkooppraatje.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[
-          { icon: '🔍', title: 'Procesanalyse', desc: 'We identificeren welke processen in uw bedrijf het meest geschikt zijn voor automatisering — op basis van tijdsinvestering en herhaalbaarheid.' },
-          { icon: '💶', title: 'ROI-berekening', desc: 'U ontvangt een concrete berekening: hoeveel uur per week bespaart u, en wat dat in euro\'s betekent op jaarbasis.' },
-          { icon: '🗺️', title: 'Implementatieplan', desc: 'Een concreet stappenplan: wat automatiseert u als eerste, wat zijn de kosten, en hoe snel is het live?' },
+          { icon: '📊', title: 'Score 0–100', desc: 'Uw AI-volwassenheid in één getal — gewogen op 10 criteria die we bij 80+ live klanten zagen samenhangen met AI-succes.' },
+          { icon: '🎯', title: 'Tier-classificatie', desc: 'Verkenner / Klaar voor quick wins / Vergevorderd — met concrete acties die bij úw fase passen.' },
+          { icon: '🗺️', title: 'Sector-aanbeveling', desc: 'Quick-wins die specifiek voor úw sector werken (bouw vs. zorg vs. e-commerce vereisen elk een andere aanpak).' },
         ].map(item => (
           <div class="card reveal">
-            <div class="text-3xl mb-4">{item.icon}</div>
+            <div class="text-3xl mb-4" aria-hidden="true">{item.icon}</div>
             <h3 class="font-bold text-navy mb-2">{item.title}</h3>
             <p class="text-sm text-slate-600">{item.desc}</p>
           </div>
         ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- What we analyze -->
-  <section class="section border-b border-slate-200">
-    <div class="container-page">
-      <div class="grid lg:grid-cols-2 gap-16 items-center">
-        <div>
-          <p class="eyebrow mb-2 reveal">Wat we bekijken</p>
-          <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy mb-6 reveal reveal-delay-1">Welke processen analyseren we?</h2>
-          <div class="space-y-4">
-            {[
-              { icon: '📞', title: 'Klantcommunicatie', desc: 'Telefonie, e-mail, WhatsApp — hoeveel tijd kost het beantwoorden van terugkerende vragen?' },
-              { icon: '📅', title: 'Afspraken & planning', desc: 'Hoe worden afspraken ingepland? Kan dit slimmer, zonder menselijke tussenkomst?' },
-              { icon: '📄', title: 'Documentverwerking', desc: 'Facturen, offertes, formulieren — worden deze handmatig overgetypt of ingevoerd?' },
-              { icon: '🔄', title: 'Repetitieve taken', desc: 'Welke taken voert uw team elke dag opnieuw uit? Dit zijn de prime kandidaten voor AI.' },
-              { icon: '📊', title: 'Rapportage & administratie', desc: 'Worden rapporten handmatig samengesteld? Data-invoer in Excel of boekhoudpakket?' },
-            ].map(item => (
-              <div class="flex gap-4 reveal">
-                <div class="text-2xl flex-shrink-0 mt-0.5">{item.icon}</div>
-                <div>
-                  <p class="font-semibold text-navy text-sm">{item.title}</p>
-                  <p class="text-sm text-slate-600">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div class="reveal reveal-delay-2">
-          <div class="bg-navy rounded-2xl p-8 text-white">
-            <p class="text-brand-indigo font-semibold text-sm mb-4">Gemiddelde resultaten na AI-implementatie</p>
-            <div class="space-y-6">
-              {[
-                { stat: '12 uur', label: 'tijdsbesparing per week', sub: 'Per medewerker bij MKB-bedrijven' },
-                { stat: '€18.000', label: 'kostenbesparing per jaar', sub: 'Gemiddeld bij onze klanten' },
-                { stat: '7 dagen', label: 'tot go-live', sub: 'Van akkoord tot werkende AI-agent' },
-              ].map(item => (
-                <div class="border-b border-slate-700 pb-6 last:border-0 last:pb-0">
-                  <p class="text-3xl font-bold text-white">{item.stat}</p>
-                  <p class="text-slate-300 font-medium">{item.label}</p>
-                  <p class="text-slate-500 text-sm mt-1">{item.sub}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Form -->
-  <section class="section" id="aanvraag">
-    <div class="container-page">
-      <div class="max-w-2xl mx-auto">
-        <div class="mb-10 reveal text-center">
-          <p class="eyebrow mb-2">Aanvraag</p>
-          <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Plan uw gratis AI scan</h2>
-          <p class="mt-3 text-slate-600">Vul het formulier in en we nemen binnen 1 werkdag contact op om een videocall in te plannen.</p>
-        </div>
-
-        <form
-          id="ai-scan-form"
-          class="bg-white border border-slate-200 rounded-2xl p-8 shadow-sm reveal"
-          novalidate
-        >
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label for="naam" class="block text-sm font-medium text-navy mb-2">Naam *</label>
-              <input type="text" id="naam" name="naam" required autocomplete="name" placeholder="Jan de Vries" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all" />
-            </div>
-            <div>
-              <label for="bedrijf" class="block text-sm font-medium text-navy mb-2">Bedrijfsnaam *</label>
-              <input type="text" id="bedrijf" name="bedrijf" required autocomplete="organization" placeholder="Mijn Bedrijf B.V." class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all" />
-            </div>
-            <div>
-              <label for="email" class="block text-sm font-medium text-navy mb-2">E-mailadres *</label>
-              <input type="email" id="email" name="email" required autocomplete="email" placeholder="jan@bedrijf.nl" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all" />
-            </div>
-            <div>
-              <label for="telefoon" class="block text-sm font-medium text-navy mb-2">Telefoonnummer</label>
-              <input type="tel" id="telefoon" name="telefoon" autocomplete="tel" placeholder="+31 6 12 34 56 78" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all" />
-            </div>
-            <div class="md:col-span-2">
-              <label for="sector" class="block text-sm font-medium text-navy mb-2">Sector *</label>
-              <select id="sector" name="sector" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all bg-white">
-                <option value="">Kies uw sector...</option>
-                <option value="horeca">Horeca &amp; Restaurant</option>
-                <option value="vastgoed">Vastgoed &amp; Makelaars</option>
-                <option value="advocatuur">Juridisch &amp; Advocatuur</option>
-                <option value="accountancy">Accountancy &amp; Administratie</option>
-                <option value="bouw">Bouw &amp; Installatie</option>
-                <option value="logistiek">Logistiek &amp; Transport</option>
-                <option value="zorg">Zorg &amp; Welzijn</option>
-                <option value="zzp">ZZP / Freelance</option>
-                <option value="ecommerce">E-commerce &amp; Detailhandel</option>
-                <option value="overig">Overig</option>
-              </select>
-            </div>
-            <div class="md:col-span-2">
-              <label for="medewerkers" class="block text-sm font-medium text-navy mb-2">Aantal medewerkers</label>
-              <select id="medewerkers" name="medewerkers" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all bg-white">
-                <option value="">Selecteer...</option>
-                <option value="zzp">ZZP / alleen</option>
-                <option value="2-5">2–5 medewerkers</option>
-                <option value="6-20">6–20 medewerkers</option>
-                <option value="21-50">21–50 medewerkers</option>
-                <option value="50+">Meer dan 50</option>
-              </select>
-            </div>
-            <div class="md:col-span-2">
-              <label for="uitdaging" class="block text-sm font-medium text-navy mb-2">Wat is uw grootste tijdverspiller? (optioneel)</label>
-              <textarea id="uitdaging" name="uitdaging" rows="3" placeholder="Bijv. handmatig afspraken inplannen, facturen verwerken, terugkerende klantvragen beantwoorden..." class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:border-transparent transition-all resize-none"></textarea>
-            </div>
-          </div>
-
-          <div class="mt-6">
-            <button type="submit" id="scan-submit-btn" class="btn-primary w-full justify-center text-base py-4">
-              <span id="scan-submit-label">Gratis AI Scan aanvragen</span>
-              <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
-            </button>
-            <p class="text-center text-xs text-slate-400 mt-3">
-              Geen spam. Geen verplichting. We nemen binnen 1 werkdag contact op.<br />
-              Door te verzenden gaat u akkoord met onze <a href="/privacy/" class="underline hover:text-slate-600">privacyverklaring</a>.
-            </p>
-          </div>
-
-          <div id="scan-success" class="hidden mt-4 p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm text-center">
-            ✓ Bedankt! We nemen binnen 1 werkdag contact op om de scan in te plannen.
-          </div>
-          <div id="scan-error" class="hidden mt-4 p-4 rounded-xl bg-red-50 border border-red-200 text-red-800 text-sm text-center">
-            Er is iets misgegaan. Probeer het opnieuw of mail naar <a href="mailto:hello@aanloopai.nl" class="underline">hello@aanloopai.nl</a>.
-          </div>
-        </form>
       </div>
     </div>
   </section>
@@ -220,13 +469,13 @@ const serviceSchema = {
     <div class="container-page">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
         {[
-          { icon: '🇳🇱', label: 'Nederlands bedrijf', sub: 'KVK: 88606902' },
-          { icon: '⏱', label: 'Live in 7 werkdagen', sub: 'Snelle implementatie' },
+          { icon: '🇳🇱', label: 'Nederlands bedrijf', sub: 'KvK: 88606902' },
+          { icon: '⏱', label: '3 minuten', sub: '11 gerichte vragen' },
           { icon: '🔒', label: 'AVG-compliant', sub: 'Data blijft in NL' },
           { icon: '✅', label: 'Geen verplichtingen', sub: 'Vrijblijvend advies' },
         ].map(t => (
           <div class="reveal">
-            <div class="text-2xl mb-2">{t.icon}</div>
+            <div class="text-2xl mb-2" aria-hidden="true">{t.icon}</div>
             <p class="text-sm font-medium text-navy">{t.label}</p>
             <p class="text-xs text-slate-500 mt-0.5">{t.sub}</p>
           </div>
@@ -240,13 +489,13 @@ const serviceSchema = {
     <div class="container-page">
       <div class="max-w-3xl mb-12 mx-auto reveal text-center">
         <p class="eyebrow mb-2">Hoe werkt het?</p>
-        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Zo verloopt de gratis AI scan</h2>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Zo werkt de gratis AI scan</h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
         {[
-          { n: '1', t: 'Aanvraag (2 min)', d: 'Vul het formulier in. We nemen binnen 1 werkdag contact op om een videocall van 30 minuten in te plannen.' },
-          { n: '2', t: 'Gesprek (30 min)', d: 'We bespreken uw bedrijfsprocessen, identificeren de beste AI-kansen en stellen concrete vragen over uw dagelijkse werk.' },
-          { n: '3', t: 'Rapport & Plan', d: 'Binnen 2 werkdagen ontvangt u een rapport met ROI-berekening, aanbevelingen en een implementatieplan op maat.' },
+          { n: '1', t: 'Scan invullen (3 min)', d: '11 gerichte vragen over uw bedrijf, tools en pijnpunten. Op uw eigen tempo, zonder account.' },
+          { n: '2', t: 'Direct resultaat', d: 'U ziet meteen uw score, tier en aanbevelingen — geen wachten, geen verkooppraatje.' },
+          { n: '3', t: 'Optioneel: rapport + gesprek', d: 'Stuur het rapport naar uzelf en plan eventueel een 30-min strategiegesprek voor een nauwkeurige op-maat analyse.' },
         ].map(s => (
           <div class="text-center reveal">
             <div class="w-12 h-12 rounded-full bg-brand-indigo text-white flex items-center justify-center font-bold text-lg mx-auto mb-4">{s.n}</div>
@@ -285,10 +534,10 @@ const serviceSchema = {
   <section class="section bg-navy text-white">
     <div class="container-page text-center">
       <h2 class="text-2xl lg:text-3xl font-bold reveal">Klaar om te ontdekken wat AI voor uw bedrijf kan doen?</h2>
-      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Vraag nu uw gratis AI scan aan. Binnen 1 werkdag plannen we een afspraak.</p>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Start de gratis AI-Readiness Scan — duurt 3 minuten en u ziet direct uw resultaat.</p>
       <div class="mt-8 flex flex-wrap gap-4 justify-center reveal reveal-delay-2">
-        <a href="#aanvraag" class="btn bg-white text-navy hover:bg-slate-100 text-base px-6 py-3.5">
-          Gratis AI scan aanvragen
+        <a href="#scan" class="btn bg-white text-navy hover:bg-slate-100 text-base px-6 py-3.5">
+          Start de scan
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </a>
         <a href="https://wa.me/31624741597" class="btn border border-slate-600 text-slate-300 hover:bg-slate-800 text-base px-6 py-3.5">
@@ -300,39 +549,406 @@ const serviceSchema = {
 </BaseLayout>
 
 <script>
-  const form = document.getElementById('ai-scan-form') as HTMLFormElement;
+  // ============================================================================
+  // AI-Readiness Scan — wizard logic, score-engine, GA4 events, email-capture
+  // ============================================================================
 
-  form?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('scan-submit-btn') as HTMLButtonElement;
-    const label = document.getElementById('scan-submit-label') as HTMLElement;
-    const successMsg = document.getElementById('scan-success') as HTMLElement;
-    const errorMsg = document.getElementById('scan-error') as HTMLElement;
+  type Tier = 'beginner' | 'ready' | 'advanced';
 
-    const formData = new FormData(form);
-    formData.append('form_type', 'scan');
-    formData.append('subject', `Gratis AI Scan aanvraag — ${formData.get('bedrijf') || 'onbekend bedrijf'}`);
-
-    btn.disabled = true;
-    label.textContent = 'Versturen…';
-    errorMsg?.classList.add('hidden');
-
+  // GA4 / dataLayer fail-safe push — werkt met of zonder GA4-script
+  function trackEvent(eventName: string, params: Record<string, unknown> = {}): void {
     try {
-      const res = await fetch('/api/submit', { method: 'POST', body: formData });
-      const json = await res.json();
-      if (json.success) {
-        successMsg?.classList.remove('hidden');
-        form.reset();
-        setTimeout(() => { window.location.href = '/bedankt/?type=scan'; }, 1500);
-      } else {
-        throw new Error(json.message || 'Onbekende fout');
+      const w = window as unknown as { dataLayer?: unknown[]; gtag?: (...args: unknown[]) => void };
+      if (w.dataLayer && Array.isArray(w.dataLayer)) {
+        w.dataLayer.push({ event: eventName, ...params });
       }
-    } catch (err) {
-      errorMsg?.classList.remove('hidden');
-      console.error('Form error:', err);
-    } finally {
-      btn.disabled = false;
-      label.textContent = 'Gratis AI Scan aanvragen';
+      if (typeof w.gtag === 'function') {
+        w.gtag('event', eventName, params);
+      }
+    } catch {
+      // No-op — analytics fout mag scan niet breken
     }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const wizard = document.getElementById('scan-wizard');
+    const result = document.getElementById('scan-result');
+    if (!wizard || !result) return;
+
+    const steps = Array.from(document.querySelectorAll<HTMLFieldSetElement>('.scan-step'));
+    const totalSteps = steps.length;
+
+    const prevBtn = document.getElementById('scan-prev-btn') as HTMLButtonElement;
+    const nextBtn = document.getElementById('scan-next-btn') as HTMLButtonElement;
+    const nextLabel = document.getElementById('scan-next-label') as HTMLElement;
+    const progressBar = document.getElementById('scan-progress-bar') as HTMLElement;
+    const progressLabel = document.getElementById('scan-progress-label') as HTMLElement;
+    const stepCurrent = document.getElementById('scan-step-current') as HTMLElement;
+    const stepTotal = document.getElementById('scan-step-total') as HTMLElement;
+    const validation = document.getElementById('scan-validation') as HTMLElement;
+
+    let current = 0;
+    let started = false;
+
+    stepTotal.textContent = String(totalSteps);
+
+    function renderProgress(i: number): void {
+      const pct = Math.round(((i + 1) / totalSteps) * 100);
+      progressBar.style.width = `${pct}%`;
+      progressLabel.textContent = `${pct}% afgerond`;
+      stepCurrent.textContent = String(i + 1);
+      prevBtn.disabled = i === 0;
+      nextLabel.textContent = i === totalSteps - 1 ? 'Bekijk resultaat' : 'Volgende';
+    }
+
+    function showStep(i: number): void {
+      steps.forEach((step, idx) => {
+        step.classList.toggle('hidden', idx !== i);
+      });
+      validation.classList.add('hidden');
+      renderProgress(i);
+      if (i > 0) {
+        wizard?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
+    function validateStep(stepIdx: number): { ok: boolean; message?: string } {
+      const step = steps[stepIdx];
+      const type = step.getAttribute('data-type') || 'radio';
+      const maxPickAttr = step.getAttribute('data-max-pick') || '';
+      const maxPick = maxPickAttr ? parseInt(maxPickAttr, 10) : 0;
+      const inputs = Array.from(step.querySelectorAll<HTMLInputElement>('input'));
+      const checked = inputs.filter(i => i.checked);
+
+      if (type === 'radio' && checked.length === 0) {
+        return { ok: false, message: 'Kies één optie om door te gaan.' };
+      }
+      if (type === 'checkbox' && checked.length === 0) {
+        return { ok: false, message: 'Kies minimaal één optie om door te gaan.' };
+      }
+      if (type === 'checkbox' && maxPick > 0 && checked.length > maxPick) {
+        return { ok: false, message: `Maximaal ${maxPick} opties kiezen — u heeft er ${checked.length} geselecteerd.` };
+      }
+      return { ok: true };
+    }
+
+    interface ScanAnswers {
+      sector: string;
+      sectorLabel: string;
+      sizeLabel: string;
+      toolsLabels: string[];
+      painsLabels: string[];
+      phoneLabel: string;
+      manualLabel: string;
+      budgetLabel: string;
+      urgencyLabel: string;
+      avgLabel: string;
+      aiExpLabel: string;
+      dataQualityLabel: string;
+      score: number;
+      tier: Tier;
+    }
+
+    function collectAnswers(): ScanAnswers {
+      const get = (qid: string): { value: string; label: string; values: string[]; labels: string[]; points: number } => {
+        const step = steps.find(s => s.getAttribute('data-qid') === qid);
+        if (!step) return { value: '', label: '', values: [], labels: [], points: 0 };
+        const checked = Array.from(step.querySelectorAll<HTMLInputElement>('input:checked'));
+        let points = 0;
+        const values: string[] = [];
+        const labels: string[] = [];
+        checked.forEach(input => {
+          values.push(input.value);
+          const labelEl = input.closest('label')?.querySelector('span');
+          labels.push(labelEl?.textContent?.trim() || input.value);
+          points += parseInt(input.getAttribute('data-points') || '0', 10);
+        });
+        return { value: values[0] || '', label: labels[0] || '', values, labels, points };
+      };
+
+      const sector = get('sector');
+      const size = get('size');
+      const tools = get('tools');
+      const pains = get('pains');
+      const phone = get('phoneVolume');
+      const hours = get('manualHours');
+      const budget = get('budget');
+      const urgency = get('urgency');
+      const avg = get('avg');
+      const aiExp = get('aiExp');
+      const data = get('dataQuality');
+
+      // Score: tools en pains worden geclamped op hun max-points (anders zou 5 tools = 10pt
+      // het tool-criterium oververtegenwoordigen).
+      const toolsScore = Math.min(tools.points, 6);
+      const painsScore = Math.min(pains.points, 12);
+      const totalScore =
+        size.points + toolsScore + painsScore + phone.points + hours.points +
+        budget.points + urgency.points + avg.points + aiExp.points + data.points;
+
+      const score = Math.max(0, Math.min(100, Math.round(totalScore)));
+      const tier: Tier = score <= 40 ? 'beginner' : score <= 70 ? 'ready' : 'advanced';
+
+      return {
+        sector: sector.value,
+        sectorLabel: sector.label,
+        sizeLabel: size.label,
+        toolsLabels: tools.labels,
+        painsLabels: pains.labels,
+        phoneLabel: phone.label,
+        manualLabel: hours.label,
+        budgetLabel: budget.label,
+        urgencyLabel: urgency.label,
+        avgLabel: avg.label,
+        aiExpLabel: aiExp.label,
+        dataQualityLabel: data.label,
+        score,
+        tier,
+      };
+    }
+
+    const tierData: Record<Tier, { label: string; headline: string; description: string; actions: string[]; cta: string; tierColor: string }> = {
+      beginner: {
+        label: 'Verkenner',
+        headline: 'AI is op dit moment nog niet uw prioriteit',
+        description: 'Eerst basis-fundering leggen — processen documenteren, digitale tools inzetten — dan pas AI. Een snelle AI-implementatie nu zou risico op teleurstelling geven.',
+        actions: [
+          'Documenteer uw belangrijkste processen (top 5 tijdverspilers)',
+          'Implementeer een basis-CRM en/of cloudboekhouding',
+          'Centraliseer klantcontact (telefoon + e-mail + WhatsApp)',
+          'Plan over 6 maanden een nieuwe AI-scan',
+        ],
+        cta: 'Plan eerst een gratis 30-min strategiegesprek',
+        tierColor: 'text-amber-300',
+      },
+      ready: {
+        label: 'Klaar voor quick wins',
+        headline: 'U bent klaar voor 1–2 quick wins met AI',
+        description: 'Uw fundering is goed. Begin met één concrete pijn (telefonie of WhatsApp), meet de impact 60–90 dagen, breid daarna uit.',
+        actions: [
+          'Kies één pijnpunt: telefonie (Marco) óf WhatsApp/mail (Emma)',
+          'Bereken ROI met onze AI ROI Calculator',
+          'Pilot-implementatie in 7 werkdagen via Starter pakket (€597/mnd)',
+          'Evalueer na 90 dagen, schaal op naar volgende proces',
+        ],
+        cta: 'Plan een gratis AI-scan voor uw quick-win selectie',
+        tierColor: 'text-brand-emerald',
+      },
+      advanced: {
+        label: 'Vergevorderd',
+        headline: 'U bent klaar voor een volledige AI-strategie',
+        description: 'Uw bedrijf is rijp voor multi-process AI-implementatie. Een gestructureerd traject (5+ processen) levert hier de grootste impact op.',
+        actions: [
+          'Volledige AI-audit: 5–10 processen scoren op ROI',
+          'Multi-process implementatie via Groei (€1.197/mnd) of Partner pakket',
+          'AI-governance: DPIA, FG, monitoring, AI-policy',
+          'Stel een AI-roadmap op voor 12–24 maanden',
+        ],
+        cta: 'Plan een 30-min strategiesessie met onze AI-architect',
+        tierColor: 'text-indigo-300',
+      },
+    };
+
+    const sectorAdvice: Record<string, string> = {
+      horeca: 'AI-reserveringen via WhatsApp + no-show-reductie via geautomatiseerde reminders',
+      vastgoed: 'Lead-kwalificatie via 24/7 AI-telefonie + automatische bezichtigingsplanning',
+      advocatuur: 'AI-receptionist voor zaak-intake + automatische conflictcheck-vragen',
+      accountancy: 'OCR-factuurverwerking + AI-helpdesk voor terugkerende klantvragen',
+      bouw: 'AI-noodlijn 24/7 + offerte-aanvragen automatisch in CRM',
+      logistiek: 'Track&trace WhatsApp-bot + chauffeurs-helpdesk via AI',
+      zorg: 'AI-receptionist voor afspraakplanning + 24/7 niet-spoed triage',
+      zzp: 'AI-secretaresse voor inkomende calls tijdens uw werk',
+      ecommerce: 'AI-orderstatus via WhatsApp + retour-helpdesk',
+      overig: 'AI-receptionist op uw drukste klantkanaal',
+    };
+
+    function escapeHtml(s: string): string {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function renderResult(answers: ScanAnswers): void {
+      const t = tierData[answers.tier];
+
+      const scoreEl = document.getElementById('scan-result-score') as HTMLElement;
+      const tierEl = document.getElementById('scan-result-tier') as HTMLElement;
+      const headlineEl = document.getElementById('scan-result-headline') as HTMLElement;
+      const descEl = document.getElementById('scan-result-description') as HTMLElement;
+      const actionsEl = document.getElementById('scan-result-actions') as HTMLElement;
+      const sectorEl = document.getElementById('scan-result-sector') as HTMLElement;
+      const ctaEl = document.getElementById('scan-result-cta') as HTMLElement;
+
+      scoreEl.textContent = String(answers.score);
+      tierEl.textContent = `${t.label} tier`;
+      tierEl.className = `text-sm font-semibold uppercase tracking-wider mb-2 ${t.tierColor}`;
+      headlineEl.textContent = t.headline;
+      descEl.textContent = t.description;
+      ctaEl.textContent = t.cta;
+
+      actionsEl.innerHTML = '';
+      t.actions.forEach((action, idx) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-start gap-3';
+        li.innerHTML = `
+          <span class="flex-shrink-0 w-6 h-6 rounded-full bg-brand-indigo text-white text-xs font-bold flex items-center justify-center mt-0.5">${idx + 1}</span>
+          <span class="text-sm text-slate-700 leading-relaxed">${escapeHtml(action)}</span>
+        `;
+        actionsEl.appendChild(li);
+      });
+
+      // Sector-aanbeveling alleen voor 'ready' (Klaar tier — meest actionable)
+      const advice = sectorAdvice[answers.sector];
+      if (answers.tier === 'ready' && advice) {
+        sectorEl.innerHTML = `<strong class="text-navy">Voor uw sector (${escapeHtml(answers.sectorLabel)}):</strong> ${escapeHtml(advice)}.`;
+        sectorEl.classList.remove('hidden');
+      } else {
+        sectorEl.classList.add('hidden');
+      }
+
+      // Hidden inputs voor email-capture
+      const setHidden = (id: string, val: string): void => {
+        const el = document.getElementById(id) as HTMLInputElement | null;
+        if (el) el.value = val;
+      };
+      setHidden('hf-scan-score', `${answers.score}/100`);
+      setHidden('hf-scan-tier', t.label);
+      setHidden('hf-scan-headline', t.headline);
+      setHidden('hf-scan-sector', answers.sectorLabel);
+      setHidden('hf-scan-size', answers.sizeLabel);
+      setHidden('hf-scan-tools', answers.toolsLabels.join(', ') || 'Geen geselecteerd');
+      setHidden('hf-scan-pains', answers.painsLabels.join(', ') || 'Geen geselecteerd');
+      setHidden('hf-scan-phone', answers.phoneLabel);
+      setHidden('hf-scan-hours', answers.manualLabel);
+      setHidden('hf-scan-budget', answers.budgetLabel);
+      setHidden('hf-scan-urgency', answers.urgencyLabel);
+      setHidden('hf-scan-avg', answers.avgLabel);
+      setHidden('hf-scan-aiexp', answers.aiExpLabel);
+      setHidden('hf-scan-data', answers.dataQualityLabel);
+      setHidden('hf-scan-actions', t.actions.join(' | '));
+      setHidden('hf-scan-secadv', advice || '—');
+    }
+
+    function showResult(): void {
+      const answers = collectAnswers();
+      renderResult(answers);
+      wizard?.classList.add('hidden');
+      result?.classList.remove('hidden');
+      result?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackEvent('scan_finished', {
+        scan_score: answers.score,
+        scan_tier: answers.tier,
+        scan_sector: answers.sector,
+      });
+    }
+
+    function nextStep(): void {
+      const v = validateStep(current);
+      if (!v.ok) {
+        validation.textContent = v.message || 'Vul deze vraag eerst in.';
+        validation.classList.remove('hidden');
+        return;
+      }
+      trackEvent('scan_step_completed', { step: current + 1, qid: steps[current].getAttribute('data-qid') });
+      if (current === totalSteps - 1) {
+        showResult();
+        return;
+      }
+      current += 1;
+      showStep(current);
+    }
+
+    function prevStep(): void {
+      if (current === 0) return;
+      current -= 1;
+      showStep(current);
+    }
+
+    function restartScan(): void {
+      current = 0;
+      started = false;
+      document.querySelectorAll<HTMLInputElement>('.scan-step input').forEach(input => {
+        input.checked = false;
+      });
+      result?.classList.add('hidden');
+      wizard?.classList.remove('hidden');
+      showStep(0);
+      (document.getElementById('scan-email-form') as HTMLFormElement | null)?.reset();
+      document.getElementById('scan-email-msg')?.classList.add('hidden');
+    }
+
+    function fireStartedOnce(): void {
+      if (started) return;
+      started = true;
+      trackEvent('scan_started', {});
+    }
+
+    nextBtn.addEventListener('click', nextStep);
+    prevBtn.addEventListener('click', prevStep);
+    document.getElementById('scan-restart-btn')?.addEventListener('click', restartScan);
+
+    // Auto-advance op radio-keuze (350ms vertraging zodat user de selectie ziet)
+    let advanceTimer: number | null = null;
+    document.querySelectorAll<HTMLInputElement>('.scan-step input[type="radio"]').forEach(input => {
+      input.addEventListener('change', () => {
+        fireStartedOnce();
+        validation.classList.add('hidden');
+        if (advanceTimer) window.clearTimeout(advanceTimer);
+        advanceTimer = window.setTimeout(() => {
+          if (current < totalSteps - 1 && input.checked) nextStep();
+        }, 350);
+      });
+    });
+
+    document.querySelectorAll<HTMLInputElement>('.scan-step input[type="checkbox"]').forEach(input => {
+      input.addEventListener('change', () => {
+        fireStartedOnce();
+        validation.classList.add('hidden');
+      });
+    });
+
+    // ============================================================================
+    // Email-capture form submit
+    // ============================================================================
+    const form = document.getElementById('scan-email-form') as HTMLFormElement | null;
+    if (!form) return;
+
+    const emailBtn = document.getElementById('scan-email-btn') as HTMLButtonElement;
+    const emailBtnText = document.getElementById('scan-email-btn-text') as HTMLElement;
+    const emailMsg = document.getElementById('scan-email-msg') as HTMLElement;
+
+    const showEmailMsg = (text: string, kind: 'success' | 'error'): void => {
+      emailMsg.textContent = text;
+      emailMsg.classList.remove('hidden', 'text-brand-emerald', 'text-red-600');
+      emailMsg.classList.add(kind === 'success' ? 'text-brand-emerald' : 'text-red-600');
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      emailBtn.disabled = true;
+      emailBtnText.textContent = 'Versturen…';
+      emailMsg.classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/submit', { method: 'POST', body: new FormData(form) });
+        const data = await res.json().catch(() => ({ success: false, message: 'Ongeldig antwoord' }));
+        if (res.ok && data.success) {
+          showEmailMsg('✓ Rapport onderweg — controleer uw inbox.', 'success');
+          trackEvent('scan_email_sent', {});
+          form.reset();
+        } else {
+          showEmailMsg(data.message || 'Versturen mislukt — probeer opnieuw.', 'error');
+        }
+      } catch {
+        showEmailMsg('Netwerkfout — probeer opnieuw.', 'error');
+      } finally {
+        emailBtn.disabled = false;
+        emailBtnText.textContent = 'Stuur rapport per e-mail →';
+      }
+    });
+
+    showStep(0);
   });
 </script>
