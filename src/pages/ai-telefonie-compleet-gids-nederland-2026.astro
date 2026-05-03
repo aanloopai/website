@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import heroAiAgent from '../assets/images/hero-ai-agent.png';
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -122,6 +124,7 @@ const verderLezen = [
 >
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
       <div class="max-w-3xl">
         <div class="flex items-center gap-3 mb-6">
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
@@ -137,6 +140,13 @@ const verderLezen = [
           <a href="/diensten/marco/" class="btn-primary">Marco voice-assistent</a>
           <a href="/gratis-ai-scan/" class="btn-secondary">Gratis architectuur-scan</a>
         </div>
+      </div>
+      <div class="reveal reveal-delay-2 relative">
+        <div class="absolute -inset-6 -z-10 bg-gradient-to-br from-brand-indigo/15 via-transparent to-brand-rose/10 blur-3xl"></div>
+        <div class="rounded-3xl overflow-hidden shadow-2xl ring-1 ring-slate-200/50">
+          <Image src={heroAiAgent} alt="AI voice-assistent met smartphone en spraakgolven — pillar-gids voor AI-telefonie in Nederland 2026" class="w-full h-auto object-cover" loading="eager" decoding="async" fetchpriority="high" widths={[400, 600, 900, 1200]} sizes="(min-width: 1024px) 50vw, 100vw" format="webp" quality={88} />
+        </div>
+      </div>
       </div>
     </div>
   </section>
