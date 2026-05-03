@@ -1,0 +1,363 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Sector-specifiek kennisbank-artikel: AI voor accountantskantoor MKB Nederland.
+// Pattern parallel aan notaris-artikel maar specifiek op Wta/NBA/AFM/Wwft + jaarrekening-pieken.
+//
+// Sources:
+// - NBA — Nederlandse Beroepsorganisatie van Accountants (nba.nl)
+// - AFM toezicht op accountantsorganisaties (afm.nl)
+// - Wta — Wet toezicht accountantsorganisaties
+// - Wwft (Wet ter voorkoming van witwassen en financieren van terrorisme)
+// - Autoriteit Persoonsgegevens — DPIA-richtlijn
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI voor accountantskantoor Nederland 2026 — NBA-bewust en Wwft-respecterend',
+  description: 'Hoe AI receptionist en WhatsApp-agent intake, jaarrekening-pieken, btw-vragen en cliëntencommunicatie automatiseren voor Nederlandse accountantskantoren. NBA-gedragsregels, Wta-conform, AVG-proof, Yuki/Twinfield/AFAS/Exact-integratie.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-04',
+  dateModified: '2026-05-04',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-voor-accountantskantoor-nederland-2026/',
+  inLanguage: 'nl-NL',
+  about: [
+    { '@type': 'Thing', name: 'Accountantskantoor' },
+    { '@type': 'Thing', name: 'AI receptionist' },
+    { '@type': 'Thing', name: 'NBA gedragsregels' },
+    { '@type': 'Thing', name: 'Wwft compliance' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/ai-voor-accountantskantoor-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+
+const faqItems = [
+  { question: 'Mag een accountantskantoor AI inzetten onder NBA-gedragsregels?', answer: 'Ja, voor administratieve intake, statusvragen en routinematig cliëntcontact. NBA-gedragsregels (VGBA, ViO en VVGGB) verplichten onafhankelijkheid, deskundigheid, integriteit en geheimhouding — geen van deze worden geraakt door AI die pre-juridisch intake doet. Adviezen, beoordelingen en controleopdrachten blijven uitsluitend voorbehouden aan de accountant zelf. Aanloop AI configureert prompt-restricties zodat de AI nooit fiscaal of accounting advies kan geven.' },
+  { question: 'Hoe gaat AI om met de fundamentele beginselen van geheimhouding?', answer: 'Alle data wordt EU-only verwerkt op ISO 27001-gecertificeerde cloud-infrastructuur in Frankfurt of Amsterdam, geen modeltraining op cliëntendata, encrypted data-at-rest en in transit, en een audit-trail die voldoet aan toezichtseisen van AFM en NBA. De verwerkersovereenkomst onder AVG artikel 28 is standaard inbegrepen, plus indien gewenst NEN 7510-bewuste configuratie voor accountantskantoren met zorgcliënten.' },
+  { question: 'Werkt dit met onze Yuki, Twinfield, AFAS of Exact?', answer: 'Ja, via directe API-koppelingen voor Yuki, Twinfield, AFAS Online, Exact Online, Visma eAccounting en Snelstart. Voor Caseware en specifieke audit-software werken we via webhooks of beveiligde IMAP-mail-routing. Onboarding 7-14 werkdagen voor één-pakket integratie, 14-21 dagen voor multi-pakket configuratie.' },
+  { question: 'Wat als een cliënt een Wwft-vraag stelt aan de AI?', answer: 'AI escaleert direct naar de verantwoordelijke accountant of compliance-officer. Cliëntenonderzoek (Customer Due Diligence) en risicobeoordelingen onder Wwft zijn altijd mensenwerk vanwege de wettelijke meldplicht bij FIU-Nederland en aansprakelijkheid van de accountantsorganisatie als poortwachter.' },
+  { question: 'Kan de AI ook jaarrekeningen opstellen of controleren?', answer: 'Nee. Het samenstellen, beoordelen of controleren van jaarrekeningen is voorbehouden aan accountants en accountants-administratieconsulenten onder de Wta. AI ondersteunt uitsluitend administratief: cliëntintake, status-updates over lopende dossiers, document-checklists opvragen, afspraken plannen, en standaard-vragen over bijvoorbeeld factuur-uploadprocedures beantwoorden.' },
+  { question: 'Hoe gaat AI om met de jaarrekening-piek in januari-april?', answer: 'Dit is precies waar AI het meest oplevert: in piekperiodes (jan-april voor jaarrekeningen, kwartaal-pieken voor btw, januari voor loonbelasting/jaaropgaven) verviervoudigt het belvolume bij accountantskantoren. AI vangt 60-75 procent van routinevragen autonoom af (waar staat mijn jaarrekening, kan ik aanvullende facturen aanleveren, wanneer is mijn afspraak, hoe upload ik documenten in Yuki) zodat menselijke medewerkers focus houden op inhoudelijke advies-vragen die echt mensenwerk vereisen.' },
+  { question: 'Is een DPIA verplicht bij implementatie van AI in onze praktijk?', answer: 'Voor een AI die persoonsgegevens van cliënten verwerkt (BSN, financiële gegevens, KvK-relaties, persoonlijke fiscale situatie) is een Data Protection Impact Assessment volgens artikel 35 AVG vaak wettelijk verplicht. Aanloop AI levert standaard een DPIA-template plus beoordelingsleidraad voor accountantskantoren mee. De definitieve DPIA-vaststelling blijft verantwoordelijkheid van uw functionaris voor gegevensbescherming of bestuur.' },
+  { question: 'Wat is de gemiddelde ROI voor een MKB-accountantskantoor?', answer: 'Voor een gemiddeld accountantskantoor met 5-15 FTE en 200-500 cliënten ligt de ROI op 6-15 keer op 12-maand basis. Concreet: 40-80 uur secretariaat-tijd per maand vrijgespeeld (waarde 2.400-4.800 euro), 24/7-bereikbaarheid voorkomt no-show op intake-afspraken (waarde 1.000-3.000 euro/mnd), snellere status-vragen-respons verhoogt cliënttevredenheid en retentie (waarde moeilijker te becijferen maar significant in seizoens-contracten).' },
+];
+
+const automatableProcesses = [
+  {
+    title: 'Eerstelijns cliënten-intake',
+    body: 'Nieuwe cliënt belt of WhatsAppt: "ik zoek een accountant voor mijn eenmanszaak". AI vraagt rechtsvorm (eenmanszaak/VOF/BV), omzet-range, sector, gewenste dienstverlening (samenstelling/loonadministratie/btw-aangifte/advies) en plant een kennismakingsgesprek met de juiste accountant. Documentchecklist (KvK-uittreksel, ID, eerste-half-jaar-cijfers, openstaande facturen) wordt direct meegestuurd.',
+  },
+  {
+    title: 'Status-vragen lopende dossiers',
+    body: 'Bestaande cliënt vraagt: "is mijn jaarrekening al af, wanneer is mijn afspraak, hoe upload ik aanvullende facturen". AI haalt realtime status uit Yuki/Twinfield/AFAS, geeft accurate status terug en wijst naar de juiste upload-procedure. 60-75 procent van piek-volume opgelost zonder menselijke tussenkomst.',
+  },
+  {
+    title: 'Afspraken inplannen + documenten opvragen',
+    body: 'Cliënt belt voor jaarrekening-bespreking. AI checkt agenda accountant, plant afspraak (rekening houdend met dossier-complexiteit en voorbereidings-tijd), stuurt agenda-uitnodiging plus documentchecklist (jaarstukken vorig jaar, openstaande grootboekrekeningen, btw-overzicht laatste 4 kwartalen, bankafschriften, contracten leningen).',
+  },
+  {
+    title: 'Btw-aangifte herinneringen',
+    body: 'Twee weken voor btw-deadline: AI stuurt automatisch via WhatsApp/e-mail een herinnering met overzicht (uw btw-aangifte over Q1 moet voor 30 april zijn ingediend; lever aanvullende facturen aan voor 25 april). Voor cliënten die niet reageren: tweede herinnering 5 dagen voor deadline, dan handmatig escalatie naar accountant.',
+  },
+  {
+    title: 'Loonadministratie-vragen werkgevers',
+    body: 'Werkgever vraagt: "mijn medewerker krijgt extra periode-toeslag, wat zijn de gevolgen voor de loonbelasting". AI antwoordt op standaard-onderwerpen (vakantiegeld, eindejaarsuitkering, bonussen) met algemene informatie en escaleert specifieke berekeningen naar loonadministrateur of accountant.',
+  },
+  {
+    title: 'Document-uploads herinneren',
+    body: 'Bij naderende deadlines: AI checkt welke documenten nog ontbreken in het cliëntdossier en stuurt gepersonaliseerde herinneringen ("u moet nog een bankafschrift Q3 plus huurovereenkomst kantoor uploaden voor we de jaarrekening kunnen samenstellen"). Vermindert no-go-deadlines met 60-80 procent.',
+  },
+];
+
+const escalationKeywords = [
+  '"klopt deze aangifte" → escaleer (advies)',
+  '"moet ik dit aftrekken" → escaleer (fiscaal advies)',
+  '"is mijn berekening correct" → escaleer (controle)',
+  '"wat zijn de gevolgen voor" → escaleer (advies)',
+  '"verklaring van" → escaleer (assurance-werk)',
+  '"DGA-loon" → escaleer (specialistisch fiscaal)',
+  '"holdingstructuur" → escaleer (corporate)',
+  '"belastingdienst-controle" → escaleer (urgent compliance)',
+];
+
+const integrations = [
+  { name: 'Yuki',                  type: 'Cliënten-administratie',  integratie: 'Native API — realtime saldo, openstaande facturen, dossier-status' },
+  { name: 'Twinfield',             type: 'Boekhoudpakket',           integratie: 'Native API via Wolters Kluwer — kan transacties + dossier ophalen' },
+  { name: 'AFAS Online',           type: 'ERP + accounting + HR',    integratie: 'Native API — multi-functioneel, cliëntdossier + agenda' },
+  { name: 'Exact Online',          type: 'Boekhouden + financieel',  integratie: 'Native API — populair bij MKB-accountantskantoren' },
+  { name: 'Visma eAccounting',     type: 'Boekhouden cloud',         integratie: 'Native API — Visma developers portal' },
+  { name: 'Snelstart',             type: 'Boekhouden zzp/MKB',       integratie: 'Native API — vooral voor administratiekantoren' },
+  { name: 'Caseware Working Papers', type: 'Audit + samenstellingen', integratie: 'Webhooks of file-export sync (geen public API)' },
+  { name: 'Loket.nl',              type: 'Salarisadministratie',     integratie: 'API plus secure mail — voor salaris-admin koppeling' },
+];
+
+const roiBreakdown = [
+  { post: 'Setup-verlies door piekperiode-overload',                  before: '€2.500-€5.000/jr',           after: '€500-€1.500/jr (75% reductie)' },
+  { post: 'Secretariaat-tijd routine-vragen',                          before: '40-80u/mnd',                  after: '10-20u/mnd (75% reductie)' },
+  { post: 'Niet-aangenomen bel-momenten in piek (jan-apr)',            before: '8-15% gemiste leads',         after: '<2% gemiste leads' },
+  { post: 'Document-deadline misses cliëntenkant',                     before: '15-25% deadlines met escalatie', after: '3-7% met escalatie' },
+  { post: 'Cliënttevredenheid status-vragen (interne NPS)',            before: '40-55 punten',                after: '70-85 punten (+30 NPS)' },
+  { post: 'Maandelijkse Aanloop-investering',                         before: '—',                          after: '€597-€1.197/mnd Marco+Emma' },
+];
+---
+
+<BaseLayout
+  title="AI voor accountantskantoor Nederland 2026 — NBA-bewust en Wwft-respecterend | Aanloop AI"
+  description="Hoe AI receptionist plus WhatsApp-agent intake, jaarrekening-pieken, btw-vragen en cliëntcommunicatie automatiseren voor Nederlandse accountantskantoren. NBA-gedragsregels, Wta-conform, AVG-proof, Yuki/Twinfield/AFAS/Exact-integratie."
+  schema={[articleSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Sector — Accountantskantoor</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          AI voor accountantskantoor — NBA-bewust en Wwft-respecterend
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          Nederlandse accountantskantoren werken in een seizoen-gedreven cyclus: jaarrekening-pieken in januari-april, kwartaal-btw-pieken, jaaropgave-pieken in januari. Tegelijk zijn de regels strikt: NBA-gedragsregels (VGBA/ViO/VVGGB), Wta-toezicht door AFM, Wwft-poortwachterschap, AVG voor financiële persoonsgegevens. Een AI receptionist plus WhatsApp-agent kan 60-75 procent van eerstelijns cliëntvragen autonoom afhandelen — mits goed geconfigureerd. Hieronder: precies welke processen automatiseerbaar zijn, hoe AI binnen NBA-regels blijft, en welke ROI Nederlandse MKB-accountantskantoren halen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Welke processen automatiseerbaar zijn</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI assistent voor een accountantskantoor neemt vooral de pre-juridische intake over: telefoongesprekken aannemen waarbij prospects naar diensten vragen (samenstelling jaarrekening, btw-aangifte, loonadministratie, fiscaal advies), benodigde documenten opvragen, klantgegevens registreren in uw boekhoud-software en een afspraak plannen met de juiste accountant. De AI registreert geen fiscale adviezen, geeft geen advies, en signaleert direct wanneer er sprake is van complexere casussen die menselijke expertise vereisen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor lopende cliënten handelt de AI status-vragen af (is mijn jaarrekening al klaar, kan ik nog aanvullende facturen aanleveren, wanneer is mijn btw-deadline) door realtime te kijken in uw kantoorsysteem (Yuki, Twinfield, AFAS Online, Exact Online of een eigen tool). Dit ontlast secretaresses voor 60-75 procent van inkomende routine-contacten zodat zij meer tijd hebben voor complexer werk en advies-coördinatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk: de AI vervangt nooit de adviesfunctie. Bij elke escalatie naar een advies-vraag schakelt de AI direct door naar mens. Voor Wwft-vragen (cliëntonderzoek, ongebruikelijke transacties) blokkeert de AI volledig — die moeten altijd door een accountant zelf worden afgehandeld vanwege de wettelijke meldplicht aan FIU-Nederland.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Top 6 processen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wat AI direct van u overneemt.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-6">
+        {automatableProcesses.map((p, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <p class="text-base font-bold text-navy mb-2">{p.title}</p>
+            <p class="text-sm text-slate-600 leading-relaxed">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">NBA-gedragsregels en AI: wat mag en wat niet</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De NBA (Nederlandse Beroepsorganisatie van Accountants) heeft geen specifieke AI-regels, maar de fundamentele beginselen uit de VGBA (Verordening Gedrags- en Beroepsregels Accountants) gelden onverminderd: integriteit, objectiviteit, vakbekwaamheid, geheimhouding en professioneel gedrag. Voor AI betekent dit: alle data EU-only verwerkt (geen US-leveranciers zonder Standard Contractual Clauses plus aanvullende waarborgen na Schrems-II), geen modeltraining op cliëntendata, expliciete vermelding aan cliënt dat AI eerstelijns intake doet, en escalatie naar mens bij elke advies- of beoordelingsvraag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI levert specifiek voor accountantskantoren een NBA-bewuste implementatie: vooraf-gescripte prompt-restricties die de AI verhinderen fiscaal of accounting advies te geven, automatische escalatie bij advies-keywords (zie volgende sectie), en logging-trail die voldoet aan NBA- en AFM-toezichtsverplichtingen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor Wwft-compliance: AI-intake mag identificatiegegevens vragen (NAW-gegevens, KvK, UBO-relaties) als onderdeel van het cliëntenonderzoek, maar de risico-classificatie (laag/normaal/verhoogd risico) en de beslissing om de relatie aan te gaan blijven volledig mensenwerk. AI ondersteunt door alle CDD-documenten (Customer Due Diligence) op te vragen voordat de accountant het dossier opent. Bij signalen van ongebruikelijke transacties (UTM-meldplicht) escaleert de AI altijd naar de compliance-officer of bestuurder.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Escalatie-protocol</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">8 keywords die AI direct naar u doorzet.</h2>
+        <p class="mt-3 text-slate-600">Voor accountantskantoren configureren we strikte keyword-detection: zodra de cliënt iets advies-aanverwants zegt, schakelt de AI in milliseconden door naar de verantwoordelijke accountant. Geen kans op onbedoeld advies door AI.</p>
+      </div>
+      <ul class="space-y-2 reveal reveal-delay-1">
+        {escalationKeywords.map((k) => (
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700">
+            <svg class="w-4 h-4 mt-1 flex-shrink-0 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M5 19h14a2 2 0 001.84-2.75L13.74 4a2 2 0 00-3.48 0L3.16 16.25A2 2 0 005 19z"/></svg>
+            <span>{k}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Integraties</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Werkt met uw bestaande boekhoud-software.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">8 native of webhook-koppelingen voor de meest gebruikte Nederlandse pakketten. Eigen-built systemen via secure IMAP-routing of REST-webhook.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Pakket</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Type</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Integratie-methode</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {integrations.map(i => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-navy">{i.name}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{i.type}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs">{i.integratie}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Voorbeeldgesprek: AI handelt jaarrekening-statusvraag af</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Cliënt belt op 14 maart om 10:30: "ik wil weten hoe het staat met onze jaarrekening over 2025". De AI antwoordt: "een moment, ik kijk in uw dossier — uw jaarrekening 2025 is in concept klaar — ze ligt momenteel ter beoordeling bij accountant Pieter de Wit. Verwachte oplevering: 28 maart. Wilt u alvast een afspraak inplannen voor het concept-bespreken". Cliënt: "ja graag". AI plant afspraak in voor 30 maart 14:00 met Pieter, stuurt agenda-uitnodiging plus link naar de concept-jaarrekening die in Yuki klaar staat. Total tijd: 3 minuten.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk wat de AI niet doet: geen uitspraak over de cijfers ("klopt de winst van 142.000 euro"), geen duiding van de eindafrekening btw, geen schatting van successierechten of andere fiscale gevolgen — al deze vragen worden geescaleerd naar Pieter voor de afspraak. De AI zegt expliciet: "voor inhoudelijke vragen over uw cijfers is Pieter de aangewezen persoon. Tijdens uw afspraak van 30 maart komt dat aan bod."</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor cliëntervaring: 88 procent van bellers waardeert directe respons (geen wachttijd, geen voicemail) en accurate status (geen "ik kijk het uit en bel terug"). NPS bij accountantskantoren met AI-intake stijgt typisch met +25-30 punten ten opzichte van traditionele secretariaat-belasting in piekperiodes.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Concrete ROI</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Voor een MKB-kantoor met 8 FTE en 320 cliënten.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Realistische cijfers per maand, gebaseerd op interviews met Aanloop-cliënten en Nederlandse benchmark-data. Uw eigen ROI varieert per kantoor-grootte, sector-mix en piek-intensiteit.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-4 text-slate-500 font-medium w-[44%]">Metric</th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[28%]">Vóór AI</th>
+              <th class="text-left py-4 px-4 font-bold text-brand-emerald w-[28%]">Met Aanloop AI</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {roiBreakdown.map(r => (
+              <tr>
+                <td class="py-3 px-4 text-slate-700">{r.post}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.before}</td>
+                <td class="py-3 px-4 text-navy font-medium text-xs">{r.after}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Bottom-line voor 8-FTE accountantskantoor: gemiddelde ROI 6-15 keer op 12-maand basis, payback-periode 6-10 weken. Vooral interessant: minder secretariaat-stress en lager personeelsverloop in piek — strategisch waardevol in een schaarse arbeidsmarkt voor accounting-talent.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Implementatie roadmap voor accountantskantoren</h2>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Een succesvolle AI-implementatie in een accountantskantoor verloopt in drie fasen. Fase 1 (week 1-2) is discovery en design: we analyseren 100 historische cliëntcontacten om de meest voorkomende vragen, escalaties en pijnpunten in kaart te brengen. Op basis hiervan ontwerpen we de conversational flow, intake-vragenlijst en escalatieprotocollen die specifiek bij uw werkwijze, sector-mix en software-stack passen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-2">Fase 2 (week 3-5) is build en pilot: we configureren de AI met uw kennisbank (FAQ, document-checklists per dienst, sector-specifieke procedures), koppelen aan uw boekhoud-software (Yuki/Twinfield/AFAS/Exact) en testen intern twee weken lang. In deze periode simuleren u en uw team realistische cliënt-scenarios — de AI leert van correcties en wordt steeds nauwkeuriger. Eind fase 2 gaat de AI live met 20-30 procent van uw cliëntverkeer voor monitoring.</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-3">Fase 3 (week 6-12) is scale en optimaliseer: volledig live op het primaire kanaal met dagelijkse KPI-monitoring, wekelijkse iteratie op basis van handover-data en maandelijkse rapportage. Bij positieve resultaten breiden we uit naar tweede kanaal (typisch WhatsApp Emma na telefoon Marco, of vice versa). Vanaf maand 4 is de AI volledig zelfstandig met alleen kwartaalreviews voor strategische verbeteringen — perfect timing voor de jaarrekening-piek in januari-april van het volgend jaar.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">AI voor accountantskantoor — antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Bronnen en verder lezen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Onafhankelijke bronnen voor uw eigen onderzoek.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="https://www.nba.nl/regelgeving/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">NBA — Regelgeving en VGBA</p>
+          <p class="text-slate-600 mt-1 text-xs">Fundamentele beginselen, gedragscode en beroepsethiek.</p>
+        </a>
+        <a href="https://www.afm.nl/nl-nl/sector/accountantsorganisaties" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">AFM — Toezicht op accountantsorganisaties</p>
+          <p class="text-slate-600 mt-1 text-xs">Wta-toezicht, vergunningen en kwaliteitssysteem-eisen.</p>
+        </a>
+        <a href="https://www.fiu-nederland.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">FIU-Nederland — Wwft-meldpunt</p>
+          <p class="text-slate-600 mt-1 text-xs">Meldplicht ongebruikelijke transacties bij UTM.</p>
+        </a>
+        <a href="https://autoriteitpersoonsgegevens.nl/themas/basis-avg/avg-algemeen/data-protection-impact-assessment-dpia" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Autoriteit Persoonsgegevens — DPIA</p>
+          <p class="text-slate-600 mt-1 text-xs">Wanneer is een DPIA wettelijk verplicht onder artikel 35 AVG.</p>
+        </a>
+        <a href="/diensten/marco/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Marco — AI receptionist</p>
+          <p class="text-slate-600 mt-1 text-xs">De telefoon-component voor accountantskantoren.</p>
+        </a>
+        <a href="/diensten/emma/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Emma — WhatsApp-agent</p>
+          <p class="text-slate-600 mt-1 text-xs">WhatsApp-component voor cliëntcommunicatie.</p>
+        </a>
+        <a href="/ai-roi-calculator/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ ROI-calculator</p>
+          <p class="text-slate-600 mt-1 text-xs">Bereken uw eigen ROI voor uw accountantskantoor.</p>
+        </a>
+        <a href="/kennisbank/ai-voor-notariskantoor-nederland-2026/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Vergelijkbaar: AI voor notariskantoor</p>
+          <p class="text-slate-600 mt-1 text-xs">Sector-pattern voor juridische dienstverleners.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Klaar voor de jaarrekening-piek 2027?
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Onboarding 7-14 werkdagen voor één pakket, 14-21 dagen voor multi-pakket. Bij start vóór november 2026 bent u klaar voor de januari-april 2027 piek met AI als eerstelijns-cliëntcontact. Maandelijks opzegbaar, NBA-bewuste configuratie, EU-only data-verwerking met DPIA-template inbegrepen.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een live demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bekijk tarieven
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
