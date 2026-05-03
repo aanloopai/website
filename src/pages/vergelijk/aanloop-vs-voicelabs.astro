@@ -1,0 +1,268 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Comparison page: Aanloop AI Marco vs Voicelabs Robin
+// Bron: voicelabs.nl publieke website per mei 2026 (homepage + pricing).
+// Aanloop data: tarieven.astro / diensten/marco.astro / over.astro.
+// Fair-compare format: alleen publiek geverifieerde feiten, expliciete disclaimer,
+// neutraal taal en bron-attribution.
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Aanloop AI Marco vs Voicelabs Robin: welke past bij uw MKB?',
+  description: 'Eerlijke vergelijking tussen Aanloop AI Marco (managed AI-receptionist NL) en Voicelabs Robin (zelf-instelbare voice+WhatsApp bundel) voor Nederlandse MKB-bedrijven. Prijs, datalocatie, integraties, doorlooptijd en compliance vergeleken op publieke gegevens per mei 2026.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-03',
+  dateModified: '2026-05-03',
+  mainEntityOfPage: 'https://aanloopai.nl/vergelijk/aanloop-vs-voicelabs/',
+  inLanguage: 'nl-NL',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Wat is het belangrijkste verschil tussen Aanloop AI Marco en Voicelabs Robin?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Voicelabs Robin is een zelf-instelbaar product (Software-as-a-Service): u krijgt een platform waarmee u zelf flows en scripts bouwt, vanaf 299 euro per maand voor 1.000 belminuten plus WhatsApp en chat. Aanloop AI Marco is een managed service (Done-For-You): wij bouwen, trainen en onderhouden de AI-receptionist voor u, vanaf 597 euro per maand voor 150 gesprekken (Starter) of 1.197 euro per maand voor onbeperkt gesprekken plus Emma WhatsApp-agent en CRM-integratie (Groei).',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Welke voice-AI heeft Nederlandstalige stemmen?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Beide platforms ondersteunen Nederlandstalige stemmen. Voicelabs Robin gebruikt Dutch-native voices (specifieke vendor niet publiek vermeld op homepage per mei 2026). Aanloop AI Marco gebruikt ElevenLabs Nederlandstalige stemmen — dit wordt expliciet vermeld in de productdocumentatie.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Waar staat de spraakdata bij elk platform?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Aanloop AI hanteert standaard EU-only datacenters (Frankfurt, Amsterdam) met AVG-conforme verwerkers­overeenkomst. Voor Voicelabs Robin is de exacte datalocatie niet expliciet publiek vermeld op de homepage per mei 2026 — vraag dit op tijdens uw evaluatie als AVG-conformiteit kritisch is voor uw sector (zorg, juridisch, overheid).',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Wie doet de implementatie en het onderhoud?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Bij Voicelabs Robin Zelf Starten configureert u zelf flows, prompts en knowledge base via het platform. Bij Aanloop AI Marco doet ons implementatie-team de volledige opzet binnen 7-10 werkdagen, inclusief script-tuning, agenda-koppeling, CRM-integratie en maandelijkse optimalisatie. Dit verklaart het prijsverschil (managed service vs platform).',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Welke is goedkoper voor een MKB met 1.500 gesprekken per maand?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Voor 1.500 gesprekken per maand komt Voicelabs Robin Zelf Starten (1.000 belminuten incl., extra minuten op offerte) waarschijnlijk uit op 299-499 euro per maand. Aanloop AI Marco Starter (597 euro, 150 gesprekken) is dan ondergrens; Groei (1.197 euro, onbeperkt gesprekken plus Emma WhatsApp en CRM) is geschikter. Voor MKBs zonder eigen AI/voice-engineer is Aanloop Groei vaak voordeliger door de inbegrepen implementatie en optimalisatie (geen 30-60 uur intern werk).',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Kan ik later overstappen van het ene platform naar het andere?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Beide aanbieders bieden maandelijkse opzegbaarheid (Aanloop AI: 1 maand opzegtermijn; Voicelabs Robin Zelf Starten: voorwaarden op website per mei 2026 controleren). Migratie bestaat uit het overhevelen van knowledge base en flow-structuur. Aanloop AI ondersteunt migratie van andere voice-platformen als onderdeel van de Setup-fee.',
+      },
+    },
+  ],
+};
+
+// Side-by-side comparison — alleen publiek geverifieerde feiten per mei 2026.
+// Aanloop data: tarieven.astro + diensten/marco.astro + over.astro.
+// Voicelabs data: voicelabs.nl homepage + pricing-pagina (per mei 2026).
+const comparison = [
+  { feature: 'Type service',                    aanloop: 'Managed (Done-For-You)',                             voicelabs: 'Zelf-instelbaar platform (Robin Zelf Starten)' },
+  { feature: 'Instapprijs',                     aanloop: '€597/mnd Starter (Marco, 150 gesprekken)',           voicelabs: '€299/mnd Robin Zelf Starten (1.000 belmin + WhatsApp + chat)' },
+  { feature: 'Bundel prijs',                    aanloop: '€1.197/mnd Groei (Marco + Emma + CRM, onbeperkt)',   voicelabs: '€299/mnd inclusief calls + WhatsApp + chat' },
+  { feature: 'Setup-kosten',                    aanloop: 'Eenmalig €495 Starter / €795 Groei (incl. training)', voicelabs: 'Niet expliciet vermeld op homepage' },
+  { feature: 'Implementatie',                   aanloop: 'Volledig door Aanloop-team (7-10 werkdagen)',        voicelabs: 'Zelf opzetten via platform (Zelf Starten tier)' },
+  { feature: 'Nederlandstalige voice',          aanloop: 'ElevenLabs NL (expliciet vermeld)',                  voicelabs: 'Dutch-native voices (vendor niet publiek)' },
+  { feature: 'CRM-integratie',                  aanloop: 'HubSpot, Pipedrive (vanaf Groei inbegrepen)',        voicelabs: 'Niet expliciet op homepage genoemd' },
+  { feature: 'Datalocatie',                     aanloop: 'EU-only (Frankfurt, Amsterdam)',                     voicelabs: 'Niet expliciet publiek vermeld' },
+  { feature: 'AVG-verwerkers­overeenkomst',     aanloop: 'Standaard inbegrepen, NEN 7510 op aanvraag',         voicelabs: 'Vraag op bij evaluatie' },
+  { feature: 'KvK / NL-aansprakelijkheid',      aanloop: 'KVK 88606902, Rotterdam',                            voicelabs: 'Voicelabs B.V., Nederland' },
+  { feature: 'Persoonlijke author / bureau',    aanloop: 'Daan Verhoeven (founder, publieke profiel)',          voicelabs: 'Voicelabs als merk, geen prominent founder-profiel' },
+  { feature: 'Customer logos publiek',          aanloop: 'Geen — nieuw bureau, illustratieve scenarios',        voicelabs: 'Fraai Tandartsen, Franky\'s (homepage)' },
+  { feature: 'Maandelijks opzegbaar',           aanloop: 'Ja, 1 maand opzegtermijn',                           voicelabs: 'Voorwaarden op website per mei 2026 controleren' },
+  { feature: 'Maandelijkse optimalisatie',      aanloop: 'Inbegrepen — wij tunen Marco op uw conversaties',     voicelabs: 'Zelf doen via platform' },
+  { feature: 'Sectoren-specifieke kennis',      aanloop: '11 sectorpages + 67 kennisbank-artikelen',            voicelabs: 'Industrie-pages op website (publieke breadte niet getoond)' },
+  { feature: 'Doelgroep best fit',              aanloop: 'MKB zonder eigen AI-team, AVG-strict (zorg, juridisch, overheid, financieel)', voicelabs: 'MKB met technische capaciteit, zelf willen instellen, prijsgevoelig' },
+];
+
+const whenAanloop = [
+  'U heeft géén eigen AI- of voice-engineer in huis',
+  'AVG-conformiteit is wettelijk vereist (zorg, juridisch, overheid, financieel)',
+  'U wilt binnen 7-14 werkdagen live, zonder zelf scripts of flows te bouwen',
+  'CRM-integratie (HubSpot/Pipedrive/custom) moet vanaf dag 1 werken',
+  'U waardeert een dedicated NL implementatie-team boven self-service tickets',
+  'Maandelijkse optimalisatie op uw eigen conversatiedata is gewenst',
+];
+
+const whenVoicelabs = [
+  'U heeft technische capaciteit en wilt zelf flows bouwen en optimaliseren',
+  'Het instapbudget is hard <€400/mnd en u accepteert dat implementatie zelf­werk is',
+  'U wilt experimenteren / proof-of-concept zonder lange onboarding',
+  'AVG-strict compliance is geen wettelijke vereiste in uw sector',
+  'U wilt voornamelijk een transactioneel SaaS-product, geen partnerschap',
+];
+---
+
+<BaseLayout
+  title="Aanloop AI Marco vs Voicelabs Robin (mei 2026) — Eerlijke Vergelijking | Aanloop AI"
+  description="Vergelijking Aanloop AI Marco versus Voicelabs Robin voor MKB Nederland: managed service vs zelf-instelbaar platform, prijs, datalocatie, AVG, CRM, doorlooptijd en doelgroep — op publieke gegevens per mei 2026."
+  schema={articleSchema}
+  faqSchema={faqSchema.mainEntity.map(q => ({ question: q.name, answer: q.acceptedAnswer.text }))}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-4xl">
+        <div class="flex items-center gap-4 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Vergelijking · mei 2026</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          Aanloop AI Marco <span class="text-slate-400">vs</span> Voicelabs Robin
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed text-pretty max-w-3xl reveal reveal-delay-2">
+          Beide aanbieders zijn Nederlands en richten zich op het MKB, maar het zijn fundamenteel verschillende producten. Aanloop AI Marco is een <strong>managed service</strong> (Done-For-You) vanaf €597/mnd. Voicelabs Robin is een <strong>zelf-instelbaar platform</strong> (Software-as-a-Service) vanaf €299/mnd. Hieronder een eerlijke vergelijking op publieke gegevens.
+        </p>
+
+        <div class="mt-8 p-4 bg-amber-50/50 border border-amber-200 rounded-xl text-sm text-slate-700 reveal reveal-delay-3">
+          <p class="font-semibold text-amber-900 mb-1">Bron-disclaimer</p>
+          <p>Voicelabs-data afkomstig van publieke voicelabs.nl-website per mei 2026 (homepage en pricing-pagina). Aanloop AI-data afkomstig van eigen tarieven en productpagina's. Beide leveranciers updaten hun aanbod regelmatig — controleer de huidige stand op beide websites voor uw definitieve evaluatie.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-6xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Side-by-side</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">16 punten naast elkaar.</h2>
+      </div>
+
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-5 text-slate-500 font-medium w-[28%]">Criterium</th>
+              <th class="text-left py-4 px-4 font-bold text-navy bg-brand-emerald/5 w-[36%]">Aanloop AI Marco<br/><span class="text-xs font-normal text-brand-emerald">Managed service</span></th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[36%]">Voicelabs Robin<br/><span class="text-xs font-normal text-slate-500">Zelf-instelbaar platform</span></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {comparison.map(row => (
+              <tr>
+                <td class="py-3 px-5 text-slate-700 font-medium">{row.feature}</td>
+                <td class="py-3 px-4 text-navy bg-brand-emerald/5 text-xs">{row.aanloop}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{row.voicelabs}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Welke past bij u?</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Doelgroep-fit per aanbieder.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Geen "wij zijn beter" framing — beide producten hebben hun eigen ideale klant. Hieronder per aanbieder de profielen waar ze het sterkst voor zijn.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div class="bg-white border-2 border-brand-emerald/30 rounded-2xl p-6 reveal">
+          <p class="text-xs font-semibold uppercase tracking-widest text-brand-emerald mb-2">Kies Aanloop AI Marco als</p>
+          <ul class="space-y-3 mt-4">
+            {whenAanloop.map(p => (
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {p}
+              </li>
+            ))}
+          </ul>
+          <a href="/diensten/marco/" class="inline-flex items-center gap-2 mt-6 text-sm font-semibold text-brand-emerald hover:underline">
+            Lees meer over Marco
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 reveal reveal-delay-1">
+          <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Kies Voicelabs Robin als</p>
+          <ul class="space-y-3 mt-4">
+            {whenVoicelabs.map(p => (
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {p}
+              </li>
+            ))}
+          </ul>
+          <p class="mt-6 text-xs text-slate-400 italic">Voicelabs is een onafhankelijke aanbieder — wij verwijzen u door naar voicelabs.nl voor hun actuele aanbod.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Aanloop AI Marco vs Voicelabs Robin — antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqSchema.mainEntity.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.name}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.acceptedAnswer.text}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Wilt u zien hoe Marco werkt voor uw bedrijf?
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          We laten u in 15 minuten een live demo zien — Marco neemt een proefgesprek op in uw branchecontext. Geen creditcard, geen verplichting. Daarna beslist u rustig.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een live demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bekijk tarieven
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
