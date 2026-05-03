@@ -3,13 +3,40 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const toolSchema = {
   '@context': 'https://schema.org',
-  '@type': 'WebApplication',
+  '@type': 'SoftwareApplication',
   name: 'AI ROI Calculator — Bereken uw besparing met AI automatisering',
-  description: 'Gratis online calculator om de ROI van AI automatisering voor uw MKB-bedrijf te berekenen. Bereken hoeveel tijd en geld u bespaart.',
+  description: 'Gratis online calculator om de ROI van AI automatisering voor uw MKB-bedrijf te berekenen. Bereken hoeveel tijd en geld u bespaart op basis van 80+ live MKB-implementaties bij Aanloop AI.',
   url: 'https://aanloopai.nl/ai-roi-calculator/',
   applicationCategory: 'BusinessApplication',
+  applicationSubCategory: 'ROI Calculator',
+  operatingSystem: 'All (browser-based)',
+  inLanguage: 'nl-NL',
+  isAccessibleForFree: true,
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
-  creator: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  creator: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  featureList: [
+    'Realtime ROI-berekening op 5 inputs',
+    'Aanbevolen Aanloop AI pakket op basis van dagvolume',
+    'Sector-specifieke multipliers voor 8 branches',
+    'FTE-equivalent en terugverdientijd in maanden',
+    'Methodologie en sector-benchmarks transparant',
+  ],
+};
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'AI ROI berekenen voor uw MKB in 5 stappen',
+  description: 'Stappenplan om de ROI van AI-automatisering voor uw MKB-bedrijf te berekenen via de Aanloop AI ROI calculator. Doorlooptijd circa 60 seconden.',
+  totalTime: 'PT1M',
+  inLanguage: 'nl-NL',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Dagvolume inkomende telefoontjes invoeren', text: 'Vul het aantal inkomende telefoongesprekken per werkdag in. Schatting op basis van uw KPN/VoIP-rapportage of grove inschatting van uw team.' },
+    { '@type': 'HowToStep', position: 2, name: 'Percentage gemiste of slecht-afgehandelde calls', text: 'Schat hoeveel procent van inkomende calls op dit moment gemist worden of niet goed afgehandeld (geen terugbel, lange wachttijd, geen escalatie).' },
+    { '@type': 'HowToStep', position: 3, name: 'Gemiddelde nieuwe klantwaarde invullen', text: 'Vul de gemiddelde lifetime value van een nieuwe klant in. Voor solo-praktijk gebruik gemiddelde jaaromzet per klant; voor MKB jaaromzet/aantal klanten.' },
+    { '@type': 'HowToStep', position: 4, name: 'Manuele werkuren en uurtarief invoeren', text: 'Schat hoeveel uur per week uw team besteedt aan repetitieve handmatige taken (administratie, planning, FAQ, follow-ups) en welk uurtarief daarbij hoort.' },
+    { '@type': 'HowToStep', position: 5, name: 'Sector kiezen en resultaat aflezen', text: 'Selecteer uw sector — de calculator past sector-multipliers toe en toont uw geschatte jaarlijkse besparing, terugverdientijd, FTE-equivalent en aanbevolen Aanloop AI pakket.' },
+  ],
 };
 
 const faqItems = [
@@ -22,7 +49,7 @@ const faqItems = [
 <BaseLayout
   title="AI ROI Calculator — Bereken uw Besparing met AI Automatisering | Aanloop AI"
   description="Bereken gratis hoeveel tijd en geld uw bedrijf bespaart met AI automatisering. Vul uw situatie in en zie direct uw ROI. Tool door Aanloop AI."
-  schema={toolSchema}
+  schema={[toolSchema, howToSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">
@@ -99,16 +126,17 @@ const faqItems = [
 
             <div>
               <label class="block text-sm font-semibold text-navy mb-2">Sector</label>
-              <select id="sector" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-indigo focus:outline-none" onchange="updateCalc()">
-                <option value="1.0">Zakelijke dienstverlening</option>
-                <option value="1.2">Bouw & Installatie</option>
-                <option value="0.9">Horeca</option>
-                <option value="1.3">Vastgoed & Makelaars</option>
-                <option value="1.1">Logistiek & Transport</option>
-                <option value="1.0">Zorg & Welzijn</option>
-                <option value="1.2">Accountancy & Financieel</option>
-                <option value="1.1">E-commerce & Retail</option>
+              <select id="sector" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-indigo focus:outline-none" onchange="onSectorChange()">
+                <option value="1.0" data-cv="2500">Zakelijke dienstverlening</option>
+                <option value="1.2" data-cv="3500">Bouw & Installatie</option>
+                <option value="0.9" data-cv="150">Horeca</option>
+                <option value="1.3" data-cv="5000">Vastgoed & Makelaars</option>
+                <option value="1.1" data-cv="4000">Logistiek & Transport</option>
+                <option value="1.0" data-cv="1200">Zorg & Welzijn</option>
+                <option value="1.2" data-cv="2800">Accountancy & Financieel</option>
+                <option value="1.1" data-cv="180">E-commerce & Retail</option>
               </select>
+              <p class="text-xs text-slate-500 mt-1">Sectorkeuze stelt automatisch een typische klantwaarde in — u kunt de slider daarna handmatig overschrijven.</p>
             </div>
 
           </div>
@@ -125,7 +153,7 @@ const faqItems = [
               <p id="result-total" class="text-5xl font-bold text-pearl mb-1">€ —</p>
               <p class="text-slate-400 text-sm">Inclusief teruggewonnen leads + tijdsbesparing</p>
               <div class="mt-6 pt-6 border-t border-white/10">
-                <p class="text-xs text-slate-400 mb-3">Terugverdientijd bij Starter pakket (€597/mnd)</p>
+                <p class="text-xs text-slate-400 mb-3">Terugverdientijd bij <span id="result-tier-label">Starter pakket (€597/mnd)</span></p>
                 <p id="result-payback" class="text-2xl font-bold text-brand-emerald">— maanden</p>
               </div>
             </div>
@@ -146,6 +174,10 @@ const faqItems = [
               <div class="flex justify-between items-center py-2 border-b border-slate-100">
                 <span class="text-sm text-slate-600">📞 Extra afspraken/maand</span>
                 <span id="result-appointments" class="text-sm font-bold text-navy">—</span>
+              </div>
+              <div class="flex justify-between items-center py-2 border-b border-slate-100">
+                <span class="text-sm text-slate-600" title="1 FTE bruto + werkgeverslasten ≈ €4.000/maand">👥 FTE-equivalent bespaard</span>
+                <span id="result-fte" class="text-sm font-bold text-navy">—</span>
               </div>
               <div class="flex justify-between items-center py-2">
                 <span class="text-sm text-slate-600">📈 Netto ROI (jaar 1)</span>
@@ -198,14 +230,14 @@ const faqItems = [
               </tr>
             </thead>
             <tbody>
-              <tr><td class="p-4 font-medium text-navy">Rijschool</td><td class="p-4 text-slate-700">25-50x</td><td class="p-4 text-slate-700">3-6 weken</td><td class="p-4 text-slate-700">Emma 197 euro</td></tr>
-              <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Huisartsenpraktijk</td><td class="p-4 text-slate-700">10-20x</td><td class="p-4 text-slate-700">1-2 maanden</td><td class="p-4 text-slate-700">Marco 397-697 euro</td></tr>
-              <tr><td class="p-4 font-medium text-navy">Installatiebedrijf</td><td class="p-4 text-slate-700">5-12x</td><td class="p-4 text-slate-700">2-4 maanden</td><td class="p-4 text-slate-700">Marco + Emma combo</td></tr>
-              <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Notariskantoor</td><td class="p-4 text-slate-700">8-18x</td><td class="p-4 text-slate-700">2-3 maanden</td><td class="p-4 text-slate-700">Marco 697 euro</td></tr>
-              <tr><td class="p-4 font-medium text-navy">Webshop / e-commerce</td><td class="p-4 text-slate-700">6-15x</td><td class="p-4 text-slate-700">1-3 maanden</td><td class="p-4 text-slate-700">Emma 197-397 euro</td></tr>
-              <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Schoonheidssalon / kapper</td><td class="p-4 text-slate-700">8-15x</td><td class="p-4 text-slate-700">1-2 maanden</td><td class="p-4 text-slate-700">Emma 197 euro</td></tr>
-              <tr><td class="p-4 font-medium text-navy">Dierenartspraktijk</td><td class="p-4 text-slate-700">12-20x</td><td class="p-4 text-slate-700">1-2 maanden</td><td class="p-4 text-slate-700">Marco 397 euro</td></tr>
-              <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Restaurant</td><td class="p-4 text-slate-700">4-10x</td><td class="p-4 text-slate-700">2-4 maanden</td><td class="p-4 text-slate-700">Emma + Marco combo</td></tr>
+              <tr><td class="p-4 font-medium text-navy">Rijschool</td><td class="p-4 text-slate-700">25-50x</td><td class="p-4 text-slate-700">3-6 weken</td><td class="p-4 text-slate-700">Groei €1.197 (Emma WhatsApp)</td></tr>
+              <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Huisartsenpraktijk</td><td class="p-4 text-slate-700">10-20x</td><td class="p-4 text-slate-700">1-2 maanden</td><td class="p-4 text-slate-700">Groei €1.197 (onbeperkt)</td></tr>
+              <tr><td class="p-4 font-medium text-navy">Installatiebedrijf</td><td class="p-4 text-slate-700">5-12x</td><td class="p-4 text-slate-700">2-4 maanden</td><td class="p-4 text-slate-700">Groei €1.197 (Marco + Emma)</td></tr>
+              <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Notariskantoor</td><td class="p-4 text-slate-700">8-18x</td><td class="p-4 text-slate-700">2-3 maanden</td><td class="p-4 text-slate-700">Starter €597 (Marco, 150 gesprekken)</td></tr>
+              <tr><td class="p-4 font-medium text-navy">Webshop / e-commerce</td><td class="p-4 text-slate-700">6-15x</td><td class="p-4 text-slate-700">1-3 maanden</td><td class="p-4 text-slate-700">Groei €1.197 (Marco + Emma)</td></tr>
+              <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Schoonheidssalon / kapper</td><td class="p-4 text-slate-700">8-15x</td><td class="p-4 text-slate-700">1-2 maanden</td><td class="p-4 text-slate-700">Groei €1.197 (Emma WhatsApp)</td></tr>
+              <tr><td class="p-4 font-medium text-navy">Dierenartspraktijk</td><td class="p-4 text-slate-700">12-20x</td><td class="p-4 text-slate-700">1-2 maanden</td><td class="p-4 text-slate-700">Groei €1.197 (24/7 spoedlijn)</td></tr>
+              <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Restaurant</td><td class="p-4 text-slate-700">4-10x</td><td class="p-4 text-slate-700">2-4 maanden</td><td class="p-4 text-slate-700">Groei €1.197 (reserveringen)</td></tr>
             </tbody>
           </table>
         </div>
@@ -267,6 +299,17 @@ const faqItems = [
     return '€ ' + Math.round(n).toLocaleString('nl-NL');
   }
 
+  function onSectorChange(): void {
+    const sectorEl = document.getElementById('sector') as HTMLSelectElement;
+    const opt = sectorEl.options[sectorEl.selectedIndex];
+    const cv = parseInt(opt.getAttribute('data-cv') || '1500', 10);
+    const sliderEl = document.getElementById('client-value') as HTMLInputElement;
+    // Slider min=100, max=10000, step=100 — snap naar dichtsbijzijnde stap.
+    const snapped = Math.round(cv / 100) * 100;
+    sliderEl.value = String(Math.min(10000, Math.max(100, snapped)));
+    updateCalc();
+  }
+
   function updateCalc(): void {
     const calls = parseInt((document.getElementById('calls-per-day') as HTMLInputElement).value);
     const missedPct = parseInt((document.getElementById('missed-pct') as HTMLInputElement).value) / 100;
@@ -295,17 +338,39 @@ const faqItems = [
     const timeSavingPerYear = manualHours * 52 * aiTimeSaving * hourlyRate;
 
     const totalSaving = leadsValue + timeSavingPerYear;
-    const annualCost = 597 * 12; // Starter pakket
+
+    // Aanbevolen pakket o.b.v. dagvolume — Starter (lt 50) / Groei (50-200) / Partner (gt 200)
+    let monthlyPrice: number;
+    let tierLabel: string;
+    if (calls < 50) {
+      monthlyPrice = 597;
+      tierLabel = 'Starter pakket (€597/mnd)';
+    } else if (calls <= 200) {
+      monthlyPrice = 1197;
+      tierLabel = 'Groei pakket (€1.197/mnd)';
+    } else {
+      monthlyPrice = 1497; // Indicatie Partner-tier; finale prijs op aanvraag
+      tierLabel = 'Partner pakket (op aanvraag, indicatie €1.497+/mnd)';
+    }
+
+    const annualCost = monthlyPrice * 12;
     const netROI = totalSaving - annualCost;
     const paybackMonths = annualCost / (totalSaving / 12);
     const extraAppointmentsPerMonth = (missedCallsPerDay * 30 * aiRecoveryRate * leadConversionRate);
+
+    // FTE-equivalent: 1 FTE bruto + werkgeverslasten ≈ €4.000/mnd (NL CBS gemiddelde 2026)
+    const ftePerMonthCost = 4000;
+    const fteEquivalent = (totalSaving / 12) / ftePerMonthCost;
+    const fteFormatted = fteEquivalent.toFixed(1).replace('.', ',') + ' FTE/mnd';
 
     // Update results
     (document.getElementById('result-total') as HTMLElement).textContent = fmt(totalSaving);
     (document.getElementById('result-leads') as HTMLElement).textContent = fmt(leadsValue) + '/jaar';
     (document.getElementById('result-time') as HTMLElement).textContent = fmt(timeSavingPerYear) + '/jaar';
     (document.getElementById('result-appointments') as HTMLElement).textContent = Math.round(extraAppointmentsPerMonth) + ' extra afspraken';
+    (document.getElementById('result-fte') as HTMLElement).textContent = fteFormatted;
     (document.getElementById('result-roi') as HTMLElement).textContent = fmt(netROI);
+    (document.getElementById('result-tier-label') as HTMLElement).textContent = tierLabel;
     (document.getElementById('result-payback') as HTMLElement).textContent =
       paybackMonths < 1 ? '< 1 maand' : `${Math.round(paybackMonths)} maanden`;
   }
