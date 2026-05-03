@@ -1,0 +1,394 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Counter-content kennisbank-artikel: realistische Total Cost of Ownership van
+// €299/mnd starter AI-telefoonagent pakketten voor NL MKB. Educatieve angle —
+// geen directe concurrent-aanval, geen aggregateRating, alleen publiek-verifieerbare
+// rekensom + AVG-context + eerlijk "wanneer is goedkoop wel genoeg".
+//
+// Sources:
+// - Voicelabs Robin "Zelf Starten" pricing (voicelabs.nl/prijzen, mei 2026)
+// - Autoriteit Persoonsgegevens DPIA-richtlijn (autoriteitpersoonsgegevens.nl)
+// - EDPB Guidelines on DPIA (edpb.europa.eu)
+// - ACM telecom-marktrapport MKB (acm.nl)
+// - SCP/CBS gemiddeld MKB-uurtarief intern personeel (cbs.nl)
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI-telefoonagent vanaf €299: 7 verborgen kosten voor Nederlandse MKB',
+  description: 'Een AI-telefoonagent vanaf 299 euro per maand lijkt scherp geprijsd, maar voor Nederlands MKB lopen de werkelijke kosten vaak op tot 800 - 1.200 euro per maand door overage-minuten, setup-tijd, AVG-advies en zelfonderhoud. Volledige TCO-rekensom plus eerlijk antwoord op de vraag wanneer een starter-pakket wel volstaat.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-04',
+  dateModified: '2026-05-04',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-telefoonagent-starter-tco-mkb-nederland/',
+  inLanguage: 'nl-NL',
+  about: [
+    { '@type': 'Thing', name: 'Total Cost of Ownership', sameAs: 'https://nl.wikipedia.org/wiki/Total_cost_of_ownership' },
+    { '@type': 'Thing', name: 'AI-telefoonagent' },
+    { '@type': 'Thing', name: 'MKB Nederland' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p', '#tldr p', '.tco-summary'] },
+  url: 'https://aanloopai.nl/kennisbank/ai-telefoonagent-starter-tco-mkb-nederland/',
+  inLanguage: 'nl-NL',
+};
+
+const faqItems = [
+  { question: 'Wat kost een AI-telefoonagent gemiddeld voor Nederlandse MKB?', answer: 'Listprijzen variëren van 299 euro per maand voor zelf-instelbare starter-pakketten tot 1.500+ euro per maand voor managed bundels met onbeperkt gesprekken plus WhatsApp en CRM. De werkelijke TCO ligt voor de meeste MKB-bedrijven 30-200 procent hoger dan de listprijs door overage-belminuten, eigen setup-uren, DPIA en maandelijks zelfonderhoud.' },
+  { question: 'Waarom is €299 per maand voor een AI-telefoonagent vaak misleidend?', answer: 'De 299 euro dekt typisch 1.000 belminuten, basisfunctionaliteit en een zelf-instelbaar platform. Verborgen kosten: extra belminuten boven 1.000 (typisch 0,12-0,25 euro per minuut), setup-tijd intern (30-60 uur), AVG/DPIA-advies (500-1.500 euro eenmalig in zorg/juridisch), en maandelijkse optimalisatie 4-8 uur. Realistisch wordt 299 euro listprijs vaak 800-1.200 euro werkelijke maandkosten in jaar 1.' },
+  { question: 'Wanneer is een starter-pakket vanaf €299 wél genoeg?', answer: 'Voor solo-ondernemers met minder dan 500 belminuten per maand, niet-AVG-strict sectoren (geen zorg, juridisch, overheid, financieel), eigen technische capaciteit voor flow-bouw en zelf-onderhoud, en een transactionele behoefte zonder CRM/agenda-koppeling. In die gevallen kan een Robin Zelf Starten of vergelijkbaar self-service product passend zijn.' },
+  { question: 'Welke kosten worden meestal niet vermeld op de pricing-pagina?', answer: 'Zes typische blinde vlekken: (1) overage-belminuten boven het bundle, (2) WhatsApp- of e-mailkanaal-uitbreidingen, (3) integratie-add-ons (CRM, agenda, betaalsysteem), (4) implementatie-uren intern bij self-service tiers, (5) DPIA en AVG-verwerkers­overeenkomst voor AVG-strict sectoren, (6) maandelijkse optimalisatie-tijd voor flow-tuning en kennisbank-onderhoud.' },
+  { question: 'Wat is het verschil tussen "managed" en "zelf-instelbaar" AI-telefonie?', answer: 'Bij een zelf-instelbaar platform configureert u zelf de gespreksflows, prompts, kennisbank en integraties — vergelijkbaar met website-bouwers als WordPress of Wix maar dan voor voice-AI. Bij een managed service bouwt en onderhoudt het bureau alles voor u en optimaliseert het maandelijks op uw eigen conversatiedata. De prijs verschilt typisch 200-300 procent omdat managed services 20-40 uur implementatie-werk en 4-8 uur per maand optimalisatie inbegrepen hebben.' },
+  { question: 'Hoeveel uur eigen werk kost een €299 starter-pakket bij start?', answer: 'Realistisch 30-60 uur over de eerste 6 weken: 4-8 uur platform-onboarding, 8-16 uur gespreksflows ontwerpen en testen, 4-8 uur kennisbank vullen, 4-8 uur stem en taalinstellingen tunen, 4-8 uur integraties met agenda en betaalsysteem, 4-8 uur AVG-documentatie. Tegen een intern uurtarief van 50-80 euro is dit eenmalig 1.500-4.800 euro — afgeschreven over 12 maanden 125-400 euro extra per maand.' },
+  { question: 'Heb ik een DPIA nodig bij een AI-telefoonagent?', answer: 'Voor sectoren met persoonsgegevens van bijzondere aard (zorg, juridisch, financieel) of grootschalige verwerking is een Data Protection Impact Assessment volgens artikel 35 AVG vaak wettelijk verplicht. De Autoriteit Persoonsgegevens publiceert hiervoor een lijst en de EDPB heeft Europese richtlijnen. Externe DPIA-begeleiding kost typisch 500-1.500 euro eenmalig. Veel starter-pakketten leveren standaard geen DPIA-template of -begeleiding mee.' },
+  { question: 'Hoe vergelijk ik AI-telefoonagent aanbieders eerlijk op TCO?', answer: 'Vraag bij elke aanbieder vier zaken op: (1) totale kosten over 12 maanden bij uw verwachte belvolume inclusief overage, (2) interne implementatie-uren bij u verwacht, (3) AVG-documentatie inbegrepen of bijbestelling, (4) maandelijkse optimalisatie inbegrepen of zelf doen. Pas deze cijfers naast de listprijs en u krijgt vergelijkbare totalen. Onze ROI-calculator op aanloopai.nl/ai-roi-calculator/ helpt u dit zelf doorrekenen.' },
+];
+
+const sevenCosts = [
+  {
+    n: 1,
+    title: 'Overage-belminuten boven het bundle',
+    impact: '+€50-300 per maand',
+    body: 'Een typisch starter-bundle van €299 dekt 1.000 belminuten — bij gemiddeld 4-5 minuten per gesprek is dat 200-250 gesprekken. Veel MKB-bedrijven met klantenservice komen hier ruim overheen: een huisartsenpraktijk handelt al 400-600 belmomenten per maand, een installatiebedrijf met spoeddienst 500-1.000. Overage-tarieven liggen typisch op €0,12-€0,25 per minuut. 500 extra minuten = €60-€125 per maand erbovenop, structureel.',
+  },
+  {
+    n: 2,
+    title: 'WhatsApp- en kanaaluitbreidingen',
+    impact: '+€50-150 per maand',
+    body: 'Veel starter-tiers adverteren met "voice + WhatsApp + chat included", maar de details zijn beperkt: WhatsApp Business API met eigen number costs vanaf €50/maand, sjabloonberichten per stuk, en bij 500+ conversaties per maand schalen de WhatsApp Cloud API-kosten significant. In sommige gevallen wordt WhatsApp pas op een hogere tier volledig ondersteund — uitbreiding kan €50-€150/mnd extra betekenen.',
+  },
+  {
+    n: 3,
+    title: 'Integratie-add-ons (CRM, agenda, betaalsysteem)',
+    impact: '+€100-300 per maand',
+    body: 'CRM-koppelingen (HubSpot, Pipedrive, Teamleader), agenda-synchronisatie (Google Calendar, Outlook 365, Microsoft Bookings), betaalsystemen (Mollie, Stripe, AcceptEmail) en branchesoftware (medisch dossier, facturatiepakket) zijn zelden inbegrepen op starter-tier. Native integraties kosten typisch €50-€150 per integratie per maand, of vereisen een Zapier/Make-bridge die €30-€80/mnd toevoegt. Drie integraties = €100-€300/mnd erbij.',
+  },
+  {
+    n: 4,
+    title: 'Eigen implementatie-uren bij start',
+    impact: 'eenmalig €1.500-€4.800 (= €125-€400/mnd in jaar 1)',
+    body: 'Self-service platforms vereisen 30-60 uur eigen werk over de eerste 6 weken: platform-onboarding, gespreksflows ontwerpen en testen, kennisbank vullen, stem en taal afstemmen, integraties opzetten, AVG-documentatie. Tegen een intern uurtarief van €50-€80 (gemiddeld voor MKB-management) is dit eenmalig €1.500-€4.800. Afgeschreven over jaar 1 = €125-€400 extra per maand. Bij managed services is dit werk inbegrepen.',
+  },
+  {
+    n: 5,
+    title: 'AVG-DPIA en verwerkers­overeenkomst',
+    impact: 'eenmalig €500-€1.500 (= €42-€125/mnd in jaar 1)',
+    body: 'Voor sectoren met bijzondere persoonsgegevens (zorg, juridisch, financieel, overheid) is een Data Protection Impact Assessment volgens artikel 35 AVG vaak wettelijk verplicht voor AI-systemen die spraak verwerken. Externe DPIA-begeleiding kost €500-€1.500 eenmalig. Veel starter-pakketten leveren geen DPIA-template, geen Engelstalige verwerkers­overeenkomst en geen NEN 7510-conformiteit. In zorgsectoren is dit een harde blocker, geen "nice to have".',
+  },
+  {
+    n: 6,
+    title: 'Maandelijkse optimalisatie en kennisbank-onderhoud',
+    impact: '+€240-€480 per maand',
+    body: 'Een AI-telefoonagent zonder maandelijkse tuning verliest binnen 3-6 maanden 15-25% van zijn nauwkeurigheid: nieuwe vragen worden niet herkend, escalatieregels worden te ruim, prijsinformatie verouderd. Realistische ondersteuningsbehoefte is 4-8 uur per maand voor flow-tuning, kennisbank-aanvullingen, conversatie-review en escalatie-tweaks. Tegen €60/uur intern = €240-€480 per maand structureel. Bij managed services is dit inbegrepen.',
+  },
+  {
+    n: 7,
+    title: 'Doorlooptijd en omzetderving tijdens implementatie',
+    impact: 'eenmalig €0-€2.000+ (sector-afhankelijk)',
+    body: 'Self-service implementaties duren typisch 6-10 weken tot productie-stabiel — versus 7-14 werkdagen bij managed implementaties. Voor MKB-bedrijven met urgent telefoon-volume (24/7-spoeddienst, no-show-gevoelige praktijk) betekent elke week vertraging gemiste omzet of klantverlies. Een huisartsenpraktijk die 4 weken langer wacht op telefoon-AI mist gemiddeld 50-100 niet-aangenomen consulten per week — concrete waarde €1.500-€3.000 per maand.',
+  },
+];
+
+const tcoTable = [
+  { row: 'Listprijs starter-bundle (1.000 belmin + WhatsApp + chat)', baseline: '€299', realistic: '€299' },
+  { row: 'Overage-belminuten (typisch 500-1.500 extra/mnd)',           baseline: '€0',   realistic: '€60-€200' },
+  { row: 'WhatsApp Business API + sjabloon-kosten',                    baseline: '€0',   realistic: '€50-€100' },
+  { row: 'Integratie-add-ons (CRM + agenda + betaal)',                 baseline: '€0',   realistic: '€100-€250' },
+  { row: 'Eigen setup-uren (jaar 1, geamortiseerd)',                   baseline: '€0',   realistic: '€125-€400' },
+  { row: 'DPIA + verwerkers­overeenkomst (jaar 1, geamortiseerd)',     baseline: '€0',   realistic: '€42-€125' },
+  { row: 'Maandelijkse optimalisatie (4-8u × €60)',                    baseline: '€0',   realistic: '€240-€480' },
+  { row: 'TOTAAL maandkosten in jaar 1',                               baseline: '€299', realistic: '€816-€1.854' },
+];
+
+const whenStarterEnough = [
+  { title: 'Solo-ondernemer met laag belvolume', body: 'Minder dan 500 belminuten per maand (≈100-125 gesprekken), eenvoudige routering, geen CRM-integratie. Een kapper, freelance fotograaf of webshop-eigenaar met 1-2 producten kan met een €299-pakket prima uit zonder structurele overage.' },
+  { title: 'Niet-AVG-strict sector', body: 'B2C-retail, hospitality, beauty, fitness, evenementen — sectoren waar persoonsgegevens niet als "bijzonder" classificeren onder artikel 9 AVG. Een DPIA is dan niet wettelijk verplicht en de starter-tier kan zonder bijbestelling AVG-conform draaien.' },
+  { title: 'Eigen technische capaciteit', body: 'Een ondernemer met IT-achtergrond, een MKB met intern automation-engineer of een digital agency die meerdere klanten bedient kan de 30-60 setup-uren zelf opvangen. Dan vervalt de €1.500-€4.800 implementatie-amortisatie en blijft de werkelijke kostprijs dichter bij de listprijs.' },
+  { title: 'Tijdelijke of pilot-inzet', body: 'Een 3-maanden seizoenscampagne, een bedrijfsoverstap-periode, een proof-of-concept voor management. Bij <6 maanden inzet weegt de eenmalige setup-investering minder zwaar en is een goedkope opzegbare starter-tier vaak passender dan een managed contract met setup-fee.' },
+];
+
+const evaluationChecklist = [
+  'Hoeveel belminuten per maand verwacht u realistisch in piek-maanden?',
+  'Welk overage-tarief geldt boven het bundle (€/minuut) — vraag dit op voor afsluiting',
+  'Welke kanalen zijn écht inbegrepen op starter-tier (voice + WhatsApp + chat) — getallen, niet woorden',
+  'Welke CRM-, agenda- en betaalintegraties zijn native versus via Zapier/Make',
+  'Hoeveel implementatie-uren verwacht uw provider dat u zelf inbrengt — vraag dit specifiek',
+  'Levert de aanbieder een DPIA-template of verwerkers­overeenkomst standaard, of bijbestelling',
+  'Is maandelijkse optimalisatie inbegrepen — zo ja, hoeveel uur per maand',
+  'Hoeveel werkdagen tot productie-stabiel — managed 7-14, self-service 30-60',
+];
+---
+
+<BaseLayout
+  title="AI-telefoonagent vanaf €299: 7 verborgen kosten voor MKB | Aanloop AI"
+  description="Een AI-telefoonagent vanaf €299/mnd lijkt scherp geprijsd, maar voor Nederlands MKB lopen de werkelijke kosten op tot €800-€1.200/mnd door overage, setup-tijd, AVG en zelfonderhoud. Volledige TCO-rekensom plus eerlijk antwoord wanneer goedkoop wel volstaat."
+  schema={[articleSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · TCO-analyse</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          AI-telefoonagent vanaf €299: 7 verborgen kosten voor Nederlandse MKB
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          €299 per maand voor een AI-telefoonagent klinkt scherp — maar de listprijs is zelden de werkelijke maandlast. Voor Nederlandse MKB-bedrijven lopen de feitelijke kosten in jaar 1 vaak op tot €800-€1.200/mnd door overage-belminuten, eigen setup-tijd, AVG-DPIA en maandelijks zelfonderhoud. In dit artikel een volledige TCO-rekensom én een eerlijk antwoord op de vraag wanneer een starter-pakket wél volstaat.
+        </p>
+
+        <div class="mt-8 p-4 bg-amber-50/50 border border-amber-200 rounded-xl text-sm text-slate-700 reveal reveal-delay-3">
+          <p class="font-semibold text-amber-900 mb-1">Bron-disclaimer</p>
+          <p>Bedragen zijn ranges gebaseerd op publieke prijsinformatie van NL voice-AI-aanbieders (Voicelabs, ElevenLabs, en marketcheck van comparable internationale providers per mei 2026), Autoriteit Persoonsgegevens DPIA-richtlijn, EDPB Guidelines 4/2019 op DPIA-verplichtingen en CBS-cijfers voor MKB-uurtarief. Concrete cijfers per provider verschillen — vraag de provider om totale TCO-onderbouwing voor uw specifieke volume.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tldr" class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="rounded-2xl border-2 border-navy/10 bg-white p-8 reveal">
+        <p class="eyebrow text-brand-emerald mb-3">TL;DR</p>
+        <p class="text-lg text-slate-700 leading-relaxed text-pretty">
+          Een advertised €299 starter-pakket dekt typisch alleen 1.000 belminuten op een zelf-instelbaar platform. Voor MKB-realiteit komen daar 6 kostenposten bij — overage, kanaal-uitbreidingen, integraties, eigen setup-uren, AVG-DPIA en maandelijks onderhoud — die de werkelijke kostprijs in jaar 1 op €800-€1.854/mnd brengen. Voor solo-ondernemers met laag volume kan een starter-tier passend zijn; voor MKB met klantenservice-volume of AVG-strict sectoren vaak niet.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Wat je écht krijgt</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Wat zit er typisch in een €299 starter-pakket?</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-6 text-sm">
+        <div class="bg-white rounded-xl border border-slate-200 p-6 reveal">
+          <p class="font-semibold text-navy mb-3">Wel inbegrepen (typisch)</p>
+          <ul class="space-y-2 text-slate-700 list-disc pl-5">
+            <li>1.000 belminuten per maand inkomend</li>
+            <li>Basis Nederlandstalige stem (1-3 keuzes)</li>
+            <li>Self-service flow-bouwer (drag-and-drop)</li>
+            <li>Kennisbank-upload (PDF, FAQ, URL-scrape)</li>
+            <li>Standaard agenda-koppeling (Google/Outlook)</li>
+            <li>Basis WhatsApp-bouwer (eigen number bring-your-own)</li>
+            <li>E-mail support (geen telefoon-support)</li>
+          </ul>
+        </div>
+        <div class="bg-white rounded-xl border border-slate-200 p-6 reveal reveal-delay-1">
+          <p class="font-semibold text-navy mb-3">Niet inbegrepen (typisch — bijbestelling)</p>
+          <ul class="space-y-2 text-slate-700 list-disc pl-5">
+            <li>Overage-belminuten boven 1.000/mnd</li>
+            <li>WhatsApp Business API + sjabloon-kosten</li>
+            <li>Native CRM-integraties (HubSpot, Pipedrive)</li>
+            <li>Implementatie door provider-team</li>
+            <li>DPIA en NEN 7510-documentatie</li>
+            <li>Maandelijkse optimalisatie en flow-tuning</li>
+            <li>Conversatie-review en kennisbank-onderhoud</li>
+            <li>Premium stemmen (ElevenLabs, custom voice clones)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-12 reveal">
+        <p class="eyebrow mb-2">De 7 verborgen kosten</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Wat de pricing-pagina niet vertelt.</h2>
+        <p class="mt-3 text-slate-600">Per kostenpost: wat het is, wanneer het opduikt, en wat het realistisch toevoegt aan uw maandlast.</p>
+      </div>
+
+      <ol class="space-y-8">
+        {sevenCosts.map(c => (
+          <li class="rounded-2xl border border-slate-200 bg-white p-6 lg:p-8 reveal">
+            <div class="flex items-baseline gap-4 mb-3">
+              <span class="text-3xl font-bold text-brand-emerald tabular-nums">{c.n}</span>
+              <h3 class="text-xl lg:text-2xl font-bold text-navy tracking-tighter-2">{c.title}</h3>
+            </div>
+            <p class="text-sm font-semibold text-amber-700 mb-3">Impact: {c.impact}</p>
+            <p class="text-slate-700 leading-relaxed">{c.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section bg-midnight text-pearl">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow text-brand-emerald mb-2">Realistische TCO-rekensom</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-pearl">€299 listprijs versus werkelijke maandlast jaar 1.</h2>
+        <p class="mt-3 text-slate-300 max-w-2xl">Voor een MKB met 200-300 klantcontacten per maand, één AVG-strict integratie en standaard implementatie-pad. De ranges reflecteren typische scenarios — niet worst-case.</p>
+      </div>
+
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse rounded-xl overflow-hidden">
+          <thead>
+            <tr class="border-b border-slate-700">
+              <th class="text-left py-4 px-5 text-slate-400 font-medium w-[52%]">Kostenpost</th>
+              <th class="text-right py-4 px-5 text-slate-400 font-medium w-[24%]">Adverteerd</th>
+              <th class="text-right py-4 px-5 text-brand-emerald font-medium w-[24%]">Realistisch</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800">
+            {tcoTable.map((row, i) => (
+              <tr class={i === tcoTable.length - 1 ? 'bg-brand-emerald/10 font-bold tco-summary' : ''}>
+                <td class="py-3 px-5">{row.row}</td>
+                <td class="py-3 px-5 text-right tabular-nums text-slate-400">{row.baseline}</td>
+                <td class={'py-3 px-5 text-right tabular-nums ' + (i === tcoTable.length - 1 ? 'text-brand-emerald' : 'text-pearl')}>{row.realistic}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <p class="mt-6 text-xs text-slate-400 italic">Geamortiseerde eenmalige kosten verdeeld over 12 maanden in jaar 1. Vanaf jaar 2 vervalt de setup-amortisatie (-€125-€400/mnd) en daalt de werkelijke maandlast naar €691-€1.454. Bij managed alternatieven zijn deze posten typisch al inbegrepen in de listprijs.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Eerlijk gezegd</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Wanneer is een starter-pakket wél genoeg?</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Geen "wij zijn altijd beter" framing. Voor de volgende profielen is een €299 self-service pakket vaak een prima keuze — en eerlijker dan een managed contract.</p>
+      </div>
+
+      <div class="grid sm:grid-cols-2 gap-6">
+        {whenStarterEnough.map((s, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <p class="text-base font-bold text-navy mb-2">{s.title}</p>
+            <p class="text-sm text-slate-600 leading-relaxed">{s.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Evaluatie-checklist</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">8 vragen om te stellen vóór u tekent.</h2>
+        <p class="mt-3 text-slate-600">Ongeacht welke aanbieder — stel deze vragen schriftelijk en u krijgt vergelijkbare TCO-cijfers tussen self-service en managed opties.</p>
+      </div>
+
+      <ol class="space-y-3 reveal reveal-delay-1">
+        {evaluationChecklist.map((q, i) => (
+          <li class="flex items-start gap-4 rounded-xl border border-slate-200 bg-white p-4">
+            <span class="flex-shrink-0 w-7 h-7 rounded-full bg-navy text-pearl text-sm font-bold flex items-center justify-center tabular-nums">{i + 1}</span>
+            <span class="text-sm text-slate-700 leading-relaxed">{q}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">TCO en starter-pakketten — antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Bronnen en verder lezen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Onafhankelijke bronnen voor uw eigen onderzoek.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="https://autoriteitpersoonsgegevens.nl/themas/basis-avg/avg-algemeen/data-protection-impact-assessment-dpia" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Autoriteit Persoonsgegevens — DPIA</p>
+          <p class="text-slate-600 mt-1 text-xs">Wanneer is een DPIA wettelijk verplicht onder artikel 35 AVG.</p>
+        </a>
+        <a href="https://edpb.europa.eu/sites/default/files/files/file1/wp248_rev.01_en.pdf" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">EDPB — DPIA Guidelines (WP248)</p>
+          <p class="text-slate-600 mt-1 text-xs">Europese richtlijnen voor DPIA bij AI- en spraakverwerkende systemen.</p>
+        </a>
+        <a href="https://www.acm.nl/nl/publicaties/telecommonitor" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">ACM — Telecom Monitor</p>
+          <p class="text-slate-600 mt-1 text-xs">Marktcijfers Nederlandse telecom en zakelijk telefoonverkeer.</p>
+        </a>
+        <a href="https://www.cbs.nl/nl-nl/cijfers/detail/82898NED" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">CBS — MKB-uurtarieven</p>
+          <p class="text-slate-600 mt-1 text-xs">Statistiek Nederland: gemiddelde uurloonkosten per sector.</p>
+        </a>
+        <a href="/vergelijk/aanloop-vs-voicelabs/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Aanloop AI Marco vs Voicelabs Robin</p>
+          <p class="text-slate-600 mt-1 text-xs">Eerlijke vergelijking managed service vs zelf-instelbaar platform.</p>
+        </a>
+        <a href="/ai-roi-calculator/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ ROI-calculator AI-telefonie</p>
+          <p class="text-slate-600 mt-1 text-xs">Bereken uw eigen TCO en payback-periode in 2 minuten.</p>
+        </a>
+        <a href="/ai-telefonie-compleet-gids-nederland-2026/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ AI-telefonie complete gids 2026</p>
+          <p class="text-slate-600 mt-1 text-xs">Pillar-artikel: hoe AI-telefonie werkt, sectoren, implementatie.</p>
+        </a>
+        <a href="/tarieven/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Aanloop AI tarieven</p>
+          <p class="text-slate-600 mt-1 text-xs">Onze managed-service prijzen en wat erbij inbegrepen is.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Wilt u uw eigen TCO doorrekenen?
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Onze ROI-calculator vraagt 6 inputs (sector, belvolume, FTE, uurtarief, no-show-percentage, conversie) en geeft binnen 2 minuten uw payback-periode plus jaarlijkse besparingen. Geen e-mail vereist voor de berekening — alleen optioneel voor het PDF-rapport.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/ai-roi-calculator/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Bereken mijn ROI
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/demo-aanvragen/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Boek een live demo
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
