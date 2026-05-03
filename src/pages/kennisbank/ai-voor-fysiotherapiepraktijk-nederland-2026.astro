@@ -1,0 +1,389 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Sector-specifiek kennisbank-artikel: AI voor fysiotherapiepraktijk MKB Nederland.
+// Pattern parallel aan tandarts/huisarts maar specifiek op KNGF-richtlijnen +
+// DTF (Directe Toegankelijkheid Fysiotherapie) + vrije-prijsvorming sinds 2017 +
+// EPD-koppeling (Intramed, FysioRoadmap, James Software, Pluvo, Mediaccount) +
+// no-show patroon (10-25% vooral op 1e-2e afspraak) + DTF-rode-vlag escalatie.
+//
+// Sources:
+// - KNGF (Koninklijk Nederlands Genootschap voor Fysiotherapie) — kngf.nl
+// - DTF — Directe Toegankelijkheid Fysiotherapie (sinds 2006)
+// - Vrije-prijsvorming fysiotherapie sinds 2017 (NZa beleidsregel)
+// - 1FB / OK4FB / KIK-V kwaliteitsregisters
+// - Wkkgz (Wet kwaliteit, klachten en geschillen zorg)
+// - WGBO (Wet op de Geneeskundige Behandelovereenkomst, Boek 7 BW)
+// - NEN 7510 informatiebeveiliging in de zorg
+// - Zorgverzekeraars Nederland (ZN) contracten en aanvullende verzekering
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI voor fysiotherapiepraktijk Nederland 2026 — KNGF-bewust, DTF-screening, no-show 65% omlaag',
+  description: 'Hoe AI receptionist en WhatsApp-agent intake, DTF-screening, no-show preventie en behandelplan-recall automatiseren voor Nederlandse fysiotherapiepraktijken. KNGF-richtlijnen, NEN 7510 zorg-IT, EPD-integratie Intramed/FysioRoadmap/James Software/Pluvo/Mediaccount, DTF-rode-vlag escalatie.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-04',
+  dateModified: '2026-05-04',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-voor-fysiotherapiepraktijk-nederland-2026/',
+  inLanguage: 'nl-NL',
+  about: [
+    { '@type': 'Thing', name: 'Fysiotherapiepraktijk' },
+    { '@type': 'Thing', name: 'AI receptionist fysiotherapie' },
+    { '@type': 'Thing', name: 'No-show reductie' },
+    { '@type': 'Thing', name: 'KNGF richtlijnen' },
+    { '@type': 'Thing', name: 'DTF screening' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/ai-voor-fysiotherapiepraktijk-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+
+const faqItems = [
+  { question: 'Mag een fysiotherapiepraktijk AI inzetten onder KNGF-richtlijnen?', answer: 'Ja, voor administratieve intake, afspraakplanning, no-show preventie, behandelplan-recall en routinematig patiëntcontact. KNGF-gedragscode en de Wet BIG eisen patiëntveiligheid, WGBO-respect en geheimhouding — geen van deze worden geraakt door AI die afspraken plant en standaard-vragen beantwoordt. Klinische beoordeling, DTF-screening (rode-vlaggen-detectie volgens KNGF-richtlijn DTF), behandelplan-keuze en hands-on therapie blijven uitsluitend voorbehouden aan de geregistreerde fysiotherapeut. Aanloop AI configureert prompt-restricties zodat de AI nooit klinische conclusies trekt en bij rode-vlag-symptomen direct doorschakelt.' },
+  { question: 'Hoe gaat AI om met DTF-screening en rode vlaggen?', answer: 'Sinds 2006 mogen patiënten zonder huisartsverwijzing rechtstreeks naar de fysiotherapeut (DTF). KNGF-richtlijn DTF schrijft een vooraf-screening voor op rode vlaggen (red flags zoals onbedoeld gewichtsverlies, nachtelijke pijn, krachtsverlies, cauda-equina-symptomen). AI doet GEEN klinische screening — die blijft 100 procent fysiotherapeut-werk. Wel kan AI tijdens de eerste-contact-intake patiënten met rode-vlag-keywords (uitstraling been, krachtsverlies plotseling, zadel-anesthesie, plotse continentie-problemen) direct doorschakelen naar de fysiotherapeut of bij levensbedreigend naar 112, in plaats van automatisch een afspraak in te plannen.' },
+  { question: 'Werkt dit met onze Intramed, FysioRoadmap of James Software?', answer: 'Ja, via directe API-koppelingen voor Intramed (meest gebruikte EPD in NL fysiotherapie), FysioRoadmap, James Software, Pluvo en Mediaccount. Voor SpotOnMedics, Therapieland en eigen-built EPD via secure REST-webhooks of beveiligde HL7-routing. Onboarding 7-14 werkdagen voor één-EPD integratie inclusief afspraakflow, behandelplan-recall, declaratie-koppeling en DBC/prestatiecode-mapping voor zorgverzekeraars-claims.' },
+  { question: 'Hoe gaat AI om met vrije-prijsvorming en zorgverzekeraars?', answer: 'Sinds 2017 geldt vrije-prijsvorming voor fysiotherapie — uw praktijk onderhandelt zelf tarieven met zorgverzekeraars (gecontracteerd) of patiënten betalen zelf en declareren via aanvullende verzekering (niet-gecontracteerd). AI antwoordt op tarief-vragen op basis van uw eigen tarievenlijst en gecontracteerde verzekeraars. Voor patiëntspecifieke vergoedings-vragen ("krijg ik dit vergoed via mijn aanvullende") verwijst AI consequent naar de zorgverzekeraar van de patiënt of biedt aan een terugbel-afspraak met uw secretariaat. Geen vergoedings-zekerheid zonder verifieerbare polisinformatie.' },
+  { question: 'Hoe verwacht no-show reductie eruit te zien?', answer: 'Fysiotherapiepraktijken zien typisch 10-25 procent no-show, met piek op 1e-2e afspraak (nieuwe patiënten 25-35 procent) en op late doordeweekse afspraken. Met AI-WhatsApp herinneringen 48u en 4u vooraf plus optionele bevestigings-actie zakt no-show naar 4-9 procent — een reductie van 60-70 procent. Voor een 4-FTE fysiotherapiepraktijk betekent dit 8-16 extra productieve uren per week, of 30.000-70.000 euro extra omzet per jaar afhankelijk van behandel-mix en gecontracteerde tarieven.' },
+  { question: 'Werkt dit ook voor manueel-therapeuten of bekken-fysiotherapeuten?', answer: 'Ja. Voor specialisaties (manuele therapie, bekkenfysiotherapie, sportfysiotherapie, oedeemtherapie, kinderfysiotherapie, geriatriefysiotherapie, oncologie-fysiotherapie) configureren we de AI om onderscheid te maken tussen specialisatie-afspraken en algemene fysiotherapie. Voor 1FB-/OK4FB-/KIK-V-geregistreerde specialisten wordt het juiste behandeltype, prestatiecode en agenda-slot automatisch geselecteerd. Voor multi-FTE praktijken met diverse specialisaties: routering op specialisme én patiënt-voorkeur (man/vrouw, ervaring met bepaalde aandoening).' },
+  { question: 'Wat is de gemiddelde ROI voor een MKB-fysiotherapiepraktijk?', answer: 'Voor een gemiddelde 3-5-FTE fysiotherapiepraktijk met 2-3 fysiotherapeuten plus 1-2 specialisten ligt de ROI op 10-22 keer op 12-maand basis. Drie hoofdwinsten: (1) no-show reductie van 10-25 procent naar 4-9 procent levert 30.000-70.000 euro/jr extra omzet, (2) secretariaat-tijd op routine-vragen daalt 70 procent (waarde 25-50u/mnd of 1.500-3.000 euro), (3) behandelplan-recall (oefenprogramma-follow-up, langlopende trajecten zoals chronische lage rugpijn of post-op revalidatie) stijgt van 50 naar 75 procent voltooiing — wat extra DBC-omzet oplevert plus betere patiëntuitkomsten.' },
+  { question: 'Hoe veilig is AI bij chronische pijn-trajecten en oefentherapie?', answer: 'AI handelt enkel administratieve aspecten af van langlopende trajecten: afspraak-bevestiging, oefenprogramma-reminders ("denk eraan om uw thuisoefeningen 3x deze week te doen"), bevestiging dat oefen-app gebruikt wordt, en intake voor follow-up consult. AI geeft GEEN inhoudelijke oefen-aanwijzingen, doet GEEN voortgangs-evaluatie en stelt GEEN behandelplan-aanpassingen voor. Bij vragen over toename pijn, nieuwe klachten of niet-vooruitgang escaleert AI direct naar de fysiotherapeut voor evaluatie tijdens consult of telefonisch.' },
+];
+
+const automatableProcesses = [
+  {
+    title: 'Eerstelijns intake nieuwe patiënt (DTF of huisarts-verwijzing)',
+    body: 'Nieuwe patiënt belt of WhatsAppt: "ik heb last van mijn rug, kan ik bij jullie terecht". AI vraagt aard van de klacht (algemene plek + duur, GEEN klinische diagnostiek), of er huisarts-verwijzing is, naam huisarts, zorgverzekering plus aanvullende, eventuele eerdere fysiotherapie, en plant een eerste consult bij beschikbare fysiotherapeut. Voor DTF-patiënten: extra screening-vraag op rode-vlag-symptomen (uitstraling, krachtsverlies, plotse pijn) — bij positief signaal direct doorschakelen naar fysiotherapeut voor telefonische pre-screening voor afspraak.',
+  },
+  {
+    title: 'No-show reductie via WhatsApp',
+    body: 'Volledig automatisch: 7 dagen vooraf agenda-bevestiging, 48u vooraf herinnering met optie om te verzetten, 4u vooraf laatste herinnering met locatie. Voor risico-patiënten (eerste of tweede afspraak, eerder no-show, late doordeweekse afspraak) extra bevestigings-vraag op T-24u: "antwoord JA om te bevestigen, NEE om te verzetten". No-show daalt structureel van 10-25 procent naar 4-9 procent — direct door te rekenen naar 30.000-70.000 euro/jr extra omzet voor 4-FTE praktijk.',
+  },
+  {
+    title: 'Tarief- en vergoedings-vragen',
+    body: 'Patiënt belt: "wat kost een behandeling bij jullie en wordt het vergoed". AI antwoordt op basis van uw eigen tarievenlijst (vrije-prijsvorming sinds 2017) plus gecontracteerde zorgverzekeraars: "een reguliere behandeling kost X euro. Als u via uw aanvullende verzekering vergoeding wilt, raad ik u aan uw polis te checken — wij declareren rechtstreeks bij gecontracteerde verzekeraars". Voor patiëntspecifieke vergoedings-uitzoek-werk: terugbel-afspraak met secretariaat.',
+  },
+  {
+    title: 'DTF-rode-vlag-detectie en escalatie',
+    body: 'Patiënt belt of WhatsAppt zonder huisartsverwijzing met klacht. AI vraagt screening-vragen ("plotse uitval", "uitstraling been", "ontstaan na ongeval", "koorts erbij", "plotse incontinentie"). Bij rood-vlag-keyword: directe escalatie naar fysiotherapeut voor telefonische pre-screening voor afspraak — geen automatische inplanning. Bij levensbedreigend (cauda-equina-verdenking, plotse zadel-anesthesie, plotse continentie-problemen): directe 112-instructie. Voorkomt onveilige automatisering binnen DTF-pad.',
+  },
+  {
+    title: 'Behandelplan-recall en oefen-reminders',
+    body: 'Voor langlopende trajecten (chronische lage rugpijn, post-op revalidatie, COPD-oefentherapie): AI stuurt automatisch via WhatsApp behandelplan-bevestigingen ("u heeft donderdag om 14:00 uw vervolgafspraak met fysiotherapeut Lisa") plus oefen-reminders tussen sessies door ("denk aan uw thuisoefeningen 3x deze week — antwoord GEDAAN als u ze gedaan heeft"). Voltooiingspercentage van behandelplan stijgt van 50 naar 75 procent — betere klinische uitkomsten plus volledig declareerbare DBCs.',
+  },
+  {
+    title: 'Status-vragen en afspraak-management',
+    body: 'Bestaande patiënt vraagt: "wanneer is mijn volgende behandeling, kan ik die verzetten, hoe lang duurt mijn traject nog". AI haalt realtime data uit Intramed/FysioRoadmap/James Software, beantwoordt agenda-vragen accuraat, biedt verzet-opties met beschikbare slots, en wijst voor klinische voortgangs-vragen ("wanneer ben ik genezen") consequent naar de fysiotherapeut tijdens consult.',
+  },
+  {
+    title: 'Recall na afgesloten behandeltraject',
+    body: '6 maanden na afsluiting van een behandeltraject: AI stuurt automatisch via WhatsApp een follow-up: "hoe gaat het inmiddels met uw rug, heeft u behoefte aan een controle of nieuwe behandeling, denkt u eraan uw oefenprogramma vol te houden". Patiënten die daadwerkelijk klachten ervaren keren makkelijker terug naar uw praktijk in plaats van naar concurrentie. Recall-rate stijgt van 30 procent typisch naar 55-65 procent.',
+  },
+];
+
+const escalationKeywords = [
+  '"plotse krachtsverlies" / "kan been niet meer optillen" → escaleer (urgent neurologisch)',
+  '"uitstraling been" + "tintelingen" / "doof" → escaleer (radiculair, MRI?)',
+  '"zadel-anesthesie" / "plotse continentie-problemen" → 112 (cauda-equina-verdenking)',
+  '"koorts" + rugpijn → escaleer (urgent, infectie-uitsluiting)',
+  '"onbedoeld gewichtsverlies" + nieuwe klacht → escaleer (rode-vlag tumor-screening)',
+  '"nachtelijke pijn" + "wakker van" → escaleer (rode-vlag KNGF-DTF)',
+  '"ongeval" / "plotseling pijn na trauma" → escaleer (urgent)',
+  '"plotse hoofdpijn" + "stijve nek" → 112 (meningitis-verdenking)',
+  '"zwanger" + acute klacht → escaleer (zorg-specifiek protocol)',
+  '"klacht over zorg" / "second opinion" → escaleer (Wkkgz, klachtenfunctionaris)',
+];
+
+const integrations = [
+  { name: 'Intramed',                        type: 'EPD fysiotherapie',           integratie: 'Native API — meest-gebruikt in NL, agenda + dossier + declaratie' },
+  { name: 'FysioRoadmap',                    type: 'EPD fysiotherapie',           integratie: 'Native API — populair bij multi-FTE, behandelplan-templates' },
+  { name: 'James Software',                  type: 'EPD fysiotherapie',           integratie: 'Native API — agenda, dossier, oefenapp-koppeling' },
+  { name: 'Pluvo',                           type: 'EPD fysiotherapie',           integratie: 'Native API — moderne cloud-EPD, REST-koppeling' },
+  { name: 'Mediaccount',                     type: 'Praktijkmanagement',          integratie: 'Native API — financieel + agenda + declaratie' },
+  { name: 'SpotOnMedics / Therapieland',     type: 'EPD fysiotherapie',           integratie: 'REST-webhooks of HL7-routing' },
+  { name: 'WhatsApp Business API',           type: 'Patiëntcommunicatie',         integratie: 'Native — WhatsApp Cloud API met sjablonen' },
+  { name: 'Microsoft 365 + Outlook',         type: 'Agenda + secure mail',        integratie: 'Microsoft Graph API — agenda-koppeling backup' },
+];
+
+const roiBreakdown = [
+  { post: 'No-show op afspraken (jaarlijkse omzetderving)',           before: '€30.000-€70.000/jr',          after: '€8.000-€20.000/jr (70% reductie)' },
+  { post: 'Secretariaat-tijd routine-vragen',                          before: '30-60u/mnd',                  after: '8-15u/mnd (75% reductie)' },
+  { post: 'Niet-aangenomen bel-momenten in piek',                      before: '15-25% gemiste leads',        after: '<3% gemiste leads' },
+  { post: 'Behandelplan-voltooiingspercentage',                        before: '45-55% voltooid',             after: '70-80% voltooid' },
+  { post: 'Recall-conversie 6-mnd na afsluiting traject',              before: '25-35% recall-rate',          after: '55-65% recall-rate' },
+  { post: 'Verloren leads door piek-onbereikbaarheid',                 before: '€1.500-€3.500/mnd',           after: '<€400/mnd' },
+  { post: 'Maandelijkse Aanloop-investering',                         before: '—',                          after: '€597-€1.197/mnd Marco+Emma' },
+];
+---
+
+<BaseLayout
+  title="AI voor fysiotherapiepraktijk Nederland 2026 — KNGF-bewust, no-show 65% omlaag | Aanloop AI"
+  description="Hoe AI receptionist plus WhatsApp-agent intake, DTF-screening, no-show preventie en behandelplan-recall automatiseren voor Nederlandse fysiotherapiepraktijken. KNGF-richtlijnen, NEN 7510 zorg-IT, EPD-integratie Intramed/FysioRoadmap/James Software/Pluvo/Mediaccount, DTF-rode-vlag escalatie."
+  schema={[articleSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Sector — Fysiotherapiepraktijk</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          AI voor fysiotherapiepraktijk — KNGF-bewust, no-show 65 procent omlaag
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          Nederlandse fysiotherapiepraktijken staan onder druk: 10-25 procent no-show op afspraken (piek op 1e-2e afspraak nieuwe patiënten), schaarse fysiotherapeuten, vrije-prijsvorming sinds 2017, KNGF-richtlijnen voor DTF-screening, NEN 7510 zorginformatie-eisen en patiënten die 24/7-bereikbaarheid verwachten. Een AI receptionist plus WhatsApp-agent kan 60-70 procent van eerstelijns patiëntvragen autonoom afhandelen én no-show reduceren tot 4-9 procent — mits goed geconfigureerd op uw EPD, KNGF-DTF-protocol en behandelmix. Hieronder: precies welke processen automatiseerbaar zijn, hoe AI binnen zorgstandaarden blijft, en welke ROI Nederlandse MKB-fysiotherapiepraktijken halen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Welke processen automatiseerbaar zijn</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI assistent voor een fysiotherapiepraktijk neemt vooral de eerstelijns patiëntvragen over: telefoongesprekken aannemen waarbij prospects of patiënten naar diensten vragen (algemene fysiotherapie, manuele therapie, bekkenfysiotherapie, sportfysiotherapie, oedeemtherapie, kinderfysiotherapie), benodigde informatie vragen (klacht-omschrijving, huisartsverwijzing of DTF, zorgverzekering, eerdere fysiotherapie), klantgegevens registreren in uw EPD en een afspraak plannen bij de juiste fysiotherapeut of specialist. De AI geeft geen klinische adviezen, doet geen DTF-screening, en signaleert direct wanneer er sprake is van rode-vlag-symptomen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor lopende patiënten handelt de AI status-vragen af (wanneer is mijn volgende afspraak, kan ik verzetten, hoe lang duurt mijn traject nog, ben ik op de juiste behandelplan-track) door realtime te kijken in uw EPD (Intramed, FysioRoadmap, James Software, Pluvo, Mediaccount). Daarnaast stuurt AI automatisch oefen-reminders tussen sessies en behandelplan-recall na 6 maanden voor afgesloten trajecten. Dit ontlast secretariaat voor 60-70 procent van inkomende routine-contacten zodat fysiotherapeuten meer tijd hebben voor patiëntcontact aan de behandeltafel.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk: de AI vervangt nooit de klinische beoordelings- of therapeutische functie. KNGF-richtlijn DTF-screening (rode-vlaggen-detectie) blijft 100 procent fysiotherapeut-werk. Bij elke escalatie naar pijn-toename, krachtsverlies, uitstraling of klinische zorg schakelt de AI direct door naar de fysiotherapeut. WGBO-verplichtingen rond informed consent en patiëntdossier blijven volledig mensenwerk.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Top 7 processen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wat AI direct van u overneemt.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-6">
+        {automatableProcesses.map((p, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <p class="text-base font-bold text-navy mb-2">{p.title}</p>
+            <p class="text-sm text-slate-600 leading-relaxed">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">KNGF en AI: wat mag en wat niet</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Het Koninklijk Nederlands Genootschap voor Fysiotherapie (KNGF) heeft geen specifieke AI-richtlijnen, maar de algemene gedragscode, KNGF-richtlijn DTF en patiëntveiligheidseisen onder de Wet BIG gelden onverminderd. Belangrijkste: WGBO-respect (informatieplicht en informed consent), zorgvuldigheidsverplichting onder Wet BIG, geheimhouding onder artikel 7:457 BW, en KNGF-richtlijn DTF voor rode-vlaggen-screening bij directe toegankelijkheid. Voor AI betekent dit: alle data EU-only verwerkt op NEN 7510-bewuste cloud, geen modeltraining op patiëntdata, expliciete vermelding aan patiënt dat AI eerstelijns intake doet, en escalatie naar mens bij elke klinische of rode-vlag-vraag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI levert specifiek voor fysiotherapiepraktijken een KNGF-bewuste implementatie: vooraf-gescripte prompt-restricties die de AI verhinderen klinische adviezen te geven (wat denkt u dat het is, hoe ernstig is het, moet ik mij zorgen maken), automatische escalatie bij 10 rode-vlag-keywords (zie volgende sectie), DTF-screening-flow die patiënten bij rode-vlag-signaal direct naar fysiotherapeut routeert in plaats van automatisch in te plannen, en logging-trail die voldoet aan KIK-V-audits, IGJ-toezichtsverplichtingen plus uw kwaliteitsregister-eisen (1FB, OK4FB).</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor Wkkgz-compliance (Wet kwaliteit, klachten en geschillen zorg): AI mag patiëntklachten over de organisatie (bijvoorbeeld wachttijd, parkeren, factuur) afhandelen volgens uw klachtenprocedure, maar klachten over behandeling, bejegening of klinische uitkomst escaleert AI altijd naar de praktijkhouder of klachtenfunctionaris. WGBO-informatie over behandelopties blijft volledig voorbehouden aan de fysiotherapeut tijdens consult. Voor vrije-prijsvorming: AI mag uw eigen tarievenlijst delen, maar geen vergoedings-zekerheid geven zonder geverifieerde polisinformatie.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Escalatie-protocol</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">10 rode-vlag-keywords die AI direct doorzet.</h2>
+        <p class="mt-3 text-slate-600">Voor fysiotherapiepraktijken configureren we strikte rode-vlag-detection conform KNGF-richtlijn DTF: zodra de patiënt iets klinisch-urgent of neurologisch-alarmerend zegt, escaleert de AI binnen seconden naar de fysiotherapeut voor pre-screening of bij levensbedreigend direct naar 112. Geen kans op onveilige automatisering binnen het DTF-pad.</p>
+      </div>
+      <ul class="space-y-2 reveal reveal-delay-1">
+        {escalationKeywords.map((k) => (
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700">
+            <svg class="w-4 h-4 mt-1 flex-shrink-0 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M5 19h14a2 2 0 001.84-2.75L13.74 4a2 2 0 00-3.48 0L3.16 16.25A2 2 0 005 19z"/></svg>
+            <span>{k}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Integraties</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Werkt met uw bestaande EPD.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">8 native of webhook-koppelingen voor de meest gebruikte Nederlandse fysiotherapie-EPDs plus WhatsApp Business API. Eigen-built dossier-systemen via secure REST-routing of HL7-mail.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Systeem</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Type</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Integratie-methode</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {integrations.map(i => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-navy">{i.name}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{i.type}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs">{i.integratie}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Voorbeeldgesprek: AI handelt no-show preventie af</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Patiënt heeft een 1e behandelafspraak op vrijdag 14:00 (hoogste no-show risico-categorie: nieuwe patiënt, late doordeweekse afspraak). Maandag stuurt AI via WhatsApp: "Hallo Stijn, herinnering: u heeft vrijdag 7 mei om 14:00 uw eerste behandelafspraak met fysiotherapeut Lisa Bakker op de praktijk Hofstraat 12. Antwoord JA om te bevestigen, NEE om te verzetten of bel ons als u vragen heeft". Stijn antwoordt: "kan ik vrijdag een uur eerder komen". AI reageert: "even kijken — vrijdag 13:00 is mogelijk bij Lisa. Antwoord JA om te bevestigen". Stijn: "ja". AI: "afspraak verzet naar vrijdag 7 mei 13:00 bij Lisa Bakker. Tot vrijdag!". EPD bijgewerkt, oude slot vrij voor wachtlijst, nieuwe bevestiging in agenda. Total tijd: 90 seconden, geen secretariaat-tijd.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor T-48u en T-4u opnieuw automatische herinneringen. Bij niet-reactie binnen 6u op T-24u: tweede herinnering met expliciete bevestigings-vraag plus reschedule-opties. Bij niet-reactie op T-4u: AI logt de no-show waarschuwing in EPD voor de receptie zodat zij eventueel kunnen bellen voor een spoed-vervanging via wachtlijst. No-show wordt zo van 10-25 procent naar 4-9 procent — concrete waarde voor 4-FTE praktijk: 30.000-70.000 euro extra omzet per jaar.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk wat de AI niet doet: geen advies over of de afspraak nog nodig is, geen klinische pre-screening ("is uw rug inmiddels niet meer pijnlijk"), geen oefen-aanwijzingen. Bij vragen over toename pijn, krachtsverlies of nieuwe klachten: directe escalatie naar fysiotherapeut via terugbel-verzoek voor pre-screening voor afspraak.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Concrete ROI</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Voor een 4-FTE fysiotherapiepraktijk met 800 actieve patiënten.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Realistische cijfers per maand voor een gemiddelde Nederlandse fysiotherapiepraktijk (3-4 fysiotherapeuten plus eventueel 1-2 specialisten zoals manuele therapie of bekkenfysio). Uw eigen ROI varieert per FTE-aantal, behandel-mix en zorgverzekeraar-contract-portfolio.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-4 text-slate-500 font-medium w-[44%]">Metric</th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[28%]">Vóór AI</th>
+              <th class="text-left py-4 px-4 font-bold text-brand-emerald w-[28%]">Met Aanloop AI</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {roiBreakdown.map(r => (
+              <tr>
+                <td class="py-3 px-4 text-slate-700">{r.post}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.before}</td>
+                <td class="py-3 px-4 text-navy font-medium text-xs">{r.after}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Bottom-line voor 4-FTE praktijk: gemiddelde ROI 10-22 keer op 12-maand basis, payback-periode 3-6 weken. Het no-show effect alleen al rechtvaardigt vrijwel direct de Aanloop-investering — alle andere winst (behandelplan-voltooiing, recall, secretariaat-tijd, piek-bereikbaarheid) is bovenop. En patiënt-satisfaction stijgt structureel omdat ze sneller een afspraak kunnen krijgen of verzetten in plaats van wachten op terugbel.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Implementatie roadmap voor fysiotherapiepraktijken</h2>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Een succesvolle AI-implementatie in een fysiotherapiepraktijk verloopt in drie fasen. Fase 1 (week 1-2) is discovery en design: we analyseren 100 historische patiëntcontacten en de no-show patronen van de afgelopen 6 maanden om de meest voorkomende vragen, escalaties en risico-patiënten in kaart te brengen. Op basis hiervan ontwerpen we de conversational flow, intake-vragenlijst per behandel-type (algemeen, manueel, bekken, sport, oedeem, kind), DTF-screening-flow, no-show preventie-flow en KNGF-bewuste rode-vlag-escalatieprotocollen die specifiek bij uw werkwijze, EPD en patiëntdemografie passen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-2">Fase 2 (week 3-5) is build en pilot: we configureren de AI met uw kennisbank (FAQ, eigen tarievenlijst, gecontracteerde verzekeraars, behandelplan-templates, oefen-reminder-templates), koppelen aan uw EPD (Intramed/FysioRoadmap/James Software/Pluvo) plus WhatsApp Business API, en testen intern twee weken lang. In deze periode simuleren u en uw team realistische patiënt-scenarios — de AI leert van correcties en wordt steeds nauwkeuriger op uw specifieke jargon, behandel-mix en escalatie-criteria. Eind fase 2 gaat de AI live met 30-40 procent van uw patiëntverkeer voor monitoring (typisch eerst no-show preventie, daarna intake).</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-3">Fase 3 (week 6-12) is scale en optimaliseer: volledig live op het primaire kanaal met dagelijkse no-show KPI-monitoring, wekelijkse iteratie op herinnerings-templates en maandelijkse rapportage over recall-conversie, no-show rate en behandelplan-voltooiing. Vanaf maand 3 ziet u typisch een stabiel no-show percentage van 4-9 procent (van 10-25 procent baseline) en 70-80 procent behandelplan-voltooiing (van 45-55 procent baseline).</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">AI voor fysiotherapiepraktijk — antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Bronnen en verder lezen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Onafhankelijke bronnen voor uw eigen onderzoek.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="https://www.kngf.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">KNGF — Beroepsvereniging Fysiotherapeuten</p>
+          <p class="text-slate-600 mt-1 text-xs">Richtlijnen, gedragscode, KNGF-richtlijn DTF en kwaliteitsbeleid voor fysiotherapie.</p>
+        </a>
+        <a href="https://www.kngf.nl/kennisplatform/richtlijnen" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">KNGF Kennisplatform — Richtlijnen</p>
+          <p class="text-slate-600 mt-1 text-xs">DTF-screening, lage rugpijn, COPD-revalidatie en alle KNGF-richtlijnen.</p>
+        </a>
+        <a href="https://www.zn.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">ZN — Zorgverzekeraars Nederland</p>
+          <p class="text-slate-600 mt-1 text-xs">Contracten en aanvullende verzekering voor fysiotherapie sinds 2017.</p>
+        </a>
+        <a href="https://www.igj.nl/onderwerpen/eerstelijns-zorg" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">IGJ — Toezicht eerstelijns zorg</p>
+          <p class="text-slate-600 mt-1 text-xs">Inspectie Gezondheidszorg en Jeugd — kwaliteitstoezicht eerstelijns paramedische zorg.</p>
+        </a>
+        <a href="https://autoriteitpersoonsgegevens.nl/themas/zorg-welzijn" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Autoriteit Persoonsgegevens — Zorg</p>
+          <p class="text-slate-600 mt-1 text-xs">AVG en NEN 7510 voor zorgverleners; DPIA-verplichtingen.</p>
+        </a>
+        <a href="/diensten/marco/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Marco — AI receptionist</p>
+          <p class="text-slate-600 mt-1 text-xs">De telefoon-component voor fysiotherapiepraktijken met DTF-rode-vlag-escalatie.</p>
+        </a>
+        <a href="/diensten/emma/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Emma — WhatsApp-agent</p>
+          <p class="text-slate-600 mt-1 text-xs">Het no-show-preventie, oefen-reminder en behandelplan-recall component.</p>
+        </a>
+        <a href="/kennisbank/ai-voor-tandartspraktijk-nederland-2026/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ AI voor tandartspraktijk</p>
+          <p class="text-slate-600 mt-1 text-xs">Zuster-zorgartikel: KNMT-bewust, NZa-tarieven, EPD-koppeling Exquise/Centrolab.</p>
+        </a>
+        <a href="/kennisbank/ai-voor-huisartsenpraktijk-nederland-2026/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ AI voor huisartsenpraktijk</p>
+          <p class="text-slate-600 mt-1 text-xs">Zuster-zorgartikel: NHG-bewust, herhaalrecepten, 112-flow, MEDOM/Promedico.</p>
+        </a>
+        <a href="/kennisbank/ai-no-show-reductie-mkb-nederland/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ AI No-show Reductie — multi-sector</p>
+          <p class="text-slate-600 mt-1 text-xs">Algemene no-show patroon plus benchmarks voor zorg, beauty en service.</p>
+        </a>
+        <a href="/ai-roi-calculator/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ ROI-calculator</p>
+          <p class="text-slate-600 mt-1 text-xs">Bereken uw eigen ROI voor uw fysiotherapiepraktijk.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Klaar om no-show 65 procent te verlagen?
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Onboarding 7-14 werkdagen voor één pakket, 14-21 dagen voor multi-pakket. KNGF-bewuste configuratie, NEN 7510-conforme cloud, EU-only data-verwerking met DPIA-template inbegrepen. Tijdens uw demo simuleren we een no-show preventie-flow plus een DTF-rode-vlag escalatie op een echte WhatsApp en telefoonlijn zodat u zelf hoort hoe Marco en Emma uw praktijk ondersteunen.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een live demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bekijk tarieven
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
