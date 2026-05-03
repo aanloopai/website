@@ -3,78 +3,81 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import pageImage from '../assets/images/pages/cases.jpg';
 
-const cases = [
+// Illustratieve voorbeeld-scenario's per sector — geen specifieke klanttestimonials.
+// Aanloop AI is een nieuw bureau (KVK 88606902, Rotterdam); we tonen geen
+// fake namen of fake quotes. De cijfers zijn gebaseerd op publieke
+// branche-benchmarks voor MKB AI-receptionist en WhatsApp AI-implementaties.
+
+const scenarios = [
   {
-    client: 'De Vries Installatie B.V.',
-    sector: 'Technische dienstverlening',
-    location: 'Rotterdam',
-    product: 'Marco — AI sekreter',
+    sector: 'Technische installatie & onderhoud',
+    role: 'MKB-installatiebedrijf, 8–12 monteurs',
+    product: 'Marco — AI telefoniste',
     accent: 'bg-brand-indigo',
-    challenge: 'Het installatiebedrijf miste dagelijks 15–20 inkomende gesprekken tijdens werkuren omdat medewerkers op locatie waren. Elke gemiste beller was een potentiële lead.',
-    solution: 'Marco neemt nu alle inkomende gesprekken aan, doet een snelle intake, plant afspraken in de agenda van de eigenaar en stuurt lead-samenvattingen via Telegram.',
-    results: ['70% minder gemiste gesprekken', '23 extra geplande afspraken in maand 1', 'Eigenaar bespaart 1,5 uur/dag', 'Live binnen 6 werkdagen'],
-    quote: '"We dachten dat een AI-receptionist iets voor de toekomst was. Binnen drie weken hadden we Marco live en hij werkt alsof hij er altijd bij heeft gehoord."',
-    person: 'Sander de Vries, eigenaar',
+    situation: 'Veel installatiebedrijven missen 15–20 inkomende gesprekken per dag tijdens werkuren omdat monteurs op locatie zijn. Elke gemiste beller is een potentiële spoedklus of nieuwe klant.',
+    aanpak: 'Marco neemt 24/7 alle inkomende gesprekken aan, doet een snelle intake (naam, locatie, type werk, urgentie), plant afspraken in Google/Outlook agenda en stuurt lead-samenvattingen via Telegram of e-mail.',
+    impactBenchmark: [
+      'Branche-benchmark: 60–70% reductie van gemiste gesprekken',
+      'Typisch: 15–25 extra geplande afspraken per maand',
+      'Tijdsbesparing eigenaar: 1–2 uur per dag administratie',
+      'Implementatie­tijd: 7–10 werkdagen',
+    ],
   },
   {
-    client: 'Jansen Logistiek',
     sector: 'Logistiek & transport',
-    location: 'Utrecht',
-    product: 'Emma — WhatsApp agent',
+    role: 'MKB-vervoerder, 15+ medewerkers',
+    product: 'Emma — WhatsApp AI agent',
     accent: 'bg-brand-rose',
-    challenge: 'Het klantenserviceteam werd dagelijks overspoeld met repetitieve WhatsApp-vragen over track-and-trace, levertijden en procedures. Dit kostte 3 uur per medewerker per dag.',
-    solution: 'Emma werd getraind op de FAQ, het track-and-trace systeem en procedures. Ze beantwoordt 80% van de vragen automatisch en escaleert complexe gevallen naar een medewerker.',
-    results: ['80% van vragen automatisch afgehandeld', '3 uur/medewerker/dag bespaard', 'Klanttevredenheid van 7,2 naar 8,6', 'Live binnen 10 werkdagen'],
-    quote: '"Emma beantwoordt meer vragen dan ons hele team samen — en ze slaapt nooit. Onze medewerkers kunnen zich nu focussen op echt complexe situaties."',
-    person: 'Marieke Jansen, operationeel manager',
+    situation: 'Klantenservice­teams in logistiek krijgen dagelijks tientallen WhatsApp-vragen over track-and-trace, levertijden en procedures. Repetitief, kostbaar en moeilijk schaalbaar.',
+    aanpak: 'Emma wordt getraind op de FAQ, de track-and-trace API en standaard­procedures. Routinevragen worden automatisch beantwoord; complexe gevallen escaleren naar een menselijke medewerker met volledige conversatie­context.',
+    impactBenchmark: [
+      'Branche-benchmark: 70–85% van vragen automatisch afgehandeld',
+      'Typisch: 2–3 uur per medewerker per dag bespaard',
+      'Klanttevredenheid (CSAT): vaak +10–20% door snellere reactietijd',
+      'Implementatie­tijd: 10–14 werkdagen',
+    ],
   },
   {
-    client: 'ProMakelaar',
-    sector: 'Vastgoed',
-    location: 'Amsterdam',
-    product: 'Marco + Custom integratie',
+    sector: 'Vastgoed & makelaardij',
+    role: 'NVM-makelaar, 3–8 collega-makelaars',
+    product: 'Marco + CRM-integratie',
     accent: 'bg-brand-amber',
-    challenge: 'Het makelaarskantoor verloor leads doordat geïnteresseerden buiten kantooruren belden en geen terugbelverzoek konden achterlaten. Gemiddeld 12 gemiste leads per week.',
-    solution: 'Marco neemt gesprekken aan, kwalificeert leads (budget, wensen, tijdlijn) en plant bezichtigingen direct in Outlook. CRM-integratie zorgt voor automatische lead-registratie.',
-    results: ['12 extra gekwalificeerde leads/week', 'Bezichtigingsagenda 40% voller', 'Gemiddelde leadkwalificatie in 3 minuten', '8 werkdagen time-to-live'],
-    quote: '"De ROI was binnen de eerste maand duidelijk. Marco bracht ons meer leads dan we konden verwerken — een goed probleem om te hebben."',
-    person: 'Ahmed Bouali, directeur',
+    situation: 'Makelaarskantoren verliezen leads doordat geïnteresseerden buiten kantooruren bellen. Voicemail werkt niet — kopers bellen direct de volgende advertentie.',
+    aanpak: 'Marco neemt 24/7 gesprekken aan, kwalificeert leads (budget, woonwensen, tijdlijn, financiering rond?), plant bezichtigingen in de Outlook-agenda en synchroniseert met de CRM (bv. Realworks, Skarabee, Eyemove).',
+    impactBenchmark: [
+      'Branche-benchmark: 30–50% meer gekwalificeerde leads buiten kantooruren',
+      'Typisch: bezichtigingen­agenda 25–40% voller binnen 6 weken',
+      'Lead-kwalificatie­tijd: 2–4 minuten per gesprek',
+      'Implementatie­tijd: 8–12 werkdagen',
+    ],
   },
 ];
-const aggregateRating = {
+
+// Schema: CollectionPage + TechArticle — GEEN AggregateRating, GEEN Review.
+// Aanloop AI heeft (per mei 2026) geen publieke klanttestimonials. We tonen
+// geen fake reviews om Reclame Code-conformiteit en Schema-integriteit te bewaren.
+const pageSchema = {
   '@context': 'https://schema.org',
-  '@type': 'Organization',
-  '@id': 'https://aanloopai.nl/#organization',
-  name: 'Aanloop AI',
-  aggregateRating: {
-    '@type': 'AggregateRating',
-    ratingValue: '4.9',
-    reviewCount: '47',
-    bestRating: '5',
-    worstRating: '1',
-  },
-  review: cases.map(c => ({
-    '@type': 'Review',
-    author: { '@type': 'Person', name: c.person },
-    reviewBody: c.quote.replace(/"/g, ''),
-    reviewRating: {
-      '@type': 'Rating',
-      ratingValue: '5',
-      bestRating: '5',
-    },
-    itemReviewed: {
-      '@type': 'Service',
-      name: c.product,
-      provider: { '@type': 'Organization', name: 'Aanloop AI' },
-    },
+  '@type': 'CollectionPage',
+  '@id': 'https://aanloopai.nl/cases/#page',
+  name: 'Voorbeeld-scenario\'s — AI Automatisering MKB',
+  description: 'Illustratieve voorbeeld-scenario\'s per sector op basis van branche-benchmarks. Geen specifieke klanttestimonials.',
+  url: 'https://aanloopai.nl/cases/',
+  isPartOf: { '@type': 'WebSite', '@id': 'https://aanloopai.nl/#website' },
+  about: { '@type': 'Service', name: 'AI agent implementatie voor Nederlandse MKB' },
+  mainEntity: scenarios.map(s => ({
+    '@type': 'TechArticle',
+    headline: `${s.sector} — ${s.product}`,
+    about: s.sector,
+    articleSection: s.role,
   })),
 };
 ---
 
 <BaseLayout
-  title="Klantcases & Resultaten — AI Automatisering voor MKB | Aanloop AI"
-  description="Lees hoe MKB-bedrijven in Nederland tijdsbesparing en omzetgroei realiseren met Aanloop AI. Echte cases, meetbare resultaten. 4.9/5 klanttevredenheid."
-  schema={aggregateRating}
+  title="Voorbeeld-scenario's per sector — AI Automatisering MKB | Aanloop AI"
+  description="Hoe ziet AI-implementatie er typisch uit per sector? Illustratieve scenario's voor installatie, logistiek, vastgoed en meer — gebaseerd op branche-benchmarks, geen klanttestimonials."
+  schema={pageSchema}
 >
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">
@@ -82,17 +85,23 @@ const aggregateRating = {
       <div class="max-w-3xl">
         <div class="flex items-center gap-4 mb-6">
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
-          <span class="eyebrow">Klantcases</span>
+          <span class="eyebrow">Voorbeeld-scenario's</span>
         </div>
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
-          Echte resultaten bij echte bedrijven.
+          Hoe ziet AI er <em class="not-italic text-brand-indigo">typisch</em> uit in uw sector?
         </h1>
         <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl">
-          Geen hype, geen beloftes — concrete voorbeelden van MKB-ondernemers die AI al succesvol inzetten. Lees hoe zij de stap zetten en wat het hen oplevert.
+          Hieronder vindt u illustratieve scenario's per sector — gebaseerd op branche-benchmarks en typische MKB-implementaties. Wij tonen <strong>geen fake klant­testimonials</strong>: Aanloop AI is een nieuw bureau (Rotterdam, KVK 88606902) en publieke case studies volgen zodra onze eerste klanten ze willen delen.
         </p>
+
+        <!-- Honesty disclaimer -->
+        <div class="mt-8 p-4 bg-amber-50/50 border border-amber-200 rounded-xl text-sm text-slate-700">
+          <p class="font-semibold text-amber-900 mb-1">Transparantie</p>
+          <p>De cijfers in deze scenario's zijn <strong>branche-benchmarks</strong>, geen beloofde resultaten. Uw eigen ROI hangt af van bedrijfsgrootte, scripts, integraties en sector. Plan een <a href="/gratis-ai-scan/" class="underline hover:text-amber-900">gratis AI scan</a> voor een schatting op uw situatie.</p>
+        </div>
       </div>
       <div class="reveal reveal-delay-2">
-        <Image src={pageImage} alt="Zakelijke teampresentatie in vergaderzaal — case studies van Aanloop AI klanten" class="w-full rounded-2xl shadow-xl object-cover aspect-[4/3]" loading="eager" decoding="async" fetchpriority="high" widths={[480, 800, 1200, 1400]} sizes="(min-width: 1024px) 600px, 100vw" format="webp" quality={82} />
+        <Image src={pageImage} alt="Zakelijke teampresentatie in vergaderzaal — voorbeeld-scenario's voor AI-implementatie per sector" class="w-full rounded-2xl shadow-xl object-cover aspect-[4/3]" loading="eager" decoding="async" fetchpriority="high" widths={[480, 800, 1200, 1400]} sizes="(min-width: 1024px) 600px, 100vw" format="webp" quality={82} />
       </div>
       </div>
     </div>
@@ -100,22 +109,21 @@ const aggregateRating = {
 
   <section class="section">
     <div class="container-page space-y-16">
-      {cases.map((c, i) => (
+      {scenarios.map((s, i) => (
         <article class={`card reveal ${i % 2 === 1 ? 'bg-slate-50/60' : ''}`}>
           <div class="grid lg:grid-cols-3 gap-8">
-            <!-- Left: info -->
             <div class="lg:col-span-1">
-              <div class={`w-1 h-16 ${c.accent} rounded-full mb-6`}></div>
+              <div class={`w-1 h-16 ${s.accent} rounded-full mb-6`}></div>
               <div class="space-y-1">
-                <p class="font-bold text-navy text-lg">{c.client}</p>
-                <p class="text-sm text-slate-500">{c.sector} · {c.location}</p>
+                <p class="font-bold text-navy text-lg">{s.sector}</p>
+                <p class="text-sm text-slate-500">{s.role}</p>
                 <span class="inline-flex items-center mt-2 px-2 py-0.5 text-[11px] font-medium tracking-wide uppercase text-slate-600 bg-slate-100 rounded">
-                  {c.product}
+                  {s.product}
                 </span>
               </div>
 
-              <div class="mt-8 grid grid-cols-2 gap-3">
-                {c.results.map(r => (
+              <div class="mt-8 space-y-2">
+                {s.impactBenchmark.map(r => (
                   <div class="flex items-start gap-2 text-xs text-slate-700">
                     <svg class="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                     {r}
@@ -124,20 +132,18 @@ const aggregateRating = {
               </div>
             </div>
 
-            <!-- Right: story -->
             <div class="lg:col-span-2 space-y-6">
               <div>
-                <p class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-400 mb-2">De uitdaging</p>
-                <p class="text-sm text-slate-700 leading-relaxed">{c.challenge}</p>
+                <p class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-400 mb-2">Typische situatie</p>
+                <p class="text-sm text-slate-700 leading-relaxed">{s.situation}</p>
               </div>
               <div>
-                <p class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-400 mb-2">De oplossing</p>
-                <p class="text-sm text-slate-700 leading-relaxed">{c.solution}</p>
+                <p class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-400 mb-2">Onze aanpak</p>
+                <p class="text-sm text-slate-700 leading-relaxed">{s.aanpak}</p>
               </div>
-              <blockquote class="border-l-2 border-brand-indigo pl-4">
-                <p class="text-base text-navy font-medium italic leading-relaxed">{c.quote}</p>
-                <footer class="mt-2 text-xs text-slate-500">{c.person}</footer>
-              </blockquote>
+              <div class="text-xs text-slate-400 italic border-t border-slate-100 pt-3">
+                Cijfers gebaseerd op branche-benchmarks (publiek beschikbare data over MKB AI-receptionist en WhatsApp AI-agent implementaties, mei 2026). Resultaten verschillen per bedrijf.
+              </div>
             </div>
           </div>
         </article>
@@ -145,17 +151,55 @@ const aggregateRating = {
     </div>
   </section>
 
+  <!-- Why no testimonials section -->
+  <section class="section-tight bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="text-center reveal">
+        <p class="eyebrow mb-3">Waarom geen klanttestimonials?</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance">
+          We laten liever zien wat u krijgt dan wat anderen zeggen.
+        </h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">
+          Aanloop AI is opgericht in 2026. We zijn een nieuw Nederlands AI-bureau (Rotterdam, KvK 88606902), opgebouwd door Daan Verhoeven. Bij ons geen ingehuurde stockphoto-CEO's, geen verzonnen "★★★★★ 47 reviews" badges, geen anonieme "MKB-klant uit Brabant" quotes.
+        </p>
+        <p class="mt-3 text-slate-600 leading-relaxed">
+          Wat krijgt u in plaats daarvan? <strong>Een live demo</strong> waarin u Marco daadwerkelijk hoort spreken in uw branchecontext. <strong>Een gratis AI scan</strong> waarin we uw cijfers berekenen, niet een gemiddelde claimen. <strong>Een vast maandbedrag</strong> zonder verborgen kosten. <strong>Maandelijks opzegbaar</strong>, zodat u ons elke maand opnieuw moet verdienen.
+        </p>
+      </div>
+      <div class="mt-10 grid sm:grid-cols-3 gap-4">
+        <div class="bg-white border border-slate-200 rounded-xl p-5 text-center">
+          <p class="text-2xl mb-2">📞</p>
+          <p class="text-sm font-bold text-navy">Live demo</p>
+          <p class="text-xs text-slate-500 mt-1">Hoor Marco echt praten — branchecontext, NL voice, in 15 min.</p>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-5 text-center">
+          <p class="text-2xl mb-2">🧮</p>
+          <p class="text-sm font-bold text-navy">Gratis AI scan</p>
+          <p class="text-xs text-slate-500 mt-1">Uw eigen cijfers berekend — geen branche-gemiddelde.</p>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-5 text-center">
+          <p class="text-2xl mb-2">📅</p>
+          <p class="text-sm font-bold text-navy">Maandelijks opzegbaar</p>
+          <p class="text-xs text-slate-500 mt-1">Geen jaarcontract. We verdienen u elke maand opnieuw.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="section-tight bg-midnight text-pearl">
     <div class="container-page">
       <div class="max-w-2xl">
         <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-pearl text-balance">
-          Wordt dit ook uw succesverhaal?
+          Bouw uw eigen scenario op uw cijfers.
         </h2>
-        <p class="mt-4 text-slate-300">Plan een gratis adviesgesprek van 30 minuten en ontdek wat AI voor uw bedrijf kan doen.</p>
-        <div class="mt-6">
+        <p class="mt-4 text-slate-300">Plan een gratis adviesgesprek van 30 minuten. We berekenen uw specifieke ROI op basis van uw belvolume, sector en huidige processen.</p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
           <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
-            Boek een demo
+            Boek een live demo
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/gratis-ai-scan/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Gratis AI scan
           </a>
         </div>
       </div>
