@@ -11,7 +11,7 @@ const articleSchema = {
     "name": "Daan Verhoeven",
     "@id": "https://aanloopai.nl/team/daan-verhoeven/#person",
     "url": "https://aanloopai.nl/team/daan-verhoeven/",
-    "sameAs": ["https://www.linkedin.com/company/aanloop-ai", "https://www.linkedin.com/in/daanverhoeven/"],
+    "sameAs": ["https://www.linkedin.com/in/daanverhoeven/"],
     "jobTitle": "Oprichter & CEO Aanloop AI",
     "worksFor": {
       "@type": "Organization",
@@ -28,8 +28,8 @@ const articleSchema = {
       "url": "https://aanloopai.nl/logo-mark-light-1024.png"
     }
   },
-  "datePublished": "2026-05-02",
-  "dateModified": "2026-05-02",
+  "datePublished": "2026-01-19",
+  "dateModified": "2026-04-18",
   "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-servicedesk-it-helpdesk-mkb-nederland-2026/",
   "inLanguage": "nl-NL"
 };
@@ -49,8 +49,7 @@ const howToSchema = {
     { '@type': 'HowToStep', position: 5, name: 'Eerste-lijn AI-agent live in pilot-team', text: 'Activeer AI-agent in pilot-portaal (Microsoft Teams-bot, Slack-bot of self-service-portaal) voor 1 afdeling van 30 tot 50 medewerkers. AI lost direct op (wachtwoord, KB-search, status-vraag) of opent ticket met volledig context. Gebruiker kan altijd "ik wil een mens" zeggen voor escalatie. Pilot-duur 2 weken.' },
     { '@type': 'HowToStep', position: 6, name: 'Geautomatiseerde acties en runbooks koppelen', text: 'Voor 5 tot 10 standaard-runbooks: laat AI-agent acties uitvoeren via API (Active Directory wachtwoord-reset, MFA-token-resync, software-license-toekenning via Microsoft 365 of Google Workspace, VPN-account-aanmaak, printer-driver-push). Elke automatische actie wordt gelogd en is reversible bij fout.' },
     { '@type': 'HowToStep', position: 7, name: 'AVG en EU AI Act compliance-stack inrichten', text: 'AI-disclosure in self-service-portaal en Teams-bot, AI-literacy training voor IT-team en pilot-eindgebruikers, logging-laag voor audit (welke ticket, welke AI-actie, welk antwoord, welke bron), retention-policy voor ticket-data (typisch 2 jaar conform AVG-minimum), DPIA bij geautomatiseerde acties op personeelsdata. Aanloop AI levert NL-talige template-pakket.' },
-    { '@type': 'HowToStep', position: 8, name: 'Roll-out, meting en bijsturen', text: 'Na pilot: roll-out in 2 of 3 golven (kantoorpersoneel, externe-facing rollen, executive-tier laatste). Maandelijkse review van 5 metrics: deflectie-percentage (zelf-opgelost zonder mens), MTTR (mean time to resolve), CSAT, hallucinatie-incidenten, kosten per ticket. Itereer op categorisatie-prompts en KB-content-gaps.' },
-  ],
+    { '@type': 'HowToStep', position: 8, name: 'Roll-out, meting en bijsturen', text: 'Na pilot: roll-out in 2 of 3 golven (kantoorpersoneel, externe-facing rollen, executive-tier laatste). Maandelijkse review van 5 metrics: deflectie-percentage (zelf-opgelost zonder mens), MTTR (mean time to resolve), CSAT, hallucinatie-incidenten, kosten per ticket. Itereer op categorisatie-prompts en KB-content-gaps.' }],
 };
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-servicedesk-it-helpdesk-mkb-nederland-2026/', inLanguage: 'nl-NL' };
@@ -64,8 +63,7 @@ const faqItems = [
   { question: 'Hoe voorkom ik dat AI verkeerde antwoorden geeft op IT-vragen?', answer: 'Drie verdedigingslagen: (1) RAG-architectuur — AI antwoordt alleen op basis van uw eigen KB en runbooks, niet uit eigen pretraining, en geeft bron-vermelding bij elk antwoord; (2) confidence-threshold — bij twijfel (lage cosine-similarity met KB-content) escaleert AI direct naar engineer in plaats van te gokken; (3) human-in-the-loop voor harde acties — wachtwoord-reset, license-toekenning of account-aanmaak gaat met dubbele bevestiging (gebruiker + AI-confirmatie of gebruiker + manager-goedkeuring voor gevoelige acties). Plus maandelijkse fout-audit met steekproef van 30 AI-antwoorden.' },
   { question: 'Kan een AI-servicedesk geintegreerd worden met Active Directory, Microsoft 365 en Google Workspace?', answer: 'Ja. Active Directory en Entra ID: AI-agent voert wachtwoord-resets, group-membership-wijzigingen en account-locks uit via Graph API (met audit-logging). Microsoft 365: license-toekenning, OneDrive-quota-uitbreiding, Teams-channel-aanmaak via PowerShell of Graph API. Google Workspace: gebruikers-aanmaak, group-management, Drive-share-acties via Admin SDK. Aanloop AI bouwt deze integraties standaard met scoped service-accounts (least-privilege) en dubbele logging in zowel het ticket-systeem als de cloud-tenant audit-log.' },
   { question: 'Wat is een realistische tier-1-deflectie-target voor MKB?', answer: 'Bij goede KB-content en 5 tot 10 geautomatiseerde runbooks: 30 tot 50 procent tier-1-deflectie in maand 3, oplopend naar 50 tot 65 procent in maand 6. Bij ondergemiddelde KB (verouderde artikelen, geen runbooks): begint bij 10 tot 20 procent en groeit naar 35 procent na KB-uitbreiding. Bij branches met sterk afwijkende systemen (medisch, juridisch, industrie): plafond 40 tot 50 procent omdat domain-knowledge te verspreid zit. Tier-2 en tier-3 deflectie blijft typisch onder 15 procent — dat soort tickets vereist altijd menselijk oordeel.' },
-  { question: 'Wanneer kies ik Zendesk AI of Freshservice Freddy versus een Aanloop AI custom build?', answer: 'Kies Zendesk AI of Freshservice Freddy bij: u gebruikt al Zendesk of Freshservice voor ticketing, 200 tot 800 tickets per maand, standaard IT-vragen (wachtwoord, software, hardware), 5 tot 25 IT-medewerkers, korte time-to-value (2 tot 4 weken). Kies Aanloop AI custom build bij: 800+ tickets per maand, branche-specifieke flows (medisch met EPD-integratie, juridisch met DMS-koppeling, industrie met OT-systemen), 25+ IT-medewerkers, strikte data-sovereignty, of u zit niet in een van de gangbare ticketing-platforms (bijv. e-mail-helpdesk of GLPI). Hybride is mogelijk: native AI voor 80 procent standaard, custom flow voor 20 procent specifieke runbooks.' },
-];
+  { question: 'Wanneer kies ik Zendesk AI of Freshservice Freddy versus een Aanloop AI custom build?', answer: 'Kies Zendesk AI of Freshservice Freddy bij: u gebruikt al Zendesk of Freshservice voor ticketing, 200 tot 800 tickets per maand, standaard IT-vragen (wachtwoord, software, hardware), 5 tot 25 IT-medewerkers, korte time-to-value (2 tot 4 weken). Kies Aanloop AI custom build bij: 800+ tickets per maand, branche-specifieke flows (medisch met EPD-integratie, juridisch met DMS-koppeling, industrie met OT-systemen), 25+ IT-medewerkers, strikte data-sovereignty, of u zit niet in een van de gangbare ticketing-platforms (bijv. e-mail-helpdesk of GLPI). Hybride is mogelijk: native AI voor 80 procent standaard, custom flow voor 20 procent specifieke runbooks.' }];
 ---
 
 <BaseLayout

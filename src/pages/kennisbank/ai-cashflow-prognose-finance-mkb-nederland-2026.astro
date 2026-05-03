@@ -11,7 +11,7 @@ const articleSchema = {
     "name": "Daan Verhoeven",
     "@id": "https://aanloopai.nl/team/daan-verhoeven/#person",
     "url": "https://aanloopai.nl/team/daan-verhoeven/",
-    "sameAs": ["https://www.linkedin.com/company/aanloop-ai", "https://www.linkedin.com/in/daanverhoeven/"],
+    "sameAs": ["https://www.linkedin.com/in/daanverhoeven/"],
     "jobTitle": "Oprichter & CEO Aanloop AI",
     "worksFor": {
       "@type": "Organization",
@@ -28,8 +28,8 @@ const articleSchema = {
       "url": "https://aanloopai.nl/logo-mark-light-1024.png"
     }
   },
-  "datePublished": "2026-05-02",
-  "dateModified": "2026-05-02",
+  "datePublished": "2025-12-31",
+  "dateModified": "2026-04-07",
   "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-cashflow-prognose-finance-mkb-nederland-2026/",
   "inLanguage": "nl-NL"
 };
@@ -49,8 +49,7 @@ const howToSchema = {
     { '@type': 'HowToStep', position: 5, name: 'Scenario-analyse en stress-test inrichten', text: 'Drie standaard-scenarios: best-case (alle klanten betalen op tijd, geen onverwachte uitgaven), base-case (huidige model-prognose), worst-case (top-3 klanten betalen 30 dagen later, plus 5 procent extra onverwachte uitgaven). Plus custom what-if scenarios: wat als grootste klant 60 dagen vertraging heeft, wat als rente-stijging op lopende lening, wat als nieuwe loonkosten Q4. Output: minimum-cash-positie-grafiek per scenario.' },
     { '@type': 'HowToStep', position: 6, name: 'CFO-dashboard en alert-flow inrichten', text: 'Wekelijks CFO-dashboard met: 13-week-cashflow-grafiek (best/base/worst), top-5 risico-debiteuren met betalings-status en geschatte impact, top-3 grootste crediteuren-piek deze maand, BTW-piek, lopende lening-aflossingen. Alerts: e-mail of Slack-notificatie als forecast onder veiligheids-buffer dreigt te zakken, of als grootste klant 7 dagen over termijn is.' },
     { '@type': 'HowToStep', position: 7, name: 'AVG, AI Act en finance-compliance inrichten', text: 'Finance-data zit op klant- en leveranciers-niveau (KvK-nummers, IBAN, factuur-bedragen) — verwerking onder AVG. Zorg voor: scoped service-account naar boekhouding-API met read-only-rechten waar mogelijk, EU-VPS voor AI-engine en data-store, verwerkersovereenkomst met AI-leverancier (Anthropic Claude EU, OpenAI EU), verwerkingsregister-aanvulling, en AI-literacy training voor controllers en finance-team. Geen high-risk EU AI Act classificatie tenzij credit-scoring wordt toegevoegd (dan high-risk).' },
-    { '@type': 'HowToStep', position: 8, name: 'Roll-out, kalibratie en model-bijsturing', text: 'Pilot eerst alleen op 13-week-forecast voor 4 weken voordat 12-maanden forecast en alerts erbij komen. Wekelijkse forecast-vs-actual-vergelijking: meet absolute fout per week en per categorie, identificeer systematische bias (bijv. model overschat altijd debiteuren-ontvangsten in december). Maandelijkse model-recalibratie. Quartaal-review met CFO of accountant op forecast-betrouwbaarheid en scenario-keuzes.' },
-  ],
+    { '@type': 'HowToStep', position: 8, name: 'Roll-out, kalibratie en model-bijsturing', text: 'Pilot eerst alleen op 13-week-forecast voor 4 weken voordat 12-maanden forecast en alerts erbij komen. Wekelijkse forecast-vs-actual-vergelijking: meet absolute fout per week en per categorie, identificeer systematische bias (bijv. model overschat altijd debiteuren-ontvangsten in december). Maandelijkse model-recalibratie. Quartaal-review met CFO of accountant op forecast-betrouwbaarheid en scenario-keuzes.' }],
 };
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-cashflow-prognose-finance-mkb-nederland-2026/', inLanguage: 'nl-NL' };
@@ -64,8 +63,7 @@ const faqItems = [
   { question: 'Blijft mijn finance-data binnen de EU en wie heeft toegang?', answer: 'Bij Aanloop AI custom build: n8n self-hosted op Hetzner Frankfurt of Scaleway Amsterdam, Anthropic Claude EU of Azure OpenAI in West-Europe, Postgres pgvector op dezelfde EU-VPS. 100 procent EU-data-flow met audit-controle. Service-account naar boekhouding-API krijgt read-only rechten waar mogelijk (sommige paketten geven alleen read-write, dan beperken we via IP-whitelist plus expliciete activiteits-logging). Verwerkersovereenkomst standaard ingericht. Bij Float, Pulse, Finally: data zit op US-servers met EU-region-flag — voor strikt-AVG-conform of BDSG-context (DACH-export) is custom build veiliger.' },
   { question: 'Kan AI cashflow-forecasting met meerdere entiteiten of valuta omgaan?', answer: 'Ja. Multi-entity (bijv. holding plus 3 dochterondernemingen): per entiteit aparte forecast plus geconsolideerde holding-view, met intercompany-flows (vorderingen en schulden tussen entiteiten) automatisch geelimineerd in consolidatie. Multi-currency (euro plus dollar of pond bij export): forecast per valuta plus euro-conversie naar gemiddelde of forward-rate, optioneel hedge-alerts bij grote outstanding posities. Voor Nederlandse MKB met DACH-export plus US-leverancier (typisch 3-currency setup): standaard configuratie. Voor complexere setups (5+ entiteiten of 4+ currencies): consolidatie-laag uitbreiden in implementatie.' },
   { question: 'Hoe verhoudt AI-cashflow-forecasting zich tot de EU AI Act?', answer: 'Cashflow-forecasting valt onder limited risk in de EU AI Act zolang het geen credit-scoring of geautomatiseerde leen-besluiten omvat. Als u alleen forecasting doet voor interne planning: limited risk, AI-disclosure naar finance-team, AI-literacy training (verplicht februari 2025). Als u echter AI inzet voor go/no-go op klant-krediet (bijv. AI bepaalt of nieuwe klant op factuur mag kopen): high-risk classificatie, conformity assessment, EU-database registratie, DPIA verplicht. Voor MKB scheid deze use-cases — cashflow-forecasting is interne planning (limited risk), credit-scoring is aparte beslissing (high-risk).' },
-  { question: 'Wanneer kies ik Float of Finally versus een Aanloop AI custom build?', answer: 'Kies Float bij: u zit op Xero of QuickBooks (typisch ZZP of klein MKB onder 1 miljoen euro omzet), engelstalige UX OK, eenvoudige cashflow-behoefte. Kies Finally of Pulse bij: U bent comfortabel met US-tooling, simpele behoefte, klein team. Kies Aanloop AI custom build bij: u zit op Twinfield, Exact, AFAS, Visma, Yuki, Snelstart of Moneybird (kortom: alle gangbare NL-paketten); u wilt NL-talige UX, EU-data en NL-banken-rapportage; multi-entity of multi-currency consolidatie; branche-specifieke modellen; integratie met uw CRM voor revenue-forecast. Vanaf 6.000 euro implementatie plus 497 euro per maand. Voor Nederlandse MKB met 1+ miljoen euro omzet en formele controller-rol: custom is typisch sterker dan generieke tools.' },
-];
+  { question: 'Wanneer kies ik Float of Finally versus een Aanloop AI custom build?', answer: 'Kies Float bij: u zit op Xero of QuickBooks (typisch ZZP of klein MKB onder 1 miljoen euro omzet), engelstalige UX OK, eenvoudige cashflow-behoefte. Kies Finally of Pulse bij: U bent comfortabel met US-tooling, simpele behoefte, klein team. Kies Aanloop AI custom build bij: u zit op Twinfield, Exact, AFAS, Visma, Yuki, Snelstart of Moneybird (kortom: alle gangbare NL-paketten); u wilt NL-talige UX, EU-data en NL-banken-rapportage; multi-entity of multi-currency consolidatie; branche-specifieke modellen; integratie met uw CRM voor revenue-forecast. Vanaf 6.000 euro implementatie plus 497 euro per maand. Voor Nederlandse MKB met 1+ miljoen euro omzet en formele controller-rol: custom is typisch sterker dan generieke tools.' }];
 ---
 
 <BaseLayout

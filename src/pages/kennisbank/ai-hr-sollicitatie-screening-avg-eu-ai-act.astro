@@ -11,7 +11,7 @@ const articleSchema = {
     "name": "Daan Verhoeven",
     "@id": "https://aanloopai.nl/team/daan-verhoeven/#person",
     "url": "https://aanloopai.nl/team/daan-verhoeven/",
-    "sameAs": ["https://www.linkedin.com/company/aanloop-ai", "https://www.linkedin.com/in/daanverhoeven/"],
+    "sameAs": ["https://www.linkedin.com/in/daanverhoeven/"],
     "jobTitle": "Oprichter & CEO Aanloop AI",
     "worksFor": {
       "@type": "Organization",
@@ -28,8 +28,8 @@ const articleSchema = {
       "url": "https://aanloopai.nl/logo-mark-light-1024.png"
     }
   },
-  "datePublished": "2026-05-02",
-  "dateModified": "2026-05-02",
+  "datePublished": "2026-01-09",
+  "dateModified": "2026-04-14",
   "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-hr-sollicitatie-screening-avg-eu-ai-act/",
   "inLanguage": "nl-NL"
 };
@@ -49,8 +49,7 @@ const howToSchema = {
     { '@type': 'HowToStep', position: 5, name: 'Transparantie naar kandidaten regelen', text: 'In de vacaturetekst en sollicitatie-bevestiging vermelden dat AI wordt gebruikt voor een eerste selectie. Bij afwijzing op basis van AI-input: geef de mogelijkheid tot menselijke heroverweging (AVG artikel 22 lid 3) en een toelichting op hoofdcriteria. Aanloop AI levert NL-talige template-teksten.' },
     { '@type': 'HowToStep', position: 6, name: 'Logging en audit-trail (EU AI Act vereiste)', text: 'Elke AI-beslissing wordt automatisch gelogd: kandidaat-id (gepseudonimiseerd), AI-input (geanonimiseerde CV-data), AI-output (score plus reden), recruiter-actie (bevestigd of overrulled), modelversie, timestamp. Bewaartermijn minimaal 6 maanden voor audit, conform AI Act artikel 12.' },
     { '@type': 'HowToStep', position: 7, name: 'Conformity assessment en CE-markering plannen', text: 'Vanaf 2 augustus 2026 is voor high-risk AI een conformity assessment verplicht voordat het systeem in gebruik wordt genomen. Voor MKB met ingekochte oplossingen: vraag de leverancier om de EU-verklaring van overeenstemming en CE-markering. Voor zelfgebouwde n8n-workflows: documenteer interne assessment of kies voor light-versie zonder eindbeslissing.' },
-    { '@type': 'HowToStep', position: 8, name: 'EU-database registratie en lopend beheer', text: 'Vanaf augustus 2026 moeten high-risk AI-systemen in werving worden geregistreerd in de EU-database (artikel 71). Wijs een verantwoordelijke aan voor lopend beheer: kwartaal-monitoring op bias-drift, jaarlijkse herziening DPIA, update van AI-disclaimer bij modelwijzigingen, training nieuwe HR-medewerkers in AI-literacy.' },
-  ],
+    { '@type': 'HowToStep', position: 8, name: 'EU-database registratie en lopend beheer', text: 'Vanaf augustus 2026 moeten high-risk AI-systemen in werving worden geregistreerd in de EU-database (artikel 71). Wijs een verantwoordelijke aan voor lopend beheer: kwartaal-monitoring op bias-drift, jaarlijkse herziening DPIA, update van AI-disclaimer bij modelwijzigingen, training nieuwe HR-medewerkers in AI-literacy.' }],
 };
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-hr-sollicitatie-screening-avg-eu-ai-act/', inLanguage: 'nl-NL' };
@@ -65,8 +64,7 @@ const faqItems = [
   { question: 'Moet ik kandidaten informeren dat ik AI gebruik in de sollicitatieprocedure?', answer: 'Ja. AVG artikel 13 vereist transparantie over het bestaan van geautomatiseerde besluitvorming, de logica daarachter en de gevolgen. Praktisch: in de vacaturetekst opnemen Wij gebruiken AI-ondersteunde screening voor een eerste selectie; uw uiteindelijke beoordeling is altijd door een recruiter. Bij afwijzing: kandidaat heeft recht op een toelichting plus mogelijkheid tot menselijke heroverweging.' },
   { question: 'Mag AI video-interviews analyseren op stem en gezichtsuitdrukking?', answer: 'Zeer beperkt en met grote risicos. Sinds februari 2025 verbiedt de EU AI Act emotie-herkenning op de werkvloer en in onderwijs (Annex II). Bij sollicitatie geldt dit grijs gebied: HireVue heeft in 2021 facial-analysis-features uitgeschakeld na bias-klachten. Ons advies: gebruik geen emotie- of gezichtsanalyse, alleen transcriptie en inhoudelijke evaluatie van antwoorden. Aanloop AIs implementatie omzeilt elke vorm van biometrische analyse.' },
   { question: 'Kan ik AI gebruiken om alle CVs onder een bepaalde score automatisch af te wijzen?', answer: 'Nee, niet zonder menselijke bevestiging. Onder AVG artikel 22 mag een afwijzing met aanmerkelijke gevolgen niet uitsluitend op AI-output gebaseerd zijn. Wel toegestaan: AI sorteert op score, recruiter ziet de bottom 70 procent met label lage match en kan in 1 klik bulk-overrulen of bulk-afwijzen na visuele review (gemiddeld 30 seconden per CV in plaats van 15 minuten). De mens beslist, AI optimaliseert workflow.' },
-  { question: 'Heeft een sollicitant recht op uitleg waarom AI hem heeft afgewezen?', answer: 'Ja, AVG artikel 22 lid 3 plus artikel 15 geven recht op betekenisvolle informatie over de logica van de besluitvorming. Praktisch: leg uit op welke hoofdcriteria de AI heeft gescoord (bijv. ervaringsjaren, specifieke skills, opleiding) zonder de algoritme-details prijs te geven. Bied de mogelijkheid tot menselijke heroverweging binnen 14 dagen. Aanloop AI levert standaard NL-talige uitleg-templates die EU AI Act-compliant zijn.' },
-];
+  { question: 'Heeft een sollicitant recht op uitleg waarom AI hem heeft afgewezen?', answer: 'Ja, AVG artikel 22 lid 3 plus artikel 15 geven recht op betekenisvolle informatie over de logica van de besluitvorming. Praktisch: leg uit op welke hoofdcriteria de AI heeft gescoord (bijv. ervaringsjaren, specifieke skills, opleiding) zonder de algoritme-details prijs te geven. Bied de mogelijkheid tot menselijke heroverweging binnen 14 dagen. Aanloop AI levert standaard NL-talige uitleg-templates die EU AI Act-compliant zijn.' }];
 ---
 
 <BaseLayout

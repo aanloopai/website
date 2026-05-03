@@ -6,18 +6,17 @@ const faqItems = [
   { question: 'Kan ik ChatGPT gebruiken als telefoniste voor mijn bedrijf?', answer: 'Niet direct. ChatGPT heeft geen telefoniefunctionaliteit en kan geen inkomende gesprekken beantwoorden. Daarvoor hebt u een gespecialiseerde voice AI oplossing nodig, zoals die van Aanloop AI, die wel integreert met uw telefoonnummer.' },
   { question: 'Is ChatGPT AVG-compliant voor zakelijk gebruik in Nederland?', answer: 'Dit is een grijs gebied. OpenAI\'s dataverwerkingsovereenkomst (DPA) is beschikbaar maar data kan buiten de EU worden verwerkt. Voor klantgegevens in Nederland is het veiliger te kiezen voor EU-gehoste oplossingen zoals n8n self-hosted, wat Aanloop AI gebruikt.' },
   { question: 'Wat kost een zakelijke AI-oplossing vergeleken met ChatGPT?', answer: 'ChatGPT Plus kost €20/maand maar doet geen acties voor u. Een volledige AI-agent bij Aanloop AI kost vanaf €597/maand, maar die voert daadwerkelijk taken uit: telefoon beantwoorden, leads registreren, afspraken inplannen — 24/7 autonoom.' },
-  { question: 'Welk AI model gebruikt Aanloop AI?', answer: 'Aanloop AI combineert meerdere modellen: OpenAI GPT-4 voor begrip en redeneren, ElevenLabs voor spraakgeneratie en Dify voor kennisbank-retrieval (RAG). We kiezen altijd het beste model voor het specifieke gebruik.' },
-];
+  { question: 'Welk AI model gebruikt Aanloop AI?', answer: 'Aanloop AI combineert meerdere modellen: OpenAI GPT-4 voor begrip en redeneren, ElevenLabs voor spraakgeneratie en Dify voor kennisbank-retrieval (RAG). We kiezen altijd het beste model voor het specifieke gebruik.' }];
 
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
   headline: 'ChatGPT voor Bedrijven vs. AI Agents — Wat Past bij uw MKB?',
   description: 'Vergelijking van ChatGPT voor zakelijk gebruik versus gespecialiseerde AI agents. Kosten, mogelijkheden en wat het beste werkt voor uw MKB.',
-  author: { '@type': 'Person', name: 'Daan Verhoeven', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', url: 'https://aanloopai.nl/team/daan-verhoeven/', jobTitle: 'Oprichter & CEO Aanloop AI', sameAs: ['https://www.linkedin.com/company/aanloop-ai', 'https://www.linkedin.com/in/daanverhoeven/'], worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' } },
+  author: { '@type': 'Person', name: 'Daan Verhoeven', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', url: 'https://aanloopai.nl/team/daan-verhoeven/', jobTitle: 'Oprichter & CEO Aanloop AI', sameAs: ['https://www.linkedin.com/in/daanverhoeven/'], worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' } },
   publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
-  datePublished: '2026-05-01',
-  dateModified: '2026-05-01',
+  datePublished: '2026-04-23',
+  dateModified: '2026-04-30',
   wordCount: 2500,
   inLanguage: 'nl-NL',
 };
@@ -103,8 +102,7 @@ const speakableSchema = {
               { icon: '✅', title: 'Content schrijven', desc: 'Blogartikelen, productomschrijvingen, e-mailcampagnes opstellen.' },
               { icon: '✅', title: 'Teksten redigeren', desc: 'Contracten, offertes en rapporten verbeteren en samenvatten.' },
               { icon: '✅', title: 'Ideeën genereren', desc: 'Brainstormen, marketingideeën, campagnethema\'s.' },
-              { icon: '✅', title: 'Vragen beantwoorden', desc: 'Informatie opzoeken en uitleggen in begrijpelijke taal.' },
-            ].map(v => (
+              { icon: '✅', title: 'Vragen beantwoorden', desc: 'Informatie opzoeken en uitleggen in begrijpelijke taal.' }].map(v => (
               <div class="bg-green-50 border border-green-200 rounded-xl p-4">
                 <p class="font-bold text-navy text-sm mb-1">{v.icon} {v.title}</p>
                 <p class="text-sm text-slate-600">{v.desc}</p>
@@ -117,8 +115,7 @@ const speakableSchema = {
               { icon: '❌', title: 'Geen telefonie', desc: 'ChatGPT kan geen inkomende gesprekken beantwoorden.' },
               { icon: '❌', title: 'Geen acties', desc: 'Hij plant geen afspraken, stuurt geen e-mails, werkt CRM\'s niet bij.' },
               { icon: '❌', title: 'Geen geheugen', desc: 'Elke sessie begint opnieuw — geen klanthistorie.' },
-              { icon: '❌', title: 'Geen integraties', desc: 'Geen directe koppeling met uw agenda, boekhouding of CRM.' },
-            ].map(v => (
+              { icon: '❌', title: 'Geen integraties', desc: 'Geen directe koppeling met uw agenda, boekhouding of CRM.' }].map(v => (
               <div class="bg-red-50 border border-red-200 rounded-xl p-4">
                 <p class="font-bold text-navy text-sm mb-1">{v.icon} {v.title}</p>
                 <p class="text-sm text-slate-600">{v.desc}</p>
@@ -133,8 +130,7 @@ const speakableSchema = {
               { n: '2', t: 'Acties uitvoeren', d: 'Afspraken inplannen in Google Calendar, leads toevoegen aan HubSpot, facturen boeken in Exact — volledig autonoom.' },
               { n: '3', t: 'WhatsApp beantwoorden', d: 'De AI reageert binnen seconden op inkomende WhatsApp-berichten, 24/7, zonder dat u online hoeft te zijn.' },
               { n: '4', t: 'Leren van uw kennisbank', d: 'De agent wordt getraind op uw specifieke diensten, prijzen en bedrijfsregels — geen generieke antwoorden.' },
-              { n: '5', t: 'Escaleren naar mens', d: 'Als een vraag te complex is, schakelt de AI naadloos over naar een echte medewerker met volledige gesprekshistorie.' },
-            ].map(s => (
+              { n: '5', t: 'Escaleren naar mens', d: 'Als een vraag te complex is, schakelt de AI naadloos over naar een echte medewerker met volledige gesprekshistorie.' }].map(s => (
               <div class="flex gap-4 items-start bg-white border border-slate-200 rounded-xl p-4">
                 <span class="w-8 h-8 rounded-full bg-brand-indigo text-white flex items-center justify-center font-bold text-sm flex-shrink-0">{s.n}</span>
                 <div>
@@ -165,8 +161,7 @@ const speakableSchema = {
                   ['AVG EU-data', '⚠️ Data kan buiten EU', '✅ NL self-hosted'],
                   ['Werkt zonder u', '❌ U moet vragen stellen', '✅ Volledig autonoom'],
                   ['Nederlandse stem', '❌', '✅ ElevenLabs NL'],
-                  ['Integraties (agenda, boekhoud)', '❌', '✅ 50+ integraties'],
-                ].map(([k, c, a]) => (
+                  ['Integraties (agenda, boekhoud)', '❌', '✅ 50+ integraties']].map(([k, c, a]) => (
                   <tr>
                     <td class="py-3 pr-4 font-medium text-slate-700">{k}</td>
                     <td class="py-3 px-4 text-center text-slate-500">{c}</td>
@@ -249,7 +244,7 @@ const speakableSchema = {
             <div>
               <p class="font-bold text-navy text-sm">Aanloop AI Redactie</p>
               <p class="text-xs text-slate-500 mt-0.5">AI-specialisten gespecialiseerd in praktische AI-implementaties voor het Nederlandse MKB. KVK: 88606902 · Rotterdam.</p>
-              <a href="https://www.linkedin.com/company/aanloop-ai" target="_blank" rel="noopener" class="text-xs text-brand-indigo hover:underline mt-1 inline-block">LinkedIn →</a>
+              <a href=target="_blank" rel="noopener" class="text-xs text-brand-indigo hover:underline mt-1 inline-block">LinkedIn →</a>
             </div>
           </div>
         </article>

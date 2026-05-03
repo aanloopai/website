@@ -5,9 +5,8 @@ const faqItems = [
   { question: 'Met welke boekhoudpakketten werkt AI factuurautomatisering?', answer: 'Aanloop AI koppelt AI factuurverwerking met Exact Online, Snelstart, Moneybird, Twinfield, AFAS, QuickBooks en Xero. Via een API-koppeling of n8n-integratie.' },
   { question: 'Hoe nauwkeurig is AI bij factuurverwerking?', answer: 'Moderne AI factuurverwerking haalt 97-99% nauwkeurigheid op gestructureerde facturen. Ongestructureerde facturen (handgeschreven of slecht opgemaakt) scoren iets lager. Twijfelgevallen worden automatisch geflagd voor menselijke review.' },
   { question: 'Is AI factuurverwerking AVG-compliant?', answer: 'Ja, mits correct geconfigureerd. Aanloop AI gebruikt n8n self-hosted, waardoor factuurdata uitsluitend op uw eigen server wordt verwerkt — in Nederland. Er worden geen gegevens naar buitenlandse AI-providers gestuurd.' },
-  { question: 'Hoeveel kost AI factuurautomatisering?', answer: 'AI factuurautomatisering is onderdeel van een custom workflow via Aanloop AI. Kosten starten vanaf €4.500 eenmalig voor implementatie + €597/maand voor beheer en monitoring. De terugverdientijd is typisch 2-4 maanden.' },
-];
-const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: 'Hoe Automatiseer je Je Facturering met AI? (Stap-voor-Stap Gids)', author: { '@type': 'Person', name: 'Daan Verhoeven', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', url: 'https://aanloopai.nl/team/daan-verhoeven/', jobTitle: 'Oprichter & CEO Aanloop AI', sameAs: ['https://www.linkedin.com/company/aanloop-ai', 'https://www.linkedin.com/in/daanverhoeven/'], worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' } }, publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2026-05-07', dateModified: '2026-05-07', inLanguage: 'nl-NL' };
+  { question: 'Hoeveel kost AI factuurautomatisering?', answer: 'AI factuurautomatisering is onderdeel van een custom workflow via Aanloop AI. Kosten starten vanaf €4.500 eenmalig voor implementatie + €597/maand voor beheer en monitoring. De terugverdientijd is typisch 2-4 maanden.' }];
+const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: 'Hoe Automatiseer je Je Facturering met AI? (Stap-voor-Stap Gids)', author: { '@type': 'Person', name: 'Daan Verhoeven', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', url: 'https://aanloopai.nl/team/daan-verhoeven/', jobTitle: 'Oprichter & CEO Aanloop AI', sameAs: ['https://www.linkedin.com/in/daanverhoeven/'], worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' } }, publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2025-12-21', dateModified: '2026-04-21', inLanguage: 'nl-NL' };
 const howToSchema = {
   '@context': 'https://schema.org',
   '@type': 'HowTo',
@@ -22,8 +21,7 @@ const howToSchema = {
     { '@type': 'HowToStep', position: 3, name: 'OCR-extractie met AI-classificatie', text: 'PDF via OCR omgezet naar gestructureerde data. AI extraheert leverancier, factuurdatum, totaalbedrag, btw-percentages, kostenposten. Nauwkeurigheid 97-99 procent op gestructureerde facturen.' },
     { '@type': 'HowToStep', position: 4, name: 'Validatie en duplicaat-check', text: 'AI controleert IBAN, KvK, btw-nummer (BTW-VIES) en vergelijkt tegen openstaande facturen om duplicaten te voorkomen.' },
     { '@type': 'HowToStep', position: 5, name: 'Automatisch boeken of geflagd voor review', text: 'Vertrouwen boven 95 procent: direct geboekt in boekhoudpakket met juiste grootboekrekening. Vertrouwen onder 95 procent: geflagd voor menselijke review met voorgestelde boeking.' },
-    { '@type': 'HowToStep', position: 6, name: 'Rapportage en iteratie', text: 'Wekelijks dashboard met aantal facturen, doorlooptijd, fouten. Maandelijkse iteratie op classificatie-accuratesse via menselijke feedback-loop.' },
-  ],
+    { '@type': 'HowToStep', position: 6, name: 'Rapportage en iteratie', text: 'Wekelijks dashboard met aantal facturen, doorlooptijd, fouten. Maandelijkse iteratie op classificatie-accuratesse via menselijke feedback-loop.' }],
 };
 ---
 <BaseLayout title="Hoe Automatiseer je Je Facturering met AI? (Stap-voor-Stap) | Aanloop AI" description="Leer hoe u uw factuurverwerking automatiseert met AI en n8n. Van PDF-extractie tot automatisch boeken in Exact Online. AVG-compliant, stap-voor-stap uitgelegd." schema={[schema, howToSchema]} faqSchema={faqItems}>
@@ -51,8 +49,7 @@ const howToSchema = {
           { n: '2', t: 'Data Extraheren met AI', d: 'Een AI-model (GPT-4o of Claude) leest de factuur en extraheert: leveranciersnaam, factuurnummer, datum, bedragen (excl./incl. btw), btw-percentage, IBAN en betaaltermijn.', tools: ['OpenAI GPT-4o', 'Claude API', 'n8n AI node'] },
           { n: '3', t: 'Valideren & Matchen', d: 'De workflow vergelijkt de factuurdata met openstaande inkooporders in uw systeem. Klopt alles? Doorsturen voor goedkeuring. Discrepantie? Flag voor menselijke review.', tools: ['n8n conditional logic', 'ERP/CRM koppeling'] },
           { n: '4', t: 'Automatisch Boeken', d: 'Bij goedkeuring boekt de workflow de factuur automatisch in uw boekhoudpakket op de juiste grootboekrekening met de juiste btw-code.', tools: ['Exact Online API', 'Moneybird API', 'Snelstart API'] },
-          { n: '5', t: 'Betaalopdracht Aanmaken', d: 'Optioneel: de workflow maakt een betaalopdracht aan voor goedkeuring in uw bankportaal. U hoeft alleen nog te autoriseren.', tools: ['SEPA betaalbestand', 'Bankintegratie'] },
-        ].map(s => (
+          { n: '5', t: 'Betaalopdracht Aanmaken', d: 'Optioneel: de workflow maakt een betaalopdracht aan voor goedkeuring in uw bankportaal. U hoeft alleen nog te autoriseren.', tools: ['SEPA betaalbestand', 'Bankintegratie'] }].map(s => (
           <div class="bg-white border border-slate-200 rounded-xl p-5">
             <div class="flex items-start gap-4">
               <span class="w-8 h-8 rounded-full bg-brand-indigo text-white flex items-center justify-center font-bold text-sm flex-shrink-0">{s.n}</span>
@@ -73,8 +70,7 @@ const howToSchema = {
         {[
           { n: '85%', l: 'Tijdsbesparing', d: 'op factuurverwerking' },
           { n: '< 0.5%', l: 'Foutenpercentage', d: 'vs 5-10% handmatig' },
-          { n: '€1.800', l: 'Besparing/maand', d: 'gemiddeld bij MKB' },
-        ].map(s => (
+          { n: '€1.800', l: 'Besparing/maand', d: 'gemiddeld bij MKB' }].map(s => (
           <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center">
             <p class="text-3xl font-bold text-navy mb-1">{s.n}</p>
             <p class="text-sm font-medium text-slate-600">{s.l}</p>

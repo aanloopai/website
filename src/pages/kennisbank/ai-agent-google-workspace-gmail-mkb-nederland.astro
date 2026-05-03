@@ -11,7 +11,7 @@ const articleSchema = {
     "name": "Daan Verhoeven",
     "@id": "https://aanloopai.nl/team/daan-verhoeven/#person",
     "url": "https://aanloopai.nl/team/daan-verhoeven/",
-    "sameAs": ["https://www.linkedin.com/company/aanloop-ai", "https://www.linkedin.com/in/daanverhoeven/"],
+    "sameAs": ["https://www.linkedin.com/in/daanverhoeven/"],
     "jobTitle": "Oprichter & CEO Aanloop AI",
     "worksFor": {
       "@type": "Organization",
@@ -28,8 +28,8 @@ const articleSchema = {
       "url": "https://aanloopai.nl/logo-mark-light-1024.png"
     }
   },
-  "datePublished": "2026-05-02",
-  "dateModified": "2026-05-02",
+  "datePublished": "2026-03-26",
+  "dateModified": "2026-04-30",
   "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-agent-google-workspace-gmail-mkb-nederland/",
   "inLanguage": "nl-NL"
 };
@@ -49,8 +49,7 @@ const howToSchema = {
     { '@type': 'HowToStep', position: 5, name: 'Use-case 1 implementeren — Gmail-triage', text: 'Configureer Gmail Help me write plus custom Apps Script of n8n-flow die binnenkomende mails categoriseert (urgent, normaal, nieuwsbrief, intern) via Gmail labels, draft-replies maakt voor bekende vraagtypen, en uitzonderingen flagt voor menselijke review. Test 3 dagen, meet tijdwinst.' },
     { '@type': 'HowToStep', position: 6, name: 'Use-case 2 en 3 toevoegen — Calendar en Meet-notes', text: 'Calendar: AI agent vindt vrij overlappend slot tussen meerdere Google Calendars via appointment scheduling, stelt voor en plant na bevestiging. Meet-notes: Meet meeting wordt getranscribeerd via Take notes for me, action-items en besluiten geextraheerd, samenvatting per email naar deelnemers. Beide use-cases activeren incrementeel.' },
     { '@type': 'HowToStep', position: 7, name: 'AVG-disclaimers en logging inrichten', text: 'In Gmail-handtekening pilot-team: vermelding dat AI ondersteunt bij correspondentie (transparantie naar externe ontvangers, AI Act limited-risk plicht). Logging-laag: elke AI-actie gelogd via Workspace Audit Log of custom BigQuery-database voor audit. AI-literacy training voor alle pilot-deelnemers documenteren met certificaten.' },
-    { '@type': 'HowToStep', position: 8, name: 'Roll-out, meten en bijsturen', text: 'Na succesvolle pilot: roll-out in 2 golven (kantoorpersoneel eerst, externe-facing rollen tweede). Maandelijkse review: aantal AI-acties via Workspace Reports, tijdwinst per gebruiker, fout-frequentie, gebruikers-tevredenheid. Bijsturen op prompts, training en use-case-uitbreidingen.' },
-  ],
+    { '@type': 'HowToStep', position: 8, name: 'Roll-out, meten en bijsturen', text: 'Na succesvolle pilot: roll-out in 2 golven (kantoorpersoneel eerst, externe-facing rollen tweede). Maandelijkse review: aantal AI-acties via Workspace Reports, tijdwinst per gebruiker, fout-frequentie, gebruikers-tevredenheid. Bijsturen op prompts, training en use-case-uitbreidingen.' }],
 };
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-agent-google-workspace-gmail-mkb-nederland/', inLanguage: 'nl-NL' };
@@ -63,8 +62,7 @@ const faqItems = [
   { question: 'Hoe verhoudt een AI agent in Google Workspace zich tot de EU AI Act?', answer: 'Een Gemini- of custom AI agent in Workspace valt onder limited risk in de EU AI Act — gebruiker moet weten dat hij met AI werkt. Praktisch: vermelding in Gmail-handtekening of in interne tooling-overview. Geen high-risk plichten zoals conformity assessment, mits AI niet wordt gebruikt voor sollicitatie-screening, kredietbeoordeling of biometrische identificatie. Wel: AI-literacy training voor alle gebruikers verplicht sinds februari 2025, plus disclosure waar AI naar externe relaties communiceert.' },
   { question: 'Kan ik een AI agent in Gmail combineren met mijn CRM zoals HubSpot of Pipedrive?', answer: 'Ja, via Apps Script, Workspace Marketplace add-ons of n8n-workflows. Concreet: AI agent leest binnenkomende email, herkent contact-naam, controleert HubSpot voor lead-status, en stelt context-aware draft-reply voor (bijv. inclusief deal-stage en laatste gespreksnotities). Aanloop AI bouwt deze integraties standaard op n8n self-hosted plus Workspace API plus Anthropic Claude EU, met EU-only data-flow. Implementatie typisch 5 tot 10 werkdagen na go-live van basis-AI-agent.' },
   { question: 'Wat zijn de grootste fouten bij Gemini of Workspace AI-implementatie in MKB?', answer: 'Top 3 fouten: (1) te brede scope ineens uitrollen (start met 2 use-cases, niet 8), (2) geen training en geen prompt-handleiding voor team (gebruikers zien dan alleen de Help me write knop en gebruiken Gemini niet), (3) gebrek aan AI-disclosure naar externe relaties (kan AVG artikel 13 schenden bij geautomatiseerde correspondentie). Mitigatie: kleine pilot, 1-uurs training met cheatsheet, vermelding in Gmail-handtekening.' },
-  { question: 'Wanneer kies ik Gemini for Google Workspace versus een Aanloop AI custom agent?', answer: 'Kies Gemini bij: 5 tot 25 gebruikers, standaard use-cases (Gmail draft, Meet-notes, Docs/Sheets/Slides assistentie, Drive-Q&A), korte time-to-value (binnen 1 week live), geen specifieke compliance-eisen. Kies custom Aanloop AI bij: 25+ gebruikers, branche-specifieke automatisering (juridische klacht-routing, accountants-werkbladen, makelaardij-CRM-flow), strikte data-sovereignty (geen Google AI-services), of integratie met niet-Google systemen (Twinfield, AFAS, NMBRS, Exact). Hybride is ook mogelijk: Gemini voor basis plus custom voor 1 of 2 specifieke flows.' },
-];
+  { question: 'Wanneer kies ik Gemini for Google Workspace versus een Aanloop AI custom agent?', answer: 'Kies Gemini bij: 5 tot 25 gebruikers, standaard use-cases (Gmail draft, Meet-notes, Docs/Sheets/Slides assistentie, Drive-Q&A), korte time-to-value (binnen 1 week live), geen specifieke compliance-eisen. Kies custom Aanloop AI bij: 25+ gebruikers, branche-specifieke automatisering (juridische klacht-routing, accountants-werkbladen, makelaardij-CRM-flow), strikte data-sovereignty (geen Google AI-services), of integratie met niet-Google systemen (Twinfield, AFAS, NMBRS, Exact). Hybride is ook mogelijk: Gemini voor basis plus custom voor 1 of 2 specifieke flows.' }];
 ---
 
 <BaseLayout

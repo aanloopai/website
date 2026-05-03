@@ -5,8 +5,7 @@ const faqItems = [
   { question: 'Welk telefoonsysteem is compatibel met ElevenLabs?', answer: 'ElevenLabs is compatibel met alle SIP-gebaseerde telefoonsystemen. In Nederland werkt het goed met Voys, Twilio, KPN, T-Mobile en de meeste VoIP-centrales. U houdt uw huidige telefoonnummer.' },
   { question: 'Heb ik een ElevenLabs account nodig?', answer: 'Als u de integratie zelf beheert: ja. Als u werkt met Aanloop AI: nee. Aanloop AI beheert de ElevenLabs configuratie volledig voor u, inclusief stem, kennisbank en workflowkoppelingen.' },
   { question: 'Kan ElevenLabs Nederlands spreken?', answer: 'Ja. ElevenLabs heeft uitstekende Nederlandse stemmen beschikbaar die zeer natuurlijk klinken. De latency (vertraging tussen vraag en antwoord) is minder dan 1 seconde, waardoor gesprekken vloeiend verlopen.' },
-  { question: 'Is ElevenLabs AVG-compliant?', answer: 'ElevenLabs verwerkt data op Europese servers. Voor maximale AVG-compliance combineert Aanloop AI ElevenLabs met n8n self-hosted: de gesprekstranscripties en klantdata blijven in Nederland, op uw eigen server.' },
-];
+  { question: 'Is ElevenLabs AVG-compliant?', answer: 'ElevenLabs verwerkt data op Europese servers. Voor maximale AVG-compliance combineert Aanloop AI ElevenLabs met n8n self-hosted: de gesprekstranscripties en klantdata blijven in Nederland, op uw eigen server.' }];
 const howToSchema = {
   '@context': 'https://schema.org', '@type': 'HowTo',
   name: 'ElevenLabs AI Agent koppelen aan je telefooncentrale',
@@ -18,10 +17,9 @@ const howToSchema = {
     { '@type': 'HowToStep', name: 'SIP-trunk koppelen', text: 'Verbind ElevenLabs met uw telefoonsysteem via een SIP-trunk bij uw VoIP-provider.' },
     { '@type': 'HowToStep', name: 'Gespreksrouting instellen', text: 'Bepaal wanneer calls naar de AI agent gaan (altijd, of alleen buiten kantooruren) en stel een fallback in naar menselijke medewerkers.' },
     { '@type': 'HowToStep', name: 'n8n workflow koppelen', text: 'Verbind de AI agent met n8n voor acties: agenda bijwerken, CRM-lead aanmaken, e-mail versturen na gesprek.' },
-    { '@type': 'HowToStep', name: 'Testen en optimaliseren', text: 'Test de agent uitgebreid met echte gespreksscenario\'s en optimaliseer de kennisbank op basis van de resultaten.' },
-  ],
+    { '@type': 'HowToStep', name: 'Testen en optimaliseren', text: 'Test de agent uitgebreid met echte gespreksscenario\'s en optimaliseer de kennisbank op basis van de resultaten.' }],
 };
-const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: 'ElevenLabs AI Agent Koppelen aan je Telefooncentrale (2026 Gids)', author: { '@type': 'Person', name: 'Daan Verhoeven', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', url: 'https://aanloopai.nl/team/daan-verhoeven/', jobTitle: 'Oprichter & CEO Aanloop AI', sameAs: ['https://www.linkedin.com/company/aanloop-ai', 'https://www.linkedin.com/in/daanverhoeven/'], worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' } }, publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2026-05-09', dateModified: '2026-05-09', inLanguage: 'nl-NL' };
+const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: 'ElevenLabs AI Agent Koppelen aan je Telefooncentrale (2026 Gids)', author: { '@type': 'Person', name: 'Daan Verhoeven', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', url: 'https://aanloopai.nl/team/daan-verhoeven/', jobTitle: 'Oprichter & CEO Aanloop AI', sameAs: ['https://www.linkedin.com/in/daanverhoeven/'], worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' } }, publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2026-05-09', dateModified: '2026-05-09', inLanguage: 'nl-NL' };
 ---
 <BaseLayout title="ElevenLabs AI Agent Koppelen aan Telefooncentrale (2026 Gids) | Aanloop AI" description="Stap-voor-stap gids: ElevenLabs AI agent koppelen aan uw bestaande telefoonsysteem. Met n8n integratie, SIP-trunk configuratie en AVG-compliance voor het Nederlandse MKB." schema={[schema, howToSchema]} faqSchema={faqItems}>
   <section class="border-b border-slate-200 hero-gradient">
@@ -60,8 +58,7 @@ const schema = { '@context': 'https://schema.org', '@type': 'Article', headline:
       <div class="space-y-3 mb-6">
         {[
           { provider: 'Voys (populair in NL)', steps: 'Voeg een nieuw SIP-account toe in het Voys-portaal. Kopieer de SIP-credentials naar ElevenLabs "Phone Numbers" → "Import". Wijs het telefoonnummer toe aan de AI agent.' },
-          { provider: 'Twilio', steps: 'Maak een Twilio account aan, koop een NL nummer (+31). In Twilio: configureer SIP Domain. In ElevenLabs: voeg het Twilio SIP endpoint in.' },
-        ].map(p => (
+          { provider: 'Twilio', steps: 'Maak een Twilio account aan, koop een NL nummer (+31). In Twilio: configureer SIP Domain. In ElevenLabs: voeg het Twilio SIP endpoint in.' }].map(p => (
           <div class="bg-white border border-slate-200 rounded-xl p-4">
             <p class="font-bold text-navy text-sm mb-2">{p.provider}</p>
             <p class="text-sm text-slate-600">{p.steps}</p>
@@ -83,8 +80,7 @@ const schema = { '@context': 'https://schema.org', '@type': 'Article', headline:
           { icon: '📅', t: 'Agenda koppelen', d: 'Na elk gesprek waarbij een afspraak is gemaakt, triggert ElevenLabs een n8n webhook die de afspraak aanmaakt in Google Calendar of Outlook.' },
           { icon: '👤', t: 'CRM bijwerken', d: 'Nieuwe leads uit gesprekken worden automatisch aangemaakt in HubSpot, Pipedrive of uw CRM.' },
           { icon: '📧', t: 'Bevestigingsmail sturen', d: 'Na elke afspraak stuurt n8n automatisch een bevestigingsmail met de gespreksdetails.' },
-          { icon: '📊', t: 'Rapport genereren', d: 'Wekelijks overzicht van alle gesprekken, topics en resultaten automatisch in uw inbox.' },
-        ].map(w => (
+          { icon: '📊', t: 'Rapport genereren', d: 'Wekelijks overzicht van alle gesprekken, topics en resultaten automatisch in uw inbox.' }].map(w => (
           <div class="flex gap-3 items-start bg-white border border-slate-200 rounded-xl p-4">
             <span class="text-xl">{w.icon}</span>
             <div><p class="font-bold text-navy text-sm mb-1">{w.t}</p><p class="text-sm text-slate-600">{w.d}</p></div>

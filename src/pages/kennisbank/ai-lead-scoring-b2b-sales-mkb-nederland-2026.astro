@@ -11,7 +11,7 @@ const articleSchema = {
     "name": "Daan Verhoeven",
     "@id": "https://aanloopai.nl/team/daan-verhoeven/#person",
     "url": "https://aanloopai.nl/team/daan-verhoeven/",
-    "sameAs": ["https://www.linkedin.com/company/aanloop-ai", "https://www.linkedin.com/in/daanverhoeven/"],
+    "sameAs": ["https://www.linkedin.com/in/daanverhoeven/"],
     "jobTitle": "Oprichter & CEO Aanloop AI",
     "worksFor": {
       "@type": "Organization",
@@ -28,8 +28,8 @@ const articleSchema = {
       "url": "https://aanloopai.nl/logo-mark-light-1024.png"
     }
   },
-  "datePublished": "2026-05-02",
-  "dateModified": "2026-05-02",
+  "datePublished": "2026-03-11",
+  "dateModified": "2026-05-01",
   "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-lead-scoring-b2b-sales-mkb-nederland-2026/",
   "inLanguage": "nl-NL"
 };
@@ -49,8 +49,7 @@ const howToSchema = {
     { '@type': 'HowToStep', position: 5, name: 'Tone en hand-off-flow naar account-executives definieren', text: 'Bij MQL-drempel: AI-gegenereerde lead-briefing voor AE met (a) waarom score hoog, (b) top 3 talking points, (c) recente engagement-signalen, (d) suggested first message. Bij SQL-drempel: automatische meeting-link of demo-call inplanning via /afspraak/ of Calendly. Bij out-of-ICP: nurture-flow in plaats van verkoopcontact.' },
     { '@type': 'HowToStep', position: 6, name: 'AVG-compliance en transparantie inrichten', text: 'Lead-scoring valt onder AVG artikel 22 (geautomatiseerde besluiten met juridisch of vergelijkbaar effect). Bij hard-stop op leads moet betrokkene recht op uitleg krijgen. Praktisch: AI-scoring geldt als ondersteunend (AE bevestigt assignment), niet als final besluit. Documenteer in privacy-statement, verwerkingsregister, en DPIA. AI-disclosure niet verplicht naar lead toe maar wel best-practice.' },
     { '@type': 'HowToStep', position: 7, name: 'Feedback-loop en model-bijsturing inrichten', text: 'Bij elke gewonnen of verloren deal: automatisch feedback naar scoring-engine (was-MQL-juist, was-SQL-juist). Maandelijkse model-recalibratie op nieuwste data. Quartaal-review van ICP-criteria zelf — markt verandert, ICP moet meebewegen. Plus 30 minuten per maand met sales-team om edge-cases te bespreken (te hoge scores, te lage scores).' },
-    { '@type': 'HowToStep', position: 8, name: 'Roll-out, meting en bijsturen', text: 'Pilot eerst op 1 kanaal (bijv. organic web-forms) gedurende 4 weken voordat ads en outbound erbij komen. Maandelijkse review van 5 metrics: MQL-to-SQL conversion (target 25 tot 40 procent), SQL-to-Won conversion (target 15 tot 30 procent), AE-tijd per gewonnen deal, gemiddelde sales-cycle-lengte, lead-rejection-rate. Itereer op scoring-thresholds en feature-set.' },
-  ],
+    { '@type': 'HowToStep', position: 8, name: 'Roll-out, meting en bijsturen', text: 'Pilot eerst op 1 kanaal (bijv. organic web-forms) gedurende 4 weken voordat ads en outbound erbij komen. Maandelijkse review van 5 metrics: MQL-to-SQL conversion (target 25 tot 40 procent), SQL-to-Won conversion (target 15 tot 30 procent), AE-tijd per gewonnen deal, gemiddelde sales-cycle-lengte, lead-rejection-rate. Itereer op scoring-thresholds en feature-set.' }],
 };
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-lead-scoring-b2b-sales-mkb-nederland-2026/', inLanguage: 'nl-NL' };
@@ -64,8 +63,7 @@ const faqItems = [
   { question: 'Welke data heb ik nodig voor effectieve AI-lead-scoring?', answer: 'Vier data-categorieen: (1) Bedrijfs-firmographics (KvK-nummer, branche-SBI, FTE, omzet-band) — automatisch via Apollo.io, Clearbit of LinkedIn Sales Navigator. (2) Persoons-data (functie-titel, anciënniteit, decision-maker-niveau) — automatisch verrijkt bij e-mail-match. (3) Engagement-signalen (welke paginas bezocht, hoeveel sessies, welke content gedownload, e-mail-opens, video-views) — uit website-tracking (HubSpot, Plausible) en marketing-automation. (4) Intent-data (anonieme bezoekers van uw concurrenten, search-intent op category-keywords) — via 6sense of Bombora voor mid-market en enterprise.' },
   { question: 'Kan AI-lead-scoring intent-data van LinkedIn of website-bezoek combineren?', answer: 'Ja. LinkedIn intent: via Sales Navigator integratie of Apollo.io enrichment haal LinkedIn-activiteit (recent veranderd van baan, recent gepost over uw category, lid van relevante groepen) in CRM. Website intent: combineer eerste-party-tracking (sessions, paginas, content) met derde-party intent (6sense, Bombora) voor mid-market accounts. AI-scoring weegt deze signalen samen: een C-level lead die uw concurrent-vergelijking-pagina bezoekt plus drie keer terugkomt op /tarieven/ scoort hoger dan een ZZP die eenmalig op de homepage was. Aanloop AI bouwt deze meervoudige data-laag standaard.' },
   { question: 'Wanneer kies ik HubSpot Predictive versus een Aanloop AI custom build?', answer: 'Kies HubSpot Predictive bij: u zit al op HubSpot Marketing Enterprise of Sales Enterprise, 100+ gewonnen deals historie, standaard B2B-funnel, 1 of 2 markten. Voordelen: zero engineering, native UX, automatische updates. Nadelen: vendor lock-in, beperkte custom-features, kosten 3.300 euro per maand vooral hoog voor MKB tot 50 medewerkers. Kies Aanloop AI custom build bij: u zit op een ander CRM (HubSpot Pro, Pipedrive, Teamleader, Salesforce, Microsoft Dynamics), branche-specifieke ICP (bijv. zorg, juridisch, industrie), of u wilt full data-sovereignty plus integratie met intent-data en LinkedIn Sales Navigator zonder enterprise-prijskaartje. Vanaf 6.000 euro implementatie + 497 euro per maand.' },
-  { question: 'Hoe meet ik of AI-lead-scoring echt werkt?', answer: 'Vijf kern-metrics maandelijks tracken: (1) MQL-to-SQL conversion (target 25 tot 40 procent — pre-AI baseline meten en vergelijken), (2) SQL-to-Won conversion (target 15 tot 30 procent), (3) AE-tijd per gewonnen deal (typisch 30 procent reductie na 3 maanden), (4) gemiddelde sales-cycle-lengte (typisch 15 tot 25 procent korter), (5) lead-rejection-rate en false-negatives. Plus quartaal-cohort-analyse: vergelijk gewonnen-deals-cohort van pre-AI met post-AI op gemiddelde dealgrootte en customer-lifetime-value. Aanloop AI levert maandelijkse rapportage-template.' },
-];
+  { question: 'Hoe meet ik of AI-lead-scoring echt werkt?', answer: 'Vijf kern-metrics maandelijks tracken: (1) MQL-to-SQL conversion (target 25 tot 40 procent — pre-AI baseline meten en vergelijken), (2) SQL-to-Won conversion (target 15 tot 30 procent), (3) AE-tijd per gewonnen deal (typisch 30 procent reductie na 3 maanden), (4) gemiddelde sales-cycle-lengte (typisch 15 tot 25 procent korter), (5) lead-rejection-rate en false-negatives. Plus quartaal-cohort-analyse: vergelijk gewonnen-deals-cohort van pre-AI met post-AI op gemiddelde dealgrootte en customer-lifetime-value. Aanloop AI levert maandelijkse rapportage-template.' }];
 ---
 
 <BaseLayout

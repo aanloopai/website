@@ -7,18 +7,17 @@ const faqItems = [
   { question: 'Hoeveel kost AI automatisering voor een MKB-bedrijf?', answer: 'De kosten variëren sterk afhankelijk van het proces. Bij Aanloop AI beginnen AI-automatiseringsoplossingen vanaf €597/maand voor een AI-agent. Custom workflow automatisering wordt op maat geprijsd op basis van uw situatie. Een gratis AI scan geeft u inzicht in de exacte kosten en baten.' },
   { question: 'Hoe lang duurt het voordat AI automatisering live is?', answer: 'Afhankelijk van de complexiteit. Een standaard AI-agent (telefoon of WhatsApp) is bij Aanloop AI binnen 7 werkdagen live. Een complexere workflow automatisering (meerdere systemen koppelen) duurt gemiddeld 3–6 weken.' },
   { question: 'Is AI automatisering AVG-compliant?', answer: 'Aanloop AI werkt uitsluitend met AVG-conforme technologie. We gebruiken n8n self-hosted infrastructuur zodat uw bedrijfsdata in Nederland blijft en niet bij buitenlandse cloudproviders terechtkomt.' },
-  { question: 'Heb ik technische kennis nodig voor AI automatisering?', answer: 'Nee. Aanloop AI ontzorgt u volledig. Wij zorgen voor de technische implementatie, koppeling aan uw systemen en training van het AI-systeem. U hoeft alleen uw bedrijfsprocessen en wensen met ons te delen.' },
-];
+  { question: 'Heb ik technische kennis nodig voor AI automatisering?', answer: 'Nee. Aanloop AI ontzorgt u volledig. Wij zorgen voor de technische implementatie, koppeling aan uw systemen en training van het AI-systeem. U hoeft alleen uw bedrijfsprocessen en wensen met ons te delen.' }];
 
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
   headline: 'AI Automatisering voor MKB — Praktische Gids 2026',
   description: 'Alles over AI automatisering voor het Nederlandse MKB. Welke processen kunt u automatiseren, wat kost het en hoe start u ermee?',
-  author: { '@type': 'Person', name: 'Daan Verhoeven', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', url: 'https://aanloopai.nl/team/daan-verhoeven/', jobTitle: 'Oprichter & CEO Aanloop AI', sameAs: ['https://www.linkedin.com/company/aanloop-ai', 'https://www.linkedin.com/in/daanverhoeven/'], worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' } },
+  author: { '@type': 'Person', name: 'Daan Verhoeven', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', url: 'https://aanloopai.nl/team/daan-verhoeven/', jobTitle: 'Oprichter & CEO Aanloop AI', sameAs: ['https://www.linkedin.com/in/daanverhoeven/'], worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' } },
   publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
-  datePublished: '2026-05-01',
-  dateModified: '2026-05-01',
+  datePublished: '2025-12-08',
+  dateModified: '2026-04-07',
   wordCount: 3000,
   inLanguage: 'nl-NL',
 };
@@ -115,8 +114,7 @@ const speakableSchema = {
               { icon: '📄', title: 'Factuurverwerking', desc: 'Inkomende facturen automatisch uitlezen, controleren en verwerken in uw boekhoudpakket (Exact, Twinfield).', besparing: '3–8 uur/week' },
               { icon: '📅', title: 'Afsprakenbeheer', desc: 'Afspraken plannen, bevestigen, herinneren en herplannen — volledig automatisch via uw agenda.', besparing: '4–8 uur/week' },
               { icon: '💬', title: 'WhatsApp klantenservice', desc: 'Directe antwoorden op veelgestelde vragen via WhatsApp. Geen wachttijd voor uw klanten.', besparing: '6–12 uur/week' },
-              { icon: '📊', title: 'Rapportage & data-invoer', desc: 'Automatisch rapporten genereren en data verwerken vanuit meerdere bronnen naar één systeem.', besparing: '3–6 uur/week' },
-            ].map(p => (
+              { icon: '📊', title: 'Rapportage & data-invoer', desc: 'Automatisch rapporten genereren en data verwerken vanuit meerdere bronnen naar één systeem.', besparing: '3–6 uur/week' }].map(p => (
               <div class="bg-white border border-slate-200 rounded-xl p-5">
                 <div class="text-2xl mb-2">{p.icon}</div>
                 <p class="font-bold text-navy text-sm mb-1">{p.title}</p>
@@ -145,8 +143,7 @@ const speakableSchema = {
                   ['Reactietijd e-mail', '4–24 uur', '< 5 minuten'],
                   ['Factuurtijd per stuk', '8–12 minuten', '< 1 minuut (automatisch)'],
                   ['Bereikbaarheid', 'Ma–vr 9–17u', '24/7 · 365 dagen'],
-                  ['Kostenstructuur', '€1.197–€4.000/maand personeel', '€597–€1.197/maand AI'],
-                ].map(([k, v, a]) => (
+                  ['Kostenstructuur', '€1.197–€4.000/maand personeel', '€597–€1.197/maand AI']].map(([k, v, a]) => (
                   <tr>
                     <td class="py-3 pr-4 font-medium text-slate-700">{k}</td>
                     <td class="py-3 px-4 text-slate-500">{v}</td>
@@ -165,8 +162,7 @@ const speakableSchema = {
               { tool: 'ElevenLabs Voice AI', rol: 'Spraak & telefonie', detail: 'Menselijke, vloeiende Nederlandse stemmen voor uw AI telefoonassistent.' },
               { tool: 'OpenAI / Anthropic Claude', rol: 'Intelligentie & begrip', detail: 'LLMs voor het begrijpen van klantverzoeken en het genereren van contextuele antwoorden.' },
               { tool: 'Dify', rol: 'Kennisbank & RAG', detail: 'Uw bedrijfsdocumenten als kennisbasis voor de AI — zodat hij altijd correcte antwoorden geeft.' },
-              { tool: 'WhatsApp Business API', rol: 'WhatsApp automatisering', detail: 'Officiële API-koppeling voor geautomatiseerde WhatsApp communicatie op schaal.' },
-            ].map(t => (
+              { tool: 'WhatsApp Business API', rol: 'WhatsApp automatisering', detail: 'Officiële API-koppeling voor geautomatiseerde WhatsApp communicatie op schaal.' }].map(t => (
               <div class="flex gap-4 bg-white border border-slate-200 rounded-xl p-4">
                 <div class="w-10 h-10 rounded-xl bg-brand-indigo/10 flex items-center justify-center flex-shrink-0">
                   <span class="text-brand-indigo text-lg">⚙️</span>
@@ -186,8 +182,7 @@ const speakableSchema = {
               { n: '1', t: 'Gratis AI Scan', d: 'We analyseren uw processen en identificeren de drie grootste automatiseringskansen voor uw bedrijf. Inclusief ROI-berekening. Gratis en vrijblijvend.' },
               { n: '2', t: 'Prioritiseer één proces', d: 'Begin niet met alles tegelijk. Kies het proces met de hoogste impact en de laagste complexiteit voor uw eerste implementatie.' },
               { n: '3', t: 'Implementeer en meet', d: 'We bouwen de oplossing, zetten hem live en meten de resultaten in de eerste 4 weken. Zo ziet u direct wat het oplevert.' },
-              { n: '4', t: 'Schaal op', d: 'Op basis van de resultaten breidt u de automatisering uit naar andere processen. Stap voor stap, zonder grote risico\'s.' },
-            ].map(s => (
+              { n: '4', t: 'Schaal op', d: 'Op basis van de resultaten breidt u de automatisering uit naar andere processen. Stap voor stap, zonder grote risico\'s.' }].map(s => (
               <div class="flex gap-4 items-start">
                 <span class="w-8 h-8 rounded-full bg-brand-indigo text-white flex items-center justify-center font-bold text-sm flex-shrink-0">{s.n}</span>
                 <div>
@@ -205,8 +200,7 @@ const speakableSchema = {
               { titel: 'Installatiebedrijven (typisch profiel)', resultaat: 'AI-telefoonassistent kan circa 70% van inkomende routine-calls overnemen (offerte-aanvragen, monteur-planning). Indicatieve besparing: 20-25 uur per week aan administratief telefoonwerk.', link: '/sectoren/bouw/' },
               { titel: 'Makelaars en vastgoedbureaus (typisch profiel)', resultaat: 'AI-agent plant bezichtigingen en doet eerste lead-kwalificatie (BANT-vragen). Indicatie: 60-70% minder gemiste calls buiten kantooruren, 10-15 extra warme leads per maand.', link: '/sectoren/vastgoed/' },
               { titel: 'Restaurants en horeca (typisch profiel)', resultaat: 'WhatsApp-AI voor reserveringen kan 80-90% van boekingen autonoom afhandelen, met directe agenda-blokkering om dubbele boekingen te voorkomen.', link: '/sectoren/horeca/' },
-              { titel: 'Logistiek en transport (typisch profiel)', resultaat: 'Automatische track-and-trace updates via WhatsApp reduceren inkomende status-vragen typisch met 35-45%.', link: '/sectoren/logistiek/' },
-            ].map(ex => (
+              { titel: 'Logistiek en transport (typisch profiel)', resultaat: 'Automatische track-and-trace updates via WhatsApp reduceren inkomende status-vragen typisch met 35-45%.', link: '/sectoren/logistiek/' }].map(ex => (
               <div class="bg-white border border-slate-200 rounded-xl p-5">
                 <p class="font-bold text-navy text-sm mb-2">{ex.titel}</p>
                 <p class="text-sm text-slate-600 mb-3">{ex.resultaat}</p>
@@ -243,7 +237,7 @@ const speakableSchema = {
             <div>
               <p class="font-bold text-navy text-sm">Aanloop AI Redactie</p>
               <p class="text-xs text-slate-500 mt-0.5">AI-specialisten gespecialiseerd in praktische AI-implementaties voor het Nederlandse MKB. KVK: 88606902 · Rotterdam.</p>
-              <a href="https://www.linkedin.com/company/aanloop-ai" target="_blank" rel="noopener" class="text-xs text-brand-indigo hover:underline mt-1 inline-block">LinkedIn →</a>
+              <a href=target="_blank" rel="noopener" class="text-xs text-brand-indigo hover:underline mt-1 inline-block">LinkedIn →</a>
             </div>
           </div>
 

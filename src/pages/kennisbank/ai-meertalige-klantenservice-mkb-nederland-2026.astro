@@ -11,7 +11,7 @@ const articleSchema = {
     "name": "Daan Verhoeven",
     "@id": "https://aanloopai.nl/team/daan-verhoeven/#person",
     "url": "https://aanloopai.nl/team/daan-verhoeven/",
-    "sameAs": ["https://www.linkedin.com/company/aanloop-ai", "https://www.linkedin.com/in/daanverhoeven/"],
+    "sameAs": ["https://www.linkedin.com/in/daanverhoeven/"],
     "jobTitle": "Oprichter & CEO Aanloop AI",
     "worksFor": {
       "@type": "Organization",
@@ -28,8 +28,8 @@ const articleSchema = {
       "url": "https://aanloopai.nl/logo-mark-light-1024.png"
     }
   },
-  "datePublished": "2026-05-02",
-  "dateModified": "2026-05-02",
+  "datePublished": "2026-04-25",
+  "dateModified": "2026-04-30",
   "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-meertalige-klantenservice-mkb-nederland-2026/",
   "inLanguage": "nl-NL"
 };
@@ -49,8 +49,7 @@ const howToSchema = {
     { '@type': 'HowToStep', position: 5, name: 'Tone-of-voice en register per taal kalibreren', text: 'NL: u-vorm voor B2B en zakelijke MKB, je-vorm voor consumer-vriendelijke branches. EN: standard professional (geen UK/US-extreem), neutrale toon. DE: Sie-vorm verplicht in B2B, conservatieve formele register, geen contracties. Plus per-taal compliance-formules (DE: "Bitte beachten Sie unsere Datenschutzhinweise" als AVG-disclaimer). Test 30 sample-replies per taal met native speaker voor go-live.' },
     { '@type': 'HowToStep', position: 6, name: 'Escalatie-flow naar moedertaalsprekers', text: 'Definieer hard-escalatie-triggers: (a) klacht-toon gedetecteerd, (b) juridische of complexe contract-vraag, (c) 2 herhaalvragen op zelfde topic, (d) lage AI-confidence (cosine similarity onder 0,75). Bij escalatie: route naar engineer of agent met juiste taal-vaardigheid. Bij geen native speaker beschikbaar: AI-vertaalde transcript plus origineel naar engineer in eigen taal voor menselijk antwoord plus reverse-translate.' },
     { '@type': 'HowToStep', position: 7, name: 'AVG en grensoverschrijdende verwerking inrichten', text: 'Bij DE-klanten valt verwerking onder GDPR-DE plus BDSG. AI-laag op EU-VPS (Hetzner Frankfurt of Scaleway Amsterdam), Anthropic Claude EU of Azure OpenAI in West-Europe. AVG-disclaimer in elke taal in chat-welkomstbericht. Verwerkersovereenkomst aanvullen met SCCs voor klantgegevens uit DACH. AI-literacy training voor klantenservice-team in eigen taal (NL volstaat als alle medewerkers NL spreken).' },
-    { '@type': 'HowToStep', position: 8, name: 'Roll-out, kwaliteit-meting en bijsturen', text: 'Pilot eerst op 1 kanaal en 1 taal (bijv. EN-chat) gedurende 2 weken. Dagelijkse kwaliteit-audit: 30 random AI-replies per taal door native speaker beoordelen op accuracy, toon en compliance. Maandelijkse review: per taal CSAT, escalatie-percentage, tijdwinst, klacht-incidenten. Itereer op KB-content-gaps en prompt-templates per taal.' },
-  ],
+    { '@type': 'HowToStep', position: 8, name: 'Roll-out, kwaliteit-meting en bijsturen', text: 'Pilot eerst op 1 kanaal en 1 taal (bijv. EN-chat) gedurende 2 weken. Dagelijkse kwaliteit-audit: 30 random AI-replies per taal door native speaker beoordelen op accuracy, toon en compliance. Maandelijkse review: per taal CSAT, escalatie-percentage, tijdwinst, klacht-incidenten. Itereer op KB-content-gaps en prompt-templates per taal.' }],
 };
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-meertalige-klantenservice-mkb-nederland-2026/', inLanguage: 'nl-NL' };
@@ -64,8 +63,7 @@ const faqItems = [
   { question: 'Wat doet AI als de klant tussen talen wisselt midden in een gesprek?', answer: 'Goede stack detecteert per-bericht (chat, e-mail) of per-segment (voicebot via Whisper of Deepgram) de taal en past antwoord-taal direct aan. Klant schrijft in NL, antwoordt AI in NL. Klant switcht naar EN, AI switcht mee. Belangrijk: laat AI niet in zijn eigen taal-keuze terugvallen door eigen drift — system-prompt expliciet "match taal van laatste klantbericht". Bij voicebot kan dit per-zin werken; bij telefonisch met streaming-STT iets meer latentie (200 tot 400 ms). Test edge-cases: klant typt 1 zin half-NL-half-EN ("kun je dit kort even checken please"), AI antwoordt typisch in dominantste taal van die zin.' },
   { question: 'Hoe regel ik escalatie naar een Duitstalige medewerker als ik die niet heb?', answer: 'Drie escalatie-patronen voor MKB zonder native speakers: (1) AI-vertaalde transcript plus originele DE-tekst naar NL-engineer, engineer typt in NL, AI vertaalt antwoord naar DE en stuurt naar klant — werkt voor 80 procent van complexe vragen. (2) Async escalatie: AI parkeert vraag, stuurt klant "wij komen binnen 4 uur op terug", DE-vraag wordt door NL-medewerker met DeepL-assist beantwoord. (3) Externe Duitstalige freelance customer-service-on-demand (typisch 35 tot 55 euro per uur ad-hoc) voor de 5 tot 10 procent meest complexe DE-tickets per maand. Aanloop AI bouwt patroon 1 standaard in.' },
   { question: 'Hoe staat het met dialecten en regionale varianten zoals Vlaams of Zwitserduits?', answer: 'Vlaams: moderne LLMs herkennen Vlaams typisch goed in input maar kunnen in output naar standaard-NL terugvallen — meestal acceptabel voor B2B, voor B2C-Vlaanderen overweeg een Vlaamse-tone-prompt. Zwitserduits geschreven (Schweizerdeutsch) is sterk regionaal — veel Zwitsers schrijven Hochdeutsch in zakelijke context, dus DE-stack volstaat. Zwitserduits gesproken: voicebot vereist Whisper-large-v3 plus expliciete CH-DE-prompt, accuracy typisch 5 tot 10 procent lager dan Hochdeutsch. Oostenrijks: Hochdeutsch-stack volstaat met enkele AT-specifieke termen (Jänner, Marille) in KB. Voor zware regionale dekking: pilot-test eerst.' },
-  { question: 'Wanneer kies ik DeepL Pro versus Anthropic Claude voor meertalige AI-klantenservice?', answer: 'Kies DeepL Pro (Advanced of Ultimate) bij: u wilt alleen vertaling, geen AI-antwoorden — bijv. uitgaande NL-mailings naar DACH automatisch laten vertalen. DeepL Pro is best-in-class voor pure NL-EN-DE vertaling, GDPR-conform, vanaf 9 euro per maand voor Starter. Kies Anthropic Claude EU bij: u wilt AI die zelf antwoorden genereert in 3 talen plus tool-use plus complex redeneren — Claude is sterk multilingual, ondersteunt RAG en tool-calling, 100 procent EU-data-flow mogelijk. Hybride is optimaal: Claude voor klantgesprekken plus DeepL Pro voor uitgaande marketing-vertaling. Aanloop AI bouwt deze hybride stack standaard.' },
-];
+  { question: 'Wanneer kies ik DeepL Pro versus Anthropic Claude voor meertalige AI-klantenservice?', answer: 'Kies DeepL Pro (Advanced of Ultimate) bij: u wilt alleen vertaling, geen AI-antwoorden — bijv. uitgaande NL-mailings naar DACH automatisch laten vertalen. DeepL Pro is best-in-class voor pure NL-EN-DE vertaling, GDPR-conform, vanaf 9 euro per maand voor Starter. Kies Anthropic Claude EU bij: u wilt AI die zelf antwoorden genereert in 3 talen plus tool-use plus complex redeneren — Claude is sterk multilingual, ondersteunt RAG en tool-calling, 100 procent EU-data-flow mogelijk. Hybride is optimaal: Claude voor klantgesprekken plus DeepL Pro voor uitgaande marketing-vertaling. Aanloop AI bouwt deze hybride stack standaard.' }];
 ---
 
 <BaseLayout

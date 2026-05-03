@@ -5,18 +5,17 @@ const faqItems = [
   { question: 'Welke AI assistent is het beste voor MKB in Nederland?', answer: 'De beste AI assistent voor MKB hangt af van uw use case. Voor telefonische bereikbaarheid 24/7 is Marco van Aanloop AI de meest complete oplossing in Nederland: vloeiend Nederlands, direct live, met agenda- en CRM-integratie. Voor WhatsApp klantenservice is Emma de aangewezen keuze.' },
   { question: 'Wat kost de beste AI assistent voor mijn bedrijf?', answer: 'Prijzen voor AI assistenten voor het MKB variëren van €20/maand (ChatGPT, geen acties) tot €597+/maand voor een volledige AI agent die telefoon beantwoordt, afspraken plant en leads registreert. Aanloop AI biedt transparante pakketten vanaf €597/maand.' },
   { question: 'Kan een AI assistent echt mijn receptionist vervangen?', answer: 'Ja. Een moderne AI receptionist zoals Marco van Aanloop AI neemt inkomende gesprekken aan in vloeiend Nederlands, begrijpt de context, plant afspraken in en stuurt leads door — 24/7, zonder pauze. Voor standaard receptiewerk is dit volledig inzetbaar.' },
-  { question: 'Is de AI assistent van Aanloop AI beter dan andere opties?', answer: 'Aanloop AI onderscheidt zich door: 1) Nederlandse data-opslag (AVG-compliant), 2) snelle implementatie (7 werkdagen live), 3) specifiek getraind op uw bedrijf, en 4) vloeiend Nederlands via ElevenLabs. We vergelijken graag transparant in een gratis adviesgesprek.' },
-];
+  { question: 'Is de AI assistent van Aanloop AI beter dan andere opties?', answer: 'Aanloop AI onderscheidt zich door: 1) Nederlandse data-opslag (AVG-compliant), 2) snelle implementatie (7 werkdagen live), 3) specifiek getraind op uw bedrijf, en 4) vloeiend Nederlands via ElevenLabs. We vergelijken graag transparant in een gratis adviesgesprek.' }];
 
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
   headline: 'De Beste AI Assistent voor MKB in Nederland (2026 Vergelijking)',
   description: 'Welke AI assistent past het beste bij uw MKB-bedrijf? Vergelijking van de beste opties in Nederland voor 2026.',
-  author: { '@type': 'Person', name: 'Daan Verhoeven', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', url: 'https://aanloopai.nl/team/daan-verhoeven/', jobTitle: 'Oprichter & CEO Aanloop AI', sameAs: ['https://www.linkedin.com/company/aanloop-ai', 'https://www.linkedin.com/in/daanverhoeven/'], worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' } },
+  author: { '@type': 'Person', name: 'Daan Verhoeven', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', url: 'https://aanloopai.nl/team/daan-verhoeven/', jobTitle: 'Oprichter & CEO Aanloop AI', sameAs: ['https://www.linkedin.com/in/daanverhoeven/'], worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' } },
   publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
-  datePublished: '2026-05-01',
-  dateModified: '2026-05-01',
+  datePublished: '2026-03-19',
+  dateModified: '2026-04-10',
   wordCount: 2200,
   inLanguage: 'nl-NL',
 };
@@ -95,8 +94,7 @@ const speakableSchema = {
             {[
               { type: 'Type 1: Conversationele AI (ChatGPT, Gemini)', prijs: '€0–€20/mnd', pros: 'Goedkoop, veelzijdig voor content en uitleg', cons: 'Geen acties, geen telefonie, moet actief bediend worden', score: '⭐⭐' },
               { type: 'Type 2: Niche AI Tools (specifieke functies)', prijs: '€30–€200/mnd', pros: 'Goed voor één specifieke taak (e-mail, agenda)', cons: 'Beperkt tot één kanaal, geen integratie', score: '⭐⭐⭐' },
-              { type: 'Type 3: Volledige AI Agent (Aanloop AI)', prijs: '€597+/mnd', pros: '24/7 telefoon, WhatsApp, CRM, agenda — volledig autonoom', cons: 'Hogere investering, maar positieve ROI binnen maand 1', score: '⭐⭐⭐⭐⭐' },
-            ].map(t => (
+              { type: 'Type 3: Volledige AI Agent (Aanloop AI)', prijs: '€597+/mnd', pros: '24/7 telefoon, WhatsApp, CRM, agenda — volledig autonoom', cons: 'Hogere investering, maar positieve ROI binnen maand 1', score: '⭐⭐⭐⭐⭐' }].map(t => (
               <div class="border border-slate-200 rounded-xl p-5">
                 <p class="font-bold text-navy text-sm mb-1">{t.type}</p>
                 <p class="text-xs text-brand-indigo mb-2">Prijs: {t.prijs} &nbsp;|&nbsp; Score: {t.score}</p>
@@ -128,8 +126,7 @@ const speakableSchema = {
                   ['Microsoft Copilot', '€25', '❌', '❌', '✅', '❌'],
                   ['Studiolee', 'n.b.', '⚠️', '⚠️', '?', '⚠️'],
                   ['DataDream', 'n.b.', '⚠️', '⚠️', '?', '⚠️'],
-                  ['Aitomatisering', 'n.b.', '❌', '⚠️', '?', '❌'],
-                ].map(([n, p, t, w, a, s]) => (
+                  ['Aitomatisering', 'n.b.', '❌', '⚠️', '?', '❌']].map(([n, p, t, w, a, s]) => (
                   <tr class={n === 'Aanloop AI (Marco)' ? 'bg-brand-indigo/5 font-medium' : ''}>
                     <td class="py-3 px-3 text-navy text-sm">{n}</td>
                     <td class="py-3 px-2 text-center text-sm">{p}</td>
@@ -175,8 +172,7 @@ const speakableSchema = {
               { vraag: 'Wilt u WhatsApp automatiseren?', antwoord: 'Kies Emma van Aanloop AI of een WhatsApp-specialist' },
               { vraag: 'Wilt u content schrijven en informatie vinden?', antwoord: 'ChatGPT Plus (€20/mnd) is voldoende' },
               { vraag: 'Wilt u meerdere kanalen automatiseren?', antwoord: 'Kies een AI agent die telefoon + WhatsApp + e-mail combineert' },
-              { vraag: 'Is AVG-compliance essentieel?', antwoord: 'Kies Aanloop AI — Nederlandse servers, data verlaat EU nooit' },
-            ].map(item => (
+              { vraag: 'Is AVG-compliance essentieel?', antwoord: 'Kies Aanloop AI — Nederlandse servers, data verlaat EU nooit' }].map(item => (
               <div class="flex gap-3 bg-white border border-slate-200 rounded-xl p-4">
                 <span class="text-brand-indigo font-bold text-sm flex-shrink-0">Q:</span>
                 <div>

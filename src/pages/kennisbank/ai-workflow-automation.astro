@@ -5,9 +5,8 @@ const faqItems = [
   { question: 'Welke tools worden gebruikt voor AI workflow automation in Nederland?', answer: 'De meest gebruikte tools zijn n8n (self-hosted, AVG-compliant), Make.com en Zapier. Aanloop AI specialiseert zich in n8n omdat data in Nederland blijft en er geen vendor lock-in is.' },
   { question: 'Welke processen zijn het meest geschikt voor automatisering?', answer: 'Processen die het best passen bij AI automation zijn: (1) repetitieve, regelmatige taken, (2) processen met duidelijke regels en beslismomenten, (3) taken waarbij data van meerdere systemen samenkomt. Voorbeelden: factuurverwerking, lead-opvolging, afspraken plannen.' },
   { question: 'Is n8n veilig voor AVG/GDPR?', answer: 'Ja. n8n self-hosted betekent dat alle data op uw eigen server draait — in Nederland. Er worden geen persoonsgegevens naar buitenlandse cloudservers gestuurd. Aanloop AI configureert n8n AVG-compliant voor al onze klanten.' },
-  { question: 'Hoe lang duurt het om een workflow te automatiseren?', answer: 'Een eenvoudige workflow (bijv. lead-routering via e-mail) kan in 1-2 werkdagen worden geïmplementeerd. Een complex multi-systeem workflow (bijv. factuurverwerking + CRM + boekhouding) duurt typisch 2-4 weken.' },
-];
-const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: 'AI Workflow Automation: Complete Uitleg voor Beginners (2026)', author: { '@type': 'Person', name: 'Daan Verhoeven', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', url: 'https://aanloopai.nl/team/daan-verhoeven/', jobTitle: 'Oprichter & CEO Aanloop AI', sameAs: ['https://www.linkedin.com/company/aanloop-ai', 'https://www.linkedin.com/in/daanverhoeven/'], worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' } }, publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2026-05-05', dateModified: '2026-05-05', inLanguage: 'nl-NL' };
+  { question: 'Hoe lang duurt het om een workflow te automatiseren?', answer: 'Een eenvoudige workflow (bijv. lead-routering via e-mail) kan in 1-2 werkdagen worden geïmplementeerd. Een complex multi-systeem workflow (bijv. factuurverwerking + CRM + boekhouding) duurt typisch 2-4 weken.' }];
+const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: 'AI Workflow Automation: Complete Uitleg voor Beginners (2026)', author: { '@type': 'Person', name: 'Daan Verhoeven', '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person', url: 'https://aanloopai.nl/team/daan-verhoeven/', jobTitle: 'Oprichter & CEO Aanloop AI', sameAs: ['https://www.linkedin.com/in/daanverhoeven/'], worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' } }, publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2026-05-05', dateModified: '2026-05-05', inLanguage: 'nl-NL' };
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-workflow-automation/', inLanguage: 'nl-NL' };
 ---
 <BaseLayout title="AI Workflow Automation: Complete Uitleg voor Beginners (2026) | Aanloop AI" description="Wat is AI workflow automation, hoe werkt het en welke processen kunt u automatiseren? Complete beginnersgids met n8n, Make.com en praktijkvoorbeelden voor het Nederlandse MKB." schema={[schema, speakableSchema]} faqSchema={faqItems}>
@@ -64,8 +63,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
             { n: '1', t: 'Trigger', d: 'Een workflow start bij een gebeurtenis: een nieuwe e-mail, een ingevuld formulier, een nieuwe factuur of een tijdschema.' },
             { n: '2', t: 'AI Verwerking', d: 'De AI (LLM) analyseert de input, extraheert relevante data en neemt een beslissing op basis van de bedrijfsregels.' },
             { n: '3', t: 'Actie', d: 'De workflow voert de actie uit: bijwerken van CRM, versturen van e-mail, aanmaken van factuur of sturen van een WhatsApp-bericht.' },
-            { n: '4', t: 'Logging & Monitoring', d: 'Elke stap wordt gelogd. U kunt live zien wat er gebeurt en ingrijpen indien nodig via het dashboard.' },
-          ].map(s => (
+            { n: '4', t: 'Logging & Monitoring', d: 'Elke stap wordt gelogd. U kunt live zien wat er gebeurt en ingrijpen indien nodig via het dashboard.' }].map(s => (
             <div class="flex gap-4 items-start bg-white border border-slate-200 rounded-xl p-4">
               <span class="w-8 h-8 rounded-full bg-brand-indigo text-white flex items-center justify-center font-bold text-sm flex-shrink-0">{s.n}</span>
               <div><p class="font-bold text-navy text-sm mb-1">{s.t}</p><p class="text-sm text-slate-600">{s.d}</p></div>
@@ -81,8 +79,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
             { icon: '📅', t: 'Afspraken plannen', d: 'Klanten zelf een afspraak laten inplannen via WhatsApp of telefoon, gesynchroniseerd met uw agenda.' },
             { icon: '📊', t: 'Rapportages', d: 'Automatisch wekelijkse of maandelijkse rapporten samenstellen en versturen.' },
             { icon: '🔔', t: 'Notificaties', d: 'Automatische alerts bij belangrijke gebeurtenissen (order, klacht, betaling).' },
-            { icon: '📦', t: 'Orderverwerking', d: 'Bestellingen automatisch verwerken, bevestigen en doorsturen naar logistiek.' },
-          ].map(v => (
+            { icon: '📦', t: 'Orderverwerking', d: 'Bestellingen automatisch verwerken, bevestigen en doorsturen naar logistiek.' }].map(v => (
             <div class="bg-slate-50 border border-slate-200 rounded-xl p-4">
               <div class="text-xl mb-2">{v.icon}</div>
               <p class="font-bold text-navy text-sm mb-1">{v.t}</p>
@@ -103,8 +100,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
                 ['Vendor lock-in', '❌ Geen', '⚠️ Beperkt', '⚠️ Sterk'],
                 ['Prijs', '~€20-50/maand server', '€9-29/maand', '€19-69/maand'],
                 ['AI integratie', '✅ Volledig', '✅ Beperkt', '⚠️ Beperkt'],
-                ['Complexe logica', '✅ Ja', '✅ Ja', '⚠️ Beperkt'],
-              ].map(([k, n, m, z]) => (
+                ['Complexe logica', '✅ Ja', '✅ Ja', '⚠️ Beperkt']].map(([k, n, m, z]) => (
                 <tr><td class="py-3 pr-4 font-medium text-slate-700">{k}</td><td class="py-3 px-4 text-navy font-medium">{n}</td><td class="py-3 px-4 text-slate-500">{m}</td><td class="py-3 pl-4 text-slate-500">{z}</td></tr>
               ))}
             </tbody>
@@ -119,8 +115,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
             ['💶 Kostenreductie', 'Geen extra medewerkers nodig voor repetitieve taken.'],
             ['🎯 Minder fouten', 'AI-verwerking heeft < 0,5% foutenpercentage vs 5-10% bij handmatig werk.'],
             ['📈 Schaalbaarheid', 'Uw workflow verwerkt 10 of 10.000 items per dag — zonder extra kosten.'],
-            ['🔒 AVG-compliant', 'n8n self-hosted houdt alle data binnen Nederland en uw controle.'],
-          ].map(([t, d]) => (
+            ['🔒 AVG-compliant', 'n8n self-hosted houdt alle data binnen Nederland en uw controle.']].map(([t, d]) => (
             <div class="flex items-start gap-3 bg-white border border-slate-200 rounded-xl p-4">
               <span class="font-bold text-navy text-sm min-w-[150px]">{t}</span>
               <p class="text-sm text-slate-600">{d}</p>
@@ -135,8 +130,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
             { n: '2', t: 'Prioriteer op ROI', d: 'Kies de processen met de hoogste tijdskosten en de duidelijkste regels (weinig uitzonderingen).' },
             { n: '3', t: 'Kies uw toolstack', d: 'Voor AVG-compliance kiest Aanloop AI altijd voor n8n self-hosted. We draaien dit op uw eigen server of een Nederlandse cloud.' },
             { n: '4', t: 'Bouw de workflow', d: 'Start eenvoudig: één workflow, één use case. Test uitgebreid met echte data.' },
-            { n: '5', t: 'Monitor en optimaliseer', d: 'Gebruik het n8n dashboard om workflows te monitoren. Pas aan op basis van uitzonderingen.' },
-          ].map(s => (
+            { n: '5', t: 'Monitor en optimaliseer', d: 'Gebruik het n8n dashboard om workflows te monitoren. Pas aan op basis van uitzonderingen.' }].map(s => (
             <div class="flex gap-4 items-start">
               <span class="w-8 h-8 rounded-full bg-slate-100 text-navy flex items-center justify-center font-bold text-sm flex-shrink-0 border border-slate-200">{s.n}</span>
               <div><p class="font-bold text-navy text-sm mb-0.5">{s.t}</p><p class="text-sm text-slate-600">{s.d}</p></div>

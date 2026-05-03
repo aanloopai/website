@@ -2,11 +2,57 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import pageImage from '../../assets/images/pages/audit.jpg';
+
+const auditSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': 'https://aanloopai.nl/diensten/audit/#service',
+    name: 'AI Audit voor MKB Nederland',
+    serviceType: 'AI strategie + implementatie-roadmap',
+    description: 'Grondige analyse van bedrijfsprocessen, ROI-prioritering per AI-kans en concrete 90-dagen implementatieroadmap. Vaste prijs €1.950, oplevering binnen 14 werkdagen.',
+    provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization' },
+    areaServed: { '@type': 'Country', name: 'Nederland' },
+    audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland (10-200 medewerkers)' },
+    offers: {
+      '@type': 'Offer',
+      '@id': 'https://aanloopai.nl/diensten/audit/#offer',
+      name: 'AI Audit — vaste prijs',
+      price: '1950',
+      priceCurrency: 'EUR',
+      availability: 'https://schema.org/InStock',
+      validFrom: '2026-05-03',
+      url: 'https://aanloopai.nl/diensten/audit/',
+      itemOffered: { '@id': 'https://aanloopai.nl/diensten/audit/#service' },
+      eligibleDuration: { '@type': 'QuantitativeValue', value: 14, unitCode: 'DAY', description: 'Oplevering binnen 14 werkdagen' },
+    },
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Audit-pakketten',
+      itemListElement: [
+        { '@type': 'Offer', name: 'Quick scan', price: '0', priceCurrency: 'EUR', description: '45-min adviesgesprek met kansen-mapping. Gratis.' },
+        { '@type': 'Offer', name: 'Basis AI Audit', price: '1950', priceCurrency: 'EUR', description: 'Volledige procesanalyse + ROI-prioritering + roadmap. 14 werkdagen.' },
+        { '@type': 'Offer', name: 'Strategie-traject', priceCurrency: 'EUR', description: 'Meerdaagse deep-dive met managementpresentatie + implementatie-begeleiding. Op maat geprijsd.' },
+      ],
+    },
+  },
+];
+
+const auditFaq = [
+  { question: 'Wat krijg ik voor €1.950?', answer: 'Een grondige procesanalyse (5-10 processen), ROI-berekening per AI-automatiseringskans, prioriteringsmatrix (impact vs implementatiekosten), tech-stack advies en een concrete 90-dagen implementatieroadmap. Plus 1 presentatie aan uw managementteam. Oplevering binnen 14 werkdagen na intake.' },
+  { question: 'Hoe lang duurt de audit echt?', answer: 'Van intake tot oplevering: 14 werkdagen (3 kalenderweken). Week 1: workshops + interviews met uw team. Week 2: data-analyse + ROI-berekeningen. Week 3: roadmap-finalisatie + management-presentatie.' },
+  { question: 'Wat is het verschil met de gratis Quick Scan?', answer: 'De Quick Scan is een gratis 45-minuten gesprek met een globale kansen-mapping — voldoende voor oriëntatie. De Basis Audit (€1.950) is een gestructureerd traject met diepgaande procesanalyse, kwantitatieve ROI-berekeningen en een gevalideerde 90-dagen roadmap.' },
+  { question: 'Kan ik de audit-investering verrekenen als ik daarna implementeer?', answer: 'Ja. Bij doorgang naar implementatie binnen 90 dagen wordt €1.000 van het audit-bedrag verrekend met het eerste maand-abonnement van Marco of Emma.' },
+  { question: 'Wie voert de audit uit?', answer: 'De audit wordt geleid door Daan Verhoeven (Oprichter Aanloop AI, 10+ jaar ervaring met workflow-automatisering en AI in NL MKB). Voor zorg- of juridische sectoren werken we samen met sector-specialisten.' },
+  { question: 'Voor welke bedrijfsgrootte is dit geschikt?', answer: 'Sweet spot: MKB met 10-200 medewerkers en €1-50M jaaromzet. Voor kleinere ZZP/freelancers is de Quick Scan vaak voldoende. Voor enterprise (200+ medewerkers) bieden we een uitgebreider Strategie-traject op maat.' },
+];
 ---
 
 <BaseLayout
-  title="AI Strategie & Implementatie Advies voor MKB Nederland | Aanloop AI"
-  description="Grondige AI-audit van uw bedrijfsprocessen + concrete implementatie-roadmap met ROI-analyse en prioritering. Voor MKB-ondernemers die AI strategisch willen inzetten."
+  title="AI Audit voor MKB — vaste prijs €1.950, oplevering in 14 dagen | Aanloop AI"
+  description="Productized AI-audit voor Nederlandse MKB: procesanalyse, ROI-prioritering en 90-dagen roadmap. Vaste prijs €1.950, geen verrassingen. Oplevering binnen 14 werkdagen. KvK 88606902."
+  schema={auditSchema}
+  faqSchema={auditFaq}
 >
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-28">
@@ -14,20 +60,43 @@ import pageImage from '../../assets/images/pages/audit.jpg';
       <div class="max-w-3xl">
         <div class="flex items-center gap-3 mb-6">
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
-          <span class="eyebrow">AI strategie & audit</span>
+          <span class="eyebrow">AI Audit · vaste prijs</span>
+        </div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-emerald/10 text-brand-emerald text-xs font-semibold mb-5">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+          €1.950 vaste prijs · oplevering in 14 dagen
         </div>
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
-          Weet waar AI het meeste oplevert.
+          Concrete AI-roadmap voor uw MKB.<br/>Binnen 14 dagen.
         </h1>
         <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl">
-          Een grondige analyse van uw bedrijfsprocessen, gevolgd door een concrete implementatieroadmap met ROI-prioritering. U weet precies waar te beginnen en wat het oplevert.
+          Geen vage strategie-deck. Een productized AI-audit met procesanalyse, kwantitatieve ROI-berekening per kans en een gevalideerde 90-dagen implementatieroadmap. Vaste prijs €1.950 — geen verrassingen, geen scope-creep.
         </p>
         <div class="mt-8 flex flex-col sm:flex-row gap-3">
-          <a href="/contact/?type=offerte" class="btn-primary text-base px-6 py-3.5">
-            Audit aanvragen
+          <a href="/contact/?type=audit" class="btn-primary text-base px-6 py-3.5">
+            Audit boeken — €1.950
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
           </a>
+          <a href="#audit-detail" class="btn-outline text-base px-6 py-3.5">Wat zit erin?</a>
         </div>
+        <ul class="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-xs text-slate-500">
+          <li class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-brand-emerald" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            5-10 processen geanalyseerd
+          </li>
+          <li class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-brand-emerald" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            Kwantitatieve ROI per kans
+          </li>
+          <li class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-brand-emerald" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            90-dagen roadmap
+          </li>
+          <li class="flex items-center gap-1.5">
+            <svg class="w-3.5 h-3.5 text-brand-emerald" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            Doorgangs-korting €1.000
+          </li>
+        </ul>
       </div>
       <div class="reveal reveal-delay-2">
         <Image src={pageImage} alt="Twee laptops met paperwork analyse — Aanloop AI audit voor Nederlandse MKB-bedrijven" class="w-full rounded-2xl shadow-xl object-cover aspect-[4/3]" loading="eager" decoding="async" fetchpriority="high" widths={[480, 800, 1200, 1400]} sizes="(min-width: 1024px) 600px, 100vw" format="webp" quality={82} />
@@ -36,7 +105,7 @@ import pageImage from '../../assets/images/pages/audit.jpg';
     </div>
   </section>
 
-  <section class="section">
+  <section id="audit-detail" class="section scroll-mt-20">
     <div class="container-page">
       <div class="grid lg:grid-cols-2 gap-16">
         <div class="reveal">
