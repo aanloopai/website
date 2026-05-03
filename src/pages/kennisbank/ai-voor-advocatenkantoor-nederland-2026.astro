@@ -1,0 +1,367 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Sector-specifiek kennisbank-artikel: AI voor advocatenkantoor MKB Nederland.
+// Pattern parallel aan notaris/accountant artikels maar specifiek op NOvA-Voda + Advocatenwet
+// + beroepsgeheim Art. 218 Sv / 7:457 BW + Wwft-poortwachterschap.
+//
+// Sources:
+// - NOvA — Nederlandse Orde van Advocaten (advocatenorde.nl)
+// - Verordening op de Advocatuur (Voda)
+// - Advocatenwet + Wet ter voorkoming van witwassen (Wwft)
+// - Raad voor Rechtsbijstand — toevoegingen-systeem (rvr.org)
+// - Hof van Discipline + lokale Dekens (tuchtrechtspraak)
+// - Autoriteit Persoonsgegevens — DPIA-richtlijn voor juridische dienstverleners
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI voor advocatenkantoor Nederland 2026 — NOvA-bewust en beroepsgeheim-respecterend',
+  description: 'Hoe AI receptionist en WhatsApp-agent intake, secretariaat-pieken en cliëntcommunicatie automatiseren voor Nederlandse advocatenkantoren. NOvA-Voda-conform, Advocatenwet-respecterend, Wwft-poortwachter, beroepsgeheim onder Art. 218 Sv geborgd, integratie met Adveniat, Cortex, Bill4Time en Microsoft 365.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-04',
+  dateModified: '2026-05-04',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-voor-advocatenkantoor-nederland-2026/',
+  inLanguage: 'nl-NL',
+  about: [
+    { '@type': 'Thing', name: 'Advocatenkantoor' },
+    { '@type': 'Thing', name: 'AI receptionist' },
+    { '@type': 'Thing', name: 'NOvA gedragsregels' },
+    { '@type': 'Thing', name: 'Beroepsgeheim advocaten' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/ai-voor-advocatenkantoor-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+
+const faqItems = [
+  { question: 'Mag een advocatenkantoor AI inzetten onder NOvA-gedragsregels?', answer: 'Ja, voor administratieve intake, statusvragen en routinematig cliëntcontact. De Verordening op de Advocatuur (Voda) en de gedragsregels eisen kerncompetenties als deskundigheid, partijdigheid voor cliënt, vertrouwelijkheid en onafhankelijkheid — geen van deze worden geraakt door AI die pre-juridisch intake doet. Juridisch advies, processuele beoordelingen en zaakstrategie blijven uitsluitend voorbehouden aan de advocaat. Aanloop AI configureert prompt-restricties zodat de AI nooit juridisch advies kan geven of standpunten kan innemen.' },
+  { question: 'Hoe wordt het beroepsgeheim onder Art. 218 Sv en 7:457 BW geborgd?', answer: 'Alle data wordt EU-only verwerkt op ISO 27001-gecertificeerde cloud-infrastructuur in Frankfurt of Amsterdam, geen modeltraining op cliëntendata, encrypted data-at-rest en in transit, en een audit-trail die voldoet aan tuchtrechtelijke toezichtseisen van de Deken en het Hof van Discipline. De verwerkersovereenkomst onder AVG artikel 28 plus expliciete geheimhoudings-clausule voor advocaten-cliënt-relatie is standaard inbegrepen.' },
+  { question: 'Werkt dit met onze Adveniat, Cortex of Bill4Time?', answer: 'Ja, via directe API-koppelingen voor Adveniat (Wolters Kluwer), Cortex Legal Practice Management, Bill4Time, BillyGrace, en TimeLogger. Voor Microsoft 365 + SharePoint integratie via Microsoft Graph API. Voor eigen-built dossier-systemen werken we via secure REST-webhooks of beveiligde IMAP-mail-routing. Onboarding 7-14 werkdagen voor één-pakket integratie, 14-21 dagen voor multi-pakket configuratie.' },
+  { question: 'Wat als een cliënt een Wwft-vraag stelt aan de AI?', answer: 'AI escaleert direct naar de verantwoordelijke advocaat of compliance-officer. Cliëntenonderzoek (Customer Due Diligence) en risicobeoordelingen onder Wwft zijn altijd mensenwerk vanwege de wettelijke meldplicht bij FIU-Nederland — advocaten zijn poortwachter voor specifieke financiële transacties zoals onroerend goed, oprichtingen, fusies en grote contante betalingen.' },
+  { question: 'Kan de AI ook juridische adviezen geven of stukken opstellen?', answer: 'Nee. Juridisch advies, het redigeren van processtukken, conceptbrieven aan tegenpartij, dagvaardingen of pleitnota\'s is voorbehouden aan advocaten en advocaat-medewerkers onder de Advocatenwet. AI ondersteunt uitsluitend administratief: cliëntintake, status-updates over lopende zaken, document-checklists opvragen, afspraken plannen, en standaard-vragen over kantoorprocedures beantwoorden.' },
+  { question: 'Hoe gaat AI om met spoed-zaken en deadlines?', answer: 'AI herkent urgentie-keywords (dagvaarding, beroep, kort geding, voorlopige voorziening, conservatoir beslag, hoger beroep, cassatie, arrestatie, voorgeleiding) en escaleert binnen seconden naar de dienstdoende advocaat. Voor reguliere termijnen (antwoord-akte, conclusie van repliek, hogere voorziening) houdt AI automatisch de zaakdeadline bij in uw practice management software en stuurt herinneringen 7 en 3 dagen vooraf naar de behandelend advocaat.' },
+  { question: 'Werkt dit ook voor toevoegingen-zaken (gefinancierde rechtsbijstand)?', answer: 'Ja, AI kan eerstelijns inkomensgegevens uitvragen en de inschatting maken of een toevoeging mogelijk is op basis van de huidige inkomens- en vermogensgrenzen die de Raad voor Rechtsbijstand publiceert. Voor de definitieve aanvraag bij Raad voor Rechtsbijstand schakelt AI altijd door naar uw secretariaat — het indienen van toevoegingsverzoeken blijft mensenwerk vanwege specifieke documentatievereisten en spoedingangsregelingen.' },
+  { question: 'Wat is de gemiddelde ROI voor een MKB-advocatenkantoor?', answer: 'Voor een gemiddeld advocatenkantoor met 3-8 advocaten (5-15 FTE totaal) en 200-600 actieve dossiers ligt de ROI op 8-20 keer op 12-maand basis. Concreet: 30-60 uur secretariaat-tijd per maand vrijgespeeld (waarde 1.800-3.600 euro), 24/7-bereikbaarheid voorkomt verloren intake bij familie- en strafrecht-spoeden (waarde 2.000-5.000 euro/mnd door hoog gem. dossier 3.000-15.000 euro), snellere status-vragen-respons verhoogt cliënttevredenheid en repeat-business in zakelijke praktijken.' },
+];
+
+const automatableProcesses = [
+  {
+    title: 'Eerstelijns cliënten-intake',
+    body: 'Nieuwe cliënt belt of WhatsAppt: "ik zoek een advocaat voor een arbeidsconflict". AI vraagt rechtsgebied (familie/arbeid/onderneming/straf/IE), urgentie (acute deadline, lopende kwestie, preventief), tegenpartij-context (geen rechtstreeks contact = goed voor partijdigheid), en plant kennismakingsgesprek met de juiste specialist. Bij toevoeging-vermoeden: inkomensvraag plus link naar Raad voor Rechtsbijstand-toets.',
+  },
+  {
+    title: 'Status-vragen lopende dossiers',
+    body: 'Bestaande cliënt vraagt: "is de antwoord-akte ingediend, wanneer is mijn zitting, heb ik gereageerd op de tegenvordering". AI haalt realtime status uit Adveniat/Cortex, geeft accurate status terug zonder juridische duiding, en wijst naar de behandelend advocaat voor inhoudelijke vragen. 50-65 procent van piek-volume opgelost zonder advocaat-tijd.',
+  },
+  {
+    title: 'Termijnen en deadlines',
+    body: 'AI bewaakt zaakdeadlines (antwoord-akte, conclusie repliek/dupliek, hogere voorziening, cassatie-termijn) door realtime sync met practice management software. 7 dagen vooraf herinnering naar advocaat, 3 dagen vooraf urgentie-escalatie, op de deadline-dag een laatste check op aanwezigheid in dossier.',
+  },
+  {
+    title: 'Documenten opvragen voor zaak-opbouw',
+    body: 'Cliënt belt over arbeidsrechtelijke kwestie. AI vraagt automatisch: arbeidsovereenkomst, ontslagbrief, mailwisseling werkgever (laatste 3 maanden), eventueel vaststellingsovereenkomst, loonstrook laatste 3 maanden, BSN voor toevoegings-aanvraag. Documentchecklist gepersonaliseerd per rechtsgebied.',
+  },
+  {
+    title: 'Spoed-doorschakeling 24/7',
+    body: 'Cliënt belt buiten kantoortijd: "mijn zoon is opgepakt, ik heb advocaat nodig". AI herkent strafrecht-spoed-keywords, geeft direct het piket-nummer of dienstdoende advocaat door (afhankelijk van jouw piket-rooster), en logt het contact in dossier voor follow-up de volgende ochtend. Voorkomt verlies van piket-zaken.',
+  },
+  {
+    title: 'Toevoegings-eligibility eerstelijns check',
+    body: 'Cliënt zonder spaargeld vraagt: "kunt u mij helpen, ik heb geen geld voor advocaat". AI vraagt globale inkomensindicatie (binnen of boven Wsnp-norm), gezinssamenstelling en vermogen. Geeft inschatting of toevoeging mogelijk is plus link naar zelftest op rvr.org. Bij eligible: schakel door naar secretariaat voor definitieve aanvraag.',
+  },
+];
+
+const escalationKeywords = [
+  '"wat is mijn kans" → escaleer (zaakstrategie)',
+  '"moet ik tekenen" → escaleer (juridisch advies)',
+  '"klopt deze brief" → escaleer (inhoudelijke beoordeling)',
+  '"is dit verjaard" → escaleer (juridisch advies)',
+  '"strafmaat" → escaleer (strafadvies)',
+  '"omgangsregeling" → escaleer (familieadvies)',
+  '"voorlopige voorziening" → escaleer (procespositie)',
+  '"ontslag op staande voet" → escaleer (urgent arbeidsrecht)',
+  '"aangehouden" / "opgepakt" → escaleer (urgent strafrecht piket)',
+  '"dagvaarding ontvangen" → escaleer (termijn-bewaking)',
+];
+
+const integrations = [
+  { name: 'Adveniat',                    type: 'Practice management',           integratie: 'Native API via Wolters Kluwer — dossier, agenda, tijd-registratie' },
+  { name: 'Cortex',                      type: 'Legal practice management',     integratie: 'Native API — dossier-status, deadlines, conflict-check' },
+  { name: 'Bill4Time',                   type: 'Time tracking + facturatie',    integratie: 'Native API — uren-registratie + factuurkoppeling' },
+  { name: 'BillyGrace',                  type: 'Tijdschrijven advocaten',       integratie: 'Native API — populair bij MKB-kantoren' },
+  { name: 'Microsoft 365 + SharePoint',  type: 'Document management',           integratie: 'Microsoft Graph API — dossier-stukken + beveiligde mail' },
+  { name: 'TimeLogger',                  type: 'Tijd-registratie',              integratie: 'API plus e-mail-import (geen public REST)' },
+  { name: 'Raad voor Rechtsbijstand',    type: 'Toevoegingen-portaal',          integratie: 'Geen API — AI biedt eligibility-indicatie, mens dient in' },
+  { name: 'Beneluxregister',             type: 'Octrooi/merken (IE-praktijk)',  integratie: 'Webhooks plus secure mail-routing' },
+];
+
+const roiBreakdown = [
+  { post: 'Setup-verlies door spoed-zaken (geen 24/7-piket)',          before: '€5.000-€15.000/jr',          after: '€1.000-€3.000/jr (80% reductie)' },
+  { post: 'Secretariaat-tijd routine-vragen',                          before: '30-60u/mnd',                  after: '8-15u/mnd (75% reductie)' },
+  { post: 'Niet-aangenomen bel-momenten in piek (familie/straf)',      before: '12-20% gemiste leads',        after: '<3% gemiste leads' },
+  { post: 'Termijn-misses en daaraan verbonden tucht-risico',          before: '1-3 incidenten/jr',           after: '<1 incident/jr (auto-bewaking)' },
+  { post: 'Cliënttevredenheid status-vragen (interne NPS)',            before: '40-60 punten',                after: '70-85 punten (+25 NPS)' },
+  { post: 'Maandelijkse Aanloop-investering',                         before: '—',                          after: '€597-€1.197/mnd Marco+Emma' },
+];
+---
+
+<BaseLayout
+  title="AI voor advocatenkantoor Nederland 2026 — NOvA-bewust en beroepsgeheim-respecterend | Aanloop AI"
+  description="Hoe AI receptionist plus WhatsApp-agent intake, spoed-zaken en cliëntcommunicatie automatiseren voor Nederlandse advocatenkantoren. NOvA-Voda-conform, beroepsgeheim Art. 218 Sv geborgd, Wwft-poortwachter, AVG-proof, Adveniat/Cortex/Bill4Time-integratie."
+  schema={[articleSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Sector — Advocatenkantoor</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          AI voor advocatenkantoor — NOvA-bewust en beroepsgeheim-respecterend
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          Nederlandse advocaten werken onder strikte regels: het beroepsgeheim onder artikel 218 Sv en 7:457 BW, de Verordening op de Advocatuur (Voda), Advocatenwet, Wwft-poortwachterschap voor specifieke transacties, AVG voor cliëntdata. Tegelijk moet het kantoor commercieel bereikbaar zijn voor familie-, straf-, arbeids-, ondernemings- en IE-zaken. Een AI receptionist plus WhatsApp-agent kan 50-65 procent van eerstelijns cliëntvragen autonoom afhandelen — mits goed geconfigureerd met strikte prompt-restricties. Hieronder: precies welke processen automatiseerbaar zijn, hoe AI binnen NOvA-Voda blijft, en welke ROI Nederlandse MKB-advocatenkantoren halen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Welke processen automatiseerbaar zijn</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI assistent voor een advocatenkantoor neemt vooral de pre-juridische intake over: telefoongesprekken aannemen waarbij prospects naar diensten vragen (familierecht, strafrecht, ondernemingsrecht, arbeidsrecht, intellectueel eigendom, IT-recht), benodigde documenten opvragen, klantgegevens registreren en een afspraak plannen met de juiste specialist. De AI legt geen juridische adviezen vast, geeft geen processuele inschattingen, en signaleert direct wanneer er sprake is van complexe casussen die mensenwerk vereisen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor lopende cliënten handelt de AI status-vragen af (is mijn antwoord-akte ingediend, wanneer is mijn zitting, kan ik nog stukken aanleveren) door realtime te kijken in uw practice management software (Adveniat, Cortex, Bill4Time of een eigen tool). Dit ontlast secretaresses voor 50-65 procent van inkomende routine-contacten zodat zij meer tijd hebben voor complexer ondersteunend werk.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk: de AI vervangt nooit de adviesfunctie. Bij elke escalatie naar een advies-vraag schakelt de AI direct door naar mens. Voor Wwft-vragen (poortwachterschap bij onroerend goed, oprichtingen, fusies, grote contante betalingen) blokkeert de AI volledig — die moeten altijd door een advocaat zelf worden afgehandeld vanwege de wettelijke meldplicht aan FIU-Nederland.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Top 6 processen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wat AI direct van u overneemt.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-6">
+        {automatableProcesses.map((p, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <p class="text-base font-bold text-navy mb-2">{p.title}</p>
+            <p class="text-sm text-slate-600 leading-relaxed">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">NOvA-Voda en AI: wat mag en wat niet</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De Nederlandse Orde van Advocaten heeft geen AI-specifieke verordening, maar de Verordening op de Advocatuur (Voda) en de gedragsregels gelden onverminderd. Belangrijkste: deskundigheid (artikel 10 Advocatenwet), partijdigheid voor cliënt, vertrouwelijkheid (beroepsgeheim onder artikel 218 Sv en 7:457 BW), en onafhankelijkheid. Voor AI betekent dit: alle data EU-only verwerkt (geen US-leveranciers zonder Standard Contractual Clauses plus aanvullende waarborgen na Schrems-II), geen modeltraining op cliëntdata, expliciete vermelding aan cliënt dat AI eerstelijns intake doet, en escalatie naar mens bij elke advies- of standpunt-vraag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI levert specifiek voor advocatenkantoren een NOvA-bewuste implementatie: vooraf-gescripte prompt-restricties die de AI verhinderen juridisch advies of standpunten te formuleren, automatische escalatie bij advies-keywords (zie volgende sectie), conflict-check-attentie (AI vraagt potentiële tegenpartij voor doorschakeling om strijdige belangen te detecteren), en logging-trail die voldoet aan tuchtrechtelijke toezichtsverplichtingen van Deken en Hof van Discipline.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor Wwft-compliance: AI-intake mag identificatiegegevens vragen (NAW, BSN, KvK, UBO-relaties) als onderdeel van het cliëntenonderzoek, maar de risico-classificatie en de beslissing om de zaak aan te nemen blijven volledig mensenwerk. AI ondersteunt door alle CDD-documenten (Customer Due Diligence) op te vragen voordat de advocaat het dossier opent. Bij signalen van ongebruikelijke transacties (UTM-meldplicht voor specifieke advocaat-handelingen) escaleert de AI altijd naar de compliance-officer of de behandelend advocaat zelf.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Escalatie-protocol</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">10 keywords die AI direct naar u doorzet.</h2>
+        <p class="mt-3 text-slate-600">Voor advocatenkantoren configureren we strikte keyword-detection: zodra de cliënt iets advies-aanverwants of urgent-juridisch zegt, schakelt de AI in milliseconden door naar de verantwoordelijke advocaat. Geen kans op onbedoeld advies door AI, en piket-zaken gaan nooit verloren.</p>
+      </div>
+      <ul class="space-y-2 reveal reveal-delay-1">
+        {escalationKeywords.map((k) => (
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700">
+            <svg class="w-4 h-4 mt-1 flex-shrink-0 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M5 19h14a2 2 0 001.84-2.75L13.74 4a2 2 0 00-3.48 0L3.16 16.25A2 2 0 005 19z"/></svg>
+            <span>{k}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Integraties</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Werkt met uw bestaande practice management.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">8 native of webhook-koppelingen voor de meest gebruikte Nederlandse pakketten plus Microsoft 365. Eigen-built dossier-systemen via secure REST-routing.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Pakket</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Type</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Integratie-methode</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {integrations.map(i => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-navy">{i.name}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{i.type}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs">{i.integratie}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Voorbeeldgesprek: AI handelt arbeidsrecht-intake af</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Cliënt belt op dinsdag 10:30: "ik ben gisteren ontslagen en ik wil weten of dat zomaar mag". De AI antwoordt: "ik help u graag verder bij de juiste advocaat. Voor we starten een paar korte vragen: was uw ontslag op staande voet of een opzegging met termijn, heeft u een ontslagbrief of vaststellingsovereenkomst ontvangen, hoe lang werkte u bij deze werkgever". Cliënt antwoordt: ontslag op staande voet, brief gisteren, 7 jaar in dienst. AI herkent urgent arbeidsrecht (termijn protest 6 maanden) en plant binnen 24 uur een arbeidsrecht-specialist in. Document-checklist meegestuurd: ontslagbrief, arbeidsovereenkomst, loonstroken laatste 3 maanden, mailwisseling werkgever laatste 6 maanden. Total tijd: 4 minuten.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk wat de AI niet doet: geen uitspraak over rechtmatigheid van het ontslag ("op staande voet vereist een dringende reden"), geen schatting van transitievergoeding, geen tactisch advies om het ontslag aan te vechten — al deze vragen worden geescaleerd naar de arbeidsrecht-advocaat voor de afspraak. De AI zegt expliciet: "voor inhoudelijke vragen over uw situatie hebben we de advocaat nodig. Tijdens uw afspraak komt dit aan bod."</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor cliëntervaring: 90 procent van bellers waardeert directe respons (geen wachttijd, geen voicemail), accurate doorschakeling (geen "ik kijk het uit en bel terug"), en geruststellende toon zonder valse beloften. NPS bij advocatenkantoren met AI-intake stijgt typisch met +20-30 punten in spoed-rechtsgebieden (familie, straf, arbeid).</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Concrete ROI</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Voor een MKB-kantoor met 5 advocaten en 380 actieve dossiers.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Realistische cijfers per maand voor een gemiddeld Nederlands advocatenkantoor (5 advocaten plus 8 ondersteunend FTE). Uw eigen ROI varieert per rechtsgebieden-mix, piket-aandeel, en toevoegingen-aandeel.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-4 text-slate-500 font-medium w-[44%]">Metric</th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[28%]">Vóór AI</th>
+              <th class="text-left py-4 px-4 font-bold text-brand-emerald w-[28%]">Met Aanloop AI</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {roiBreakdown.map(r => (
+              <tr>
+                <td class="py-3 px-4 text-slate-700">{r.post}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.before}</td>
+                <td class="py-3 px-4 text-navy font-medium text-xs">{r.after}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Bottom-line voor 5-advocaat kantoor: gemiddelde ROI 8-20 keer op 12-maand basis, payback-periode 4-8 weken. Vooral interessant: tucht-risico-reductie door auto-deadline-bewaking en nooit-meer-piket-misser via 24/7 spoed-doorschakeling.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Implementatie roadmap voor advocatenkantoren</h2>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Een succesvolle AI-implementatie in een advocatenkantoor verloopt in drie fasen. Fase 1 (week 1-2) is discovery en design: we analyseren 100 historische cliëntcontacten over alle rechtsgebieden om de meest voorkomende intake-vragen, escalaties en spoed-patronen in kaart te brengen. Op basis hiervan ontwerpen we de conversational flow, intake-vragenlijst per rechtsgebied, en escalatieprotocollen die specifiek bij uw werkwijze, specialisatie-mix en piket-rooster passen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-2">Fase 2 (week 3-5) is build en pilot: we configureren de AI met uw kennisbank (FAQ per rechtsgebied, document-checklists per zaaktype, sector-specifieke procedures), koppelen aan uw practice management software (Adveniat/Cortex/Bill4Time) plus Microsoft 365, en testen intern twee weken lang. In deze periode simuleren u en uw team realistische cliënt-scenarios — de AI leert van correcties en wordt steeds nauwkeuriger op uw specifieke jargon en escalatie-criteria. Eind fase 2 gaat de AI live met 20-30 procent van uw cliëntverkeer voor monitoring.</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-3">Fase 3 (week 6-12) is scale en optimaliseer: volledig live op het primaire kanaal met dagelijkse KPI-monitoring, wekelijkse iteratie op basis van handover-data en maandelijkse rapportage. Bij positieve resultaten breiden we uit naar tweede kanaal (typisch WhatsApp Emma na telefoon Marco, of vice versa). Vanaf maand 4 is de AI volledig zelfstandig met alleen kwartaalreviews voor strategische verbeteringen.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">AI voor advocatenkantoor — antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Bronnen en verder lezen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Onafhankelijke bronnen voor uw eigen onderzoek.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="https://www.advocatenorde.nl/voor-advocaten/regelgeving" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">NOvA — Verordening op de Advocatuur</p>
+          <p class="text-slate-600 mt-1 text-xs">Voda en gedragsregels, beroepsgeheim, kwaliteitsbeleid.</p>
+        </a>
+        <a href="https://wetten.overheid.nl/BWBR0002093/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Advocatenwet</p>
+          <p class="text-slate-600 mt-1 text-xs">Officiële tekst Advocatenwet via wetten.overheid.nl.</p>
+        </a>
+        <a href="https://www.fiu-nederland.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">FIU-Nederland — Wwft-meldpunt</p>
+          <p class="text-slate-600 mt-1 text-xs">Meldplicht ongebruikelijke transacties bij UTM voor advocaten.</p>
+        </a>
+        <a href="https://www.rvr.org/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Raad voor Rechtsbijstand</p>
+          <p class="text-slate-600 mt-1 text-xs">Toevoegingen, eligibility-tests, vergoedingen-overzicht.</p>
+        </a>
+        <a href="https://autoriteitpersoonsgegevens.nl/themas/basis-avg/avg-algemeen/data-protection-impact-assessment-dpia" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Autoriteit Persoonsgegevens — DPIA</p>
+          <p class="text-slate-600 mt-1 text-xs">Wanneer is een DPIA wettelijk verplicht onder artikel 35 AVG.</p>
+        </a>
+        <a href="/diensten/marco/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Marco — AI receptionist</p>
+          <p class="text-slate-600 mt-1 text-xs">De telefoon-component voor advocatenkantoren met 24/7 piket-doorschakeling.</p>
+        </a>
+        <a href="/kennisbank/ai-voor-notariskantoor-nederland-2026/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ AI voor notariskantoor</p>
+          <p class="text-slate-600 mt-1 text-xs">Sector-pattern voor parallel juridische dienstverlening.</p>
+        </a>
+        <a href="/kennisbank/ai-voor-accountantskantoor-nederland-2026/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ AI voor accountantskantoor</p>
+          <p class="text-slate-600 mt-1 text-xs">Vergelijkbaar AVG-strict + Wwft-poortwachterschap profiel.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Klaar voor 24/7 piket-bereikbaarheid?
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Onboarding 7-14 werkdagen voor één pakket, 14-21 dagen voor multi-pakket. Maandelijks opzegbaar, NOvA-bewuste configuratie, EU-only data-verwerking met DPIA-template inbegrepen plus geheimhouding-clausule onder Art. 218 Sv. Tijdens uw demo simuleren we een live spoed-strafrecht-call zodat u zelf hoort hoe Marco escaleert.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een live demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bekijk tarieven
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
