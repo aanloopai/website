@@ -1,5 +1,8 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import heroAiAgent from '../../assets/images/hero-ai-agent.png';
+import dashboardMockup from '../../assets/images/dashboard-mockup.png';
 
 const features = [
   'Neemt 24/7 gesprekken aan in vloeiend Nederlands',
@@ -109,19 +112,56 @@ const schema = {
             <a href="/tarieven/" class="btn-outline text-base px-6 py-3.5">Bekijk tarieven</a>
           </div>
         </div>
-        <!-- Stats card -->
-        <div class="grid grid-cols-2 gap-4">
-          {[
-            { value: '70%', label: 'minder gemiste gesprekken', color: 'text-brand-indigo' },
-            { value: '24/7', label: 'beschikbaar, ook in het weekend', color: 'text-brand-rose' },
-            { value: '7 dgn', label: 'gemiddelde time-to-live', color: 'text-brand-amber' },
-            { value: '€597', label: 'vanaf per maand all-in', color: 'text-brand-emerald' },
-          ].map(s => (
-            <div class="card text-center">
-              <div class={`text-3xl font-bold ${s.color}`}>{s.value}</div>
-              <div class="text-xs text-slate-500 mt-1">{s.label}</div>
-            </div>
-          ))}
+        <!-- Hero visual: AI receptionist device with overlay stat cards -->
+        <div class="relative">
+          <div class="absolute -inset-6 -z-10 bg-gradient-to-br from-brand-indigo/15 via-transparent to-brand-rose/10 blur-3xl"></div>
+          <div class="rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/20 ring-1 ring-slate-200/50">
+            <Image
+              src={heroAiAgent}
+              alt="Marco AI receptionist — 24/7 telefoon-assistent voor MKB Nederland, vloeiend Nederlands"
+              class="w-full h-auto"
+              loading="eager"
+              decoding="async"
+              widths={[400, 600, 900, 1200]}
+              sizes="(min-width: 1024px) 50vw, 100vw"
+              format="webp"
+              quality={88}
+            />
+          </div>
+          <!-- Floating stat: minder gemiste gesprekken -->
+          <div class="absolute -top-4 -left-4 bg-white rounded-2xl shadow-xl border border-slate-100 p-4 hidden sm:block">
+            <div class="text-2xl font-bold text-brand-indigo">70%</div>
+            <div class="text-[11px] text-slate-500 mt-0.5 leading-tight">minder gemiste<br/>gesprekken</div>
+          </div>
+          <!-- Floating stat: vanaf prijs -->
+          <div class="absolute -bottom-5 -right-4 bg-white rounded-2xl shadow-xl border border-slate-100 p-4 hidden sm:block">
+            <div class="text-2xl font-bold text-brand-emerald">€597</div>
+            <div class="text-[11px] text-slate-500 mt-0.5 leading-tight">vanaf p/mnd<br/>all-in</div>
+          </div>
+          <!-- Floating "live" indicator -->
+          <div class="absolute top-1/2 -translate-y-1/2 -right-2 bg-white rounded-full shadow-lg border border-slate-100 px-3 py-1.5 hidden md:flex items-center gap-2">
+            <span class="relative flex h-2.5 w-2.5">
+              <span class="absolute inline-flex h-full w-full rounded-full bg-brand-emerald opacity-75 animate-ping"></span>
+              <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-brand-emerald"></span>
+            </span>
+            <span class="text-xs font-semibold text-navy">24/7 live</span>
+          </div>
+        </div>
+
+        <!-- Mobile-only stat strip (compensates for hidden floating stats on small screens) -->
+        <div class="grid grid-cols-3 gap-3 sm:hidden mt-6">
+          <div class="text-center">
+            <div class="text-xl font-bold text-brand-indigo">70%</div>
+            <div class="text-[10px] text-slate-500 mt-0.5">minder gemist</div>
+          </div>
+          <div class="text-center">
+            <div class="text-xl font-bold text-brand-rose">24/7</div>
+            <div class="text-[10px] text-slate-500 mt-0.5">beschikbaar</div>
+          </div>
+          <div class="text-center">
+            <div class="text-xl font-bold text-brand-emerald">€597</div>
+            <div class="text-[10px] text-slate-500 mt-0.5">v/a per maand</div>
+          </div>
         </div>
       </div>
     </div>
@@ -177,6 +217,50 @@ const schema = {
           <p class="text-sm text-slate-600 leading-relaxed">Iedere week ontvangt u een rapport met gespreksvolume, conversieratio en transcripten van interessante calls. Wij stellen scriptverbeteringen voor; u beslist. Marco wordt beter elke maand zonder dat u extra hoeft te trainen.</p>
         </li>
       </ol>
+
+      <!-- Dashboard preview — wat klanten elke dag in handen hebben -->
+      <div class="mt-16 reveal">
+        <div class="grid lg:grid-cols-5 gap-10 items-center">
+          <div class="lg:col-span-2">
+            <p class="eyebrow mb-3">Live klantdashboard</p>
+            <h3 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy text-balance mb-4">
+              Iedere call, iedere lead, in één overzicht.
+            </h3>
+            <p class="text-slate-600 leading-relaxed mb-6">
+              Vanaf dag 1 ziet u realtime hoe Marco presteert: actieve gesprekken, gemiddelde antwoordtijd, conversie per dag en transcripts van elke call. Geen black box — u heeft de controle.
+            </p>
+            <ul class="space-y-2.5">
+              {[
+                'Realtime gespreks- en lead-metrics',
+                'Volledige transcripts en opnames',
+                'Wekelijkse rapportage per e-mail',
+                'Export naar uw BI-tool (Looker, Power BI)',
+              ].map(f => (
+                <li class="flex items-start gap-2 text-sm text-slate-700">
+                  <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  {f}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div class="lg:col-span-3 relative">
+            <div class="absolute -inset-6 -z-10 bg-gradient-to-br from-brand-indigo/10 via-transparent to-brand-emerald/10 blur-3xl"></div>
+            <div class="rounded-2xl overflow-hidden shadow-2xl shadow-slate-900/15 ring-1 ring-slate-200/60 bg-midnight">
+              <Image
+                src={dashboardMockup}
+                alt="Marco klant-dashboard — live gespreksmetrics, leads en conversie van uw AI-receptionist"
+                class="w-full h-auto"
+                loading="lazy"
+                decoding="async"
+                widths={[480, 800, 1200, 1600]}
+                sizes="(min-width: 1024px) 60vw, 100vw"
+                format="webp"
+                quality={85}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 

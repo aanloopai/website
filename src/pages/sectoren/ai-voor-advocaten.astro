@@ -1,5 +1,7 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import sectorImage from '../../assets/images/sectoren/advocaten.jpg';
 
 const faqItems = [
   { question: 'Hoe kan AI een advocatenkantoor helpen?', answer: 'AI helpt advocatenkantoren op drie gebieden: (1) intake-screening — automatisch kwalificerende vragen stellen aan potentiële cliënten, (2) agendabeheer — afspraken inplannen en bevestigen zonder receptionist, (3) documentverwerking — contracten en dossiers snel indexeren. Het resultaat: meer factureerbare uren, minder administratie.' },
@@ -13,6 +15,7 @@ const schema = { '@context': 'https://schema.org', '@type': 'Service', serviceTy
 <BaseLayout title="AI voor Advocatenkantoren in Nederland | Aanloop AI" description="AI agent voor advocatenkantoren: intake-screening, agendabeheer en documentverwerking. AVG-compliant. Bespaar 10-20 uur per week. KVK: 88606902." schema={schema} faqSchema={faqItems}>
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-20">
+      <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
       <div class="max-w-3xl">
         <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Sectoren · Juridisch</span></div>
         <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">AI voor Advocatenkantoren:<br/>Meer Factureerbare Uren, Minder Administratie</h1>
@@ -21,6 +24,10 @@ const schema = { '@context': 'https://schema.org', '@type': 'Service', serviceTy
           <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI Scan voor advocaten<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
           <a href="/prijzen/" class="btn-outline">Bekijk tarieven</a>
         </div>
+      </div>
+      <div class="reveal reveal-delay-2">
+        <Image src={sectorImage} alt="Vrouwe Justitia statue — AI voor advocatenkantoren en juridische dienstverlening" class="w-full rounded-2xl shadow-xl object-cover aspect-[4/3]" loading="eager" decoding="async" fetchpriority="high" widths={[480, 800, 1200, 1400]} sizes="(min-width: 1024px) 600px, 100vw" format="webp" quality={82} />
+      </div>
       </div>
     </div>
   </section>
