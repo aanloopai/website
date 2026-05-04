@@ -92,7 +92,7 @@ Voor "instance of business" + "located in Rotterdam" + "Chamber of Commerce iden
 reference URL (P854): https://www.kvk.nl/zoeken/?source=all&q=88606902
 title: KvK Handelsregister 88606902
 publisher: Kamer van Koophandel
-retrieved: <today's date>
+retrieved: 2026-05-04
 ```
 
 Voor "official website":
@@ -100,7 +100,7 @@ Voor "official website":
 ```
 reference URL: https://aanloopai.nl
 title: Aanloop AI - Officiële website
-retrieved: <today's date>
+retrieved: 2026-05-04
 ```
 
 ---
