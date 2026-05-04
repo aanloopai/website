@@ -1,0 +1,364 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Strategie-content: AI Agency vs eigen AI-engineer in dienst — TCO + time-to-value
+// + risico-vergelijking voor MKB Nederland. Conversie funnel-bottom counter-objection.
+//
+// Companion van Voicelabs €299 TCO counter-content (commit 8ba0084) — dekt nu de
+// andere kant: niet "concurrent-agency vs Aanloop" maar "agency vs in-house engineer".
+//
+// Bronnen / aannames:
+// - CBS data Nederlandse arbeidsmarkt IT/AI-engineers 2026
+// - Salaris-benchmarks via Hays/Robert Half/Michael Page reports 2026
+// - Werkgever-totaalkosten conform CBS-formule (~1.35x bruto loon)
+// - Onboarding-doorlooptijd typisch MKB pilot
+// - Time-to-MVP voor LLM-pipeline + voice-agent + WhatsApp-integratie
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI Agency vs eigen AI-engineer Nederland 2026 — TCO €11.700 vs €1.197/mnd, time-to-value 7-14 dagen vs 6-12 maanden',
+  description: 'Volledige TCO-vergelijking AI agency vs eigen AI-engineer in dienst voor Nederlandse MKB. Loonkosten + werkgeverslasten + recruitment + tooling + risico-matrix. Wanneer agency wint, wanneer in-house wint, en wanneer u beide nodig heeft.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-04',
+  dateModified: '2026-05-04',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-agency-vs-eigen-engineer-mkb-nederland-2026/',
+  inLanguage: 'nl-NL',
+  about: [
+    { '@type': 'Thing', name: 'AI engineer' },
+    { '@type': 'Thing', name: 'AI agency' },
+    { '@type': 'Thing', name: 'TCO Total Cost of Ownership' },
+    { '@type': 'Thing', name: 'MKB Nederland' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/ai-agency-vs-eigen-engineer-mkb-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+
+const faqItems = [
+  { question: 'Is het niet goedkoper om gewoon zelf een AI-engineer in dienst te nemen?', answer: 'Op het eerste gezicht lijkt €70.000-€100.000 bruto/jr aan loonkosten vergelijkbaar met €597-€1.197/mnd agency-fee. Maar: bruto loon × 1,35 (werkgeverslasten WGA/WHK/ZVW/pensioen/vakantiegeld) = €95.000-€135.000 totaal werkgeverskosten/jr. Plus: €15.000-€30.000 recruitment-kosten (recruiter-fee 25% jaarsalaris bij headhunter), €5.000-€10.000 tooling per jaar (Cursor/GitHub Copilot/Claude/cloud-budget), €5.000-€15.000 onboarding/training. Totaal jaar-1: €125.000-€190.000 voor één engineer. Dat is €10.400-€15.800/mnd vs €1.197/mnd agency. Agency wint bij 8-13x lager TCO.' },
+  { question: 'Maar dan heb ik wel mijn eigen IP en geen vendor lock-in toch?', answer: 'Bij Aanloop AI hebben uw klant-data, prompts, kennisbank en configuratie 100 procent uw eigendom — geen vendor lock-in op data. Code en infrastructuur zijn gestandaardiseerd open-source componenten (Twilio voice, WhatsApp Business API, OpenAI/Anthropic LLM via API, eigen orchestratie-laag). U kunt op elk moment overstappen naar in-house implementatie of andere agency met behoud van data en context. Het IP-argument geldt vooral voor proprietary deep-tech bouw — voor implementatie van AI receptionist of WhatsApp-agent op MKB-schaal is dit géén relevante moat.' },
+  { question: 'Wat als ik een unieke use-case heb die geen agency aankan?', answer: 'Eerlijk antwoord: dat is wanneer in-house wel zin heeft. Indicatoren: (a) uw concurrentievoordeel zit in de AI-implementatie zelf, niet in de business-resultaten ervan, (b) u heeft 250+ engineer-jaar aan AI-werk te doen (bijv. fintech met realtime fraud-detection ML), (c) compliance-eisen die externe verwerker-relatie verbieden (bepaalde overheids- of defensie-context). Voor 95 procent van Nederlandse MKB met AI receptionist + WhatsApp + workflow-automatisering valt geen van deze. Agency-route met API-toegang plus implementatie-partner is dan strikt superieur op TCO en time-to-value.' },
+  { question: 'Hoe lang duurt het voordat ik live ben met agency vs in-house?', answer: 'Agency Aanloop AI: 7-14 werkdagen voor één-pakket (Marco AI receptionist) tot 28-42 dagen voor multi-pakket plus complexe EPD/CRM-koppeling. In-house engineer: minimaal 4-6 maanden recruitment-tijd (NL AI-engineer markt is 2026 zeer krap, 60-90 dagen tot ondertekenen contract plus 30-60 dagen opzegtermijn vorige werkgever). Daarna 60-120 dagen onboarding plus eerste MVP. Totaal time-to-live: 8-14 maanden. Verschil: agency leeft 6-12 maanden eerder. Voor een praktijk met €5.000/mnd no-show kosten = €30.000-€60.000 verloren tijdens wachten op in-house team.' },
+  { question: 'Wat als mijn engineer vertrekt na 2 jaar?', answer: 'Statistisch hoog risico: gemiddelde tenure van AI-engineer in NL 2026 is 1.8-2.3 jaar (LinkedIn data). Bij vertrek: alle context, prompts, configuraties en operationele kennis vertrekt mee. Onboarding nieuwe engineer kost 4-6 maanden tot productieve kennis-overdracht plus €15.000-€30.000 nieuwe recruitment. Agency continuiteit-risico is anders: agency heeft typisch 3-8 engineers per klant-stack-domein, kennis is in documentatie + processen geborgd. Continuiteit-eis: kies agency met expliciete service-continuiteits-clausule en data-export-recht in contract.' },
+  { question: 'Wanneer raden jullie wel in-house engineer aan?', answer: 'Wij zijn eerlijk hierover: in-house engineer is de juiste keuze als (a) AI is uw kern-product en differentiator, niet uw efficiency-tool, (b) u heeft >250 engineer-uren AI-werk per maand structureel, (c) compliance- of geheimhoudings-eisen sluiten externe verwerker uit, (d) u bouwt iets unieks dat nog niemand heeft (R&D, niet implementatie). Voor 95 procent van MKB die "alleen maar" AI receptionist, WhatsApp-agent, workflow-automatisering of CRM-integratie wil: agency is structureel goedkoper, sneller en lager-risico. Hybride model (agency voor implementatie + 1 in-house product owner zonder coding) werkt soms ook goed bij snelle scale-ups.' },
+  { question: 'Kan ik overstappen van agency naar in-house later als ik schaal?', answer: 'Ja, en bij Aanloop AI faciliteren wij dit actief. Wij leveren bij elk project: (1) volledige data-export + documentatie van prompts en kennisbank, (2) infrastructuur-as-code repository (Terraform/scripts) zodat u de hele stack kunt overnemen, (3) overdrachts-traject van 4-8 weken waarin uw nieuwe in-house engineer ingewerkt wordt, (4) optionele afbouw naar consultancy-uurtarief. Het is in ons belang dat u met opgebouwde context kunt overgaan in plaats van vendor-lock-in voelen — dat geeft eerlijker langetermijn-relatie.' },
+  { question: 'Wat als ik beide doe — agency voor implementatie, eigen engineer voor onderhoud?', answer: 'Dat werkt en is voor scale-ups vanaf 50+ FTE een verstandige tussenstap. Pattern: agency bouwt en lanceert (maand 1-3), agency draagt over aan uw in-house team (maand 4-6), in-house draait operationeel met agency op consultancy-uurtarief voor escalatie of nieuwe features (maand 7+). Total-cost in jaar-1: €40.000-€60.000 (agency build + transition) plus geleidelijk groeiende in-house investering. In jaar 2 onafhankelijk. Pas op: dit pattern werkt alleen als u écht intentie heeft om in-house op te bouwen — anders blijven beide kosten lopen.' },
+];
+
+const tcoBreakdown = [
+  { post: 'Bruto loon AI-engineer (mid-senior NL 2026)',           inhouse: '€70.000-€100.000/jr',          agency: 'n.v.t.' },
+  { post: 'Werkgeverslasten (WGA/WHK/ZVW/pensioen/vakantiegeld, ~1.35x)', inhouse: '€24.500-€35.000/jr',     agency: 'n.v.t.' },
+  { post: 'Recruitment-fee (25% jaarsalaris bij headhunter)',        inhouse: '€17.500-€25.000 eenmalig',     agency: 'n.v.t.' },
+  { post: 'Tooling (Cursor/Copilot/Claude/cloud-budget)',            inhouse: '€5.000-€10.000/jr',            agency: 'inbegrepen' },
+  { post: 'Onboarding + training eerste 6 mnd',                      inhouse: '€10.000-€20.000 eenmalig',     agency: 'n.v.t.' },
+  { post: 'Hardware + werkplek + secundair',                         inhouse: '€3.000-€6.000/jr',             agency: 'n.v.t.' },
+  { post: 'Aanloop AI agency-fee (Marco + Emma multi-pakket)',       inhouse: 'n.v.t.',                       agency: '€597-€1.197/mnd' },
+  { post: 'Onboarding-fee Aanloop (eenmalig, soms gratis bij jaar-contract)', inhouse: 'n.v.t.',                agency: '€0-€2.500 eenmalig' },
+  { post: 'TCO jaar-1 (excl. recruiter en build)',                   inhouse: '€112.500-€171.000',            agency: '€7.164-€16.864' },
+  { post: 'TCO jaar-2 (steady-state)',                               inhouse: '€102.500-€151.000',            agency: '€7.164-€14.364' },
+  { post: 'Effectief €/maand jaar-2',                                inhouse: '€8.500-€12.600/mnd',           agency: '€597-€1.197/mnd' },
+];
+
+const timeToValueBreakdown = [
+  { phase: 'Recruitment + ondertekenen contract',                inhouse: '60-90 dagen',                  agency: '0 dagen (direct beschikbaar)' },
+  { phase: 'Opzegtermijn vorige werkgever',                      inhouse: '30-60 dagen',                  agency: 'n.v.t.' },
+  { phase: 'Onboarding + eerste werkende setup',                 inhouse: '30-60 dagen',                  agency: '7-14 werkdagen voor één pakket' },
+  { phase: 'Eerste werkende AI receptionist live',               inhouse: '120-180 dagen',                agency: '7-14 werkdagen' },
+  { phase: 'EPD/CRM-koppeling productie-rijp',                   inhouse: '60-90 dagen na MVP',           agency: '14-21 dagen extra' },
+  { phase: 'Multi-pakket Marco + Emma volledig operationeel',    inhouse: '8-14 maanden totaal',          agency: '28-42 dagen totaal' },
+  { phase: 'Gemiste omzet tijdens wachten (no-show kosten ~€5k/mnd)', inhouse: '€40.000-€70.000 verloren', agency: '€2.000-€7.000 verloren' },
+];
+
+const riskMatrix = [
+  { risk: 'Engineer vertrekt (NL gemiddelde tenure 1.8-2.3 jr)',     inhouse: 'HOOG: kennis vertrekt, €15-30k re-recruit', agency: 'LAAG: agency-team continuïteit' },
+  { risk: 'Verkeerde technische keuze in pilot (Voicelabs-syndroom)', inhouse: 'HOOG: 6-mnd verlies + nieuwe MVP',          agency: 'LAAG: agency draagt build-risico' },
+  { risk: 'Compliance-fout (NEN 7510, AVG, branchecode)',             inhouse: 'HOOG: in-house mist niche-expertise',       agency: 'LAAG: agency doet 50+ MKB klanten met dezelfde stack' },
+  { risk: 'Onderhouds-overhead bij nieuwe LLM-versie',                inhouse: 'MIDDEL: jaarlijks 80-160u upgrade-werk',    agency: 'LAAG: inbegrepen in fee' },
+  { risk: 'Schaal naar 2e of 3e use-case',                           inhouse: 'MIDDEL: extra engineer of overuren',         agency: 'LAAG: nieuwe pakket toevoegen' },
+  { risk: 'IP/data-eigendom verlies bij agency-stop',                 inhouse: 'GEEN: alles in eigen huis',                  agency: 'MIDDEL: contract-clausule cruciaal' },
+  { risk: 'Vendor lock-in op specifieke LLM-provider',                inhouse: 'LAAG: kies zelf wat past',                   agency: 'LAAG bij goed agency: API-providers swap-baar' },
+];
+
+const whenInhouseWins = [
+  'Uw kern-product is AI zelf (LLM-startup, computer vision SaaS, autonomous-agent platform)',
+  '>250 engineer-uren AI-werk per maand structureel (FTE-equivalent gerechtvaardigd)',
+  'Compliance-eisen sluiten externe verwerker uit (defensie, sommige overheid, banking met DNB-toezicht op specifieke domeinen)',
+  'U bouwt iets dat geen agency kan leveren (R&D, niet-bestaande integraties, eigen ML-modellen op proprietary data)',
+  'Schaal-fase: 100+ FTE bedrijf met meerdere AI use-cases en jaar-budget >€500k',
+];
+
+const whenAgencyWins = [
+  'AI is uw efficiency-tool, niet uw kern-product (95% van MKB-cases)',
+  'Standaard-implementaties: AI receptionist, WhatsApp-agent, workflow-automatisering, CRM-koppeling',
+  'Time-to-live is kritiek: u verliest geld elke maand zonder AI (no-show, gemiste leads, secretariaat-overload)',
+  'Budget <€10.000/mnd voor AI-stack — agency past op MKB-budget, in-house engineer NIET',
+  'U mist branche-specifieke compliance-expertise (NEN 7510 zorg, NOvA-Voda advocaat, Wta accountant)',
+  'U wilt geen recruitment-overhead, geen people-management, geen turnover-risico',
+  'Multi-pakket use-case maar één-FTE niet genoeg engineer-werk voor full-time job',
+];
+---
+
+<BaseLayout
+  title="AI Agency vs eigen AI-engineer Nederland 2026 — TCO €11.700 vs €1.197/mnd | Aanloop AI"
+  description="Volledige TCO-vergelijking AI agency vs eigen AI-engineer in dienst voor Nederlandse MKB. Loonkosten + werkgeverslasten + recruitment + tooling + risico-matrix. Wanneer agency wint, wanneer in-house wint, en wanneer u beide nodig heeft."
+  schema={[articleSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Strategie — Buy vs Build</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          AI Agency of eigen AI-engineer — wat kost het écht in 2026?
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          MKB-ondernemers krijgen vaak het advies "neem gewoon een AI-engineer aan" alsof dat één-op-één vergelijkbaar is met €597-€1.197/mnd voor een agency. De realiteit is dat één AI-engineer in 2026 in Nederland €112.500-€171.000 per jaar kost als u recruitment, werkgeverslasten, tooling en onboarding meerekent — dat is 8-14 keer duurder dan agency-route, met een time-to-live van 8-14 maanden in plaats van 7-42 dagen. Hieronder: volledige TCO-vergelijking, time-to-value-vergelijking, risico-matrix, en eerlijk advies wanneer in-house écht beter is. Geen verkooppraatje, alleen cijfers en context die u zelf kunt verifiëren.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">De verborgen kosten van een eigen AI-engineer</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Het meest gemaakte rekenfout in MKB-context: kijken naar bruto jaarsalaris en dat als totaalkosten beschouwen. Een mid-senior AI-engineer in Nederland kost in 2026 €70.000-€100.000 bruto/jr (bron: Hays/Robert Half/Michael Page benchmarks). Daar bovenop komen werkgeverslasten van ongeveer 35 procent — WGA, WHK, ZVW, pensioenpremie, vakantiegeld, vakantieuren-reservering — wat het brengt naar €95.000-€135.000 totaalkosten loon per jaar. Dat is nog steeds niet alles.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Recruitment in de Nederlandse AI-engineer markt 2026 is structureel krap. Een headhunter-fee bedraagt 22-30 procent van het bruto jaarsalaris bij succesvolle plaatsing, dus €17.500-€30.000 eenmalig. Tooling (Cursor IDE, GitHub Copilot, Claude API-budget, OpenAI API-budget, AWS/Azure infrastructuur, monitoring-tools) komt op €5.000-€10.000 per jaar. Onboarding plus eerste 6 maanden training en context-opbouw kost €10.000-€20.000 in productiviteits-verlies. Hardware, werkplek en secundaire arbeidsvoorwaarden voegen €3.000-€6.000 per jaar toe.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Totaal jaar-1: €112.500-€171.000 per AI-engineer. Effectief per maand: €9.400-€14.250. Vergelijking: Aanloop AI agency-route met Marco plus Emma multi-pakket inclusief alle kennisbank-onderhoud, prompt-iteratie, EPD-koppeling en 24/7 monitoring kost €597-€1.197 per maand. Verschil: agency is 8-14 keer goedkoper TCO. Voor 95 procent van MKB use-cases (AI receptionist, WhatsApp-agent, workflow-automatisering) levert in-house geen merkbare waarde-toevoeging boven agency.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">TCO-vergelijking jaar-1 en jaar-2</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Volledige Total Cost of Ownership.</h2>
+        <p class="mt-3 text-slate-600 max-w-3xl">Cijfers in 2026 euro, gebaseerd op publieke salaris-benchmarks (Hays/Robert Half/Michael Page) plus standaard CBS-formule voor werkgeverslasten (~1.35x bruto). Agency-fee gebaseerd op Aanloop AI Marco + Emma multi-pakket. Uw werkelijke kosten variëren per regio, ervaring-niveau engineer en complexiteit use-case.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-4 text-slate-500 font-medium w-[50%]">Kostenpost</th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[25%]">Eigen engineer</th>
+              <th class="text-left py-4 px-4 font-bold text-brand-emerald w-[25%]">Agency (Aanloop)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {tcoBreakdown.map(r => (
+              <tr>
+                <td class="py-3 px-4 text-slate-700">{r.post}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.inhouse}</td>
+                <td class="py-3 px-4 text-navy font-medium text-xs">{r.agency}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-sm text-slate-600 max-w-3xl reveal reveal-delay-2">Verschil per maand jaar-2 steady-state: <strong class="text-navy">€8.500-€12.600 in-house vs €597-€1.197 agency</strong>. Factor 8-14× goedkoper. Per jaar: €100.000-€150.000 verschil. Voor MKB met €5.000/mnd no-show kosten: agency haalt break-even binnen weken, in-house pas na 2-3 jaar productieve periode (mits engineer überhaupt zo lang blijft).</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Time-to-value</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wanneer bent u live?</h2>
+        <p class="mt-3 text-slate-600 max-w-3xl">Per fase: hoe lang duurt het tot uw AI receptionist of WhatsApp-agent productie-live staat. Inclusief de verborgen wachttijd op recruitment plus opzegtermijn vorige werkgever — wat MKB-eigenaars vaak vergeten in hun planning.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-4 text-slate-500 font-medium w-[44%]">Fase</th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[28%]">Eigen engineer</th>
+              <th class="text-left py-4 px-4 font-bold text-brand-emerald w-[28%]">Agency (Aanloop)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {timeToValueBreakdown.map(r => (
+              <tr>
+                <td class="py-3 px-4 text-slate-700">{r.phase}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.inhouse}</td>
+                <td class="py-3 px-4 text-navy font-medium text-xs">{r.agency}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-sm text-slate-600 max-w-3xl reveal reveal-delay-2">Concreet: agency leeft 6-12 maanden eerder dan in-house. Voor een tandarts- of fysiotherapie-praktijk met €5.000/mnd no-show kosten betekent dit <strong class="text-navy">€30.000-€60.000 verloren omzet</strong> tijdens het wachten op de eigen engineer. Voor een huisartsenpraktijk met 25-40 procent piekuur-onbereikbaarheid is het effect gelijksoortig — patiëntfrustratie groeit, sommigen schrijven uit, vraagt een paar jaar om te herstellen.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Risico-matrix</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Welke risico's loopt u in welk model?</h2>
+        <p class="mt-3 text-slate-600 max-w-3xl">Beide modellen hebben risico's. In-house betekent volledige operationele controle maar ook 100 procent eigen kennisretentie-risico. Agency betekent contractueel afgedekt continuiteit maar je moet de juiste partner kiezen. Hieronder: 7 risico-categorieën waar MKB op moet letten.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-4 text-slate-500 font-medium w-[40%]">Risico-categorie</th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[30%]">Eigen engineer</th>
+              <th class="text-left py-4 px-4 font-bold text-brand-emerald w-[30%]">Agency (Aanloop)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {riskMatrix.map(r => (
+              <tr>
+                <td class="py-3 px-4 text-slate-700">{r.risk}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.inhouse}</td>
+                <td class="py-3 px-4 text-navy font-medium text-xs">{r.agency}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wanneer agency écht beter is voor uw MKB</h2>
+      <ul class="space-y-3 mb-8">
+        {whenAgencyWins.map((w) => (
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-emerald-50/40 p-4 text-sm text-slate-700">
+            <svg class="w-4 h-4 mt-1 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span>{w}</span>
+          </li>
+        ))}
+      </ul>
+
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 mt-12">Wanneer in-house écht beter is</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Wij zijn eerlijk hierover — agency is niet altijd de beste keuze. Voor specifieke profielen werkt in-house engineer beter ondanks de hogere TCO en langere time-to-value. De vijf indicatoren waarbij u serieus moet overwegen om een eigen engineer aan te nemen of het hybride model te kiezen:</p>
+      <ul class="space-y-3 mb-8">
+        {whenInhouseWins.map((w) => (
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-amber-50/40 p-4 text-sm text-slate-700">
+            <svg class="w-4 h-4 mt-1 flex-shrink-0 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+            <span>{w}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="text-slate-600 leading-relaxed mb-4">Als één of meer van deze profielen op u van toepassing is: kies voor in-house, eventueel met initial agency-build die later wordt overgedragen. Anders: agency is structureel goedkoper, sneller en lager-risico.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Het hybride model: agency-build, in-house operate</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor scale-ups vanaf 50+ FTE met groeiende AI-ambitie is het hybride model vaak de beste tussenstap. Pattern: agency bouwt, lanceert en draait operationeel in maand 1-3. Tussen maand 4-6 wordt de stack overgedragen aan een nieuwe in-house engineer (die u in maand 1-3 al hebt geworven, parallel aan agency-build). Vanaf maand 7+ draait in-house operationeel met agency op consultancy-uurtarief voor escalatie of nieuwe features.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voordeel: u heeft 6 maanden eerder een werkende AI-stack (vs pure in-house 8-14 maanden), uw engineer wordt onboard met al-werkende productie-stack in plaats van vanaf scratch, en u behoudt de optie om terug naar agency te gaan als de engineer vertrekt. Nadeel: total-cost jaar-1 is hoger dan pure agency (€40.000-€60.000 voor agency build + transition plus parallel-loon engineer), maar vanaf jaar 2 onafhankelijk en goedkoper dan agency-perpetual als u écht structureel AI-werk hebt.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Bij Aanloop AI faciliteren wij dit overdrachts-model expliciet. Standaard inbegrepen bij elk project: data-export rechten, infrastructure-as-code documentatie, prompt + kennisbank versie-controle, plus 4-8 weken overdrachts-traject. Wij verdienen aan succesvolle implementatie, niet aan gedwongen vendor-lock-in. Een tevreden klant die later in-house gaat is voor ons net zo waardevol als een lange-termijn agency-klant.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Buy vs build — eerlijke antwoorden.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Bronnen en verder lezen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Verifieer onze cijfers zelf.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="https://www.hays.nl/salarisgids" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Hays Salarisgids 2026</p>
+          <p class="text-slate-600 mt-1 text-xs">Onafhankelijke salaris-benchmarks AI/data engineer Nederland.</p>
+        </a>
+        <a href="https://www.roberthalf.nl/salarisgids" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Robert Half Salarisgids</p>
+          <p class="text-slate-600 mt-1 text-xs">Tweede onafhankelijke benchmark voor IT-functies NL.</p>
+        </a>
+        <a href="https://www.cbs.nl/nl-nl/cijfers/detail/85019NED" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">CBS — Werkgeverskosten loon</p>
+          <p class="text-slate-600 mt-1 text-xs">Officiële cijfers over werkgeverslasten op brutoloon.</p>
+        </a>
+        <a href="https://www.uwv.nl/werkgevers/wga-en-ziektewet/index.aspx" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">UWV — WGA en Ziektewet</p>
+          <p class="text-slate-600 mt-1 text-xs">Werkgeverspremies wettelijke werknemersverzekeringen.</p>
+        </a>
+        <a href="/kennisbank/ai-telefoonagent-starter-tco-mkb-nederland/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ TCO Voicelabs starter (€299) deepdive</p>
+          <p class="text-slate-600 mt-1 text-xs">Companion-artikel: 7 verborgen kostenposten goedkope agency-route.</p>
+        </a>
+        <a href="/kennisbank/ai-agency-kiezen-mkb-nederland-2026/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ AI Agency kiezen — buyer guide</p>
+          <p class="text-slate-600 mt-1 text-xs">12 selectiecriteria + 8 red flags voor agency-keuze.</p>
+        </a>
+        <a href="/tarieven/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Aanloop AI tarieven</p>
+          <p class="text-slate-600 mt-1 text-xs">Transparante tarief-overzicht: Marco, Emma, multi-pakket.</p>
+        </a>
+        <a href="/ai-roi-calculator/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ ROI-calculator</p>
+          <p class="text-slate-600 mt-1 text-xs">Bereken uw eigen TCO en ROI voor agency-route.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Eerlijk advies of pure verkooppraat?
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Tijdens uw demo nemen wij uw use-case door en geven eerlijk antwoord — agency, in-house, hybride of geen van drieën. Als uw situatie écht beter past bij in-house, zeggen wij dat. Als hybride-model logischer is, beschrijven wij hoe overdracht eruit ziet. Geen pressure-tactic, alleen analyse die u zou doen als u zelf adviseur was.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek strategie-gesprek
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bekijk tarieven
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
