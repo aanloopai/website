@@ -1,0 +1,125 @@
+#!/usr/bin/env node
+// Auto-generate public/sitemap.xml from src/pages, excluding noindex pages,
+// dynamic routes, and well-known non-canonical URLs (404, bedankt, demo-*).
+const fs = require('fs');
+const path = require('path');
+
+const ROOT = path.join(__dirname, '..');
+const PAGES_DIR = path.join(ROOT, 'src', 'pages');
+const SITEMAP = path.join(ROOT, 'public', 'sitemap.xml');
+const SITE = 'https://aanloopai.nl';
+
+// On-disk pages that exist but should NOT be in sitemap (post-submit / 404)
+const SITEMAP_EXCLUDE = new Set([
+  '/404/',
+  '/bedankt/',
+  '/demo-bedankt/',
+  '/demo-bevestigd/',
+  '/demo-herplannen/',
+  '/demo-inplannen/',
+]);
+
+function walk(dir, files = []) {
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) walk(full, files);
+    else if (entry.isFile() && entry.name.endsWith('.astro')) files.push(full);
+  }
+  return files;
+}
+
+function pageToUrl(file) {
+  const rel = path.relative(PAGES_DIR, file).replace(/\\/g, '/');
+  let url = '/' + rel.replace(/\.astro$/, '');
+  if (url.endsWith('/index')) url = url.slice(0, -'index'.length);
+  if (!url.endsWith('/')) url += '/';
+  return url;
+}
+
+function isDynamicRoute(file) {
+  return /\[[^\]]+\]/.test(path.relative(PAGES_DIR, file));
+}
+
+function isNoindex(content) {
+  return /<BaseLayout\b[^>]*?\bnoindex(?:=\{?true\}?)?(?:\s|>|\/)/.test(content);
+}
+
+function priorityFor(url) {
+  if (url === '/') return '1.0';
+  if (url === '/diensten/' || url === '/cases/' || url === '/sectoren/') return '0.9';
+  if (url.startsWith('/diensten/') && (url.includes('bundel') || url.includes('website-laten-maken') || url.includes('webshop-laten-maken'))) return '0.95';
+  if (url.startsWith('/diensten/')) return '0.9';
+  if (url === '/gratis-ai-scan/' || url === '/no-show-calculator/') return '0.85';
+  if (url === '/branche-statistieken-mkb-ai-nederland/') return '0.85';
+  if (url.startsWith('/sectoren/')) return '0.85';
+  if (url.startsWith('/cases/')) return '0.8';
+  if (url.startsWith('/kennisbank/')) return '0.8';
+  if (url.startsWith('/locaties/')) return '0.75';
+  if (url.startsWith('/vergelijk/')) return '0.75';
+  if (url === '/glossarium/') return '0.75';
+  if (url.startsWith('/ai-')) return '0.85';
+  return '0.7';
+}
+
+function changefreqFor(url) {
+  if (url.startsWith('/team/') || url === '/glossarium/' || url === '/pers/') return 'monthly';
+  if (url.startsWith('/locaties/')) return 'monthly';
+  return 'weekly';
+}
+
+const today = new Date().toISOString().slice(0, 10);
+
+const files = walk(PAGES_DIR);
+const urls = [];
+const skipped = { noindex: [], dynamic: [], excluded: [] };
+
+for (const file of files) {
+  if (isDynamicRoute(file)) {
+    skipped.dynamic.push(path.relative(ROOT, file));
+    continue;
+  }
+  const content = fs.readFileSync(file, 'utf8');
+  const url = pageToUrl(file);
+  if (isNoindex(content)) {
+    skipped.noindex.push(url);
+    continue;
+  }
+  if (SITEMAP_EXCLUDE.has(url)) {
+    skipped.excluded.push(url);
+    continue;
+  }
+  urls.push(url);
+}
+
+urls.sort();
+
+// Preserve existing lastmod values where the URL was already present
+const existingXml = fs.existsSync(SITEMAP) ? fs.readFileSync(SITEMAP, 'utf8') : '';
+const lastmodMap = new Map();
+for (const m of existingXml.matchAll(/<loc>([^<]+)<\/loc>\s*<lastmod>([^<]+)<\/lastmod>/g)) {
+  const u = m[1].replace(SITE, '');
+  lastmodMap.set(u, m[2]);
+}
+
+const xmlLines = [
+  '<?xml version="1.0" encoding="UTF-8"?>',
+  '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
+];
+
+for (const u of urls) {
+  const loc = SITE + u;
+  const lastmod = lastmodMap.get(u) || today;
+  xmlLines.push(
+    `  <url><loc>${loc}</loc><lastmod>${lastmod}</lastmod><changefreq>${changefreqFor(u)}</changefreq><priority>${priorityFor(u)}</priority></url>`
+  );
+}
+
+xmlLines.push('</urlset>');
+xmlLines.push('');
+
+fs.writeFileSync(SITEMAP, xmlLines.join('\n'));
+
+console.log(`Wrote ${urls.length} URLs to public/sitemap.xml`);
+console.log(`Skipped noindex (${skipped.noindex.length}): ${skipped.noindex.join(', ')}`);
+console.log(`Skipped dynamic (${skipped.dynamic.length}): ${skipped.dynamic.join(', ')}`);
+console.log(`Skipped excluded (${skipped.excluded.length}): ${skipped.excluded.join(', ')}`);

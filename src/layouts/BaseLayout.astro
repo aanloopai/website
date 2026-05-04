@@ -24,7 +24,14 @@ const {
 } = Astro.props;
 
 const canonical = canonicalOverride ?? new URL(Astro.url.pathname, 'https://aanloopai.nl').toString();
-const fullTitle = title.includes('Aanloop') ? title : `${title} · Aanloop AI`;
+// Smart suffix: only append " · Aanloop AI" when total stays <=60 chars
+// (Google SERP truncation threshold). Hardcoded "Aanloop" in source title
+// is respected verbatim — no double-suffix.
+const TITLE_SUFFIX = ' · Aanloop AI';
+const TITLE_MAX = 60;
+const fullTitle = title.includes('Aanloop')
+  ? title
+  : (title.length + TITLE_SUFFIX.length <= TITLE_MAX ? `${title}${TITLE_SUFFIX}` : title);
 
 // Per-page OG-image: derive from URL path, fallback to default
 const ogSlugMap: Record<string, string> = {
