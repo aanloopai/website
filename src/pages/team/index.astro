@@ -1,0 +1,118 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const teamSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': 'https://aanloopai.nl/team/#collection',
+  name: 'Team Aanloop AI',
+  description: 'Het team achter Aanloop AI — AI-specialisten voor het Nederlandse MKB.',
+  url: 'https://aanloopai.nl/team/',
+  isPartOf: { '@id': 'https://aanloopai.nl/#website' },
+  about: { '@id': 'https://aanloopai.nl/#organization' },
+};
+---
+
+<BaseLayout
+  title="Team Aanloop AI — AI-specialisten voor MKB"
+  description="Maak kennis met het team achter Aanloop AI. AI-specialisten met 10+ jaar ervaring in voice AI, WhatsApp-bots en workflow automatisering voor MKB Nederland."
+  schema={teamSchema}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Ons team</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI-specialisten voor het Nederlandse MKB.
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty max-w-2xl">
+          Aanloop AI B.V. is een Rotterdams AI-bureau dat zich exclusief richt op het MKB. We combineren technische diepgang met praktische implementatie — geen beloftes, alleen werkende oplossingen die binnen 7 werkdagen live staan.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="grid md:grid-cols-2 gap-8 max-w-5xl">
+        <a
+          href="/team/daan-verhoeven/"
+          class="rounded-2xl border border-slate-200 bg-white p-8 hover:border-navy hover:shadow-md transition-all group"
+        >
+          <div class="flex items-start gap-4 mb-4">
+            <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-navy text-white text-xl font-bold">
+              DV
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-navy group-hover:underline">Daan Verhoeven</h2>
+              <p class="text-sm text-slate-500 mt-1">Oprichter &amp; CEO</p>
+            </div>
+          </div>
+          <p class="text-slate-600 leading-relaxed">
+            Begeleidt 80+ Nederlandse MKB-bedrijven met implementatie van AI-receptionisten, WhatsApp-assistenten en workflow automatisering. 10+ jaar ervaring in tech en automation.
+          </p>
+          <p class="mt-4 text-sm font-semibold text-navy group-hover:underline">
+            Lees profiel →
+          </p>
+        </a>
+
+        <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 p-8">
+          <div class="flex items-start gap-4 mb-4">
+            <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-500 text-xl">
+              +
+            </div>
+            <div>
+              <h2 class="text-xl font-bold text-slate-700">Het team groeit</h2>
+              <p class="text-sm text-slate-500 mt-1">We zijn aan het werven</p>
+            </div>
+          </div>
+          <p class="text-slate-600 leading-relaxed">
+            Aanloop AI groeit. We zoeken AI-engineers, voice-specialisten en MKB-implementatie-consultants die direct impact willen maken bij Nederlandse ondernemers.
+          </p>
+          <a href="/vacatures/" class="mt-4 inline-block text-sm font-semibold text-navy hover:underline">
+            Bekijk openstaande rollen →
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight border-t border-slate-200 bg-slate-50/60">
+    <div class="container-page max-w-4xl">
+      <div class="grid md:grid-cols-3 gap-6 text-center">
+        <div>
+          <p class="text-3xl font-bold text-navy">80+</p>
+          <p class="text-sm text-slate-600 mt-1">MKB-implementaties</p>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-navy">2024</p>
+          <p class="text-sm text-slate-600 mt-1">Opgericht in Rotterdam</p>
+        </div>
+        <div>
+          <p class="text-3xl font-bold text-navy">7 dagen</p>
+          <p class="text-sm text-slate-600 mt-1">Gemiddelde live-tijd</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl text-center">
+      <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-4">Liever direct een gesprek?</h2>
+      <p class="text-lg text-slate-600 mb-8">
+        Plan een gratis 30-minuten adviesgesprek met Daan. Concrete adviezen voor uw bedrijf — geen verkooppraatje.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-3 justify-center">
+        <a href="/aanvragen/" class="btn-primary text-base px-6 py-3.5">
+          Plan adviesgesprek
+        </a>
+        <a href="/contact/" class="btn-outline text-base px-6 py-3.5">
+          Of stuur een bericht
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
