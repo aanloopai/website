@@ -1,0 +1,374 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Sector-specifiek kennisbank-artikel: AI voor schoonheidssalon en kapsalon MKB Nederland.
+// Pattern parallel aan zorg-cluster maar specifiek op ANBOS/ProVoet richtlijnen +
+// booking-platforms (Salonized, Treatwell, Booksy, Phorest) + no-show patroon
+// (25-45% — hoogste van alle MKB-sectoren) + WhatsApp-first communicatie + recall/loyalty.
+//
+// Sources:
+// - ANBOS (Algemene Nederlandse Branche Organisatie Schoonheidsverzorging) — anbos.nl
+// - ProVoet (brancheorganisatie pedicure) — provoet.nl
+// - ANKO (kapperscentrum) — anko.nl
+// - KCBE (Kennis Centrum Beauty en Esthetiek)
+// - AVG voor klantgegevens beauty (geen NEN 7510 want geen zorg)
+// - Wet kosmetische geneeskunde (voor cosmetisch arts / huidtherapie)
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI voor schoonheidssalon en kapsalon Nederland 2026 — no-show 80% omlaag, agenda altijd vol',
+  description: 'Hoe AI receptionist en WhatsApp-agent intake, no-show preventie, last-minute hervulling en recall automatiseren voor Nederlandse schoonheidssalons, kapsalons en pedicure-praktijken. Salonized/Treatwell/Booksy/Phorest integratie, ANBOS-bewust, AVG-conform.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-04',
+  dateModified: '2026-05-04',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-voor-schoonheidssalon-kapsalon-nederland-2026/',
+  inLanguage: 'nl-NL',
+  about: [
+    { '@type': 'Thing', name: 'Schoonheidssalon' },
+    { '@type': 'Thing', name: 'Kapsalon' },
+    { '@type': 'Thing', name: 'AI receptionist beauty' },
+    { '@type': 'Thing', name: 'No-show reductie' },
+    { '@type': 'Thing', name: 'WhatsApp marketing salon' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/ai-voor-schoonheidssalon-kapsalon-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+
+const faqItems = [
+  { question: 'Werkt AI ook voor kleine salons (1-2 stoelen)?', answer: 'Ja, juist daar levert AI vaak de hoogste relatieve waarde. Voor solo-schoonheidsspecialist of -kapper die nu alle telefoongesprekken zelf neemt tijdens behandelingen verstoren bel-momenten direct uw productieve tijd. AI receptionist neemt 100 procent van inkomende calls aan, plant in op uw beschikbare slots in Salonized of Treatwell, en stuurt herinneringen via WhatsApp. Voor 1-2-stoelen salon kost de Aanloop-investering typisch 1-2 voorkomen no-shows per week — alle waarde daarboven is netto winst.' },
+  { question: 'Hoe veel no-show kan AI écht voorkomen in beauty?', answer: 'Beauty heeft de hoogste no-show rate van alle MKB-sectoren: 25-45 procent gemiddeld, met piek bij first-time klanten en late-doordeweekse afspraken. Met AI WhatsApp-herinneringen 7-dagen, 48u, 4u vooraf plus optionele bevestigings-actie zakt no-show structureel naar 4-9 procent — een reductie van 75-85 procent. Voor een 4-stoelen salon met €60 gemiddelde behandeling betekent dit 20-40 extra productieve uren per week of €30.000-€90.000 extra omzet per jaar.' },
+  { question: 'Werkt dit met onze Salonized, Treatwell of Booksy?', answer: 'Ja, via directe API-koppelingen voor Salonized (meest-gebruikte NL platform), Treatwell, Booksy, Phorest, Mind My Salon en Adam (kapsalon-specifiek). Voor Mogelli, Mocoflo en eigen-built systemen via secure REST-webhooks. Onboarding 7-14 werkdagen voor één-platform integratie inclusief afspraakflow, no-show preventie, recall-flow en loyalty-trigger automatisering.' },
+  { question: 'Hoe gaat AI om met de WhatsApp-voorkeur van beauty-klanten?', answer: 'Beauty is de meest WhatsApp-native sector — 70-85 procent van klanten geeft de voorkeur aan WhatsApp boven telefoon voor afspraken. Aanloop AI werkt via WhatsApp Business API als primair kanaal. Klanten kunnen hun afspraak boeken, verzetten, bevestigen en zelfs een nieuw type behandeling vragen via WhatsApp-conversatie. AI gebruikt natuurlijk Nederlands, herkent korte berichten ("kan ik dinsdag 14u, voor knippen") en plant direct in. Telefoon blijft beschikbaar als achtervang voor oudere klanten.' },
+  { question: 'Hoe werkt AI met last-minute cancellaties en wachtlijst?', answer: 'Wanneer een klant 4-24u vooraf annuleert, scant AI direct de wachtlijst van klanten die op kortere termijn een afspraak wilden of op stand-by staan voor populaire behandelingen. AI stuurt automatische WhatsApp-aanbiedingen ("er is net een plek vrijgekomen woensdag 14:00 voor knippen, wil je deze hebben?") aan de eerste 3-5 wachtlijst-klanten. Eerste die JA antwoordt, krijgt de slot. Slot-vulling stijgt van 35-45 procent (handmatig bellen voor vervanging) naar 75-85 procent. Per stoel betekent dit 4-8 extra slots per maand die anders leeg waren.' },
+  { question: 'Kan AI rebookings en recall voor terugkerende behandelingen regelen?', answer: 'Ja, en dit is een onderschatte revenue-driver in beauty. 4-6 weken na een knipbeurt, 4 weken na een wenkbrauw-behandeling, 3 weken na een pedicure — AI stuurt automatisch via WhatsApp een rebooking-uitnodiging met 3 beschikbare slot-opties. Klant antwoordt met cijfer (1-2-3) en afspraak komt direct in Salonized/Treatwell te staan. Recall-conversie stijgt van 35-45 procent (geen actief systeem) naar 70-80 procent. Voor een 4-stoelen salon met 800 actieve klanten levert dit 80-150 extra rebookings per maand op.' },
+  { question: 'Hoe zit het met AVG en klantgegevens in beauty?', answer: 'Beauty valt onder algemene AVG (geen NEN 7510 zoals zorg). Aanloop AI verwerkt klantgegevens (naam, telefoon, email, voorkeurs-behandelaar, behandelhistorie, allergie-notities) EU-only op ISO 27001 cloud-infrastructuur in Frankfurt of Amsterdam, geen modeltraining op klantdata, encrypted data-at-rest en in transit. Verwerkersovereenkomst onder AVG artikel 28 standaard inbegrepen. Voor cosmetische geneeskunde / huidtherapie waarvoor wel medische gegevens worden vastgelegd, geldt aanvullende NEN 7510-bewuste verwerking.' },
+  { question: 'Wat is de gemiddelde ROI voor een MKB-salon?', answer: 'Voor een gemiddelde 3-5-stoelen schoonheidssalon of kapsalon met 600-1.000 actieve klanten ligt de ROI op 12-30 keer op 12-maand basis (hoogste in MKB-portfolio). Vier hoofdwinsten: (1) no-show reductie van 25-45 procent naar 4-9 procent levert €30.000-€90.000/jr extra omzet, (2) last-minute slot-vulling van 35-45 procent naar 75-85 procent voegt 4-8 extra omzet-slots per stoel per maand toe, (3) recall-conversie van 35-45 procent naar 70-80 procent geeft 80-150 extra rebookings per maand, (4) telefonisch routine-werk daalt 80 procent (waarde 30-60u/mnd of €1.800-€3.600).' },
+];
+
+const automatableProcesses = [
+  {
+    title: 'Eerstelijns intake nieuwe klant via WhatsApp',
+    body: 'Nieuwe klant WhatsAppt: "ik zoek een knipbeurt of pedicure voor volgende week". AI vraagt voorkeurs-behandelaar (man/vrouw, ervaring met dik haar of fijn haar, vegan-only producten), beschikbare dagen/tijden, en plant direct een eerste afspraak in Salonized of Treatwell. Voor first-time klant: korte intake-vragenlijst (allergieën, eerdere reacties, gewenste resultaat) zodat de behandelaar voorbereid de eerste sessie kan starten.',
+  },
+  {
+    title: 'No-show reductie via WhatsApp (multi-touch)',
+    body: 'Volledig automatisch: 7 dagen vooraf agenda-bevestiging, 48u vooraf herinnering met optie om te verzetten, 4u vooraf laatste herinnering met locatie + parkeertips. Voor risico-klanten (eerste afspraak, eerder no-show, late doordeweekse afspraak, dure behandeling >€80) extra bevestigings-vraag op T-24u: "antwoord JA om je afspraak te bevestigen, NEE om te verzetten". No-show daalt structureel van 25-45 procent naar 4-9 procent — direct door te rekenen naar €30.000-€90.000/jr extra omzet voor 4-stoelen salon.',
+  },
+  {
+    title: 'Last-minute cancellatie + wachtlijst-hervulling',
+    body: 'Klant annuleert 4-24u vooraf via WhatsApp. AI registreert annulering in Salonized en scant direct wachtlijst plus stand-by klanten voor populaire behandelingen. Stuurt automatische WhatsApp-aanbiedingen aan eerste 3-5 wachtlijst-kandidaten ("er is net een plek vrijgekomen woensdag 14:00 voor knippen bij Lisa, wil je deze hebben?"). Eerste JA-respons krijgt slot. Vervangings-rate stijgt van 35-45 procent (manueel bellen) naar 75-85 procent geautomatiseerd.',
+  },
+  {
+    title: 'Rebooking en recall voor terugkerende behandelingen',
+    body: 'Geheel automatisch: 4 weken na knipbeurt, 6 weken na haarverf, 3 weken na pedicure, 4 weken na wenkbrauw-behandeling stuurt AI via WhatsApp een rebooking-uitnodiging met 3 beschikbare slot-opties bij dezelfde behandelaar (mits beschikbaar) of met de vermelding wie de "next-best" alternatief is. Klant antwoordt met cijfer (1-2-3) en afspraak komt direct in Salonized te staan. Recall-conversie stijgt van 35-45 procent naar 70-80 procent.',
+  },
+  {
+    title: 'Tarief- en behandel-vragen',
+    body: 'Klant vraagt: "wat kost een knipbeurt + kleur" of "hoe lang duurt een Brazilian Wax". AI antwoordt op basis van uw eigen tarievenlijst en behandelduur-tabel (vrije-prijsvorming): "een knipbeurt + verffout-correctie kost X euro en duurt 2 uur". Voor combinatie-vragen of speciale wensen: aanbod om eerst kort overleg met de behandelaar te plannen vóór de boeking.',
+  },
+  {
+    title: 'Loyalty-trigger en retentie-aanbiedingen',
+    body: 'AI volgt klant-bezoekfrequentie. Een vaste klant die 8 weken niet meer is geweest: AI stuurt zachte WhatsApp-uitnodiging ("we missen je! Kom je binnenkort weer langs?"). Een klant die net 5e bezoek heeft: AI stuurt loyalty-cadeau-melding ("vandaag verdiend: 20% korting op je volgende behandeling — plan binnen 4 weken in"). Retentie en lifetime-value stijgen merkbaar.',
+  },
+  {
+    title: 'Status-vragen en behandel-voorbereiding',
+    body: 'Klant vraagt: "wanneer is mijn afspraak, wat moet ik meenemen, kan ik douchen voor mijn pedicure". AI haalt realtime data uit Salonized of Treatwell, beantwoordt agenda-vragen accuraat, en geeft behandel-specifieke voorbereiding (geen koffie 2u voor wax, schoon nagels voor manicure, gewassen haar voor knippen). Voor specifieke productadvies of medische vragen (zwanger + bepaalde behandeling): escalatie naar behandelaar.',
+  },
+];
+
+const escalationKeywords = [
+  '"ernstige allergische reactie" / "ademnood na behandeling" → 112',
+  '"brandwond" / "blaren" na laser of wax → escaleer salon-eigenaar',
+  '"infectie" / "pus" na piercing of microneedling → escaleer (mogelijk arts)',
+  '"klacht over behandeling" → escaleer (klachtenfunctionaris ANBOS)',
+  '"second opinion" cosmetisch → escaleer (eigenaar of huidtherapeut)',
+  '"zwanger" + bepaalde behandeling (Bot, laser) → escaleer voor advies',
+  '"medische conditie" + behandelvraag → escaleer (eventueel huidtherapeut)',
+  '"allergie geweest" + nieuwe behandeling → escaleer voor patch-test-advies',
+  '"erg veel pijn" tijdens of na behandeling → escaleer behandelaar',
+  '"product-reactie elders gehad" + zelfde behandeling vraag → escaleer',
+];
+
+const integrations = [
+  { name: 'Salonized',                       type: 'NL salon-software',           integratie: 'Native API — meest-gebruikt in NL beauty, agenda + dossier + financieel' },
+  { name: 'Treatwell',                       type: 'EU booking platform',         integratie: 'Native API — populair voor online-vindbaarheid en booking' },
+  { name: 'Booksy',                          type: 'Internationaal booking',      integratie: 'Native API — groeiend NL gebruik, mobile-first' },
+  { name: 'Phorest',                         type: 'Iers/EU salon-software',      integratie: 'Native API — populair bij multi-locatie kapsalons' },
+  { name: 'Mind My Salon',                   type: 'NL salon-software',           integratie: 'Native API — focus op kapsalons en barbershops' },
+  { name: 'Adam',                            type: 'Kapsalon-software',           integratie: 'Native API — Nederlands kapsalon-platform' },
+  { name: 'WhatsApp Business API',           type: 'Klantcommunicatie',           integratie: 'Native — WhatsApp Cloud API, primair kanaal voor beauty' },
+  { name: 'Eigen-built / Mogelli / Mocoflo', type: 'Salon-software',              integratie: 'REST-webhooks of secure data-bridge' },
+];
+
+const roiBreakdown = [
+  { post: 'No-show op afspraken (jaarlijkse omzetderving)',           before: '€30.000-€90.000/jr',          after: '€5.000-€15.000/jr (80% reductie)' },
+  { post: 'Telefonisch routine-werk',                                 before: '40-80u/mnd',                  after: '8-16u/mnd (80% reductie)' },
+  { post: 'Last-minute slot-vulling vervangings-rate',                before: '35-45% van geannuleerde',     after: '75-85% van geannuleerde' },
+  { post: 'Rebooking/recall conversie terugkerende klant',            before: '35-45% retour',                after: '70-80% retour' },
+  { post: 'Niet-aangenomen bel-momenten in piek (11-15u)',            before: '20-35% gemiste leads',        after: '<3% gemiste leads' },
+  { post: 'Klant lifetime-value door retentie-trigger',                before: '+0% baseline',                after: '+15-25% LTV stijging' },
+  { post: 'Maandelijkse Aanloop-investering',                         before: '—',                           after: '€597-€1.197/mnd Marco+Emma' },
+];
+---
+
+<BaseLayout
+  title="AI voor schoonheidssalon en kapsalon Nederland 2026 — no-show 80% omlaag | Aanloop AI"
+  description="Hoe AI receptionist plus WhatsApp-agent intake, no-show preventie, last-minute hervulling en recall automatiseren voor Nederlandse schoonheidssalons, kapsalons en pedicure-praktijken. Salonized/Treatwell/Booksy/Phorest integratie, ANBOS-bewust, AVG-conform."
+  schema={[articleSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Sector — Beauty & Salon</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          AI voor schoonheidssalon en kapsalon — no-show 80 procent omlaag
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          Beauty heeft de hoogste no-show rate van alle MKB-sectoren in Nederland — 25-45 procent gemiddeld, soms 50+ procent bij first-time klanten of late-doordeweekse afspraken. Plus: schaarse behandelaars, WhatsApp-first klantcommunicatie, vrije-prijsvorming, en telefonisch piekuur 11:00-15:00 dat klanten frustreert. Een AI receptionist plus WhatsApp-agent kan 75-85 procent van no-show voorkomen, last-minute slots automatisch hervullen, rebooking-conversie verdubbelen, en 80 procent van routine-vragen autonoom afhandelen — mits goed geconfigureerd op uw Salonized, Treatwell, Booksy of Phorest. Hieronder: precies welke processen automatiseerbaar zijn en welke ROI Nederlandse MKB-salons halen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Welke processen automatiseerbaar zijn</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI assistent voor een schoonheidssalon of kapsalon neemt vooral de eerstelijns klantcontacten over: WhatsApp-berichten en telefoongesprekken aannemen waarbij prospects of klanten naar diensten vragen (knipbeurt, kleurbehandeling, manicure, pedicure, wenkbrauw-behandeling, wax, microneedling, gezichtsbehandeling), benodigde informatie vragen (voorkeurs-behandelaar, beschikbare dagen, eventuele allergieën of speciale wensen), klantgegevens registreren in uw booking-platform en een afspraak plannen op het juiste tijdstip met de juiste behandelaar. De AI geeft geen klinische adviezen en signaleert direct wanneer er sprake is van medische escalatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor lopende klanten handelt de AI status-vragen af (wanneer is mijn afspraak, kan ik verzetten, wat moet ik meenemen voor mijn pedicure) door realtime in Salonized, Treatwell of Booksy te kijken. Daarnaast doet AI de echt revenue-kritieke automatisering: no-show preventie via WhatsApp-multi-touch herinneringen, last-minute hervulling van geannuleerde slots via wachtlijst-broadcast, rebooking-recall na knipbeurt of huid-behandeling, en loyalty-trigger voor klanten die te lang weggebleven zijn.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk: de AI vervangt nooit de behandelaars-expertise of de salon-relatie. Voor specifieke product-keuzes, allergie-vragen, contra-indicaties, of behandel-aanpassingen escaleert AI direct naar de behandelaar zelf. AI maakt het werk van uw team makkelijker en zorgt dat geen klant onbeantwoord blijft, in plaats van menselijke aandacht te vervangen.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Top 7 processen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wat AI direct van u overneemt.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-6">
+        {automatableProcesses.map((p, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <p class="text-base font-bold text-navy mb-2">{p.title}</p>
+            <p class="text-sm text-slate-600 leading-relaxed">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Waarom no-show in beauty zo hoog is — en hoe AI dit oplost</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Beauty heeft structureel de hoogste no-show rate van Nederlandse dienstensectoren: 25-45 procent gemiddeld, met piek bij first-time klanten (40-55 procent), late doordeweekse afspraken (35-50 procent) en hoge-prijs behandelingen (klanten cancellen vaker laat-minuut bij €100+ tarieven). Reden: beauty is een impuls-aankoop met laag commitment-niveau. Klanten boeken in een opwelling tijdens lunch-break, vergeten de afspraak, of voelen zich ongemakkelijk om af te zeggen en blijven gewoon weg.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI lost dit op met multi-touch WhatsApp-herinneringen plus een psychologische bevestigings-friction die het cancel-or-confirm gemakkelijker maakt dan ghost-cancellen. Pattern: 7 dagen vooraf zachte bevestiging, 48 uur vooraf herinnering met one-tap reschedule, 4 uur vooraf locatie-bericht. Voor risico-klanten extra T-24u "antwoord JA om te bevestigen". De WhatsApp-friction is vriendelijk maar dwingt klant tot actie — wat resulteert in 75-85 procent no-show reductie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Daar bovenop: de last-minute hervulling functie. Wanneer een klant 4-24u vooraf annuleert (wat met de easy-WhatsApp-flow vaker gebeurt — minder ghost-no-show), scant AI binnen seconden de wachtlijst en stuurt aanbiedingen aan de eerste 3-5 stand-by klanten. Vervangings-rate gaat van 35-45 procent (manueel bellen) naar 75-85 procent. Per stoel betekent dit 4-8 extra slots per maand die anders leeg waren — direct door te rekenen naar €240-€720 extra omzet per stoel per maand.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Escalatie-protocol</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">10 keywords die AI direct doorzet.</h2>
+        <p class="mt-3 text-slate-600">Voor schoonheidssalons configureren we strikte escalatie-keywords: zodra een klant medische klacht, allergische reactie of klacht-over-behandeling meldt, schakelt de AI binnen seconden door naar de salon-eigenaar of bij levensbedreigend direct naar 112. AI geeft nooit medisch of cosmetisch product-advies zelfstandig.</p>
+      </div>
+      <ul class="space-y-2 reveal reveal-delay-1">
+        {escalationKeywords.map((k) => (
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700">
+            <svg class="w-4 h-4 mt-1 flex-shrink-0 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M5 19h14a2 2 0 001.84-2.75L13.74 4a2 2 0 00-3.48 0L3.16 16.25A2 2 0 005 19z"/></svg>
+            <span>{k}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Integraties</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Werkt met uw bestaande booking-platform.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">8 native of webhook-koppelingen voor de meest gebruikte Nederlandse beauty-platforms plus WhatsApp Business API. Eigen-built systemen via secure REST-routing.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Systeem</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Type</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Integratie-methode</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {integrations.map(i => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-navy">{i.name}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{i.type}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs">{i.integratie}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Voorbeeldgesprek: AI vult last-minute geannuleerd slot</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Het is woensdag 09:30. Klant Mariska annuleert via WhatsApp haar afspraak van vrijdag 14:00 voor knippen + kleur (€95, 2,5 uur slot). Voorheen zou dat slot tot vrijdag leeg blijven of secretariaat zou 30 minuten bellen. Nu: AI registreert annulering in Salonized, scant binnen seconden de wachtlijst van 8 klanten die op kortere termijn een knip-of-kleur slot wilden of die op stand-by-lijst staan voor een populair tijdslot. AI prioriteert op (a) voorkeurs-behandelaar match, (b) tijd-flexibiliteit, (c) klant-loyaliteit.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">AI stuurt automatisch WhatsApp-bericht aan eerste 3 wachtlijst-kandidaten: "Hallo Sandra, er is net een plek vrijgekomen vrijdag 7 mei om 14:00 bij Lisa voor knippen + kleur. Wil je deze hebben? Antwoord JA om te bevestigen, NEE om te passen". Sandra antwoordt 11 minuten later: "JA". AI bevestigt onmiddellijk: "geboekt! vrijdag 7 mei 14:00 bij Lisa voor knippen + kleur. Tot vrijdag!" en plaatst direct in Salonized. AI annuleert tegelijk de twee andere openstaande aanbiedingen ("plek is inmiddels vergeven, we sturen je bij volgende cancellatie weer een aanbod"). Total tijd van cancel-tot-vervanging: 11 minuten zonder enig menselijk werk.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Per maand voor een 4-stoelen salon: AI vervangt typisch 16-32 anders-leeg-staande slots. Bij €60 gemiddelde behandel-omzet: €960-€1.920 extra omzet per maand alleen via deze functie — meer dan voldoende om de hele Aanloop-investering terug te verdienen.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Concrete ROI</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Voor een 4-stoelen salon met 800 actieve klanten.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Realistische cijfers per maand voor een gemiddelde Nederlandse 4-stoelen schoonheidssalon of kapsalon (3-4 behandelaars, gemiddelde behandel-prijs €60). Uw eigen ROI varieert per stoel-aantal, klantbase, behandelmix en tariefstructuur.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-4 text-slate-500 font-medium w-[44%]">Metric</th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[28%]">Vóór AI</th>
+              <th class="text-left py-4 px-4 font-bold text-brand-emerald w-[28%]">Met Aanloop AI</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {roiBreakdown.map(r => (
+              <tr>
+                <td class="py-3 px-4 text-slate-700">{r.post}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.before}</td>
+                <td class="py-3 px-4 text-navy font-medium text-xs">{r.after}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Bottom-line voor 4-stoelen salon: gemiddelde ROI 12-30 keer op 12-maand basis (hoogste in MKB-portfolio), payback-periode 1-3 weken. No-show reductie alleen al verdient de Aanloop-investering 5-10× terug per maand. Last-minute hervulling, recall en loyalty-trigger zijn allemaal pure netto-winst bovenop.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Implementatie roadmap voor salons</h2>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Een succesvolle AI-implementatie in een salon verloopt in drie korte fasen. Fase 1 (week 1) is discovery en design: we analyseren uw 100 meest-recente afspraken plus no-show patronen om de hoog-risico tijdslots, behandel-types en klant-segmenten te identificeren. Op basis hiervan ontwerpen we de WhatsApp-conversational flow, intake-vragenlijst per behandel-type, no-show preventie-multi-touch sequenties, last-minute hervullings-flow en escalatieprotocollen die specifiek bij uw werkwijze, booking-platform en klantbase passen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-2">Fase 2 (week 2-3) is build en pilot: we configureren de AI met uw kennisbank (FAQ, tarievenlijst, behandelduur-tabel, voorbereidings-instructies, allergie-procedures), koppelen aan uw Salonized/Treatwell/Booksy/Phorest plus WhatsApp Business API, en testen intern één à twee weken. In deze periode simuleren u en uw team realistische klant-scenarios — de AI leert van correcties en wordt steeds nauwkeuriger op uw specifieke jargon, behandelmix en klant-typologie. Eind fase 2 gaat de AI live met 40-50 procent van uw klantverkeer (typisch eerst no-show preventie en rebooking, daarna intake en hervulling).</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-3">Fase 3 (week 4-8) is scale en optimaliseer: volledig live op WhatsApp plus telefoon-achtervang met dagelijkse no-show KPI-monitoring, wekelijkse iteratie op herinnerings-templates en maandelijkse rapportage over no-show rate, hervullings-conversie en recall-conversie. Vanaf maand 2 ziet u typisch een stabiel no-show percentage van 4-9 procent (van 25-45 procent baseline) en 75-85 procent slot-hervullings-rate (van 35-45 procent baseline).</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">AI voor salons — antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Bronnen en verder lezen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Onafhankelijke bronnen voor uw eigen onderzoek.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="https://www.anbos.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">ANBOS — Schoonheidsspecialisten branche</p>
+          <p class="text-slate-600 mt-1 text-xs">Branche-organisatie, gedragscode, kwaliteitsbeleid voor schoonheidssalons.</p>
+        </a>
+        <a href="https://www.anko.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">ANKO — Brancheorganisatie kappers</p>
+          <p class="text-slate-600 mt-1 text-xs">Belangenbehartiging, beroepsnormen en ondersteuning kapsalons NL.</p>
+        </a>
+        <a href="https://www.provoet.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">ProVoet — Pedicure brancheorganisatie</p>
+          <p class="text-slate-600 mt-1 text-xs">Beroepsstandaarden en kwaliteitsbeleid pedicure-praktijken.</p>
+        </a>
+        <a href="https://autoriteitpersoonsgegevens.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Autoriteit Persoonsgegevens — AVG</p>
+          <p class="text-slate-600 mt-1 text-xs">AVG-verplichtingen voor dienstverleners met klantgegevens.</p>
+        </a>
+        <a href="/diensten/marco/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Marco — AI receptionist</p>
+          <p class="text-slate-600 mt-1 text-xs">De telefoon-component voor salons met behandelaar-routering.</p>
+        </a>
+        <a href="/diensten/emma/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Emma — WhatsApp-agent</p>
+          <p class="text-slate-600 mt-1 text-xs">Het no-show preventie, hervulling en recall component (primair kanaal beauty).</p>
+        </a>
+        <a href="/kennisbank/ai-no-show-reductie-mkb-nederland/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ AI No-show Reductie — multi-sector</p>
+          <p class="text-slate-600 mt-1 text-xs">Algemene no-show patroon plus benchmarks voor zorg, beauty en service.</p>
+        </a>
+        <a href="/ai-roi-calculator/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ ROI-calculator</p>
+          <p class="text-slate-600 mt-1 text-xs">Bereken uw eigen ROI voor uw schoonheidssalon of kapsalon.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Klaar om no-show 80 procent te verlagen?
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Onboarding 7-14 werkdagen voor één-platform koppeling, 14-21 dagen voor multi-pakket plus loyalty-flow. ANBOS-bewuste configuratie, AVG-conforme cloud, EU-only data-verwerking. Tijdens uw demo simuleren we een no-show preventie multi-touch flow plus een last-minute hervullings-flow op een echte WhatsApp zodat u zelf hoort hoe Emma uw salon ondersteunt.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een live demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bekijk tarieven
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
