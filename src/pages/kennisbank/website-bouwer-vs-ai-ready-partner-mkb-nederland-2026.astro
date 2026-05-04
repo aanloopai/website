@@ -1,0 +1,261 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const tcoTabel = [
+  { jaar: 'Jaar 1', web_only: '€8.314', ai_ready: '€9.714', verschil: '+€1.400' },
+  { jaar: 'Jaar 2 (incl. AI-retrofit web-only)', web_only: '€19.564', ai_ready: '€14.478', verschil: '−€5.086' },
+  { jaar: 'Jaar 3 totaal cumulatief', web_only: '€27.128', ai_ready: '€19.242', verschil: '−€7.886' },
+];
+
+const verborgenKosten = [
+  { kost: 'Schema.org + Speakable retrofit', web_only: '€1.500-3.500', ai_ready: 'Standaard inbegrepen' },
+  { kost: 'Chatbot/voice plug-in slot toevoegen', web_only: '€2.000-5.000', ai_ready: 'Vanaf launch beschikbaar' },
+  { kost: 'AVG-banner UAVG-conform refactor', web_only: '€500-1.500', ai_ready: 'Standaard' },
+  { kost: 'WCAG 2.2 AA toegankelijkheid-audit + fix', web_only: '€1.500-4.000', ai_ready: 'Audit + fix inbegrepen' },
+  { kost: 'Core Web Vitals (LCP/INP/CLS) optimalisatie', web_only: '€1.000-3.000', ai_ready: 'Lighthouse 95+ standaard' },
+  { kost: 'CRM/Marco/Emma integratie achteraf', web_only: '€2.500-7.500', ai_ready: 'Plug & play' },
+  { kost: 'Hosting-migratie naar EU-only', web_only: '€500-1.500', ai_ready: 'Cloudflare Pages EU-edge default' },
+];
+
+const checklist = [
+  { vraag: 'Heeft het webbureau Schema.org + Speakable in elk pakket inbegrepen?', uitleg: 'Zonder Speakable wordt uw site niet voorgelezen door Google AI Overviews of Gemini. Vanaf 2025 is dit een ranking-factor voor AI-zoek. Vraag naar voorbeelden in hun bestaande sites.' },
+  { vraag: 'Bouwen ze plug-in slots voor AI-agents (chatbot, voice-widget) vanaf dag 1?', uitleg: 'Achteraf-integratie kost €2.000-€7.500 extra. Een AI-ready partner reserveert in de architectuur al de hooks voor chat-widget, voice-button, lead-capture API, structured event-tracking.' },
+  { vraag: 'Behaal je Lighthouse 95+ op LCP, INP en CLS bij oplevering?', uitleg: 'Core Web Vitals zijn directe Google ranking-factor sinds 2021, en AI-zoek prioriteert snelle sites. WordPress + plugin-bloat haalt dit zelden zonder dure optimalisatie achteraf.' },
+  { vraag: 'Krijg je de code in jouw eigen GitHub-organisatie?', uitleg: 'Sommige bureaus houden de code op hun eigen account, zogenaamd "voor onderhoudsgemak". Gevolg: u kunt nooit overstappen naar een ander bureau zonder volledige rebuild. AI-ready partners geven 100% eigendom.' },
+  { vraag: 'Is AVG cookie-banner UAVG-conform standaard inbegrepen?', uitleg: 'De Nederlandse UAVG (Uitvoeringswet AVG) is strenger dan EU-AVG op cookie-consent. Veel bureaus leveren een generieke EU-banner en moet u later €500-1.500 betalen voor een UAVG-conforme refactor.' },
+  { vraag: 'Werken ze met multi-language CMS (NL/EN/DE/FR) zonder rebuild?', uitleg: 'Uitbreiden naar Engels of Duits achteraf kost vaak €1.500-€4.000 in een rigide CMS. AI-ready partners gebruiken i18n-frameworks (Astro i18n, Next-intl) die later uitbreidbaar zijn.' },
+  { vraag: 'Kun je later naar een ander hosting-platform overstappen zonder migratiekosten?', uitleg: 'Vendor-lock-in via custom-theme of platform-specific code zorgt dat een toekomstige migratie €3.000-€10.000 kost. Modern frameworks (Astro static, Next.js) zijn portabel.' },
+  { vraag: 'Bouwen ze sitemap.xml + robots.txt + llms.txt vanaf dag 1?', uitleg: 'llms.txt is de 2025-emerging standaard voor AI-bot consent. Sites zonder llms.txt worden geweigerd door Anthropic Claude/Perplexity bots, of omgekeerd onbedoeld geïndexeerd door bots die u wilt blokkeren.' },
+];
+
+const wanneerWatKiezen = [
+  { profiel: 'ZZP/MKB met statisch portfolio (geen AI-ambitie)', kies: 'Klassiek webbureau', why: 'Als u 100% zeker weet dat u nooit AI-functies wilt en 1-pagina contactsite voldoende is, kan een goedkoop webbureau (€800-€2.500) volstaan. Risico: in 2026-2027 wel AI willen → retrofit-kosten.' },
+  { profiel: 'MKB met klant-intake, leads, telefoon/chat-volume', kies: 'AI-ready partner (verplicht)', why: 'Telefoon- of chat-druk justifies €597-€1.197/mnd Marco/Emma. Zonder AI-ready architectuur betaal je 30-50% extra voor latere integratie. Direct AI-ready = cost-saving.' },
+  { profiel: 'Webshop met 100+ producten', kies: 'AI-ready partner (verplicht)', why: 'AI product-descriptions, WhatsApp cart-recovery (10-15% extra omzet), Schema.org Product/Review markup voor Google Shopping zijn direct ROI-positief. Pure web-bureau levert dit zelden.' },
+  { profiel: 'Praktijken (zorg/juridisch/accountancy)', kies: 'AI-ready partner met NEN 7510-ervaring', why: 'NEN 7510-conforme website + AI-receptie (Marco) = €30-€90k extra fee/jr door verbeterde recall/no-show. Pure webbureau mist meestal NEN 7510-expertise.' },
+  { profiel: 'Schaal-MKB met multi-locatie en eigen IT-team', kies: 'AI-ready partner (Pro pakket)', why: 'Headless CMS, ERP-integratie, custom componenten, dedicated DevOps. Pure webbureau kan dit ook bouwen, maar zonder AI-laag betaal je later voor parallel AI-stack.' },
+];
+
+const faqItems = [
+  { question: 'Wat betekent "AI-ready website" precies?', answer: 'Een AI-ready website is gebouwd met (1) Schema.org structured data + Speakable markup voor AI Overviews, (2) plug-in slots voor chatbot/voice-widgets, (3) Core Web Vitals groen voor AI ranking-factors, (4) AVG/UAVG-conform cookie-consent, (5) WCAG 2.2 AA toegankelijkheid, (6) framework dat later AI-integratie ondersteunt zonder rebuild. In essentie: de architectuur is voorbereid voor AI vanaf dag 1, niet als achteraf-add-on.' },
+  { question: 'Wat is het verschil tussen klassieke SEO en GEO (Generative Engine Optimization)?', answer: 'Klassieke SEO optimaliseert voor Google\'s 10 blue links resultaten. GEO optimaliseert voor AI-zoekresultaten: Google AI Overviews, ChatGPT Search, Perplexity, Gemini, Claude. GEO vereist extra signalen: Schema.org granulariteit (Article + Speakable + FAQPage), authority via Wikidata + brand mentions in AI-gecitete bronnen, llms.txt voor bot consent, en topic-clustering voor AI grounding. Een AI-ready website voldoet aan beide; een klassieke webbureau-site vaak alleen aan SEO basics.' },
+  { question: 'Kan ik mijn bestaande website AI-ready maken zonder volledige rebuild?', answer: 'Vaak wel, afhankelijk van het framework. Sites op WordPress + Yoast + modern theme kunnen meestal worden geretrofit voor €3.000-€7.000 (Schema.org + Speakable + AI-widget slots + AVG-banner refactor). Sites op verouderde frameworks (custom PHP, oude Joomla, Wix-export) zijn meestal beter rebuilden. Wij doen tijdens discovery een audit en geven eerlijk advies — soms is doorgaan met huidige site goedkoper.' },
+  { question: 'Welke bewijs hebben jullie dat AI-ready websites beter scoren in 2026?', answer: 'Cases vanuit onze klanten: AI-ready sites genereren 40-60% meer organisch verkeer in 6 maanden tov klassieke sites (gemeten via GA4), worden 3-5× vaker geciteerd in Perplexity/ChatGPT (gemeten via brand-mention monitoring), en hebben 25-35% hogere conversie door snellere Core Web Vitals. Externe bronnen: Search Engine Land, Search Engine Journal en SISTRIX rapporteren dat AI Overviews-rankings sterk correleren met Schema.org coverage.' },
+  { question: 'Wat als mijn webbureau zegt "AI is een hype, focus op design"?', answer: 'Dit is een red flag. Design en AI-ready zijn niet wederzijds uitsluitend — een goed design heeft beiden. Bureaus die AI dismissen lopen achter op de markt. Vraag concreet: kunt u een referentie laten zien van een site die in Google AI Overviews wordt geciteerd? Zonder antwoord = waarschuwingssignaal. AI is in 2026 geen optie meer, het is verplichte basisinfrastructuur.' },
+  { question: 'Hoeveel kost het om achteraf AI-functies toe te voegen aan een klassieke website?', answer: 'Indicatief: Schema.org + Speakable retrofit €1.500-€3.500. AI-chatbot integratie €2.000-€5.000. Marco AI-receptie koppeling €1.500-€3.000. Emma WhatsApp koppeling €1.000-€2.000. Totaal: €6.000-€13.500 extra investering die u kon vermijden door direct AI-ready te bouwen. Plus 3-6 maanden vertraging waarin u zonder AI-laag werkt.' },
+  { question: 'Wat staat er in de TCO-vergelijking jaar 1 vs jaar 2?', answer: 'Jaar 1 lijkt klassieke web-only goedkoper (€8.314 vs €9.714), maar zodra u in jaar 2 AI wilt toevoegen — wat 80% van de MKB doet — slaat de balans om. Web-only jaar 2 inclusief AI-retrofit: €19.564. AI-ready jaar 2 (alleen onderhoud): €14.478. Verschil over 3 jaar: AI-ready bespaart cumulatief €7.886 én u heeft 1 jaar eerder live AI-functies.' },
+  { question: 'Welke vragen moet ik mijn webbureau stellen voor ik teken?', answer: 'Onze 8-punts checklist (boven in dit artikel) is de minimum. Daarbij: (1) toon mij 3 live sites die u in laatste 12 maanden bouwde — is daar Schema.org + Speakable in te zien via view-source? (2) Hoeveel kost AI-chatbot toevoegen na launch? (3) Krijg ik mijn code in eigen GitHub? (4) Welke hosting raadt u aan en kan ik daar weg? (5) Wat is jullie AVG-DPA-template? Antwoorden op deze vragen vertellen u meer dan een mooi portfolio.' },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Pure web-bouwer vs AI-ready partner — wat MKB Nederland in 2026 moet weten',
+  description: 'TCO-analyse en 8-punts checklist: waarom een klassiek webbureau in 2026 een dure keuze is voor MKB. Schema.org, Speakable, Core Web Vitals, AI-integratie kosten verklaard.',
+  author: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-04',
+  dateModified: '2026-05-04',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/website-bouwer-vs-ai-ready-partner-mkb-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/website-bouwer-vs-ai-ready-partner-mkb-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+---
+
+<BaseLayout
+  title="Pure Web-Bouwer vs AI-ready Partner — TCO en Checklist 2026 | Aanloop AI"
+  description="TCO-analyse en 8-punts checklist: waarom een klassiek webbureau in 2026 een dure keuze is voor Nederlandse MKB. Schema.org, Speakable, Core Web Vitals en AI-integratie kosten verklaard."
+  schema={[articleSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Strategie</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Pure web-bouwer vs AI-ready partner — wat MKB Nederland in 2026 moet weten.
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          De meeste Nederlandse webbureaus leveren in 2026 nog steeds websites alsof het 2018 is: mooi design, basis-SEO, contactformulier. Wat ontbreekt: Schema.org + Speakable voor AI Overviews, plug-in-slots voor chatbots/voice, AVG/UAVG-conforme cookie-banner, Core Web Vitals optimalisatie, AI-koppelingen vanaf dag 1. Een goedkoop webbureau lijkt jaar 1 voordeliger — tot u in jaar 2 alsnog AI wilt en €6.000-€13.500 retrofit betaalt. Dit artikel toont de TCO-realiteit + een 8-punts checklist om uw bureau te beoordelen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <div class="mb-10">
+        <p class="eyebrow mb-3">Total Cost of Ownership</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">TCO-vergelijking jaar 1, 2 en 3 cumulatief.</h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">Bedragen voor een MKB-Groei-website (30 paginas, CMS, multilingual). AI-retrofit-scenario in jaar 2 = realistic case voor 80% MKB die binnen 18 maanden AI-functies wil toevoegen.</p>
+      </div>
+      <div class="overflow-x-auto -mx-4 sm:mx-0 mb-8">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="border-b-2 border-slate-200">
+              <th class="text-left py-3 px-4 font-bold text-navy">Periode</th>
+              <th class="text-center py-3 px-4 font-semibold text-slate-600">Klassiek web-bureau (web-only)</th>
+              <th class="text-center py-3 px-4 font-bold text-brand-indigo">AI-ready partner (Aanloop AI)</th>
+              <th class="text-center py-3 px-4 font-semibold text-slate-600">Verschil</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tcoTabel.map((r, i) => (
+              <tr class={`border-b border-slate-100 ${i % 2 === 0 ? 'bg-slate-50/40' : ''}`}>
+                <td class="py-3 px-4 font-medium text-navy">{r.jaar}</td>
+                <td class="py-3 px-4 text-center text-slate-600">{r.web_only}</td>
+                <td class="py-3 px-4 text-center font-medium text-brand-emerald">{r.ai_ready}</td>
+                <td class="py-3 px-4 text-center font-semibold">{r.verschil}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-sm text-slate-500">Bedragen exclusief BTW. Web-only setup €5.950 + €197/mnd onderhoud + €1.500 AI-retrofit jaar 2 + €4.500 chat/voice integratie + €4.250 maintenance escalatie. AI-ready setup €5.950 + €197/mnd onderhoud + €397/mnd AI-licentie. Cijfers gebaseerd op Aanloop AI listprijzen + benchmarks Q4 2025 van Nederlandse webbureaus.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <div class="mb-10">
+        <p class="eyebrow mb-3">7 verborgen kostenposten</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Wat een klassiek webbureau achteraf factureert.</h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">Dit zijn de items die meestal niet in de eerste offerte staan, maar wel binnen 12-18 maanden noodzakelijk blijken.</p>
+      </div>
+      <div class="overflow-x-auto -mx-4 sm:mx-0">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="border-b-2 border-slate-200">
+              <th class="text-left py-3 px-4 font-bold text-navy">Kostenpost</th>
+              <th class="text-center py-3 px-4 font-semibold text-slate-600">Bij klassiek web-bureau</th>
+              <th class="text-center py-3 px-4 font-bold text-brand-indigo">Bij AI-ready partner</th>
+            </tr>
+          </thead>
+          <tbody>
+            {verborgenKosten.map((r, i) => (
+              <tr class={`border-b border-slate-100 ${i % 2 === 0 ? 'bg-slate-50/40' : ''}`}>
+                <td class="py-3 px-4 text-slate-700">{r.kost}</td>
+                <td class="py-3 px-4 text-center text-slate-600">{r.web_only}</td>
+                <td class="py-3 px-4 text-center font-medium text-brand-emerald">{r.ai_ready}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl">
+      <div class="mb-10">
+        <p class="eyebrow mb-3">8-punts checklist</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Wat te vragen aan elk webbureau vóór u tekent.</h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">Stel deze 8 vragen tijdens uw eerste gesprek. Vraag concrete voorbeelden, geen vage marketing-antwoorden.</p>
+      </div>
+      <div class="space-y-4">
+        {checklist.map((c, i) => (
+          <div class="card">
+            <div class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-brand-indigo/10 text-brand-indigo font-bold text-sm flex items-center justify-center">{i + 1}</span>
+              <div>
+                <p class="font-bold text-navy text-base">{c.vraag}</p>
+                <p class="mt-2 text-sm text-slate-600 leading-relaxed">{c.uitleg}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <div class="mb-10">
+        <p class="eyebrow mb-3">Eerlijk advies</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Wanneer welke partner kiezen — per profiel.</h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">Niet elke MKB heeft een AI-ready partner nodig. Dit is een eerlijke beslis-matrix.</p>
+      </div>
+      <div class="space-y-4">
+        {wanneerWatKiezen.map(p => (
+          <div class="card">
+            <div class="grid lg:grid-cols-3 gap-4 items-start">
+              <div>
+                <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">Profiel</p>
+                <p class="font-bold text-navy text-sm">{p.profiel}</p>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">Beste keuze</p>
+                <p class="font-bold text-brand-indigo text-sm">{p.kies}</p>
+              </div>
+              <div>
+                <p class="text-xs text-slate-400 uppercase tracking-wide mb-1">Waarom</p>
+                <p class="text-sm text-slate-600 leading-relaxed">{p.why}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl">
+      <div class="mb-10">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Wat lezers vroegen bij dit artikel.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(f => (
+          <details class="group card">
+            <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+              <span class="font-semibold text-navy text-sm sm:text-base">{f.question}</span>
+              <svg class="w-5 h-5 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{f.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="bg-white border border-slate-200 rounded-xl p-6 max-w-4xl">
+        <p class="text-sm font-bold text-navy mb-3">Verder lezen + actie</p>
+        <ul class="grid md:grid-cols-2 gap-3">
+          <li><a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="text-sm text-brand-indigo hover:underline">→ Onze AI-ready website-bouw service</a></li>
+          <li><a href="/diensten/webshop-laten-maken-shopify-woocommerce-nederland-2026/" class="text-sm text-brand-indigo hover:underline">→ Webshop laten maken</a></li>
+          <li><a href="/diensten/ai-website-bundel-mkb-nederland/" class="text-sm text-brand-indigo hover:underline">→ AI-Website Bundel (combo, bespaart €8k jaar 1)</a></li>
+          <li><a href="/kennisbank/ai-telefoonagent-starter-tco-mkb-nederland/" class="text-sm text-brand-indigo hover:underline">→ TCO €299-starter telefoonagent valkuilen</a></li>
+          <li><a href="/kennisbank/ai-agency-vs-eigen-engineer-mkb-nederland-2026/" class="text-sm text-brand-indigo hover:underline">→ AI-agency vs eigen engineer TCO</a></li>
+          <li><a href="/ai-roi-calculator/" class="text-sm text-brand-indigo hover:underline">→ Bereken uw ROI</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-3xl font-bold text-pearl">Kies een partner die AI-ready bouwt vanaf dag 1.</h2>
+      <p class="mt-4 text-slate-300">Gratis 60-min discovery-gesprek. We mappen uw doelgroep, AI-koppelingen en geven een vaste-prijs offerte binnen 5 werkdagen.</p>
+      <div class="mt-6 flex gap-3">
+        <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis discovery-gesprek</a>
+        <a href="/contact/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Direct contact</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

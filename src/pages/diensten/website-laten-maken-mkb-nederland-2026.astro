@@ -1,0 +1,293 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const features = [
+  'AI-ready architectuur — vanaf dag 1 koppelbaar aan Marco, Emma en chatbot-widgets',
+  'Schema.org structured data + Speakable markup voor AI Overviews en ChatGPT-citaties',
+  'Core Web Vitals groen — LCP < 1.5s, INP < 100ms, CLS < 0.05 (Lighthouse 95+)',
+  'AVG-compliant by default — cookie-banner conform UAVG, EU-only hosting (Frankfurt/Amsterdam)',
+  'WCAG 2.2 AA toegankelijkheid — semantic HTML, focus-states, skip-links, alt-tekst',
+  'Multilingual NL/EN/DE/FR uitbreidbaar zonder CMS-rebuild',
+  'CMS naar keuze — Astro + Decap, Next.js + Sanity, WordPress + ACF, of headless setup',
+  'Live binnen 4-8 weken inclusief content-migratie en 301-redirects van oude site',
+  'Maandelijks onderhoud, security-updates, backups en uptime-monitoring inbegrepen',
+  'Eigendom 100% bij u — code in uw eigen GitHub, geen platform-lock-in',
+];
+
+const pakketten = [
+  { naam: 'Starter', setup: '€2.950', mnd: '€97', desc: 'Perfect voor ZZP/MKB tot 10 paginas. Modern design, Astro/Hugo static-site, contactformulier, NL/EN, hosting + SSL inbegrepen.', items: ['Tot 10 paginas', 'Mobile-first responsive', 'Schema.org SEO basis', 'Cloudflare Pages hosting', 'Maandelijks security-update'] },
+  { naam: 'Groei', setup: '€5.950', mnd: '€197', desc: 'Voor groeiende MKB. CMS, blog/kennisbank, lead-formulieren, GA4, A/B-test ready, AI-chatbot-widget plug-in slot.', items: ['Tot 30 paginas + CMS', 'Blog + kennisbank-engine', 'Marco/Emma chat-widget slot', 'GA4 + GrowthBook setup', 'Multilingual NL/EN/DE'], featured: true },
+  { naam: 'Pro', setup: 'Vanaf €11.500', mnd: '€397', desc: 'Voor schaal-MKB. Headless CMS, custom componenten, API-integraties (CRM/ERP), advanced analytics + conversie-tracking.', items: ['Onbeperkte paginas', 'Headless Sanity/Strapi', 'CRM/ERP API-koppeling', 'Conversion-rate optimization', 'Dedicated DevOps SLA'] },
+];
+
+const stack = {
+  'Frameworks': ['Astro 4', 'Next.js 15', 'Nuxt 3', 'WordPress + ACF', 'Hugo'],
+  'CMS': ['Decap CMS', 'Sanity', 'Strapi', 'Storyblok', 'WordPress', 'Headless WP'],
+  'Hosting': ['Cloudflare Pages', 'Vercel', 'Netlify', 'Hetzner', 'AWS Amplify'],
+  'Integraties': ['HubSpot', 'Salesforce', 'Pipedrive', 'Mailchimp', 'Brevo', 'Calendly'],
+  'AI-laag': ['Marco AI-receptie', 'Emma WhatsApp', 'AI chatbot-widget', 'AI ROI-calc embed'],
+  'Analytics': ['GA4', 'GrowthBook', 'Plausible', 'PostHog', 'Hotjar'],
+};
+
+const vergelijking = [
+  { criterium: 'AI-ready architectuur (chatbot/voice plug-in slot)', aanloop: 'Standaard', web_agency: 'Add-on €5-15k', wordpress_diy: 'Plugin-maintenance' },
+  { criterium: 'Schema.org + Speakable voor AI Overviews', aanloop: 'Standaard', web_agency: 'Vaak ontbreekt', wordpress_diy: 'Yoast deels' },
+  { criterium: 'Core Web Vitals groen (LCP/INP/CLS)', aanloop: 'Lighthouse 95+', web_agency: 'Variabel', wordpress_diy: 'Plugin-bloat risico' },
+  { criterium: 'AVG/UAVG cookie-banner + DPIA-template', aanloop: 'Inbegrepen', web_agency: 'Extra €500-1.500', wordpress_diy: 'Zelf doen' },
+  { criterium: 'WCAG 2.2 AA toegankelijkheid', aanloop: 'Audit + fix', web_agency: 'Vaak niet', wordpress_diy: 'Theme-afhankelijk' },
+  { criterium: 'Eigendom code (GitHub bij klant)', aanloop: '100% klant', web_agency: 'Vaak agency-lock', wordpress_diy: 'Klant' },
+  { criterium: 'Maandelijks onderhoud + monitoring', aanloop: 'Inbegrepen', web_agency: '€150-400/mnd extra', wordpress_diy: 'Hoster-afhankelijk' },
+  { criterium: 'Marco/Emma direct activeerbaar', aanloop: 'Plug & play', web_agency: 'Custom integratie', wordpress_diy: 'iframe/embed' },
+  { criterium: 'Time-to-live nieuwe website', aanloop: '4-8 weken', web_agency: '8-16 weken', wordpress_diy: '4-12 weken DIY' },
+];
+
+const proces = [
+  { stap: '01', titel: 'Discovery & strategie', tijd: 'Week 1', body: 'Gratis 60-min strategie-gesprek. We mappen uw business-model, doelgroep, key user-flows en concurrentie. U krijgt een sitemap-voorstel, content-skelet en wireframes voor goedkeuring.' },
+  { stap: '02', titel: 'Design & content', tijd: 'Week 2-3', body: 'Visueel design in Figma met 2 revisierondes. Parallel schrijven onze copywriters AI-ondersteunde NL-content (uw tone-of-voice, SEO-geoptimaliseerd, AVG-conform). U keurt alles goed voor build-fase.' },
+  { stap: '03', titel: 'Build, AI-koppeling & launch', tijd: 'Week 4-6', body: 'Development in uw eigen GitHub-repo. Schema.org markup, Speakable, Core Web Vitals, AVG-banner. Marco/Emma chat-widget activeerbaar op launch-dag. 301-redirects van oude site, monitoring opzetten, go-live.' },
+];
+
+const faqItems = [
+  { question: 'Hoe lang duurt een nieuwe website?', answer: 'Starter (10 paginas): 4-5 weken. Groei (30 paginas + CMS + blog): 6-8 weken. Pro (custom features + integraties): 10-14 weken. Wij werken in vaste sprints met wekelijkse demo-momenten — u ziet voortgang elke week, geen verrassingen.' },
+  { question: 'Waarom is een AI-ready website belangrijk in 2026?', answer: 'Google AI Overviews, ChatGPT Search, Perplexity en Gemini citeren websites op basis van structured data, Speakable markup en authority-signalen. Een traditionele "mooie website" zonder AI-ready architectuur wordt in AI-zoekresultaten niet getoond. Wij bouwen vanaf dag 1 voor zowel klassieke SEO als AI-citatie (GEO).' },
+  { question: 'Wat is het verschil met een traditioneel webbureau?', answer: 'Traditionele bureaus leveren een mooie website, maar AI-koppeling (chatbot, voice, lead-qualifier) komt achteraf met losse facturen. Wij bouwen direct AI-ready: Marco of Emma kunt u op launch-dag activeren, de architectuur ondersteunt het al. U bespaart 30-50% op latere AI-integratiekosten en heeft 1 partner ipv 2.' },
+  { question: 'Mag ik mijn website ergens anders hosten?', answer: 'Ja, altijd. De code staat in uw eigen GitHub-organisatie. U kunt op Cloudflare Pages, Vercel, Netlify, Hetzner of een eigen VPS hosten. Wij raden Cloudflare Pages aan voor MKB (gratis SSL, EU-edge, Core Web Vitals optimaal), maar u beslist.' },
+  { question: 'Wat als ik later content wil aanpassen?', answer: 'Bij Starter krijgt u een eenvoudige Decap CMS interface. Bij Groei en Pro krijgt u Sanity/Strapi met visuele editor en preview. U kunt zelf paginas aanmaken, blogartikelen publiceren en afbeeldingen wisselen — geen developer nodig.' },
+  { question: 'Krijg ik een nieuwe domeinnaam of behoud ik de oude?', answer: 'U behoudt uw bestaande domein. Wij regelen DNS-cutover op launch-dag (5-10 min downtime). 301-redirects van alle oude URLs naar nieuwe URLs zorgen dat uw Google-rankings behouden blijven en backlinks geldig.' },
+  { question: 'Wat zit er in het maandelijkse onderhoud?', answer: 'Security-updates van framework + dependencies, uptime-monitoring (24/7 ping), back-ups (dagelijks), SSL-renewal, performance-monitoring (Core Web Vitals), 1-2 uur content/design-aanpassingen per maand, prioriteit support binnen 4 uur op werkdagen.' },
+  { question: 'Bouwen jullie ook webshops?', answer: 'Ja, daarvoor hebben wij een aparte service: Webshop laten maken (Shopify/WooCommerce/Lightspeed). Voor combinaties content-website + webshop-onderdeel bouwen we een hybride setup. Vraag in uw discovery-gesprek naar de webshop-bundel.' },
+  { question: 'Wat kost een website met AI volledig geïntegreerd?', answer: 'Onze AI-Website Bundel combineert website (Groei pakket) + Marco AI-receptionist + Emma WhatsApp in 1 pakket: vanaf €4.950 setup + €397/maand all-in. Dit bespaart €1.500-3.000 ten opzichte van losse facturatie. Zie /diensten/ai-website-bundel-mkb-nederland/ voor details.' },
+];
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  '@id': 'https://aanloopai.nl/diensten/website-laten-maken-mkb-nederland-2026/#service',
+  name: 'Website laten maken MKB Nederland — AI-ready Webdesign',
+  serviceType: 'Web Design & Development',
+  description: 'AI-ready website laten maken voor Nederlandse MKB. Modern design, Astro/Next.js/WordPress, Schema.org + Speakable, Core Web Vitals groen, AVG-compliant, WCAG 2.2 AA. Vanaf €2.950 setup.',
+  url: 'https://aanloopai.nl/diensten/website-laten-maken-mkb-nederland-2026/',
+  provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  areaServed: { '@type': 'Country', name: 'Nederland' },
+  audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
+  offers: {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'EUR',
+    lowPrice: '2950',
+    highPrice: '11500',
+    offerCount: '3',
+    availability: 'https://schema.org/InStock',
+  },
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/diensten/website-laten-maken-mkb-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+---
+
+<BaseLayout
+  title="Website Laten Maken MKB Nederland 2026 — AI-ready Webdesign | Aanloop AI"
+  description="Website laten maken voor Nederlandse MKB. AI-ready architectuur, Schema.org + Speakable, Core Web Vitals groen, AVG-compliant, WCAG 2.2 AA. Live binnen 4-8 weken vanaf €2.950 setup. KvK 88606902."
+  schema={[serviceSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Diensten · Website &amp; Webshop</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          Website laten maken die AI-ready is — niet later, vanaf dag 1.
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          De meeste webbureaus leveren in 2026 nog steeds websites zonder AI-architectuur, zonder Speakable schema voor AI Overviews en zonder plug-in-slots voor chatbot of voice-assistent. Aanloop AI bouwt websites die per direct koppelbaar zijn aan Marco (AI-telefonist), Emma (WhatsApp) en chatbot-widgets — én die door ChatGPT, Gemini en Google AI Overviews worden geciteerd. Vanaf €2.950 setup, live binnen 4-8 weken.
+        </p>
+        <div class="mt-8 flex gap-3 flex-wrap reveal reveal-delay-3">
+          <a href="/demo-aanvragen/" class="btn-primary text-base px-6 py-3.5">Gratis discovery-gesprek <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="#pakketten" class="btn-outline text-base px-6 py-3.5">Bekijk pakketten</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-slate-50 border-b border-slate-200">
+    <div class="container-page">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        {[{v:'4-8 wk',l:'live na briefing'},{v:'95+',l:'Lighthouse score'},{v:'100%',l:'eigendom code'},{v:'€2.950',l:'vanaf setup'}].map(s=>(
+          <div class="reveal"><p class="text-2xl font-bold text-navy">{s.v}</p><p class="text-xs text-slate-500 mt-1">{s.l}</p></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <p class="eyebrow mb-3">Wat zit erin</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">10 dingen die elke MKB-website in 2026 nodig heeft.</h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">Standaard inbegrepen — geen meerwerk, geen verborgen facturen.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {features.map((f, i) => (
+          <div class={`flex items-start gap-3 p-4 rounded-xl bg-slate-50 border border-slate-100 reveal reveal-delay-${(i % 4) + 1}`}>
+            <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-sm text-slate-700">{f}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="pakketten" class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <p class="eyebrow mb-3">Pakketten</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Transparante prijzen, eenmalige setup + maandelijks onderhoud.</h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">Geen verborgen kosten, geen meerwerk-rekeningen achteraf. Alle pakketten inclusief AVG-compliance, schema.org markup en Core Web Vitals optimalisatie.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {pakketten.map(p => (
+          <div class:list={['card relative', p.featured && 'border-2 border-navy']}>
+            {p.featured && <span class="absolute -top-3 left-5 px-2.5 py-0.5 bg-navy text-white text-[11px] font-medium tracking-wide uppercase rounded">Populair</span>}
+            <h3 class="text-lg font-bold text-navy">{p.naam}</h3>
+            <div class="mt-3 flex items-baseline gap-2"><span class="text-3xl font-bold text-navy">{p.setup}</span><span class="text-sm text-slate-500">setup</span></div>
+            <p class="text-xs text-slate-500 mt-1">+ {p.mnd}/maand onderhoud</p>
+            <p class="text-sm text-slate-600 mt-3 leading-relaxed">{p.desc}</p>
+            <ul class="mt-4 space-y-2">
+              {p.items.map(i => (
+                <li class="flex items-start gap-2 text-sm text-slate-700">
+                  <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  {i}
+                </li>
+              ))}
+            </ul>
+            <a href="/demo-aanvragen/" class="btn-outline mt-6 w-full justify-center text-sm">Aanvragen</a>
+          </div>
+        ))}
+      </div>
+      <p class="mt-8 text-sm text-slate-500 max-w-2xl">Alle prijzen exclusief BTW. Setup-fee in 2 termijnen (50% bij start, 50% bij oplevering). Onderhoud opzegbaar per maand. Vraag naar de AI-Website Bundel als u Marco/Emma direct mee wilt.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <p class="eyebrow mb-3">Hoe werkt het</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Van eerste gesprek tot live: 3 fases, 4-8 weken.</h2>
+      </div>
+      <ol class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {proces.map(p => (
+          <li class="card">
+            <div class="text-3xl font-bold text-brand-indigo mb-2">{p.stap}</div>
+            <p class="text-xs text-slate-400 mb-2">{p.tijd}</p>
+            <h3 class="text-lg font-bold text-navy mb-2">{p.titel}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{p.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <p class="eyebrow mb-3">Tech-stack</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">U kiest het framework — wij bouwen het goed.</h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">Geen one-size-fits-all. We adviseren tijdens discovery wat het beste past bij uw team, content-volume en groeiplan.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {Object.entries(stack).map(([cat, items]) => (
+          <div class="card">
+            <h3 class="text-sm font-bold text-navy mb-3">{cat}</h3>
+            <ul class="flex flex-wrap gap-2">
+              {items.map(t => <li class="text-xs px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">{t}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-10 reveal">
+        <p class="eyebrow mb-3">Aanloop AI vs concurrent</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Wat krijgt u standaard, wat kost het bij anderen extra?</h2>
+      </div>
+      <div class="overflow-x-auto -mx-4 sm:mx-0">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="border-b-2 border-slate-200">
+              <th class="text-left py-3 px-4 font-bold text-navy">Criterium</th>
+              <th class="text-center py-3 px-4 font-bold text-brand-indigo">Aanloop AI</th>
+              <th class="text-center py-3 px-4 font-semibold text-slate-600">Web-bureau klassiek</th>
+              <th class="text-center py-3 px-4 font-semibold text-slate-600">WordPress DIY</th>
+            </tr>
+          </thead>
+          <tbody>
+            {vergelijking.map((r, i) => (
+              <tr class={`border-b border-slate-100 ${i % 2 === 0 ? 'bg-slate-50/40' : ''}`}>
+                <td class="py-3 px-4 text-slate-700">{r.criterium}</td>
+                <td class="py-3 px-4 text-center font-medium text-brand-emerald">{r.aanloop}</td>
+                <td class="py-3 px-4 text-center text-slate-500">{r.web_agency}</td>
+                <td class="py-3 px-4 text-center text-slate-500">{r.wordpress_diy}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Wat klanten vragen vóór ze tekenen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(f => (
+          <details class="group card">
+            <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+              <span class="font-semibold text-navy text-sm sm:text-base">{f.question}</span>
+              <svg class="w-5 h-5 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{f.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 max-w-3xl">
+        <p class="text-sm font-bold text-navy mb-3">Gerelateerde diensten</p>
+        <ul class="flex flex-wrap gap-3">
+          <li><a href="/diensten/webshop-laten-maken-shopify-woocommerce-nederland-2026/" class="text-sm text-brand-indigo hover:underline">Webshop laten maken →</a></li>
+          <li><a href="/diensten/ai-website-bundel-mkb-nederland/" class="text-sm text-brand-indigo hover:underline">AI-Website Bundel (combo) →</a></li>
+          <li><a href="/diensten/ai-chatbot-website/" class="text-sm text-brand-indigo hover:underline">AI Chatbot voor uw website →</a></li>
+          <li><a href="/diensten/marco/" class="text-sm text-brand-indigo hover:underline">Marco AI-receptie →</a></li>
+          <li><a href="/kennisbank/website-bouwer-vs-ai-ready-partner-mkb-nederland-2026/" class="text-sm text-brand-indigo hover:underline">Pure web-agency vs AI-ready partner →</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-3xl font-bold text-pearl reveal">Klaar voor een website die meegaat met AI?</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Gratis 60-min discovery-gesprek. We mappen uw doelgroep, sitemap en AI-koppelingen, en u krijgt een vaste-prijs offerte binnen 5 werkdagen.</p>
+      <div class="mt-6 flex gap-3 reveal reveal-delay-2">
+        <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis discovery-gesprek</a>
+        <a href="/contact/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Direct contact</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,292 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const features = [
+  'Platformkeuze advies — Shopify, WooCommerce, Lightspeed of headless (Medusa/Saleor)',
+  'iDeal + Bancontact + Tikkie + creditcards via Mollie/Stripe — Nederlandse standaard',
+  'PostNL/DHL/DPD/GLS/Sendcloud koppeling — labels, tracking, retours geautomatiseerd',
+  'AI-product-descriptions in NL/EN/DE/FR — schaalbaar voor 100-10.000 producten',
+  'Conversie-optimalisatie vanaf launch — A/B-test framework + heatmaps',
+  'AVG + cookie-consent + DPIA-template — UAVG conform Nederland',
+  'Schema.org Product + Offer + AggregateRating + Review markup voor Google Shopping',
+  'Cart-abandonment recovery via WhatsApp (Emma) — 10-15% extra conversie',
+  'Voorraadkoppeling met uw ERP/POS (Exact, AFAS, Lightspeed Retail, Vendora, Custom)',
+  'Live binnen 6-12 weken inclusief productimport + 301-redirects oude shop',
+];
+
+const pakketten = [
+  { naam: 'Starter Shop', setup: '€4.950', mnd: '€197', desc: 'Tot 100 producten. Shopify of WooCommerce, NL betaalmethoden, PostNL koppeling, basic SEO + Schema.org.', items: ['Tot 100 producten', 'Shopify Basic of WooCommerce', 'iDeal + Tikkie + cards', 'PostNL labels', 'Basis Google Shopping feed'] },
+  { naam: 'Groei Shop', setup: '€8.950', mnd: '€397', desc: 'Tot 1.000 producten. Multi-currency NL/BE/DE, Klaviyo email-flows, Emma WhatsApp cart-recovery, GA4 + e-commerce tracking.', items: ['Tot 1.000 producten', 'Shopify Advanced of WooCommerce + Bricks', 'Multi-currency NL/BE/DE', 'Klaviyo + Emma WhatsApp', 'Conversion-rate optimization'], featured: true },
+  { naam: 'Pro Shop', setup: 'Vanaf €17.500', mnd: '€797', desc: 'Onbeperkt + B2B/wholesale. Headless commerce, custom checkout, ERP-integratie, multi-warehouse, dedicated DevOps.', items: ['Onbeperkte producten', 'Headless commerce (Medusa/Saleor)', 'B2B portal + wholesale-prijzen', 'ERP/WMS integratie', 'Dedicated DevOps SLA'] },
+];
+
+const stack = {
+  'Platform': ['Shopify Basic/Advanced/Plus', 'WooCommerce + Bricks', 'Lightspeed eCom', 'Medusa.js', 'Saleor', 'Headless WP'],
+  'Betalen': ['Mollie', 'Stripe', 'Adyen', 'iDeal', 'Bancontact', 'Tikkie', 'Klarna', 'Afterpay'],
+  'Verzenden': ['Sendcloud', 'PostNL', 'DHL eCommerce', 'DPD', 'GLS', 'Bpost', 'PUDO/SmartLockers'],
+  'Marketing': ['Klaviyo', 'Mailchimp', 'Brevo', 'Meta Ads', 'Google Shopping', 'TikTok Shop'],
+  'AI-laag': ['Emma WhatsApp cart-recovery', 'AI product-descriptions', 'AI chatbot voor productadvies', 'Voorraadcheck via voice'],
+  'ERP/POS': ['Exact Online', 'AFAS', 'Lightspeed Retail', 'Vendora', 'SAP B1', 'Custom REST/GraphQL'],
+};
+
+const vergelijking = [
+  { criterium: 'iDeal + Tikkie + Bancontact direct', aanloop: 'Standaard', web_agency: 'Standaard', diy: 'Plugin-fee Mollie' },
+  { criterium: 'AI product-descriptions NL/EN/DE/FR', aanloop: 'Inbegrepen', web_agency: '€2-5k extra', diy: 'Handmatig of ChatGPT' },
+  { criterium: 'WhatsApp cart-recovery (Emma)', aanloop: 'Inbegrepen vanaf Groei', web_agency: 'Custom build', diy: 'Niet beschikbaar' },
+  { criterium: 'Schema.org Product + Review markup', aanloop: 'Standaard', web_agency: 'Vaak partial', diy: 'Plugin-afhankelijk' },
+  { criterium: 'AVG + cookie-consent UAVG-conform', aanloop: 'Inbegrepen', web_agency: 'Extra €500-1.500', diy: 'Zelf doen' },
+  { criterium: 'Sendcloud + PostNL labels native', aanloop: 'Standaard', web_agency: 'Standaard', diy: 'App-installatie' },
+  { criterium: 'ERP-koppeling (Exact/AFAS/Lightspeed)', aanloop: 'Inbegrepen Pro', web_agency: '€5-15k extra', diy: 'Niet zonder dev' },
+  { criterium: 'AI chatbot voor productadvies', aanloop: 'Plug & play', web_agency: 'Custom integratie', diy: 'Plugin (beperkt)' },
+  { criterium: 'Time-to-live volledige shop', aanloop: '6-12 weken', web_agency: '12-20 weken', diy: '4-16 weken DIY' },
+];
+
+const proces = [
+  { stap: '01', titel: 'Discovery & catalogus', tijd: 'Week 1-2', body: 'We analyseren uw productrange, doelgroep, marges en logistiek. Platformkeuze (Shopify vs WooCommerce vs Lightspeed) op basis van objectief beslis-framework. Catalogus-import-plan + product-data-model.' },
+  { stap: '02', titel: 'Design, content & catalogus-import', tijd: 'Week 3-6', body: 'Visueel design in Figma. Productimport via CSV/API. AI genereert NL/EN/DE descriptions, alt-tekst, meta-titels. Schema.org Product markup per artikel. Klaviyo email-flows opgezet.' },
+  { stap: '03', titel: 'Betalingen, verzending & launch', tijd: 'Week 7-10', body: 'Mollie/Stripe live, iDeal + Tikkie + cards getest. PostNL/DHL labels live. Sendcloud retour-portal. Emma WhatsApp cart-recovery actief. Test-aankoop, soft-launch (1 week), public-launch.' },
+];
+
+const faqItems = [
+  { question: 'Welk platform is het beste voor mijn webshop?', answer: 'Shopify is sneller live (4-8 weken) en heeft minder onderhoud, maar 2-3% transactie-fee buiten Shopify Payments. WooCommerce is goedkoper bij volume, geeft volledige controle, maar vereist meer onderhoud. Lightspeed eCom is sterk als u ook een fysieke winkel heeft. Wij adviseren tijdens discovery objectief — geen revenue-share met platform.' },
+  { question: 'Werkt iDeal direct?', answer: 'Ja. Wij gebruiken Mollie of Stripe als payment provider — beide ondersteunen iDeal, Bancontact, Tikkie, creditcards, Klarna en Afterpay native. Uitbetaling 1 werkdag op uw zakelijke rekening. Wij configureren alles inclusief webhooks en order-status sync.' },
+  { question: 'Hoe importeren we onze huidige producten?', answer: 'Wij hebben import-scripts voor Shopify, WooCommerce, Lightspeed Retail, Magento en Excel/CSV. Variabelen, varianten, prijzen, voorraad, afbeeldingen, SEO-velden. Voor specials (gepersonaliseerde producten, bundels) bouwen we custom logica. 301-redirects van oude URLs naar nieuwe URLs zodat Google-rankings behouden blijven.' },
+  { question: 'Wat doet de AI cart-recovery via WhatsApp?', answer: 'Wanneer een klant items toevoegt en niet afrekent, stuurt Emma na 1u een eerste WhatsApp-bericht ("Vergeten af te rekenen?"), na 24u een herinnering met optionele 5%-korting-code (u beslist), na 72u een laatste reminder. Cases tonen 10-15% extra conversie van anders verloren bezoekers. Werkt alleen met opt-in (AVG-conform).' },
+  { question: 'Verwerken jullie ook B2B/wholesale orders?', answer: 'Ja, vanaf het Pro pakket. We bouwen een aparte B2B-portal met: login per klantaccount, klant-specifieke prijzen, bulk-orderformulieren, BTW-vrijstelling intra-EU, krediet-limieten, factuur-betaling op rekening. Geïntegreerd met uw ERP voor klantdata.' },
+  { question: 'Hoe gaat het met retouren?', answer: 'Sendcloud retour-portal of Shopify Returns. Klant logt in met ordernummer, kiest retouren, krijgt direct retourlabel (PDF of QR), kiest PUDO of pickup. Status-updates via e-mail + WhatsApp. Refund automatisch terug op originele betaalmethode na ontvangst (na uw goedkeuring of automatisch). Wij configureren uw retourbeleid.' },
+  { question: 'Kunnen we Google Shopping direct gebruiken?', answer: 'Ja. Wij genereren bij oplevering een Merchant Center feed (XML/CSV) met Schema.org Product markup, GTIN/MPN, beschikbaarheid, prijzen in EUR. Google Shopping campagnes opzetten doen wij optioneel als marketing-add-on, of u doet het zelf met de feed.' },
+  { question: 'Hoe wordt de webshop onderhouden?', answer: 'Maandelijks pakket inclusief: platform-updates (Shopify auto, WooCommerce ons), security-patches, plugin/app-updates, SSL-renewal, backups (dagelijks), uptime-monitoring, betaal-/verzend-API health-check, 1-2u content-aanpassingen per maand, prioriteit support binnen 4u op werkdagen.' },
+  { question: 'Wat als ik later wil overstappen naar een ander platform?', answer: 'Bij Aanloop AI heeft u altijd uw eigen data en eigen GitHub-code (bij WooCommerce/headless). Bij Shopify heeft u toegang tot uw store-admin. Wij faciliteren migratie naar een ander platform met data-export en re-import. Geen lock-in via theme of custom-code dat alleen wij kunnen onderhouden.' },
+];
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  '@id': 'https://aanloopai.nl/diensten/webshop-laten-maken-shopify-woocommerce-nederland-2026/#service',
+  name: 'Webshop laten maken Nederland — Shopify, WooCommerce, Lightspeed',
+  serviceType: 'E-commerce Web Development',
+  description: 'Webshop laten maken voor Nederlandse MKB. Shopify, WooCommerce, Lightspeed of headless. iDeal/Mollie, PostNL/DHL, AI product-descriptions, WhatsApp cart-recovery. Vanaf €4.950 setup.',
+  url: 'https://aanloopai.nl/diensten/webshop-laten-maken-shopify-woocommerce-nederland-2026/',
+  provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  areaServed: { '@type': 'Country', name: 'Nederland' },
+  audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland — E-commerce' },
+  offers: {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'EUR',
+    lowPrice: '4950',
+    highPrice: '17500',
+    offerCount: '3',
+    availability: 'https://schema.org/InStock',
+  },
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/diensten/webshop-laten-maken-shopify-woocommerce-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+---
+
+<BaseLayout
+  title="Webshop Laten Maken Nederland 2026 — Shopify, WooCommerce, Lightspeed | Aanloop AI"
+  description="Webshop laten maken voor Nederlandse MKB. iDeal/Mollie, PostNL/DHL, AI product-descriptions, WhatsApp cart-recovery (Emma). Live binnen 6-12 weken vanaf €4.950 setup. KvK 88606902."
+  schema={[serviceSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Diensten · Webshop &amp; E-commerce</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          Webshop laten maken — Shopify, WooCommerce of Lightspeed, mét AI ingebouwd.
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          Een webshop bouwen in 2026 is meer dan een mooie productpagina. iDeal en Tikkie zijn standaard. PostNL/DHL/Sendcloud koppeling is verplicht. AI-gegenereerde NL/EN/DE-product-descriptions schalen uw catalogus zonder copywriter-army. WhatsApp cart-recovery via Emma redt 10-15% van anders verloren conversies. Wij bouwen het allemaal in één traject — vanaf €4.950 setup, live binnen 6-12 weken.
+        </p>
+        <div class="mt-8 flex gap-3 flex-wrap reveal reveal-delay-3">
+          <a href="/demo-aanvragen/" class="btn-primary text-base px-6 py-3.5">Gratis discovery-gesprek <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="#pakketten" class="btn-outline text-base px-6 py-3.5">Bekijk pakketten</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-slate-50 border-b border-slate-200">
+    <div class="container-page">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+        {[{v:'6-12 wk',l:'live na briefing'},{v:'10-15%',l:'extra conversie cart-recovery'},{v:'NL/EN/DE',l:'multi-language standaard'},{v:'€4.950',l:'vanaf setup'}].map(s=>(
+          <div class="reveal"><p class="text-2xl font-bold text-navy">{s.v}</p><p class="text-xs text-slate-500 mt-1">{s.l}</p></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <p class="eyebrow mb-3">Wat zit erin</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">10 dingen die elke NL-webshop in 2026 nodig heeft.</h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">Standaard inbegrepen — geen meerwerk-rekeningen voor "iDeal-koppeling" of "AI descriptions".</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {features.map((f, i) => (
+          <div class={`flex items-start gap-3 p-4 rounded-xl bg-slate-50 border border-slate-100 reveal reveal-delay-${(i % 4) + 1}`}>
+            <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span class="text-sm text-slate-700">{f}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="pakketten" class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <p class="eyebrow mb-3">Pakketten</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Vaste setup-prijs + maandelijks onderhoud, geen omzet-share.</h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">Geen "percentage van uw omzet" zoals sommige platforms. U betaalt setup en maandelijks onderhoud, behoudt 100% van uw marge.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {pakketten.map(p => (
+          <div class:list={['card relative', p.featured && 'border-2 border-navy']}>
+            {p.featured && <span class="absolute -top-3 left-5 px-2.5 py-0.5 bg-navy text-white text-[11px] font-medium tracking-wide uppercase rounded">Populair</span>}
+            <h3 class="text-lg font-bold text-navy">{p.naam}</h3>
+            <div class="mt-3 flex items-baseline gap-2"><span class="text-3xl font-bold text-navy">{p.setup}</span><span class="text-sm text-slate-500">setup</span></div>
+            <p class="text-xs text-slate-500 mt-1">+ {p.mnd}/maand onderhoud</p>
+            <p class="text-sm text-slate-600 mt-3 leading-relaxed">{p.desc}</p>
+            <ul class="mt-4 space-y-2">
+              {p.items.map(i => (
+                <li class="flex items-start gap-2 text-sm text-slate-700">
+                  <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  {i}
+                </li>
+              ))}
+            </ul>
+            <a href="/demo-aanvragen/" class="btn-outline mt-6 w-full justify-center text-sm">Aanvragen</a>
+          </div>
+        ))}
+      </div>
+      <p class="mt-8 text-sm text-slate-500 max-w-2xl">Alle prijzen exclusief BTW en exclusief platform-fees (Shopify €27-€289/mnd, WooCommerce hosting €25-€75/mnd). Setup-fee in 2 termijnen. Onderhoud opzegbaar per maand.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <p class="eyebrow mb-3">Hoe werkt het</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Van eerste gesprek tot live: 3 fases, 6-12 weken.</h2>
+      </div>
+      <ol class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {proces.map(p => (
+          <li class="card">
+            <div class="text-3xl font-bold text-brand-indigo mb-2">{p.stap}</div>
+            <p class="text-xs text-slate-400 mb-2">{p.tijd}</p>
+            <h3 class="text-lg font-bold text-navy mb-2">{p.titel}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{p.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-12 reveal">
+        <p class="eyebrow mb-3">Tech-stack</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Platform &amp; integraties die wij standaard ondersteunen.</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {Object.entries(stack).map(([cat, items]) => (
+          <div class="card">
+            <h3 class="text-sm font-bold text-navy mb-3">{cat}</h3>
+            <ul class="flex flex-wrap gap-2">
+              {items.map(t => <li class="text-xs px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">{t}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-10 reveal">
+        <p class="eyebrow mb-3">Aanloop AI vs concurrent</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Wat krijgt u standaard, wat kost het bij anderen extra?</h2>
+      </div>
+      <div class="overflow-x-auto -mx-4 sm:mx-0">
+        <table class="min-w-full text-sm">
+          <thead>
+            <tr class="border-b-2 border-slate-200">
+              <th class="text-left py-3 px-4 font-bold text-navy">Criterium</th>
+              <th class="text-center py-3 px-4 font-bold text-brand-indigo">Aanloop AI</th>
+              <th class="text-center py-3 px-4 font-semibold text-slate-600">Webshop-bureau klassiek</th>
+              <th class="text-center py-3 px-4 font-semibold text-slate-600">Shopify DIY</th>
+            </tr>
+          </thead>
+          <tbody>
+            {vergelijking.map((r, i) => (
+              <tr class={`border-b border-slate-100 ${i % 2 === 0 ? 'bg-slate-50/40' : ''}`}>
+                <td class="py-3 px-4 text-slate-700">{r.criterium}</td>
+                <td class="py-3 px-4 text-center font-medium text-brand-emerald">{r.aanloop}</td>
+                <td class="py-3 px-4 text-center text-slate-500">{r.web_agency}</td>
+                <td class="py-3 px-4 text-center text-slate-500">{r.diy}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Wat klanten vragen vóór ze tekenen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(f => (
+          <details class="group card">
+            <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+              <span class="font-semibold text-navy text-sm sm:text-base">{f.question}</span>
+              <svg class="w-5 h-5 flex-shrink-0 text-slate-400 group-open:rotate-180 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{f.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 max-w-3xl">
+        <p class="text-sm font-bold text-navy mb-3">Gerelateerde diensten</p>
+        <ul class="flex flex-wrap gap-3">
+          <li><a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="text-sm text-brand-indigo hover:underline">Website laten maken →</a></li>
+          <li><a href="/diensten/ai-website-bundel-mkb-nederland/" class="text-sm text-brand-indigo hover:underline">AI-Website Bundel (combo) →</a></li>
+          <li><a href="/diensten/emma/" class="text-sm text-brand-indigo hover:underline">Emma WhatsApp Agent →</a></li>
+          <li><a href="/kennisbank/ai-voor-shopify-webshop-nederland/" class="text-sm text-brand-indigo hover:underline">AI voor Shopify webshop →</a></li>
+          <li><a href="/sectoren/ai-voor-webshops/" class="text-sm text-brand-indigo hover:underline">Sector: webshops →</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-3xl font-bold text-pearl reveal">Klaar voor een webshop met AI ingebouwd?</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Gratis 60-min discovery-gesprek. We beoordelen uw catalogus, marges en logistiek, en u krijgt een vaste-prijs offerte binnen 5 werkdagen.</p>
+      <div class="mt-6 flex gap-3 reveal reveal-delay-2">
+        <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis discovery-gesprek</a>
+        <a href="/contact/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Direct contact</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
