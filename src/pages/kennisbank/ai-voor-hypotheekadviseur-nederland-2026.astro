@@ -1,0 +1,385 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Sector-specifiek kennisbank-artikel: AI voor hypotheekadviseur MKB Nederland.
+// Pattern parallel aan accountantskantoor + advocatenkantoor, maar specifiek op
+// AFM/Wft regulering + Wwft KYC + HDN/FocusOn/Adviesbox/Figlo/Elements integratie +
+// provisieverbod-fee-context + oversluit-recall + KiFiD klachtenroute.
+//
+// Sources:
+// - AFM (Autoriteit Financiële Markten) — afm.nl
+// - Wft (Wet op het financieel toezicht) — wetten.overheid.nl
+// - Wwft (Wet ter voorkoming van witwassen en financieren van terrorisme)
+// - HDN (Hypotheek Data Netwerk) — hdn.nl
+// - KiFiD (Klachteninstituut Financiële Dienstverlening) — kifid.nl
+// - NVHP (Nederlandse Vereniging van Hypothecair Planners)
+// - Adfiz (brancheorganisatie financieel adviseurs)
+// - Klantbelang Centraal (AFM-norm)
+// - Provisieverbod hypotheken sinds 1 januari 2013
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI voor hypotheekadviseur Nederland 2026 — AFM-bewust, Wwft-compliant, lead-conversie verdubbelt',
+  description: 'Hoe AI receptionist en WhatsApp-agent intake, KYC-pre-screening, document-collectie en oversluit-recall automatiseren voor Nederlandse hypotheekadviseurs. AFM/Wft-regulering, Wwft KYC, HDN-koppeling, FocusOn/Adviesbox/Figlo/Elements integratie, KiFiD-route.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-04',
+  dateModified: '2026-05-04',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-voor-hypotheekadviseur-nederland-2026/',
+  inLanguage: 'nl-NL',
+  about: [
+    { '@type': 'Thing', name: 'Hypotheekadviseur' },
+    { '@type': 'Thing', name: 'AI voor financieel adviseur' },
+    { '@type': 'Thing', name: 'AFM Wft-regulering' },
+    { '@type': 'Thing', name: 'Wwft KYC' },
+    { '@type': 'Thing', name: 'HDN Hypotheek Data Netwerk' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/ai-voor-hypotheekadviseur-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+
+const faqItems = [
+  { question: 'Mag een hypotheekadviseur AI inzetten onder AFM en Wft?', answer: 'Ja, voor administratieve handelingen — lead-intake, kwalifying-vragen, document-collectie, status-updates, agendabeheer en oversluit-recall. Wat AI absoluut niet mag onder Wft Hypothecair krediet: hypotheekadvies geven, geldverstrekker-keuze sturen, of inhoudelijke uitspraken doen over passendheid. Dat blijft 100 procent voorbehouden aan de Wft-bevoegde adviseur. Aanloop AI configureert prompt-restricties zodat de AI bij elke advies-vraag direct doorschakelt en de verplichte AFM-norm Klantbelang Centraal niet doorkruist.' },
+  { question: 'Hoe gaat AI om met Wwft-meldplicht en KYC?', answer: 'AI doet pre-screening: identificeert volgens Wwft artikel 3 de cliënt met BSN, paspoort/ID-document upload, woonadres-verificatie en bron-van-vermogen-check. Bij signalen van Wwft-risico (contante stortingen, ongebruikelijke vermogenssprong, PEP-status, complexe corporate-structuur) escaleert AI direct naar de adviseur of compliance-officer. Definitieve KYC-beoordeling, integriteitstoets en eventuele FIU-melding blijven mensenwerk — AI legt alleen de brug zodat adviseur direct met volledige context start in plaats van 30 minuten basis-intake doen.' },
+  { question: 'Werkt dit met onze HDN-koppeling, FocusOn of Adviesbox?', answer: 'Ja, via directe API-koppelingen voor HDN (Hypotheek Data Netwerk) XML-flow voor offerte-aanvragen naar geldverstrekkers, FocusOn/FocusFinanciën als CRM, Adviesbox als rekenmodule, Figlo voor klant-adviestraject-flow, Elements voor advies-rapportage en Finrust als klantdossier. Voor Independer-feed plus Hypotheekberekening.nl-leads native lead-routing. Onboarding 14-28 werkdagen voor één-CRM integratie inclusief intake-flow, document-collectie, status-flow, oversluit-recall en Wwft-pre-screening-protocol.' },
+  { question: 'Hoe gaat AI om met klantbelang centraal en advies-grenzen?', answer: 'AFM-norm Klantbelang Centraal vereist dat advies passend is bij de klantsituatie en doelstellingen. AI mag deze norm nooit raken. Concreet: AI verzamelt feiten (inkomen, vermogen, hypotheekdoel, looptijd-voorkeur, risicotolerantie globaal) en geeft die gestructureerd door aan de adviseur — die vervolgens het passend advies formuleert. AI geeft nooit een rente-aanbeveling, geldverstrekker-suggestie of hypotheekvorm-keuze (annuïtair vs lineair vs aflossingsvrij). Bij elke adviesvraag van een klant escaleert AI direct naar de Wft-bevoegde adviseur met "voor uw advies wil ik u doorverbinden met een van onze hypotheekadviseurs".' },
+  { question: 'Kan AI document-collectie automatiseren?', answer: 'Ja, dit is een van de hoogste-impact use-cases. Na ondertekening van de adviesopdracht stuurt AI via WhatsApp en e-mail een persoonlijke document-checklist met deadline: salarisstroken laatste 3 maanden, werkgeversverklaring, jaaropgaaf, ID-kopie, recent bankafschrift, koopakte plus taxatierapport, eventueel jaarrekeningen voor ZZP/DGA. Klant uploadt via secure portal; AI checkt formaat-compleetheid (niet inhoudelijk), stuurt herinneringen op dag 3, 7 en 10, en signaleert ontbrekende stukken aan de adviseur. Resultaat: doorlooptijd document-collectie van 14 naar 3-5 werkdagen — wat de hele acceptatietraject met 1-2 weken versnelt.' },
+  { question: 'Hoe werkt oversluit-recall en rente-monitoring?', answer: 'Bestaande klanten krijgen automatische recall-momenten op de juiste tijd: 3 maanden voor einde rentevaste-periode, bij significante ECB-rentewijziging (>0,5 procentpunt onder huidige rente), bij rentemiddel-momenten (10-jaars vast loopt af na 7 jaar) en bij oversluit-arbitrage-kansen. AI stuurt een persoonlijk WhatsApp-bericht met de huidige hypotheekstatus en biedt een gratis rente-check bij de adviseur. Conversie van oversluit-recall stijgt typisch van 8 procent (handmatige nieuwsbrief) naar 25-35 procent (gepersonaliseerde trigger-recall) — bij gemiddeld €2.800 fee per oversluiting is dat €30.000-€60.000 extra omzet per jaar voor een 4-adviseur kantoor.' },
+  { question: 'Wat is de gemiddelde ROI voor een hypotheekadvies-MKB-kantoor?', answer: 'Voor een gemiddeld 3-5-adviseur kantoor met 200-400 hypotheken/jr en gemiddelde fee €2.500-€4.500 ligt de ROI op 8-20 keer op 12-maand basis. Vier hoofdwinsten: (1) lead-kwalificatie en -conversie stijgt van 25 procent naar 40-50 procent door 24/7-bereikbaarheid en snellere eerste-respons (waarde 12-24 extra hypotheken per jaar = €30.000-€100.000 extra fee), (2) document-collectie doorlooptijd van 14 naar 4 dagen versnelt acceptatietraject met 1-2 weken (snellere pipeline-rotatie + minder afhakers), (3) administratieve tijd op status-vragen daalt 60-75 procent (60-100u/mnd vrijgespeeld voor advies-uren = €18.000-€36.000/jr extra advies-omzet), (4) oversluit-recall-conversie van 8 procent naar 25-35 procent levert €30.000-€60.000/jr extra fee.' },
+  { question: 'Werkt dit ook voor zelfstandige hypotheekadviseurs of franchise-formules?', answer: 'Ja. Solo-adviseur: identiek pattern met lagere onboarding-kosten omdat configuratie eenvoudiger is — extra cruciaal omdat solo-adviseurs het meest leiden onder reactieve admin-tijd die advies-uren vreet. Franchise-formules (De Hypotheker, Vipotek-formules, Hypotheekstore-formules): integratie binnen de franchise-stack mogelijk mits franchise-IT-beleid het toelaat; vaak is parallel-implementatie als extra kanaal een snellere route dan stack-vervanging. Voor onafhankelijke kantoren (lid van Adfiz of NVHP) zonder vaste formule-stack: maximale flexibiliteit op uw bestaande HDN/FocusOn/Adviesbox-combinatie.' },
+];
+
+const automatableProcesses = [
+  {
+    title: 'Lead-intake en eerste kwalificatie',
+    body: 'Prospect belt of WhatsAppt: "ik wil een hypotheek voor onze nieuwe woning". AI vraagt aankoopprijs, eigen vermogen, gezamenlijk bruto-inkomen, dienstverband (vast/tijdelijk/ZZP/DGA), geboortedata, gezinssituatie, hypotheekdoel (aankoop/oversluit/verbouw/tweede woning) en planning. Op basis van deze feiten checkt AI globale haalbaarheid (NIBUD-norm-indicatie, geen formele Wft-toets) en plant een adviesgesprek bij de eerstvolgende beschikbare Wft-bevoegde adviseur in FocusOn. Geen advies, alleen gestructureerde feitenverzameling.',
+  },
+  {
+    title: 'Document-checklist en automatische herinneringen',
+    body: 'Na ondertekening adviesopdracht stuurt AI een gepersonaliseerde document-checklist via WhatsApp en e-mail: salarisstroken laatste 3 maanden, werkgeversverklaring, jaaropgaaf, ID-kopie, koopakte, taxatierapport, eventueel jaarrekeningen voor ondernemers. Klant uploadt naar secure portal; AI checkt formaat-compleetheid en stuurt herinneringen op dag 3, 7 en 10. Doorlooptijd van 14 naar 4 werkdagen — wat het hele acceptatietraject één tot twee weken versnelt.',
+  },
+  {
+    title: 'KYC en Wwft pre-screening',
+    body: 'Cliënt-identificatie volgens Wwft artikel 3: BSN, ID-document upload met QR-verificatie, woonadres-bevestiging, bron-van-vermogen-vragen voor afkoop pensioen, schenking ouders of vermogen uit verkoop bedrijf. AI signaleert Wwft-risico-indicatoren (contante storting, ongebruikelijke vermogenssprong, PEP-status, complexe corporate-structuur) en escaleert direct naar adviseur of compliance-officer. Definitieve integriteitsbeoordeling en eventuele FIU-melding blijven mensenwerk.',
+  },
+  {
+    title: 'Status-updates lopende dossiers',
+    body: 'Bestaande klant vraagt: "waar staan we met onze hypotheek". AI haalt realtime status uit FocusOn/Figlo/Elements: offerte uitstaand bij geldverstrekkers (3 van 5 binnen, 2 verwacht), taxatie status, werkgeversverklaring nog op te leveren, planning bindend aanbod, planning notaris-passering. Klant krijgt accurate update zonder dat adviseur 10 minuten in dossier hoeft te duiken. 60-75 procent van status-bel-tijd verdwijnt zo.',
+  },
+  {
+    title: 'Oversluit-recall trigger-based',
+    body: 'Volledig automatisch: AI monitort per klant rentevast-einddata, ECB-renteveranderingen en oversluit-arbitrage-kansen. 3 maanden voor einde rentevast-periode of bij rente-stap meer dan 0,5 procentpunt onder huidige klantrente: persoonlijk WhatsApp-bericht met huidige hypotheekstatus en aanbod gratis rente-check. Conversie stijgt van 8 procent (nieuwsbrief) naar 25-35 procent (trigger-recall). Voor een 4-adviseur kantoor met 600 actieve klanten: €30.000-€60.000 extra fee per jaar.',
+  },
+  {
+    title: 'Notaris-passering en nazorg-flow',
+    body: 'Na bindend aanbod plant AI automatisch tweede klant-afspraak voor passeer-akte voorbereiding: bevestigt notariskeuze, koppelt notariskantoor-data via secure overdracht, bevestigt sleuteloverdracht-datum en stuurt klant 24u voor passering een herinnering met checklist (legitimatie meenemen, eigen geld op derdengelden-rekening, eindcontrole hypotheekakte). Na passeer plant AI 12-mnd nazorg-moment plus rentevast-einde-recall vooruit.',
+  },
+  {
+    title: 'KiFiD klachten-route en complexe escalatie',
+    body: 'Wanneer een klant zegt "ik ben niet tevreden", "ik wil een klacht indienen", of vraagt naar KiFiD: AI escaleert direct naar de praktijkhouder of klachtenfunctionaris en logt het contact. Voor complex-advies-vragen (echtscheidings-hypotheek, ondernemers-inkomen, expat-financiering, tweede woning, beleggingshypotheek): directe escalatie naar Wft-bevoegde adviseur — geen poging om eerst zelf vragen te beantwoorden. AFM-norm Klantbelang Centraal blijft 100 procent intact.',
+  },
+];
+
+const escalationKeywords = [
+  '"advies" / "wat raadt u aan" / "wat zou u doen" → escalate naar Wft-bevoegde adviseur (advies-grens)',
+  '"klantbelang" / "passend advies" / "second opinion advies" → escalate (AFM-norm Klantbelang Centraal)',
+  '"contante storting" / "cash betaling" / "anonimiseer" → Wwft-flag + compliance-officer',
+  '"PEP" / "politiek prominent" / "politicus familie" → Wwft-flag (verscherpt cliëntenonderzoek)',
+  '"verzwijgen" / "niet melden inkomen" / "extra kasinkomen" → Wwft + integriteit + escalate',
+  '"scheiding" / "echtscheiding" / "boedelscheiding" → complex advies, escalate',
+  '"klacht" / "KiFiD" / "tuchtcommissie" → klachtenfunctionaris + log',
+  '"ZZP" / "DGA" / "ondernemer" + "hypotheek" → complex inkomen, escalate naar adviseur',
+  '"expat" / "buitenlands inkomen" / "non-resident" → complex internationaal, escalate',
+  '"beleggingshypotheek" / "tweede woning" / "verhuur-pand" → complex product, escalate',
+];
+
+const integrations = [
+  { name: 'HDN (Hypotheek Data Netwerk)',     type: 'Offerte-platform',             integratie: 'XML-koppeling — offerte-aanvragen naar 30+ geldverstrekkers' },
+  { name: 'FocusOn / FocusFinanciën',         type: 'CRM hypotheek-adviseur',       integratie: 'Native API — meest-gebruikte CRM in NL, dossier + agenda + Wft-log' },
+  { name: 'Adviesbox',                        type: 'Rekenmodule',                  integratie: 'Native API — passende-norm berekeningen (NIBUD), maandlasten, rentevergelijk' },
+  { name: 'Figlo',                            type: 'Klant-adviestraject',          integratie: 'Native API — adviesrapportage, klantbeeld, Wft-dossiervorming' },
+  { name: 'Elements (FBTO/EDR)',              type: 'Adviesplatform',               integratie: 'API-koppeling — advies-flow + dossier' },
+  { name: 'Finrust / Diepol',                 type: 'Klantdossier',                 integratie: 'Native API of REST-webhook — secure dossier-overdracht' },
+  { name: 'WhatsApp Business API',            type: 'Klantcommunicatie',            integratie: 'Native — WhatsApp Cloud API met sjablonen + secure portal-link' },
+  { name: 'Microsoft 365 + Exchange',         type: 'Agenda + secure mail',         integratie: 'Microsoft Graph API — agenda-koppeling backup' },
+];
+
+const roiBreakdown = [
+  { post: 'Lead-conversie eerste 24u',                                before: '25-30% conversie',             after: '40-50% conversie' },
+  { post: 'Document-collectie doorlooptijd',                          before: '12-16 werkdagen',              after: '3-5 werkdagen' },
+  { post: 'Adviseur-tijd op status-vragen',                           before: '60-90u/mnd',                   after: '15-25u/mnd (75% reductie)' },
+  { post: 'Oversluit-recall conversie',                               before: '6-10% (nieuwsbrief)',          after: '25-35% (trigger-recall)' },
+  { post: 'KYC/Wwft-intake voorbereidingstijd per case',              before: '45-90 minuten',                after: '10-20 minuten (alleen review)' },
+  { post: 'Niet-aangenomen telefoongesprekken (avond/weekend)',       before: '20-35% gemiste calls',         after: '<3% gemiste calls' },
+  { post: 'Maandelijkse Aanloop-investering',                         before: '—',                            after: '€597-€1.197/mnd Marco+Emma' },
+];
+---
+
+<BaseLayout
+  title="AI voor hypotheekadviseur Nederland 2026 — AFM-bewust, Wwft-compliant, lead-conversie verdubbelt | Aanloop AI"
+  description="Hoe AI receptionist plus WhatsApp-agent intake, KYC-pre-screening, document-collectie en oversluit-recall automatiseren voor Nederlandse hypotheekadviseurs. AFM/Wft-regulering, Wwft KYC, HDN-koppeling, FocusOn/Adviesbox/Figlo/Elements integratie."
+  schema={[articleSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Sector — Hypotheekadviseur</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          AI voor hypotheekadviseur — AFM-bewust, Wwft-compliant, lead-conversie verdubbelt
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          Nederlandse hypotheekadviseurs werken in een uniek gereguleerd vak: AFM-vergunning onder Wft Hypothecair krediet, Wwft cliëntonderzoek en meldplicht, AVG bijzondere financiële persoonsgegevens, klantbelang-centraal-norm, KiFiD-klachtenroute en provisieverbod-fee-context. Tegelijk concurreren onafhankelijke kantoren met grote ketens en Independer-platforms op snelheid van eerste-respons en doorlooptijd. Een AI receptionist plus WhatsApp-agent kan 60-70 procent van administratieve handelingen overnemen — lead-intake, document-collectie, status-vragen, oversluit-recall, Wwft-pre-screening — terwijl het Wft-advies 100 procent voorbehouden blijft aan de bevoegde adviseur. Mits goed geconfigureerd op uw HDN-koppeling, FocusOn/Figlo/Adviesbox-stack en AFM-bewuste prompt-restricties. Hieronder: precies welke processen automatiseerbaar zijn, hoe AI binnen Wft en Wwft blijft, en welke ROI Nederlandse MKB-hypotheekadvies-kantoren halen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Welke processen automatiseerbaar zijn</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI assistent voor een hypotheekadvieskantoor neemt vooral de eerstelijns klantcontacten en administratieve handelingen over: telefoongesprekken aannemen waarbij prospects zich melden voor een hypotheekvraag (aankoop, oversluit, verbouwing, tweede woning), gestructureerd alle feiten verzamelen die de adviseur nodig heeft (aankoopprijs, inkomenssituatie, eigen vermogen, hypotheekdoel, planning, gezinssituatie), document-checklists uitsturen na ondertekening adviesopdracht en herinneringen verzenden, en status-vragen beantwoorden voor lopende dossiers. De AI geeft geen Wft-advies, doet geen passendheidstoets en doet geen geldverstrekker-suggesties.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor lopende klanten handelt de AI status-vragen af (waar staat onze offerte, klopt mijn passeer-datum, wanneer komt mijn rentevast af) door realtime in uw FocusOn, Figlo of Elements te kijken. Dit ontlast adviseurs voor 60-75 procent van inkomende routine-contacten — in een 4-adviseur kantoor met 200-400 hypotheken per jaar gaat dat al snel om 60-100 uur per maand die nu naar advies-uren of nieuwe acquisitie kunnen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk: de AI vervangt nooit de Wft-bevoegde adviseur. Hypotheekadvies (productkeuze, geldverstrekker-keuze, hypotheekvorm-keuze, rentevast-keuze, looptijd-advies) blijft 100 procent voorbehouden aan de natuurlijke persoon met Wft Hypothecair krediet bevoegdheid. Bij elke klant-vraag die over advies, passendheid of klantbelang gaat schakelt de AI direct door — met als gestandaardiseerd antwoord "voor uw advies wil ik u doorverbinden met een van onze hypotheekadviseurs". Geen ruimte voor schaduw-advies, AFM-norm Klantbelang Centraal blijft 100 procent intact.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Top 7 processen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wat AI direct van uw adviseur en backoffice overneemt.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-6">
+        {automatableProcesses.map((p, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <p class="text-base font-bold text-navy mb-2">{p.title}</p>
+            <p class="text-sm text-slate-600 leading-relaxed">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">AFM, Wft en AI: wat mag en wat absoluut niet</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De Autoriteit Financiële Markten (AFM) houdt toezicht op de Wet op het financieel toezicht (Wft) en specifiek op Wft Hypothecair krediet. De kernregel: hypotheekadvies is een gereguleerde activiteit die alleen mag worden verricht door natuurlijke personen met de Wft-bevoegdheid Hypothecair krediet, vanuit een AFM-vergunde onderneming. Voor AI betekent dit een harde scheidslijn: feiten verzamelen, processen begeleiden en administratie afhandelen mag, maar elke vorm van inhoudelijk advies (welke geldverstrekker, welke hypotheekvorm, welke rentevast-periode, of het product passend is) is verboden voor AI.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI levert specifiek voor hypotheekadviseurs een AFM-bewuste implementatie: vooraf-gescripte prompt-restricties die de AI verhinderen advies te geven (welke hypotheek is beter voor mij, wat zou u doen, is annuïtair of lineair beter), automatische escalatie bij 10 advies-rode-vlag-keywords, gestandaardiseerde escalatie-formulering naar Wft-bevoegde adviseur, en logging-trail die voldoet aan AFM-toezichtsverplichtingen plus Wft-dossiervorming. Klantbelang Centraal-norm wordt zo nooit doorkruist — de AI doet alleen wat een gediplomeerde administratief medewerker ook zou mogen doen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor Wwft (Wet ter voorkoming van witwassen en financieren van terrorisme): hypotheekadviseurs zijn Wwft-instellingen en hebben verscherpte cliëntonderzoek-plicht plus meldplicht ongebruikelijke transacties bij FIU-Nederland. AI mag pre-screening doen (BSN-identificatie, ID-document-upload, woonadres, bron-van-vermogen-vragen) en risico-indicatoren signaleren. Definitieve cliëntonderzoek-beoordeling, integriteitstoets en FIU-melding blijven volledig mensenwerk. Voor het provisieverbod (sinds 2013): AI is niet relevant — fee-afspraken blijven adviseurs-verantwoordelijkheid.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Escalatie-protocol</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">10 keywords die AI direct doorzet naar Wft-adviseur of compliance.</h2>
+        <p class="mt-3 text-slate-600">Voor hypotheekadviseurs configureren we strikte rode-vlag-detection conform Wft-grens en Wwft-meldplicht: zodra de klant iets zegt over advies, passendheid, klantbelang, of een Wwft-risico-indicatie geeft, escaleert de AI direct. Geen kans op schaduw-advies en geen Wwft-melding gemist.</p>
+      </div>
+      <ul class="space-y-2 reveal reveal-delay-1">
+        {escalationKeywords.map((k) => (
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700">
+            <svg class="w-4 h-4 mt-1 flex-shrink-0 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M5 19h14a2 2 0 001.84-2.75L13.74 4a2 2 0 00-3.48 0L3.16 16.25A2 2 0 005 19z"/></svg>
+            <span>{k}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Integraties</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Werkt met uw bestaande hypotheek-stack.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">8 native of webhook-koppelingen voor de meest-gebruikte Nederlandse hypotheek-CRM- en advies-systemen plus HDN offerte-flow en WhatsApp Business API. Onafhankelijke kantoren zonder vaste formule-stack: maximale flexibiliteit op uw bestaande combinatie.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Systeem</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Type</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Integratie-methode</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {integrations.map(i => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-navy">{i.name}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{i.type}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs">{i.integratie}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Voorbeeldgesprek: AI handelt nieuwe hypotheek-aanvraag af</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Prospect WhatsAppt op zaterdagavond 21:30 — adviseurs zijn al lang naar huis: "hallo, we hebben net een huis gekocht en willen graag een hypotheekgesprek". Voorheen zou deze lead pas maandag-ochtend gezien worden, met 24-30 uur respons-vertraging waarin een concurrent die wel 24/7 reageert al de afspraak heeft binnengehaald. Nu antwoordt AI binnen 30 seconden: "Goedenavond, leuk dat u contact opneemt met ABC Hypotheek-adviseurs. Ik help u graag bij de eerste planning van uw adviesgesprek. Mag ik u een paar vragen stellen om alvast voor te bereiden?". Klant: "ja graag". AI vraagt vervolgens gestructureerd: aankoopprijs, planning sleuteloverdracht, gezamenlijk bruto-inkomen, dienstverband-type, eigen vermogen, eventuele lopende leningen, gezinssituatie, hypotheekdoel.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Klant antwoordt: aankoopprijs €425.000, sleuteloverdracht over 8 weken, gezamenlijk bruto €98.000, beide vast dienstverband, eigen vermogen €55.000, geen overige leningen, 2 kinderen, eerste eigen woning. AI registreert dit gestructureerd in FocusOn, plant een adviesgesprek bij de eerstvolgende beschikbare Wft-bevoegde adviseur (binnen 48u), stuurt een digitale adviesopdracht ter ondertekening, en zet meteen de document-checklist klaar. Maandagochtend start de adviseur niet bij nul maar met een volledig gevulde dossiermap. Klant heeft sneller geholpen dan bij een grote keten. Total tijd voor klant: 6 minuten, total tijd voor adviseur: 0 minuten.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk wat de AI niet doet: geen uitspraak over of de hypotheek haalbaar is bij dat inkomen, geen rente-aanbeveling, geen geldverstrekker-suggestie, geen advies over hypotheekvorm. Bij vragen als "wat zou u zelf doen", "denkt u dat het lukt", "is annuïtair beter dan lineair" antwoordt AI consequent "voor uw passend advies wil ik u doorverbinden met een van onze hypotheekadviseurs — zij hebben de Wft-bevoegdheid om u daarover te adviseren". Wft-grens 100 procent gerespecteerd.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Concrete ROI</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Voor een 4-adviseur kantoor met 280 hypotheken per jaar.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Realistische cijfers per maand voor een gemiddeld Nederlands hypotheekadvies-MKB-kantoor (3-5 adviseurs, 200-400 hypotheken per jaar, gemiddelde fee €2.500-€4.500). Uw eigen ROI varieert per portefeuille-mix (aankoop vs oversluit vs ondernemers) en gemiddelde fee-niveau.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-4 text-slate-500 font-medium w-[44%]">Metric</th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[28%]">Vóór AI</th>
+              <th class="text-left py-4 px-4 font-bold text-brand-emerald w-[28%]">Met Aanloop AI</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {roiBreakdown.map(r => (
+              <tr>
+                <td class="py-3 px-4 text-slate-700">{r.post}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.before}</td>
+                <td class="py-3 px-4 text-navy font-medium text-xs">{r.after}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Bottom-line voor 4-adviseur kantoor met 280 hypotheken/jr: gemiddelde ROI 8-20 keer op 12-maand basis, payback-periode 3-6 weken. Het lead-conversie-effect (van 25 naar 40-50 procent door 24/7 eerste-respons) plus oversluit-recall-conversie (van 8 naar 25-35 procent) levert samen €60.000-€160.000 extra fee-omzet per jaar. De document-collectie-versnelling (14 naar 4 dagen) plus adviseur-tijd op admin (60-90u/mnd vrij) is winst bovenop. Met €597-€1.197 per maand investering in Marco plus Emma is de payback gerealiseerd binnen het eerste kwartaal — en groeit het effect naarmate de oversluit-pipeline volloopt.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Implementatie roadmap voor hypotheekadvieskantoren</h2>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Een succesvolle AI-implementatie in een hypotheekadvieskantoor verloopt in drie fasen. Fase 1 (week 1-3) is discovery en design: we analyseren 200 historische klantcontacten, bel-piekpatronen en lead-respons-tijden van de afgelopen 3 maanden om de meest voorkomende vragen, escalaties en piek-momenten in kaart te brengen. Op basis hiervan ontwerpen we de conversational flow voor lead-intake, document-collectie, status-flow, oversluit-recall en Wwft-pre-screening — plus AFM-bewuste rode-vlag-escalatieprotocollen die specifiek bij uw werkwijze, CRM-stack en klantpopulatie (particulier, ZZP, DGA, expat) passen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-2">Fase 2 (week 4-7) is build en pilot: we configureren de AI met uw kennisbank (FAQ over openingstijden, fee-transparantie, doorlooptijden, document-eisen, oversluit-criteria), koppelen aan uw FocusOn/Figlo/Elements, HDN voor offerte-status, Adviesbox voor rekenmodule-vragen, plus WhatsApp Business API, en testen intern twee à drie weken lang. In deze periode simuleren u en uw adviseur-team realistische klant-scenarios — de AI leert van correcties en wordt steeds nauwkeuriger op uw specifieke advies-grenzen, Wwft-protocol en escalatie-criteria. Eind fase 2 gaat de AI live met 25-35 procent van uw klantverkeer voor monitoring (typisch eerst lead-intake plus status-vragen).</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-3">Fase 3 (week 8-14) is scale en optimaliseer: volledig live op het primaire kanaal met dagelijkse KPI-monitoring (lead-respons-tijd, lead-naar-afspraak conversie, document-collectie doorlooptijd, oversluit-recall conversie), wekelijkse iteratie op herinnerings-templates en maandelijkse rapportage. Vanaf maand 3 ziet u typisch een stabiel lead-conversie van meer dan 40 procent (van 25 procent baseline), document-collectie binnen 5 werkdagen (van 14 dagen baseline) en oversluit-recall conversie van 25-35 procent (van 8 procent baseline). Dat zijn voor een 4-adviseur kantoor cijfers die direct zichtbaar zijn op de fee-omzet per kwartaal.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">AI voor hypotheekadviseur — antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Bronnen en verder lezen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Onafhankelijke bronnen voor uw eigen onderzoek.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="https://www.afm.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">AFM — Autoriteit Financiële Markten</p>
+          <p class="text-slate-600 mt-1 text-xs">Toezichthouder Wft Hypothecair krediet, Klantbelang Centraal-norm en vergunningenregister.</p>
+        </a>
+        <a href="https://www.hdn.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">HDN — Hypotheek Data Netwerk</p>
+          <p class="text-slate-600 mt-1 text-xs">Centrale infrastructuur voor offerte-aanvragen naar geldverstrekkers in Nederland.</p>
+        </a>
+        <a href="https://www.kifid.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">KiFiD — Klachteninstituut Financiële Dienstverlening</p>
+          <p class="text-slate-600 mt-1 text-xs">Onafhankelijke klachtenroute voor hypotheek- en financiële advies-klachten.</p>
+        </a>
+        <a href="https://www.adfiz.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Adfiz — Brancheorganisatie financieel adviseurs</p>
+          <p class="text-slate-600 mt-1 text-xs">Beroepsorganisatie onafhankelijke financieel adviseurs Nederland.</p>
+        </a>
+        <a href="https://www.fiu-nederland.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">FIU-Nederland — Financial Intelligence Unit</p>
+          <p class="text-slate-600 mt-1 text-xs">Wwft-meldpunt voor ongebruikelijke transacties.</p>
+        </a>
+        <a href="https://autoriteitpersoonsgegevens.nl/themas/financien" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Autoriteit Persoonsgegevens — Financiën</p>
+          <p class="text-slate-600 mt-1 text-xs">AVG voor financiële sector, DPIA-verplichtingen.</p>
+        </a>
+        <a href="/diensten/marco/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Marco — AI receptionist</p>
+          <p class="text-slate-600 mt-1 text-xs">De telefoon-component voor hypotheekkantoren met 24/7 lead-intake.</p>
+        </a>
+        <a href="/diensten/emma/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Emma — WhatsApp-agent</p>
+          <p class="text-slate-600 mt-1 text-xs">Het document-collectie-, status- en oversluit-recall-component.</p>
+        </a>
+        <a href="/kennisbank/ai-voor-accountantskantoor-nederland-2026/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ AI voor accountantskantoor</p>
+          <p class="text-slate-600 mt-1 text-xs">Zuster-zakelijk-artikel: NBA-bewust, Wwft, jaarrekening-pieken.</p>
+        </a>
+        <a href="/ai-roi-calculator/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ ROI-calculator</p>
+          <p class="text-slate-600 mt-1 text-xs">Bereken uw eigen ROI voor uw hypotheekadvieskantoor.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Klaar om uw lead-conversie te verdubbelen zonder de Wft-grens te raken?
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Onboarding 14-28 werkdagen voor één-CRM koppeling, 28-42 dagen voor multi-stack of franchise-context. AFM-bewuste configuratie, Wwft-pre-screening protocol, EU-only data-verwerking met DPIA-template inbegrepen. Tijdens uw demo simuleren we een volledige lead-intake op zaterdagavond én een oversluit-recall-trigger op een echte WhatsApp en telefoonlijn — zodat u zelf hoort hoe Marco en Emma uw kantoor 24/7 ondersteunen zonder ooit de adviseur-grens te overschrijden.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een live demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bekijk tarieven
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
