@@ -41,12 +41,14 @@ const files = walk(PAGES_DIR);
 let modified = 0;
 const log = [];
 
-// Two title-declaration shapes in this codebase:
+// Three title-declaration shapes in this codebase:
 //   1) const title = '...'; (frontmatter)
-//   2)   title="..." (JSX attribute on multi-line <BaseLayout>)
+//   2)   title="..." (JSX attribute on its own line — multi-line BaseLayout)
+//   3) <BaseLayout title="..." ...> (JSX attribute inline on opening tag)
 const PATTERNS = [
   { re: /(\bconst\s+title\s*=\s*)(['"])([^\n]*?)\2(\s*;?)/, label: 'const' },
-  { re: /(^\s+title=)(['"])([^\n"']*?)\2/m, label: 'jsx' },
+  { re: /(^\s+title=)(['"])([^\n"']*?)\2/m, label: 'jsx-line' },
+  { re: /(<BaseLayout\b[^>]*?\btitle=)(['"])([^"'\n]*?)\2/, label: 'jsx-inline' },
 ];
 
 for (const file of files) {
