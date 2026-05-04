@@ -1,0 +1,384 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Sector-specifiek kennisbank-artikel: AI voor paardenarts (equine veterinair) MKB Nederland.
+// Pattern parallel aan dierenartspraktijk, maar specifiek op
+// KNMvD Sectie Paard + 24/7 ambulante praktijk + acute koliek-spoed +
+// concours-context + paardenpaspoort/UDD + Wet dieren + sportkeuringen.
+//
+// Sources:
+// - KNMvD Sectie Paard — knmvd.nl
+// - Wet dieren / WUD — wetten.overheid.nl
+// - Geneesmiddelenwet diergeneeskunde + UDD-regeling
+// - Paardenpaspoort + medicatie-administratie via FNRS/KNHS database
+// - FNRS (Federatie Nederlandse Ruitersportcentra)
+// - KNHS (Koninklijke Nederlandse Hippische Sportfederatie) reglement
+// - Universiteit Utrecht Faculteit Diergeneeskunde Equine
+// - NVWA toezicht UDD + diergeneesmiddelen — nvwa.nl
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI voor paardenarts Nederland 2026 — KNMvD-bewust, koliek-spoed 24/7, ambulante agenda geoptimaliseerd',
+  description: 'Hoe AI receptionist en WhatsApp-agent acute koliek-spoed-triage, ambulante agenda-routing, vaccinatie- en gebitcontrole-recall en sportkeuring-flow automatiseren voor Nederlandse paardenartsen. KNMvD Sectie Paard, WUD-grens, paardenpaspoort/UDD, FNRS/KNHS-context, 10 acute spoed-keywords met directe escalatie.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-04',
+  dateModified: '2026-05-04',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-voor-paardenarts-nederland-2026/',
+  inLanguage: 'nl-NL',
+  about: [
+    { '@type': 'Thing', name: 'Paardenarts' },
+    { '@type': 'Thing', name: 'Equine veterinaire praktijk' },
+    { '@type': 'Thing', name: 'KNMvD Sectie Paard' },
+    { '@type': 'Thing', name: 'Paardenpaspoort UDD' },
+    { '@type': 'Thing', name: 'Koliek-spoed' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/ai-voor-paardenarts-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+
+const faqItems = [
+  { question: 'Mag een paardenarts AI inzetten onder KNMvD en Wet dieren?', answer: 'Ja, voor administratieve handelingen — afspraak-intake, ambulante route-planning, vaccinatie- en gebitcontrole-recall, paardenpaspoort-medicatie-administratie, sportkeuring-coördinatie, no-show preventie en eerste-triage van eigenaar-meldingen. Wat AI absoluut niet mag onder de Wet dieren en WUD: een diagnose stellen, behandeling voorschrijven, of een geneesmiddel adviseren — dat is voorbehouden handelen van de bevoegde paardenarts. Bij detectie van acute spoed-keywords (koliek, kreupelheid graad 4-5, bloedverlies, partus-problemen, diepe wond, kapseldoorschot) escaleert AI binnen 5 seconden naar de dienstdoende equine vet of regionale 24u-kliniek — Wet dieren en KNMvD-grens 100 procent intact.' },
+  { question: 'Hoe gaat AI om met acute koliek-spoed?', answer: 'Koliek is bij paarden de meest acute en frequente spoedsituatie — afhankelijk van het type (gas, obstructie, draaiing, infarct) is sterfte zonder snelle interventie 30-80 procent. AI is geconfigureerd op koliek-rode-vlag-keywords: rolt over de grond, krabt buik, kijkt naar flank, weigert eten, geen mest 12u plus, zweet hevig, polsfrequentie hoog (eigenaar kan globaal voelen). Bij detectie escaleert AI binnen 5 seconden naar de dienstdoende paardenarts, geeft korte spoed-overdracht (paard-naam, leeftijd, ras, eerste klacht-tijdstip, gedrag, eet-status), en koppelt de gesprekken. Voor avond/weekend en buiten de regio: directe doorschakeling naar Universiteitskliniek Diergeneeskunde Utrecht of regionale 24u equine kliniek (Heesch, Hilversum, Wolvega). Doorlooptijd van eerste contact tot vet-in-lijn: typisch onder 90 seconden.' },
+  { question: 'Werkt dit met onze Provet, Animana of equine-specifieke EPDs?', answer: 'Ja, via directe API-koppelingen voor de meest-gebruikte equine veterinaire EPDs in Nederland: Provet/Provet Cloud (populair bij ambulante paardenartsen vanwege mobiele-app), Animana (IDEXX) voor multi-species praktijken, EquiVet, Vetware Equine-module, plus integratie met FNRS/KNHS paardenpaspoort-database voor medicatie-administratie en sport-paard wachttijden. Voor agenda-routing op meerdere stallen per dag: native Google Calendar of Microsoft Outlook koppeling met postcode-clustering. Onboarding 14-28 werkdagen voor één-EPD integratie inclusief afspraak-flow, route-clustering, recall-flow, paspoort-medicatie en KNMvD-bewuste rode-vlag-detection.' },
+  { question: 'Hoe handelt AI ambulante agenda-clustering bij meerdere stallen per dag?', answer: 'Een paardenarts werkt typisch ambulant: 6-12 stallen of pensions per dag bezoeken in een geografisch cluster om reistijd te minimaliseren. AI optimaliseert dit door bij elke nieuwe afspraak de postcode te checken tegen al ingeplande locaties die dag, en — afhankelijk van prioriteit — een efficient route te suggereren. Bij niet-spoed-aanvragen: AI plant op de eerstvolgende rit-dag in dat cluster (typisch maandag-noord, dinsdag-oost, etc). Bij spoed: directe inschuiving met automatische bericht naar overige eigenaren over mogelijke vertraging. Resultaat: 15-25 procent meer paarden per rij-dag zonder extra werkuren, en eigenaren krijgen realistische tijdslot-voorspelling in plaats van ergens tussen 9:00 en 17:00.' },
+  { question: 'Kan AI vaccinatie- en gebitcontrole-recall automatiseren?', answer: 'Ja, dit is een van de hoogste-impact use-cases voor preventieve paardenzorg. AI monitort per paard: jaarvaccinatie influenza-tetanus (FNRS/KNHS-verplicht voor sport-paarden, geldigheid maximaal 6 maanden voor wedstrijd-deelname), gebitcontrole-cyclus (jaarlijks-2-jaarlijks afhankelijk leeftijd), ontwormings-cyclus (voorjaar/najaar), West-Nile-vaccinatie (na blootstelling-risico), en post-operatieve controle. 4-6 weken voor vervaldatum: persoonlijke WhatsApp-recall met paard-naam (Hallo, voor Storm staat de jaarvaccinatie weer gepland — zal ik een afspraak inplannen tijdens de noord-rit van dinsdag 15 oktober?). Conversie van vaccinatie-recall stijgt typisch van 20-30 procent (passieve mail) naar 55-75 procent (gepersonaliseerd met directe rit-koppeling). Voor een paardenarts met 800-1.500 paarden in portfolio: structurele groei van preventie-omzet.' },
+  { question: 'Hoe gaat AI om met paardenpaspoort en UDD-regeling?', answer: 'Het paardenpaspoort is wettelijk verplicht en bevat de medicatie-administratie volgens UDD (Uitsluitend Door Dierenarts). Voor sport-paarden (FEI/KNHS-context) gelden bovendien specifieke wachttijden voor toegestane medicatie. AI mag administratief ondersteunen: bij elke ambulante visite registreert AI welke medicatie is toegediend in de paspoort-app of EPD, vraagt eigenaar om paspoort-foto te uploaden indien nog niet in dossier, en signaleert bij sport-context welke wachttijden gelden voor wedstrijd-deelname. AI doet zelf geen medicatie-keuze of dosering-advies — dat blijft Wft-bevoegde paardenarts-verantwoordelijkheid. Resultaat: paspoort-administratie-fouten dalen tot bijna nul, en sport-eigenaren krijgen automatisch wachttijd-bevestiging voor wedstrijd-planning.' },
+  { question: 'Wat is de gemiddelde ROI voor een ambulante paardenarts-praktijk?', answer: 'Voor een gemiddelde 2-4-paardenarts ambulante praktijk met 800-1.500 paarden in portfolio en gemiddelde rit-fee €120-€220 per visite (excl. medicatie) ligt de ROI op 10-22 keer op 12-maand basis. Vier hoofdwinsten: (1) ambulante agenda-clustering levert 15-25 procent meer paarden per rij-dag, ofwel €40.000-€100.000 extra omzet per jaar zonder extra paardenarts-uren, (2) vaccinatie- en gebitcontrole-recall conversie stijgt van 20-30 procent naar 55-75 procent, levert €25.000-€70.000 extra preventieve omzet per jaar plus betere paard-gezondheid, (3) 24/7 spoed-bereikbaarheid voor koliek en geboorte-problemen wint klant-loyaliteit en voorkomt verlies aan concurrent-praktijk, (4) administratieve tijd op afspraak-coördinatie en paspoort-administratie daalt 65-80 procent (40-70 uur per maand vrij voor extra rit-uren of klanten-acquisitie). Plus de spoed-veiligheid: één voorkomen koliek-fataal door snelle escalatie is reputationeel en emotioneel onbetaalbaar.' },
+  { question: 'Werkt dit ook voor solo-paardenartsen of grote equine klinieken?', answer: 'Ja. Solo-paardenarts (1-2 FTE, vaak met 1 receptionist of partner-administratie): identiek pattern met lagere onboarding-kosten — extra cruciaal voor solo omdat één paardenarts geen ruimte heeft om tijdens rij-dag tussen visites door telefoongesprekken aan te nemen. AI als 24/7 telefoon-receptionist en agenda-clustering = letterlijk extra capaciteit zonder extra FTE. Grote equine klinieken (Universiteitskliniek Utrecht, Heesch, Wolvega, Hilversum, Sportpaardenkliniek Schaijk): integratie binnen de bestaande tech-stack mogelijk; vaak is parallel-implementatie als extra kanaal voor avond/weekend en niet-kritieke vragen de snellere route. Voor onafhankelijke ambulante paardenartsen zonder kliniek-binding: maximale flexibiliteit op uw bestaande Provet- of Animana-stack.' },
+];
+
+const automatableProcesses = [
+  {
+    title: 'Acute koliek- en spoed-triage 24/7',
+    body: 'Eigenaar belt in paniek: mijn paard rolt sinds een uur over de grond en kijkt naar zijn flank, of het veulen is geboren maar de placenta is na 3 uur nog niet uit, of Storm bloedt fors uit een diepe wond aan de borst. AI herkent levensbedreiging en escaleert binnen 5 seconden: directe doorverbinding naar dienstdoende paardenarts, gestructureerde overdracht van symptoom-tijdlijn, paard-grootte en leeftijd, locatie van de stal voor reisadvies. Voor avond/weekend buiten regio: directe doorschakeling naar Universiteitskliniek Diergeneeskunde Utrecht of dichtstbijzijnde 24u equine kliniek (Heesch, Wolvega, Hilversum). Volledig geprotocolleerd op KNMvD-spoed-richtlijnen voor equine.',
+  },
+  {
+    title: 'Ambulante agenda-clustering en route-optimalisatie',
+    body: 'Bij elke nieuwe afspraak checkt AI postcode tegen al ingeplande locaties die dag, en suggereert de eerstvolgende rit-dag in dat geografisch cluster (maandag-noord, dinsdag-oost, etc). Voor de eigenaar betekent dat: realistische tijdslot-voorspelling in plaats van ergens tussen 9:00 en 17:00 — typisch krijgt eigenaar een 90-minuten-window. Bij spoed-inschuiving: automatische WhatsApp aan overige eigenaren in die rit over mogelijke vertraging. Resultaat: 15-25 procent meer paarden per rij-dag zonder extra werkuren, hogere klant-tevredenheid op punctualiteit, en minder tussen-de-bedrijven-door telefoongesprekken voor de paardenarts.',
+  },
+  {
+    title: 'Vaccinatie- en gebitcontrole-recall preventief',
+    body: 'Volledig automatisch: AI monitort per paard influenza-tetanus jaarvaccinatie (FNRS/KNHS-verplichting, max 6 maanden voor wedstrijd-deelname), gebitcontrole-interval (jaarlijks bij oude paarden, 2-jaarlijks bij anderen), ontwormings-cyclus voorjaar/najaar, West-Nile-vaccinatie waar relevant, en post-operatieve controle. 4-6 weken voor vervaldatum: persoonlijke WhatsApp-recall met paard-naam en koppeling aan eerstvolgende rit-dag in dat cluster. Conversie stijgt van 20-30 procent (brief of generiek mail) naar 55-75 procent (gepersonaliseerd). Voor een 1.000-paarden portfolio: 200-450 extra preventieve visites per jaar.',
+  },
+  {
+    title: 'Paardenpaspoort-medicatie-administratie en UDD-controle',
+    body: 'Bij elke ambulante visite registreert AI in de EPD en paspoort-app welke medicatie is toegediend (volgens UDD-regeling). Voor sport-paarden (FEI/KNHS-context): automatische check tegen toegestane medicatie-lijst plus wachttijd-berekening voor eerstvolgende wedstrijd-deelname. Eigenaar krijgt automatisch een bevestigings-WhatsApp met behandeling uitgevoerd op datum, wachttijd voor wedstrijd: X dagen, deelname mogelijk vanaf datum. AI doet geen medicatie-keuze of dosering-advies — dat blijft paardenarts-verantwoordelijkheid. Resultaat: paspoort-administratie-fouten dalen tot bijna nul, sport-eigenaren krijgen automatisch wachttijd-bevestiging voor planning.',
+  },
+  {
+    title: 'Sportkeuring en aankoopkeuring-flow',
+    body: 'Voor sportpaard-eigenaren plant AI aankoopkeuring (5-staps-keuring volgens KNHS-richtlijn), exportkeuring of FEI-vergunning-keuring. AI vraagt: paard-gegevens, doel-gebruik (springen/dressuur/eventing), prijs-categorie (bepaalt grondigheid keuring), eventuele bekende afwijkingen, en plant in op een rit-dag waarbij ook tijd voor uitgebreide keuring beschikbaar is. Stuurt voorbereidings-checklist naar eigenaar (paspoort, vaccinatie-status, eventuele medische voorgeschiedenis, recente röntgenfotos indien aanwezig). Resultaat: keuring-doorlooptijd korter, paardenarts heeft alle voorbereiding klaar, eigenaar krijgt heldere verwachting.',
+  },
+  {
+    title: 'No-show preventie multi-touch voor stal-bezoeken',
+    body: 'Direct na boeking bevestigt AI met paard-naam, datum en tijdslot, 48u vooraf herinnert via WhatsApp dat eigenaar of pension-houder bij stal aanwezig moet zijn, 4u vooraf herbevestigt met klikt u hier voor bevestiging of verzetten. Bij annulering binnen 24u: automatische trigger naar wachtlijst van paarden in dat geografisch cluster die nog op een rit staan te wachten. Resultaat: no-show op stal-visites daalt van 8-15 procent naar 2-4 procent — voor 4-paardenarts praktijk met 30 visites per dag is dat 1-2 voorheen-verloren slots per dag terug, ofwel €30.000-€60.000 extra fee-omzet per jaar zonder extra capaciteit.',
+  },
+  {
+    title: 'Eigenaar-vraag administratie en factuur-status',
+    body: 'Eigenaar vraagt: is de factuur voor de gebitcontrole van Storm al verstuurd, wanneer komt u voor de jaarprik, kan ik de declaratie voor mijn paardenverzekering ontvangen. AI haalt realtime status uit EPD: factuur-status, eerstvolgende rit-dag in regio, declaratie-document. Voor inhoudelijke vragen (zou Storm in dressuur fit zijn): directe doorverbinding naar paardenarts. 60-75 procent van administratieve bel-tijd verdwijnt zo, paardenarts kan zich op klinisch werk en advies-uren focussen.',
+  },
+];
+
+const escalationKeywords = [
+  '"koliek" / "rolt over de grond" / "krabt buik" / "kijkt naar flank" → directe spoed (sterfte 30-80% zonder snelle interventie)',
+  '"weigert eten" + "geen mest 12u" / "zweet hevig zonder reden" → mogelijk koliek, directe spoed',
+  '"diepe wond" / "bloedt fors" / "kapseldoorschot" / "doorgesneden pees" → directe spoed (bloeding/peesletsel)',
+  '"weeën meer dan 2u" / "placenta niet uit na 3u" / "veulen niet drinken eerste 6u" → directe spoed (partus/neonataal)',
+  '"plotse kreupelheid graad 4-5" / "kan helemaal niet lopen" / "houdt been continue op" → directe spoed (mogelijk fractuur/abces/pees)',
+  '"kapot oog" / "doorboring oog" / "blind plotseling" → directe spoed (oog-noodgeval, irreversibel binnen uren)',
+  '"choke" / "verslikt zich" / "voer komt uit neus" → directe spoed (slokdarm-obstructie)',
+  '"hoge koorts" + "ziek" + "kudde" → directe spoed + bioveiligheid (mogelijk infectieuze ziekte)',
+  '"vergiftiging" / "tuinplanten" / "schimmel-hooi" / "krachtvoer-overdosis" → directe spoed',
+  '"diagnose" / "wat heeft hij" / "welk medicijn" / "wat zou u doen" → escalate naar paardenarts (WUD-grens)',
+];
+
+const integrations = [
+  { name: 'Provet / Provet Cloud',                            type: 'Veterinair EPD ambulant',       integratie: 'Native API — populair bij paardenartsen vanwege mobiele-app + offline-sync' },
+  { name: 'Animana (IDEXX)',                                  type: 'Veterinair EPD multi-species',  integratie: 'Native API — voor praktijken met paard + andere species' },
+  { name: 'EquiVet / Vetware Equine',                         type: 'Equine-specifieke EPD',         integratie: 'API + webhook — equine-specifieke modules' },
+  { name: 'FNRS/KNHS paardenpaspoort-DB',                     type: 'Sport-paard register',          integratie: 'API-koppeling voor wachttijd-berekening + paspoort-medicatie' },
+  { name: 'Google Calendar / Outlook',                        type: 'Agenda + route',                integratie: 'Native API — postcode-clustering + rit-routing' },
+  { name: 'WhatsApp Business API',                            type: 'Klantcommunicatie',             integratie: 'Native — sjablonen + paspoort-foto-upload + locatie-deling' },
+  { name: 'Universiteitskliniek Utrecht (overleg)',           type: 'Spoed-doorverwijzing',          integratie: 'Geconfigureerd telefoonnummer + protocol voor 24u escalatie' },
+  { name: 'Equine 24u-klinieken (Heesch/Wolvega/Hilversum)',  type: 'Regionale spoed',               integratie: 'Geconfigureerde telefoonnummers + regio-routing op postcode' },
+];
+
+const roiBreakdown = [
+  { post: 'Paarden per rij-dag (clustering)',                         before: '6-9 visites',                  after: '8-12 visites (+15-25%)' },
+  { post: 'Vaccinatie/gebitcontrole-recall conversie',                before: '20-30% (brief)',               after: '55-75% (WhatsApp)' },
+  { post: 'No-show op stal-visites',                                  before: '8-15%',                        after: '2-4%' },
+  { post: 'Avond/weekend lead-capture (gemiste calls)',               before: '30-50% gemist',                after: '<5% gemist' },
+  { post: 'Administratieve tijd (afspraak/paspoort/factuur)',         before: '50-90u/mnd',                   after: '15-25u/mnd (75% reductie)' },
+  { post: 'Spoed-detectie respons-tijd (koliek/wond/partus)',         before: '5-15 min (terugbel)',          after: '<90 sec (directe escalatie)' },
+  { post: 'Maandelijkse Aanloop-investering',                         before: '—',                            after: '€597-€1.197/mnd Marco+Emma' },
+];
+---
+
+<BaseLayout
+  title="AI voor paardenarts Nederland 2026 — KNMvD-bewust, koliek-spoed 24/7, ambulante agenda geoptimaliseerd | Aanloop AI"
+  description="Hoe AI receptionist plus WhatsApp-agent acute koliek-spoed-triage, ambulante agenda-routing, vaccinatie/gebitcontrole-recall en sportkeuring-flow automatiseren voor Nederlandse paardenartsen. KNMvD Sectie Paard, WUD-grens, paardenpaspoort/UDD, FNRS/KNHS-context."
+  schema={[articleSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Sector — Paardenarts</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          AI voor paardenarts — KNMvD-bewust, koliek-spoed 24/7, ambulante agenda geoptimaliseerd
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          Nederlandse paardenartsen hebben een bijzonder werkprofiel: ambulante praktijk met 6-12 stallen per rij-dag, 24/7 koliek- en partus-spoed (sterfte 30-80 procent zonder snelle interventie), KNMvD Sectie Paard-richtlijnen, paardenpaspoort plus UDD-regeling, FNRS/KNHS sport-paard wachttijden en concours-keuringen. Tegelijk werkdruk extreem hoog (KNMvD-onderzoek toont structureel boven-werkweken in equine), administratie groeit door uitbreidende paspoort-eisen, en avond- of weekend-eigenaren met spoed-vragen krijgen vaak pas door derde-doorschakeling iemand aan de lijn. Een AI receptionist plus WhatsApp-agent kan 60-75 procent van administratieve handelingen overnemen — afspraak-intake, ambulante agenda-clustering, vaccinatie/gebitcontrole-recall, paspoort-administratie, sportkeuring-flow, no-show preventie — én is direct levensreddend bij koliek-spoed door 10 acute keywords binnen 90 seconden naar dienstdoende paardenarts of regionale 24u-kliniek (Utrecht/Heesch/Wolvega/Hilversum) te escaleren. Wet dieren en KNMvD-grens 100 procent intact: diagnose en behandeling blijven voorbehouden aan de bevoegde paardenarts. Hieronder: precies welke processen automatiseerbaar zijn en welke ROI ambulante paardenartspraktijken halen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Welke processen automatiseerbaar zijn</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI assistent voor een paardenarts neemt vooral eerstelijns klantcontacten en administratieve handelingen over: telefoongesprekken aannemen waarbij eigenaren of pension-houders zich melden voor een visite (jaarvaccinatie, gebitcontrole, kreupelheid-onderzoek, voorzorgskeuring, ontwormingsplan), gestructureerd paard-naam en symptoom-beeld uitvragen, plannen op de eerstvolgende rit-dag in dat geografisch cluster, paardenpaspoort-administratie ondersteunen na elke ambulante visite, en sportkeuring/aankoopkeuring-flow plus vaccinatie- en gebitcontrole-recall automatiseren. De AI stelt geen diagnose, doet geen medicatie-advies en doet geen behandel-suggestie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor lopende klanten handelt de AI ook administratieve vragen af (komt mijn afspraak nog door, is de factuur al verstuurd, wat zijn de wachttijd-eisen voor mijn wedstrijd-deelname) door realtime in uw Provet, Animana of EquiVet te kijken. Dit ontlast paardenarts en assistent voor 65-80 procent van inkomende routine-contacten — in een 4-paardenarts ambulante praktijk met 800-1.500 paarden in portfolio gaat dat al snel om 50-90 uur per maand die nu naar extra rit-uren of klanten-acquisitie kunnen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk: de AI vervangt nooit de bevoegde paardenarts. Diagnose, medicatie-keuze, behandelplan en chirurgische beslissingen blijven 100 procent voorbehouden aan de natuurlijke persoon met de bevoegdheid uit de Wet dieren en de Wet uitoefening diergeneeskunde (WUD). Bij elke eigenaar-vraag die over diagnose, medicatie of behandeling gaat schakelt de AI direct door — met als gestandaardiseerd antwoord "voor diagnose en behandeling wil ik u doorverbinden met onze paardenarts". Bij detectie van koliek-, partus- of acute spoed-symptomen escaleert de AI binnen 90 seconden naar de dienstdoende paardenarts of doorverwijzing 24u-kliniek — daarover meer in het spoed-protocol-blok hieronder.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Top 7 processen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wat AI direct van uw paardenarts en administratie overneemt.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-6">
+        {automatableProcesses.map((p, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <p class="text-base font-bold text-navy mb-2">{p.title}</p>
+            <p class="text-sm text-slate-600 leading-relaxed">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">KNMvD Sectie Paard, WUD en AI: wat mag en wat absoluut niet</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De Koninklijke Nederlandse Maatschappij voor Diergeneeskunde (KNMvD) heeft een specifieke Sectie Paard met aanvullende kwaliteits- en spoed-richtlijnen voor equine veterinair handelen. De Wet dieren en de Wet uitoefening diergeneeskunde (WUD) bepalen wettelijk wat alleen door een bevoegde paardenarts mag gebeuren: het stellen van een diagnose, het voorschrijven van diergeneesmiddelen volgens UDD, het uitvoeren van invasieve handelingen, en het maken van een behandelplan. Voor AI betekent dit een harde scheidslijn: feiten verzamelen, ambulante agenda routeren, paspoort-administratie afhandelen en eigenaar-communicatie automatiseren mag, maar elke vorm van inhoudelijke veterinaire uitspraak (welke aandoening, welk middel, welke dosering, welke ingreep) is verboden voor AI.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI levert specifiek voor paardenartsen een KNMvD-Sectie-Paard-bewuste implementatie: vooraf-gescripte prompt-restricties die de AI verhinderen om diagnoses te stellen of medicatie-suggesties te doen, automatische escalatie bij 10 acute spoed-keywords (koliek, fors bloedverlies, partus-problemen, plotse kreupelheid graad 4-5, oog-noodgeval, choke, vergiftiging, ernstige koorts, hoge koliek-pijn, en de WUD-keyword diagnose-vraag), gestandaardiseerde escalatie-formulering naar dienstdoende paardenarts, en logging-trail die voldoet aan KNMvD-kwaliteitsregister-verplichtingen plus EPD-dossiervorming. WUD-grens wordt zo nooit doorkruist.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor het paardenpaspoort en de UDD-regeling: AI ondersteunt administratief de medicatie-registratie volgens UDD-richtlijnen, en checkt voor sport-paarden (FEI/KNHS-context) automatisch wachttijden voor wedstrijd-deelname tegen de toegestane medicatie-lijst. AI doet zelf geen medicatie-keuze of dosering-advies — dat blijft Wft-bevoegde paardenarts-verantwoordelijkheid. NVWA-toezicht op UDD blijft volledig intact. Voor AVG van eigenaar-gegevens (paard-medische data is strikt genomen geen bijzondere persoonsgegevens, maar eigenaar-NAW en betalings-gegevens wel): standaard AVG-conform en EU-only data-verwerking met DPIA-template inbegrepen.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Spoed-protocol</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">10 acute keywords met directe escalatie naar dienstdoende paardenarts.</h2>
+        <p class="mt-3 text-slate-600">Equine spoed is uniek hoog-risico: koliek (sterfte 30-80 procent zonder snelle interventie), partus-problemen (60 minuten kritiek window), peesletsel of kapsel-doorschot (irreversibel zonder snelle behandeling), oog-noodgeval (uren-window). Aanloop AI is voor paardenartsen expliciet geconfigureerd op 10 levensbedreigende keywords met directe doorverbinding naar dienstdoende paardenarts of 24u-kliniek (Utrecht/Heesch/Wolvega/Hilversum) op basis van eigenaar-locatie.</p>
+      </div>
+      <ul class="space-y-2 reveal reveal-delay-1">
+        {escalationKeywords.map((k) => (
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700">
+            <svg class="w-4 h-4 mt-1 flex-shrink-0 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M5 19h14a2 2 0 001.84-2.75L13.74 4a2 2 0 00-3.48 0L3.16 16.25A2 2 0 005 19z"/></svg>
+            <span>{k}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Integraties</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Werkt met uw bestaande paardenarts-stack.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">8 native of webhook-koppelingen voor de meest-gebruikte equine veterinaire EPD-systemen plus paardenpaspoort-database, agenda-routing en spoed-doorverwijzing naar regionale 24u-klinieken. Onafhankelijke ambulante paardenartsen zonder kliniek-binding: maximale flexibiliteit op uw bestaande Provet- of Animana-stack.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Systeem</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Type</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Integratie-methode</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {integrations.map(i => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-navy">{i.name}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{i.type}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs">{i.integratie}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Voorbeeldgesprek: AI handelt acute koliek-melding 's nachts af</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Eigenaar belt op zondag 03:15 — paardenarts is in nachtdienst maar zit nu in een ander koliek-geval 25km verderop: hallo, mijn 8-jarige KWPN-merrie rolt sinds een uur over de grond, kijkt naar haar flank, weigert te eten en heeft sinds 22:00 geen mest meer geproduceerd. AI herkent direct multi-keyword koliek-rode-vlag (rolt over grond + flank-kijken + weigert eten + geen mest) en escaleert binnen 5 seconden:</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Dit klinkt als een mogelijke koliek, dit is een veterinaire spoedsituatie bij paarden. Ik probeer onze dienstdoende paardenarts nu direct te bereiken. AI belt parallel de paardenarts via diens persoonlijke nummer — die geeft aan nog 90 minuten bezig te zijn met het andere koliek-geval. AI checkt direct de eigenaar-locatie (Brabant) tegen de regio-nooddienst-list en stelt voor: Onze paardenarts is op dit moment 90 minuten bezig met een andere spoed. Op 35 kilometer van uw locatie is Equine Spoedkliniek Heesch geopend met 24u koliek-OK-faciliteit. Ik kan u direct met hen verbinden — wilt u dat? Eigenaar bevestigt; AI verbindt door, geeft korte spoed-overdracht (KWPN-merrie 8 jaar, koliek-symptomen sinds 02:00, eigenaar in lijn), en de Heesch-kliniek bereidt opname voor. Total tijd van eerste contact tot kliniek-in-lijn: 2 minuten 10 seconden.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk wat de AI niet doet: geen koliek-diagnose stellen (uw paard heeft een draai-koliek), geen medicatie-advies (geef haar nu een Buscopan), geen wacht eerst even af tot de paardenarts klaar is met andere klant (= mogelijk dood-vonnis), geen probability-uitspraak. AI verzamelt feiten, herkent koliek-rode-vlag-pattern op KNMvD-spoed-richtlijnen, en escaleert pragmatisch naar de eerstvolgende beschikbare optie — de paardenarts zelf, of bij volle agenda direct de regionale 24u-kliniek. Wet dieren en WUD-grens 100 procent gerespecteerd, en tegelijk life-saving-snel.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Concrete ROI</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Voor een 3-paardenarts ambulante praktijk met 1.000 paarden portfolio.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Realistische cijfers per maand voor een gemiddelde Nederlandse ambulante paardenarts-praktijk (2-4 paardenartsen, 800-1.500 paarden in portfolio, gemiddelde rit-fee €120-€220 per visite excl. medicatie). Uw eigen ROI varieert per portfolio-mix (sport-paarden vs hobby-paarden vs draagmoeder/fokkerij), per spoed-aandeel en per gemiddelde fee-niveau.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-4 text-slate-500 font-medium w-[44%]">Metric</th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[28%]">Vóór AI</th>
+              <th class="text-left py-4 px-4 font-bold text-brand-emerald w-[28%]">Met Aanloop AI</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {roiBreakdown.map(r => (
+              <tr>
+                <td class="py-3 px-4 text-slate-700">{r.post}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.before}</td>
+                <td class="py-3 px-4 text-navy font-medium text-xs">{r.after}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Bottom-line voor 3-paardenarts ambulante praktijk met 1.000 paarden portfolio: gemiddelde ROI 10-22 keer op 12-maand basis, payback-periode 4-7 weken. Het ambulante-clustering-effect (15-25 procent meer paarden per rij-dag) levert alleen al €40.000-€100.000 extra omzet per jaar zonder extra paardenarts-uren — terugverdiend in de eerste 6-10 weken. De vaccinatie- en gebitcontrole-recall verbetering (van 20-30 procent naar 55-75 procent conversie) is structurele groei die ook de paard-gezondheid verbetert en de paardenarts-eigenaar-relatie versterkt. De spoed-veiligheid is moeilijker te kapitaliseren maar reputationeel én medisch onbetaalbaar — één voorkomen koliek-fataal door snelle escalatie naar 24u-kliniek dekt al meerdere jaren AI-investering. Met €597-€1.197 per maand investering in Marco plus Emma is de payback gerealiseerd binnen het eerste kwartaal en groeit het effect naarmate het recall-systeem volloopt.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Implementatie roadmap voor paardenartspraktijken</h2>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Een succesvolle AI-implementatie in een ambulante paardenartspraktijk verloopt in drie fasen. Fase 1 (week 1-3) is discovery en design: we analyseren 200-400 historische klantcontacten, vaccinatie-respons-rates, koliek- en spoed-incidenten en agenda-clustering-data van de afgelopen 3 maanden om de meest voorkomende vragen, escalaties, geografische clusters en piek-momenten in kaart te brengen. Op basis hiervan ontwerpen we de conversational flow voor afspraak-intake, ambulante route-clustering, vaccinatie- en gebitcontrole-recall, paardenpaspoort-administratie, sportkeuring-flow en no-show preventie — plus KNMvD-Sectie-Paard-bewuste rode-vlag-escalatieprotocollen die specifiek bij uw werkwijze, EPD-stack en portfolio-mix (sport-paarden, hobby-paarden, draagmoeder/fokkerij, manege-paarden) passen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-2">Fase 2 (week 4-7) is build en pilot: we configureren de AI met uw kennisbank (FAQ over openingstijden, rit-tarieven, vaccinatie-schemas, paspoort-eisen, betalings-opties, sport-wachttijden), koppelen aan uw Provet, Animana of EquiVet, FNRS/KNHS-paspoort-DB voor wachttijd-berekening, plus WhatsApp Business API en agenda-clustering, en testen intern twee à drie weken lang. In deze periode simuleren u en uw assistenten realistische klant-scenarios — de AI leert van correcties en wordt steeds nauwkeuriger op uw specifieke triage-criteria, koliek-protocollen en doorverwijs-relaties met de regionale 24u-klinieken (Utrecht/Heesch/Wolvega/Hilversum). Eind fase 2 gaat de AI live met 25-35 procent van uw klantverkeer voor monitoring (typisch eerst afspraak-intake plus vaccinatie-recall).</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-3">Fase 3 (week 8-14) is scale en optimaliseer: volledig live op het primaire kanaal met dagelijkse KPI-monitoring (paarden-per-rij-dag, vaccinatie-recall conversie, no-show op stal-visites, spoed-detectie respons-tijd, paspoort-administratie-volledigheid), wekelijkse iteratie op herinnerings-templates en maandelijkse rapportage. Vanaf maand 3 ziet u typisch 8-12 visites per rij-dag (van 6-9 baseline), vaccinatie-recall conversie 55-75 procent (van 20-30 procent baseline), en koliek-detectie respons-tijd onder 90 seconden (van 5-15 minuten baseline). Dat zijn voor een 3-paardenarts praktijk cijfers die direct zichtbaar zijn op de fee-omzet per kwartaal en op de werkdruk-belasting van uw team.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">AI voor paardenarts — antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Bronnen en verder lezen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Onafhankelijke bronnen voor uw eigen onderzoek.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="https://www.knmvd.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">KNMvD Sectie Paard</p>
+          <p class="text-slate-600 mt-1 text-xs">Beroepsorganisatie sectie en kwaliteitsnormen voor Nederlandse paardenartsen.</p>
+        </a>
+        <a href="https://wetten.overheid.nl/BWBR0030250/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Wet dieren — wetten.overheid.nl</p>
+          <p class="text-slate-600 mt-1 text-xs">Wettelijk kader uitoefening diergeneeskunde en bevoegdheden.</p>
+        </a>
+        <a href="https://www.knhs.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">KNHS — Hippische Sportfederatie</p>
+          <p class="text-slate-600 mt-1 text-xs">Reglementen sport-paard, vaccinatie-eisen en wedstrijd-deelname.</p>
+        </a>
+        <a href="https://www.fnrs.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">FNRS — Federatie Ruitersportcentra</p>
+          <p class="text-slate-600 mt-1 text-xs">Branche-organisatie ruitersportcentra en pension-stallen.</p>
+        </a>
+        <a href="https://www.uu.nl/onderwijs/diergeneeskunde" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Universiteitskliniek Diergeneeskunde Utrecht</p>
+          <p class="text-slate-600 mt-1 text-xs">24u equine kliniek voor doorverwijzing en complexe spoed.</p>
+        </a>
+        <a href="https://www.nvwa.nl/onderwerpen/diergeneesmiddelen" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">NVWA — Toezicht UDD en diergeneesmiddelen</p>
+          <p class="text-slate-600 mt-1 text-xs">Toezicht op UDD-regeling en paardenpaspoort-administratie.</p>
+        </a>
+        <a href="/diensten/marco/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Marco — AI receptionist</p>
+          <p class="text-slate-600 mt-1 text-xs">De telefoon-component voor paardenartsen met 24/7 koliek-spoed-detectie.</p>
+        </a>
+        <a href="/diensten/emma/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Emma — WhatsApp-agent</p>
+          <p class="text-slate-600 mt-1 text-xs">Het vaccinatie-recall-, no-show-preventie- en paspoort-administratie-component.</p>
+        </a>
+        <a href="/kennisbank/ai-voor-dierenartspraktijk-nederland-2026/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ AI voor dierenartspraktijk</p>
+          <p class="text-slate-600 mt-1 text-xs">Zuster-veterinair-artikel: gezelschapsdier-praktijk, no-show preventie, herhaalrecept.</p>
+        </a>
+        <a href="/ai-roi-calculator/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ ROI-calculator</p>
+          <p class="text-slate-600 mt-1 text-xs">Bereken uw eigen ROI voor uw paardenartspraktijk.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Klaar om koliek-spoed 24/7 te garanderen en uw rij-dag-capaciteit met 20 procent te verhogen?
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Onboarding 14-28 werkdagen voor één-EPD koppeling, 28-42 dagen voor multi-stack of grote ambulante praktijk. KNMvD-Sectie-Paard-bewuste configuratie, 10 spoed-keywords protocol, 24u-kliniek-doorverwijzingen geconfigureerd op postcode (Utrecht/Heesch/Wolvega/Hilversum), EU-only data-verwerking met DPIA-template inbegrepen. Tijdens uw demo simuleren we een acute koliek-melding op zondagochtend én een vaccinatie-recall met rit-clustering op een echte WhatsApp en telefoonlijn — zodat u zelf hoort hoe Marco en Emma uw ambulante praktijk 24/7 ondersteunen zonder ooit de WUD-grens te overschrijden.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een live demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bekijk tarieven
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

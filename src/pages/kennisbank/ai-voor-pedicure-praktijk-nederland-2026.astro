@@ -1,0 +1,382 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Sector-specifiek kennisbank-artikel: AI voor solo-pedicure / medisch-pedicure praktijk MKB Nederland.
+// Pattern parallel aan schoonheidssalon, maar specifiek op
+// ProVoet branche + Kwaliteitsregister Pedicures (KP) + medisch-pedicure (DM-voet/risicovoet) +
+// ambulant vs salon + verzekeraar-vergoeding voor diabetische voet + AVG bijzondere persoonsgegevens.
+//
+// Sources:
+// - ProVoet (brancheorganisatie pedicures Nederland) — provoet.nl
+// - KP (Kwaliteitsregister Pedicures) voor medisch pedicure — kwaliteitsregister-pedicures.nl
+// - NVvP (Nederlandse Vereniging van Podotherapeuten) — voor doorverwijs-context
+// - Zorgverzekeraars Nederland: vergoeding diabetische voet via Sst (Stichting Diabetes en Voet)
+// - DM-richtlijn NHG voor multidisciplinaire voetzorg
+// - AP voor AVG (medische pedicure-data = bijzondere persoonsgegevens)
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI voor pedicure-praktijk Nederland 2026 — ProVoet-bewust, no-show 75 procent omlaag, recall verdrievoudigt',
+  description: 'Hoe AI receptionist en WhatsApp-agent afspraak-intake, no-show preventie, recall-cyclus en verzekeraar-flow automatiseren voor Nederlandse solo-pedicures en medisch pedicures. ProVoet-context, KP-register, DM-voet/risicovoet zorgketen, Salonized/Treatwell integratie, AVG-bewust voor medische data.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-04',
+  dateModified: '2026-05-04',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-voor-pedicure-praktijk-nederland-2026/',
+  inLanguage: 'nl-NL',
+  about: [
+    { '@type': 'Thing', name: 'Pedicure-praktijk' },
+    { '@type': 'Thing', name: 'Medisch pedicure' },
+    { '@type': 'Thing', name: 'ProVoet branche' },
+    { '@type': 'Thing', name: 'Diabetische voet zorg' },
+    { '@type': 'Thing', name: 'Kwaliteitsregister Pedicures' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/ai-voor-pedicure-praktijk-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+
+const faqItems = [
+  { question: 'Werkt AI ook voor solo-pedicures of alleen grotere salons?', answer: 'Solo-pedicures zijn juist de doelgroep waar AI het meest impact heeft. Een solo-pedicure heeft typisch geen receptionist en moet zelf telefoongesprekken aannemen tussen behandelingen door — wat constant onderbreking betekent en regelmatig leidt tot gemiste calls. AI als 24/7 telefoon-receptionist plus WhatsApp-agent betekent letterlijk dat de pedicure niet meer hoeft op te nemen tussen behandelingen, dat avond/weekend-aanvragen worden vastgelegd, en dat no-show preventie automatisch loopt. Onboarding voor solo-praktijk: 7-14 werkdagen, configuratie eenvoudiger dan multi-stoelen-context. Voor pedicure-aan-huis ambulant: integratie met postcode-clustering op rit-dagen werkt identiek aan dierenarts-routing.' },
+  { question: 'Hoe gaat AI om met medische pedicure en diabetische voet-zorg?', answer: 'Medisch pedicures (KP-Kwaliteitsregister-geregistreerd) behandelen risicovoeten — diabetes mellitus, reumatische voet, vaatpatiënten, neurologische voetproblemen. Dit valt onder de DM-richtlijn NHG voor multidisciplinaire voetzorg, met verzekeraar-vergoeding via Sst (Stichting Diabetes en Voet). AI ondersteunt de intake door bij elke nieuwe medische pedicure-aanvraag te vragen naar verwijsbrief, zorgprofiel-classificatie (Sims 0-3), DM-type, lopende behandelaar-context (huisarts, podotherapeut, internist), en verzekeraar plus polis. AI doet zelf geen risicocategorie-beoordeling — dat blijft pedicure-bevoegdheid. Bij rode-vlag-symptomen (drukplek, ulcus, infectie-tekens, plotse pijn) escaleert AI direct naar de pedicure of doorverwijzing huisarts.' },
+  { question: 'Werkt dit met onze Salonized, Treatwell, Booksy of pedicure-CRM?', answer: 'Ja, via directe API-koppelingen voor Salonized (meest-gebruikte boekingssoftware bij NL pedicures), Treatwell, Booksy, plus pedicure-specifieke CRMs zoals Pedimo, Pedicare en Cyrano. Voor medisch pedicures met zorgketen-koppeling: integratie met Vektis-declaratie-flow voor diabetische voet en koppeling aan podotherapeut-doorverwijs-systemen. Plus WhatsApp Business API voor klant-communicatie en Google/Outlook agenda-backup. Onboarding 7-14 werkdagen voor solo-praktijk, 14-21 dagen voor multi-pedicure praktijk inclusief afspraak-flow, no-show preventie, recall-cyclus, verzekeraar-vragen en KP-bewuste rode-vlag-detection.' },
+  { question: 'Kan AI no-show op pedicure-afspraken verminderen?', answer: 'Ja, dit is de hoogste-impact use-case voor pedicure-praktijken. No-show op pedicure-afspraken ligt gemiddeld 15-25 procent — lager dan beauty-salons maar nog steeds substantieel, vooral bij oudere klanten met mobiliteits-issues, mantelzorg-omstandigheden of vergeet-momenten. AI implementeert multi-touch reminder-flow: bevestiging direct na boeking, herinnering 48u vooraf via WhatsApp, herbevestiging 4u vooraf met klikbare bevestigings-knop, plus automatische wachtlijst-trigger bij annulering binnen 24u. Resultaat: no-show daalt van 15-25 procent naar 4-7 procent — voor solo-pedicure met 6-8 behandelingen per dag is dat 1-2 voorheen-verloren slots per dag terug, ofwel €600-€1.500 extra omzet per maand zonder extra capaciteit.' },
+  { question: 'Hoe werkt recall-cyclus bij pedicure?', answer: 'Pedicure-zorg is bij uitstek cyclisch: standaard pedicure 6-8 weken (gezond), medisch pedicure 4-6 weken (DM/risicovoet), klinisch pedicure 4 weken (na ulcus-genezing). AI monitort per klant de individuele cyclus en stuurt 1 week voor de optimale boek-datum een persoonlijke WhatsApp: Hallo, het is bijna 6 weken geleden dat we uw pedicure hebben gedaan — zal ik een afspraak inplannen voor donderdag 12 oktober om 14:00? Met klikbare ja/verzetten-knop. Conversie van pedicure-recall stijgt typisch van 25-35 procent (papieren herinnering of generiek mail) naar 65-85 procent (gepersonaliseerde WhatsApp met directe boek-link). Voor solo-pedicure met 250 actieve klanten: 100-200 extra behandelingen per jaar — €5.000-€12.000 extra omzet plus structureel hogere klant-retentie.' },
+  { question: 'Hoe gaat AI om met AVG en bijzondere persoonsgegevens?', answer: 'Medische pedicures verwerken bijzondere persoonsgegevens onder AVG: DM-status, comorbiditeit (vaatlijden, neuropathie), behandelplan, ulcus-historie. Dit vereist verscherpte beveiliging en doelbinding. Aanloop AI levert standaard EU-only data-verwerking (geen US-cloud), encryption-at-rest en in-transit, AVG-conforme verwerkersovereenkomst, plus DPIA-template voor uw eigen AP-melding-plicht. Voor cosmetisch pedicures (geen medische data): standaard AVG voor NAW en betalings-gegevens. Bij elke pedicure-context configureren we de AI-prompt zo dat alleen relevante intake-vragen worden gesteld (data-minimalisatie-principe), zonder onnodige medische uitvragen.' },
+  { question: 'Wat is de gemiddelde ROI voor een MKB-pedicure-praktijk?', answer: 'Voor een gemiddelde solo-pedicure (1 FTE, 6-8 behandelingen per dag, gemiddelde fee €30-€55 voor cosmetisch en €40-€70 voor medisch) ligt de ROI op 8-15 keer op 12-maand basis. Drie hoofdwinsten: (1) no-show daalt van 15-25 procent naar 4-7 procent, levert €7.000-€18.000 extra omzet per jaar zonder extra werkuren, (2) recall-cyclus conversie stijgt van 25-35 procent naar 65-85 procent, levert €5.000-€12.000 extra omzet per jaar plus structureel hogere klant-retentie en lifetime-value, (3) telefonische bereikbaarheid 24/7 voor avond/weekend-aanvragen wint 5-10 procent extra nieuwe klanten die anders naar concurrent gaan. Voor multi-pedicure praktijk (3-4 FTE): ROI 12-22 keer met dezelfde verhoudingen op grotere volumes.' },
+  { question: 'Werkt dit ook voor pedicure-aan-huis (ambulant) of alleen salon?', answer: 'Voor ambulante pedicures (pedicure-aan-huis, vooral bij ouderen, gehandicapten, of bij verpleeg-/verzorgingshuizen) is AI extra waardevol. AI plant met postcode-clustering op rit-dagen (maandag-noord, dinsdag-oost, etc), checkt bij elke nieuwe afspraak of de klant-locatie efficient meegenomen kan worden in een lopende rit, en geeft eigenaren of mantelzorgers een realistische tijdslot-voorspelling van 60-90 minuten in plaats van wachten zonder houvast. Voor verpleeg- of verzorgingshuis-context: koppeling aan instellings-agenda mogelijk. Resultaat: 15-25 procent meer behandelingen per rij-dag zonder extra werkuren, hogere klant- en mantelzorger-tevredenheid op punctualiteit.' },
+];
+
+const automatableProcesses = [
+  {
+    title: 'Afspraak-intake voor cosmetisch en medisch pedicure',
+    body: 'Klant belt of WhatsAppt: ik wil graag een nieuwe pedicure-afspraak, of mijn pedicure-cyclus is weer. AI vraagt: cosmetisch of medisch (KP-context), eerste bezoek of bestaande klant, eventuele specifieke aandacht-punten (kalknagels, eelt, ingegroeide nagel, schimmel), bij medisch: DM-context en verwijsbrief-status, en plant in op het juiste tijd-slot (regulier 30-45min, medisch 45-60min, klinisch 60-75min). Voor nieuwe medische klanten: extra stappen voor verzekeraar-check en zorgprofiel-classificatie. Geen behandel-advies, alleen gestructureerde intake en agenda-routing.',
+  },
+  {
+    title: 'No-show preventie multi-touch',
+    body: 'Direct na boeking bevestigt AI met klant-naam, datum, tijdslot en (bij ambulant) verwacht aankomst-window van 60-90 minuten, 48u vooraf herinnert via WhatsApp, 4u vooraf herbevestigt met klikt u hier voor bevestiging of verzetten. Bij annulering of niet-bevestiging binnen 24u: automatische wachtlijst-trigger naar 3-5 klanten met flexibele agenda. Resultaat: no-show daalt van 15-25 procent naar 4-7 procent — voor solo-pedicure met 6-8 behandelingen per dag is dat 1-2 voorheen-verloren slots per dag terug, ofwel €600-€1.500 extra omzet per maand.',
+  },
+  {
+    title: 'Pedicure-cyclus recall trigger-based',
+    body: 'Volledig automatisch: AI monitort per klant de individuele pedicure-cyclus (cosmetisch 6-8 weken, medisch 4-6 weken, klinisch 4 weken bij DM-voet of post-ulcus). 1 week voor optimale boek-datum: persoonlijke WhatsApp-recall met klant-naam (Hallo Anneke, het is bijna 6 weken geleden dat we uw pedicure hebben gedaan — zal ik een afspraak inplannen voor donderdag 12 oktober om 14:00) met klikbare ja/verzetten-knop. Conversie stijgt van 25-35 procent (passieve mail of brief) naar 65-85 procent (gepersonaliseerde WhatsApp met directe boek-link). Voor solo-pedicure met 250 actieve klanten: 100-200 extra behandelingen per jaar.',
+  },
+  {
+    title: 'Verzekeraar-vragen en declaratie-status (medisch)',
+    body: 'Klant vraagt: wordt mijn medische pedicure vergoed door zorgverzekering, moet ik eerst een verwijsbrief bij huisarts ophalen, hoe declareer ik via Sst-vergoeding diabetische voet. AI haalt polisvoorwaarden uit klant-record, checkt zorgprofiel-classificatie (Sims 1-2-3 voor DM-voet via NHG-richtlijn) tegen verzekeraar-dekking, en geeft feitelijke status-update zonder claim-toezegging. Voor complexe vragen of voorafgaande machtiging: directe doorverbinding naar pedicure of declaratie-medewerker. Resultaat: 60-75 procent van verzekeraar-bel-tijd verdwijnt zo, klant krijgt directe duidelijkheid in plaats van terugbel-vertraging.',
+  },
+  {
+    title: 'Ambulante route-clustering voor pedicure-aan-huis',
+    body: 'Voor pedicure-aan-huis: AI plant met postcode-clustering op rit-dagen (maandag-noord, dinsdag-oost, etc) en geeft klanten of mantelzorgers een realistische tijdslot-voorspelling van 60-90 minuten in plaats van een hele dag wachten. Voor verpleeg- of verzorgingshuis-context: koppeling aan instellings-agenda mogelijk. Resultaat: 15-25 procent meer behandelingen per rij-dag zonder extra werkuren, hogere klant- en mantelzorger-tevredenheid, en de pedicure verliest geen tijd aan tussen-behandelingen-door-coördinatie.',
+  },
+  {
+    title: 'Rode-vlag-detectie voor risicovoet en escalatie',
+    body: 'Bij intake of recall-gesprek herkent AI symptoom-keywords die op acute voetzorg duiden: drukplek met blaar of wond, ulcus dat niet geneest, infectie-tekens (rood, warm, pus), plotse hevige voet-pijn, zwarte verkleuring tenen of voetzool, koorts in combinatie met DM. Bij detectie escaleert AI direct naar de pedicure of bij geen-bereikbaarheid naar de huisarts/podotherapeut. Voor diabetische klanten extra alert: niet-genezende wond binnen 14 dagen = directe verwijs-trigger volgens DM-richtlijn NHG. AI doet zelf geen risicocategorie-beoordeling — alleen patroon-herkenning en escalatie.',
+  },
+  {
+    title: 'Eerste-klant intake en kennismaking-flow',
+    body: 'Nieuwe klant meldt zich: AI vraagt naar voet-historie (eerdere pedicure-ervaring, specifieke klachten zoals ingegroeide nagel of kalknagels, eventuele medische context zoals DM of vaatproblemen), legt het verschil uit tussen cosmetisch en medisch pedicure, deelt de tarieven en vergoedings-mogelijkheden, en plant een eerste afspraak van 60-75 minuten met extra tijd voor anamnese. Voor medisch-context: stuurt verwijsbrief-template indien klant nog moet ophalen bij huisarts. Resultaat: nieuwe klanten komen voorbereid en met realistische verwachtingen, eerste-bezoek-conversie naar reguliere klant stijgt van 60-70 procent naar 80-90 procent.',
+  },
+];
+
+const escalationKeywords = [
+  '"ulcus" / "wond geneest niet" / "open plek voet" → directe escalate (mogelijk diabetische voet, NHG-richtlijn)',
+  '"infectie" / "rood" + "warm" / "pus" / "stinkt" → directe escalate (mogelijk ontsteking, vraagt huisarts-beoordeling)',
+  '"plotse hevige pijn voet" / "kan niet lopen" / "schoot in" → escalate (mogelijk fractuur/jicht/trombose)',
+  '"zwarte verkleuring teen" / "blauwe voet" / "koud aanvoelen" → directe escalate (mogelijk vaatprobleem, spoed)',
+  '"DM" + "wond" / "diabetes" + "blaar" → directe escalate (DM-voet hoog risico, 14-dagen verwijs-grens)',
+  '"reuma" + "ontsteking voet" / "warm gewricht" → escalate (mogelijke reuma-flare)',
+  '"trombose" / "kuit gezwollen" / "ademnood" → directe spoed (mogelijke DVT/longembolie, 112-trigger)',
+  '"behandel-advies" / "wat moet ik doen" / "is dit normaal" → escalate naar pedicure (geen behandel-advies via AI)',
+  '"medische verklaring" / "vergoeding regelen voor mij" → escalate naar pedicure (claim-grens)',
+  '"klacht" / "ontevreden" / "tuchtklacht" / "KP-melding" → escalate naar praktijkhouder + log',
+];
+
+const integrations = [
+  { name: 'Salonized',                          type: 'Boekingssoftware (meest-gebruikt)', integratie: 'Native API — agenda + klant-CRM + recall-trigger' },
+  { name: 'Treatwell',                          type: 'Boekingsplatform',              integratie: 'Native API — externe lead-bron + interne agenda-sync' },
+  { name: 'Booksy',                             type: 'Boekingsapp',                   integratie: 'Native API — populair bij solo-pedicures met mobiele klant-app' },
+  { name: 'Pedimo / Pedicare / Cyrano',         type: 'Pedicure-specifieke CRM',       integratie: 'API + webhook — dossier-koppeling + behandel-historie' },
+  { name: 'Vektis declaratie-flow',             type: 'Zorgverzekeraar-declaratie (medisch)', integratie: 'Webhook — Sst-vergoeding diabetische voet routing' },
+  { name: 'WhatsApp Business API',              type: 'Klantcommunicatie',             integratie: 'Native — sjablonen + foto-upload bij rode-vlag' },
+  { name: 'Google Calendar / Outlook',          type: 'Agenda + ambulante route',      integratie: 'Native API — postcode-clustering bij pedicure-aan-huis' },
+  { name: 'Podotherapeut-verwijs-systeem',      type: 'Zorgketen (medisch)',           integratie: 'Mail + secure-overdracht voor doorverwijs-context' },
+];
+
+const roiBreakdown = [
+  { post: 'No-show op pedicure-afspraken',                            before: '15-25%',                       after: '4-7%' },
+  { post: 'Recall-cyclus conversie (6/8-weken-recall)',               before: '25-35% (brief/mail)',          after: '65-85% (WhatsApp)' },
+  { post: 'Avond/weekend lead-capture (gemiste calls)',               before: '20-35% gemist',                after: '<3% gemist' },
+  { post: 'Pedicure-tijd op telefoon-onderbreking',                   before: '60-100min/dag',                after: '5-15min/dag (85% reductie)' },
+  { post: 'Behandelingen per ambulante rij-dag (clustering)',         before: '5-7 behandelingen',            after: '6-9 behandelingen (+15-25%)' },
+  { post: 'Eerste-bezoek-conversie naar reguliere klant',             before: '60-70%',                       after: '80-90% (intake-voorbereiding)' },
+  { post: 'Maandelijkse Aanloop-investering',                         before: '—',                            after: '€297-€597/mnd Marco/Emma solo-pakket' },
+];
+---
+
+<BaseLayout
+  title="AI voor pedicure-praktijk Nederland 2026 — ProVoet-bewust, no-show 75 procent omlaag, recall verdrievoudigt | Aanloop AI"
+  description="Hoe AI receptionist plus WhatsApp-agent afspraak-intake, no-show preventie, pedicure-cyclus recall en verzekeraar-flow automatiseren voor Nederlandse solo-pedicures en medisch pedicures. ProVoet-context, KP-Kwaliteitsregister, DM-voet/risicovoet zorgketen, Salonized/Treatwell integratie, AVG-bewust voor medische data."
+  schema={[articleSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Sector — Pedicure</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          AI voor pedicure-praktijk — ProVoet-bewust, no-show 75 procent omlaag, recall verdrievoudigt
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          Nederlandse pedicures werken vaak solo of in een hele kleine praktijk: één tot twee FTE, zes tot tien behandelingen per dag, een mix van cosmetisch en medisch werk, en regelmatig ambulante pedicure-aan-huis voor oudere of mindervalide klanten. Tegelijk valt medisch pedicure onder de KP-kwaliteitsregistratie en de DM-richtlijn voor multidisciplinaire voetzorg, en is no-show op afspraken structureel 15-25 procent — vooral bij oudere klanten met mobiliteits- of geheugenissues. Een solo-pedicure heeft typisch geen receptionist en moet zelf telefoongesprekken aannemen tussen behandelingen door, wat constant onderbreking betekent en geregeld leidt tot gemiste calls of no-show op de eigen agenda. Een AI receptionist plus WhatsApp-agent kan 70-85 procent van administratieve handelingen overnemen — afspraak-intake, no-show preventie, recall-cyclus, verzekeraar-vragen, ambulante route-clustering — én escaleert direct bij rode-vlag-symptomen (ulcus, infectie, DM-wond, plotse pijn) naar de pedicure of huisarts. Hieronder: precies welke processen automatiseerbaar zijn en welke ROI Nederlandse MKB-pedicure-praktijken halen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Welke processen automatiseerbaar zijn</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI assistent voor een pedicure-praktijk neemt vooral eerstelijns klantcontacten en administratieve handelingen over: telefoongesprekken aannemen waarbij klanten zich melden voor een nieuwe afspraak (regulier cosmetisch, medisch pedicure, klinisch DM-voet, of eerst-bezoek), gestructureerd uitvragen wat voor type behandeling nodig is en eventuele specifieke aandacht-punten (kalknagels, eelt, ingegroeide nagel, schimmel-vermoeden, DM-context), plannen op het juiste tijd-slot (30-45min regulier, 45-60min medisch, 60-75min klinisch), no-show preventie automatiseren met multi-touch reminders, en pedicure-cyclus recall trigger-based versturen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor lopende klanten handelt de AI ook administratieve vragen af (komt mijn afspraak nog door, wordt het vergoed door mijn verzekering, kan ik mijn afspraak verzetten) door realtime in uw Salonized, Pedimo of Treatwell-CRM te kijken. Dit ontlast de pedicure voor 70-85 procent van inkomende routine-contacten — voor solo-pedicures gaat dat al snel om 60-100 uur per maand telefoon-onderbrekingen die nu gericht naar behandeluren of klanten-acquisitie kunnen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk: de AI vervangt nooit de bevoegde pedicure of medisch pedicure. Behandel-keuze, risicocategorie-beoordeling (Sims 0-3 voor DM-voet), zorgprofiel-classificatie en eventuele verwijzing naar huisarts, podotherapeut of internist blijven 100 procent voorbehouden aan de pedicure of medisch pedicure (KP-geregistreerd). Bij elke vraag die over diagnose, behandel-advies of medische beoordeling gaat schakelt de AI direct door — met als gestandaardiseerd antwoord "voor uw behandel-advies wil ik u doorverbinden met onze pedicure". Bij detectie van rode-vlag-symptomen (ulcus, infectie, DM-wond) escaleert de AI direct.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Top 7 processen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wat AI direct van uw pedicure overneemt.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-6">
+        {automatableProcesses.map((p, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <p class="text-base font-bold text-navy mb-2">{p.title}</p>
+            <p class="text-sm text-slate-600 leading-relaxed">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">ProVoet, KP-register en AI: wat mag en wat absoluut niet</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">ProVoet is de brancheorganisatie voor pedicures in Nederland en zet de kwaliteits- en beroepsethische normen. Het Kwaliteitsregister Pedicures (KP) is voor medisch pedicures verplicht en gekoppeld aan vergoedings-context voor diabetische voet via Sst (Stichting Diabetes en Voet). De DM-richtlijn NHG voor multidisciplinaire voetzorg bepaalt de samenwerking tussen huisarts, internist, podotherapeut en (medisch) pedicure. Voor AI betekent dit: feiten verzamelen, intake afhandelen, agenda en recall automatiseren mag, maar elke vorm van behandel-advies, risicocategorie-beoordeling of medische uitspraak is verboden voor AI.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI levert specifiek voor pedicure-praktijken een ProVoet- en KP-bewuste implementatie: vooraf-gescripte prompt-restricties die de AI verhinderen om behandel-adviezen of risicocategorie-uitspraken te doen, automatische escalatie bij 10 rode-vlag-keywords (ulcus, infectie, DM-wond, plotse pijn, vaatproblemen, reuma-flare, trombose-trigger, en behandel-advies-vragen), gestandaardiseerde escalatie-formulering naar pedicure of doorverwijzing huisarts/podotherapeut, en logging-trail die voldoet aan KP-kwaliteitsregister-verplichtingen. ProVoet-grens en KP-grens worden zo nooit doorkruist.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor AVG: medisch pedicures verwerken bijzondere persoonsgegevens (DM-status, comorbiditeit, behandelplan, ulcus-historie). Aanloop AI levert standaard EU-only data-verwerking, encryption-at-rest en in-transit, AVG-conforme verwerkersovereenkomst, en DPIA-template voor uw eigen AP-melding-plicht. Voor cosmetisch pedicures (geen medische data): standaard AVG voor NAW en betalings-gegevens. Bij elke pedicure-context configureren we AI-prompt zo dat alleen relevante intake-vragen worden gesteld (data-minimalisatie-principe), zonder onnodige medische uitvragen voor cosmetisch werk.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Escalatie-protocol</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">10 rode-vlag-keywords met directe escalatie naar pedicure of huisarts.</h2>
+        <p class="mt-3 text-slate-600">Voor medisch pedicures (KP-geregistreerd) is rode-vlag-detectie cruciaal omdat een niet-genezende wond bij DM-patiënten binnen 14 dagen tot ulcus-progressie kan leiden volgens DM-richtlijn NHG. Aanloop AI is configureerd op 10 levensbedreigende of zorg-escalatie keywords met directe escalatie naar pedicure, en bij niet-bereikbaarheid een fallback naar huisarts of podotherapeut.</p>
+      </div>
+      <ul class="space-y-2 reveal reveal-delay-1">
+        {escalationKeywords.map((k) => (
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700">
+            <svg class="w-4 h-4 mt-1 flex-shrink-0 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M5 19h14a2 2 0 001.84-2.75L13.74 4a2 2 0 00-3.48 0L3.16 16.25A2 2 0 005 19z"/></svg>
+            <span>{k}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Integraties</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Werkt met uw bestaande pedicure-stack.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">8 native of webhook-koppelingen voor de meest-gebruikte boekingssoftware en pedicure-CRMs in Nederland plus zorgketen-koppeling voor medisch werk en WhatsApp Business API. Solo-pedicures zonder bestaand CRM: lichte onboarding mogelijk binnen 7 werkdagen.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Systeem</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Type</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Integratie-methode</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {integrations.map(i => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-navy">{i.name}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{i.type}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs">{i.integratie}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Voorbeeldgesprek: AI handelt recall en no-show preventie af voor solo-pedicure</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Het is dinsdag 14 oktober 2026, 10:30. Bestaande klant van uw solo-praktijk — Anneke (74, gepensioneerde, vorige cosmetisch pedicure op 2 september, optimale 6-weken-recall valt op 14 oktober) — krijgt een persoonlijke WhatsApp van uw nummer: Goedemorgen Anneke, het is bijna 6 weken geleden dat we uw pedicure hebben gedaan — zal ik een afspraak inplannen voor donderdag 23 oktober om 14:00, of past dinsdag 28 oktober om 10:00 beter? AI biedt twee tijdslots aan op basis van uw open agenda en voorkeur-historie van Anneke (zij komt typisch dinsdag-ochtend of donderdag-middag).</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Anneke antwoordt graag dinsdag 28 oktober 10:00. AI bevestigt direct, plant in Salonized, en stuurt op zondag 26 oktober een 48u-vooraf herinnering. Op dinsdag 28 oktober om 06:00 stuurt AI een 4u-vooraf bevestigings-bericht: Goedemorgen Anneke, vandaag 10:00 staat uw pedicure-afspraak gepland — graag bevestigen door op JA of VERZETTEN te tikken. Anneke bevestigt JA. Uitslag: u krijgt voorspelbaar bezoek met heel-laag no-show risico, geen tussen-behandelingen-door telefoon-onderbreking, en uw recall-cyclus loopt structureel zonder mentale belasting.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk wat de AI niet doet: geen behandel-advies geven (zal ik vandaag uw kalknagels behandelen), geen medisch oordeel (uw voet ziet er prima uit), geen tarief-onderhandeling. AI doet alleen plannen, herinneren en logistiek. Bij vragen als wat moet ik doen aan mijn ingegroeide nagel of is dit normaal antwoordt AI consequent voor uw behandel-advies wil ik u doorverbinden met onze pedicure — zij heeft de bevoegdheid om u daarover te adviseren. ProVoet- en KP-grens 100 procent gerespecteerd, en tegelijk solo-pedicure-vriendelijke automatisering die de werkdruk significant verlaagt.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Concrete ROI</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Voor een solo-pedicure met 250 actieve klanten.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Realistische cijfers per maand voor een gemiddelde Nederlandse solo-pedicure-praktijk (1-2 FTE, 6-8 behandelingen per dag, gemiddelde fee €30-€55 cosmetisch en €40-€70 medisch). Uw eigen ROI varieert per klant-mix (cosmetisch vs medisch), per percentage ambulante pedicure-aan-huis en per werkschema (4-5 behandeldagen per week).</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-4 text-slate-500 font-medium w-[44%]">Metric</th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[28%]">Vóór AI</th>
+              <th class="text-left py-4 px-4 font-bold text-brand-emerald w-[28%]">Met Aanloop AI</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {roiBreakdown.map(r => (
+              <tr>
+                <td class="py-3 px-4 text-slate-700">{r.post}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.before}</td>
+                <td class="py-3 px-4 text-navy font-medium text-xs">{r.after}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Bottom-line voor solo-pedicure met 250 actieve klanten: gemiddelde ROI 8-15 keer op 12-maand basis, payback-periode 6-10 weken. De no-show daling (van 15-25 procent naar 4-7 procent) levert alleen al €7.000-€18.000 extra omzet per jaar zonder extra werkuren — terugverdiend in de eerste 3-4 maanden. De pedicure-cyclus recall verbetering (van 25-35 procent naar 65-85 procent conversie) is structurele groei die ook de klant-retentie significant verhoogt en lifetime-value verbetert. Voor solo-pedicures is de pedicure-tijd-besparing op telefoon-onderbrekingen (60-100 minuten per dag) bovendien direct kwaliteit-van-leven winst — minder cognitieve belasting, meer focus op behandelingen. Met €297-€597 per maand investering in Marco/Emma solo-pakket is de payback gerealiseerd binnen het eerste kwartaal en groeit het effect naarmate het recall-systeem volloopt.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Implementatie roadmap voor pedicure-praktijken</h2>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Een succesvolle AI-implementatie in een pedicure-praktijk verloopt in drie fasen, met voor solo-praktijken een verkort traject (5-8 weken totaal in plaats van 14 weken voor multi-praktijk). Fase 1 (week 1-2 voor solo, 1-3 voor multi) is discovery en design: we analyseren 100-200 historische klantcontacten, no-show patronen en recall-respons-rates van de afgelopen 3 maanden om de meest voorkomende vragen, escalaties en piek-momenten in kaart te brengen. Op basis hiervan ontwerpen we de conversational flow voor afspraak-intake, no-show preventie, pedicure-cyclus recall, verzekeraar-vragen en (voor ambulant) postcode-clustering — plus ProVoet- en KP-bewuste rode-vlag-escalatieprotocollen die specifiek bij uw werkwijze, klant-mix (cosmetisch vs medisch) en eventuele zorgketen-context passen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-2">Fase 2 (week 3-4 voor solo, 4-7 voor multi) is build en pilot: we configureren de AI met uw kennisbank (FAQ over openingstijden, tarieven, behandel-types, vergoedings-mogelijkheden voor medisch, betalings-opties), koppelen aan uw Salonized, Pedimo, Treatwell of Booksy, plus WhatsApp Business API en (voor medisch) Vektis-declaratie-flow, en testen intern één à twee weken lang. In deze periode simuleert u realistische klant-scenarios — de AI leert van correcties en wordt steeds nauwkeuriger op uw specifieke triage-criteria, behandel-grenzen en escalatie-protocollen. Eind fase 2 gaat de AI live met 30-50 procent van uw klantverkeer voor monitoring (typisch eerst no-show preventie plus recall-cyclus).</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-3">Fase 3 (week 5-8 voor solo, 8-14 voor multi) is scale en optimaliseer: volledig live op het primaire kanaal met dagelijkse KPI-monitoring (no-show rate, recall conversie, eerste-bezoek-conversie naar reguliere klant, telefoon-onderbreking-uren), wekelijkse iteratie op recall-templates en maandelijkse rapportage. Vanaf maand 2 ziet u typisch een no-show stabiel onder 7 procent (van 15-25 procent baseline), recall-cyclus conversie boven 65 procent (van 25-35 procent baseline), en eerste-bezoek-conversie boven 85 procent (van 60-70 procent baseline). Voor solo-pedicures is dit direct merkbaar in de werkdruk-belasting en in de fee-omzet per maand.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">AI voor pedicure — antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Bronnen en verder lezen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Onafhankelijke bronnen voor uw eigen onderzoek.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="https://www.provoet.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">ProVoet — Brancheorganisatie pedicures</p>
+          <p class="text-slate-600 mt-1 text-xs">Beroepsorganisatie en kwaliteitsnormen voor Nederlandse pedicures.</p>
+        </a>
+        <a href="https://www.kwaliteitsregister-pedicures.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">KP — Kwaliteitsregister Pedicures</p>
+          <p class="text-slate-600 mt-1 text-xs">Verplicht register voor medisch pedicures, gekoppeld aan vergoedings-context.</p>
+        </a>
+        <a href="https://www.podotherapie.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">NVvP — Nederlandse Vereniging van Podotherapeuten</p>
+          <p class="text-slate-600 mt-1 text-xs">Voor doorverwijs-context bij complexe voet-zorg.</p>
+        </a>
+        <a href="https://richtlijnen.nhg.org/standaarden/diabetes-mellitus-type-2" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">NHG — DM-richtlijn met multidisciplinaire voetzorg</p>
+          <p class="text-slate-600 mt-1 text-xs">Richtlijn voor zorgketen pedicure-huisarts-podotherapeut bij DM-voet.</p>
+        </a>
+        <a href="https://autoriteitpersoonsgegevens.nl/themas/zorg" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Autoriteit Persoonsgegevens — Zorg en AVG</p>
+          <p class="text-slate-600 mt-1 text-xs">AVG voor bijzondere persoonsgegevens in medische pedicure-context.</p>
+        </a>
+        <a href="https://www.zn.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Zorgverzekeraars Nederland</p>
+          <p class="text-slate-600 mt-1 text-xs">Verzekeraar-context en Sst-vergoeding voor diabetische voet.</p>
+        </a>
+        <a href="/diensten/marco/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Marco — AI receptionist</p>
+          <p class="text-slate-600 mt-1 text-xs">De telefoon-component voor solo-pedicures met 24/7 lead-intake.</p>
+        </a>
+        <a href="/diensten/emma/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Emma — WhatsApp-agent</p>
+          <p class="text-slate-600 mt-1 text-xs">Het no-show-preventie- en recall-cyclus-component.</p>
+        </a>
+        <a href="/kennisbank/ai-voor-schoonheidssalon-kapsalon-nederland-2026/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ AI voor schoonheidssalon en kapsalon</p>
+          <p class="text-slate-600 mt-1 text-xs">Zuster-beauty-artikel: no-show preventie, last-minute slot-hervulling.</p>
+        </a>
+        <a href="/ai-roi-calculator/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ ROI-calculator</p>
+          <p class="text-slate-600 mt-1 text-xs">Bereken uw eigen ROI voor uw pedicure-praktijk.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Klaar om no-show te halveren en de telefoon-onderbreking-belasting te elimineren?
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Onboarding 7-14 werkdagen voor solo-pedicure (5-8 weken totaal traject), 14-21 dagen voor multi-praktijk. ProVoet- en KP-bewuste configuratie, 10 rode-vlag-keywords protocol voor risicovoet-zorg, EU-only data-verwerking met DPIA-template inbegrepen. Tijdens uw demo simuleren we een no-show preventie-flow én een 6-weken-recall-trigger op een echte WhatsApp en telefoonlijn — zodat u zelf hoort hoe Marco en Emma uw solo-praktijk 24/7 ondersteunen zonder ooit de behandel-grens te overschrijden.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een live demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bekijk tarieven
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

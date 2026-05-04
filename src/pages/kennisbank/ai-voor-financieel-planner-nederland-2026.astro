@@ -1,0 +1,385 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Sector-specifiek kennisbank-artikel: AI voor financieel-planner / vermogensplanner MKB Nederland.
+// Pattern parallel aan hypotheekadviseur, maar specifiek op
+// AFM/Wft Vermogen + DUFAS gedragscode + provisieverbod beleggen + FFP/Adfiz +
+// jaarreview-flow + KiFiD klachtenroute + Wwft cliëntonderzoek vermogenstak.
+//
+// Sources:
+// - AFM (Autoriteit Financiële Markten) — afm.nl
+// - Wft Vermogen / Wft Beleggen — wetten.overheid.nl
+// - Provisieverbod beleggen sinds 1 januari 2014
+// - DUFAS (Dutch Fund and Asset Management Association) gedragscode
+// - FFP (Federatie van Financieel Planners) — ffp.nl
+// - Adfiz (brancheorganisatie financieel adviseurs)
+// - KiFiD klachtenroute — kifid.nl
+// - Klantbelang Centraal AFM-norm
+// - Wwft cliëntonderzoek + meldplicht FIU-Nederland
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI voor financieel-planner Nederland 2026 — Wft Vermogen, jaarreview-conversie verdrievoudigt',
+  description: 'Hoe AI receptionist en WhatsApp-agent intake, jaarreview-recall, KYC-pre-screening en klant-portaal-vragen automatiseren voor Nederlandse financieel-planners en vermogensplanners. AFM/Wft Vermogen, DUFAS gedragscode, provisieverbod beleggen, FFP/Adfiz, Figlo/Elements/Helderzicht integratie, KiFiD-route.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-04',
+  dateModified: '2026-05-04',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-voor-financieel-planner-nederland-2026/',
+  inLanguage: 'nl-NL',
+  about: [
+    { '@type': 'Thing', name: 'Financieel-planner' },
+    { '@type': 'Thing', name: 'Vermogensplanner' },
+    { '@type': 'Thing', name: 'AFM Wft Vermogen' },
+    { '@type': 'Thing', name: 'DUFAS gedragscode' },
+    { '@type': 'Thing', name: 'FFP Federatie Financieel Planners' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/ai-voor-financieel-planner-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+
+const faqItems = [
+  { question: 'Mag een financieel-planner AI inzetten onder AFM Wft Vermogen?', answer: 'Ja, voor administratieve handelingen — lead-intake, kwalifying-vragen, KYC-pre-screening, jaarreview-recall, klant-portaal-vragen, document-collectie en agendabeheer. Wat AI absoluut niet mag onder Wft Vermogen of Wft Beleggen: vermogensadvies geven, beleggings-aanbevelingen doen, fonds-keuze sturen, of inhoudelijke uitspraken doen over passendheid van financiële producten. Dat blijft 100 procent voorbehouden aan de Wft-bevoegde planner met Wft Vermogen of Wft Beleggen module. Aanloop AI configureert prompt-restricties zodat de AI bij elke advies-vraag direct doorschakelt en de AFM-norm Klantbelang Centraal niet doorkruist.' },
+  { question: 'Hoe past AI binnen DUFAS gedragscode en provisieverbod beleggen?', answer: 'Het provisieverbod beleggen geldt sinds 1 januari 2014: bij vermogensadvies en vermogensbeheer mag geen provisie of commissie van product-aanbieders worden ontvangen — alleen directe fee van de klant. AI raakt deze regel niet, omdat AI geen advies geeft. Wat AI wel doet: transparante fee-communicatie ondersteunen door bij intake automatisch fee-uitleg te sturen (uurtarief, percentage-van-vermogen, vaste fee per service-tier), DUFAS-gedragscode-bewuste antwoorden geven over kostenstructuur, en de juiste verwachtingen scheppen voor het eerste advies-gesprek. Klantbelang Centraal blijft 100 procent intact omdat advies altijd mensenwerk is.' },
+  { question: 'Werkt dit met onze Figlo, Elements of Helderzicht?', answer: 'Ja, via directe API-koppelingen voor Figlo (klant-adviestraject + financiële planning module), Elements (advies-rapportage + planning), Helderzicht (vermogensbeheer + klant-overzicht), Adviesbox financieel (rekenmodules), Bilan (klant-portaal en consolidatie), Cinco (klant-app), FOCUS Adviessoftware en FOCUS Vermogen. Voor administratie-koppeling: Microsoft 365 Exchange voor agenda en secure mail, plus WhatsApp Business API voor klant-communicatie. Onboarding 14-28 werkdagen voor één-CRM integratie inclusief jaarreview-flow, KYC-pre-screening, klant-portaal-vragen en Wft-bewuste rode-vlag-detection.' },
+  { question: 'Hoe gaat AI om met klantbelang centraal en advies-grenzen?', answer: 'AFM-norm Klantbelang Centraal vereist dat advies passend is bij de klantsituatie, doelstellingen en risicobereidheid. AI mag deze norm nooit raken. Concreet: AI verzamelt feiten (vermogenssamenstelling, doelstellingen, horizon, risicotolerantie globaal, lopende verplichtingen) en geeft die gestructureerd door aan de planner — die vervolgens het passend advies formuleert. AI geeft nooit een fonds-aanbeveling, asset-allocatie-suggestie, of pensioen-keuze. Bij elke adviesvraag van een klant escaleert AI direct naar de Wft-bevoegde planner met "voor uw vermogensadvies wil ik u doorverbinden met een van onze Wft-planners".' },
+  { question: 'Kan AI jaarreview-recall en proactief contact automatiseren?', answer: 'Ja, dit is een van de hoogste-impact use-cases voor fee-based planners. In een fee-based model rekent u jaarlijks een planner-fee, en de klant verwacht aandacht voor zijn jaarreview, schenking-momenten, pensioen-mijlpalen en levensgebeurtenissen. AI monitort per klant automatisch: jaarreview-cyclus (12 maanden na vorige planning), schenkings-jaar (€6.713 vrijgesteld in 2026 voor kinderen), pensioen-mijlpalen (60-jaar AOW-richtleeftijd-update, 67-jaar AOW-start, 70-jaar Box 3-impact), beleggings-koersschokken (drawdown meer dan 15 procent → check-in trigger). Bij vervaldatum binnen 6 weken stuurt AI een persoonlijk WhatsApp-bericht of mail-uitnodiging voor jaarreview-afspraak. Conversie van jaarreview-recall stijgt typisch van 25 procent (passieve mail) naar 65-75 procent (gepersonaliseerde trigger-recall).' },
+  { question: 'Hoe gaat AI om met Wwft-meldplicht en KYC bij vermogenstak?', answer: 'Financieel-planners en vermogensplanners zijn Wwft-instellingen met verscherpte cliëntonderzoek-plicht. AI doet pre-screening: cliënt-identificatie volgens Wwft artikel 3 met BSN, paspoort/ID-document upload, woonadres-verificatie, bron-van-vermogen-vragen (verkoop bedrijf, schenking ouders, erfenis, lange-termijn besparen, externe verkoop pand). Bij signalen van Wwft-risico (contante stortingen, ongebruikelijke vermogenssprong, PEP-status, complexe corporate-structuur of trust, herkomst niet-EU jurisdicties met verhoogd risico) escaleert AI direct naar de planner of compliance-officer. Definitieve KYC-beoordeling, integriteitstoets en eventuele FIU-melding blijven mensenwerk — AI legt alleen de brug zodat planner direct met volledige context start.' },
+  { question: 'Wat is de gemiddelde ROI voor een MKB-financieel-planner-kantoor?', answer: 'Voor een gemiddeld 3-5-FTE kantoor met 200-400 klanten en gemiddelde fee €1.500-€4.000 per klant per jaar (fee-based model) ligt de ROI op 8-18 keer op 12-maand basis. Vier hoofdwinsten: (1) jaarreview-conversie stijgt van 25 procent naar 65-75 procent door proactieve trigger-recall (waarde: betere klant-retentie, hogere lifetime-value, structureel sterkere fee-omzet — €40.000-€100.000 extra per jaar voor 4-FTE kantoor), (2) lead-conversie eerste-contact 25→45 procent door 24/7 respons (€20.000-€60.000 extra fee/jr), (3) planner-tijd op KYC-intake en status-vragen daalt 65-80 procent (50-90u/mnd vrijgespeeld voor advies-uren = €30.000-€60.000/jr extra advies-omzet), (4) klant-portaal-vragen geautomatiseerd (jaaroverzicht, fiscaal IB-document, fonds-prestatie tot maand X) — assistent-tijd 70 procent omlaag. Plus de DUFAS-gedragscode-conforme transparantie en betere klant-tevredenheid.' },
+  { question: 'Werkt dit ook voor solo-planners of grote vermogensbeheer-kantoren?', answer: 'Ja. Solo-planner (1-2 FTE, vaak met 1 assistent): identiek pattern met lagere onboarding-kosten omdat configuratie eenvoudiger is — extra cruciaal voor solo omdat één eigenaar geen ruimte heeft om naast advies-uren ook operationele jaarreview-recall en KYC-administratie te combineren. Grote vermogensbeheer-kantoren (Wft Vermogensbeheer-vergunning, AIFMD-context): integratie binnen de bestaande tech-stack mogelijk mits compliance-officer akkoord; vaak is parallel-implementatie als extra kanaal voor fee-based klanten een snellere route. Voor onafhankelijke FFP- of Adfiz-aangesloten kantoren zonder vaste formule-stack: maximale flexibiliteit op uw bestaande Figlo/Elements/Helderzicht-combinatie.' },
+];
+
+const automatableProcesses = [
+  {
+    title: 'Lead-intake en eerste kwalificatie',
+    body: 'Prospect belt of WhatsAppt: "we hebben een huis verkocht en willen graag onze vermogensplanning op orde brengen". AI vraagt vermogenssamenstelling op hoofdlijnen (bank, beleggingen, vastgoed, pensioen-pot, ondernemerswaarde), planning-doel (pensioen-aanvulling, schenking aan kinderen, vermogensbescherming, financiële onafhankelijkheid), tijdshorizon, gezinssituatie, eventuele lopende verplichtingen, en plant een kennismakingsgesprek bij de eerstvolgende beschikbare Wft-bevoegde planner. Geen advies, alleen gestructureerde feitenverzameling. Bij vermogen onder de minimumdrempel (kantoor-specifiek, vaak €100k of €250k): vriendelijke afhandeling met tip naar zelfstandige tools of execution-only platform — geen verspilde planner-uren op niet-passende leads.',
+  },
+  {
+    title: 'KYC en Wwft pre-screening voor vermogenstak',
+    body: 'Cliënt-identificatie volgens Wwft artikel 3: BSN, ID-document upload met QR-verificatie, woonadres-bevestiging, bron-van-vermogen-vragen voor verkoop bedrijf, afkoop pensioen, schenking ouders, externe verkoop pand of beleggings-portefeuille-historie. AI signaleert Wwft-risico-indicatoren (contante storting, ongebruikelijke vermogenssprong, PEP-status, complexe trust-structuur of niet-EU herkomst) en escaleert direct naar planner of compliance-officer. Definitieve integriteitsbeoordeling en eventuele FIU-Nederland-melding blijven mensenwerk.',
+  },
+  {
+    title: 'Jaarreview-recall trigger-based',
+    body: 'Volledig automatisch: AI monitort per klant de 12-maand-jaarreview-cyclus, plus schenkings-jaar, pensioen-mijlpalen (60/65/67/70-jaar), AOW-richtleeftijd-updates, en beleggings-drawdown-momenten (>15 procent dip = check-in trigger). 6 weken voor reviewdatum: persoonlijk WhatsApp-bericht of mail met directe boek-link voor reviewgesprek. Conversie stijgt van 25 procent (passieve mail) naar 65-75 procent (trigger-recall). Voor een 4-FTE kantoor met 300 klanten en gemiddelde review-fee €750-€2.000 per klant: €40.000-€100.000 extra fee per jaar plus structureel hogere lifetime-value door betere klant-retentie.',
+  },
+  {
+    title: 'Klant-portaal vragen en jaaroverzichten',
+    body: 'Klant vraagt: "kunt u mij het jaaroverzicht 2025 sturen voor mijn IB-aangifte" of "wat is de huidige stand van mijn beleggingsportefeuille" of "kan ik mijn extra schenking nog meenemen voor 2025". AI haalt realtime data uit Helderzicht/Bilan/Cinco-portaal: jaarover-zicht-PDF, actuele portfolio-stand, fiscaal-overzicht voor IB Box 3, schenking-status, lopende kwartaal-rapportage. Voor inhoudelijke vragen ("is mijn portefeuille nog passend bij mijn risicoprofiel"): directe doorverbinding naar planner. Resultaat: 70 procent van inkomende portaal-vragen geautomatiseerd, assistent-tijd vrij voor planner-ondersteuning.',
+  },
+  {
+    title: 'Pensioen-mijlpaal en levensgebeurtenis-recall',
+    body: 'AI monitort levensgebeurtenissen die directe vermogensplanning-impact hebben: 60 jaar (AOW-richtleeftijd-bevestiging + pre-pensioen-strategie), 65 jaar (deeltijd-pensioen mogelijkheden), 67 jaar (AOW-start + Box 3-belasting-shift), 70 jaar (pensioen-uitkering keuze), echtscheidings-melding (pensioenverevening + boedelverdeling), erfgenamen-momenten, schenkings-jaarwisseling. Bij elk relevant moment: persoonlijk WhatsApp-bericht of mail met aanbod review-afspraak. Niet om advies te geven — om aandacht te bieden zodat de klant zich gehoord voelt en op tijd bij de planner is voor passend advies. Klant-tevredenheid en NPS schieten omhoog.',
+  },
+  {
+    title: 'Schenkings-cyclus en fiscale jaarwisseling',
+    body: 'Vanaf oktober automatisch: AI stuurt klanten met vermogen boven €1M een herinnering over de jaarlijkse schenkings-mogelijkheden voor 2025/2026 (€6.713 vrijgesteld voor kinderen, €2.690 voor anderen, €31.813 eenmalige schenking voor woning), en biedt een afspraak met de planner om te beoordelen of een schenking past binnen de bredere planning. Voor klanten met estate-planning-flag: extra trigger voor erfbelasting-optimalisatie. AI doet geen advies — schept alleen de bewustwording en plant het gesprek. Voor een kantoor met 200 klanten boven schenkings-drempel: 30-50 extra planning-momenten per jaar.',
+  },
+  {
+    title: 'KiFiD klachten-route en complexe escalatie',
+    body: 'Wanneer een klant zegt "ik ben niet tevreden", "ik wil een klacht indienen", of vraagt naar KiFiD: AI escaleert direct naar de praktijkhouder of klachtenfunctionaris en logt het contact. Voor complex-advies-vragen (echtscheidings-vermogen, ondernemers-overdracht, expat-financiering, internationale erf-structuur, beleggingsverlies > 25 procent klacht): directe escalatie naar Wft-bevoegde planner — geen poging om eerst zelf vragen te beantwoorden. AFM-norm Klantbelang Centraal blijft 100 procent intact, en KiFiD-klachtenroute wordt nooit gebypassed.',
+  },
+];
+
+const escalationKeywords = [
+  '"advies" / "wat raadt u aan" / "wat zou u doen" → escalate naar Wft-planner (advies-grens)',
+  '"klantbelang" / "passend advies" / "second opinion" → escalate (AFM-norm Klantbelang Centraal)',
+  '"contante storting" / "cash betaling" / "anonimiseer" → Wwft-flag + compliance-officer',
+  '"PEP" / "politiek prominent" / "politicus familie" → Wwft-flag (verscherpt cliëntenonderzoek)',
+  '"verzwijgen" / "niet melden" / "verborgen vermogen" → Wwft + integriteit + escalate',
+  '"echtscheiding" / "boedelscheiding" / "alimentatie" → complex advies, escalate',
+  '"klacht" / "KiFiD" / "tuchtcommissie" / "verlies meer dan 25 procent" → klachtenfunctionaris + log',
+  '"trust" / "stamrecht-bv" / "internationale structuur" → complex, escalate',
+  '"expat" / "buitenlands inkomen" / "non-resident" → complex internationaal, escalate',
+  '"overdracht bedrijf" / "DGA-uitkoop" / "MBO" → complex bedrijfs-overdracht, escalate',
+];
+
+const integrations = [
+  { name: 'Figlo',                            type: 'Klant-adviestraject',          integratie: 'Native API — financiële planning module + Wft-dossiervorming' },
+  { name: 'Elements (FBTO/EDR)',              type: 'Adviesplatform',               integratie: 'API-koppeling — advies-flow + dossier' },
+  { name: 'Helderzicht',                      type: 'Vermogensbeheer + klant-overzicht', integratie: 'Native API — actuele portfolio-stand, jaaroverzichten, fiscaal IB' },
+  { name: 'Bilan',                            type: 'Klant-portaal + consolidatie', integratie: 'Native API — multi-bank/multi-broker consolidatie' },
+  { name: 'Cinco',                            type: 'Klant-app vermogensbeheer',    integratie: 'REST-API — klant-portaal data + notificaties' },
+  { name: 'Adviesbox financieel',             type: 'Rekenmodule',                  integratie: 'Native API — passende-norm berekeningen + scenario-modellen' },
+  { name: 'WhatsApp Business API',            type: 'Klantcommunicatie',            integratie: 'Native — WhatsApp Cloud API met sjablonen + secure portal-link' },
+  { name: 'Microsoft 365 + Exchange',         type: 'Agenda + secure mail',         integratie: 'Microsoft Graph API — agenda-koppeling + Outlook-integratie' },
+];
+
+const roiBreakdown = [
+  { post: 'Lead-conversie eerste 24u',                                before: '25-30% conversie',             after: '40-50% conversie' },
+  { post: 'Jaarreview-conversie',                                     before: '20-30% (passieve mail)',       after: '60-75% (trigger-recall)' },
+  { post: 'Planner-tijd op KYC-intake en routinevragen',              before: '60-90u/mnd',                   after: '15-25u/mnd (75% reductie)' },
+  { post: 'Klant-portaal-vragen (jaaroverzicht/IB/portfolio)',        before: '40-70u/mnd assistent',         after: '10-20u/mnd (70% reductie)' },
+  { post: 'KYC/Wwft-intake voorbereidingstijd per case',              before: '60-120 minuten',               after: '15-25 minuten (alleen review)' },
+  { post: 'Niet-aangenomen telefoongesprekken (avond/weekend)',       before: '20-35% gemiste calls',         after: '<3% gemiste calls' },
+  { post: 'Maandelijkse Aanloop-investering',                         before: '—',                            after: '€597-€1.197/mnd Marco+Emma' },
+];
+---
+
+<BaseLayout
+  title="AI voor financieel-planner Nederland 2026 — Wft Vermogen, jaarreview-conversie verdrievoudigt | Aanloop AI"
+  description="Hoe AI receptionist plus WhatsApp-agent intake, jaarreview-recall, KYC-pre-screening en klant-portaal-vragen automatiseren voor Nederlandse financieel-planners en vermogensplanners. AFM/Wft Vermogen, DUFAS gedragscode, provisieverbod beleggen, FFP/Adfiz, Figlo/Elements/Helderzicht integratie."
+  schema={[articleSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Sector — Financieel-planner</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          AI voor financieel-planner — Wft Vermogen, jaarreview-conversie verdrievoudigt
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          Nederlandse financieel-planners en vermogensplanners werken in een dubbel-uniek vak: AFM-vergunning onder Wft Vermogen of Wft Beleggen, provisieverbod sinds 2014 (alleen fee-based), DUFAS gedragscode, AVG bijzondere financiële persoonsgegevens, klantbelang-centraal-norm, KiFiD-klachtenroute, FFP- of Adfiz-aansluiting plus Wwft cliëntonderzoek met verscherpte aandacht voor bron-van-vermogen. Tegelijk concurreren onafhankelijke kantoren met grote banken en execution-only platforms op de kwaliteit van fee-based aandacht — en is het juist de jaarreview-recall die het verschil maakt tussen klant-retentie en klant-uitstroom. Een AI receptionist plus WhatsApp-agent kan 65-80 procent van administratieve handelingen overnemen — lead-intake, KYC-pre-screening, jaarreview-recall, klant-portaal-vragen, schenkings-jaarwisseling — terwijl het Wft-advies 100 procent voorbehouden blijft aan de bevoegde planner. Hieronder: precies welke processen automatiseerbaar zijn, hoe AI binnen Wft Vermogen en DUFAS blijft, en welke ROI Nederlandse MKB-financieel-planner-kantoren halen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Welke processen automatiseerbaar zijn</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI assistent voor een financieel-planner-kantoor neemt vooral de eerstelijns klantcontacten en administratieve handelingen over: telefoongesprekken aannemen waarbij prospects zich melden voor een vermogensplanning-vraag (verkoop bedrijf, pensioen-voorbereiding, schenking aan kinderen, vermogensbescherming, financiële onafhankelijkheid), gestructureerd alle feiten verzamelen die de planner nodig heeft (vermogenssamenstelling, doelstellingen, horizon, risicotolerantie globaal, gezinssituatie, lopende verplichtingen), KYC-pre-screening volgens Wwft uitvoeren, en jaarreview-cyclus plus pensioen-mijlpalen automatisch monitoren. De AI geeft geen Wft-advies, doet geen passendheidstoets en doet geen fonds-suggesties.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor lopende klanten handelt de AI ook portaal-vragen af (kan ik mijn jaaroverzicht krijgen, wat is de huidige stand van mijn portefeuille, kan ik nog schenken in dit jaar) door realtime in uw Helderzicht, Bilan of Cinco-portaal te kijken. Dit ontlast planners en assistenten voor 65-80 procent van inkomende routine-contacten — in een 4-FTE kantoor met 300 klanten gaat dat al snel om 50-90 uur per maand die nu naar advies-uren of nieuwe acquisitie kunnen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk: de AI vervangt nooit de Wft-bevoegde planner. Vermogensadvies (asset-allocatie, fonds-keuze, pensioen-strategie, schenkings-strategie, estate-planning, fiscale optimalisatie) blijft 100 procent voorbehouden aan de natuurlijke persoon met Wft Vermogen of Wft Beleggen module en bij voorkeur ook FFP-certificering. Bij elke klant-vraag die over advies, passendheid of klantbelang gaat schakelt de AI direct door — met als gestandaardiseerd antwoord "voor uw vermogensadvies wil ik u doorverbinden met een van onze Wft-planners". Geen ruimte voor schaduw-advies, AFM-norm Klantbelang Centraal blijft 100 procent intact.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Top 7 processen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wat AI direct van uw planner en assistent overneemt.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-6">
+        {automatableProcesses.map((p, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <p class="text-base font-bold text-navy mb-2">{p.title}</p>
+            <p class="text-sm text-slate-600 leading-relaxed">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">AFM Wft Vermogen, DUFAS en AI: wat mag en wat absoluut niet</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De Autoriteit Financiële Markten (AFM) houdt toezicht op de Wet op het financieel toezicht (Wft) en specifiek op Wft Vermogen, Wft Beleggen en — voor wie ook beheert — Wft Vermogensbeheer. De kernregel: vermogensadvies is een gereguleerde activiteit die alleen mag worden verricht door natuurlijke personen met de juiste Wft-module, vanuit een AFM-vergunde onderneming. Voor AI betekent dit een harde scheidslijn: feiten verzamelen, processen begeleiden, KYC-administratie afhandelen en jaarreview-recall plannen mag, maar elke vorm van inhoudelijk advies (welke asset-allocatie, welke fonds, welke pensioen-keuze, of het product passend is) is verboden voor AI.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI levert specifiek voor financieel-planners een AFM-bewuste implementatie: vooraf-gescripte prompt-restricties die de AI verhinderen advies te geven, automatische escalatie bij 10 advies-rode-vlag-keywords, gestandaardiseerde escalatie-formulering naar Wft-bevoegde planner, en logging-trail die voldoet aan AFM-toezichtsverplichtingen plus Wft-dossiervorming. Klantbelang Centraal-norm wordt zo nooit doorkruist — de AI doet alleen wat een gediplomeerde planner-assistent ook zou mogen doen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor het provisieverbod beleggen (geldend sinds 1 januari 2014): geen invloed door AI, omdat AI nooit advies geeft of product-keuzes stuurt. Voor de DUFAS gedragscode (Dutch Fund and Asset Management Association): AI ondersteunt de transparantie-vereisten door automatische fee-uitleg bij intake en heldere kostenstructuur-communicatie. Voor Wwft (Wet ter voorkoming van witwassen en financieren van terrorisme): financieel-planners zijn Wwft-instellingen met verscherpte cliëntonderzoek-plicht en meldplicht ongebruikelijke transacties bij FIU-Nederland. AI mag pre-screening doen en risico-indicatoren signaleren; definitieve cliëntonderzoek-beoordeling, integriteitstoets en eventuele FIU-melding blijven volledig mensenwerk.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Escalatie-protocol</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">10 keywords die AI direct doorzet naar Wft-planner of compliance.</h2>
+        <p class="mt-3 text-slate-600">Voor financieel-planners configureren we strikte rode-vlag-detection conform Wft-grens en Wwft-meldplicht: zodra de klant iets zegt over advies, passendheid, klantbelang, of een Wwft-risico-indicatie geeft, escaleert de AI direct. Geen kans op schaduw-advies en geen Wwft-melding gemist.</p>
+      </div>
+      <ul class="space-y-2 reveal reveal-delay-1">
+        {escalationKeywords.map((k) => (
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-700">
+            <svg class="w-4 h-4 mt-1 flex-shrink-0 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M5 19h14a2 2 0 001.84-2.75L13.74 4a2 2 0 00-3.48 0L3.16 16.25A2 2 0 005 19z"/></svg>
+            <span>{k}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Integraties</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Werkt met uw bestaande financieel-planner-stack.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">8 native of webhook-koppelingen voor de meest-gebruikte Nederlandse financieel-planner-stack plus klant-portaal-software en WhatsApp Business API. Onafhankelijke kantoren zonder vaste formule-stack: maximale flexibiliteit op uw bestaande Figlo/Elements/Helderzicht-combinatie.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Systeem</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Type</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Integratie-methode</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {integrations.map(i => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-navy">{i.name}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{i.type}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs">{i.integratie}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Voorbeeldgesprek: AI handelt jaarreview-recall en schenkings-trigger af</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Het is 18 oktober 2026. Klant van uw kantoor — Joost (62, vermogen €1,4M, jaarlijkse fee €2.400, vorige planning-review op 14 maart 2025) — krijgt op woensdagochtend 09:30 een persoonlijke WhatsApp van uw kantoor: "Goedemorgen Joost, het is bijna een jaar geleden dat we uw planning hebben besproken. Daarnaast komt het einde van 2026 in zicht — een goed moment om te bekijken of de jaarlijkse schenking aan uw kinderen nog past binnen uw planning. Zal ik een planning-review afspraak inplannen met Marielle? Voor uw gemak: dinsdagmiddag 4 november om 14:00 of donderdag 6 november om 11:00 zijn beide beschikbaar."</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Joost antwoordt "graag dinsdag 4 november 14:00". AI bevestigt direct, plant de afspraak in Marielle's Outlook-agenda via Microsoft Graph API, stuurt de Outlook-uitnodiging, en zet alvast de voorbereiding klaar in Figlo: jaaroverzicht 2026 uit Helderzicht, schenkings-historie laatste 3 jaar, pensioen-status, lopende beleggings-allocatie, en eventuele life-events sinds vorige review (uit dossier-notities). Marielle start de afspraak niet bij nul maar met een volledig voorbereide klant-map. Klant heeft persoonlijke aandacht ervaren zonder dat een planner of assistent één belminuut kwijt was. Total tijd voor klant: 2 minuten. Total tijd voor planner: 0 minuten voorbereiding op de aanloop, wel 60 minuten in het reviewgesprek zelf.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Belangrijk wat de AI niet doet: geen advies geven over wel-of-niet schenken, geen schenkings-bedrag-suggestie, geen optimalisatie-aanbeveling. AI stelt alleen de vraag op, biedt het gesprek aan, en regelt de logistiek. Bij vragen als "wat zou u doen", "is schenken nu slim", "moet ik herallokeren" antwoordt AI consequent "voor uw passend advies wil ik u graag het reviewgesprek met Marielle laten doen — zij heeft de Wft-bevoegdheid om u daarover te adviseren". Wft-grens 100 procent gerespecteerd, en tegelijk klant-aandacht die in een fee-based model het verschil maakt tussen retentie en uitstroom.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Concrete ROI</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Voor een 4-FTE kantoor met 300 klanten.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Realistische cijfers per maand voor een gemiddeld Nederlands financieel-planner-MKB-kantoor (3-5 FTE planners, 200-400 klanten, gemiddelde fee €1.500-€4.000 per klant per jaar in fee-based model). Uw eigen ROI varieert per portefeuille-mix (vermogensplanning vs full vermogensbeheer) en gemiddelde fee-niveau.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-4 text-slate-500 font-medium w-[44%]">Metric</th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[28%]">Vóór AI</th>
+              <th class="text-left py-4 px-4 font-bold text-brand-emerald w-[28%]">Met Aanloop AI</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {roiBreakdown.map(r => (
+              <tr>
+                <td class="py-3 px-4 text-slate-700">{r.post}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.before}</td>
+                <td class="py-3 px-4 text-navy font-medium text-xs">{r.after}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Bottom-line voor 4-FTE kantoor met 300 klanten: gemiddelde ROI 8-18 keer op 12-maand basis, payback-periode 4-8 weken. De jaarreview-conversie verbetering (van 25 procent naar 65-75 procent) is structurele groei die de fee-omzet jaar-na-jaar versterkt en de klant-retentie significant verhoogt — €40.000-€100.000 extra fee per jaar voor een 4-FTE kantoor. Plus de planner-tijd vrijgespeeld op KYC-intake en routinevragen (50-90 uur per maand) die direct doorvloeit naar advies-uren of nieuwe acquisitie. Met €597-€1.197 per maand investering in Marco plus Emma is de payback gerealiseerd binnen het eerste kwartaal — en groeit het effect naarmate het jaarreview-systeem volloopt en klant-tevredenheid (NPS) stijgt.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Implementatie roadmap voor financieel-planner-kantoren</h2>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Een succesvolle AI-implementatie in een financieel-planner-kantoor verloopt in drie fasen. Fase 1 (week 1-3) is discovery en design: we analyseren 200-400 historische klantcontacten, jaarreview-respons-rates, KYC-doorlooptijden en lead-respons-tijden van de afgelopen 3 maanden om de meest voorkomende vragen, escalaties en piek-momenten in kaart te brengen. Op basis hiervan ontwerpen we de conversational flow voor lead-intake, KYC-pre-screening, jaarreview-recall, klant-portaal-vragen, schenkings-jaarwisseling en pensioen-mijlpalen — plus AFM-bewuste rode-vlag-escalatieprotocollen die specifiek bij uw werkwijze, CRM-stack en klantpopulatie (vermogensplanning, vermogensbeheer, ondernemers, expat) passen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-2">Fase 2 (week 4-7) is build en pilot: we configureren de AI met uw kennisbank (FAQ over openingstijden, fee-transparantie, jaarreview-cyclus, schenkings-mogelijkheden, pensioen-informatie, KYC-eisen), koppelen aan uw Figlo, Elements, Helderzicht of Bilan, plus WhatsApp Business API en Microsoft 365 Exchange, en testen intern twee à drie weken lang. In deze periode simuleren u en uw planner-team realistische klant-scenarios — de AI leert van correcties en wordt steeds nauwkeuriger op uw specifieke advies-grenzen, Wwft-protocol en escalatie-criteria. Eind fase 2 gaat de AI live met 25-35 procent van uw klantverkeer voor monitoring (typisch eerst lead-intake plus jaarreview-recall).</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-3">Fase 3 (week 8-14) is scale en optimaliseer: volledig live op het primaire kanaal met dagelijkse KPI-monitoring (lead-respons-tijd, lead-naar-afspraak conversie, jaarreview-conversie, klant-portaal-deflectie, KYC-doorlooptijd), wekelijkse iteratie op recall-templates en maandelijkse rapportage. Vanaf maand 3 ziet u typisch een stabiele lead-conversie van meer dan 40 procent (van 25 procent baseline), jaarreview-conversie van 65-75 procent (van 25 procent baseline), en klant-portaal-vragen 70 procent geautomatiseerd (van 0 procent baseline). Dat zijn voor een 4-FTE kantoor cijfers die direct zichtbaar zijn op de fee-omzet per kwartaal en op de klant-tevredenheid (NPS).</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">AI voor financieel-planner — antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Bronnen en verder lezen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Onafhankelijke bronnen voor uw eigen onderzoek.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="https://www.afm.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">AFM — Autoriteit Financiële Markten</p>
+          <p class="text-slate-600 mt-1 text-xs">Toezichthouder Wft Vermogen, Wft Beleggen, Klantbelang Centraal-norm en vergunningenregister.</p>
+        </a>
+        <a href="https://www.ffp.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">FFP — Federatie Financieel Planners</p>
+          <p class="text-slate-600 mt-1 text-xs">Beroepsorganisatie en certificering CFP-titel voor Nederlandse financieel-planners.</p>
+        </a>
+        <a href="https://www.dufas.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">DUFAS — Dutch Fund and Asset Management Association</p>
+          <p class="text-slate-600 mt-1 text-xs">Brancheorganisatie vermogensbeheer en gedragscode.</p>
+        </a>
+        <a href="https://www.adfiz.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Adfiz — Brancheorganisatie financieel adviseurs</p>
+          <p class="text-slate-600 mt-1 text-xs">Beroepsorganisatie onafhankelijke financieel adviseurs Nederland.</p>
+        </a>
+        <a href="https://www.kifid.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">KiFiD — Klachteninstituut Financiële Dienstverlening</p>
+          <p class="text-slate-600 mt-1 text-xs">Onafhankelijke klachtenroute voor vermogens- en financieel advies-klachten.</p>
+        </a>
+        <a href="https://www.fiu-nederland.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">FIU-Nederland — Financial Intelligence Unit</p>
+          <p class="text-slate-600 mt-1 text-xs">Wwft-meldpunt voor ongebruikelijke transacties.</p>
+        </a>
+        <a href="/diensten/marco/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Marco — AI receptionist</p>
+          <p class="text-slate-600 mt-1 text-xs">De telefoon-component voor planner-kantoren met 24/7 lead-intake.</p>
+        </a>
+        <a href="/diensten/emma/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ Emma — WhatsApp-agent</p>
+          <p class="text-slate-600 mt-1 text-xs">Het jaarreview-recall- en klant-portaal-component.</p>
+        </a>
+        <a href="/kennisbank/ai-voor-hypotheekadviseur-nederland-2026/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ AI voor hypotheekadviseur</p>
+          <p class="text-slate-600 mt-1 text-xs">Zuster-financieel-artikel: AFM/Wft Hypothecair, HDN-koppeling, oversluit-recall.</p>
+        </a>
+        <a href="/ai-roi-calculator/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">→ ROI-calculator</p>
+          <p class="text-slate-600 mt-1 text-xs">Bereken uw eigen ROI voor uw financieel-planner-kantoor.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Klaar om jaarreview-conversie te verdrievoudigen zonder de Wft-grens te raken?
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Onboarding 14-28 werkdagen voor één-CRM koppeling, 28-42 dagen voor multi-stack of vermogensbeheer-context. AFM-bewuste configuratie, Wwft-pre-screening protocol, EU-only data-verwerking met DPIA-template inbegrepen. Tijdens uw demo simuleren we een jaarreview-recall en een schenkings-trigger op een echte WhatsApp en telefoonlijn — zodat u zelf hoort hoe Marco en Emma uw kantoor proactief klant-aandacht laten geven zonder ooit de planner-grens te overschrijden.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een live demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bekijk tarieven
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
