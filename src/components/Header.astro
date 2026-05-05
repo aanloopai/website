@@ -162,7 +162,7 @@ const navSchema = {
 <!-- Main header -->
 <header id="site-header" class="sticky top-0 z-40 bg-white/85 backdrop-blur-lg border-b border-slate-200/80 transition-all duration-300">
   <div class="container-page">
-    <div class="flex items-center justify-between h-18 py-3 gap-4">
+    <div class="flex items-center justify-between h-18 py-3 gap-4 relative">
 
       <!-- Logo -->
       <a href="/" class="flex items-center group flex-shrink-0" aria-label="Aanloop AI — naar de homepagina">
@@ -298,7 +298,7 @@ const navSchema = {
         <a href="/cases/" class="nav-link">Cases</a>
 
         <!-- Over dropdown (compact) -->
-        <div class="nav-group" data-nav-trigger>
+        <div class="nav-group nav-group-relative" data-nav-trigger>
           <button class="nav-link with-arrow" aria-expanded="false" aria-haspopup="menu" aria-controls="dropdown-over">
             Over
             <svg class="w-3.5 h-3.5 nav-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
@@ -450,26 +450,28 @@ const navSchema = {
     @apply text-navy bg-slate-100/70;
   }
 
-  .nav-group {
+  .nav-group-relative {
     position: relative;
   }
   .megamenu {
     position: absolute;
-    top: calc(100% + 6px);
-    left: 50%;
-    transform: translateX(-50%) translateY(-4px);
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
     opacity: 0;
     pointer-events: none;
     transition: opacity 160ms ease-out, transform 160ms ease-out;
     z-index: 50;
     width: max-content;
     max-width: min(1100px, calc(100vw - 32px));
+    transform: translateY(-4px);
   }
   
-  /* Fix for Diensten dropdown opening too far left */
-  .nav-group:first-child .megamenu {
-    left: -20px; /* Align slightly left of the button, rather than centered */
-    transform: translateY(-4px);
+  .megamenu-compact {
+    left: auto;
+    right: -10px;
+    margin: 0;
   }
   
   .nav-group:hover > .megamenu,
@@ -477,19 +479,6 @@ const navSchema = {
   .nav-group[data-open="true"] > .megamenu {
     opacity: 1;
     pointer-events: auto;
-  }
-  
-  /* Update transform on hover for centered items */
-  .nav-group:not(:first-child):hover > .megamenu,
-  .nav-group:not(:first-child):focus-within > .megamenu,
-  .nav-group:not(:first-child)[data-open="true"] > .megamenu {
-    transform: translateX(-50%) translateY(0);
-  }
-  
-  /* Update transform on hover for the first item */
-  .nav-group:first-child:hover > .megamenu,
-  .nav-group:first-child:focus-within > .megamenu,
-  .nav-group:first-child[data-open="true"] > .megamenu {
     transform: translateY(0);
   }
   .megamenu-inner {
