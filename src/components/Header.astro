@@ -465,12 +465,32 @@ const navSchema = {
     width: max-content;
     max-width: min(1100px, calc(100vw - 32px));
   }
+  
+  /* Fix for Diensten dropdown opening too far left */
+  .nav-group:first-child .megamenu {
+    left: -20px; /* Align slightly left of the button, rather than centered */
+    transform: translateY(-4px);
+  }
+  
   .nav-group:hover > .megamenu,
   .nav-group:focus-within > .megamenu,
   .nav-group[data-open="true"] > .megamenu {
     opacity: 1;
     pointer-events: auto;
+  }
+  
+  /* Update transform on hover for centered items */
+  .nav-group:not(:first-child):hover > .megamenu,
+  .nav-group:not(:first-child):focus-within > .megamenu,
+  .nav-group:not(:first-child)[data-open="true"] > .megamenu {
     transform: translateX(-50%) translateY(0);
+  }
+  
+  /* Update transform on hover for the first item */
+  .nav-group:first-child:hover > .megamenu,
+  .nav-group:first-child:focus-within > .megamenu,
+  .nav-group:first-child[data-open="true"] > .megamenu {
+    transform: translateY(0);
   }
   .megamenu-inner {
     @apply bg-white border border-slate-200 rounded-2xl shadow-2xl shadow-slate-900/10 p-7;
