@@ -73,6 +73,12 @@ function checkSchema(schema, sourceFile, idx, errors, isTopLevel = true) {
   if (!isTopLevel && schema['@id']) {
     return;
   }
+  // `@graph` containers (schema.org pattern) hold typed nodes; the wrapper
+  // itself has no @type. Validate children, skip the wrapper.
+  if (Array.isArray(schema['@graph'])) {
+    schema['@graph'].forEach((node, i) => checkSchema(node, sourceFile, `${idx}.@graph[${i}]`, errors, false));
+    return;
+  }
   const types = Array.isArray(schema['@type']) ? schema['@type'] : [schema['@type']];
   if (!types[0]) {
     errors.push({ file: sourceFile, schemaIndex: idx, type: 'missing-type', message: 'missing @type' });
@@ -82,6 +88,9 @@ function checkSchema(schema, sourceFile, idx, errors, isTopLevel = true) {
     const required = REQUIRED[t];
     if (!required) continue;
     for (const field of required) {
+      // Offer.price is satisfied by `priceSpecification` (used for "op aanvraag"
+      // / variable-pricing offers). Both schema.org-valid and Google-acceptable.
+      if (t === 'Offer' && field === 'price' && schema.priceSpecification) continue;
       if (schema[field] === undefined || schema[field] === null || schema[field] === '') {
         errors.push({
           file: sourceFile,
