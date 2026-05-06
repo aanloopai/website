@@ -33,9 +33,11 @@ function pageToUrl(file) {
 function extract(content) {
   const titleMatch = content.match(/(?:^|\n)\s*const\s+title\s*=\s*([`'"])(.*?)\1/s);
   const descMatch = content.match(/(?:^|\n)\s*const\s+description\s*=\s*([`'"])(.*?)\1/s);
-  const layoutTitleAttr = content.match(/<BaseLayout\b[^>]*?\btitle=\{?([`'"])([^`'"]+)\1\}?/);
-  const layoutDescAttr = content.match(/<BaseLayout\b[^>]*?\bdescription=\{?([`'"])([^`'"]+)\1\}?/);
-  const noindex = /<BaseLayout\b[^>]*?\bnoindex(?:=\{?true\}?)?(?:\s|>)/.test(content);
+  // Quote-specific capture so apostrofs inside ".." don't break the match.
+  // [\s\S] allows multi-line BaseLayout calls.
+  const layoutTitleAttr = content.match(/<BaseLayout\b[\s\S]*?\btitle=\{?(["'`])((?:(?!\1).)*?)\1\}?/);
+  const layoutDescAttr = content.match(/<BaseLayout\b[\s\S]*?\bdescription=\{?(["'`])((?:(?!\1).)*?)\1\}?/);
+  const noindex = /<BaseLayout\b[\s\S]*?\bnoindex(?:=\{?true\}?)?(?:\s|>)/.test(content);
   const title = titleMatch ? titleMatch[2] : (layoutTitleAttr ? layoutTitleAttr[2] : null);
   const desc = descMatch ? descMatch[2] : (layoutDescAttr ? layoutDescAttr[2] : null);
   return { title, desc, noindex };
