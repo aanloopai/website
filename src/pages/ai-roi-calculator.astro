@@ -418,6 +418,9 @@ const faqItems = [
     return '€ ' + Math.round(n).toLocaleString('nl-NL');
   }
 
+  let _roiTrackTimer: ReturnType<typeof setTimeout> | null = null;
+  let _roiStarted = false;
+
   function onSectorChange(): void {
     const sectorEl = document.getElementById('sector') as HTMLSelectElement;
     const opt = sectorEl.options[sectorEl.selectedIndex];
@@ -493,6 +496,22 @@ const faqItems = [
     (document.getElementById('result-payback') as HTMLElement).textContent =
       paybackMonths < 1 ? '< 1 maand' : `${Math.round(paybackMonths)} maanden`;
 
+    // Track ROI calculator engagement
+    if (!_roiStarted) {
+      _roiStarted = true;
+      (window as any)._track?.('roi_calculator_started', {});
+    }
+    if (_roiTrackTimer) clearTimeout(_roiTrackTimer);
+    _roiTrackTimer = setTimeout(() => {
+      const _sectorEl = document.getElementById('sector') as HTMLSelectElement;
+      (window as any)._track?.('roi_calculator_result_viewed', {
+        roi_total: Math.round(totalSaving),
+        roi_tier: tierLabel,
+        roi_payback_months: Math.round(paybackMonths),
+        roi_sector: _sectorEl?.options[_sectorEl.selectedIndex]?.textContent || '',
+      });
+    }, 3000);
+
     // Sync hidden form inputs voor email-capture (lees-route, geen UI-impact)
     const sectorEl = document.getElementById('sector') as HTMLSelectElement;
     const sectorLabel = sectorEl.options[sectorEl.selectedIndex]?.textContent || '';
@@ -534,6 +553,9 @@ const faqItems = [
       b.classList.remove('border-brand-indigo', 'bg-brand-indigo/5', 'ring-2', 'ring-brand-indigo');
     });
     card.classList.add('border-brand-indigo', 'bg-brand-indigo/5', 'ring-2', 'ring-brand-indigo');
+    (window as any)._track?.('roi_preset_selected', {
+      preset_id: card.getAttribute('data-preset') || '',
+    });
     if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(15);
     updateCalc();
     // Smooth scroll naar resultaat-kaart op mobile (preset = directe sector-keuze, user wil zien wat het oplevert)
@@ -645,6 +667,7 @@ const faqItems = [
 
       const stamp = new Date().toISOString().split('T')[0];
       doc.save(`aanloop-roi-rapport-${stamp}.pdf`);
+      (window as any)._track?.('roi_pdf_downloaded', {});
       if (typeof navigator !== 'undefined' && navigator.vibrate) navigator.vibrate(20);
     } catch (err) {
       console.error('PDF generation failed:', err);
@@ -725,6 +748,7 @@ const faqItems = [
         const data = await res.json().catch(() => ({ success: false, message: 'Ongeldig antwoord' }));
 
         if (res.ok && data.success) {
+          (window as any)._track?.('roi_email_submitted', { currency: 'EUR', value: 50 });
           showMsg('✓ Rapport onderweg — controleer uw inbox.', 'success');
           form.reset();
         } else {
@@ -738,4 +762,10 @@ const faqItems = [
       }
     });
   });
+</script>
+
+<script>
+  // GrowthBook A/B experiments — Phase 2 (roi-calc-first-step variant)
+  import { initExperimentsOnConsent } from '../lib/ab-experiments';
+  initExperimentsOnConsent();
 </script>
