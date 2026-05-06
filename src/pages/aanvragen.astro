@@ -52,7 +52,7 @@ const steps = [
               ]}>
                 {step.n}
               </div>
-              <span class:list={['text-xs hidden sm:block', i === 0 ? 'font-medium text-navy' : 'text-slate-400']}>
+              <span class:list={['text-xs hidden sm:block', i === 0 ? 'font-medium text-navy' : 'text-slate-500']}>
                 {step.label}
               </span>
               {i < steps.length - 1 && <div class="w-8 h-px bg-slate-200 mx-1"></div>}
@@ -163,7 +163,7 @@ const steps = [
                     <div class="border-2 border-slate-200 rounded-xl p-4 text-center transition-all">
                       <div class="text-xl mb-1">{method.icon}</div>
                       <div class="text-xs font-bold text-navy">{method.label}</div>
-                      <div class="text-[11px] text-slate-400 mt-0.5">{method.desc}</div>
+                      <div class="text-[11px] text-slate-500 mt-0.5">{method.desc}</div>
                     </div>
                   </label>
                 ))}
@@ -173,7 +173,7 @@ const steps = [
               <div id="sepa-field">
                 <label for="iban" class="block text-xs font-medium text-navy mb-1.5">IBAN *</label>
                 <input type="text" id="iban" name="iban" class="form-input" placeholder="NL91 ABNA 0417 1643 00" />
-                <p class="text-[11px] text-slate-400 mt-1">Door uw IBAN in te voeren machtigt u Aanloop AI voor SEPA-incasso.</p>
+                <p class="text-[11px] text-slate-500 mt-1">Door uw IBAN in te voeren machtigt u Aanloop AI voor SEPA-incasso.</p>
               </div>
 
               <div class="mt-4 flex items-start gap-3">
@@ -198,7 +198,7 @@ const steps = [
         <!-- Order summary -->
         <div class="lg:col-span-2">
           <div class="card sticky top-24">
-            <p class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-400 mb-4">Uw bestelling</p>
+            <h2 class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-500 mb-4">Uw bestelling</p>
 
             <div class="flex items-start justify-between mb-1">
               <div>
@@ -207,7 +207,7 @@ const steps = [
               </div>
               <div class="text-right">
                 <p id="order-price" class="font-bold text-navy">€{selected.price}</p>
-                <p class="text-xs text-slate-400">/maand</p>
+                <p class="text-xs text-slate-500">/maand</p>
               </div>
             </div>
 
@@ -230,10 +230,10 @@ const steps = [
                 <span class="text-slate-600">Factureringsperiode</span>
                 <div class="flex items-center gap-2">
                   <span id="billing-monthly-label" class="text-navy font-medium text-xs">Maandelijks</span>
-                  <button id="order-billing-toggle" class="relative w-10 h-5 rounded-full bg-slate-200 transition-colors">
+                  <button id="order-billing-toggle" type="button" class="relative w-10 h-5 rounded-full bg-slate-200 transition-colors" aria-label="Schakel tussen maandelijkse en jaarlijkse facturering">
                     <span class="absolute left-0.5 top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform" id="order-knob"></span>
                   </button>
-                  <span id="billing-annual-label" class="text-slate-400 text-xs">Jaarlijks</span>
+                  <span id="billing-annual-label" class="text-slate-500 text-xs">Jaarlijks</span>
                 </div>
               </div>
             </div>
