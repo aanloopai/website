@@ -253,7 +253,28 @@ const allSchemas = [
       gtag('js', new Date());
       gtag('config', 'G-VS8SZZ6W45', { anonymize_ip: true, transport_type: 'beacon' });
     </script>
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-VS8SZZ6W45"></script>
+    <!-- GTM script lazy-loaded after first interaction or idle (matches ElevenLabs widget pattern).
+         Cuts TBT ~1500ms on desktop while keeping consent + analytics intact. -->
+    <script is:inline>
+      (function(){
+        var loaded = false;
+        function loadGTM(){
+          if (loaded) return; loaded = true;
+          var s = document.createElement('script');
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-VS8SZZ6W45';
+          s.async = true;
+          document.head.appendChild(s);
+        }
+        ['scroll','mousemove','touchstart','keydown','click'].forEach(function(ev){
+          window.addEventListener(ev, loadGTM, { once: true, passive: true });
+        });
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(function(){ setTimeout(loadGTM, 3000); });
+        } else {
+          setTimeout(loadGTM, 4000);
+        }
+      })();
+    </script>
 
     <!-- Canonical & Hreflang -->
     <link rel="canonical" href={canonical} />
