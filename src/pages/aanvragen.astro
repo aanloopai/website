@@ -8,17 +8,17 @@ const product = url.searchParams.get('product') || 'marco';
 const planDetails: Record<string, { name: string; price: number; annualPrice: number; product: string; features: string[] }> = {
   starter: {
     name: 'Starter',
-    price: 297,
-    annualPrice: 249,
+    price: 597,
+    annualPrice: 497,
     product: 'Marco — AI sekreter',
-    features: ['Tot 200 gesprekken/maand', '1 callscript op maat', 'E-mail lead-routering', 'Dashboard + transcripts'],
+    features: ['Tot 150 gesprekken/maand', '1 callscript op maat', 'Agenda + e-mail lead-notificatie', 'Dashboard + transcripts'],
   },
   groei: {
     name: 'Groei',
-    price: 497,
-    annualPrice: 417,
+    price: 1197,
+    annualPrice: 997,
     product: 'Marco — AI sekreter',
-    features: ['Onbeperkte gesprekken', 'Tot 5 callscripts', 'CRM-integratie + Telegram', 'Prioriteit support < 4 uur'],
+    features: ['Onbeperkte gesprekken', 'Tot 3 callscripts', 'Marco + Emma WhatsApp + CRM-integratie', 'Prioriteit support < 4 uur'],
   },
 };
 
@@ -292,8 +292,8 @@ const steps = [
   const oKnob = document.getElementById('order-knob') as HTMLElement;
   const monthlyLabel = document.getElementById('billing-monthly-label') as HTMLElement;
   const annualLabel = document.getElementById('billing-annual-label') as HTMLElement;
-  const summaryPriceMonthly = parseInt((document.getElementById('order-price') as HTMLElement)?.textContent?.replace('€','') || '497');
-  const summaryPriceAnnual = Math.round(summaryPriceMonthly * 0.84);
+  const summaryPriceMonthly = parseInt((document.getElementById('order-price') as HTMLElement)?.textContent?.replace('€','') || '597');
+  const summaryPriceAnnual = Math.round(summaryPriceMonthly * 0.833);
   let annualActive = false;
 
   oToggle?.addEventListener('click', () => {
