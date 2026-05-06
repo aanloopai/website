@@ -72,7 +72,26 @@ This file lists ALL actions that ONLY you (the user) can perform. AI agents hand
 8. Verify (postcard or video call - usually 5-7 days)
 9. Once verified: add 5+ photos, write description matching homepage value-prop
 
-### 5. Setup Bing Webmaster Tools + submit sitemap (10 minutes)
+### 5. Create Microsoft Clarity project + add ID to BaseLayout.astro (10 minutes)
+
+**Why:** Microsoft Clarity provides free heatmaps and session recordings (with privacy masking and consent-gating) to identify UX friction points.
+
+**Steps:**
+1. Go to https://clarity.microsoft.com
+2. Sign in with your Microsoft account (or create one)
+3. Click "Create a new project"
+4. Project name: "Aanloop AI"
+5. Website: https://aanloopai.nl
+6. Get your Clarity Project ID (10-character alphanumeric string)
+7. Open `src/layouts/BaseLayout.astro`
+8. Find line with `clarityProjectId = 'XXXXXXXX'` (search for "TODO" around line 391)
+9. Replace `XXXXXXXX` with your actual Project ID
+10. Save file
+11. Build & deploy (agent will handle commit/push with your authorization)
+
+**Clarity is already consent-gated** (only loads if analytics cookies accepted) and privacy-friendly (input fields masked by default). No further setup needed.
+
+### 6. Setup Bing Webmaster Tools + submit sitemap (10 minutes)
 
 **Why:** Bing powers ChatGPT web search. Lower NL share but high AI-engine signal.
 
@@ -87,7 +106,7 @@ This file lists ALL actions that ONLY you (the user) can perform. AI agents hand
 
 ## HIGH PRIORITY — Phase 1 (Days 2-7)
 
-### 6. Activate LinkedIn company page (45 minutes)
+### 7. Activate LinkedIn company page (45 minutes)
 
 **Why:** AI engines verify entities via LinkedIn. Currently sameAs in Organization schema points to Daan's PERSONAL profile (incorrect). Also flagged in audit.
 
@@ -104,7 +123,7 @@ This file lists ALL actions that ONLY you (the user) can perform. AI agents hand
 10. About section: agent will generate content (see linkedin-company-page-content.md when ready)
 11. Connect personal profile as admin
 
-### 7. Submit Wikidata Q-entity (30 minutes)
+### 8. Submit Wikidata Q-entity (30 minutes)
 
 **Why:** Wikidata = Knowledge Graph backbone. ChatGPT/Perplexity/Gemini all consult Wikidata for entity verification.
 
@@ -115,7 +134,7 @@ This file lists ALL actions that ONLY you (the user) can perform. AI agents hand
 4. Add references: KvK official record, official website, LinkedIn company page (must exist first - do step 6)
 5. Monitor Watchlist for revert attempts in following 14 days
 
-### 8. Create Crunchbase profile (20 minutes)
+### 9. Create Crunchbase profile (20 minutes)
 
 1. Go to https://www.crunchbase.com/
 2. "Add Organization"
@@ -127,14 +146,14 @@ This file lists ALL actions that ONLY you (the user) can perform. AI agents hand
 8. Industry: Artificial Intelligence
 9. Funding: bootstrapped (or actual stage)
 
-### 9. Activate GitHub organization (10 minutes)
+### 10. Activate GitHub organization (10 minutes)
 
 1. Create org: `aanloopai`
 2. Add 1-2 public repos (open-source AI templates as marketing) - agent can create initial repos
 3. Logo + description
 4. Website link
 
-### 10. Reserve YouTube channel handle (5 minutes)
+### 11. Reserve YouTube channel handle (5 minutes)
 
 1. Create / claim @aanloopai handle on YouTube
 2. Channel settings: NL language, NL country
@@ -145,7 +164,7 @@ This file lists ALL actions that ONLY you (the user) can perform. AI agents hand
 
 ## MEDIUM PRIORITY — Phase 2 (Days 8-21)
 
-### 11. Approve named-customer testimonial outreach
+### 12. Approve named-customer testimonial outreach
 
 **Why:** E-E-A-T audit flagged anonymous testimonials as trust risk. Need 3-5 customers willing to be named publicly with case studies.
 
@@ -154,11 +173,11 @@ This file lists ALL actions that ONLY you (the user) can perform. AI agents hand
 - Email outreach: "We'd like to feature your success story on our site - quotes will be reviewed before publish, brand visibility for you, no PII beyond company name + role"
 - Sign written consent (template will be provided)
 
-### 12. Approve real customer logos for trust strip
+### 13. Approve real customer logos for trust strip
 
 **Why:** Anonymous logos = no trust. Need 5-8 real customer logos with permission.
 
-### 13. Activate weekly LinkedIn posting cadence
+### 14. Activate weekly LinkedIn posting cadence
 
 **Why:** Phase 4 thought leadership requires Daan's voice. 1 post per week minimum.
 
@@ -175,23 +194,23 @@ This file lists ALL actions that ONLY you (the user) can perform. AI agents hand
 
 ## LOW PRIORITY — Phase 3-4 (Days 21-90)
 
-### 14. HARO daily check (15 min/day)
+### 15. HARO daily check (15 min/day)
 
 Sign up at https://www.helpareporter.com/ — receive 3x daily emails of journalist queries. Daan responds when relevant (AI/MKB/NL queries).
 
-### 15. Tweakers / Computable pitch responses
+### 16. Tweakers / Computable pitch responses
 
 When agent drafts pitches, Daan reviews + sends from own email (not bulk). Editor responses come to user inbox.
 
-### 16. Trustpilot company profile
+### 17. Trustpilot company profile
 
 Free at https://business.trustpilot.com/
 
-### 17. AI tool directories
+### 18. AI tool directories
 
 Submit to: futuretools.io, theresanaiforthat.com, lemonio.com (15 min each)
 
-### 18. Conference / podcast pitches
+### 19. Conference / podcast pitches
 
 Daan reviews + sends pitches when agent prepares them.
 

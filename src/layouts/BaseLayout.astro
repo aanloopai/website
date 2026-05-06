@@ -389,6 +389,38 @@ const allSchemas = [
     <!-- LCP image preload — logo is in the header above the fold -->
     <link rel="preload" as="image" href="/brand/logo-horizontal-light.svg" fetchpriority="high" />
 
+    <!-- Microsoft Clarity: Heatmap + Session Recording (AVG-compliant, consent-gated, lazy-loaded) -->
+    <!-- TODO: Replace 'XXXXXXXX' with actual Clarity project ID from clarity.microsoft.com -->
+    <script is:inline>
+      (function() {
+        // Only load Clarity if user accepted analytics cookies
+        var clarityProjectId = 'XXXXXXXX';
+        function loadClarity() {
+          try {
+            if (localStorage.getItem('aanloop_cookie_consent') !== 'all') return;
+          } catch (e) { return; }
+
+          var c = window.clarity = window.clarity || function() {
+            (c.q = c.q || []).push(arguments);
+          };
+          var script = document.createElement('script');
+          script.async = true;
+          script.src = 'https://www.clarity.ms/tag/' + clarityProjectId;
+          document.head.appendChild(script);
+        }
+
+        // Load on first interaction or idle callback
+        ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'].forEach(function(ev) {
+          window.addEventListener(ev, loadClarity, { once: true, passive: true });
+        });
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(function() { setTimeout(loadClarity, 3000); });
+        } else {
+          setTimeout(loadClarity, 4000);
+        }
+      })();
+    </script>
+
     <!-- Schema.org JSON-LD -->
     {allSchemas.map(s => (
       <script type="application/ld+json" set:html={JSON.stringify(s)} />
