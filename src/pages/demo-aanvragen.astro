@@ -208,9 +208,10 @@ function fillSummary() {
   (document.getElementById('s-sector') as HTMLElement).textContent = g('sector');
 }
 
-document.getElementById('naar-stap-2')?.addEventListener('click',()=>{ if(v1()) toonStap(2); });
+let _demoStarted = false;
+document.getElementById('naar-stap-2')?.addEventListener('click',()=>{ if(v1()) { if (!_demoStarted) { _demoStarted = true; (window as any)._track?.('demo_form_started', { form_name: 'demo_aanvraag' }); } toonStap(2); } });
 document.getElementById('terug-1')?.addEventListener('click',()=>toonStap(1));
-document.getElementById('naar-stap-3')?.addEventListener('click',()=>{ if(v2()){ fillSummary(); toonStap(3); }});
+document.getElementById('naar-stap-3')?.addEventListener('click',()=>{ if(v2()){ (window as any)._track?.('demo_form_step2_completed', { form_name: 'demo_aanvraag', sector: (document.getElementById('sector') as HTMLSelectElement)?.value || '' }); fillSummary(); toonStap(3); }});
 document.getElementById('terug-2')?.addEventListener('click',()=>toonStap(2));
 
 document.getElementById('demo-form')?.addEventListener('submit', async (e) => {
@@ -235,6 +236,7 @@ document.getElementById('demo-form')?.addEventListener('submit', async (e) => {
     let json: any = {};
     try { json = JSON.parse(text); } catch { json = { message: text }; }
     if (res.ok && json.success) {
+      (window as any)._track?.('generate_lead', { form_name: 'demo_aanvraag', currency: 'EUR', value: 200 });
       window.location.href = '/demo-bedankt/';
     } else {
       throw new Error(`[HTTP ${res.status}] ${json.message || text || 'Onbekende fout'}`);

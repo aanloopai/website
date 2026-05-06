@@ -261,6 +261,14 @@ const type = url.searchParams.get('type') || 'contact';
       const json = await res.json();
 
       if (json.success) {
+        const _ctype = (document.querySelector('input[name="type"]:checked') as HTMLInputElement)?.value || 'contact';
+        const _cvals: Record<string, number> = { demo: 200, offerte: 300, contact: 50 };
+        (window as any)._track?.('generate_lead', {
+          form_name: 'contact_form',
+          contact_type: _ctype,
+          currency: 'EUR',
+          value: _cvals[_ctype] || 50,
+        });
         successMsg?.classList.remove('hidden');
         form.reset();
         setTimeout(() => {

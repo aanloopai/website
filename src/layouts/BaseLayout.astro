@@ -283,6 +283,23 @@ const allSchemas = [
       } catch (e) {}
       gtag('js', new Date());
       gtag('config', 'G-VS8SZZ6W45', { anonymize_ip: true, transport_type: 'beacon' });
+      // Global fail-safe event helper
+      window._track = function(name, params) {
+        try {
+          if (window.gtag) window.gtag('event', name, params || {});
+          if (Array.isArray(window.dataLayer)) window.dataLayer.push(Object.assign({ event: name }, params || {}));
+        } catch(e) {}
+      };
+      // Phone-click delegation (werkt ook na lazy DOM-injectie van ElevenLabs widget)
+      document.addEventListener('click', function(e) {
+        var a = e.target && e.target.closest ? e.target.closest('a[href^="tel:"]') : null;
+        if (a) window._track('phone_click', { link_url: a.href, link_text: (a.textContent || '').trim() });
+      });
+      // WhatsApp-click delegation
+      document.addEventListener('click', function(e) {
+        var a = e.target && e.target.closest ? e.target.closest('a[href*="wa.me"]') : null;
+        if (a) window._track('whatsapp_click', { link_url: a.href });
+      });
     </script>
     <!-- GTM script lazy-loaded after first interaction or idle (matches ElevenLabs widget pattern).
          Cuts TBT ~1500ms on desktop while keeping consent + analytics intact. -->

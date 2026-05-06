@@ -278,6 +278,12 @@ const steps = [
 </style>
 
 <script>
+  // Track plan page view
+  document.addEventListener('DOMContentLoaded', () => {
+    const _plan = new URLSearchParams(window.location.search).get('plan') || 'groei';
+    (window as any)._track?.('plan_page_viewed', { plan_name: _plan });
+  });
+
   // Payment method toggle
   document.querySelectorAll('input[name="betaalmethode"]').forEach(radio => {
     radio.addEventListener('change', (e) => {
@@ -339,6 +345,15 @@ const steps = [
       const res = await fetch('/api/submit', { method: 'POST', body: data });
       const json = await res.json();
       if (json.success) {
+        const _planParam = new URLSearchParams(window.location.search).get('plan') || 'groei';
+        const _planValues: Record<string, number> = { starter: 597, groei: 1197 };
+        const _planValue = _planValues[_planParam] || 597;
+        (window as any)._track?.('purchase', {
+          transaction_id: 'aanvraag_' + Date.now(),
+          currency: 'EUR',
+          value: _planValue,
+          items: [{ item_name: 'Aanloop AI ' + _planParam, price: _planValue, quantity: 1 }],
+        });
         window.location.href = '/bedankt/?type=aanvraag';
       } else {
         throw new Error(json.message || 'Onbekende fout');
