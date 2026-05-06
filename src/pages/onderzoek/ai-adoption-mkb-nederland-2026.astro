@@ -324,7 +324,7 @@ const speakableSchema = {
     label.textContent = 'Verzenden...';
 
     const data = new FormData(form);
-    data.append('form_type', 'survey-ai-adoption');
+    data.append('form_type', 'survey_ai_adoption');
     data.append('subject', `Onderzoek AI-adoptie MKB - ${data.get('bedrijf') || 'onbekend'} (${data.get('sector') || 'sector onbekend'})`);
 
     try {
@@ -332,7 +332,7 @@ const speakableSchema = {
       const json = await res.json();
       if (json.success) {
         (window as any)._track?.('generate_lead', {
-          form_type: 'survey-ai-adoption',
+          form_type: 'survey_ai_adoption',
           sector: data.get('sector')
         });
         window.location.href = '/bedankt/?type=survey';

@@ -46,6 +46,11 @@ const AUTORESPONSE_TEMPLATES = {
     intro: 'Bedankt voor het invullen van onze AI-Readiness Scan.',
     body: 'Hieronder vindt u uw persoonlijke AI-Readiness rapport met score, tier-classificatie en concrete aanbevelingen. We nemen binnen 14 dagen vrijblijvend contact op om te kijken of een gratis 30-min strategiegesprek zinvol is voor uw situatie.',
   },
+  survey_ai_adoption: {
+    subject: 'Bedankt voor uw deelname — AI-adoptie onderzoek MKB Nederland 2026',
+    intro: 'Bedankt voor uw deelname aan ons AI-adoptie onderzoek 2026.',
+    body: 'Uw antwoorden zijn goed ontvangen. Binnen 2 werkdagen ontvangt u een persoonlijke benchmark-score van uw AI-volwassenheid versus uw sector. Het volledige onderzoeksrapport publiceren we in september 2026 — u ontvangt automatisch de pre-publicatie versie. Mocht u een gratis 30-min strategiegesprek hebben aangevinkt, dan plant onze CEO Daan Verhoeven dit binnen 1 werkweek met u in.',
+  },
 };
 
 const ROI_REPORT_KEYS = [
