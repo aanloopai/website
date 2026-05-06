@@ -1,9 +1,67 @@
 ---
 // Footer component
+const featuredPillars = [
+  {
+    title: 'AI voor pensioenadviseur 2026',
+    desc: 'Wft Pensioenadvies + WTP transitie',
+    href: '/kennisbank/ai-voor-pensioenadviseur-nederland-2026/',
+  },
+  {
+    title: 'AI voor financieel planner 2026',
+    desc: 'Beleggingsadvisering + vermogensopbouw',
+    href: '/kennisbank/ai-voor-financieel-planner-nederland-2026/',
+  },
+  {
+    title: 'AI voor hypotheekadviseur 2026',
+    desc: 'Kredietwaardigheid + offertes automatiseren',
+    href: '/kennisbank/ai-voor-hypotheekadviseur-nederland-2026/',
+  },
+  {
+    title: 'AI prijzen vergelijking MKB',
+    desc: 'Kostencalculator + ROI benchmarking',
+    href: '/kennisbank/ai-prijzen-vergelijking-mkb-nederland-2026/',
+  },
+  {
+    title: 'Voice AI vs Chatbot gids',
+    desc: 'Selectiecriteria + implementatie-roadmap',
+    href: '/kennisbank/voice-ai-vs-chatbot-beslisgids-mkb-nederland-2026/',
+  },
+  {
+    title: 'EU AI Act MKB compliance',
+    desc: 'Regelgeving + risicoclassificatie-checklist',
+    href: '/kennisbank/eu-ai-act-mkb-nederland-2026/',
+  },
+];
 ---
 
 <footer class="bg-midnight text-pearl">
   <div class="container-page py-16 lg:py-20">
+    <!-- Featured pillars section -->
+    <div class="mb-16 pb-12 border-b border-slate-800/40">
+      <h2 class="text-xs font-semibold tracking-[0.15em] uppercase text-slate-400 mb-6">
+        Meest gelezen kennisbank
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {featuredPillars.map((pillar) => (
+          <a
+            href={pillar.href}
+            class="group p-4 rounded-lg bg-slate-900/40 hover:bg-slate-900/60 border border-slate-800 hover:border-slate-700 transition-all duration-200"
+            aria-label={`${pillar.title}: ${pillar.desc}`}
+          >
+            <h3 class="text-sm font-semibold text-pearl group-hover:text-white transition-colors">
+              {pillar.title}
+            </h3>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed">
+              {pillar.desc}
+            </p>
+            <span class="text-xs text-brand-indigo group-hover:text-brand-indigo/80 mt-3 inline-block transition-colors">
+              Lees gids →
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
 
       <!-- Brand block -->
