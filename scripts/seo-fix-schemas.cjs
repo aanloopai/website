@@ -46,6 +46,15 @@ for (const file of files) {
     "$1, url: 'https://aanloopai.nl'$2"
   );
 
+  // Fix 4: itemOffered Service missing provider — add @id reference.
+  content = content.replace(
+    /(itemOffered:\s*\{\s*'@type':\s*'Service',[^}]*?)(\}(?!\s*,\s*provider))/g,
+    (match, p1, p2) => {
+      if (match.includes('provider')) return match;
+      return `${p1}, provider: { '@id': 'https://aanloopai.nl/#organization' }${p2}`;
+    }
+  );
+
   if (content !== original) {
     fs.writeFileSync(file, content);
     modified++;

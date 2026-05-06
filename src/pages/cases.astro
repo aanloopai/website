@@ -92,12 +92,14 @@ const pageSchema = {
   description: 'Illustratieve voorbeeld-scenario\'s per sector op basis van branche-benchmarks. Geen specifieke klanttestimonials.',
   url: 'https://aanloopai.nl/cases/',
   isPartOf: { '@type': 'WebSite', '@id': 'https://aanloopai.nl/#website' },
-  about: { '@type': 'Service', name: 'AI agent implementatie voor Nederlandse MKB' },
+  about: { '@type': 'Service', name: 'AI agent implementatie voor Nederlandse MKB', provider: { '@id': 'https://aanloopai.nl/#organization' } },
   mainEntity: scenarios.map(s => ({
     '@type': 'TechArticle',
     headline: `${s.sector} — ${s.product}`,
     about: s.sector,
     articleSection: s.role,
+    datePublished: '2026-05-01',
+    author: { '@id': 'https://aanloopai.nl/#organization' },
   })),
 };
 ---
