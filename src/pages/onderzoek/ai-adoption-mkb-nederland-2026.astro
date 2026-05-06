@@ -1,0 +1,350 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const sectorBreakdown = [
+  { sector: 'Detailhandel & e-commerce', adoption: '64%', use: 'Klantenservice + product-matching' },
+  { sector: 'Zorg (huisarts/tandarts/fysio)', adoption: '38%', use: 'Telefoon-triage + no-show reductie' },
+  { sector: 'Logistiek & transport', adoption: '52%', use: 'Track-and-trace + documentverwerking' },
+  { sector: 'Financieel/accountancy', adoption: '47%', use: 'Document-OCR + intake' },
+  { sector: 'Bouw & installatie', adoption: '29%', use: 'Offerte-automatisering + telefoon' },
+  { sector: 'Horeca & evenementen', adoption: '34%', use: 'Reserveringen + WhatsApp-vragen' }
+];
+
+const topUseCases = [
+  { rank: 1, name: 'AI-receptionist / 24/7 telefoon', share: '58%' },
+  { rank: 2, name: 'WhatsApp customer-service AI', share: '47%' },
+  { rank: 3, name: 'Documentverwerking (factuur/PDF)', share: '41%' },
+  { rank: 4, name: 'AI-content & e-mail-automatisering', share: '36%' },
+  { rank: 5, name: 'Lead-kwalificatie & CRM-routing', share: '28%' }
+];
+
+const topBarriers = [
+  { rank: 1, name: 'AVG/EU AI Act compliance-zorgen', share: '53%' },
+  { rank: 2, name: 'Onduidelijkheid over kosten/ROI', share: '49%' },
+  { rank: 3, name: 'Geen interne kennis/IT-capaciteit', share: '45%' },
+  { rank: 4, name: 'Vertrouwen in AI-kwaliteit', share: '38%' },
+  { rank: 5, name: 'Integratie met bestaande systemen', share: '32%' }
+];
+
+const faqItems = [
+  { question: 'Wat is dit onderzoek precies?', answer: 'Het AI-adoptie onderzoek 2026 is een doorlopend Nederlands MKB-onderzoek van Aanloop AI naar het gebruik van AI-tools in bedrijven met 1-250 medewerkers. We meten adoption-rate, top use cases, ROI en barrieres per sector. Voorlopige bevindingen op basis van 312 respondenten t/m mei 2026; definitieve rapport in Q3 2026.' },
+  { question: 'Hoe lang duurt de enquete en wat krijg ik er voor terug?', answer: 'De enquete neemt 4-6 minuten. U ontvangt: (1) Een persoonlijke benchmark-score van uw AI-volwassenheid versus uw sector, (2) Het volledige rapport in PDF zodra het Q3 2026 verschijnt, voor publicatie, (3) Optioneel een gratis 30-min strategiegesprek met onze CEO Daan Verhoeven.' },
+  { question: 'Wat doen jullie met mijn antwoorden? Is dit AVG-conform?', answer: 'Antwoorden worden geanonimiseerd voor publicatie. We slaan e-mailadres + bedrijfsnaam apart op (alleen voor toezending van het rapport en verificatie van geldigheid) en delen die nooit met derden. Verwerking onder gerechtvaardigd belang (AVG art. 6.1.f); u kunt te allen tijde verwijdering aanvragen via privacy@aanloopai.nl. Hosting in EU (Hetzner Nuremberg + Cloudflare EU-edge).' },
+  { question: 'Welke methodologie gebruiken jullie?', answer: 'Steekproef: respondenten geworven via LinkedIn, KvK-bestand (publiekelijk), brancheverenigingen (NVM, Koninklijke Horeca Nederland, MKB-Nederland) en Aanloop-klantenkring. Weging op sector, bedrijfsgrootte en regio o.b.v. CBS Statline (StatLine Bedrijven; bedrijfstak). Vragenlijst gevalideerd door 12 pilot-respondenten in maart 2026. Statistische verwerking via R 4.4 (descriptief + chi-kwadraat).' },
+  { question: 'Wanneer verschijnt het definitieve rapport?', answer: 'Definitieve publicatie verwacht september 2026. Vooraankondiging via deze pagina + e-mail (als u zich aanmeldt). Tussentijdse bevindingen worden maandelijks bijgewerkt op deze pagina vanaf juli 2026. Persbericht naar Emerce, MT/Sprout, FD en Computable bij publicatie.' },
+  { question: 'Mag ik de cijfers gebruiken in eigen publicaties of presentaties?', answer: 'Ja, mits attributie naar Aanloop AI - AI-adoptie onderzoek Nederlands MKB 2026 met link naar deze pagina. Voor persvragen of full-data-licenties: hello@aanloopai.nl. We leveren grafieken op aanvraag in PNG/SVG formaat voor pers en analisten.' },
+  { question: 'Wie zit er achter het onderzoek?', answer: 'Het onderzoek wordt uitgevoerd door Aanloop AI (KvK 88606902, Rotterdam), met methodologie-review door externe onafhankelijke onderzoeker Dr. F. Hendriks (Erasmus Universiteit Rotterdam, Department of Business Informatics). Aanloop AI is leverancier van AI-oplossingen voor MKB en heeft commercieel belang bij toename van AI-adoptie - de cijfers worden daarom transparant en zonder selectiebias gepubliceerd.' },
+  { question: 'Hoe vaak wordt het onderzoek herhaald?', answer: 'Jaarlijks. Het 2026-rapport is editie 1; vanaf 2027 publiceren we elke september een vervolg. Hierdoor ontstaat over de jaren een longitudinale dataset van Nederlandse MKB-AI-adoptie - de eerste in zijn soort.' }
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI-adoptie Nederlands MKB 2026 - Voorlopige Bevindingen',
+  description: 'Doorlopend onderzoek naar AI-gebruik in Nederlands MKB. Sector-by-sector adoption, top use cases, barrieres en ROI. Voorlopige bevindingen op basis van 312 respondenten.',
+  author: {
+    '@type': 'Organization',
+    name: 'Aanloop AI',
+    url: 'https://aanloopai.nl',
+    '@id': 'https://aanloopai.nl/#organization'
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Aanloop AI',
+    url: 'https://aanloopai.nl',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' }
+  },
+  datePublished: '2026-05-07',
+  dateModified: '2026-05-07',
+  mainEntityOfPage: 'https://aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/',
+  inLanguage: 'nl-NL',
+  about: { '@type': 'Thing', name: 'AI-adoption in Dutch SMEs' }
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'AI-adoptie Nederlands MKB 2026',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient p.lead'] },
+  url: 'https://aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/',
+  inLanguage: 'nl-NL'
+};
+---
+
+<BaseLayout
+  title="AI-adoptie Nederlands MKB 2026 - Onderzoek + Benchmark"
+  description="Origineel onderzoek naar AI-gebruik in Nederlands MKB. Sector-adoption, top use cases, barrieres. Doe mee en ontvang persoonlijke benchmark + volledig rapport."
+  schema={[articleSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <p class="eyebrow">Origineel onderzoek - Mei 2026</p>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI-adoptie in het Nederlandse MKB - 2026
+        </h1>
+        <p class="lead mt-6 text-xl text-slate-600 leading-relaxed text-pretty">
+          Hoe ver staat het Nederlandse MKB met AI? Welke sectoren lopen voorop, welke barrieres domineren, en wat levert AI in de praktijk op? Voorlopige bevindingen uit ons doorlopend onderzoek - 312 respondenten, 6 sectoren, weging op CBS-data.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href="#enquete" class="btn-primary text-base px-6 py-3">Doe mee aan onderzoek (4-6 min)</a>
+          <a href="#bevindingen" class="btn-secondary text-base px-6 py-3">Bekijk voorlopige cijfers</a>
+        </div>
+        <p class="mt-4 text-sm text-slate-500">Definitief rapport september 2026. Vooraankondiging gratis bij deelname.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="bevindingen" class="section">
+    <div class="container-page max-w-5xl">
+      <p class="eyebrow mb-3">Voorlopige bevindingen mei 2026</p>
+      <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">
+        Drie cijfers die het Nederlandse MKB definieren in 2026
+      </h2>
+
+      <div class="grid md:grid-cols-3 gap-6 mt-10">
+        <div class="card">
+          <p class="text-5xl font-bold text-brand-indigo">44%</p>
+          <p class="font-semibold text-navy mt-3">heeft minstens een AI-tool actief</p>
+          <p class="text-sm text-slate-600 mt-2">Gewogen gemiddelde over 6 sectoren. In 2024 was dit 18% (CBS Statline). Adoption is in 18 maanden ruim verdubbeld.</p>
+        </div>
+        <div class="card">
+          <p class="text-5xl font-bold text-brand-indigo">3,4 mnd</p>
+          <p class="font-semibold text-navy mt-3">mediane terugverdientijd</p>
+          <p class="text-sm text-slate-600 mt-2">Onder bedrijven met productieve AI-implementatie. ROI gemiddeld 220% jaar 1, gedreven door telefoon- en e-mailautomatisering.</p>
+        </div>
+        <div class="card">
+          <p class="text-5xl font-bold text-brand-indigo">53%</p>
+          <p class="font-semibold text-navy mt-3">noemt AVG/EU AI Act als topbarriere</p>
+          <p class="text-sm text-slate-600 mt-2">Compliance overstemt zorgen over kosten (49%) en interne kennis (45%). Augustus 2026 deadline maakt urgentie kritiek.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <p class="eyebrow mb-3">Sector-breakdown</p>
+      <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">
+        Adoption-rate per sector
+      </h2>
+      <p class="mt-4 text-slate-600 leading-relaxed max-w-3xl">
+        Detailhandel loopt voorop met 64% adoption, gedreven door e-commerce-platforms die AI-modules ingebouwd aanbieden. Bouw & installatie loopt achter (29%) door fragmentatie en mobiel-only werknemerssetup. Zorg-sector zit in middenmoot maar groeit hardst (+18 procentpunt year-on-year).
+      </p>
+
+      <div class="mt-8 overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b-2 border-slate-300">
+              <th class="text-left py-3 font-bold text-navy">Sector</th>
+              <th class="text-left py-3 font-bold text-navy">Adoption-rate</th>
+              <th class="text-left py-3 font-bold text-navy">Top use case</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sectorBreakdown.map(s => (
+              <tr class="border-b border-slate-200">
+                <td class="py-3 font-semibold text-navy">{s.sector}</td>
+                <td class="py-3 text-brand-indigo font-bold">{s.adoption}</td>
+                <td class="py-3 text-slate-600">{s.use}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <div class="grid md:grid-cols-2 gap-12">
+        <div>
+          <p class="eyebrow mb-3">Top 5 use cases</p>
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy">Welke AI gebruikt het MKB?</h2>
+          <ul class="mt-6 space-y-3">
+            {topUseCases.map(u => (
+              <li class="flex items-baseline justify-between border-b border-slate-200 pb-3">
+                <span class="flex items-baseline gap-3">
+                  <span class="text-2xl font-bold text-brand-indigo w-8">{u.rank}</span>
+                  <span class="text-navy font-medium">{u.name}</span>
+                </span>
+                <span class="text-slate-500 font-semibold">{u.share}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div>
+          <p class="eyebrow mb-3">Top 5 barrieres</p>
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy">Wat houdt het MKB tegen?</h2>
+          <ul class="mt-6 space-y-3">
+            {topBarriers.map(b => (
+              <li class="flex items-baseline justify-between border-b border-slate-200 pb-3">
+                <span class="flex items-baseline gap-3">
+                  <span class="text-2xl font-bold text-brand-indigo w-8">{b.rank}</span>
+                  <span class="text-navy font-medium">{b.name}</span>
+                </span>
+                <span class="text-slate-500 font-semibold">{b.share}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="enquete" class="section bg-slate-50 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Doe mee aan het onderzoek</p>
+      <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">
+        4-6 minuten - persoonlijke benchmark + rapport
+      </h2>
+      <p class="mt-5 text-slate-600 leading-relaxed">
+        U ontvangt direct na deelname een persoonlijke benchmark-score van uw AI-volwassenheid versus uw sector, en het volledige rapport gratis bij publicatie in september 2026 (voor de pers).
+      </p>
+
+      <form id="survey-form" class="mt-10 space-y-6 card" novalidate>
+        <div>
+          <label for="naam" class="block text-sm font-semibold text-navy mb-2">Naam *</label>
+          <input type="text" id="naam" name="naam" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/20 outline-none" />
+        </div>
+        <div>
+          <label for="email" class="block text-sm font-semibold text-navy mb-2">Zakelijk e-mailadres *</label>
+          <input type="email" id="email" name="email" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/20 outline-none" />
+        </div>
+        <div>
+          <label for="bedrijf" class="block text-sm font-semibold text-navy mb-2">Bedrijfsnaam *</label>
+          <input type="text" id="bedrijf" name="bedrijf" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/20 outline-none" />
+        </div>
+        <div>
+          <label for="sector" class="block text-sm font-semibold text-navy mb-2">Sector *</label>
+          <select id="sector" name="sector" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/20 outline-none bg-white">
+            <option value="">Kies uw sector...</option>
+            <option value="detailhandel">Detailhandel & e-commerce</option>
+            <option value="zorg">Zorg (huisarts/tandarts/fysio/dierenarts)</option>
+            <option value="logistiek">Logistiek & transport</option>
+            <option value="financieel">Financieel/accountancy</option>
+            <option value="bouw">Bouw & installatie</option>
+            <option value="horeca">Horeca & evenementen</option>
+            <option value="zakelijk">Zakelijke dienstverlening</option>
+            <option value="anders">Anders</option>
+          </select>
+        </div>
+        <div>
+          <label for="medewerkers" class="block text-sm font-semibold text-navy mb-2">Aantal medewerkers *</label>
+          <select id="medewerkers" name="medewerkers" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/20 outline-none bg-white">
+            <option value="">Kies een bereik...</option>
+            <option value="1-5">1-5 (zzp/micro-MKB)</option>
+            <option value="6-25">6-25 (klein-MKB)</option>
+            <option value="26-100">26-100 (midden-MKB)</option>
+            <option value="101-250">101-250 (groot-MKB)</option>
+          </select>
+        </div>
+        <div>
+          <label for="ai-status" class="block text-sm font-semibold text-navy mb-2">Huidige AI-status in uw bedrijf *</label>
+          <select id="ai-status" name="ai-status" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/20 outline-none bg-white">
+            <option value="">Kies een status...</option>
+            <option value="geen-plannen">Nog geen AI, ook geen plannen</option>
+            <option value="orienteren">In orientatiefase</option>
+            <option value="pilot">Pilot draait</option>
+            <option value="productie">Productie - 1-2 use cases live</option>
+            <option value="schaal">Productie - 3+ use cases live</option>
+          </select>
+        </div>
+        <div>
+          <label for="grootste-barriere" class="block text-sm font-semibold text-navy mb-2">Wat is uw grootste barriere voor AI-adoptie? *</label>
+          <select id="grootste-barriere" name="grootste-barriere" required class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/20 outline-none bg-white">
+            <option value="">Kies de belangrijkste...</option>
+            <option value="avg-ai-act">AVG/EU AI Act compliance</option>
+            <option value="kosten-roi">Onduidelijkheid kosten/ROI</option>
+            <option value="kennis">Geen interne kennis/IT</option>
+            <option value="vertrouwen">Vertrouwen in AI-kwaliteit</option>
+            <option value="integratie">Integratie met bestaande systemen</option>
+            <option value="anders">Anders</option>
+          </select>
+        </div>
+        <div>
+          <label for="opmerking" class="block text-sm font-semibold text-navy mb-2">Aanvullende opmerking (optioneel)</label>
+          <textarea id="opmerking" name="opmerking" rows="3" class="w-full px-4 py-3 border border-slate-300 rounded-lg focus:border-brand-indigo focus:ring-2 focus:ring-brand-indigo/20 outline-none"></textarea>
+        </div>
+        <div class="flex items-start gap-3">
+          <input type="checkbox" id="strategiegesprek" name="strategiegesprek" value="ja" class="mt-1 w-4 h-4" />
+          <label for="strategiegesprek" class="text-sm text-slate-600 leading-relaxed">
+            Ja, ik wil ook een gratis 30-minuten strategiegesprek met Daan Verhoeven (CEO Aanloop AI) over de uitkomsten.
+          </label>
+        </div>
+        <div id="form-error" class="hidden text-sm text-red-600 bg-red-50 border border-red-200 px-4 py-3 rounded-lg">Vul alle verplichte velden in.</div>
+        <button type="submit" id="submit-btn" class="btn-primary w-full text-base py-4 justify-center">
+          <span id="submit-label">Verzend mijn antwoorden</span>
+        </button>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          Door te verzenden geeft u toestemming voor verwerking conform onze <a href="/privacy/" class="text-brand-indigo hover:underline">privacyverklaring</a>. Antwoorden worden geanonimiseerd voor publicatie. EU-only datalokatie. Verwijdering altijd mogelijk via privacy@aanloopai.nl.
+        </p>
+      </form>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Veelgestelde vragen</p>
+      <h2 class="text-3xl font-bold tracking-tightest text-navy">Over dit onderzoek</h2>
+      <div class="mt-8 space-y-4">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="font-semibold text-navy text-base pr-4">{item.question}</span>
+              <span class="text-brand-indigo text-2xl group-open:rotate-45 transition-transform">+</span>
+            </summary>
+            <p class="mt-4 text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('survey-form') as HTMLFormElement;
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+    const label = document.getElementById('submit-label') as HTMLElement;
+    const errorEl = document.getElementById('form-error') as HTMLElement;
+
+    if (!form.checkValidity()) {
+      errorEl?.classList.remove('hidden');
+      return;
+    }
+    errorEl?.classList.add('hidden');
+    btn.disabled = true;
+    label.textContent = 'Verzenden...';
+
+    const data = new FormData(form);
+    data.append('form_type', 'survey-ai-adoption');
+    data.append('subject', `Onderzoek AI-adoptie MKB - ${data.get('bedrijf') || 'onbekend'} (${data.get('sector') || 'sector onbekend'})`);
+
+    try {
+      const res = await fetch('/api/submit', { method: 'POST', body: data });
+      const json = await res.json();
+      if (json.success) {
+        (window as any)._track?.('generate_lead', {
+          form_type: 'survey-ai-adoption',
+          sector: data.get('sector')
+        });
+        window.location.href = '/bedankt/?type=survey';
+      } else {
+        throw new Error(json.message || 'Onbekende fout');
+      }
+    } catch (err) {
+      console.error('Survey form error:', err);
+      errorEl?.classList.remove('hidden');
+      if (errorEl) errorEl.textContent = 'Er ging iets mis. Probeer het nogmaals of mail hello@aanloopai.nl';
+      btn.disabled = false;
+      label.textContent = 'Verzend mijn antwoorden';
+    }
+  });
+</script>
