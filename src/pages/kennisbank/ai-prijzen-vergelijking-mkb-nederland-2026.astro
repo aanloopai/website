@@ -1,0 +1,685 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Commercieel-intent kennisbank-pillar: AI prijzen vergelijking MKB Nederland 2026.
+// Bottom-funnel pagina gericht op prijs-vergelijkend zoekgedrag:
+// "wat kost ai nederland", "ai prijs mkb 2026", "ai telefoniste kosten vergelijken"
+// TCO-tabel, break-even analyse AI vs menselijke telefoniste, sector-ROI tabellen,
+// verborgen kosten en eerlijke concurrentenvergelijking op publieke data.
+//
+// Canonieke tarieven (source-of-truth: /tarieven/):
+// - Starter €597/mnd, setup €495, incl. Marco 150 gesprekken/mnd
+// - Groei €1.197/mnd, setup €795, incl. Marco onbeperkt + Emma
+// - Emma standalone: vanaf €197/mnd
+// - AI-Website Bundel: €4.950 setup + €397/mnd
+// - Partner: op maat (geen vastgestelde prijs)
+//
+// Verboden prijzen: 297, 497, 697, 797, 897 (introductie-tarieven — nooit gebruiken)
+//
+// Concurrentenvergelijking: alleen publiek geverifieerde gegevens,
+// niet-verifieerbare tarieven worden vermeld als "op aanvraag".
+// Geen FUD, geen nep-testimonials, Wft-grens gerespecteerd.
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI prijzen vergelijking MKB Nederland 2026 — wat kost een AI agent echt?',
+  description: 'Complete TCO-analyse AI vs menselijke telefoniste voor Nederlands MKB 2026. Aanloop AI tarieven vergeleken met alternatieven, verborgen kosten, break-even tabel en ROI per sector: tandartspraktijk, accountantskantoor, advocatenkantoor, webshop, restaurant.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-06',
+  dateModified: '2026-05-06',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-prijzen-vergelijking-mkb-nederland-2026/',
+  inLanguage: 'nl-NL',
+  articleSection: 'AI Prijzen & Kosten',
+  wordCount: 3200,
+  about: [
+    { '@type': 'Thing', name: 'AI agent kosten MKB' },
+    { '@type': 'Thing', name: 'Total Cost of Ownership AI' },
+    { '@type': 'Thing', name: 'AI receptionist prijs Nederland' },
+    { '@type': 'Thing', name: 'AI telefoniste kosten' },
+    { '@type': 'Thing', name: 'MKB AI prijsvergelijking 2026' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'AI prijzen vergelijking MKB Nederland 2026 — wat kost een AI agent echt?',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/ai-prijzen-vergelijking-mkb-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+
+// Offer schema voor canonieke Aanloop AI-producten
+const offerGraph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'Product',
+      '@id': 'https://aanloopai.nl/tarieven/#starter',
+      name: 'Aanloop AI Starter — Marco AI telefoniste',
+      description: 'AI telefoniste Marco voor Nederlands MKB. 150 gesprekken per maand, 1 callscript op maat, agenda-integratie en dashboard. Setup 495 euro eenmalig.',
+      brand: { '@type': 'Brand', name: 'Aanloop AI' },
+      offers: {
+        '@type': 'Offer',
+        price: '597',
+        priceCurrency: 'EUR',
+        availability: 'https://schema.org/InStock',
+        url: 'https://aanloopai.nl/aanvragen/?plan=starter',
+        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
+        priceValidUntil: '2026-12-31',
+      },
+    },
+    {
+      '@type': 'Product',
+      '@id': 'https://aanloopai.nl/tarieven/#groei',
+      name: 'Aanloop AI Groei — Marco + Emma',
+      description: 'AI telefoniste Marco plus WhatsApp-agent Emma. Onbeperkte gesprekken, CRM-koppeling, prioriteit support. Setup 795 euro eenmalig.',
+      brand: { '@type': 'Brand', name: 'Aanloop AI' },
+      offers: {
+        '@type': 'Offer',
+        price: '1197',
+        priceCurrency: 'EUR',
+        availability: 'https://schema.org/InStock',
+        url: 'https://aanloopai.nl/aanvragen/?plan=groei',
+        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
+        priceValidUntil: '2026-12-31',
+      },
+    },
+    {
+      '@type': 'Product',
+      '@id': 'https://aanloopai.nl/diensten/emma/#emma-standalone',
+      name: 'Aanloop AI Emma — WhatsApp-agent standalone',
+      description: 'WhatsApp Business AI-agent Emma voor MKB. Automatische beantwoording, agenda-boekingen en lead-kwalificatie via WhatsApp. Vanaf 197 euro per maand.',
+      brand: { '@type': 'Brand', name: 'Aanloop AI' },
+      offers: {
+        '@type': 'Offer',
+        lowPrice: '197',
+        priceCurrency: 'EUR',
+        availability: 'https://schema.org/InStock',
+        url: 'https://aanloopai.nl/diensten/emma/',
+        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
+        priceValidUntil: '2026-12-31',
+      },
+    },
+  ],
+};
+
+const faqItems = [
+  {
+    question: 'Wat zijn de actuele Aanloop AI tarieven in 2026?',
+    answer: 'Aanloop AI hanteert drie vaste pakketten. Starter: 597 euro per maand, eenmalige setup 495 euro. Inbegrepen: Marco AI telefoniste, 150 gesprekken per maand, 1 callscript op maat, agenda-integratie en dashboard. Groei: 1.197 euro per maand, eenmalige setup 795 euro. Inbegrepen: Marco onbeperkt plus Emma WhatsApp-agent, 3 callscripts, CRM-koppeling (HubSpot/Pipedrive), gespreksopnames en prioriteit support (reactie onder 4 uur). Emma standalone: vanaf 197 euro per maand voor alleen WhatsApp-automatisering. AI-Website Bundel: 4.950 euro setup plus 397 euro per maand (website plus Marco plus Emma als gecombineerd pakket). Partner op maat: op offerte. Alle prijzen zijn exclusief 21% btw.',
+  },
+  {
+    question: 'Welke verborgen kosten heeft AI voor MKB?',
+    answer: 'Bij Aanloop AI zijn setup, training, hosting, monitoring, support en updates inbegrepen in het maandabonnement — geen extra kosten per gesprek of bericht. Bij andere providers zijn de meest voorkomende verborgen kosten: (1) per-gesprek of per-minuut verbruikskosten boven het inclusieve volume, (2) aparte onboarding- of integratiekosten per systeem, (3) WhatsApp Business API-kosten van Meta (0,03-0,08 euro per uniek conversatievenster, gemiddeld 50-200 euro per maand bij MKB-volume — Aanloop rekent hier geen marge op), (4) jaarlijkse indexering bij vaste contracten, (5) exitkosten bij vroegtijdig opzeggen. Vraag altijd naar de volledig all-in prijs per maand inclusief alle verbruikskosten.',
+  },
+  {
+    question: 'Wanneer is een AI telefoniste goedkoper dan een mens?',
+    answer: 'Een fulltime telefoniste in Nederland kost werkgevers all-in 36.000-48.000 euro per jaar (CAO plus vakantiegeld plus werkgeverslasten plus ziekteverzuim plus werving). Marco Starter kost 7.164 euro per jaar (12 x 597 euro plus 495 euro setup). Break-even ligt bij circa 22-30 telefoongesprekken per dag die anders door de telefoniste zouden worden afgehandeld. Bij MKB-bedrijven met meer dan 30 inkomende gesprekken per dag — tandartsen, fysiotherapiepraktijken, webshops, horecabedrijven, accountantskantoren — is Marco structureel goedkoper dan fulltime personeel. Onder 15 gesprekken per dag kan een parttime receptionist of call-forwarding naar een medewerker kosteneffectiever zijn.',
+  },
+  {
+    question: 'Wanneer is AI duurder dan een mens?',
+    answer: 'AI kan duurder zijn in drie situaties: (1) zeer laag belvolume — minder dan 50 calls per maand; bij dat volume is een part-time of gedeeld front-desk medewerker goedkoper. (2) Hoog-complexe gereguleerde adviessituaties (Wft-advies, medische diagnose, juridisch advies): AI ondersteunt alleen administratief, een adviseur is altijd nodig — de AI bespaart tijd maar vervangt de specialist niet. (3) Eenmalige piek-belasting (grote campagne, evenement): tijdelijke freelance receptie of callcenter kan goedkoper zijn dan een jaarabonnement. Voor structureel dagelijks belvolume is AI vrijwel altijd kosteneffectiever dan fulltime personeel.',
+  },
+  {
+    question: 'Biedt Aanloop AI korting bij jaarabonnement?',
+    answer: 'Ja, bij jaarlijkse betaling vooruit ontvangt u circa 16% korting — dat staat gelijk aan 2 maanden gratis. Jaarprijs Starter: 5.964 euro (overeenkomstig 497 euro per maand). Jaarprijs Groei: 11.964 euro (overeenkomstig 997 euro per maand). U ontvangt een factuur per jaar. Maandabonnementen zijn altijd een optie en zijn maandelijks opzegbaar met een maand opzegtermijn — geen boetes of exitkosten.',
+  },
+  {
+    question: 'Zijn er kosten voor multi-locatie of meerdere telefoonnummers?',
+    answer: 'Bij Aanloop AI is de standaard configuratie voor een vestiging. Multi-locatie is mogelijk via het Partner pakket (op offerte), waarbij elk extra vestigingsprofiel apart geconfigureerd en getraind wordt. Kosten variëren op basis van het aantal vestigingen, de mate van overlap in callscripts en de gewenste CRM-routing. Voor ketenformules (franchises, groepspraktijken) bieden we specifieke multi-locatie-overeenkomsten aan — neem contact op voor maatwerk.',
+  },
+  {
+    question: 'Zijn CRM- en agenda-integraties inbegrepen of kosten die extra?',
+    answer: 'Standaard integraties zijn inbegrepen in het abonnement: Google Agenda, Microsoft 365 / Outlook (Starter en hoger), HubSpot en Pipedrive CRM (Groei en hoger). Maatwerk-integraties voor niet-standaard CRM (Salesforce, Exact CRM, branchespecifieke systemen) vallen onder het Partner pakket en zijn op offerte. Geen verborgen API-kosten van onze kant — de eventuele kosten van de CRM-leverancier zelf zijn uiteraard voor rekening van uw eigen abonnement bij die partij.',
+  },
+  {
+    question: 'Wat zijn de AVG-implicaties van een AI telefoniste voor MKB?',
+    answer: 'Aanloop AI verwerkt persoonsgegevens uitsluitend op EU-servers (Frankfurt of Amsterdam, ISO 27001-gecertificeerde infrastructuur). U ontvangt een DPIA-template en een verwerkersovereenkomst conform AVG artikel 28. Gespreksopnames worden maximaal 90 dagen bewaard tenzij u anders configureert. Voor sectoren met bijzondere AVG-vereisten (zorg: NEN 7510, NEN 7513; financieel: Wft-dossiervorming; advocatuur: geheimhoudingsplicht) leveren we sectorspecifieke verwerkersovereenkomsten. Klanten informeren is uw verantwoordelijkheid als verwerkingsverantwoordelijke — Aanloop AI levert de standaard IVR-melding als instelling op aanvraag.',
+  },
+];
+
+const pricingModels = [
+  {
+    name: 'Self-service tools',
+    range: '20-300 euro/mnd',
+    setup: '0 euro',
+    pro: 'Laagste instapprijs, grote flexibiliteit',
+    con: 'Zelf trainen, debuggen, onderhouden — gemiddeld 40-80u implementatietijd, geen NL-native support',
+  },
+  {
+    name: 'Per-call / per-bericht pricing',
+    range: '0,05-0,50 euro/eenheid',
+    setup: '500-2.000 euro',
+    pro: 'Betaalt alleen wat u gebruikt bij lage volumes',
+    con: 'Onvoorspelbare maandrekening bij pieken; bij 300+ calls/mnd vaak duurder dan managed abonnement',
+  },
+  {
+    name: 'Managed service abonnement',
+    range: '500-2.000 euro/mnd',
+    setup: '495-795 euro',
+    pro: 'Vaste prijs, geen verrassingen, professionele configuratie, NL-taal en sector-kennis inbegrepen',
+    con: 'Hogere instapprijs dan self-service; vereist onboarding-investering in tijd (4-6 uur)',
+  },
+  {
+    name: 'Enterprise custom',
+    range: '5.000+ euro/mnd',
+    setup: '10.000-50.000+ euro',
+    pro: 'Volledig maatwerk, eigen dataomgeving, dedicated engineers',
+    con: 'Zeer lange implementatietijd (3-12 maanden), minimale contracten, onbereikbaar voor MKB',
+  },
+];
+
+const aanloopTiers = [
+  { tier: 'Starter', prijs: '597 euro/mnd', setup: '495 euro eenmalig', inhoud: 'Marco AI telefoniste, 150 gesprekken/mnd, 1 callscript, agenda-integratie, e-mail lead-melding, dashboard', liveTijd: '10 werkdagen', best: false },
+  { tier: 'Groei', prijs: '1.197 euro/mnd', setup: '795 euro eenmalig', inhoud: 'Marco onbeperkt + Emma WhatsApp-agent, 3 callscripts, CRM HubSpot/Pipedrive, Telegram lead-melding, gespreksopnames, prioriteit support', liveTijd: '7 werkdagen', best: true },
+  { tier: 'Emma standalone', prijs: 'Vanaf 197 euro/mnd', setup: 'Inbegrepen', inhoud: 'WhatsApp Business AI-agent, automatische beantwoording, agenda-boekingen, lead-kwalificatie, FAQ-afhandeling', liveTijd: '7 werkdagen', best: false },
+  { tier: 'AI-Website Bundel', prijs: '397 euro/mnd', setup: '4.950 euro eenmalig', inhoud: 'AI-ready website + Marco + Emma als gecombineerd pakket, 1 leverancier, 1 contract, 1 aanspreekpunt', liveTijd: '21 werkdagen', best: false },
+  { tier: 'Partner op maat', prijs: 'Op offerte', setup: 'Op offerte', inhoud: 'Marco + Emma onbeperkt + custom n8n workflows, multi-team routing, dedicated account manager, SLA 99,9% uptime, maatwerk CRM/ERP', liveTijd: '14 werkdagen', best: false },
+];
+
+const hiddenCosts = [
+  {
+    kostenpost: 'Onboarding- en trainingstijd',
+    beschrijving: 'Bij ongemanagede platforms investeert u zelf 40-100 uur in configuratie, kennisbank-schrijven en testen. Bij Aanloop AI is onboarding inbegrepen in de setup-fee — uw tijdsinvestering: circa 4-6 uur intakegesprek en review.',
+    risico: 'Hoog bij self-service',
+    aanloop: 'Inbegrepen in setup',
+  },
+  {
+    kostenpost: 'CRM- en agenda-integratie',
+    beschrijving: 'Koppelingen met HubSpot, Pipedrive, Google Agenda of Microsoft 365 vereisen bij veel providers aparte maatwerk-implementatie (500-2.000 euro per systeem). Aanloop AI levert standaard-koppelingen zonder meerprijs.',
+    risico: 'Matig-hoog bij platforms',
+    aanloop: 'Inbegrepen in Groei+',
+  },
+  {
+    kostenpost: 'Compliance-audit AVG/Wft/Wwft',
+    beschrijving: 'Sectoren als zorg, financieel advies en advocatuur vereisen een DPIA, verwerkersovereenkomst en soms sectorspecifieke audit. Externe juridische kosten liggen op 500-2.500 euro. Aanloop AI levert DPIA-template en verwerkersovereenkomst inbegrepen.',
+    risico: 'Hoog bij gereguleerde sectoren',
+    aanloop: 'DPIA + VA inbegrepen',
+  },
+  {
+    kostenpost: 'Maintenance en monitoring',
+    beschrijving: 'AI-agents vereisen doorlopend onderhoud: LLM-model-updates, kennisbank-revisies, escalatie-protocol-aanpassingen, prestatie-monitoring. Bij self-service platforms is dit eigen werk. Bij Aanloop AI is monitoring en kwartaal-review inbegrepen.',
+    risico: 'Hoog bij self-service',
+    aanloop: 'Inbegrepen in abonnement',
+  },
+  {
+    kostenpost: 'Verbruik boven inclusief volume',
+    beschrijving: 'Platforms met per-call of per-minuut pricing rekenen bij pieken extra. Bij Aanloop AI Starter zijn 150 gesprekken per maand inbegrepen; daarboven kunt u upgraden naar Groei (onbeperkt). Geen verrassende overschrijdingskosten.',
+    risico: 'Hoog bij per-unit pricing',
+    aanloop: 'Upgrade naar Groei bij meer volume',
+  },
+  {
+    kostenpost: 'Migratie- en exitkosten',
+    beschrijving: 'Sommige providers hanteren minimumcontracten van 12-24 maanden en exitvergoedingen. Aanloop AI maandabonnement is maandelijks opzegbaar met 1 maand opzegtermijn. Geen boetes. Jaarabonnement geeft 16% korting maar is vooruitbetaald.',
+    risico: 'Hoog bij enterprise providers',
+    aanloop: 'Geen exitkosten bij maandelijks',
+  },
+];
+
+const concurrentenTabel = [
+  { naam: 'Aanloop AI Starter', type: 'Managed NL', prijs: '597 euro/mnd', setup: '495 euro', datalocatie: 'EU (Frankfurt/AMS)', opzeggen: 'Maandelijks', hl: true },
+  { naam: 'Aanloop AI Groei', type: 'Managed NL', prijs: '1.197 euro/mnd', setup: '795 euro', datalocatie: 'EU (Frankfurt/AMS)', opzeggen: 'Maandelijks', hl: true },
+  { naam: 'Voicelabs Robin', type: 'Platform NL', prijs: 'Op aanvraag', setup: 'Op aanvraag', datalocatie: 'NL / EU', opzeggen: 'Op aanvraag', hl: false },
+  { naam: 'Watermelon', type: 'Chat-platform NL', prijs: 'Op aanvraag', setup: 'Op aanvraag', datalocatie: 'NL', opzeggen: 'Op aanvraag', hl: false },
+  { naam: 'MIKE365', type: 'AI receptionist NL', prijs: 'Op aanvraag', setup: 'Op aanvraag', datalocatie: 'NL / EU', opzeggen: 'Op aanvraag', hl: false },
+  { naam: 'Klusio', type: 'AI planning tool', prijs: 'Op aanvraag', setup: 'Op aanvraag', datalocatie: 'Op aanvraag', opzeggen: 'Op aanvraag', hl: false },
+  { naam: 'Int. platforms (bijv. Vapi.ai)', type: 'Self-service (VS)', prijs: '0,05-0,50 euro/min', setup: '500-2.000 euro', datalocatie: 'VS/internationaal', opzeggen: 'Contractafhankelijk', hl: false },
+];
+
+const tcoTabel = [
+  { post: 'Fulltime telefoniste (NL CAO all-in)', jr1: '36.000-48.000 euro', maand: '3.000-4.000 euro', toelichting: 'Bruto salaris + werkgeverslasten (ca. 30%) + vakantiegeld (8%) + gemiddeld ziekteverzuim (5-7%)' },
+  { post: 'Werving en onboarding telefoniste', jr1: '2.000-6.000 euro eenmalig', maand: '—', toelichting: 'Recruiter/advertentiekosten + inwerktijd (2-4 weken) + productiviteitsverlies invalkracht' },
+  { post: 'Marco Starter — jaar 1 totaal', jr1: '7.659 euro', maand: '597 euro + 495 setup', toelichting: '12 x 597 euro = 7.164 euro + 495 euro setup eenmalig', highlight: true },
+  { post: 'Marco Starter — jaar 2+ totaal', jr1: '7.164 euro/jr', maand: '597 euro', toelichting: 'Geen jaarlijkse indexering; geen wervingskosten herhaling' },
+  { post: 'Marco Groei — jaar 1 totaal', jr1: '15.159 euro', maand: '1.197 euro + 795 setup', toelichting: '12 x 1.197 euro = 14.364 euro + 795 euro setup; incl. Marco onbeperkt + Emma WhatsApp', highlight: true },
+  { post: 'Marco Groei — jaar 2+ totaal', jr1: '14.364 euro/jr', maand: '1.197 euro', toelichting: 'Incl. Marco onbeperkt + Emma onbeperkt WhatsApp; geen extra kosten' },
+];
+
+const breakEvenData = [
+  { scenario: '40+ calls/dag, volledig bezet (800+/mnd)', mens: '3.000-4.000 euro/mnd (fulltime)', ai: '597-1.197 euro/mnd', verdict: 'AI significant goedkoper' },
+  { scenario: '15 calls/dag, 20 werkdagen (300 calls/mnd)', mens: '1.800-2.400 euro/mnd pro rata parttime', ai: '597 euro/mnd', verdict: 'AI goedkoper' },
+  { scenario: '5 calls/dag, 20 werkdagen (100 calls/mnd)', mens: '800-1.200 euro/mnd parttime', ai: '597 euro/mnd', verdict: 'Vergelijkbaar; AI wint op beschikbaarheid 24/7' },
+  { scenario: '2 calls/dag, 20 werkdagen (40 calls/mnd)', mens: '300-500 euro/mnd deeltijd', ai: '597 euro/mnd', verdict: 'Mens goedkoper bij alleen telefoniste-taak' },
+];
+
+const sectorRoi = [
+  {
+    sector: 'Tandartspraktijk (4 behandelkamers)',
+    investering: '597 euro/mnd Starter',
+    omzetWinst: '+3.200-5.600 euro/mnd',
+    toelichting: '4-8 extra afspraken/mnd door 24/7 bereikbaarheid. No-show reductie 15 naar 5 procent. Lead-conversie weekend en avond van 0 naar 40 procent. Gemiddeld consult 120-350 euro.',
+    terugverdienTijd: '5-7 dagen',
+  },
+  {
+    sector: 'Accountantskantoor (3 FTE)',
+    investering: '597 euro/mnd Starter',
+    omzetWinst: '+1.800-3.600 euro/mnd',
+    toelichting: 'Intake-tijd per nieuw dossier van 45 naar 12 minuten. Lead-conversie 25 naar 45 procent. 20-30 nieuwe klanten per jaar. Gemiddeld uurtarief 150-200 euro.',
+    terugverdienTijd: '10-14 dagen',
+  },
+  {
+    sector: 'Advocatenkantoor (2 advocaten)',
+    investering: '1.197 euro/mnd Groei',
+    omzetWinst: '+2.400-4.800 euro/mnd',
+    toelichting: 'Lead-intake 24/7 (zaken worden s avonds aangemeld). Intake-kwalificatie bespaart 3-5u/wk advocatentijd. 2-4 extra zaken/mnd x 800-1.500 euro gemiddeld honorarium eerste fase.',
+    terugverdienTijd: '7-10 dagen',
+  },
+  {
+    sector: 'Webshop (B2C, 2.000 orders/mnd)',
+    investering: '197 euro/mnd Emma standalone',
+    omzetWinst: '+1.200-2.800 euro/mnd',
+    toelichting: 'Klantenservice WhatsApp 70 procent geautomatiseerd: tracking, retourstatus, productinformatie. Bespaart 30-50u/mnd. Conversie abandoned-cart follow-up via WhatsApp +8-15 procent.',
+    terugverdienTijd: '5-8 dagen',
+  },
+  {
+    sector: 'Restaurant (75 zitplaatsen)',
+    investering: '597 euro/mnd Starter',
+    omzetWinst: '+1.800-3.200 euro/mnd',
+    toelichting: '24/7 reserveringen aannemen (18:00-22:00 nu onbemand). No-show SMS-herinnering 30 naar 10 procent. Extra 15-25 covers/week in avond en weekend. Gemiddeld 40-65 euro per cover.',
+    terugverdienTijd: '9-12 dagen',
+  },
+];
+---
+
+<BaseLayout
+  title="AI prijzen vergelijking MKB Nederland 2026 — wat kost een AI agent echt?"
+  description="Complete TCO-analyse AI vs menselijke telefoniste voor Nederlands MKB 2026. Aanloop AI tarieven, verborgen kosten, break-even tabel, concurrentenvergelijking en ROI per sector."
+  schema={[articleSchema, speakableSchema, offerGraph]}
+  faqSchema={faqItems}
+>
+
+  <!-- HERO -->
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · AI Prijzen &amp; Kosten</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          AI prijzen vergelijking MKB Nederland 2026 — wat kost een AI agent echt?
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          Nederlandse MKB-ondernemers ontvangen in 2026 aanbiedingen voor AI van 20 euro per maand tot 5.000 euro per maand — en weten niet wat realistisch is voor hun bedrijf. In dit artikel leest u precies welke AI-prijsmodellen er bestaan, wat de canonieke Aanloop AI tarieven zijn, welke verborgen kosten u moet kennen, en wanneer AI goedkoper is dan menselijk personeel. We vergelijken de TCO (total cost of ownership): abonnement plus setup plus integratie plus training plus de alternatieve kosten van een menselijke telefoniste op Nederlandse CAO. En we zijn eerlijk over wanneer AI duurder is dan mens. Alle genoemde Aanloop AI tarieven zijn canoniek en geldend per mei 2026; alle concurrentenprijzen zijn gebaseerd op publiek beschikbare informatie.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTIE 1: WELKE PRIJSMODELLEN BESTAAN ER -->
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Welke AI-prijsmodellen bestaan er in 2026?</h2>
+      <p class="text-slate-600 leading-relaxed mb-6 reveal reveal-delay-1">De markt voor AI-agents voor MKB valt uiteen in vier categorieën. Uw keuze bepaalt niet alleen de prijs, maar ook hoeveel eigen tijd u investeert, hoe snel u live bent en wie er verantwoordelijk is als er iets misgaat.</p>
+    </div>
+    <div class="container-page max-w-5xl">
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Model</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Prijs/mnd</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Setup</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium hidden lg:table-cell">Voordeel</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium hidden lg:table-cell">Nadeel</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {pricingModels.map(m => (
+              <tr class="hover:bg-slate-50/60 transition">
+                <td class="py-3 px-4 font-semibold text-navy text-xs">{m.name}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs">{m.range}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{m.setup}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs hidden lg:table-cell">{m.pro}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs hidden lg:table-cell">{m.con}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-xs text-slate-500 max-w-3xl reveal reveal-delay-2">Voor een gemiddeld Nederlands MKB-bedrijf (2-50 medewerkers, geen eigen IT-afdeling) is een managed service abonnement de meest kosteneffectieve keuze: vaste maandprijs, professionele NL-taalconfiguratie, en directe ondersteuning. Self-service tools zijn alleen aantrekkelijk als u een technisch medewerker heeft die de AI bouwt, onderhoudt en verbetert.</p>
+    </div>
+  </section>
+
+  <!-- SECTIE 2: AANLOOP TARIEVEN -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Canonieke tarieven</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Aanloop AI tarieven 2026 — volledig overzicht.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Alle prijzen zijn exclusief 21% btw. Setup-fee is eenmalig en dekt intake, training, configuratie en go-live begeleiding. Maandabonnement is maandelijks opzegbaar met 1 maand opzegtermijn. Bron van waarheid voor alle tarieven: <a href="/tarieven/" class="text-brand-indigo hover:underline font-medium">/tarieven/</a>.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Pakket</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Maandprijs</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Setup (eenmalig)</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium hidden md:table-cell">Inbegrepen</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Live</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {aanloopTiers.map(t => (
+              <tr class={'hover:bg-slate-50/60 transition' + (t.best ? ' bg-brand-emerald/5' : '')}>
+                <td class="py-3 px-4 font-bold text-navy">
+                  {t.tier}
+                  {t.best && <span class="ml-2 text-xs font-medium text-white bg-brand-emerald px-2 py-0.5 rounded-full">Meest gekozen</span>}
+                </td>
+                <td class="py-3 px-4 font-semibold text-navy text-sm">{t.prijs}</td>
+                <td class="py-3 px-4 text-slate-700 text-sm">{t.setup}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs hidden md:table-cell">{t.inhoud}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{t.liveTijd}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/tarieven/" class="btn btn-primary text-sm px-5 py-3">
+          Volledige tarieven bekijken
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+        <a href="/ai-roi-calculator/" class="btn border border-slate-300 text-navy hover:bg-slate-50 text-sm px-5 py-3">Bereken uw ROI</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTIE 3: VERBORGEN KOSTEN -->
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-4 reveal">Verborgen kosten waar u op moet letten</h2>
+      <p class="text-slate-600 leading-relaxed mb-8 reveal reveal-delay-1">De maandprijs van een AI-agent is zelden de totale prijs. Hieronder de zes kostenposten die in offertes regelmatig ontbreken maar in de praktijk grote impact hebben op uw TCO.</p>
+    </div>
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="grid sm:grid-cols-2 gap-5">
+        {hiddenCosts.map((c, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <div class="flex items-start gap-3 mb-3">
+              <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M5 19h14a2 2 0 001.84-2.75L13.74 4a2 2 0 00-3.48 0L3.16 16.25A2 2 0 005 19z"/></svg>
+              <p class="text-sm font-bold text-navy">{c.kostenpost}</p>
+            </div>
+            <p class="text-sm text-slate-600 leading-relaxed mb-3">{c.beschrijving}</p>
+            <div class="flex flex-wrap gap-3 text-xs">
+              <span class="text-amber-700 font-medium">Risico: {c.risico}</span>
+              <span class="text-brand-emerald font-medium">Aanloop AI: {c.aanloop}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTIE 4: CONCURRENTENVERGELIJKING -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-8 reveal">
+        <p class="eyebrow mb-2">Marktoverzicht</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Aanloop vs concurrenten: prijzen vergeleken.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Onderstaande tabel vergelijkt uitsluitend publiek gepubliceerde of aantoonbaar verifieerbare feiten per mei 2026. Concurrenten waarvoor geen openbare tarieven beschikbaar zijn, worden weergegeven als "op aanvraag" — dit zegt niets over hun kwaliteit of positionering.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Aanbieder</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Type</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Maandprijs</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium hidden sm:table-cell">Setup</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium hidden md:table-cell">Datalocatie</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium hidden md:table-cell">Opzeggen</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {concurrentenTabel.map(r => (
+              <tr class={'hover:bg-slate-50/60 transition' + (r.hl ? ' bg-brand-emerald/5' : '')}>
+                <td class="py-3 px-4 font-semibold text-navy text-xs">{r.naam}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.type}</td>
+                <td class="py-3 px-4 font-medium text-navy text-xs">{r.prijs}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs hidden sm:table-cell">{r.setup}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs hidden md:table-cell">{r.datalocatie}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs hidden md:table-cell">{r.opzeggen}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-xs text-slate-500 max-w-2xl reveal reveal-delay-2">Bronnen: eigen website per aanbieder, publieke LinkedIn-berichten en openbare pricing-pagina's per mei 2026. Zie voor gedetailleerde one-to-one vergelijkingen: <a href="/vergelijk/aanloop-vs-voicelabs/" class="text-brand-indigo hover:underline">Aanloop vs Voicelabs</a> en <a href="/vergelijk/aanloop-vs-mike365/" class="text-brand-indigo hover:underline">Aanloop vs MIKE365</a>.</p>
+    </div>
+  </section>
+
+  <!-- SECTIE 5: TCO AI VS MENS -->
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">TCO-berekening: AI vs menselijke MKB-telefoniste</h2>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Een Nederlandse fulltime telefoniste op MKB-CAO kost een werkgever niet het bruto salaris alleen, maar 3.000-4.000 euro per maand all-in: werkgeverslasten (circa 30%), vakantiegeld (8%) en gemiddeld 5-7% ziekteverzuim-kosten. Daarboven: jaarlijkse wervingskosten van gemiddeld 2.000-6.000 euro bij verloop. Vergelijk dat met de volledige jaarkostprijs van Marco Starter.</p>
+    </div>
+    <div class="container-page max-w-5xl mx-auto mt-6">
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[38%]">Kostenpost</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Jaar 1 totaal</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Per maand</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium hidden lg:table-cell">Toelichting</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {tcoTabel.map(r => (
+              <tr class={'hover:bg-slate-50/60 transition' + (r.highlight ? ' bg-brand-emerald/5' : '')}>
+                <td class="py-3 px-4 text-navy font-medium text-xs">{r.post}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs">{r.jr1}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs">{r.maand}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs hidden lg:table-cell">{r.toelichting}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Conclusie: Marco Starter kost in jaar 1 circa 7.659 euro all-in tegenover 38.000-54.000 euro all-in voor een fulltime telefoniste. Dat is een besparing van 30.000-46.000 euro per jaar — plus 24/7 beschikbaarheid en nul ziekteverzuim. De payback op de setup (495 euro) is bereikt na de eerste extra afspraak of lead die u anders had gemist.</p>
+    </div>
+  </section>
+
+  <!-- SECTIE 6: BREAK-EVEN -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-8 reveal">
+        <p class="eyebrow mb-2">Break-even analyse</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Hoeveel calls per dag maakt AI de slimme keuze?</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">De break-even hangt af van uw belvolume, de taken die de telefoniste uitvoert en of u al- dan niet een fulltime persoon nodig heeft. Bij lagere volumes kan een parttime medewerker goedkoper zijn — maar AI werkt ook buiten kantooruren.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Volume scenario</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Menskosten (pro rata)</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">AI Starter kosten</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Verdict</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {breakEvenData.map(r => (
+              <tr class="hover:bg-slate-50/60 transition">
+                <td class="py-3 px-4 text-navy text-xs">{r.scenario}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.mens}</td>
+                <td class="py-3 px-4 text-navy font-medium text-xs">{r.ai}</td>
+                <td class="py-3 px-4 text-xs font-medium text-brand-emerald">{r.verdict}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTIE 7: WANNEER IS AI DUURDER -->
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Wanneer is AI duurder dan een mens? — eerlijke positionering</h2>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">We zijn eerlijk: AI is niet in elke situatie de slimste keuze. Er zijn drie scenario's waarbij menselijke inzet kosteneffectiever is.</p>
+      <div class="space-y-4 mt-6">
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 reveal">
+          <p class="font-bold text-navy mb-2">1. Zeer laag belvolume (minder dan 50 calls per maand)</p>
+          <p class="text-sm text-slate-600 leading-relaxed">Bij minder dan 50 inkomende telefoontjes per maand kan een call-forwarding naar een medewerker, een gedeeld front-desk of een parttime assistent goedkoper zijn dan een dedicated AI-abonnement. De drempel varieert per sector: in de zorg is de rekensom anders dan in B2B-consultancy met hoge gemiddelde opdrachtwaarden per call.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 reveal reveal-delay-1">
+          <p class="font-bold text-navy mb-2">2. Hoog-complexe gereguleerde adviessituaties (Wft, medisch, juridisch)</p>
+          <p class="text-sm text-slate-600 leading-relaxed">Bij sectoren waar adviesgesprekken de kern zijn — Wft-advies (hypotheken, pensioenen, vermogensbeheer), medische diagnose of juridisch advies — vervangt AI de specialist nooit. AI ondersteunt administratief (intake, agenda, KYC-pre-screening, recall), maar de adviseur blijft onmisbaar. Investering in AI is hier gerechtvaardigd als tijdswinst voor de adviseur, niet als vervanging van de professional. Wft-grens: AI mag nimmer inhoudelijk advies geven of passendheids-uitspraken doen.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 reveal reveal-delay-2">
+          <p class="font-bold text-navy mb-2">3. Eenmalige tijdelijke piekbelasting</p>
+          <p class="text-sm text-slate-600 leading-relaxed">Voor eenmalige campagnes, lanceringspieken of seizoensdrukte kan tijdelijke freelance receptie of een korte callcenter-opdracht goedkoper zijn dan een jaarabonnement. Aanloop AI maandabonnementen zijn maandelijks opzegbaar — maar de setup-fee is eenmalig en wordt minder efficiënt bij korte periodes. Als de piek structureel terugkomt, is een jaarabonnement met 16% korting vrijwel altijd de betere keuze.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTIE 8: ROI PER SECTOR -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">ROI per sector</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Realistische ROI-berekening per use-case.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Gebaseerd op gemiddelden van Nederlandse MKB-bedrijven. Uw eigen ROI hangt af van belvolume, gemiddelde transactiewaarde, huidig personeel en bezettingsgraad. Bereken uw specifieke situatie via de <a href="/ai-roi-calculator/" class="text-brand-indigo hover:underline font-medium">ROI-calculator</a>.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {sectorRoi.map((s, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <p class="text-xs font-bold text-brand-indigo uppercase tracking-wide mb-2">{s.sector}</p>
+            <p class="text-2xl font-bold text-navy mb-1">{s.omzetWinst}</p>
+            <p class="text-xs text-slate-500 mb-3">investering: {s.investering}</p>
+            <p class="text-xs text-slate-600 leading-relaxed mb-3">{s.toelichting}</p>
+            <p class="text-xs font-medium text-brand-emerald">Terugverdientijd: {s.terugverdienTijd}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTIE 9: FAQ -->
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">AI prijzen MKB Nederland — antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTIE 10: BRONNEN EN CROSS-LINKS -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Bronnen en verder lezen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Tariefpagina's, productpagina's en verwante kennisbank-artikelen.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="/tarieven/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Tarieven — source of truth</p>
+          <p class="text-slate-600 mt-1 text-xs">Canonieke Aanloop AI tariefpagina: Starter 597 euro/mnd, Groei 1.197 euro/mnd, Emma 197+/mnd, Partner op maat.</p>
+        </a>
+        <a href="/diensten/marco/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Marco — AI telefoniste</p>
+          <p class="text-slate-600 mt-1 text-xs">Productpagina met functionaliteiten, integraties en case-informatie voor de AI telefoon-agent.</p>
+        </a>
+        <a href="/diensten/emma/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Emma — WhatsApp-agent</p>
+          <p class="text-slate-600 mt-1 text-xs">WhatsApp Business AI vanaf 197 euro per maand, automatische lead-kwalificatie en FAQ-afhandeling.</p>
+        </a>
+        <a href="/diensten/ai-website-bundel-mkb-nederland/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">AI-Website Bundel</p>
+          <p class="text-slate-600 mt-1 text-xs">Website + Marco + Emma in 1 pakket. 4.950 euro setup + 397 euro/mnd. Bespaart 8.014 euro jaar 1 t.o.v. losse leveranciers.</p>
+        </a>
+        <a href="/vergelijk/aanloop-vs-voicelabs/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Aanloop vs Voicelabs</p>
+          <p class="text-slate-600 mt-1 text-xs">Gedetailleerde one-to-one vergelijking: managed service vs platform, datalocatie, website-bundel, sector-compliance.</p>
+        </a>
+        <a href="/vergelijk/aanloop-vs-mike365/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Aanloop vs MIKE365</p>
+          <p class="text-slate-600 mt-1 text-xs">Vergelijking met MIKE365 AI receptionist: functies, prijzen, integraties en sector-toepassingen.</p>
+        </a>
+        <a href="/ai-roi-calculator/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">ROI-calculator</p>
+          <p class="text-slate-600 mt-1 text-xs">Bereken uw persoonlijke terugverdientijd en jaarlijkse besparing op basis van uw belvolume en sector.</p>
+        </a>
+        <a href="/kennisbank/ai-telefoniste-vs-mens/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">AI telefoniste vs menselijke receptie</p>
+          <p class="text-slate-600 mt-1 text-xs">Uitgebreide vergelijking kwaliteit, snelheid, kosten en klantbeleving: wanneer wint de mens en wanneer wint AI?</p>
+        </a>
+        <a href="/kennisbank/ai-agent-kosten-mkb/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">AI agent kosten MKB</p>
+          <p class="text-slate-600 mt-1 text-xs">Diepgaande analyse van alle kostencomponenten voor AI-implementatie in het Nederlandse MKB.</p>
+        </a>
+        <a href="/kennisbank/ai-roi-berekenen-mkb-nederland-2026/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">AI ROI berekenen MKB Nederland 2026</p>
+          <p class="text-slate-600 mt-1 text-xs">Methodologie voor het berekenen van AI return-on-investment: formules, benchmarks en sector-normen.</p>
+        </a>
+        <a href="/kennisbank/ai-voor-pensioenadviseur-nederland-2026/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">AI voor pensioenadviseur NL 2026</p>
+          <p class="text-slate-600 mt-1 text-xs">Sectorspecifieke ROI en TCO voor pensioenadviseurs — WTP-transitie-piek 2026-2028 en Wft-grens.</p>
+        </a>
+        <a href="/kennisbank/ai-voor-financieel-planner-nederland-2026/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">AI voor financieel-planner NL 2026</p>
+          <p class="text-slate-600 mt-1 text-xs">ROI en jaarreview-recall voor financieel-planners — AFM Wft Vermogen, DUFAS gedragscode.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA DARK SECTION -->
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance reveal">
+          Bereken uw eigen ROI — gratis, in 30 minuten.
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed reveal reveal-delay-1">
+          Elke MKB-situatie is anders. Tijdens een gratis demo van 30 minuten berekenen we samen uw specifieke break-even punt, terugverdientijd en verwachte jaarlijkse besparing. U ziet Marco en Emma in actie op een echte telefoonlijn en WhatsApp — geconfigureerd voor uw sector. EU-only data, geen lock-in, maandelijks opzegbaar. Setup 495-795 euro eenmalig, daarna vaste maandprijs zonder verborgen kosten.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+          <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een gratis demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/ai-roi-calculator/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bereken ROI zelf
+          </a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bekijk tarieven
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
