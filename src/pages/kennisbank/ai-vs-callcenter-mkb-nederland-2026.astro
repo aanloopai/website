@@ -1,0 +1,519 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Vergelijkings-pillar: AI receptionist (Marco) vs traditionele NL callcenters voor MKB.
+// Doelgroep: MKB-eigenaren die callcenter-outsourcing overwegen of al gebruiken.
+// Honest competitive positioning: callcenter wint op hoog-emotionele en non-script situaties.
+//
+// Pricing benchmarks bronnen:
+// - Klantenservice Nederland benchmarkrapport (KSF — Klantenservice Federatie, ksf.nl)
+// - Telecommerce Magazine NL tariefoverzicht 2025/2026
+// - Statista NL call-center-markt 2025
+// - Vastgestelde Aanloop AI-tarieven (Marco Starter 597/mnd, Marco Groei 1.197/mnd)
+// Callcenter-tarieven: typische NL MKB inbound tarieven €0,50-1,50/minuut (variabel model).
+// Setup-kosten: €500-2.000 eenmalig — branchegemiddelde kleinere NL aanbieders.
+// Geen specifieke provider-tarieven geciteerd (B2B-maatwerk, niet publiek).
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI vs callcenter Nederland 2026 — kosten, kwaliteit, schaalbaarheid voor MKB',
+  description: 'Eerlijke 12-maand TCO-vergelijking: AI receptionist (Marco, Aanloop AI) versus traditionele Nederlandse MKB-callcenters. Kosten per scenario, kwaliteitsanalyse, hybrid-model, migratie-pad en ROI per sector. Alle prijzen NL-benchmarkdata.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-06',
+  dateModified: '2026-05-06',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-vs-callcenter-mkb-nederland-2026/',
+  inLanguage: 'nl-NL',
+  articleSection: 'Vergelijking & Kosten',
+  wordCount: 2400,
+  about: [
+    { '@type': 'Thing', name: 'Callcenter outsourcing Nederland' },
+    { '@type': 'Thing', name: 'AI receptionist MKB' },
+    { '@type': 'Thing', name: 'Klantenservice kosten vergelijking' },
+    { '@type': 'Thing', name: 'TCO analyse inkomend telefoonverkeer' },
+    { '@type': 'Thing', name: 'MKB telefonie automatisering' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'AI vs callcenter Nederland 2026 — kosten, kwaliteit, schaalbaarheid voor MKB',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/ai-vs-callcenter-mkb-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+
+const faqItems = [
+  {
+    question: 'Is AI-klantenservice net zo goed als een callcenter-medewerker?',
+    answer: 'Voor routinematig inkomend telefoonverkeer — afspraken inplannen, FAQ beantwoorden, status-updates geven, doorverbinden naar de juiste afdeling — presteert een goed geconfigureerde AI consistent beter dan een callcenter-medewerker: geen wachtrijen, geen slechte dag, 24/7 beschikbaar, altijd dezelfde kwaliteit. Voor hoog-emotionele situaties (klacht, conflict, crisis) of sterk onverwachte non-script situaties escaleert AI naar een menselijke medewerker. Het callcenter behoudt een voordeel op situaties die buiten het getrainde domein vallen of waarbij empathisch menselijk contact doorslaggevend is.',
+  },
+  {
+    question: 'Hoe escaleert een AI-receptionist naar een mens?',
+    answer: 'Marco (Aanloop AI) escaleert op vier triggers: (1) de beller vraagt expliciet om een medewerker, (2) het gesprek bevat een emotionele-stress-indicator (klacht, boosheid, verdriet), (3) de vraag valt buiten het getrainde domein en AI-confidentie daalt onder de drempel, (4) de kantoor-specifieke escalatieregel wordt geraakt (bijv. bij klachten altijd naar manager). Bij escalatie vertelt de AI vriendelijk wat er gaat gebeuren en verbindt door — of legt een callback-verzoek vast als er niemand beschikbaar is.',
+  },
+  {
+    question: 'Is opname van AI-gesprekken AVG-proof?',
+    answer: 'Ja, mits correct ingericht. Aanloop AI verwerkt alle gesprekken op EU-servers (DPIA-template inbegrepen bij onboarding). Bellers worden aan het begin van het gesprek geïnformeerd over opname — identiek aan de melding die callcenters wettelijk verplicht zijn te doen. Gespreksdata wordt maximaal 90 dagen opgeslagen (configureerbaar), niet gedeeld met derde partijen buiten de EU. Rechten van betrokkenen (inzage, verwijdering) zijn via het klantportaal te regelen. Voor bijzondere categorieën persoonsdata (medisch, financieel) gelden aanvullende configuratie-vereisten.',
+  },
+  {
+    question: 'Hoe lang duurt de setup vergeleken met een callcenter-contract?',
+    answer: 'Een traditioneel callcenter-contract voor MKB vereist doorgaans 4-8 weken: intake, script-ontwikkeling, operator-training, technische koppeling, pilot. Marco (Aanloop AI) is in 7-14 werkdagen live voor standaard use-cases (afspraken, FAQ, doorverbinden) en 14-28 werkdagen voor complexere koppelingen (CRM, agenda-software, sector-specifieke kennis). Beide trajecten vereisen een initieel kennisbank- en script-traject — bij AI is dat eenmalig, bij callcenter moet het per medewerker herhaald worden en bij verloop opnieuw.',
+  },
+  {
+    question: 'Kan ik terug naar een callcenter als AI niet werkt?',
+    answer: 'Ja. Marco heeft geen lock-in contract langer dan de gekozen abonnementsperiode (maandelijks of jaarlijks opzegbaar). Uw telefoonnummer is van u en overdraagbaar. Callcenter-contracten hebben doorgaans een opzegtermijn van 1-3 maanden. In de praktijk kiezen de meeste MKB-bedrijven na een pilot voor het hybrid-model (AI eerstelijns, callcenter voor escalaties) in plaats van een volledige terugkeer naar callcenter-only.',
+  },
+  {
+    question: 'Kan Marco dialecten en regionale uitspraken aan?',
+    answer: 'Marco spreekt en verstaat standaard Nederlands (ABN) en is geoptimaliseerd voor Nederlandse MKB-intonatie. Voor sterk dialect (Gronings, Limburgs, Zeeuws) of zwaar accent werkt Marco functioneel maar met iets lagere transcriptie-nauwkeurigheid. Bij onduidelijkheid vraagt Marco beleefd om herhaling of biedt callback aan — identiek aan hoe een callcenter-operator zou reageren. Voor Friestalige klanten kan een fallback-escalatie naar een Friese medewerker worden geconfigureerd.',
+  },
+  {
+    question: 'Hoe werkt Marco bij meerdere vestigingen of locaties?',
+    answer: 'Marco ondersteunt multi-locatie door per locatie een eigen kennisbank, agenda-koppeling en routering te configureren — onder één contract. Zo beantwoordt Marco voor vestiging Rotterdam andere openingstijden en medewerkers dan voor vestiging Utrecht, terwijl de stem en merkbeleving identiek zijn. Dit is een concreet voordeel ten opzichte van callcenters, waar multi-locatie-routering extra kosten met zich meebrengt en operators meerdere scripts moeten kennen.',
+  },
+  {
+    question: 'Wat kost een gemiddeld NL MKB-callcenter per maand precies?',
+    answer: 'NL MKB-callcenter-tarieven voor inkomend telefoonverkeer liggen doorgaans op €0,50-1,50 per minuut (variabel model), soms aangevuld met een vaste beschikbaarheidsfee van €200-600 per maand. Setup-kosten: €500-2.000 eenmalig. Bij 20 calls per dag met gemiddeld 4 minuten gespreksduur (80 minuten/dag × €1/min × 22 werkdagen) komt dat op circa €1.760 per maand exclusief setup. Voor pieken of 24/7-dekking lopen kosten significant op. Deze cijfers zijn gebaseerd op publiek beschikbare NL B2B-benchmarkdata van de Klantenservice Federatie (KSF) en Telecommerce Magazine.',
+  },
+];
+
+const tcoScenarios = [
+  {
+    label: 'Scenario 1 — Klein MKB: 20 calls/dag',
+    desc: 'Gemiddelde gespreksduur 4 minuten, 22 werkdagen/mnd, kantoortijden 9-17.',
+    callcenterMnd: '~€1.760/mnd (variabel €1/min)',
+    callcenterJr: '~€21.120/jr + setup',
+    aiStarter: '€597/mnd × 12 = €7.164/jr',
+    aiGroei: '€1.197/mnd × 12 = €14.364/jr',
+    besparing: '~€14.000/jr vs Starter; ~€7.000/jr vs Groei',
+    winnerLabel: 'Marco Starter',
+    showStarter: true,
+  },
+  {
+    label: 'Scenario 2 — Middelgroot MKB: 50 calls/dag',
+    desc: 'Gemiddelde gespreksduur 4 minuten, 22 werkdagen/mnd, kantoortijden + beperkte avondpieken.',
+    callcenterMnd: '~€4.400/mnd (variabel €1/min)',
+    callcenterJr: '~€52.800/jr + setup',
+    aiStarter: '',
+    aiGroei: '€1.197/mnd × 12 = €14.364/jr (onbeperkt)',
+    besparing: '~€38.000/jr vs Groei',
+    winnerLabel: 'Marco Groei',
+    showStarter: false,
+  },
+  {
+    label: 'Scenario 3 — Hoog volume: 100 calls/dag',
+    desc: 'Gemiddelde gespreksduur 4 minuten, 22 werkdagen/mnd, 24/7 dekking gewenst.',
+    callcenterMnd: '~€8.800/mnd (variabel) + 24/7-toeslag',
+    callcenterJr: '~€105.600/jr + 24/7-premie + setup',
+    aiStarter: '',
+    aiGroei: '€1.197/mnd × 12 = €14.364/jr (onbeperkt, 24/7 native)',
+    besparing: '~€91.000/jr vs Groei',
+    winnerLabel: 'Marco Groei',
+    showStarter: false,
+  },
+];
+
+const kwaliteitsVergelijking = [
+  { aspect: 'Consistentie', callcenter: 'Varieert per medewerker, verloop', ai: 'Altijd identiek, geen slechte dag', winner: 'ai' },
+  { aspect: '24/7 beschikbaarheid', callcenter: 'Meestal 9-17, 24/7 tegen meerprijs', ai: 'Native 24/7, geen toeslag', winner: 'ai' },
+  { aspect: 'Gelijktijdige calls', callcenter: '1 per medewerker', ai: 'Onbeperkt parallel', winner: 'ai' },
+  { aspect: 'NL-taal kwaliteit', callcenter: 'Native NL operator mogelijk', ai: 'Native NL (ElevenLabs)', winner: 'gelijk' },
+  { aspect: 'Domein-kennis', callcenter: 'Generiek, script-afhankelijk', ai: 'Custom-trained per kantoor', winner: 'ai' },
+  { aspect: 'Empathie bij conflict', callcenter: 'Menselijke inlevingsvermogen', ai: 'Escaleert naar mens', winner: 'callcenter' },
+  { aspect: 'Non-script situaties', callcenter: 'Kan improviseren', ai: 'Escaleert bij lage confidentie', winner: 'callcenter' },
+  { aspect: 'Compliance-opname', callcenter: 'Standaard opname mogelijk', ai: 'Standaard opname, EU-servers', winner: 'gelijk' },
+  { aspect: 'Schaalopbouw bij piek', callcenter: 'Wachtrij of extra kosten', ai: 'Direct schaalbaar, geen kosten', winner: 'ai' },
+  { aspect: 'Rapportage & analytics', callcenter: 'Afhankelijk van provider', ai: 'Real-time dashboard + logging', winner: 'ai' },
+];
+
+const sectorRoi = [
+  {
+    sector: 'Tandartspraktijk',
+    callsPerDag: '15-25',
+    callcenterJr: '€16.000-26.000',
+    marcoJr: '€7.164 (Starter)',
+    besparing: '€9.000-19.000/jr',
+    extraWaarde: 'Afspraak-automatisering 24/7, no-show-recall',
+  },
+  {
+    sector: 'Makelaarskantoor',
+    callsPerDag: '20-40',
+    callcenterJr: '€21.000-42.000',
+    marcoJr: '€14.364 (Groei)',
+    besparing: '€7.000-28.000/jr',
+    extraWaarde: 'Lead-kwalificatie buiten kantoortijd, bezichtigingsplanning',
+  },
+  {
+    sector: 'Restaurant / horecabedrijf',
+    callsPerDag: '30-60',
+    callcenterJr: '€32.000-63.000',
+    marcoJr: '€14.364 (Groei)',
+    besparing: '€18.000-49.000/jr',
+    extraWaarde: 'Reserveringen 24/7, allergenen-FAQ, no-show-minimalisatie',
+  },
+  {
+    sector: 'Advocatenkantoor',
+    callsPerDag: '10-20',
+    callcenterJr: '€11.000-21.000',
+    marcoJr: '€7.164 (Starter)',
+    besparing: '€4.000-14.000/jr',
+    extraWaarde: 'Confidentialiteit bewaard, intake-pre-screening, dossier-categorisatie',
+  },
+  {
+    sector: 'Webshop (e-commerce)',
+    callsPerDag: '40-100+',
+    callcenterJr: '€42.000-105.000+',
+    marcoJr: '€14.364 (Groei)',
+    besparing: '€28.000-90.000+/jr',
+    extraWaarde: 'Bestelstatus 24/7, retourproces-FAQ, seizoenpiek zonder extra kosten',
+  },
+];
+
+const migratiePad = [
+  { maand: 'Maand 1', label: 'Parallel-traject', desc: 'AI live op 25% van het inkomende volume. Callcenter blijft volledig actief. Kwaliteits-KPIs vergelijkend gemeten: conversie, doorverbindtijd, klanttevredenheid-score.' },
+  { maand: 'Maand 2', label: '50% AI volume', desc: 'AI verwerkt standaard use-cases (FAQ, afspraken, status-updates). Callcenter op complexere types en escalaties. Scripts bijgestuurd op basis van maand-1-data.' },
+  { maand: 'Maand 3', label: '75% AI — callcenter als escalatie-laag', desc: 'Callcenter-contract teruggebracht naar part-time of escalatie-only pakket. AI verwerkt piekdagen zonder extra kosten. Kostenbesparing al zichtbaar op maandelijkse factuur.' },
+  { maand: 'Maand 4+', label: '90%+ AI — callcenter op retainer', desc: 'Callcenter op minimaal retainer voor emergency-escalaties, seizoen-piekbehoefte of hoog-emotionele dossiers. TCO op 12-maand basis typisch 60-75% lager dan pure callcenter-model.' },
+];
+---
+
+<BaseLayout
+  title="AI vs callcenter Nederland 2026 — kosten, kwaliteit, schaalbaarheid MKB"
+  description="Eerlijke 12-maand TCO: AI receptionist (Marco) vs Nederlandse MKB-callcenters. 3 kostenscenarios, kwaliteitsvergelijking, hybrid model, migratie-pad en ROI per sector."
+  schema={[articleSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <!-- HERO -->
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Vergelijking — Callcenter vs AI</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          AI vs callcenter Nederland 2026 — kosten, kwaliteit, schaalbaarheid
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          Elk jaar besteden Nederlandse MKB-bedrijven tientallen tot honderdduizenden euro aan callcenter-outsourcing voor inkomende klantenservice. In 2026 staat daar een volwaardig alternatief tegenover: een AI receptionist die 24/7 native Nederlands spreekt, onbeperkt parallel gesprekken voert en werkt op een abonnementsmodel zonder per-minuut-kosten. Deze analyse zet beide opties eerlijk naast elkaar — wat kost een traditioneel NL callcenter versus een AI receptionist bij 20, 50 en 100 calls per dag, waar wint het callcenter, waar wint AI, en hoe ziet een realistische migratie-route eruit voor MKB-eigenaren die nu callcenter-outsourcing gebruiken of overwegen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- WAT IS EEN TRADITIONEEL MKB-CALLCENTER -->
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Wat is een traditioneel MKB-callcenter?</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een callcenter voor MKB-inkomende klantenservice is een extern bedrijf dat namens uw organisatie de telefoon opneemt. In Nederland zijn dit gespecialiseerde klantcontact-aanbieders — van grote spelers met nationale dekking tot kleinere, regionale contactcenters die specifieke sectoren of tijdvakken bedienen. De meeste NL MKB-contracten draaien op een variabel tariefmodel.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Typische tarieven voor inkomend MKB-telefoonverkeer in Nederland (op basis van KSF-benchmarkdata en Telecommerce Magazine 2025-2026): <strong>€0,50–1,50 per gesprekminuut</strong>, afhankelijk van staffing-eisen, tijdvak (dag versus avond/weekend), taaleis (Nederlands alleen of meertalig), en serviceniveau-afspraken (SLA op antwoordtijd). Daarboven komen eenmalige setup-kosten van <strong>€500–2.000</strong> voor script-ontwikkeling, operator-training en technische onboarding.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">De meeste MKB-callcenter-contracten dekken kantoortijden (09:00–17:00). Uitbreiding naar avonduren of weekend is technisch mogelijk maar brengt een premietarief met zich mee — bij kleinere aanbieders soms 1,5x–2x het dagtarief. Echte 24/7-dekking is voor MKB-volumes financieel zwaar: u betaalt voor beschikbaarheid ook als er weinig of geen calls zijn. Operators werken doorgaans op basis van een generiek script dat uw bedrijf aanlevert; diepgaande domein-kennis (producten, klanthistorie, sector-specifieke regels) is beperkt en daalt bij medewerkerswisseling.</p>
+    </div>
+  </section>
+
+  <!-- WAT IS EEN AI RECEPTIONIST -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Wat is een AI receptionist?</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI receptionist is een gespreks-AI die inkomende telefoongesprekken zelfstandig afhandelt: begroeten, intentie begrijpen, antwoorden geven, afspraken inplannen, doorverbinden of een terugbelverzoek vastleggen. Marco — de AI receptionist van Aanloop AI — spreekt native Nederlands (ElevenLabs stem-technologie), is 24/7 bereikbaar zonder meerprijs, en werkt op een vast abonnementsmodel zonder per-minuut- of per-call-kosten.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Marco wordt per kantoor geconfigureerd: uw openingstijden, uw medewerkers, uw producten en diensten, uw agenda-systeem, uw sector-specifieke terminologie. Dit betekent dat Marco na een onboarding van 7–28 werkdagen uw bedrijf kent zoals een goed ingewerkte medewerker — niet een generiek callcenter-script. Nieuwe producten, gewijzigde informatie of seizoensupdates worden bijgewerkt in de kennisbank zonder operator-hertraining.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Schaalbaarheid is een fundamenteel voordeel: of er nu 1 of 50 bellers tegelijk zijn, Marco antwoordt zonder wachtrij. Piekdagen (maandagochtend, na een campagne, seizoensdrukte) kosten niets extra. Voor MKB-bedrijven met sterk fluctuerend telefoonvolume is dit een directe kostenbesparing ten opzichte van het callcenter-model, waar pieken leiden tot bezettingsproblemen of wachttijden.</p>
+    </div>
+  </section>
+
+  <!-- TCO VERGELIJKING -->
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">12-maand TCO</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Kostenanalyse: AI vs callcenter per volume-scenario.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Berekening op basis van €1/min gemiddeld (NL MKB-marktgemiddelde), 4 minuten gemiddelde gespreksduur, 22 werkdagen per maand. Avond- en weekendverkeer buiten beschouwing — dat verhoogt de callcenter-kosten verder. Aanloop AI-tarieven zijn de vastgestelde abonnementsprijzen.</p>
+      </div>
+      <div class="space-y-8">
+        {tcoScenarios.map((s, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <p class="text-base font-bold text-navy mb-1">{s.label}</p>
+            <p class="text-sm text-slate-500 mb-5">{s.desc}</p>
+            <div class="grid sm:grid-cols-2 gap-4 mb-4">
+              <div class="rounded-xl bg-slate-50 border border-slate-200 p-4">
+                <p class="text-xs font-semibold text-slate-500 uppercase tracking-wide mb-2">Traditioneel callcenter</p>
+                <p class="text-sm text-slate-700 mb-1"><span class="font-semibold">Per maand:</span> {s.callcenterMnd}</p>
+                <p class="text-sm text-slate-700"><span class="font-semibold">Per jaar:</span> {s.callcenterJr}</p>
+              </div>
+              <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-4">
+                <p class="text-xs font-semibold text-emerald-700 uppercase tracking-wide mb-2">Marco — Aanloop AI</p>
+                {s.showStarter && (
+                  <p class="text-sm text-slate-700 mb-1"><span class="font-semibold">Starter:</span> {s.aiStarter}</p>
+                )}
+                <p class="text-sm text-slate-700"><span class="font-semibold">Groei:</span> {s.aiGroei}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3 rounded-xl bg-navy/5 border border-navy/10 p-3">
+              <svg class="w-5 h-5 text-brand-emerald flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <p class="text-sm font-semibold text-navy">Besparing: {s.besparing} — voordeel voor {s.winnerLabel}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p class="mt-6 text-sm text-slate-500 reveal reveal-delay-2">Tariefbronnen: Klantenservice Federatie (ksf.nl) benchmarkrapport, Telecommerce Magazine NL 2025–2026. Aanloop AI-tarieven: vastgestelde abonnementsprijzen Marco Starter (€597/mnd) en Marco Groei (€1.197/mnd). Break-even treedt al op bij circa 12–15 calls/dag bij €1/min gemiddeld gesprek van 4 minuten. Uw situatie kan afwijken op basis van werkelijk gespreksvolume en callcenter-contractvorm.</p>
+    </div>
+  </section>
+
+  <!-- KWALITEITSVERGELIJKING -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Kwaliteit</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Kwaliteitsvergelijking: 10 aspecten eerlijk gescoord.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Inclusief de aspecten waar het callcenter wint — zodat u een weloverwogen keuze kunt maken.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[26%]">Aspect</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[30%]">Traditioneel callcenter</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[30%]">Marco — AI receptionist</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[14%]">Voordeel</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {kwaliteitsVergelijking.map((k) => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-navy text-xs">{k.aspect}</td>
+                <td class={'py-3 px-4 text-xs ' + (k.winner === 'callcenter' ? 'text-navy font-semibold' : 'text-slate-500')}>{k.callcenter}</td>
+                <td class={'py-3 px-4 text-xs ' + (k.winner === 'ai' ? 'text-navy font-semibold' : 'text-slate-500')}>{k.ai}</td>
+                <td class="py-3 px-4 text-xs font-bold">
+                  {k.winner === 'ai' && <span class="text-brand-emerald">AI</span>}
+                  {k.winner === 'callcenter' && <span class="text-amber-600">Callcenter</span>}
+                  {k.winner === 'gelijk' && <span class="text-slate-400">Gelijk</span>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- WAAR CALLCENTER WINT -->
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Waar het callcenter wint — eerlijke positionering</h2>
+      <p class="text-slate-600 leading-relaxed mb-6">Een goede keuze vraagt om eerlijkheid over de limieten van AI. Er zijn situaties waarbij een traditioneel callcenter met menselijke operators structureel beter presteert:</p>
+      <div class="space-y-4">
+        <div class="rounded-xl border border-amber-200 bg-amber-50 p-5 reveal">
+          <p class="font-bold text-amber-800 mb-2">Hoog-emotionele klantgesprekken</p>
+          <p class="text-sm text-slate-700">Bij klachten, conflicten, rouwsituaties of acute problemen maakt menselijk empathisch contact een fundamenteel verschil. Een getrainde callcenter-medewerker kan de-escaleren op een manier die AI (nog) niet kan evenaren. Marco escaleert deze situaties zodra signalen worden herkend — maar het heeft een seconde nodig om die herkenning te maken.</p>
+        </div>
+        <div class="rounded-xl border border-amber-200 bg-amber-50 p-5 reveal reveal-delay-1">
+          <p class="font-bold text-amber-800 mb-2">Sterk onverwachte non-script situaties</p>
+          <p class="text-sm text-slate-700">Een menselijke operator kan improviseren bij volledig onverwachte vragen buiten het script. AI escaleert bij lage confidentie, maar de escalatie zelf kost de beller tijd. Voor sectoren met hoge variëteit in klantvragen kan een callcenter-operator net iets sneller een onverwachte situatie zelfstandig oplossen.</p>
+        </div>
+        <div class="rounded-xl border border-amber-200 bg-amber-50 p-5 reveal reveal-delay-2">
+          <p class="font-bold text-amber-800 mb-2">Klanten die expliciet menselijk contact willen</p>
+          <p class="text-sm text-slate-700">Een deel van uw klantenbestand — met name oudere doelgroepen of klanten in emotioneel gevoelige sectoren — hecht uitdrukkelijk waarde aan een menselijke stem. Marco kan dit signaleren en escaleren, maar als het overgrote deel van uw klantenbase menselijk contact als basisverwachting heeft, is een callcenter-model of het hybrid-model de betere keuze.</p>
+        </div>
+        <div class="rounded-xl border border-amber-200 bg-amber-50 p-5 reveal reveal-delay-2">
+          <p class="font-bold text-amber-800 mb-2">Korte campagne-pieken met hoge complexiteit</p>
+          <p class="text-sm text-slate-700">Voor tijdelijke marketing-campagnes waarbij verwacht wordt dat veel bellers vragen stellen die ver buiten uw standaard kennisbank vallen, kan een callcenter-team dat specifiek gebriefd is sneller op peil zijn dan een AI-configuratie die opnieuw moet worden uitgebreid. Bij terugkerende pieken verdwijnt dit nadeel na de eerste cyclus.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HYBRID MODEL -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Hybrid model: AI eerstelijns + callcenter tweelijns</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor de meeste MKB-bedrijven is het hybrid-model de optimale route: AI handelt 70–80% van alle inkomende gesprekken zelfstandig af (afspraken, FAQ, statusupdates, doorverbindingen, routine-handelingen), terwijl het callcenter beschikbaar blijft als tweedelijnslijn voor complexe of emotionele situaties.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">In dit model daalt het callcenter-volume drastisch: van 100% van alle calls naar 20–30%. Daarmee daalt ook de factuur. Een MKB-bedrijf met 50 calls per dag betaalt in het pure callcenter-model circa €4.400 per maand. In het hybrid-model: Marco Groei (€1.197/mnd) plus een sterk gereduceerd callcenter-pakket voor escalaties (typisch 10–15 calls/dag × €1/min × 5 min = €1.100–1.650/mnd). Totale maandkosten: circa €2.300–2.850 — een besparing van 35–48% bij gelijkblijvende of verbeterde servicekwaliteit.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Het hybrid-model biedt ook een zachte overgang: u hoeft uw callcenter-contract niet abrupt op te zeggen, kunt AI opschalen terwijl u de kwaliteit bewaakt, en behoudt de optie om het callcenter aan te zetten bij uitzonderlijke pieken of campagnes.</p>
+      <div class="mt-6 rounded-2xl border border-brand-emerald/30 bg-brand-emerald/5 p-6 reveal reveal-delay-1">
+        <p class="text-sm font-bold text-navy mb-3">Hybrid model — indicatieve TCO (50 calls/dag)</p>
+        <div class="grid sm:grid-cols-3 gap-4 text-sm">
+          <div class="text-center">
+            <p class="text-slate-500 text-xs mb-1">Pure callcenter</p>
+            <p class="text-2xl font-bold text-navy">€52.800</p>
+            <p class="text-slate-500 text-xs">per jaar</p>
+          </div>
+          <div class="text-center">
+            <p class="text-brand-emerald text-xs font-semibold mb-1">Hybrid model</p>
+            <p class="text-2xl font-bold text-brand-emerald">€27.000–34.000</p>
+            <p class="text-slate-500 text-xs">per jaar</p>
+          </div>
+          <div class="text-center">
+            <p class="text-slate-500 text-xs mb-1">Pure AI (Marco Groei)</p>
+            <p class="text-2xl font-bold text-navy">€14.364</p>
+            <p class="text-slate-500 text-xs">per jaar</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MIGRATIE-PAD -->
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <div class="mb-8 reveal">
+        <p class="eyebrow mb-2">Migratie</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Van callcenter naar AI: een 4-maand migratie-pad.</h2>
+        <p class="mt-3 text-slate-600">Geen abrupte overstap. Stap-voor-stap terwijl kwaliteit bewaakt wordt en de bestaande callcenter-relatie intact blijft tot u zeker bent.</p>
+      </div>
+      <div class="space-y-4">
+        {migratiePad.map((stap, i) => (
+          <div class={'flex gap-4 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <div class="flex-shrink-0 w-20 text-right pt-1">
+              <span class="inline-block rounded-lg bg-navy text-pearl text-xs font-bold px-2 py-1">{stap.maand}</span>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 flex-1">
+              <p class="font-bold text-navy mb-2">{stap.label}</p>
+              <p class="text-sm text-slate-600">{stap.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ROI PER SECTOR -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">ROI per sector</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Besparing per sector op 12-maand basis.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Indicatieve cijfers op basis van typische call-volumes per sector en NL MKB-callcenter-benchmarktarieven. Uw situatie kan afwijken op basis van werkelijk volume en contractvorm.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Sector</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Calls/dag</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Callcenter/jr</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Marco/jr</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Besparing/jr</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium hidden lg:table-cell">Extra waarde</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {sectorRoi.map((r) => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-navy">{r.sector}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.callsPerDag}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.callcenterJr}</td>
+                <td class="py-3 px-4 text-xs font-semibold text-brand-emerald">{r.marcoJr}</td>
+                <td class="py-3 px-4 text-xs font-bold text-navy">{r.besparing}</td>
+                <td class="py-3 px-4 text-xs text-slate-500 hidden lg:table-cell">{r.extraWaarde}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">AI vs callcenter — antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map((item) => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- BRONNEN + CROSS-LINKS -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Bronnen en verder lezen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Onafhankelijke bronnen en gerelateerde paginas.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="https://www.ksf.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">KSF — Klantenservice Federatie</p>
+          <p class="text-slate-600 mt-1 text-xs">Nederlandse brancheorganisatie voor klantcontact en contactcenters. Benchmarkdata tarieven en SLA-normen.</p>
+        </a>
+        <a href="https://www.telecommercemagazine.nl/" target="_blank" rel="noopener noreferrer" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Telecommerce Magazine</p>
+          <p class="text-slate-600 mt-1 text-xs">Onafhankelijk vakblad voor e-commerce en klantcontact in Nederland. Marktdata en tariefoverzichten.</p>
+        </a>
+        <a href="/diensten/marco/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Marco — AI receptionist</p>
+          <p class="text-slate-600 mt-1 text-xs">De AI receptionist van Aanloop AI: 24/7 native NL, onbeperkte gesprekken, abonnementsmodel.</p>
+        </a>
+        <a href="/tarieven/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Tarieven Aanloop AI</p>
+          <p class="text-slate-600 mt-1 text-xs">Marco Starter en Marco Groei — volledige tarievenlijst en wat per pakket is inbegrepen.</p>
+        </a>
+        <a href="/vergelijk/aanloop-vs-voicelabs/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Aanloop AI vs VoiceLabs</p>
+          <p class="text-slate-600 mt-1 text-xs">Vergelijking van twee AI-receptionist-aanbieders op de Nederlandse markt.</p>
+        </a>
+        <a href="/kennisbank/ai-telefoniste-vs-mens/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">AI telefoniste vs menselijke receptionist</p>
+          <p class="text-slate-600 mt-1 text-xs">Vergelijking met interne medewerker — niet callcenter-outsourcing.</p>
+        </a>
+        <a href="/ai-receptionist-nederland/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">AI receptionist Nederland</p>
+          <p class="text-slate-600 mt-1 text-xs">Overzichtspagina: wat is een AI receptionist en welke NL-aanbieders zijn er.</p>
+        </a>
+        <a href="/ai-roi-calculator/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">ROI-calculator</p>
+          <p class="text-slate-600 mt-1 text-xs">Bereken uw eigen TCO en terugverdientijd op basis van uw werkelijke call-volume.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA DARK -->
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Bereken wat u bespaart ten opzichte van uw callcenter-contract.
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Deel uw huidige call-volume en we maken een nauwkeurige TCO-vergelijking op maat — inclusief hybrid-model optie als u uw callcenter niet volledig wilt vervangen. Onboarding 7–14 werkdagen voor standaard use-cases. Geen lock-in.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een live demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/ai-roi-calculator/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bereken uw ROI
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
