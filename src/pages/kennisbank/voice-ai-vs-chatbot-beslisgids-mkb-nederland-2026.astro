@@ -1,0 +1,505 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// Beslissings-kennisbank: Voice AI vs Chatbot voor MKB Nederland.
+// Decision-intent commerciële query — MKB-eigenaar evalueert welk AI-type te deployen.
+// Canonical pricing: Marco 597 euro/mnd, Emma 197 euro/mnd standalone, Combo 1197 euro/mnd.
+// Wft-grens gerespecteerd; geen mock-testimonials; geen verboden prijzen.
+//
+// Cross-links:
+// - /diensten/marco/ (Voice AI product)
+// - /diensten/emma/ (Chatbot product)
+// - /diensten/ai-website-bundel-mkb-nederland/ (Combo)
+// - /tarieven/
+// - /vergelijk/aanloop-vs-voicelabs/
+// - /kennisbank/ai-receptionist-vs-ai-telefoniste-vergelijking/
+// - /kennisbank/ai-voor-shopify-webshop-nederland/
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Voice AI vs chatbot — welke past bij uw MKB? (Beslisgids 2026)',
+  description: 'Volledige beslisgids voor MKB-eigenaren: Voice AI (telefoon) vs Chatbot AI (WhatsApp/website) vs Combo. Scenarios, vergelijkingstabel, sector-aanbevelingen, implementatie-roadmap en 8 FAQ.',
+  author: {
+    '@type': 'Person',
+    name: 'Daan Verhoeven',
+    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+    url: 'https://aanloopai.nl/team/daan-verhoeven/',
+    sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-06',
+  dateModified: '2026-05-06',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/voice-ai-vs-chatbot-beslisgids-mkb-nederland-2026/',
+  inLanguage: 'nl-NL',
+  articleSection: 'AI-beslissingen MKB',
+  wordCount: 2800,
+  about: [
+    { '@type': 'Thing', name: 'Voice AI' },
+    { '@type': 'Thing', name: 'Chatbot AI' },
+    { '@type': 'Thing', name: 'MKB Nederland' },
+    { '@type': 'Thing', name: 'AI-assistent vergelijking' },
+    { '@type': 'Thing', name: 'WhatsApp Business API' },
+  ],
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Voice AI vs chatbot — welke past bij uw MKB? (Beslisgids 2026)',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/voice-ai-vs-chatbot-beslisgids-mkb-nederland-2026/',
+  inLanguage: 'nl-NL',
+};
+
+const faqItems = [
+  {
+    question: 'Wat is het verschil tussen Voice AI en een chatbot?',
+    answer: 'Voice AI verwerkt gesproken taal via de telefoon en voert een mensachtig telefoongesprek: inkomende calls beantwoorden, afspraken inplannen, berichten noteren en doorverbinden. Een chatbot verwerkt geschreven tekst via WhatsApp, website-chat of e-mail: vragen beantwoorden, leads pre-screenen, bestelstatussen opzoeken en informatie sturen. Het fundamentele verschil is het kanaal (geluid versus tekst) en de interactie-snelheid (real-time spraak versus asynchroon typen). Voor MKB geldt als vuistregel: als uw klanten u bellen, kies Voice AI; als ze u berichten, kies chatbot; als ze beide doen, kies combo.',
+  },
+  {
+    question: 'Kan ik beginnen met Voice AI en later een chatbot toevoegen, of andersom?',
+    answer: 'Ja, dit is de aanbevolen route voor solo-MKB en kleine teams. Start met het kanaal dat het meeste volume heeft — typisch telefoon (Voice AI) voor zorg, juridisch en dienstverlening; WhatsApp (chatbot) voor webshops en horeca. Na 3-6 maanden, wanneer het eerste kanaal stabiel loopt en u de kennisbank heeft opgebouwd, voegt u het tweede kanaal toe. De kennisbank is grotendeels herbruikbaar, waardoor de tweede implementatie 40-60 procent sneller verloopt. Directe combo-start wordt aangeraden bij multi-locatie-bedrijven of wanneer beide kanalen al nu een hoog volume hebben.',
+  },
+  {
+    question: 'Welke AI-assistent werkt het best voor een tandartspraktijk?',
+    answer: 'Voor een tandartspraktijk is de combo de beste keuze: Voice AI (Marco) voor afspraken inplannen, no-show-herinneringen via belletje, en spoed-calls buiten kantoortijden; Chatbot AI (Emma) voor WhatsApp-vragen over openingstijden, verzekering-informatie, behandelingen, en bevestigingen na afloop. Tandartsen hebben zowel een hoog telefoonvolume (afspraken, spoedmeldingen) als een hoog WhatsApp-volume (praktische vragen van patienten). De combo reduceert de personeelslast voor de balie met 60-75 procent op routinecontacten, terwijl complexe situaties altijd naar de praktijkassistente worden doorgeschakeld.',
+  },
+  {
+    question: 'Is Voice AI AVG-compliant voor mijn sector?',
+    answer: 'Voice AI van Aanloop AI verwerkt spraakdata uitsluitend op EU-servers (Frankfurt of Amsterdam, ISO 27001-gecertificeerd). We leveren een verwerkersovereenkomst (AVG artikel 28) met uw praktijk als verwerkingsverantwoordelijke. Gesprekken worden geanonimiseerd na verwerking conform uw retentiebeleid. Voor gezondheids- of medische informatie (zorg, tandarts, fysiotherapeut) configureren we extra escalatie-triggers zodat bijzondere persoonsgegevens nooit door de AI worden bewaard of doorgestuurd zonder expliciete toestemming. NEN 7510-opzet beschikbaar voor zorgsector. Chatbot AI (WhatsApp) verwerkt via de WhatsApp Business API — data blijft binnen Meta-infrastructuur voor de berichtverwerking, maar persoonlijke klantdata wordt uitsluitend op EU-servers van Aanloop AI opgeslagen.',
+  },
+  {
+    question: 'Hoe lang duurt de implementatie van Voice AI versus chatbot?',
+    answer: 'Voice AI (Marco): 14-21 werkdagen voor de standaard-implementatie inclusief stem-kalibratie, agenda-koppeling, kennisbank-opbouw en interne test-fase. Chatbot AI (Emma): 7-14 werkdagen voor WhatsApp Business API-activatie, kennisbank-configuratie en escalatie-protocol. Combo (beide tegelijk): 21-28 werkdagen — de kennisbank wordt gedeeld opgebouwd, waardoor de extra tijd beperkt is. Voor multi-locatie of complexe CRM-integraties: 28-42 werkdagen. Na live-gang is er een monitoring-periode van 2-4 weken waarbij we dagelijks bijsturen op basis van echte gesprekken.',
+  },
+  {
+    question: 'Wat kost Voice AI versus chatbot per maand?',
+    answer: 'Marco (Voice AI) is beschikbaar vanaf 597 euro per maand. Emma (chatbot/WhatsApp) is beschikbaar als standalone product. De AI-Website Bundel met Marco plus Emma plus AI-ready website is het meest kosteneffectieve instappakket voor MKB dat beide kanalen wil — zie de tarieven-pagina voor actuele prijzen. Alle pakketten zijn maandelijks opzegbaar, geen exit-fees. Setup-kosten zijn eenmalig bij aanvang.',
+  },
+  {
+    question: 'Wat als mijn klanten zowel bellen als WhatsApp-berichten sturen?',
+    answer: 'Dan is de combo de juiste keuze. Multi-channel klanten hebben hogere klanttevredenheid als ze op elk kanaal een consistent, snel antwoord krijgen. Met Marco en Emma op een gedeelde kennisbank ziet de klant geen verschil — of ze nu bellen of appen, ze krijgen dezelfde informatie over uw openingstijden, diensten, tarieven en beschikbaarheid. Bovendien maakt de combo een lead-handover-flow mogelijk: Emma screent via WhatsApp de klantbehoefte voor (naam, vraagtype, urgentie), en Marco belt de gekwalificeerde lead terug op het juiste moment. Dit verhoogt conversie significant voor hogere-ticket-diensten zoals advocatuur, makelaars en financieel advies.',
+  },
+  {
+    question: 'Kan Voice AI ook uitgaande calls doen voor afspraak-herinneringen?',
+    answer: 'Ja, dit is een van de hoogste-impact use-cases van Marco: geautomatiseerde herinneringsbelletjes 24-48 uur voor een afspraak met optie voor bevestigen, verzetten of annuleren via spraakinteractie. No-show-reductie van gemiddeld 30-55 procent is haalbaar in sectoren zoals zorg, beauty en juridisch. De AI belt op een door u ingesteld tijdstip, spreekt de klant op naam aan, noemt de afspraak-details, en verwerkt de klantrespons direct terug in uw agenda (via Calendly, Google Calendar, Microsoft Bookings, Cliniq Apps, of ander gekoppeld systeem). Chatbot kan vergelijkbare herinneringen doen via WhatsApp — maar bellen heeft typisch een 2-3 keer hogere respons-rate dan een WhatsApp-bericht voor afspraak-herinneringen.',
+  },
+];
+
+const voiceAiScenarios = [
+  {
+    title: 'Hoog inkomend telefoonvolume (50+ calls per dag)',
+    body: 'Bedrijven met meer dan 50 inkomende calls per dag — inclusief tandartsen, huisartsenpraktijken, autogarages, kappers en makelaars — verliezen zonder Voice AI structureel leads en omzet. Elke niet-aangenomen call is een potentiele klant die naar de concurrent belt. Marco beantwoordt alle inkomende calls 24/7, neemt een bericht op, plant een afspraak in of schakelt door — ook tijdens drukke momenten of wanneer alle lijnen bezet zijn. Dit is de klassieke use-case waarbij Voice AI zichzelf binnen 4-8 weken terugverdient.',
+  },
+  {
+    title: '24/7 bereikbaarheid kritiek (zorg, advocaten, makelaars)',
+    body: 'Voor sectoren waar urgentie hoog is — spoedoproepen bij huisarts of tandarts, aanvragen bij een advocaat na een ongeluk, interesse bij een makelaar op een avondexpositie — is 24/7 telefonische bereikbaarheid een concurrentievoordeel. Marco neemt elke call aan, ook om 23:00 of op zondag, kwalificeert de urgentie en schakelt bij echte spoed door naar de dienstdoende medewerker. Niet-urgente contacten worden netjes vastgelegd voor de eerstvolgende werkdag. Klanten weten dat ze altijd geholpen worden.',
+  },
+  {
+    title: 'Klantpopulatie gebruikt voornamelijk de telefoon',
+    body: 'Oudere klantgroepen (55+) en klanten in hoog-tempo beroepen (bouw, transport, horeca) communiceren sterk via telefoon. Voor een pedicure, audicien, orthopeed of keuringsstation is de telefoon het primaire kanaal voor nieuwe klanten. Chatbot via WhatsApp bereikt deze doelgroep minder effectief. Voice AI sluit aan bij het gedrag van uw klanten zonder hen te dwingen een app te openen of te typen.',
+  },
+  {
+    title: 'No-show reductie via afspraak-bevestiging-calls',
+    body: 'In sectoren met hoge no-show-kosten — zorgpraktijken, schoonheidssalons, autogarages, fysiotherapeuten — biedt Voice AI een directe ROI via geautomatiseerde herinneringsbelletjes. Marco belt 24-48 uur voor de afspraak, vraagt om bevestiging en verwerkt een annulering of wijziging direct terug in de agenda. No-show-reductie van 30-55 procent is realistisch. Dit maakt de agenda-bezetting dichter en verhoogt omzet per medewerker significant — zonder dat een receptionist hier tijd aan kwijt is.',
+  },
+  {
+    title: 'Compliance bij gesprekken vereist logging (Wft, AVG strict)',
+    body: 'Financieel adviseurs, verzekerings-intermediairs en accountants hebben soms een logging- of registratieplicht voor klantcontact. Voice AI met gesprekslogging en transcript-functie biedt een audittrail die handmatig noteren nooit kan bieden. Elke call wordt vastgelegd met datum, tijdstip, samenvatting en escalatie-status. Wft-grens wordt gerespecteerd: Voice AI geeft nooit advies, noteert alleen feitelijke klantinformatie en schakelt door bij advies-vragen.',
+  },
+];
+
+const chatbotScenarios = [
+  {
+    title: 'Hoog web- of WhatsApp-berichtenvolume',
+    body: 'Bedrijven die dagelijks tientallen WhatsApp-berichten of website-contactvragen ontvangen — webshops, restaurants, evenementbedrijven, verhuurorganisaties — lopen vast zonder geautomatiseerde afhandeling. Emma beantwoordt alle inkomende WhatsApp-berichten en website-chats direct, ook buiten kantooruren, en handelt routinevragen (openingstijden, beschikbaarheid, prijzen, levertijden) volledig zelfstandig af. Dit scheelt een medewerker 4-8 uur per dag op routineberichtverkeer.',
+  },
+  {
+    title: 'Customer support 24/7 zonder extra personeel',
+    body: 'Voor MKB-bedrijven met klanten in meerdere tijdzones of met late-avond-orders is een chatbot de meest kosteneffectieve manier om 24/7 support te bieden. Emma handelt statusvragen, retourinstructies, algemene klachten en productvragen af zonder wachttijd — ook op zaterdag om 22:00. Pas bij complexe klachten of emotioneel geladen berichten escaleert Emma naar een medewerker. Dit verhoogt klanttevredenheid zonder personeelsuitbreiding.',
+  },
+  {
+    title: 'Webshop FAQ en cart-recovery',
+    body: 'Webshops verliezen dagelijks omzet door verlaten winkelwagens en onbeantwoorde product-vragen die twijfel veroorzaken. Emma op uw website of WhatsApp herkent verlaten winkelwagen-patronen, stuurt een proactief bericht met antwoord op veelgestelde product-vragen, en begeleidt de klant naar de bestelling. FAQ-afhandeling via chatbot (maatvoering, leveringstijden, retourbeleid, garanties) verlaagt het percentage verlaten winkelwagens met 15-30 procent voor typische Nederlandse webshops.',
+  },
+  {
+    title: 'Lead-pre-screening voor sales',
+    body: 'B2B-bedrijven en hogere-ticket-dienstverleners (consultants, coaches, installateurs, IT-dienstverleners) willen niet elke aanvraag persoonlijk kwalificeren. Emma stelt via WhatsApp of website-chat de kwalificatie-vragen: wat is uw huidige situatie, wat is uw budget, wanneer wilt u starten, wat is de urgentie. Alleen leads die alle kwalificatie-criteria halen worden doorgezet voor een gesprek met de accountmanager of eigenaar. Dit bespaart 60-80 procent van de tijd die nu in ongekwalificeerde gesprekken gaat.',
+  },
+  {
+    title: 'Asynchroon klantcontact (klanten beantwoorden op eigen tempo)',
+    body: 'WhatsApp-communicatie is van nature asynchroon: klanten lezen en antwoorden wanneer het hun uitkomt — in de trein, tijdens lunch, na het werk. Dit gedrag past niet bij telefonie, maar perfect bij chatbot. Sectoren waar klanten bewust kiezen voor schriftelijk contact (accountancy, juridisch advies op instapniveau, online coaching, verzekeringen) hebben meer succes met chatbot als eerste contactpunt. De klant voelt minder druk en de conversie-kwaliteit is hoger.',
+  },
+];
+
+const comboScenarios = [
+  {
+    title: 'Multi-channel klanten die zowel bellen als appen',
+    body: 'Wanneer uw klantenbestand beide kanalen gebruikt — deels telefoon, deels WhatsApp — is de combo de enige manier om iedereen consistent te bedienen. Inconsistentie in responstijd of kwaliteit tussen kanalen is een van de sterkste klant-irritaties. Marco en Emma delen een kennisbank, waardoor de klant altijd hetzelfde antwoord krijgt, ongeacht het kanaal. Dit is geen luxe maar een standaard verwachting geworden in het Nederlandse MKB-segment.',
+  },
+  {
+    title: 'Sectoren waar zowel telefoon als WhatsApp dominant zijn',
+    body: 'Tandartsen, advocaten, makelaars, restaurants en kapsalons hebben doorgaans een mix van telefoon-afspraken (voice dominant) en WhatsApp-vragen (chat dominant). Een Voice AI zonder chatbot mist de WhatsApp-stroom; een chatbot zonder Voice AI mist de telefoonstroom. De combo dekt het volledige communicatieprofiel van deze sectoren en zorgt dat geen enkel klantcontact-moment onbeantwoord blijft.',
+  },
+  {
+    title: 'Lead-handover: chatbot screent, voice AI sluit',
+    body: 'De krachtigste combinatie voor hogere-ticket-dienstverleners: Emma kwalificeert de lead via WhatsApp (budget, tijdlijn, urgentie, vraagtype) en zodra de lead gekwalificeerd is, plant Marco een terugbelafspraak of belt de lead proactief terug. Dit is de digitale versie van een goed georkestreerd sales-proces waarbij ongekwalificeerde leads worden gefilterd en gekwalificeerde leads snel persoonlijk worden geholpen. Conversie op hogere-ticket-diensten (advies, installatie, begeleiding) stijgt typisch 20-40 procent ten opzichte van uitsluitend WhatsApp of uitsluitend telefoon.',
+  },
+];
+
+const comparisonRows = [
+  { aspect: 'Kanaal',              voice: 'Telefoon (inbound + outbound)',           chatbot: 'WhatsApp, website-chat, e-mail' },
+  { aspect: 'Interactie-type',     voice: 'Real-time gesproken taal',                chatbot: 'Asynchroon geschreven tekst' },
+  { aspect: 'Prijs',               voice: 'Vanaf 597 euro per maand (Marco)',         chatbot: 'Zie tarieven-pagina (Emma)' },
+  { aspect: 'Setup-tijd',          voice: '14-21 werkdagen',                         chatbot: '7-14 werkdagen' },
+  { aspect: 'Talen',               voice: 'Nederlands native + Engels, Duits, Frans', chatbot: 'Nederlands native + 20+ talen via WhatsApp' },
+  { aspect: 'Agenda-koppeling',    voice: 'Calendly, Google Calendar, MS Bookings, Cliniq', chatbot: 'Calendly, Google Calendar (via koppeling)' },
+  { aspect: 'CRM-integratie',      voice: 'HubSpot, Salesforce, Pipedrive, Exact, custom', chatbot: 'HubSpot, Salesforce, Pipedrive, custom' },
+  { aspect: 'WhatsApp Business',   voice: 'Niet van toepassing',                     chatbot: 'Native (Meta WhatsApp Business API)' },
+  { aspect: 'No-show reductie',    voice: 'Ja — herinneringsbelletjes 24-48u voor afspraak', chatbot: 'Beperkt — herinneringsberichten minder respons' },
+  { aspect: 'Lead-pre-screening',  voice: 'Ja — tijdens gesprek',                    chatbot: 'Ja — via gestructureerde vragenflow' },
+  { aspect: 'AVG-compliance',      voice: 'EU-servers, verwerkersovereenkomst, transcript-retentie instelbaar', chatbot: 'EU-servers voor klantdata, Meta voor berichtverwerking, verwerkersovereenkomst' },
+  { aspect: 'NEN 7510 (zorg)',     voice: 'Beschikbaar op aanvraag',                 chatbot: 'Beschikbaar op aanvraag' },
+  { aspect: 'Wft-grens',           voice: 'Geen advies, alleen informatief + escalatie', chatbot: 'Geen advies, alleen informatief + escalatie' },
+  { aspect: 'Ideale sectoren',     voice: 'Zorg, advocaten, makelaars, autogarages, pedicure, kappers', chatbot: 'Webshops, horeca, logistiek, coaches, IT-dienstverleners' },
+];
+
+const sectorRecommendations = [
+  { sector: 'Zorg (huisarts, fysio, tandarts)',       prio: 'Voice AI prio', rationale: 'Telefoon dominant — spoedoproepen, afspraken inplannen, herinneringsbelletjes. Combo bij hoog WhatsApp-volume.', product: 'Marco + optioneel Emma' },
+  { sector: 'Webshop (e-commerce)',                   prio: 'Chatbot AI prio', rationale: 'WhatsApp/website dominant — productvragen, bestelstatus, retour, cart-recovery. Voice optioneel bij hoge klantenservice-escalaties.', product: 'Emma + optioneel Marco' },
+  { sector: 'Tandarts',                               prio: 'Combo (aanbevolen)', rationale: 'Telefoon voor afspraken en spoed, WhatsApp voor patienten-vragen over behandelingen, kosten en verzekeraar.', product: 'Marco + Emma' },
+  { sector: 'Accountantskantoor',                     prio: 'Voice AI prio', rationale: 'Telefoon dominant — klanten bellen voor deadlines, vragen over aangifte, afspraken. WhatsApp-volume doorgaans laag.', product: 'Marco + optioneel Emma' },
+  { sector: 'Advocatenkantoor',                       prio: 'Combo (aanbevolen)', rationale: 'Telefoon voor urgente juridische vragen en intake, WhatsApp voor documentdoorgifte en statusupdates bij lopende zaken.', product: 'Marco + Emma' },
+  { sector: 'Restaurant / horeca',                    prio: 'Combo (aanbevolen)', rationale: 'Telefoon voor reserveringen en spoedinformatie, WhatsApp voor menu-vragen, allergenen-informatie en bevestigingen.', product: 'Marco + Emma' },
+  { sector: 'Pedicure / schoonheidssalon / kapper',  prio: 'Voice AI prio', rationale: 'Oudere klantdemografie telefoon-dominant. Afspraakinplannen en no-show-recall zijn de primaire use-cases.', product: 'Marco (eventueel Emma na 6 mnd)' },
+  { sector: 'Logistiek / transport',                  prio: 'Chatbot AI prio', rationale: 'Track-trace vragen, leveringsstatus, afwijkingen asynchroon via WhatsApp afhandelen past bij het operationele ritme in de sector.', product: 'Emma + optioneel Marco' },
+];
+
+const roadmapPhases = [
+  {
+    phase: 'Fase 1: Kies het hoogste-volume-kanaal',
+    tijdlijn: 'Week 1-3',
+    body: 'Analyseer uw inkomende contacten van de afgelopen 3 maanden: hoeveel calls, hoeveel WhatsApp-berichten, hoeveel website-chat-vragen? Kies het kanaal met het hoogste volume als startpunt. Voor solo-MKB en teams tot 5 personen: typisch Voice AI als telefoon dominant is. Voor webshops en horeca: typisch chatbot. Onboarding-analyse identificeert top-10 vragen en top-5 escalaties zodat de configuratie direct op uw echte situatie is gericht.',
+  },
+  {
+    phase: 'Fase 2: Live-gang en eerste stabilisatie',
+    tijdlijn: 'Week 4-8',
+    body: 'Het eerste kanaal gaat live op 25-35 procent van het verkeer. Dagelijkse monitoring van escalatie-rate, conversie, klanttevredenheid en kennisbank-gaps. Aanpassingen worden wekelijks doorgevoerd. Na 4 weken volledig live op primair kanaal. KPI-rapport na 30 dagen toont concrete resultaten: lead-conversie, no-show-reductie, tijdsbesparing. Dit vormt ook het business-case fundament voor het tweede kanaal.',
+  },
+  {
+    phase: 'Fase 3: Tweede kanaal toevoegen (combo-upgrade)',
+    tijdlijn: 'Maand 3-6 (solo MKB) of direct (multi-locatie)',
+    body: 'Solo-MKB en kleine teams: zodra het eerste kanaal stabiel loopt (escalatie-rate onder 15 procent, lead-conversie stabiel), start de integratie van het tweede kanaal. De bestaande kennisbank is herbruikbaar — tweede implementatie duurt 40-60 procent korter. Multi-locatie-bedrijven en organisaties met aantoonbaar hoog volume op beide kanalen starten direct met de combo om consistentie over alle locaties te garanderen.',
+  },
+];
+---
+
+<BaseLayout
+  title="Voice AI vs chatbot MKB beslisgids 2026"
+  description="Volledige beslisgids voor MKB-eigenaren: Voice AI (telefoon) vs Chatbot AI (WhatsApp/website) vs Combo. Scenarios, vergelijkingstabel, sector-aanbevelingen en implementatie-roadmap."
+  schema={[articleSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <!-- Hero -->
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Beslisgids — AI-assistent types</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          Voice AI vs chatbot — welke past bij uw MKB? (Beslisgids 2026)
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
+          Twee fundamenteel verschillende AI-assistenten staan ter beschikking van het Nederlandse MKB: Voice AI die inkomende en uitgaande telefooncontacten verwerkt, en Chatbot AI die WhatsApp-berichten en website-chats afhandelt. Geen van beide is universeel beter — de juiste keuze hangt af van uw klantgedrag, sector, inkomend contactvolume en beschikbaar budget. Deze beslisgids legt het verschil uit, geeft scenario's voor elk type en presenteert een vergelijkingstabel en sector-specifieke aanbevelingen zodat u vandaag een onderbouwde keuze kunt maken. Voor de meeste MKB-bedrijven in Nederland geldt: beginnen met het kanaal dat het meeste klantvolume heeft, stabiliseren, en dan uitbreiden naar de combo. Hieronder alles wat u nodig heeft om die beslissing goed te maken.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sectie 1: Twee fundamentele AI-assistent types -->
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">De twee fundamentele AI-assistent types uitgelegd</h2>
+
+      <h3 class="text-xl font-bold text-navy mb-3 reveal reveal-delay-1">Voice AI — telefonische aanwezigheid zonder personeel</h3>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">
+        Voice AI is een AI-assistent die via de telefoon werkt: inkomende calls beantwoorden, gesproken taal begrijpen, klantinformatie noteren, afspraken inplannen in een gekoppelde agenda, urgent contact doorschakelen naar de juiste persoon, en uitgaande herinneringsbelletjes doen. Voice AI klinkt menselijk, spreekt Nederlands native, stelt gerichte vragen om de klantvraag te kwalificeren en escaleert bij complexe of emotionele situaties direct naar een medewerker.
+      </p>
+      <p class="text-slate-600 leading-relaxed mb-6 reveal reveal-delay-1">
+        Sterke punten van Voice AI: hoogste respons-rate (telefoon wordt het vaakst en snelst beantwoord door klanten), geschikt voor urgente contactmomenten, bereikt oudere klantgroepen die niet WhatsApp-actief zijn, ideaal voor afspraakbeheer en no-show-reductie, en biedt een professionele indruk door 24/7 beschikbaarheid ook buiten kantoortijden. Marco is het Voice AI-product van Aanloop AI voor het Nederlandse MKB — telefoon-AI receptionist die de telefoon altijd aanneemt.
+      </p>
+
+      <h3 class="text-xl font-bold text-navy mb-3 reveal reveal-delay-2">Chatbot AI — schriftelijk klantcontact op schaal</h3>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-2">
+        Chatbot AI is een AI-assistent die via tekst-kanalen werkt: WhatsApp-berichten beantwoorden, website-chat afhandelen, vragen over openingstijden en prijzen beantwoorden, bestelstatussen opzoeken, leads pre-screenen via gestructureerde vragenflows, en documenten of links versturen. Chatbot AI is asynchroon — de klant stuurt een bericht, de AI antwoordt direct, maar de klant hoeft niet in real-time aanwezig te zijn. Dit past bij het communicatiegedrag van veel Nederlandse consumenten die liever appen dan bellen.
+      </p>
+      <p class="text-slate-600 leading-relaxed mb-6 reveal reveal-delay-2">
+        Sterke punten van Chatbot AI: schaalt eenvoudig bij hoog berichtenvolume, beheert meerdere gesprekken tegelijk, asynchroon contact past bij klantgedrag voor praktische vragen, rich media (foto's, PDFs, links) verzenden is eenvoudig, en WhatsApp Business API heeft de hoogste open-rate van alle klantcommunicatie-kanalen in Nederland (gemiddeld 95 procent). Emma is het Chatbot AI-product van Aanloop AI voor het Nederlandse MKB — WhatsApp-assistent en website-chat die altijd antwoordt.
+      </p>
+    </div>
+  </section>
+
+  <!-- Sectie 2: Wanneer kies je Voice AI -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Scenario-analyse</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wanneer kiest u Voice AI?</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Vijf scenarios waarbij Voice AI de duidelijk betere keuze is voor uw MKB. Herkent u meerdere scenarios? Dan is Voice AI uw startpunt.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-6">
+        {voiceAiScenarios.map((s, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <div class="flex items-start gap-3 mb-3">
+              <div class="w-8 h-8 rounded-lg bg-brand-indigo/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg class="w-4 h-4 text-brand-indigo" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+              </div>
+              <p class="text-base font-bold text-navy">{s.title}</p>
+            </div>
+            <p class="text-sm text-slate-600 leading-relaxed">{s.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Sectie 3: Wanneer kies je Chatbot AI -->
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Scenario-analyse</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wanneer kiest u Chatbot AI?</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Vijf scenarios waarbij Chatbot AI de duidelijk betere keuze is voor uw MKB. Herkent u meerdere scenarios? Dan is Chatbot AI uw startpunt.</p>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-6">
+        {chatbotScenarios.map((s, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+            <div class="flex items-start gap-3 mb-3">
+              <div class="w-8 h-8 rounded-lg bg-brand-emerald/10 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <svg class="w-4 h-4 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+              </div>
+              <p class="text-base font-bold text-navy">{s.title}</p>
+            </div>
+            <p class="text-sm text-slate-600 leading-relaxed">{s.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Sectie 4: Wanneer combineren -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Decision matrix</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wanneer kiest u de combo (Voice AI + Chatbot)?</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Drie situaties waarbij de combinatie van Voice AI en Chatbot AI meer oplevert dan elk type afzonderlijk.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        {comboScenarios.map((s, i) => (
+          <div class={'rounded-2xl border-2 border-brand-indigo/20 bg-white p-6 reveal' + (i > 0 ? ' reveal-delay-' + i : '')}>
+            <div class="w-8 h-8 rounded-lg bg-brand-indigo/10 flex items-center justify-center mb-3">
+              <svg class="w-4 h-4 text-brand-indigo" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            </div>
+            <p class="text-base font-bold text-navy mb-2">{s.title}</p>
+            <p class="text-sm text-slate-600 leading-relaxed">{s.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Sectie 5: Vergelijkingstabel -->
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Overzicht</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Vergelijkingstabel: Voice AI vs Chatbot AI</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Alle relevante dimensies naast elkaar voor uw beslissing.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[28%]">Dimensie</th>
+              <th class="text-left py-3 px-4 font-bold text-brand-indigo w-[36%]">Voice AI (Marco)</th>
+              <th class="text-left py-3 px-4 font-bold text-brand-emerald w-[36%]">Chatbot AI (Emma)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {comparisonRows.map(r => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-navy text-xs">{r.aspect}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs">{r.voice}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs">{r.chatbot}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sectie 6: Sector-aanbevelingen -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Sector-gids</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Sector-specifieke aanbeveling — 8 Nederlandse MKB-sectoren</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Gebaseerd op klantcommunicatie-patronen, gemiddeld belvolume en WhatsApp-gebruik per sector in het Nederlandse MKB.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[26%]">Sector</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[20%]">Aanbeveling</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[38%]">Rationale</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[16%]">Product</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {sectorRecommendations.map(r => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-navy text-xs">{r.sector}</td>
+                <td class="py-3 px-4 text-xs">
+                  <span class={
+                    r.prio.includes('Voice') ? 'inline-block px-2 py-0.5 rounded-full bg-brand-indigo/10 text-brand-indigo font-semibold' :
+                    r.prio.includes('Chatbot') ? 'inline-block px-2 py-0.5 rounded-full bg-brand-emerald/10 text-brand-emerald font-semibold' :
+                    'inline-block px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-semibold'
+                  }>{r.prio}</span>
+                </td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.rationale}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs font-medium">{r.product}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sectie 7: Implementatie roadmap -->
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Implementatie roadmap — welke eerst, wanneer uitbreiden?</h2>
+      <p class="text-slate-600 leading-relaxed mb-8 reveal reveal-delay-1">
+        De implementatie-volgorde heeft directe invloed op de snelheid waarmee u ROI realiseert en op de kwaliteit van de klantervaring. Een gefaseerde aanpak — eerst het hoogste-volume-kanaal, dan uitbreiden naar combo — werkt voor de meeste solo-MKB en kleine teams beter dan direct op twee kanalen tegelijk starten. Uitzondering: multi-locatie-bedrijven die direct een consistent communicatiebeleid over alle locaties willen, starten direct met de combo.
+      </p>
+      <div class="space-y-6">
+        {roadmapPhases.map((p, i) => (
+          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i > 0 ? ' reveal-delay-' + i : '')}>
+            <div class="flex items-start gap-4">
+              <div class="w-8 h-8 rounded-full bg-brand-indigo flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span class="text-sm font-bold text-white">{i + 1}</span>
+              </div>
+              <div>
+                <p class="text-base font-bold text-navy mb-1">{p.phase}</p>
+                <p class="text-xs font-medium text-brand-indigo mb-2">{p.tijdlijn}</p>
+                <p class="text-sm text-slate-600 leading-relaxed">{p.body}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Sectie 8: FAQ -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Voice AI vs chatbot — antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Sectie 9: Bronnen + cross-links -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Verder lezen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Producten, vergelijkingen en verwante gidsen.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="/diensten/marco/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Marco — Voice AI receptionist</p>
+          <p class="text-slate-600 mt-1 text-xs">Het telefoon-AI product van Aanloop AI voor het Nederlandse MKB — 24/7 beschikbaar, NL native, agenda-koppeling.</p>
+        </a>
+        <a href="/diensten/emma/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Emma — Chatbot AI (WhatsApp)</p>
+          <p class="text-slate-600 mt-1 text-xs">Het WhatsApp-assistent- en website-chat-product van Aanloop AI — asynchroon, multi-taal, lead-pre-screening.</p>
+        </a>
+        <a href="/diensten/ai-website-bundel-mkb-nederland/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">AI-Website Bundel — Marco + Emma + website</p>
+          <p class="text-slate-600 mt-1 text-xs">De combo in een pakket: Voice AI, Chatbot AI en AI-ready website met één contract en één aanspreekpunt.</p>
+        </a>
+        <a href="/tarieven/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Tarieven — actuele prijzen</p>
+          <p class="text-slate-600 mt-1 text-xs">Overzicht van alle pakketten, setup-kosten en maandelijkse tarieven voor Marco, Emma en de combo.</p>
+        </a>
+        <a href="/vergelijk/aanloop-vs-voicelabs/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Aanloop AI vs VoiceLabs — vergelijking</p>
+          <p class="text-slate-600 mt-1 text-xs">Onafhankelijke vergelijking van twee Nederlandse Voice AI-aanbieders op prijs, features en sectorpasvorm.</p>
+        </a>
+        <a href="/kennisbank/ai-receptionist-vs-ai-telefoniste-vergelijking/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">AI Receptionist vs AI Telefoniste</p>
+          <p class="text-slate-600 mt-1 text-xs">Verwante vergelijking binnen het Voice AI-domein: receptionist, telefoniste en telefoonassistent uitgelegd.</p>
+        </a>
+        <a href="/kennisbank/ai-voor-shopify-webshop-nederland/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">AI voor Shopify-webshop Nederland</p>
+          <p class="text-slate-600 mt-1 text-xs">Specifieke implementatiegids voor webshops: Chatbot AI voor WhatsApp, cart-recovery en klantenservice.</p>
+        </a>
+        <a href="/ai-roi-calculator/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">ROI-calculator</p>
+          <p class="text-slate-600 mt-1 text-xs">Bereken zelf uw verwachte ROI op Voice AI, Chatbot of de combo — op basis van uw belvolume en omzet per lead.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA dark -->
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance reveal">
+          Klaar om te kiezen — of wilt u het samen doorlopen?
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed reveal reveal-delay-1">
+          In een demo van 30 minuten bespreken we uw contactvolume, klantdemografie en sector. U hoort live hoe Marco telefooncontacten afhandelt en hoe Emma WhatsApp-berichten beantwoordt — zodat u concreet voelt welk type, of welke combo, bij uw MKB past. Onboarding 7-28 werkdagen afhankelijk van het gekozen kanaal. EU-dataverwerking, AVG-verwerkersovereenkomst inbegrepen, maandelijks opzegbaar.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+          <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Boek een gratis demo
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Bekijk tarieven
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
