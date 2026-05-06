@@ -30,6 +30,56 @@ const schema = { '@context': 'https://schema.org', '@type': 'Service', name: 'AI
       </div>
     </div>
   </section>
+  <!-- Sector-specifieke uitdagingen -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Uitdagingen voor webshops & e-commerce</p>
+        <h2 class="text-2xl font-bold text-navy mb-6">Waarom klantenservice bij webshops zonder AI escaleert</h2>
+        <p class="text-slate-600 leading-relaxed mb-6">Nederlandse webshops ontvangen gemiddeld 3–8 klantenservice-contacten per 100 bestellingen. Bij een webshop met 500 bestellingen per maand zijn dat 15–40 contactmomenten per dag — over orderstatus, retourvragen, leveringstijden en productadvies. Zonder AI-ondersteuning kost dit een fulltime equivalent of leidt tot lange reactietijden en dalende klanttevredenheid.</p>
+      </div>
+      <div class="space-y-5 reveal">
+        {[
+          { title: 'Klantenservice volume domineert de werkdag', body: 'Tot 70% van alle klantenservice-vragen bij webshops zijn repetitief: "Waar is mijn bestelling?", "Hoe retourneer ik?", "Wanneer wordt bezorgd?" AI agent Emma beantwoordt deze vragen automatisch via WhatsApp en chat — met real-time koppeling aan uw WooCommerce of Shopify orderdata.' },
+          { title: 'Retourafhandeling drukt de marge bij hoog volume', body: 'Elk retourproces kost gemiddeld €4–8 aan personeelskosten. Bij webshops met een retourpercentage van 20–30% (mode, elektronica) loopt dit snel op. AI automatiseert de retouraanvraag, genereert retourlabels via koppeling met PostNL/DHL Parcel en houdt de retourstatus bij — zonder menselijke ingreep.' },
+          { title: 'Seizoenspieken zijn niet op te vangen met vast personeel', body: 'Singles Day, Black Friday en de kerstperiode verveelvoudigen het klantenservice-volume binnen enkele dagen. Vast personeel aannemen voor piekperiodes is niet kostenefficiënt. AI schaalt automatisch op: geen extra kosten, geen inwerktijd, dezelfde responstijd.' },
+          { title: 'Productadvies en cross-selling blijven onderbenut', body: 'Klanten die via WhatsApp of chat contact opnemen, zijn koopbereid. Zonder AI-ondersteuning worden ze standaard doorverwezen naar de website. Met AI wordt de klantintentie herkend en wordt direct het juiste product aanbevolen — inclusief cross-sell op basis van eerdere aankopen.' },
+        ].map(item => (
+          <div class="border border-slate-200 rounded-xl p-5 bg-white">
+            <h3 class="font-semibold text-navy mb-2 text-sm">{item.title}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{item.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust signals -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-8 reveal">
+        <p class="eyebrow mb-2">Compliance & integraties</p>
+        <h2 class="text-2xl font-bold text-navy mb-4">Voor webshops werken wij speciaal met</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 reveal">
+        {[
+          { icon: '🛒', title: 'Shopify, WooCommerce & Lightspeed koppelingen', body: 'Directe API-koppeling met Shopify, WooCommerce, Magento en Lightspeed. De AI agent heeft real-time toegang tot orderdata, voorraadstatus en klantinformatie. Bestellingsupdates worden automatisch gesynchroniseerd.' },
+          { icon: '📦', title: 'PostNL, DHL Parcel & Sendcloud integraties', body: 'Track & trace informatie wordt direct opgehaald uit PostNL, DHL Parcel of via Sendcloud. Klanten ontvangen automatisch een statusupdate bij elke nieuwe scan — proactief, zonder dat ze hoeven te bellen.' },
+          { icon: '💳', title: 'Mollie, iDeal & betalingsstatus', body: 'Betalingsstatus, terugbetalingen en openstaande facturen worden real-time gecheckt via koppeling met Mollie. Bij retour wordt automatisch een terugbetaling geïnitieerd zodra het pakket is ontvangen — volledig traceerbaar.' },
+          { icon: '🔒', title: 'AVG-conforme klantdata verwerking', body: 'Klantdata van uw webshop wordt verwerkt op een Nederlandse server via n8n self-hosted. Geen doorgifte aan Amerikaanse cloudproviders. Transactielogboek beschikbaar voor AVG-audits. Verwerkersovereenkomst inbegrepen conform AVG artikel 28.' },
+        ].map(t => (
+          <div class="flex gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
+            <span class="text-2xl">{t.icon}</span>
+            <div>
+              <p class="font-semibold text-navy text-sm mb-1">{t.title}</p>
+              <p class="text-xs text-slate-600 leading-relaxed">{t.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container-page max-w-4xl mx-auto">
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">

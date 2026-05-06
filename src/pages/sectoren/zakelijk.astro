@@ -41,6 +41,56 @@ const schema = {
       </div>
     </div>
   </section>
+  <!-- Sector-specifieke uitdagingen -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Uitdagingen in zakelijke dienstverlening</p>
+        <h2 class="text-2xl font-bold text-navy mb-6">Waarom adviesbureaus en consultants vastlopen op administratie</h2>
+        <p class="text-slate-600 leading-relaxed mb-6">Zakelijke dienstverleners — adviesbureaus, consultants, interim-bureaus, accountants en juristen — hebben één ding gemeen: hun omzet hangt af van billable uren, maar gemiddeld 35–45% van de werkweek gaat op aan niet-factureerbare activiteiten. E-mails beantwoorden, offertes samenstellen, afspraken inplannen en rapportages produceren. AI lost precies dat op.</p>
+      </div>
+      <div class="space-y-5 reveal">
+        {[
+          { title: 'E-mailbeheer kost consultants dagelijks 1,5–2 uur', body: 'Een gemiddeld adviesbureau ontvangt 60–120 e-mails per dag. De helft zijn statusvragen, vergaderverzoeken of informatieverzoeken die via een standaard antwoord beantwoord kunnen worden. AI verwerkt inkomende e-mails, categoriseert ze op prioriteit en stelt antwoorden op ter goedkeuring — of beantwoordt ze direct voor routinevragen.' },
+          { title: 'Offertes samenstellen duurt te lang voor het resultaat', body: 'Een offerte voor een standaard consultancyproject kost gemiddeld 2–4 uur per voorstel. Met AI worden offertes automatisch samengesteld op basis van het klantprofiel, scope en urentarief — inclusief standaard voorwaarden, deliverables en betalingstermijnen. Goedkeuring door de consultant is één klik.' },
+          { title: 'Rapportages en presentaties zijn repetitief maar tijdrovend', body: 'Maandelijkse statusrapportages, kwartaalpresentaties en voortgangsoverzichten worden bij veel bureaus handmatig samengesteld vanuit spreadsheets en projectdata. AI automatiseert het genereren van rapportages uit uw bestaande databronnen, inclusief grafieken en managementsamenvatting.' },
+          { title: 'Klantopvolging en follow-up valt tussen de wal en het schip', body: 'In drukke projectfasen worden follow-up e-mails na offertes, kennismakingsgesprekken en afgeronde opdrachten vergeten. AI beheert automatisch een follow-up schema: na 3 werkdagen een herinnering, na 7 werkdagen een alternatief voorstel. Nooit meer een warme lead verloren door te late opvolging.' },
+        ].map(item => (
+          <div class="border border-slate-200 rounded-xl p-5 bg-white">
+            <h3 class="font-semibold text-navy mb-2 text-sm">{item.title}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{item.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust signals -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-8 reveal">
+        <p class="eyebrow mb-2">Compliance & werkwijze</p>
+        <h2 class="text-2xl font-bold text-navy mb-4">Voor zakelijke dienstverleners werken wij speciaal met</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 reveal">
+        {[
+          { icon: '🔒', title: 'AVG-conforme verwerking via n8n self-hosted', body: 'Alle klantdata, e-mailcorrespondentie en offertedata worden verwerkt op een Nederlandse server via n8n self-hosted. Geen doorgifte aan Amerikaanse cloudproviders voor gevoelige klantinformatie. Verwerkersovereenkomst inbegrepen conform AVG artikel 28.' },
+          { icon: '📊', title: 'Exact, Twinfield & CRM-koppelingen', body: 'Directe koppeling met de meeste gangbare boekhoud- en CRM-systemen: Exact Online, Twinfield, Visma, HubSpot en Salesforce. Offertes worden automatisch gesynchroniseerd met uw facturatiesysteem zodra ze zijn geaccepteerd.' },
+          { icon: '⚖️', title: 'Wft-grens en geheimhoudingsplicht geborgd', body: 'AI geeft nooit financieel of juridisch advies dat de Wft-grens overschrijdt. De AI stelt vragen, verzamelt informatie en plant afspraken — maar geeft geen concreet beleggings-, fiscaal of juridisch advies. Dit is contractueel vastgelegd in onze verwerkersovereenkomst.' },
+          { icon: '🏗️', title: 'EU AI Act ready — transparantie geborgd', body: 'Aanloop AI past de EU AI Act toe per augustus 2026. Klanten worden transparant geïnformeerd dat zij met een AI agent communiceren. Onze systemen voldoen aan de transparantie- en menselijk-toezicht-eisen van de EU AI Act voor zakelijke toepassingen.' },
+        ].map(t => (
+          <div class="flex gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
+            <span class="text-2xl">{t.icon}</span>
+            <div>
+              <p class="font-semibold text-navy text-sm mb-1">{t.title}</p>
+              <p class="text-xs text-slate-600 leading-relaxed">{t.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container-page">
       <div class="grid lg:grid-cols-2 gap-16 mb-16">

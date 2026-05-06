@@ -48,6 +48,56 @@ const schema = { '@context': 'https://schema.org', '@type': 'Service', name: 'AI
     </div>
   </section>
 
+  <!-- Sector-specifieke uitdagingen -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Uitdagingen in vastgoed & makelaardij</p>
+        <h2 class="text-2xl font-bold text-navy mb-6">Waarom makelaars en vastgoedbedrijven leads mislopen</h2>
+        <p class="text-slate-600 leading-relaxed mb-6">De vastgoedmarkt is 24/7 actief: woningzoekenden browsen op Funda tussen 19:00 en 22:00, bellen op zaterdag en sturen WhatsApp-berichten terwijl uw kantoor gesloten is. Zonder AI-ondersteuning leidt dat structureel tot gemiste leads, no-show bezichtigingen en tijdverlies op niet-gekwalificeerde intake.</p>
+      </div>
+      <div class="space-y-5 reveal">
+        {[
+          { title: 'Leads komen buiten kantooruren binnen', body: 'Funda-bezoekers zijn het actiefst tussen 19:00 en 22:00 en in het weekend. Een gemiste call of onbeantwoord WhatsApp-bericht betekent dat de woningzoekende binnen 10 minuten naar een concurrent belt. AI agent Marco vangt deze leads 24/7 op en kwalificeert direct: budget, gewenste locatie, tijdlijn en type woning.' },
+          { title: 'Intake-kwalificatie kost 4–6 uur per week per makelaar', body: 'Makelaars besteden gemiddeld een volledige werkdag per week aan eerste gesprekken met leads die uiteindelijk niet serieus zijn of buiten het aanbod vallen. AI stelt automatisch kwalificerende vragen en stuurt alleen serieuze kopers door — zo focust u uw tijd op de warme leads.' },
+          { title: 'No-show bij bezichtigingen treft gemiddeld 1 op 5 afspraken', body: 'Zonder geautomatiseerde bevestiging en herinnering loopt het no-show percentage bij bezichtigingen op tot 20%. AI verstuurt automatisch een bevestiging bij inplanning, een herinnering 24 uur van tevoren en een WhatsApp-bericht op de ochtend van de bezichtiging — bewezen effectief via Emma.' },
+          { title: 'Huurderscommunicatie bij verhuurportefeuilles vergt structuur', body: 'Verhuurmakelaars en property managers ontvangen dagelijks huurdersvragen over onderhoud, huurverhoging en contractverlenging. Zonder gestructureerde intake escaleren kleine verzoeken. AI agent Emma verwerkt binnenkomende huurdersvragen via WhatsApp, categoriseert ze en plant technische inspecties direct in uw agenda.' },
+        ].map(item => (
+          <div class="border border-slate-200 rounded-xl p-5 bg-white">
+            <h3 class="font-semibold text-navy mb-2 text-sm">{item.title}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{item.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust signals -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-8 reveal">
+        <p class="eyebrow mb-2">Compliance & werkwijze</p>
+        <h2 class="text-2xl font-bold text-navy mb-4">Voor makelaars en vastgoedbedrijven werken wij speciaal met</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 reveal">
+        {[
+          { icon: '🔗', title: 'CRM & MLS koppelingen', body: 'Directe koppeling met uw bestaande makelaarssoftware: Real Works, Makelaarsland CRM, Brainware en generieke MLS-exports. Woningdata wordt automatisch geladen zodat de AI agent altijd actuele informatie geeft over uw aanbod.' },
+          { icon: '📅', title: 'Agenda-integratie voor bezichtigingsplanning', body: 'Google Calendar en Outlook worden rechtstreeks gekoppeld. Bezichtigingen worden ingepland binnen uw beschikbaarheidsgrenzen, bevestigingen automatisch verstuurd en herinneringen getriggerd 24 uur voor aanvang — geen dubbele boekingen.' },
+          { icon: '💬', title: 'WhatsApp Emma voor huurderscommunicatie', body: 'Emma verwerkt huurdersvragen via WhatsApp Business API: onderhoudsverzoeken, huurincasso-herinneringen en contractvragen. Urgente meldingen worden direct doorgestuurd; routinemeldingen worden gecategoriseerd en ingepland.' },
+          { icon: '🔒', title: 'AVG-compliant leaddata verwerking', body: 'Alle leadgegevens worden verwerkt op een Nederlandse server via n8n self-hosted. Persoonsgegevens van woningzoekenden en huurders worden niet gedeeld met externe partijen. U ontvangt een verwerkersovereenkomst conform AVG artikel 28.' },
+        ].map(t => (
+          <div class="flex gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
+            <span class="text-2xl">{t.icon}</span>
+            <div>
+              <p class="font-semibold text-navy text-sm mb-1">{t.title}</p>
+              <p class="text-xs text-slate-600 leading-relaxed">{t.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container-page">
       <div class="grid lg:grid-cols-2 gap-12 mb-16">

@@ -30,6 +30,56 @@ const schema = { '@context': 'https://schema.org', '@type': 'Service', name: 'AI
       </div>
     </div>
   </section>
+  <!-- Sector-specifieke uitdagingen -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Uitdagingen voor ZZP'ers</p>
+        <h2 class="text-2xl font-bold text-navy mb-6">Waarom ZZP'ers structureel leads mislopen</h2>
+        <p class="text-slate-600 leading-relaxed mb-6">Als ZZP'er bent u tegelijkertijd uitvoerder, accountmanager, receptionist en administrateur. Terwijl u in de uitvoering zit — op locatie werkt, coacht, installeert of adviseert — gaat de telefoon. En die call is vaak een nieuwe lead die binnen 10 minuten naar een concurrent belt als hij geen antwoord krijgt. Zonder AI-ondersteuning is 24/7 bereikbaarheid voor een eenmanszaak simpelweg niet haalbaar.</p>
+      </div>
+      <div class="space-y-5 reveal">
+        {[
+          { title: 'Gemiste calls tijdens uitvoering zijn gemiste omzet', body: 'Onderzoek toont dat 78% van klanten de volgende leverancier belt als de eerste niet opneemt. Als ZZP\'er kunt u tijdens een opdracht niet opnemen — maar dat betekent niet dat de lead wacht. AI agent Marco neemt uw telefoon aan, beantwoordt vragen over uw diensten, tarieven en beschikbaarheid, en plant direct een afspraak in.' },
+          { title: 'Geen personeel betekent geen administratieve ondersteuning', body: 'Offertes sturen, herinneringen versturen, facturen opvolgen, agenda beheren — bij een eenmanszaak doet u dat allemaal zelf. Na een lange werkdag zijn dit de taken die blijven liggen. AI automatiseert offerteherinneringen, factuurherinneringen en lead-follow-up zodat u zich kunt focussen op uw vak.' },
+          { title: 'Deeltijds werken als ZZP\'er vergroot het bereikbaarheidsgat', body: 'Veel ZZP\'ers werken deels in loondienst of combineren meerdere activiteiten. Juist dan is bereikbaarheid een probleem: de klant belt op een moment dat u niet beschikbaar bent. AI werkt 24/7 — ook in de uren dat u in dienst bent bij een opdrachtgever, kinderen haalt of slaapt.' },
+          { title: 'AVG voor eenmanszaken is een onderschat risico', body: 'Ook als ZZP\'er bent u verplicht AVG-conform te werken als u persoonsgegevens verwerkt. Een AI agent die klantdata verwerkt, moet voldoen aan de AVG. Aanloop AI verwerkt alle data op een Nederlandse server via n8n self-hosted — geen Amerikaans platform. U ontvangt een verwerkersovereenkomst conform AVG artikel 28.' },
+        ].map(item => (
+          <div class="border border-slate-200 rounded-xl p-5 bg-white">
+            <h3 class="font-semibold text-navy mb-2 text-sm">{item.title}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{item.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust signals -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-8 reveal">
+        <p class="eyebrow mb-2">Werkwijze & compliance</p>
+        <h2 class="text-2xl font-bold text-navy mb-4">Voor ZZP'ers werken wij speciaal met</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 reveal">
+        {[
+          { icon: '📞', title: 'Marco: telefoon-AI voor ZZP', body: 'Marco is uw 24/7 AI-telefoniste die calls aanneemt op uw bestaande telefoonnummer. Hij beantwoordt vragen over uw diensten, tarieven, beschikbaarheid en plant afspraken direct in uw agenda. U ontvangt na elk gesprek een transcript per e-mail.' },
+          { icon: '💬', title: 'Emma: WhatsApp Business voor klantcontact', body: 'Emma beantwoordt WhatsApp-berichten van bestaande en nieuwe klanten, stuurt offerteherinneringen en bevestigt afspraken. Koppelt met uw Google Calendar of Outlook. Vanaf €197/maand als standalone add-on.' },
+          { icon: '🔗', title: 'Agenda & boekingssysteem koppeling', body: 'Directe koppeling met Google Calendar, Outlook, Calendly en Acuity Scheduling. Afspraken worden ingepland op basis van uw beschikbaarheid — zonder heen-en-weer communicatie. U bepaalt zelf welke slots de AI beschikbaar stelt.' },
+          { icon: '🔒', title: 'AVG-compliant voor eenmanszaken', body: 'Klantdata van uw ZZP-bedrijf wordt verwerkt op een Nederlandse server via n8n self-hosted. Geen data bij Amerikaanse providers. Verwerkersovereenkomst inbegrepen — ook voor eenmanszaken die formeel geen DPO hoeven aan te wijzen.' },
+        ].map(t => (
+          <div class="flex gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
+            <span class="text-2xl">{t.icon}</span>
+            <div>
+              <p class="font-semibold text-navy text-sm mb-1">{t.title}</p>
+              <p class="text-xs text-slate-600 leading-relaxed">{t.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container-page max-w-4xl mx-auto">
       <div class="mb-10 reveal">

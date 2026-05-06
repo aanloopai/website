@@ -43,6 +43,56 @@ const schema = {
       </div>
     </div>
   </section>
+  <!-- Sector-specifieke uitdagingen -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Uitdagingen in zorg & welzijn</p>
+        <h2 class="text-2xl font-bold text-navy mb-6">Waarom zorgpraktijken telefoondrukte niet meer bijhouden</h2>
+        <p class="text-slate-600 leading-relaxed mb-6">Een gemiddelde huisartsenpraktijk of fysiotherapiepraktijk ontvangt 40–80 telefoontjes per dag. De helft gaat over afspraken plannen, bevestigen of verzetten — routinewerk dat te veel tijd kost van de assistenten. Tegelijkertijd neemt de no-show door het ontbreken van herinneringen toe, en wachttijden groeien. AI lost dit structureel op zonder medische rol over te nemen.</p>
+      </div>
+      <div class="space-y-5 reveal">
+        {[
+          { title: 'Telefoondrukte in de ochtend belemmert patiëntenzorg', body: 'Tussen 08:00 en 09:30 piekert de telefonie in elke praktijk. Assistenten zijn bezet met afsprakenbeheer terwijl de wachtkamer vol zit. AI agent Marco neemt routinegesprekken automatisch aan — ook buiten kantoortijden. Zo kunnen assistenten zich richten op de patiënt die voor hen staat.' },
+          { title: 'No-show percentage loopt op tot 15–20% zonder herinneringen', body: 'Zorgorganisaties verliezen jaarlijks duizenden euro\'s aan geen-verschijn-consulten. Een geautomatiseerde herinnering 24 uur en 2 uur voor de afspraak — via SMS, WhatsApp of telefoon — verlaagt no-shows gemiddeld met 30%. Dit vereist een AVG-conforme verwerking van minimale persoonsgegevens.' },
+          { title: 'Wachtlijstbeheer is handmatig en foutgevoelig', body: 'Bij annulering vrijgekomen plekken worden handmatig ingevuld, wat resulteert in lege slots en onnodige wachttijd. AI beheert automatisch een wachtlijst: bij annulering wordt de eerstvolgende beschikbare patiënt op de wachtlijst proactief benaderd en uitgenodigd voor het vrijgekomen slot.' },
+          { title: 'NEN 7510 en AVG vereisen zorgvuldige dataverwerking', body: 'In de zorg gelden strengere eisen dan in andere sectoren: NEN 7510 voor informatiebeveiliging en de AVG voor persoonsgegevens. Aanloop AI verwerkt minimale persoonsdata (naam, afspraakdetails) op Nederlandse servers via n8n self-hosted. Medische dossiers worden nooit opgeslagen in het AI-systeem. Verwerkersovereenkomst inbegrepen.' },
+        ].map(item => (
+          <div class="border border-slate-200 rounded-xl p-5 bg-white">
+            <h3 class="font-semibold text-navy mb-2 text-sm">{item.title}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{item.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust signals -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-8 reveal">
+        <p class="eyebrow mb-2">Compliance & werkwijze</p>
+        <h2 class="text-2xl font-bold text-navy mb-4">Voor de zorgsector werken wij speciaal met</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4 reveal">
+        {[
+          { icon: '🔒', title: 'NEN 7510 informatiebeveiliging', body: 'Onze AI-implementaties voor de zorg voldoen aan NEN 7510 — de Nederlandse norm voor informatiebeveiliging in de zorg. Alle communicatiestromen worden versleuteld en opgeslagen op EU-servers. We leveren een verwerkersovereenkomst conform AVG artikel 28.' },
+          { icon: '📋', title: 'Medicom, Nexus & HIS-koppelingen', body: 'Koppeling met gangbare huisartspakketten (Medicom, Nexus, Promedico) voor directe agenda-integratie. Afspraken worden rechtstreeks in uw HIS-agenda gezet zonder handmatige overdracht — AVG-conform via geauthenticeerde API.' },
+          { icon: '🏥', title: 'Triage zonder medisch advies', body: 'De AI agent plant afspraken in op basis van urgentie-indicaties (spoed / zelfde dag / regulier) maar geeft nooit medisch advies of diagnoses. De triage blijft altijd bij de zorgprofessional. Dit is contractueel vastgelegd in onze verwerkersovereenkomst.' },
+          { icon: '🌐', title: '100% EU data-verwerking via n8n', body: 'Patiëntdata verlaat nooit de EU. We gebruiken n8n self-hosted op een Nederlandse Hetzner-server. Geen doorgifte aan Amerikaanse AI-providers voor persoonsgegevens. Volledig auditeerbaar met transactielogboek.' },
+        ].map(t => (
+          <div class="flex gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
+            <span class="text-2xl">{t.icon}</span>
+            <div>
+              <p class="font-semibold text-navy text-sm mb-1">{t.title}</p>
+              <p class="text-xs text-slate-600 leading-relaxed">{t.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container-page">
       <div class="grid lg:grid-cols-2 gap-16 mb-16">
