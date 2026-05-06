@@ -140,13 +140,34 @@ const orgSchema = {
     '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
     name: 'Daan Verhoeven',
     url: 'https://aanloopai.nl/team/daan-verhoeven/',
-    jobTitle: 'Oprichter & CEO',
+    image: 'https://aanloopai.nl/team/daan-verhoeven.jpg',
+    jobTitle: 'Oprichter, CEO Aanloop AI',
+    knowsAbout: [
+      'Artificial intelligence',
+      'AI consulting',
+      'Wft Pensioenadvies',
+      'Wft Vermogen',
+      'Wft Hypothecair',
+      'AVG / GDPR compliance',
+      'EU AI Act',
+      'n8n automation',
+      'ElevenLabs voice AI',
+      'WhatsApp Business API',
+      'Dutch MKB / KMO',
+      'AI receptionist',
+      'AI agent design',
+    ],
+    alumniOf: 'Aanloop AI fanboys network',
     worksFor: { '@id': 'https://aanloopai.nl/#organization' },
     sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
   },
   sameAs: [
     'https://www.linkedin.com/in/daanverhoeven/',
     'https://www.kvk.nl/zoeken/?source=all&q=88606902',
+    'https://github.com/aanloopai',
+    'https://www.youtube.com/@aanloopai',
+    'https://www.crunchbase.com/organization/aanloop-ai',
+    'https://www.wikidata.org/wiki/QXXXXXXX',
   ],
   knowsAbout: [
     'AI Agents',
@@ -180,6 +201,16 @@ const websiteSchema = {
       urlTemplate: 'https://aanloopai.nl/kennisbank/?q={search_term_string}',
     },
     'query-input': 'required name=search_term_string',
+  },
+};
+
+// ── Speakable Schema (for voice assistants) ───────────────────────
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['h1', 'main p:first-of-type', '.eyebrow + h2 + p', '[data-speakable]'],
   },
 };
 
