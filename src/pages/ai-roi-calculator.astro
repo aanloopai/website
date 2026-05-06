@@ -121,7 +121,7 @@ const faqItems = [
           <div class="space-y-6" id="calc-form">
 
             <div>
-              <label class="block text-sm font-semibold text-navy mb-2">Hoeveel inkomende telefoontjes ontvangt u per dag?</label>
+              <label for="calls-per-day" class="block text-sm font-semibold text-navy mb-2">Hoeveel inkomende telefoontjes ontvangt u per dag?</label>
               <input type="range" id="calls-per-day" min="5" max="150" value="30" step="5"
                 class="w-full accent-blue-700" oninput="updateCalc()">
               <div class="flex justify-between text-xs text-slate-500 mt-1">
@@ -130,7 +130,7 @@ const faqItems = [
             </div>
 
             <div>
-              <label class="block text-sm font-semibold text-navy mb-2">Hoeveel calls worden momenteel gemist of niet goed afgehandeld?</label>
+              <label for="missed-pct" class="block text-sm font-semibold text-navy mb-2">Hoeveel calls worden momenteel gemist of niet goed afgehandeld?</label>
               <input type="range" id="missed-pct" min="5" max="60" value="25" step="5"
                 class="w-full accent-blue-700" oninput="updateCalc()">
               <div class="flex justify-between text-xs text-slate-500 mt-1">
@@ -139,7 +139,7 @@ const faqItems = [
             </div>
 
             <div>
-              <label class="block text-sm font-semibold text-navy mb-2">Wat is de gemiddelde waarde van een nieuwe klant voor u?</label>
+              <label for="client-value" class="block text-sm font-semibold text-navy mb-2">Wat is de gemiddelde waarde van een nieuwe klant voor u?</label>
               <input type="range" id="client-value" min="100" max="10000" value="1500" step="100"
                 class="w-full accent-blue-700" oninput="updateCalc()">
               <div class="flex justify-between text-xs text-slate-500 mt-1">
@@ -148,7 +148,7 @@ const faqItems = [
             </div>
 
             <div>
-              <label class="block text-sm font-semibold text-navy mb-2">Hoeveel uur per week besteedt uw team aan handmatige, repetitieve taken?</label>
+              <label for="manual-hours" class="block text-sm font-semibold text-navy mb-2">Hoeveel uur per week besteedt uw team aan handmatige, repetitieve taken?</label>
               <input type="range" id="manual-hours" min="2" max="40" value="15" step="1"
                 class="w-full accent-blue-700" oninput="updateCalc()">
               <div class="flex justify-between text-xs text-slate-500 mt-1">
@@ -157,7 +157,7 @@ const faqItems = [
             </div>
 
             <div>
-              <label class="block text-sm font-semibold text-navy mb-2">Gemiddeld uurtarief van medewerkers die routinetaken uitvoeren</label>
+              <label for="hourly-rate" class="block text-sm font-semibold text-navy mb-2">Gemiddeld uurtarief van medewerkers die routinetaken uitvoeren</label>
               <input type="range" id="hourly-rate" min="15" max="80" value="30" step="5"
                 class="w-full accent-blue-700" oninput="updateCalc()">
               <div class="flex justify-between text-xs text-slate-500 mt-1">
@@ -166,7 +166,7 @@ const faqItems = [
             </div>
 
             <div>
-              <label class="block text-sm font-semibold text-navy mb-2">Sector</label>
+              <label for="sector" class="block text-sm font-semibold text-navy mb-2">Sector</label>
               <select id="sector" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-indigo focus:outline-none" onchange="onSectorChange()">
                 <option value="1.0" data-cv="2500">Zakelijke dienstverlening</option>
                 <option value="1.2" data-cv="3500">Bouw & Installatie</option>
