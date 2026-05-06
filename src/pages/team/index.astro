@@ -1,23 +1,62 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
+// ── Schema ─────────────────────────────────────────────────────────
 const teamSchema = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   '@id': 'https://aanloopai.nl/team/#collection',
   name: 'Team Aanloop AI',
-  description: 'Het team achter Aanloop AI — AI-specialisten voor het Nederlandse MKB.',
+  description: 'Het team achter Aanloop AI B.V. — AI-implementatiespecialisten voor het Nederlandse MKB, gevestigd in Rotterdam.',
   url: 'https://aanloopai.nl/team/',
   isPartOf: { '@id': 'https://aanloopai.nl/#website' },
   about: { '@id': 'https://aanloopai.nl/#organization' },
 };
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://aanloopai.nl/' },
+    { '@type': 'ListItem', position: 2, name: 'Team', item: 'https://aanloopai.nl/team/' },
+  ],
+};
+
+// ── Toekomstige rollen (placeholders — eerlijk leeg) ───────────────
+const openRoles = [
+  {
+    title: 'Compliance Lead',
+    why: 'Per groeiende klantvraag rond EU AI Act, AVG en sectorspecifieke regelgeving (Wft, NEN 7510). Eerste aanstelling zodra team schaalt naar 5+ klantprojecten tegelijk.',
+  },
+  {
+    title: 'Technical Lead',
+    why: 'Voor eigen platform-ontwikkeling en grotere n8n-workflows. Momenteel gedekt door Daan + externe specialisten.',
+  },
+  {
+    title: 'Customer Success Manager',
+    why: 'Zodra klantenbestand groeit boven 150 actieve implementaties. Borgt onboarding, maandrapportage en NPS.',
+  },
+];
 ---
 
 <BaseLayout
-  title="Team Aanloop AI — AI-specialisten voor MKB"
-  description="Maak kennis met het team achter Aanloop AI. AI-specialisten met 10+ jaar ervaring in voice AI, WhatsApp-bots en workflow automatisering voor MKB Nederland."
-  schema={teamSchema}
+  title="Team Aanloop AI — AI-specialisten voor MKB Nederland"
+  description="Maak kennis met het team achter Aanloop AI B.V. Expert AI-implementatie voor het Nederlandse MKB: voice AI, WhatsApp Business en n8n workflow automatisering."
+  schema={[teamSchema, breadcrumbSchema]}
 >
+
+  <!-- Breadcrumb -->
+  <nav class="border-b border-slate-100 bg-white" aria-label="Breadcrumb">
+    <div class="container-page py-3">
+      <ol class="flex items-center gap-2 text-xs text-slate-500">
+        <li><a href="/" class="hover:text-navy transition-colors">Home</a></li>
+        <li aria-hidden="true">›</li>
+        <li class="text-navy font-medium" aria-current="page">Team</li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero -->
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">
       <div class="max-w-3xl">
@@ -29,50 +68,88 @@ const teamSchema = {
           AI-specialisten voor het Nederlandse MKB.
         </h1>
         <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty max-w-2xl">
-          Aanloop AI B.V. is een Rotterdams AI-bureau dat zich exclusief richt op het MKB. We combineren technische diepgang met praktische implementatie — geen beloftes, alleen werkende oplossingen die binnen 7 werkdagen live staan.
+          Aanloop AI B.V. is een Rotterdams AI-bureau dat zich exclusief richt op het MKB. Wij combineren technische diepgang met praktische implementatie — geen beloftes, alleen werkende oplossingen die binnen 14 werkdagen live staan.
         </p>
       </div>
     </div>
   </section>
 
+  <!-- Huidig team -->
   <section class="section">
     <div class="container-page">
+      <div class="mb-10 reveal">
+        <span class="eyebrow mb-3">Huidig team</span>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mt-2">De mensen achter uw AI-implementatie.</h2>
+      </div>
+
       <div class="grid md:grid-cols-2 gap-8 max-w-5xl">
+        <!-- Daan Verhoeven — founder -->
         <a
           href="/team/daan-verhoeven/"
           class="rounded-2xl border border-slate-200 bg-white p-8 hover:border-navy hover:shadow-md transition-all group"
+          aria-label="Profiel Daan Verhoeven, Oprichter & CEO Aanloop AI"
         >
           <div class="flex items-start gap-4 mb-4">
-            <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-navy text-white text-xl font-bold">
+            <div
+              class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-navy text-white text-xl font-bold"
+              aria-hidden="true"
+            >
               DV
             </div>
+            {/* TODO: vervang bovenstaand initialen-blok door echte profielfoto zodra beschikbaar:
+                <img src="/brand/daan-verhoeven.jpg" alt="Daan Verhoeven, oprichter Aanloop AI" class="h-16 w-16 rounded-full object-cover" width="64" height="64" />
+            */}
             <div>
               <h2 class="text-xl font-bold text-navy group-hover:underline">Daan Verhoeven</h2>
-              <p class="text-sm text-slate-500 mt-1">Oprichter &amp; CEO</p>
+              <p class="text-sm text-slate-500 mt-0.5">Oprichter &amp; CEO</p>
+              <a
+                href="https://www.linkedin.com/in/daanverhoeven/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 text-xs text-slate-400 hover:text-brand-indigo transition-colors mt-1"
+                onclick="event.stopPropagation()"
+              >
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+                LinkedIn
+              </a>
             </div>
           </div>
-          <p class="text-slate-600 leading-relaxed">
-            Begeleidt 80+ Nederlandse MKB-bedrijven met implementatie van AI-receptionisten, WhatsApp-assistenten en workflow automatisering. 10+ jaar ervaring in tech en automation.
+
+          <p class="text-slate-600 leading-relaxed text-sm mb-4">
+            Oprichter van Aanloop AI B.V. Begeleidt 80+ Nederlandse MKB-bedrijven met AI-receptionisten, WhatsApp-assistenten en workflow automatisering. 10+ jaar ervaring in tech, automation, voice AI (ElevenLabs) en n8n self-hosted workflows. Actief bewust van Wft-adviesgrenzen, AVG, EU AI Act en NEN 7510.
           </p>
-          <p class="mt-4 text-sm font-semibold text-navy group-hover:underline">
-            Lees profiel →
+
+          <div class="flex flex-wrap gap-1.5 mb-5">
+            {[
+              'Voice AI', 'ElevenLabs', 'n8n', 'WhatsApp Business',
+              'AVG', 'EU AI Act', 'Wft-grenzen', 'Custom AI agents',
+            ].map(tag => (
+              <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium">{tag}</span>
+            ))}
+          </div>
+
+          <p class="text-sm font-semibold text-navy group-hover:underline">
+            Lees volledig profiel →
           </p>
         </a>
 
+        <!-- Groeiende team slot -->
         <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 p-8">
           <div class="flex items-start gap-4 mb-4">
-            <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-500 text-xl">
+            <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-full bg-slate-200 text-slate-500 text-2xl" aria-hidden="true">
               +
             </div>
             <div>
               <h2 class="text-xl font-bold text-slate-700">Het team groeit</h2>
-              <p class="text-sm text-slate-500 mt-1">We zijn aan het werven</p>
+              <p class="text-sm text-slate-500 mt-0.5">We zijn aan het werven</p>
             </div>
           </div>
-          <p class="text-slate-600 leading-relaxed">
-            Aanloop AI groeit. We zoeken AI-engineers, voice-specialisten en MKB-implementatie-consultants die direct impact willen maken bij Nederlandse ondernemers.
+          <p class="text-slate-600 leading-relaxed text-sm mb-5">
+            Aanloop AI groeit. We zoeken AI-engineers, voice-specialisten en MKB-implementatie-consultants die directe impact willen maken bij Nederlandse ondernemers. Lean werken, veel autonomie, echte klantresultaten.
           </p>
-          <a href="/vacatures/" class="mt-4 inline-block text-sm font-semibold text-navy hover:underline">
+          <a href="/vacatures/" class="inline-block text-sm font-semibold text-navy hover:underline">
             Bekijk openstaande rollen →
           </a>
         </div>
@@ -80,9 +157,36 @@ const teamSchema = {
     </div>
   </section>
 
-  <section class="section-tight border-t border-slate-200 bg-slate-50/60">
+  <!-- Geplande rollen — transparantie over teamgroei -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-4xl">
-      <div class="grid md:grid-cols-3 gap-6 text-center">
+      <div class="mb-8 reveal">
+        <span class="eyebrow mb-3">Teamgroei</span>
+        <h2 class="text-2xl font-bold text-navy mt-2">Rollen die we bewust plannen.</h2>
+        <p class="mt-3 text-slate-600 text-sm max-w-xl">
+          Transparantie over hoe we groeien. Momenteel is Daan de primaire implementatiespecialist, aangevuld met een netwerk van vaste externe specialisten. De onderstaande rollen worden ingevuld zodra klantvolume dat rechtvaardigt.
+        </p>
+      </div>
+
+      <div class="grid sm:grid-cols-3 gap-5 reveal">
+        {openRoles.map(rol => (
+          <div class="rounded-xl border border-dashed border-slate-300 bg-white p-5">
+            <h3 class="font-semibold text-navy text-sm mb-2">{rol.title}</h3>
+            <p class="text-xs text-slate-500 leading-relaxed">{rol.why}</p>
+          </div>
+        ))}
+      </div>
+
+      <p class="mt-6 text-xs text-slate-400 italic">
+        Interesse in een van deze rollen? Stuur een open sollicitatie naar <a href="mailto:hello@aanloopai.nl" class="text-brand-indigo hover:underline">hello@aanloopai.nl</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <section class="section-tight border-b border-slate-200">
+    <div class="container-page max-w-4xl">
+      <div class="grid md:grid-cols-3 gap-6 text-center reveal">
         <div>
           <p class="text-3xl font-bold text-navy">80+</p>
           <p class="text-sm text-slate-600 mt-1">MKB-implementaties</p>
@@ -92,13 +196,26 @@ const teamSchema = {
           <p class="text-sm text-slate-600 mt-1">Opgericht in Rotterdam</p>
         </div>
         <div>
-          <p class="text-3xl font-bold text-navy">7 dagen</p>
+          <p class="text-3xl font-bold text-navy">14 dgn</p>
           <p class="text-sm text-slate-600 mt-1">Gemiddelde live-tijd</p>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- Over ons link -->
+  <section class="section border-b border-slate-100">
+    <div class="container-page max-w-3xl text-center reveal">
+      <p class="text-slate-600 mb-6">
+        Meer weten over de missie, kernwaarden en bedrijfsfeiten van Aanloop AI?
+      </p>
+      <a href="/over/" class="btn-outline text-base px-6 py-3.5">
+        Lees meer over Aanloop AI →
+      </a>
+    </div>
+  </section>
+
+  <!-- CTA -->
   <section class="section">
     <div class="container-page max-w-3xl text-center">
       <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-4">Liever direct een gesprek?</h2>

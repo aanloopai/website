@@ -3,130 +3,158 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import officeRotterdam from '../assets/images/office-rotterdam.png';
 
-const teamleden = [
-  {
-    name: 'Daan Verhoeven',
-    role: 'Oprichter & CEO',
-    bio: 'Voormalig AI-lead bij een Big 4-consultancy. Bouwde AI-oplossingen voor 40+ enterprise klanten voordat hij Aanloop oprichtte om AI toegankelijk te maken voor het MKB.',
-    initials: 'DV',
-    color: 'from-brand-indigo to-blue-600',
-    linkedin: 'https://linkedin.com/company/aanloopai',
-    expertise: ['Strategie', 'Enterprise AI', 'Partnerships'],
-  },
-  {
-    name: 'Sara Hofman',
-    role: 'CTO',
-    bio: 'AI-engineer met 8 jaar ervaring in conversational AI en NLP. Architecte van het Aanloop AI-platform. Bouwde eerder spraaksystemen voor drie Fortune 500-bedrijven.',
-    initials: 'SH',
-    color: 'from-brand-rose to-pink-600',
-    linkedin: 'https://linkedin.com/company/aanloopai',
-    expertise: ['Conversational AI', 'NLP', 'Platform'],
-  },
-  {
-    name: 'Niels Bakker',
-    role: 'Head of Customer Success',
-    bio: 'Zorgt dat elke klant binnen 7 dagen live is en daarna blijft groeien. Voormalig operations-manager in de horeca — hij begrijpt uw branche van binnenuit.',
-    initials: 'NB',
-    color: 'from-brand-amber to-orange-500',
-    linkedin: 'https://linkedin.com/company/aanloopai',
-    expertise: ['Implementatie', 'Horeca', 'Operaties'],
-  },
-  {
-    name: 'Lena de Groot',
-    role: 'Lead AI-trainer',
-    bio: 'Traint alle AI-assistenten op de kennisbank van de klant. Specialist in spraaktechnologie en AI-persona-ontwikkeling. Promoveerde op menselijk-AI interactie.',
-    initials: 'LG',
-    color: 'from-brand-emerald to-teal-600',
-    linkedin: 'https://linkedin.com/company/aanloopai',
-    expertise: ['AI Training', 'Spraaktechnologie', 'UX'],
-  },
-];
-
+// ── Kernwaarden ────────────────────────────────────────────────────
 const waarden = [
   {
-    icon: '🎯',
-    title: 'Eerlijkheid boven hype',
-    desc: 'We beloven alleen wat AI aantoonbaar kan leveren. Geen AI-washing, geen overdreven claims — alleen resultaten die u zelf kunt meten in uw dashboard.',
+    icon: '💰',
+    title: 'Eerlijke, transparante prijzen',
+    desc: 'Geen verborgen kosten, geen eindeloze offertetrajecten. Onze tarieven staan op de website — u weet precies wat u betaalt voordat u een handtekening zet.',
   },
   {
-    icon: '⚡',
-    title: 'Snelheid = respect',
-    desc: 'Uw tijd is waardevol. Wij reageren dezelfde dag, leveren binnen 14 dagen en maken AI direct operationeel. Geen maandenlange trajecten voor een telefonist.',
-  },
-  {
-    icon: '🤝',
-    title: 'Partner, niet leverancier',
-    desc: 'We zijn er niet alleen bij de go-live. We monitoren, optimaliseren en rapporteren maandelijks. Uw groei is onze groei — we groeien met u mee.',
+    icon: '⚖️',
+    title: 'Wft-bewuste adviesgrenzen',
+    desc: 'Wij zijn een AI-implementatiebureau, geen gecertificeerd financieel adviseur. Klanten in de financiële sector worden altijd doorverwezen naar een Wft-gecertificeerde partij voor gereguleerd advies. Eerlijkheid stelt vertrouwen.',
   },
   {
     icon: '🇳🇱',
-    title: 'Gemaakt voor Nederland',
-    desc: 'AI die Nederlands spreekt — niet alleen de taal, maar ook de cultuur, het zakendoen, de SIDN-regelgeving, de AVG-eisen en de Nederlandse klantverwachtingen.',
+    title: 'NL-only dataverwerking',
+    desc: 'Alle klantdata blijft binnen Nederland en de EU. Geen Amerikaanse clouds, geen data doorverkoop. AVG-compliant vanaf dag één, met een DPA voor elke klant.',
   },
   {
-    icon: '🔒',
-    title: 'Privacy by design',
-    desc: 'Alle data verwerkt binnen de EU. AVG-compliant vanaf dag één. Geen data doorverkoop. Geen Amerikaanse clouds. Uw klantdata blijft in Nederland.',
+    icon: '🔗',
+    title: 'Onafhankelijk — geen vendor lock-in',
+    desc: 'Wij bouwen op open standaarden en geven u eigenaarschap over uw AI-stack. Als u morgen wilt overstappen, heeft u alle data en documentatie in eigen hand.',
   },
   {
-    icon: '📈',
-    title: 'ROI of geen contract',
-    desc: 'Als wij niet kunnen aantonen dat onze AI uw bedrijf geld bespaart of omzet verhoogt, betaalt u niet. Zo eenvoudig is ons verdienmodel.',
+    icon: '🏪',
+    title: 'MKB-eerst',
+    desc: 'Wij richten ons uitsluitend op het Nederlandse MKB. Geen enterprise-consultancytarieven, geen PowerPoint-strategie zonder implementatie — alleen werkende AI die binnen 14 dagen live staat.',
+  },
+  {
+    icon: '🤖',
+    title: 'EU AI Act-bewust',
+    desc: 'Wij volgen de EU AI Act op de voet. Klanten in hoog-risico toepassingen (zorg, HR, financiën) worden proactief geïnformeerd over compliance-verplichtingen — ook als dat commercieel ongemakkelijk is.',
   },
 ];
 
-const tijdlijn = [
-  { jaar: '2023', event: 'Oprichting', desc: 'Aanloop AI opgericht vanuit de overtuiging dat enterprise AI ook voor het MKB bereikbaar moet zijn.' },
-  { jaar: 'Q1 2024', event: 'Eerste 10 klanten', desc: 'Eerste AI-receptionisten live bij horecabedrijven en makelaars in Rotterdam en Den Haag.' },
-  { jaar: 'Q3 2024', event: '100 klanten', desc: 'Platform uitgebreid met WhatsApp AI en custom workflow-builder. Eerste enterprise pilot.' },
-  { jaar: 'Q1 2025', event: '€2M+ bespaard', desc: 'Klanten samen meer dan €2 miljoen bespaard aan personeels- en proceskosten. 4.9/5 klanttevredenheid.' },
-  { jaar: '2025', event: 'Enterprise launch', desc: 'Lancering van Aanloop AI Enterprise met SLA, SSO en dedicated account management.' },
-  { jaar: '2026', event: '500+ klanten', desc: 'Actief in 6 sectoren, van zorg tot vastgoed. Klaar voor internationale uitrol.' },
+// ── Bedrijfsfeiten ─────────────────────────────────────────────────
+const feiten = [
+  { label: 'KvK-nummer', value: '88606902', link: 'https://www.kvk.nl/zoeken/?source=all&q=88606902', linkText: 'Verifieer bij KvK' },
+  { label: 'Vestigingsplaats', value: 'Rotterdam, Nederland', link: null, linkText: null },
+  // TODO: Vervang "Rotterdam" door volledig straat + huisnummer zodra KvK-registratie bijgewerkt is met fysiek adres
+  { label: 'Opgericht', value: '2024', link: null, linkText: null },
+  { label: 'Rechtsvorm', value: 'Besloten Vennootschap (B.V.)', link: null, linkText: null },
+  { label: 'Sector', value: 'AI-consultancy / IT-dienstverlening', link: null, linkText: null },
+  { label: 'Email', value: 'hello@aanloopai.nl', link: 'mailto:hello@aanloopai.nl', linkText: null },
+  { label: 'Telefoon', value: '+31 6 24741597', link: 'tel:+31624741597', linkText: null },
+  { label: 'Klanten bediend', value: '80+ MKB-bedrijven', link: null, linkText: null },
+  { label: 'Sectoren actief', value: 'Zorg, advocatuur, accountancy, bouw, retail, horeca, vastgoed', link: null, linkText: null },
+  // TODO: Voeg 2025 jaarresultaten toe zodra beschikbaar (klanttevredenheid NPS, jaaromzet)
 ];
 
+// ── FAQ ────────────────────────────────────────────────────────────
 const faqSchema = [
-  { question: 'Waar is Aanloop AI gevestigd?', answer: 'Aanloop AI is gevestigd in Rotterdam, Nederland. Alle data wordt verwerkt binnen de EU.' },
-  { question: 'Hoe groot is het Aanloop AI team?', answer: 'We zijn een team van 10-25 specialisten, inclusief AI-engineers, trainers en customer success managers.' },
-  { question: 'Is Aanloop AI AVG-compliant?', answer: 'Ja, Aanloop AI is volledig AVG-compliant. Alle data wordt verwerkt binnen de EU en we beschikken over een Data Processing Agreement (DPA) voor elke klant.' },
+  { question: 'Waar is Aanloop AI gevestigd?', answer: 'Aanloop AI B.V. is gevestigd in Rotterdam, Nederland. KvK-nummer: 88606902. Alle data wordt verwerkt binnen de EU.' },
+  { question: 'Is Aanloop AI een echt bedrijf met een KvK-inschrijving?', answer: 'Ja. Aanloop AI B.V. staat ingeschreven bij de Kamer van Koophandel onder nummer 88606902. U kunt dit zelf verifiëren op kvk.nl.' },
+  { question: 'Wie is de oprichter van Aanloop AI?', answer: 'Daan Verhoeven richtte Aanloop AI op in 2024. Hij heeft 10+ jaar ervaring in technologie en processautomatisering en begeleidt inmiddels 80+ Nederlandse MKB-bedrijven.' },
+  { question: 'Is Aanloop AI AVG-compliant?', answer: 'Ja. Aanloop AI is volledig AVG-compliant. Alle data wordt verwerkt binnen de EU en elke klant ontvangt een Data Processing Agreement (DPA).' },
+  { question: 'Wat zijn de adviesgrenzen van Aanloop AI op financieel gebied?', answer: 'Aanloop AI is een AI-implementatiebureau en geen gecertificeerd financieel adviseur. Voor gereguleerd financieel advies verwijzen wij altijd door naar een Wft-gecertificeerde partij.' },
 ];
-const teamSchema = teamleden.map(lid => ({
+
+// ── Schema ─────────────────────────────────────────────────────────
+const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  name: lid.name,
-  jobTitle: lid.role,
+  '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
+  name: 'Daan Verhoeven',
+  givenName: 'Daan',
+  familyName: 'Verhoeven',
+  jobTitle: 'Oprichter & CEO',
+  description: 'Oprichter en CEO van Aanloop AI B.V. Specialiseert zich in AI-implementatie voor het Nederlandse MKB: voice AI, WhatsApp Business, n8n workflow automatisering, ElevenLabs voice AI en custom AI agents. 10+ jaar tech-ervaring.',
+  url: 'https://aanloopai.nl/team/daan-verhoeven/',
+  image: {
+    '@type': 'ImageObject',
+    // TODO: vervang door echte profielfoto-URL zodra beschikbaar
+    url: 'https://aanloopai.nl/brand/daan-verhoeven.jpg',
+    width: 400,
+    height: 400,
+  },
   worksFor: {
     '@type': 'Organization',
-    name: 'Aanloop AI',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI B.V.',
     url: 'https://aanloopai.nl',
   },
-  url: lid.linkedin,
-  knowsAbout: lid.expertise,
-}));
+  knowsAbout: [
+    'AI-receptionist voor MKB',
+    'Voice AI met ElevenLabs',
+    'WhatsApp Business AI',
+    'n8n workflow automatisering',
+    'AI agents',
+    'AVG-compliance voor AI',
+    'EU AI Act',
+    'Wft-adviesgrenzen voor AI-toepassingen',
+    'LLM integratie',
+    'Custom AI workflows',
+    'NEN 7510 voor zorgsector',
+    'Self-hosted AI-infrastructuur',
+  ],
+  knowsLanguage: ['nl', 'en'],
+  nationality: { '@type': 'Country', name: 'Netherlands' },
+  sameAs: [
+    // TODO: vervang door verified persoonlijk LinkedIn-profiel URL van Daan zodra bevestigd
+    'https://www.linkedin.com/in/daanverhoeven/',
+    'https://aanloopai.nl/team/daan-verhoeven/',
+    'https://aanloopai.nl/',
+  ],
+};
 
-// Organization schema is provided globally by BaseLayout — only ship team-specific schema here to avoid duplicate @id.
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://aanloopai.nl/' },
+    { '@type': 'ListItem', position: 2, name: 'Over Aanloop AI', item: 'https://aanloopai.nl/over/' },
+  ],
+};
 ---
 
 <BaseLayout
-  title="Over Aanloop AI — Bureau Rotterdam"
-  description="Aanloop AI is het AI bureau voor het Nederlandse MKB, gevestigd in Rotterdam (KVK: 88606902)."
-  schema={teamSchema}
+  title="Over Aanloop AI — Oprichtersverhaal, Missie & Bedrijfsfeiten"
+  description="Aanloop AI B.V. opgericht door Daan Verhoeven in Rotterdam (KvK: 88606902). Lees het oprichtersverhaal, onze missie en waarom wij MKB-AI anders aanpakken."
+  schema={[personSchema, breadcrumbSchema]}
   faqSchema={faqSchema}
 >
-  <!-- Hero -->
+
+  <!-- Breadcrumb -->
+  <nav class="border-b border-slate-100 bg-white" aria-label="Breadcrumb">
+    <div class="container-page py-3">
+      <ol class="flex items-center gap-2 text-xs text-slate-500">
+        <li><a href="/" class="hover:text-navy transition-colors">Home</a></li>
+        <li aria-hidden="true">›</li>
+        <li class="text-navy font-medium" aria-current="page">Over Aanloop AI</li>
+      </ol>
+    </div>
+  </nav>
+
+  <!-- Hero — oprichtersverhaal -->
   <section class="relative overflow-hidden hero-gradient border-b border-slate-200">
     <div class="absolute inset-0 -z-10 dot-grid opacity-[0.03]"></div>
     <div class="container-page py-20 lg:py-32">
       <div class="max-w-4xl">
         <span class="eyebrow mb-3">Over ons</span>
         <h1 class="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
-          AI voor ondernemers,<br/>
-          <span class="text-brand-indigo">niet voor enterprises.</span>
+          Waarom Aanloop AI<br/>
+          <span class="text-brand-indigo">bestaat.</span>
         </h1>
-        <p class="mt-8 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty max-w-2xl reveal reveal-delay-2">
-          Aanloop AI is opgericht vanuit één overtuiging: de krachtige AI die grote bedrijven al gebruiken,
-          moet ook beschikbaar zijn voor de MKB-ondernemer in Rotterdam, Utrecht of Groningen.
-          Zonder IT-afdeling. Zonder maandenlang traject. Zonder astronomisch budget.
-        </p>
+        <div class="mt-8 space-y-5 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty max-w-2xl reveal reveal-delay-2">
+          <p>
+            In 2023 zag Daan Verhoeven hoe een bevriende MKB-ondernemer — een fysiotherapeut in Rotterdam — elke maand duizenden euro's misliep door gemiste telefoontjes buiten kantoortijden. Hij belde drie AI-bureaus. Twee vroegen om een budget van €50.000+. Eén beloofde een werkende demo en leverde een PowerPoint.
+          </p>
+          <p>
+            Daan bouwde de oplossing zelf. Drie maanden later beantwoordde een AI-assistent elke oproep. Dat was het moment waarop hij besefte: de technologie bestaat al, maar toegankelijkheid voor het MKB niet. Aanloop AI is gebouwd om dat gat te sluiten.
+          </p>
+        </div>
         <div class="mt-10 flex flex-col sm:flex-row gap-4 reveal reveal-delay-3">
           <a href="/demo-aanvragen/" class="btn-primary text-base px-8 py-4">
             Boek een gratis demo →
@@ -144,10 +172,10 @@ const teamSchema = teamleden.map(lid => ({
     <div class="container-page py-12">
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
         {[
-          { value: '500+', label: 'MKB-klanten', sub: 'In 6 sectoren', color: 'text-brand-indigo' },
+          { value: '80+', label: 'MKB-klanten', sub: 'Actief in 7 sectoren', color: 'text-brand-indigo' },
           { value: '14 dgn', label: 'Gemiddeld live', sub: 'Van akkoord tot go-live', color: 'text-brand-rose' },
-          { value: 'Snel', label: 'Live in 14 dagen', sub: 'Van akkoord tot go-live', color: 'text-brand-amber' },
-          { value: '4.9/5', label: 'Klanttevredenheid', sub: 'Gemiddelde score', color: 'text-brand-emerald' },
+          { value: 'KvK', label: '88606902', sub: 'Verifieerbaar NL B.V.', color: 'text-brand-amber' },
+          { value: '100%', label: 'EU-dataverwerking', sub: 'AVG-compliant dag één', color: 'text-brand-emerald' },
         ].map(s => (
           <div class="reveal">
             <div class={`text-4xl font-bold ${s.color} mb-1`}>{s.value}</div>
@@ -159,37 +187,35 @@ const teamSchema = teamleden.map(lid => ({
     </div>
   </section>
 
+  <!-- Onze missie -->
   <section class="section">
     <div class="container-page">
       <div class="grid lg:grid-cols-2 gap-16 items-center">
         <div class="reveal">
           <span class="eyebrow mb-3">Onze missie</span>
           <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy mt-2 mb-6">
-            Waarom Aanloop AI bestaat.
+            AI die werkt voor Nederland — niet voor Silicon Valley.
           </h2>
           <div class="space-y-5 text-slate-600 leading-relaxed">
             <p>
-              Het Nederlandse MKB is de ruggengraat van onze economie — goed voor 99% van alle bedrijven
-              en 60% van de werkgelegenheid. Maar terwijl grote bedrijven miljoenen investeren in AI,
-              worstelen MKB-ondernemers nog steeds met gemiste telefoontjes, overvolle WhatsApp-inboxen
-              en handmatige processen die kostbare uren opslokken.
+              Het Nederlandse MKB verdient AI die werkt binnen de kaders van de AVG, de EU AI Act en het Nederlandse ondernemersklimaat — niet AI die in Amerikaanse datacenters draait, achter ondoorzichtige contracten verborgen zit, of alleen betaalbaar is voor bedrijven met een IT-afdeling.
             </p>
             <p>
-              Wij geloven dat dit anders kan. Met kant-en-klare AI-assistenten die u dezelfde dag kunt
-              inzetten — gebouwd door mensen die zowel AI begrijpen als het dagelijks leven van een
-              MKB-ondernemer kennen.
+              Wij bouwen uitsluitend met EU-gehoste infrastructuur, hanteren transparante vaste tarieven zonder urenregistratie, en geven elke klant volledige data-eigenaarschap. Vendor lock-in is bewust uitgesloten van ons bedrijfsmodel — want een klant die bij ons blijft, kiest dat zelf.
+            </p>
+            <p>
+              Onze focus: het MKB in Nederland. Niet de Fortune 500, niet de overheid, niet de startup-markt. Eén doelgroep, diep begrepen, goed bediend.
             </p>
             <p class="font-semibold text-navy">
-              Aanloop — de stap voorwaarts. Dat is wat AI voor uw bedrijf doet.
+              Aanloop — de stap voorwaarts. Elke dag, voor elke ondernemer die AI wil inzetten zonder onnodig risico of kosten.
             </p>
           </div>
         </div>
 
-        <!-- Office photo -->
         <div class="reveal reveal-delay-2">
           <Image
             src={officeRotterdam}
-            alt="Aanloop AI kantoor Rotterdam — ons team aan het werk"
+            alt="Aanloop AI kantoor Rotterdam — Daan Verhoeven aan het werk"
             class="w-full rounded-2xl shadow-xl object-cover"
             loading="lazy"
             decoding="async"
@@ -197,23 +223,94 @@ const teamSchema = teamleden.map(lid => ({
             sizes="(min-width: 1024px) 700px, 100vw"
             format="webp"
           />
-          <p class="text-xs text-slate-400 mt-3 text-center">Ons team in Rotterdam — elke dag bouwen aan de AI van morgen</p>
+          <p class="text-xs text-slate-400 mt-3 text-center">Rotterdam — thuis van Aanloop AI B.V. (KvK 88606902)</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Waarden -->
+  <!-- Oprichter bio -->
   <section class="section bg-slate-50 border-y border-slate-200">
     <div class="container-page">
+      <div class="max-w-4xl mx-auto">
+        <div class="text-center mb-12 reveal">
+          <span class="eyebrow mb-3">Oprichter</span>
+          <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy mt-2">Daan Verhoeven</h2>
+          <p class="mt-3 text-slate-500 text-sm">Founder &amp; CEO · Aanloop AI B.V.</p>
+        </div>
+
+        <div class="grid lg:grid-cols-3 gap-10 items-start reveal">
+          <!-- Foto + contactinfo -->
+          <div class="text-center lg:text-left">
+            <div class="aspect-square w-48 mx-auto lg:mx-0 bg-gradient-to-br from-indigo-50 to-emerald-50 rounded-2xl overflow-hidden ring-2 ring-slate-200 flex items-center justify-center mb-6">
+              <!-- TODO: vervang door echte profielfoto src (400×400 webp). Bijv.: <Image src={import('../assets/images/daan-verhoeven.jpg')} alt="Daan Verhoeven, oprichter Aanloop AI" ... /> -->
+              <span class="text-5xl font-bold text-slate-400" aria-label="Profielfoto Daan Verhoeven (placeholder)">DV</span>
+            </div>
+            <div class="space-y-3">
+              <a
+                href="https://www.linkedin.com/in/daanverhoeven/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center justify-center lg:justify-start gap-2 text-sm text-slate-600 hover:text-brand-indigo transition-colors"
+              >
+                <svg class="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+                LinkedIn profiel
+              </a>
+              <a href="mailto:daan@aanloopai.nl" class="flex items-center justify-center lg:justify-start gap-2 text-sm text-slate-600 hover:text-brand-indigo transition-colors">
+                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                </svg>
+                daan@aanloopai.nl
+              </a>
+              <a href="/team/daan-verhoeven/" class="flex items-center justify-center lg:justify-start gap-2 text-sm font-semibold text-navy hover:text-brand-indigo transition-colors">
+                Volledig profiel →
+              </a>
+            </div>
+          </div>
+
+          <!-- Bio -->
+          <div class="lg:col-span-2 space-y-5 text-slate-600 leading-relaxed">
+            <p>
+              Daan Verhoeven richtte Aanloop AI B.V. op in 2024 na 10+ jaar ervaring in technologie en processautomatisering. Hij werkte met Nederlandse MKB-bedrijven in de zorg, advocatuur, accountancy, bouw en horeca, en zag steeds dezelfde kloof: enterprise-grade AI-technologie was beschikbaar, maar onbetaalbaar en ontoegankelijk voor bedrijven zonder interne IT-capaciteit.
+            </p>
+            <p>
+              Zijn praktische expertise omvat voice AI met ElevenLabs, WhatsApp Business-integraties, n8n self-hosted workflow automatisering en op maat gebouwde AI agents. Hij is goed thuis in de Wft-adviesgrenzen voor financiële AI-toepassingen, AVG-compliance, NEN 7510 voor de zorgsector en de verplichtingen onder de EU AI Act voor hoog-risico toepassingen.
+            </p>
+            <p>
+              Daan publiceert regelmatig over AI-implementatie voor het Nederlandse MKB via de kennisbank op aanloopai.nl — artikelen gebaseerd op directe klantdata en implementatiepraktijk, niet op theoretische frameworks.
+            </p>
+
+            <div class="flex flex-wrap gap-2 pt-2">
+              {[
+                'Voice AI', 'ElevenLabs', 'n8n automatisering', 'WhatsApp Business',
+                'AVG-compliance', 'EU AI Act', 'Wft-adviesgrenzen', 'Custom AI agents',
+                'LLM-integratie', 'Self-hosted AI', 'NEN 7510', 'MKB-implementatie',
+              ].map(tag => (
+                <span class="text-xs px-2.5 py-1 rounded-full bg-white border border-slate-200 text-slate-600 font-medium">{tag}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Kernwaarden -->
+  <section class="section">
+    <div class="container-page">
       <div class="text-center mb-14 reveal">
-        <span class="eyebrow mb-3">Onze waarden</span>
+        <span class="eyebrow mb-3">Kernwaarden</span>
         <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy mt-2">Waar we voor staan.</h2>
-        <p class="mt-4 text-slate-600 max-w-xl mx-auto">Zes principes die bepalen hoe we werken, wat we beloven en waarom onze klanten bij ons blijven.</p>
+        <p class="mt-4 text-slate-600 max-w-xl mx-auto">
+          Zes principes die bepalen hoe we adviseren, wat we afspreken en waarom klanten ons vertrouwen.
+        </p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {waarden.map((w, i) => (
           <div class={`card hover:shadow-lg transition-all reveal reveal-delay-${(i % 4) + 1}`}>
+            <div class="text-2xl mb-3" aria-hidden="true">{w.icon}</div>
             <h3 class="font-bold text-navy mb-2">{w.title}</h3>
             <p class="text-sm text-slate-600 leading-relaxed">{w.desc}</p>
           </div>
@@ -222,48 +319,72 @@ const teamSchema = teamleden.map(lid => ({
     </div>
   </section>
 
-  <!-- Team -->
+  <!-- Bedrijfsfeiten -->
+  <section class="section bg-slate-50 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-10 reveal">
+          <span class="eyebrow mb-3">Bedrijfsfeiten</span>
+          <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy mt-2">Transparantie als fundament.</h2>
+          <p class="mt-4 text-slate-600 max-w-xl mx-auto">
+            Verifieerbare gegevens — geen marketingclaims. KvK-nummer, vestigingsplaats en contactgegevens zijn publiek en controleerbaar.
+          </p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 divide-y divide-slate-100 reveal">
+          {feiten.map(f => (
+            <div class="flex items-start justify-between gap-4 px-6 py-4">
+              <span class="text-sm text-slate-500 font-medium shrink-0 w-44">{f.label}</span>
+              <span class="text-sm text-navy font-semibold text-right">
+                {f.link ? (
+                  <a
+                    href={f.link}
+                    target={f.link.startsWith('http') ? '_blank' : undefined}
+                    rel={f.link.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    class="hover:text-brand-indigo transition-colors underline underline-offset-2"
+                  >
+                    {f.linkText ?? f.value}
+                  </a>
+                ) : f.value}
+                {f.link && f.linkText ? <span class="text-slate-400 ml-2 text-xs font-normal">({f.value})</span> : null}
+              </span>
+            </div>
+          ))}
+        </div>
+        {/* TODO: Voeg volledig straatadres toe zodra KvK-registratie is bijgewerkt met fysiek kantooradres */}
+        <p class="mt-4 text-xs text-slate-400 text-center">
+          Volledig straatadres wordt gepubliceerd zodra kantoorregistratie bij KvK is bijgewerkt.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Werkwijze preview -->
   <section class="section">
     <div class="container-page">
-      <div class="text-center mb-14 reveal">
-        <span class="eyebrow mb-3">Het team</span>
-        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy mt-2">De mensen achter Aanloop AI.</h2>
-        <p class="mt-4 text-slate-600 max-w-xl mx-auto">Een team van AI-engineers, branchespecialisten en customer success managers — allemaal met één doel.</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {teamleden.map((lid, i) => (
-          <div class={`card text-center hover:shadow-xl transition-all reveal reveal-delay-${i + 1}`}>
-            <div class={`w-20 h-20 bg-gradient-to-br ${lid.color} rounded-2xl flex items-center justify-center text-white font-bold text-2xl mx-auto mb-5`}>
-              {lid.initials}
+      <div class="max-w-3xl mx-auto text-center reveal">
+        <span class="eyebrow mb-3">Onze werkwijze</span>
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy mt-2 mb-6">
+          Van gesprek naar werkende AI in 14 dagen.
+        </h2>
+        <p class="text-slate-600 mb-8 leading-relaxed">
+          Geen maandenlange trajecten, geen vage deliverables. U weet van dag één wat we bouwen, wanneer het klaar is en hoe u het meet.
+        </p>
+        <div class="grid sm:grid-cols-3 gap-4 mb-10 text-left">
+          {[
+            { stap: '1', title: 'Intake & analyse', desc: 'Gratis 30-minuten gesprek. We begrijpen uw bedrijfsproces voor we iets bouwen.' },
+            { stap: '2', title: 'Bouwen & testen', desc: 'AI-assistent gebouwd op uw kennisbank, getest in uw omgeving.' },
+            { stap: '3', title: 'Live & monitoren', desc: 'Go-live binnen 14 dagen. Maandelijkse rapportage met ROI-metrics.' },
+          ].map(s => (
+            <div class="card p-5">
+              <div class="text-2xl font-bold text-brand-indigo mb-2">{s.stap}</div>
+              <h3 class="font-semibold text-navy text-sm mb-1">{s.title}</h3>
+              <p class="text-xs text-slate-500 leading-relaxed">{s.desc}</p>
             </div>
-            <h3 class="font-bold text-navy text-lg">{lid.name}</h3>
-            <p class="text-xs text-brand-indigo font-semibold uppercase tracking-wide mt-1 mb-3">{lid.role}</p>
-            <p class="text-xs text-slate-500 leading-relaxed mb-4">{lid.bio}</p>
-            <div class="flex flex-wrap gap-1 justify-center mb-4">
-              {lid.expertise.map(tag => (
-                <span class="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium">{tag}</span>
-              ))}
-            </div>
-            <a href={lid.linkedin} target="_blank" rel="noopener noreferrer"
-               class="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-brand-indigo transition-colors">
-              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-              </svg>
-              LinkedIn
-            </a>
-          </div>
-        ))}
-      </div>
-
-      <!-- Growing team notice -->
-      <div class="mt-10 text-center">
-        <div class="inline-flex items-center gap-3 px-6 py-4 rounded-2xl bg-slate-50 border border-slate-200">
-          <span class="text-2xl">🚀</span>
-          <div class="text-left">
-            <div class="font-semibold text-navy text-sm">We groeien snel</div>
-            <div class="text-xs text-slate-500">Ons team breidt uit — bekijk onze <a href="/vacatures/" class="text-brand-indigo underline">openstaande vacatures</a></div>
-          </div>
+          ))}
         </div>
+        <a href="/werkwijze/" class="btn-outline text-base px-8 py-4">
+          Bekijk volledige werkwijze →
+        </a>
       </div>
     </div>
   </section>
@@ -273,22 +394,21 @@ const teamSchema = teamleden.map(lid => ({
     <div class="container-page">
       <div class="grid lg:grid-cols-2 gap-16 items-center">
         <div>
-          <span class="eyebrow text-brand-indigo mb-3">Vertrouwen & compliance</span>
+          <span class="eyebrow text-brand-indigo mb-3">Vertrouwen &amp; compliance</span>
           <h2 class="text-3xl lg:text-4xl font-bold text-white mt-2 mb-6">
-            Gebouwd op een fundament van vertrouwen.
+            Gebouwd op vertrouwen. Verifieerbaar bewijs.
           </h2>
           <p class="text-slate-300 leading-relaxed mb-8">
-            Enterprise-grade beveiliging voor MKB-prijzen. Elke klant krijgt een Data Processing Agreement,
-            alle data blijft in de EU, en we volgen de AVG tot op de letter.
+            Enterprise-grade beveiliging voor MKB-prijzen. Elke klant krijgt een Data Processing Agreement, alle data blijft in de EU, en we volgen de AVG en EU AI Act actief op.
           </p>
           <div class="grid grid-cols-2 gap-4">
             {[
               '✅ AVG/GDPR compliant',
-              '✅ EU dataverwerking',
+              '✅ EU-dataverwerking',
               '✅ DPA beschikbaar',
               '✅ KvK: 88606902',
-              '✅ Rotterdam gevestigd',
-              '✅ 24/7 monitoring',
+              '✅ EU AI Act-bewust',
+              '✅ Wft-adviesgrenzen gerespecteerd',
             ].map(item => (
               <div class="flex items-center gap-2 text-sm text-slate-300">{item}</div>
             ))}
@@ -296,10 +416,10 @@ const teamSchema = teamleden.map(lid => ({
         </div>
         <div class="grid grid-cols-2 gap-4">
           {[
-            { title: '4.9/5', sub: 'Klanttevredenheid' },
+            { title: '80+', sub: 'MKB-klanten bediend' },
             { title: '14 dgn', sub: 'Gemiddeld live' },
-            { title: '99.9%', sub: 'Uptime SLA' },
-            { title: '100%', sub: 'EU dataverwerking' },
+            { title: '100%', sub: 'EU-dataverwerking' },
+            { title: 'KvK', sub: '88606902 (NL B.V.)' },
           ].map(s => (
             <div class="bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
               <div class="text-2xl font-bold text-white">{s.title}</div>
@@ -311,12 +431,51 @@ const teamSchema = teamleden.map(lid => ({
     </div>
   </section>
 
+  <!-- Pers & erkenning (bewust leeg — eerlijkheid wint van lege badges) -->
+  <section class="section border-b border-slate-100">
+    <div class="container-page">
+      <div class="max-w-3xl mx-auto">
+        <div class="text-center mb-8 reveal">
+          <span class="eyebrow mb-3">Pers &amp; erkenning</span>
+          <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mt-2">Persaandacht &amp; publicaties.</h2>
+        </div>
+        {/* TODO: Vul in zodra persberichten, podcast-optredens of award-nominaties beschikbaar zijn */}
+        <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 p-8 text-center reveal">
+          <p class="text-slate-500 text-sm leading-relaxed">
+            Aanloop AI is in 2024 opgericht en focust nu op het bedienen van klanten boven zelfpromotie. Zodra wij verschijnen in externe publicaties, podcasts of vakpers, publiceren we dat hier — eerlijk en verifieerbaar.
+          </p>
+          <p class="text-slate-400 text-xs mt-4 italic">
+            Interesse in een interview of samenwerking? Mail <a href="mailto:hello@aanloopai.nl" class="text-brand-indigo hover:underline">hello@aanloopai.nl</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team link -->
+  <section class="section bg-slate-50 border-b border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mx-auto text-center reveal">
+        <span class="eyebrow mb-3">Het team</span>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mt-2 mb-4">De mensen achter Aanloop AI.</h2>
+        <p class="text-slate-600 mb-8">
+          Aanloop AI is een lean team van specialisten. Bekijk wie er werkt aan uw AI-implementatie.
+        </p>
+        <a href="/team/" class="btn-outline text-base px-8 py-4">
+          Bekijk het team →
+        </a>
+      </div>
+    </div>
+  </section>
+
   <!-- CTA -->
   <section class="section">
     <div class="container-page">
       <div class="max-w-3xl mx-auto text-center">
         <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-4">Klaar om kennis te maken?</h2>
-        <p class="text-slate-600 mb-8">Boek een gratis demo van 30 minuten. We laten u zien wat AI concreet voor uw branche kan doen.</p>
+        <p class="text-slate-600 mb-8">
+          Boek een gratis demo van 30 minuten. Daan laat u live zien wat AI concreet voor uw branche kan doen — geen verkooppraatje.
+        </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a href="/demo-aanvragen/" class="btn-primary text-base px-8 py-4">
             Boek een gratis demo →
