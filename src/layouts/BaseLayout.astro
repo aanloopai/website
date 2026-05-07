@@ -139,9 +139,13 @@ const orgSchema = {
     '@type': 'Person',
     '@id': 'https://aanloopai.nl/team/magahdogan/#person',
     name: 'Mustafa Agah Dogan',
+    givenName: 'Mustafa',
+    additionalName: 'Agah',
+    familyName: 'Dogan',
     url: 'https://aanloopai.nl/team/magahdogan/',
     image: 'https://aanloopai.nl/team/magahdogan.jpg',
     jobTitle: 'Oprichter, CEO Aanloop AI',
+    description: 'Oprichter en CEO Aanloop AI B.V. BSc Computer Engineering (2012), bijna 20 jaar IT-ervaring, voormalig AI-lead Big 4-consultancy met 40+ enterprise AI-implementaties.',
     knowsAbout: [
       'Artificial intelligence',
       'AI consulting',
@@ -157,14 +161,27 @@ const orgSchema = {
       'AI receptionist',
       'AI agent design',
     ],
-    alumniOf: 'Aanloop AI fanboys network',
+    alumniOf: {
+      '@type': 'EducationalOrganization',
+      name: 'Bilgisayar Mühendisliği (Computer Engineering BSc, 2012)',
+    },
     worksFor: { '@id': 'https://aanloopai.nl/#organization' },
-    sameAs: ['https://www.linkedin.com/in/magahdogan/'],
+    sameAs: [
+      'https://www.linkedin.com/in/magahdogan/',
+      // TODO: voeg X/Twitter, GitHub-personal, Mastodon zodra publiek beschikbaar
+    ],
   },
   sameAs: [
-    'https://www.linkedin.com/in/magahdogan/',
+    'https://www.linkedin.com/company/aanloop-ai',
     'https://www.kvk.nl/zoeken/?source=all&q=88606902',
     'https://github.com/aanloopai',
+    // TODO: voeg toe zodra entity-vermeldingen live zijn:
+    // 'https://www.wikidata.org/wiki/[Q-id]',
+    // 'https://www.crunchbase.com/organization/aanloop-ai',
+    // 'https://www.producthunt.com/products/aanloop-ai',
+    // 'https://twitter.com/aanloopai',
+    // 'https://nl.trustpilot.com/review/aanloopai.nl',
+    // 'https://www.google.com/maps/place/?q=place_id:[GBP-id]',
   ],
   knowsAbout: [
     'AI Agents',
