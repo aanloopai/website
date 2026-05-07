@@ -1,0 +1,565 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const scholarlSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ScholarlyArticle',
+  headline: 'Methodologie — AI Adoption MKB Nederland 2026',
+  description: 'Volledige methodologische verantwoording van het AI-adoptie onderzoek Nederlands MKB 2026: onderzoeksvraag, doelpopulatie, steekproeftrekking, vragenlijst-ontwerp, data-analyse, beperkingen, ethiek en tijdlijn.',
+  author: {
+    '@type': 'Organization',
+    name: 'Aanloop AI',
+    url: 'https://aanloopai.nl',
+    '@id': 'https://aanloopai.nl/#organization'
+  },
+  creator: {
+    '@type': 'Organization',
+    name: 'Aanloop AI',
+    url: 'https://aanloopai.nl',
+    '@id': 'https://aanloopai.nl/#organization'
+  },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Aanloop AI',
+    url: 'https://aanloopai.nl',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' }
+  },
+  datePublished: '2026-05-07',
+  dateModified: '2026-05-07',
+  mainEntityOfPage: 'https://aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/methodologie/',
+  inLanguage: 'nl-NL',
+  about: [
+    { '@type': 'Thing', name: 'AI adoption in Dutch SMEs' },
+    { '@type': 'Thing', name: 'Research methodology' },
+    { '@type': 'Thing', name: 'MKB Nederland' }
+  ],
+  isPartOf: {
+    '@type': 'ResearchProject',
+    name: 'AI Adoption MKB Nederland 2026',
+    url: 'https://aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/'
+  },
+  keywords: 'AI adoptie, MKB Nederland, onderzoeksmethodologie, survey design, CBS, KvK, EU AI Act, AVG'
+};
+
+const datasetSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: 'AI Adoption MKB NL 2026 — Planned Survey Dataset',
+  description: 'Geplande dataset van het AI-adoptie onderzoek Nederlands MKB 2026. Steekproef 500 MKB-bedrijven (10-200 medewerkers), 6 sectoren, gewogen op CBS Statline bedrijfstakdata. Definitieve publicatie Q3 2026.',
+  creator: {
+    '@type': 'Organization',
+    name: 'Aanloop AI',
+    url: 'https://aanloopai.nl',
+    '@id': 'https://aanloopai.nl/#organization'
+  },
+  temporalCoverage: '2026',
+  spatialCoverage: {
+    '@type': 'Place',
+    name: 'Nederland',
+    geo: { '@type': 'GeoShape', addressCountry: 'NL' }
+  },
+  inLanguage: 'nl-NL',
+  license: 'https://creativecommons.org/licenses/by/4.0/',
+  url: 'https://aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/',
+  variableMeasured: [
+    'AI adoption rate per sector',
+    'Top AI use cases MKB',
+    'Adoption barriers (AVG, kosten, kennis)',
+    'ROI perceptie en payback period',
+    'EU AI Act compliance bewustwording'
+  ]
+};
+---
+
+<BaseLayout
+  title="Methodologie — AI Adoption MKB Nederland 2026 | Aanloop AI Onderzoek"
+  description="Volledige methodologische verantwoording: onderzoeksvraag, doelpopulatie (NL MKB 10-200 medewerkers), steekproeftrekking, vragenlijst-ontwerp, data-analyse, beperkingen en citatie-richtlijnen."
+  schema={[scholarlSchema, datasetSchema]}
+>
+  <!-- Hero -->
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-14 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <p class="eyebrow">Onderzoeksverantwoording — Geplande studie 2026-Q2/Q4</p>
+        </div>
+        <nav class="text-sm text-slate-500 mb-4" aria-label="breadcrumb">
+          <ol class="flex flex-wrap gap-1 items-center">
+            <li><a href="/" class="hover:text-brand-indigo transition-colors">Home</a></li>
+            <li class="mx-1 text-slate-300">/</li>
+            <li><a href="/onderzoek/ai-adoption-mkb-nederland-2026/" class="hover:text-brand-indigo transition-colors">AI-adoptie MKB 2026</a></li>
+            <li class="mx-1 text-slate-300">/</li>
+            <li class="text-slate-700 font-medium">Methodologie</li>
+          </ol>
+        </nav>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Methodologie — AI Adoption MKB Nederland 2026
+        </h1>
+        <p class="lead mt-6 text-xl text-slate-600 leading-relaxed text-pretty">
+          Dit document beschrijft de onderzoeksopzet, steekproefstrategie, vragenlijst-architectuur en data-analysemethode van het AI-adoptie onderzoek Nederlands MKB 2026. Het is een <strong>geplande studie</strong> (2026-Q2 t/m Q4); tussentijdse bevindingen worden transparant als zodanig gelabeld.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-3 text-sm">
+          <span class="pill bg-brand-indigo/10 text-brand-indigo font-medium">Geplande studie 2026</span>
+          <span class="pill bg-slate-100 text-slate-600">CC-BY 4.0</span>
+          <span class="pill bg-slate-100 text-slate-600">AVG-conform</span>
+          <span class="pill bg-slate-100 text-slate-600">EU data only</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main content -->
+  <article class="section">
+    <div class="container-page max-w-4xl">
+
+      <!-- Inhoudsopgave -->
+      <div class="card bg-slate-50 border border-slate-200 mb-12">
+        <h2 class="text-base font-bold text-navy mb-4">Inhoudsopgave</h2>
+        <ol class="space-y-2 text-sm text-brand-indigo">
+          <li><a href="#onderzoeksvraag" class="hover:underline">1. Onderzoeksvraag</a></li>
+          <li><a href="#doelpopulatie" class="hover:underline">2. Doelpopulatie</a></li>
+          <li><a href="#steekproef" class="hover:underline">3. Steekproeftrekking</a></li>
+          <li><a href="#vragenlijst" class="hover:underline">4. Vragenlijst-ontwerp</a></li>
+          <li><a href="#dataverzameling" class="hover:underline">5. Data-verzameling-procedure</a></li>
+          <li><a href="#data-analyse" class="hover:underline">6. Data-analyse-aanpak</a></li>
+          <li><a href="#beperkingen" class="hover:underline">7. Beperkingen</a></li>
+          <li><a href="#ethiek" class="hover:underline">8. Ethiek en AVG</a></li>
+          <li><a href="#tijdlijn" class="hover:underline">9. Tijdlijn</a></li>
+          <li><a href="#citatie" class="hover:underline">10. Hoe te citeren</a></li>
+        </ol>
+      </div>
+
+      <!-- 1. Onderzoeksvraag -->
+      <section id="onderzoeksvraag" class="mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy mb-4">1. Onderzoeksvraag</h2>
+        <p class="text-slate-700 leading-relaxed mb-4">
+          De centrale onderzoeksvraag luidt:
+        </p>
+        <blockquote class="border-l-4 border-brand-indigo pl-6 py-3 bg-slate-50 rounded-r-lg mb-6">
+          <p class="text-lg font-semibold text-navy italic leading-relaxed">
+            "In welke mate adopteren Nederlandse MKB-bedrijven met 10 tot 200 medewerkers AI-technologie in 2026, welke sectoren lopen voorop, welke barrieres domineren, en wat is de gepercipieerde ROI van vroeg-adopterende bedrijven?"
+          </p>
+        </blockquote>
+        <p class="text-slate-700 leading-relaxed mb-4">Onderliggende deelvragen:</p>
+        <ol class="list-decimal list-inside space-y-3 text-slate-700 leading-relaxed ml-2">
+          <li><strong>Adoption-rate:</strong> Welk percentage MKB-bedrijven heeft minstens één AI-tool actief in productie per sector en bedrijfsgrootte?</li>
+          <li><strong>Use cases:</strong> Welke AI-toepassingen (telefoon, WhatsApp, documentverwerking, contentgeneratie, lead-kwalificatie) worden het meest ingezet?</li>
+          <li><strong>Barrieres:</strong> Welke factoren vertragen of blokkeren AI-adoptie — met name AVG/EU AI Act compliance, ROI-onduidelijkheid en interne kennistekort?</li>
+          <li><strong>ROI-perceptie:</strong> Hoe lang duurt de terugverdientijd bij bedrijven met een actieve implementatie, en welke indicatoren meten zij?</li>
+          <li><strong>Vendor-keuze:</strong> Op basis van welke criteria kiezen MKB-bedrijven hun AI-leverancier (prijs, managed vs. self-service, EU-compliance)?</li>
+          <li><strong>Regulatoire bewustwording:</strong> In welke mate zijn MKB-beslissers op de hoogte van de EU AI Act-verplichtingen per augustus 2026?</li>
+        </ol>
+      </section>
+
+      <!-- 2. Doelpopulatie -->
+      <section id="doelpopulatie" class="mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy mb-4">2. Doelpopulatie</h2>
+        <p class="text-slate-700 leading-relaxed mb-4">
+          De doelpopulatie bestaat uit Nederlandse MKB-bedrijven die voldoen aan alle onderstaande criteria:
+        </p>
+        <div class="grid md:grid-cols-2 gap-4 mb-6">
+          <div class="card border border-slate-200">
+            <h3 class="font-bold text-navy mb-3">Inclusiepopulatie</h3>
+            <ul class="space-y-2 text-sm text-slate-700">
+              <li class="flex items-start gap-2"><span class="text-brand-indigo font-bold mt-0.5">+</span>Gevestigd in Nederland (alle provincies)</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo font-bold mt-0.5">+</span>10 t/m 200 FTE (conform KvK MKB-definitie)</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo font-bold mt-0.5">+</span>Actief in een van de 6 doelsectoren</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo font-bold mt-0.5">+</span>Respondent is beslisser of medewerker met directe kennis van IT/AI-beleid</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo font-bold mt-0.5">+</span>Bedrijf is minstens 1 jaar actief (opgericht voor 2025)</li>
+            </ul>
+          </div>
+          <div class="card border border-slate-200">
+            <h3 class="font-bold text-navy mb-3">Exclusiepopulatie</h3>
+            <ul class="space-y-2 text-sm text-slate-700">
+              <li class="flex items-start gap-2"><span class="text-red-500 font-bold mt-0.5">-</span>Bedrijven met minder dan 10 FTE (zzp-segment) — aparte studie</li>
+              <li class="flex items-start gap-2"><span class="text-red-500 font-bold mt-0.5">-</span>Bedrijven met meer dan 200 FTE (enterprise-segment)</li>
+              <li class="flex items-start gap-2"><span class="text-red-500 font-bold mt-0.5">-</span>Respondenten buiten de genoemde sectoren</li>
+              <li class="flex items-start gap-2"><span class="text-red-500 font-bold mt-0.5">-</span>Dubbele deelname (gecontroleerd via bedrijfsnaam + e-maildomein)</li>
+            </ul>
+          </div>
+        </div>
+        <p class="text-slate-700 leading-relaxed">
+          De zes doelsectoren zijn: <strong>Detailhandel &amp; e-commerce</strong>, <strong>Zorg (huisarts/tandarts/fysio)</strong>, <strong>Logistiek &amp; transport</strong>, <strong>Financieel/accountancy</strong>, <strong>Bouw &amp; installatie</strong> en <strong>Horeca &amp; evenementen</strong>. Keuze gebaseerd op CBS Statline bedrijfstakpublicaties: deze sectoren vertegenwoordigen gezamenlijk circa 62% van het Nederlandse MKB-werkgelegenheidsvolume (Bron: CBS Statline, Bedrijven naar rechtsvorm en bedrijfsgrootte, publicatie 2025).
+        </p>
+      </section>
+
+      <!-- 3. Steekproeftrekking -->
+      <section id="steekproef" class="mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy mb-4">3. Steekproeftrekking</h2>
+        <div class="bg-amber-50 border border-amber-200 rounded-lg px-5 py-4 mb-6 text-sm text-amber-900">
+          <strong>Transparantiemelding:</strong> De veldwerkfase is op het moment van publicatie van dit methodologiedocument (mei 2026) nog niet volledig afgerond. Tussentijdse bevindingen op de hoofdpagina zijn gebaseerd op inkomende respondenten en worden maandelijks bijgewerkt. Definitieve steekproefgrootte en weegschema worden gepubliceerd bij afronding van de veldwerkfase (verwacht Q3 2026).
+        </div>
+        <h3 class="text-lg font-bold text-navy mb-3">Steekproefstrategie</h3>
+        <p class="text-slate-700 leading-relaxed mb-4">
+          We hanteren een <strong>gestratificeerde doelgerichte steekproef</strong> (purposive stratified sampling) met post-hoc weging op CBS-populatiedata:
+        </p>
+        <ul class="space-y-3 text-slate-700 leading-relaxed mb-6">
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-brand-indigo/10 text-brand-indigo flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">1</span>
+            <span><strong>Stratificatie:</strong> respondenten worden geworven per sector-cel en bedrijfsgrootte-klasse (10-25 / 26-100 / 101-200 FTE) om een representatieve dekking te garanderen.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-brand-indigo/10 text-brand-indigo flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">2</span>
+            <span><strong>Streefsteekproef:</strong> minimaal 500 valide respondenten (na kwaliteitscontrole), gelijkmatig verdeeld over 6 sectoren (n&gt;=75 per sector) en 3 bedrijfsgrootteklassen.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-brand-indigo/10 text-brand-indigo flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">3</span>
+            <span><strong>Post-stratificatieweging:</strong> CBS Statline bedrijfstakgewichten worden gebruikt om over- of onderrepresentatie van sectoren te corrigeren. Gewichten worden gepubliceerd als bijlage bij het eindrapport.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-6 h-6 rounded-full bg-brand-indigo/10 text-brand-indigo flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">4</span>
+            <span><strong>Kwaliteitscontrole:</strong> responses met een invulduur van minder dan 90 seconden of met inconsistente antwoordpatronen (speeder-filtering, straight-liner-detectie) worden verwijderd.</span>
+          </li>
+        </ul>
+        <h3 class="text-lg font-bold text-navy mb-3">Wervingskanalen</h3>
+        <p class="text-slate-700 leading-relaxed mb-3">
+          Respondenten worden geworven via drie parallelle kanalen:
+        </p>
+        <ol class="list-decimal list-inside space-y-2 text-slate-700 leading-relaxed ml-2 mb-4">
+          <li><strong>LinkedIn B2B outreach</strong> — gericht op beslissers (functietitels: directeur/eigenaar/IT-manager) bij NL MKB in de doelsectoren</li>
+          <li><strong>Brevo-nieuwsbrief</strong> — eigen abonneelijst van aanloopai.nl (MKB-segment, NL only)</li>
+          <li><strong>Branchevereniging-samenwerking</strong> — gevalideerde contacten via MKB-Nederland en sectorassociaties</li>
+        </ol>
+        <p class="text-sm text-slate-500 italic">
+          Pilot-validatie: De vragenlijst wordt getest door 12 pilot-respondenten (2 per sector) op begrijpelijkheid, invultijd en antwoordambiguiteit voor de hoofdveldwerkfase.
+        </p>
+      </section>
+
+      <!-- 4. Vragenlijst-ontwerp -->
+      <section id="vragenlijst" class="mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy mb-4">4. Vragenlijst-ontwerp</h2>
+        <p class="text-slate-700 leading-relaxed mb-6">
+          De vragenlijst is opgebouwd rond zes meetpijlers. Verwachte invulduur: 4-6 minuten. Taal: Nederlands. Platform: online survey (SurveyMonkey of Typeform Enterprise, beide AVG-conform met EU-dataopslag).
+        </p>
+        <div class="space-y-4">
+          <div class="card border border-slate-200">
+            <div class="flex items-start gap-4">
+              <span class="w-8 h-8 rounded-lg bg-brand-indigo text-white flex items-center justify-center font-bold text-sm flex-shrink-0">A</span>
+              <div>
+                <h3 class="font-bold text-navy mb-1">AI-readiness</h3>
+                <p class="text-sm text-slate-600 leading-relaxed mb-2">Mate van digitale volwassenheid als voorspeller voor AI-adoptie. Items: huidig gebruik van cloudsoftware, aanwezigheid van IT-verantwoordelijke, budget beschikbaar voor digitalisering.</p>
+                <span class="text-xs text-slate-500 italic">Vraagtype: 5-puntschaal (Likert) + meerkeuze</span>
+              </div>
+            </div>
+          </div>
+          <div class="card border border-slate-200">
+            <div class="flex items-start gap-4">
+              <span class="w-8 h-8 rounded-lg bg-brand-indigo text-white flex items-center justify-center font-bold text-sm flex-shrink-0">B</span>
+              <div>
+                <h3 class="font-bold text-navy mb-1">Huidige AI-adoptie</h3>
+                <p class="text-sm text-slate-600 leading-relaxed mb-2">Welke AI-tools zijn actief (ja/nee/pilot/gepland) per use-case categorie: voicebot/receptionist, WhatsApp AI, documentverwerking, content-AI, lead-kwalificatie, andere.</p>
+                <span class="text-xs text-slate-500 italic">Vraagtype: Meerkeuzevraag (meerdere antwoorden)</span>
+              </div>
+            </div>
+          </div>
+          <div class="card border border-slate-200">
+            <div class="flex items-start gap-4">
+              <span class="w-8 h-8 rounded-lg bg-brand-indigo text-white flex items-center justify-center font-bold text-sm flex-shrink-0">C</span>
+              <div>
+                <h3 class="font-bold text-navy mb-1">Adoptiebarrieres</h3>
+                <p class="text-sm text-slate-600 leading-relaxed mb-2">Wat zijn de drie belangrijkste drempels? Schaaloptie: AVG/privacyzorgen, ROI-onduidelijkheid, gebrek aan interne kennis, vertrouwen in AI-kwaliteit, integratiecomplexiteit, kostenniveau, EU AI Act-onzekerheid, anders (open veld).</p>
+                <span class="text-xs text-slate-500 italic">Vraagtype: Rangschikking top-3 + open veld</span>
+              </div>
+            </div>
+          </div>
+          <div class="card border border-slate-200">
+            <div class="flex items-start gap-4">
+              <span class="w-8 h-8 rounded-lg bg-brand-indigo text-white flex items-center justify-center font-bold text-sm flex-shrink-0">D</span>
+              <div>
+                <h3 class="font-bold text-navy mb-1">ROI-perceptie</h3>
+                <p class="text-sm text-slate-600 leading-relaxed mb-2">Voor bedrijven met productieve AI: gemeten besparingen (FTE-uren/mnd), terugverdientijd (schatting in maanden), primaire ROI-metriek (kosten, omzet, klanttevredenheid, no-show).</p>
+                <span class="text-xs text-slate-500 italic">Vraagtype: Numerieke invulvelden (conditie: alleen bij "actief in productie")</span>
+              </div>
+            </div>
+          </div>
+          <div class="card border border-slate-200">
+            <div class="flex items-start gap-4">
+              <span class="w-8 h-8 rounded-lg bg-brand-indigo text-white flex items-center justify-center font-bold text-sm flex-shrink-0">E</span>
+              <div>
+                <h3 class="font-bold text-navy mb-1">Vendor-keuze criteria</h3>
+                <p class="text-sm text-slate-600 leading-relaxed mb-2">Op basis van welke criteria wordt een AI-leverancier geselecteerd? Items: prijs/transparantie, managed vs. self-service, EU-datavereisten, sectorspecifieke ervaring, contractvorm (maandelijks vs. jaarlijks).</p>
+                <span class="text-xs text-slate-500 italic">Vraagtype: 5-puntbelang-schaal</span>
+              </div>
+            </div>
+          </div>
+          <div class="card border border-slate-200">
+            <div class="flex items-start gap-4">
+              <span class="w-8 h-8 rounded-lg bg-brand-indigo text-white flex items-center justify-center font-bold text-sm flex-shrink-0">F</span>
+              <div>
+                <h3 class="font-bold text-navy mb-1">EU AI Act en AVG-bewustwording</h3>
+                <p class="text-sm text-slate-600 leading-relaxed mb-2">Kennis van de EU AI Act per augustus 2026, compliance-status, of bedrijf een DPA (Data Processing Agreement) heeft met AI-leveranciers, en of AI-systemen als hoog-risico worden geclassificeerd.</p>
+                <span class="text-xs text-slate-500 italic">Vraagtype: Meerkeuze + ja/nee + open veld</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. Data-verzameling -->
+      <section id="dataverzameling" class="mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy mb-4">5. Data-verzameling-procedure</h2>
+        <p class="text-slate-700 leading-relaxed mb-4">
+          De data-verzameling verloopt volledig digitaal en anoniem voor externe publicatie:
+        </p>
+        <ul class="space-y-4 text-slate-700 leading-relaxed">
+          <li class="flex items-start gap-3">
+            <span class="w-2 h-2 rounded-full bg-brand-indigo mt-2 flex-shrink-0"></span>
+            <span><strong>Platform:</strong> Online vragenlijst via SurveyMonkey Enterprise of Typeform Business — beide voldoen aan de AVG en slaan data op binnen EU-datacenters (Ierland of Duitsland).</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-2 h-2 rounded-full bg-brand-indigo mt-2 flex-shrink-0"></span>
+            <span><strong>Aanvullende veldwerkmethode:</strong> De landingspagina <a href="/onderzoek/ai-adoption-mkb-nederland-2026/" class="text-brand-indigo hover:underline">aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/</a> bevat een vereenvoudigd intake-formulier (7 vragen). Uitgebreidere data wordt verkregen via het volledige survey-instrument, gepubliceerd in Q2 2026.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-2 h-2 rounded-full bg-brand-indigo mt-2 flex-shrink-0"></span>
+            <span><strong>Dataopslag:</strong> E-mailadressen en bedrijfsnamen worden uitsluitend opgeslagen voor toezending van het eindrapport en worden gescheiden bewaard van de geanonimiseerde survey-antwoorden. Hosting via Hetzner (Neurenberg, Duitsland) of Cloudflare EU-edge.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-2 h-2 rounded-full bg-brand-indigo mt-2 flex-shrink-0"></span>
+            <span><strong>Incentive:</strong> Respondenten ontvangen (1) een persoonlijke benchmark-score van hun AI-volwassenheid versus sectorgenoten, en (2) het definitieve rapport bij publicatie voor publieke beschikbaarstelling. Geen financiele incentive om response-bias te vermijden.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <span class="w-2 h-2 rounded-full bg-brand-indigo mt-2 flex-shrink-0"></span>
+            <span><strong>Responsebewaking:</strong> Wekelijkse controle op invulsnelheid, sector-dekking en kwaliteitsindicatoren. Bij onvoldoende dekking van een sector wordt gerichte aanvullende werving ingezet.</span>
+          </li>
+        </ul>
+      </section>
+
+      <!-- 6. Data-analyse -->
+      <section id="data-analyse" class="mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy mb-4">6. Data-analyse-aanpak</h2>
+        <p class="text-slate-700 leading-relaxed mb-6">
+          De data-analyse verloopt in drie lagen:
+        </p>
+        <div class="space-y-6">
+          <div>
+            <h3 class="text-lg font-bold text-navy mb-2">Laag 1 — Beschrijvende statistiek</h3>
+            <p class="text-slate-700 leading-relaxed">
+              Frequentietabellen en percentages per vraag. Adoptie-rates per sector berekend als gewogen percentage van respondenten met minstens een actieve AI-tool. Gewichten gebaseerd op CBS Statline-bedrijfstakpublicaties (meest recente beschikbare jaargang). Software: R 4.4 (packages: survey, tidyverse, knitr).
+            </p>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-navy mb-2">Laag 2 — Segmentatie-analyse</h3>
+            <p class="text-slate-700 leading-relaxed">
+              Kruistabellen en chi-kwadraattoetsen om significante verschillen in adoptie-rates en barrieres te identificeren naar (a) bedrijfsgrootteklasse en (b) sector. Significantieniveau: p &lt; 0,05. Effectgrootte: Cramer's V voor nominale associaties. Meervoudige toetsing gecorrigeerd via Bonferroni-methode.
+            </p>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-navy mb-2">Laag 3 — Thematische analyse open antwoorden</h3>
+            <p class="text-slate-700 leading-relaxed">
+              Open-ended items (toelichting barrieres, overige opmerkingen) worden geanalyseerd via inductieve thematische codering. Codeerschema opgesteld door twee onafhankelijke codeurs; Cohen's kappa berekend voor betrouwbaarheid. Minimale kappa-drempel voor acceptatie: kappa &gt;= 0,70.
+            </p>
+          </div>
+        </div>
+        <div class="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200 text-sm text-slate-600">
+          <strong class="text-navy">Reproducibility-statement:</strong> Analysescript (R Markdown) en anonieme dataset worden gepubliceerd als open bijlage bij het eindrapport (CC-BY 4.0), zodat externe onderzoekers de resultaten kunnen reproduceren.
+        </div>
+      </section>
+
+      <!-- 7. Beperkingen -->
+      <section id="beperkingen" class="mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy mb-4">7. Beperkingen</h2>
+        <p class="text-slate-700 leading-relaxed mb-4">
+          Transparantie over de beperkingen van het onderzoek is essentieel voor correcte interpretatie van de bevindingen:
+        </p>
+        <div class="space-y-4">
+          <div class="pl-4 py-1 border-l-4 border-amber-400">
+            <h3 class="font-bold text-navy text-sm mb-1">Zelf-selectie-bias (self-selection bias)</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Bedrijven die deelnemen aan een AI-adoptie onderzoek zijn waarschijnlijk al verder in hun AI-journey dan de gemiddelde MKB-ondernemer. Dit kan adoption-rates opwaarts vertekenen. Weging op CBS-populatiedata mitigeert dit gedeeltelijk, maar elimineert het niet.</p>
+          </div>
+          <div class="pl-4 py-1 border-l-4 border-amber-400">
+            <h3 class="font-bold text-navy text-sm mb-1">Geografische beperking (NL-only)</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Het onderzoek richt zich uitsluitend op Nederlandse MKB-bedrijven. Bevindingen zijn niet direct generaliseerbaar naar Belgie, Duitsland of andere EU-landen, ook al zijn regulatoire kaders (EU AI Act, AVG) vergelijkbaar.</p>
+          </div>
+          <div class="pl-4 py-1 border-l-4 border-amber-400">
+            <h3 class="font-bold text-navy text-sm mb-1">Sectorale beperking (6 sectoren)</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Zes sectoren dekken niet alle MKB-segmenten. Sectoren als onderwijs, overheid, advocatuur en financiele diensten zijn bewust buiten scope gehouden omwille van populatiegrootte en focus. Bevindingen per sector zijn niet representatief voor niet-gedekte sectoren.</p>
+          </div>
+          <div class="pl-4 py-1 border-l-4 border-amber-400">
+            <h3 class="font-bold text-navy text-sm mb-1">Sociaal-wenselijkheidseffect</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Respondenten kunnen AI-gebruik overschatten of adoptie-plannen positiever voorstellen dan de praktijk rechtvaardigt. Anonimisering van antwoorden voor publicatie reduceert dit effect, maar elimineert het niet.</p>
+          </div>
+          <div class="pl-4 py-1 border-l-4 border-amber-400">
+            <h3 class="font-bold text-navy text-sm mb-1">Cross-sectioneel ontwerp</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Het onderzoek is cross-sectioneel (meting op een moment in 2026-Q2). Causale verbanden (bijv. sector bepaalt adoptie-rate) kunnen niet worden vastgesteld. Longitudinale herhaalmeting is gepland vanaf 2027.</p>
+          </div>
+          <div class="pl-4 py-1 border-l-4 border-amber-400">
+            <h3 class="font-bold text-navy text-sm mb-1">Commercieel belang uitvoerende partij</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Aanloop AI is leverancier van AI-oplossingen voor MKB en heeft commercieel belang bij hogere AI-adoptie. Om de objectiviteit te waarborgen worden ruwe data gepubliceerd, methodologie openbaar gesteld en is externe methodologie-review voorzien.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. Ethiek + AVG -->
+      <section id="ethiek" class="mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy mb-4">8. Ethiek en AVG-compliance</h2>
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="card border border-slate-200">
+            <h3 class="font-bold text-navy mb-3">Persoonsgegevens en AVG</h3>
+            <ul class="space-y-2 text-sm text-slate-700">
+              <li class="flex items-start gap-2"><span class="text-green-600 font-bold">v</span> <span><strong>Rechtsgrond:</strong> Gerechtvaardigd belang (AVG art. 6.1.f) voor verwerking survey-antwoorden. Expliciete toestemming voor gebruik contactgegevens voor rapportverzending.</span></li>
+              <li class="flex items-start gap-2"><span class="text-green-600 font-bold">v</span> <span><strong>Data minimization:</strong> Alleen naam, zakelijk e-mailadres en sector worden opgeslagen als persoonsgegevens. Survey-antwoorden worden apart bewaard zonder koppeling aan naam/e-mail voor analyse.</span></li>
+              <li class="flex items-start gap-2"><span class="text-green-600 font-bold">v</span> <span><strong>Bewaartermijn:</strong> Persoonsgegevens maximaal 24 maanden na afronding studie. Anonieme onderzoeksdata onbeperkt bewaard ten behoeve van longitudinale vergelijking.</span></li>
+              <li class="flex items-start gap-2"><span class="text-green-600 font-bold">v</span> <span><strong>Rechten betrokkene:</strong> Inzage, rectificatie en verwijdering altijd mogelijk via privacy@aanloopai.nl. Response binnen 5 werkdagen gegarandeerd.</span></li>
+              <li class="flex items-start gap-2"><span class="text-green-600 font-bold">v</span> <span><strong>Doorgifte:</strong> Geen doorgifte aan derde landen buiten de EER. Survey-platform met EU-verwerkersovereenkomst.</span></li>
+            </ul>
+          </div>
+          <div class="card border border-slate-200">
+            <h3 class="font-bold text-navy mb-3">Onderzoeksethiek</h3>
+            <ul class="space-y-2 text-sm text-slate-700">
+              <li class="flex items-start gap-2"><span class="text-green-600 font-bold">v</span> <span><strong>Informed consent:</strong> Respondenten worden voor deelname geinformeerd over het doel, de uitvoerende partij, en de AVG-rechten. Deelname is volledig vrijwillig.</span></li>
+              <li class="flex items-start gap-2"><span class="text-green-600 font-bold">v</span> <span><strong>Geen deceptie:</strong> Het commerciele belang van Aanloop AI bij AI-adoptie wordt expliciet vermeld in de vragenlijst-intro en op de onderzoekspagina.</span></li>
+              <li class="flex items-start gap-2"><span class="text-green-600 font-bold">v</span> <span><strong>Publicatie-integriteit:</strong> Alle bevindingen worden gepubliceerd ongeacht of zij gunstig of ongunstig zijn voor de commerciele activiteiten van Aanloop AI.</span></li>
+              <li class="flex items-start gap-2"><span class="text-green-600 font-bold">v</span> <span><strong>Open data:</strong> Geanonimiseerde dataset beschikbaar onder CC-BY 4.0 na publicatie eindrapport (verwacht september 2026).</span></li>
+              <li class="flex items-start gap-2"><span class="text-green-600 font-bold">v</span> <span><strong>Externe review:</strong> Methodologie voorzien van review door onafhankelijk onderzoeker voor publicatie eindrapport.</span></li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. Tijdlijn -->
+      <section id="tijdlijn" class="mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy mb-4">9. Studietijdlijn 2026</h2>
+        <div class="space-y-6 border-l-2 border-slate-200 pl-6 ml-2">
+          <div>
+            <div class="flex flex-wrap items-center gap-3 mb-1">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Q1 2026 (jan-mrt)</span>
+              <span class="text-xs font-bold text-green-600">[Afgerond]</span>
+            </div>
+            <h3 class="font-bold text-navy mb-2">Voorbereiding en vragenlijst-ontwerp</h3>
+            <ul class="space-y-1 text-sm text-slate-600">
+              <li>— Literatuurstudie AI-adoptie Europa (Eurostat, OECD, EU Joint Research Centre)</li>
+              <li>— Opstellen vragenlijst-framework (6 pijlers)</li>
+              <li>— Pilot-test vragenlijst bij 12 respondenten</li>
+              <li>— Methodologische opzet vastgesteld</li>
+            </ul>
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-3 mb-1">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Q2 2026 (apr-jun)</span>
+              <span class="text-xs font-bold text-brand-indigo">[Lopend]</span>
+            </div>
+            <h3 class="font-bold text-navy mb-2">Veldwerk en tussentijdse rapportage</h3>
+            <ul class="space-y-1 text-sm text-slate-600">
+              <li>— Online enquete-platform live</li>
+              <li>— Werving via LinkedIn, Brevo-nieuwsbrief, brancheverenigingen</li>
+              <li>— Tussentijdse bevindingen (n&gt;=100) gepubliceerd op hoofdpagina</li>
+              <li>— Maandelijkse update cijfers</li>
+            </ul>
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-3 mb-1">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Q3 2026 (jul-sep)</span>
+              <span class="text-xs font-bold text-slate-500">[Gepland]</span>
+            </div>
+            <h3 class="font-bold text-navy mb-2">Afronding veldwerk en analyse</h3>
+            <ul class="space-y-1 text-sm text-slate-600">
+              <li>— Veldwerkperiode sluit 31 augustus 2026</li>
+              <li>— Post-stratificatieweging op CBS-data</li>
+              <li>— Statistische analyse (R 4.4)</li>
+              <li>— Thematische codering open antwoorden</li>
+              <li>— Externe methodologie-review</li>
+            </ul>
+          </div>
+          <div>
+            <div class="flex flex-wrap items-center gap-3 mb-1">
+              <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Q4 2026 (okt)</span>
+              <span class="text-xs font-bold text-slate-500">[Gepland]</span>
+            </div>
+            <h3 class="font-bold text-navy mb-2">Publicatie definitief rapport</h3>
+            <ul class="space-y-1 text-sm text-slate-600">
+              <li>— Definitief rapport gepubliceerd op aanloopai.nl (open access, CC-BY 4.0)</li>
+              <li>— Persbericht naar Emerce, MT/Sprout, FD Ondernemer, Computable</li>
+              <li>— Anonieme dataset beschikbaar als download</li>
+              <li>— Inschrijving herhaalonderzoek 2027 geopend</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. Citatie -->
+      <section id="citatie" class="mb-12">
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy mb-4">10. Hoe te citeren</h2>
+        <p class="text-slate-700 leading-relaxed mb-6">
+          Dit onderzoek is vrij beschikbaar onder <strong>Creative Commons Licentie CC-BY 4.0</strong>. U mag de bevindingen citeren, delen en bewerken mits u Aanloop AI als bron vermeldt.
+        </p>
+
+        <div class="space-y-4">
+          <div>
+            <h3 class="text-base font-bold text-navy mb-2">APA 7e editie</h3>
+            <div class="bg-slate-800 text-slate-100 rounded-lg p-4 font-mono text-sm leading-relaxed">
+              Dogan, M. A., &amp; Aanloop AI. (2026). AI-adoptie in het Nederlandse MKB 2026: Sector-adoption, use cases en barrieres [Doorlopend onderzoeksrapport]. Aanloop AI. https://aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-base font-bold text-navy mb-2">BibTeX</h3>
+            <pre class="bg-slate-800 text-slate-100 rounded-lg p-4 font-mono text-sm leading-relaxed overflow-x-auto whitespace-pre-wrap">{`@techreport{aanloopai2026mkbadoptie,
+  author       = {Dogan, Mustafa Agah and {Aanloop AI}},
+  title        = {AI-adoptie in het Nederlandse MKB 2026:
+                  Sector-adoption, use cases en barrieres},
+  institution  = {Aanloop AI},
+  year         = {2026},
+  type         = {Doorlopend onderzoeksrapport},
+  address      = {Rotterdam, Nederland},
+  url          = {https://aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/},
+  note         = {KvK: 88606902. Licentie: CC-BY 4.0},
+}`}</pre>
+          </div>
+
+          <div>
+            <h3 class="text-base font-bold text-navy mb-2">Korte verwijzing (persvrijgave / presentatie)</h3>
+            <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 text-sm text-slate-700 italic">
+              "Bron: Aanloop AI, AI-adoptie Nederlands MKB 2026, aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/ (CC-BY 4.0)"
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-6 bg-brand-indigo/5 border border-brand-indigo/20 rounded-lg p-4 text-sm text-slate-700">
+          <strong class="text-navy">Persvragen of data-licenties?</strong> Neem contact op via <a href="mailto:hello@aanloopai.nl" class="text-brand-indigo hover:underline">hello@aanloopai.nl</a>. We leveren op aanvraag grafieken in PNG/SVG-formaat voor pers en analisten.
+        </div>
+      </section>
+
+    </div>
+  </article>
+
+  <!-- Lees ook -->
+  <section class="section bg-slate-50 border-t border-slate-200">
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow mb-3">Gerelateerde pagina's</p>
+      <h2 class="text-2xl font-bold tracking-tightest text-navy mb-6">Meer uit dit onderzoek</h2>
+      <div class="grid md:grid-cols-3 gap-4">
+        <a href="/onderzoek/ai-adoption-mkb-nederland-2026/" class="card hover:shadow-md hover:border-brand-indigo transition-all">
+          <h3 class="font-bold text-navy mb-2">Onderzoek — Hoofdpagina</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Bekijk de voorlopige bevindingen: sector-adoption rates, top use cases en barrieres.</p>
+          <span class="text-sm text-brand-indigo mt-3 inline-block">Bekijk bevindingen →</span>
+        </a>
+        <a href="/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/" class="card hover:shadow-md hover:border-brand-indigo transition-all">
+          <h3 class="font-bold text-navy mb-2">AI en AVG-Compliance MKB</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Praktische gids: hoe blijft uw AI AVG-conform? DPA, NEN 7510 en EU AI Act uitgelegd.</p>
+          <span class="text-sm text-brand-indigo mt-3 inline-block">Lees gids →</span>
+        </a>
+        <a href="/kennisbank/ai-roi-berekenen-mkb-nederland-2026/" class="card hover:shadow-md hover:border-brand-indigo transition-all">
+          <h3 class="font-bold text-navy mb-2">AI ROI Berekenen MKB</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Formules, sector-benchmarks en payback-periodes voor het Nederlands MKB.</p>
+          <span class="text-sm text-brand-indigo mt-3 inline-block">Lees gids →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section bg-gradient-to-br from-navy to-brand-indigo text-white">
+    <div class="container-page max-w-2xl text-center">
+      <h2 class="text-2xl font-bold tracking-tightest mb-4">Draag bij aan het onderzoek</h2>
+      <p class="text-slate-200 leading-relaxed mb-6">
+        Vier tot zes minuten, anoniem verwerkt. U ontvangt uw persoonlijke benchmark-score en het definitieve rapport gratis bij publicatie.
+      </p>
+      <a href="/onderzoek/ai-adoption-mkb-nederland-2026/#enquete" class="bg-white text-navy font-semibold px-8 py-4 rounded-xl hover:bg-slate-100 transition-colors inline-block">
+        Doe mee aan onderzoek →
+      </a>
+    </div>
+  </section>
+
+</BaseLayout>

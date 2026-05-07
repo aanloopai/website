@@ -58,7 +58,17 @@ const articleSchema = {
   dateModified: '2026-05-07',
   mainEntityOfPage: 'https://aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/',
   inLanguage: 'nl-NL',
-  about: { '@type': 'Thing', name: 'AI-adoption in Dutch SMEs' }
+  about: { '@type': 'Thing', name: 'AI-adoption in Dutch SMEs' },
+  mainEntity: {
+    '@type': 'Dataset',
+    name: 'AI Adoption MKB NL 2026 (planned)',
+    description: 'Geplande survey-dataset: 500 MKB-bedrijven (10-200 medewerkers), 6 sectoren, gewogen op CBS Statline. Definitieve publicatie Q3 2026.',
+    creator: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', '@id': 'https://aanloopai.nl/#organization' },
+    temporalCoverage: '2026',
+    spatialCoverage: { '@type': 'Place', name: 'Nederland', geo: { '@type': 'GeoShape', addressCountry: 'NL' } },
+    license: 'https://creativecommons.org/licenses/by/4.0/',
+    url: 'https://aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/'
+  }
 };
 
 const speakableSchema = {
@@ -285,6 +295,108 @@ const speakableSchema = {
           Door te verzenden geeft u toestemming voor verwerking conform onze <a href="/privacy/" class="text-brand-indigo hover:underline">privacyverklaring</a>. Antwoorden worden geanonimiseerd voor publicatie. EU-only datalokatie. Verwijdering altijd mogelijk via privacy@aanloopai.nl.
         </p>
       </form>
+    </div>
+  </section>
+
+  <!-- Cite-friendly public stat-block -->
+  <section class="section bg-slate-50 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <p class="eyebrow mb-3">Marktcontext — publieke bronnen</p>
+      <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">
+        AI en het Nederlandse MKB in cijfers
+      </h2>
+      <p class="mt-4 text-slate-600 leading-relaxed max-w-3xl">
+        Onderstaande cijfers zijn afkomstig uit openbaar beschikbare bronnen en vormen de marktcontext voor dit onderzoek. Ze zijn citeerbaar met bronvermelding.
+      </p>
+
+      <div class="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="card border border-slate-200">
+          <p class="text-4xl font-bold text-brand-indigo">1,4 mln</p>
+          <p class="font-semibold text-navy mt-2">MKB-bedrijven in Nederland</p>
+          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Totaal aantal MKB-bedrijven (0-250 medewerkers) actief in Nederland per 2024.</p>
+          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: CBS Statline, Bedrijven; bedrijfsgrootte 2024</p>
+        </div>
+        <div class="card border border-slate-200">
+          <p class="text-4xl font-bold text-brand-indigo">63%</p>
+          <p class="font-semibold text-navy mt-2">van NL werkgelegenheid in MKB</p>
+          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Het Nederlandse MKB is verantwoordelijk voor circa 63% van de totale private werkgelegenheid in Nederland.</p>
+          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: CBS / MKB-Nederland, Jaarcijfers MKB 2023</p>
+        </div>
+        <div class="card border border-slate-200">
+          <p class="text-4xl font-bold text-brand-indigo">34%</p>
+          <p class="font-semibold text-navy mt-2">van EU-bedrijven gebruikt AI (2024)</p>
+          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Aandeel EU-ondernemingen (10+ medewerkers) dat in 2024 minstens een AI-technologie inzet, een stijging van 8 procentpunt t.o.v. 2023.</p>
+          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: Eurostat, ICT Usage in Enterprises Survey 2024</p>
+        </div>
+        <div class="card border border-slate-200">
+          <p class="text-4xl font-bold text-brand-indigo">aug 2026</p>
+          <p class="font-semibold text-navy mt-2">EU AI Act verbodsbepalingen van kracht</p>
+          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Vanaf 2 augustus 2026 gelden de verbodsbepalingen voor onaanvaardbaar-risicovolle AI-systemen voor alle organisaties die AI inzetten in de EU, inclusief MKB.</p>
+          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: Verordening (EU) 2024/1689, Publicatieblad EU</p>
+        </div>
+        <div class="card border border-slate-200">
+          <p class="text-4xl font-bold text-brand-indigo">+18 pp</p>
+          <p class="font-semibold text-navy mt-2">AI-adoptiegroei EU MKB in 2 jaar</p>
+          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Het aandeel EU-bedrijven met 10-49 medewerkers dat AI inzet groeide van 16% (2022) naar 34% (2024), een verdubbeling in twee jaar.</p>
+          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: Eurostat, ICT Usage in Enterprises 2022-2024</p>
+        </div>
+        <div class="card border border-slate-200">
+          <p class="text-4xl font-bold text-brand-indigo">top-3</p>
+          <p class="font-semibold text-navy mt-2">NL in EU Digital Economy Index</p>
+          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Nederland behoort consistent tot de top-3 van de EU op de DESI-ranglijst (Digital Economy and Society Index), met name op connectiviteit en digitale vaardigheden.</p>
+          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: Europese Commissie, DESI 2023</p>
+        </div>
+      </div>
+      <p class="mt-6 text-xs text-slate-400 italic">
+        Citeerbaar als: "Bron: Aanloop AI onderzoekspagina, aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/ — met verwijzing naar oorspronkelijke bronnen (CBS, Eurostat, EU-verordening)."
+      </p>
+    </div>
+  </section>
+
+  <!-- Methodologie cross-link -->
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <div class="grid md:grid-cols-2 gap-8 items-center">
+        <div>
+          <p class="eyebrow mb-3">Onderzoeksverantwoording</p>
+          <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy text-balance">
+            Transparante methodologie — volledig openbaar
+          </h2>
+          <p class="mt-4 text-slate-600 leading-relaxed">
+            We publiceren de volledige onderzoeksopzet: steekproeftrekking, vragenlijst-architectuur, data-analysemethode, beperkingen en ethische richtlijnen. Alle data wordt na publicatie vrijgegeven onder CC-BY 4.0.
+          </p>
+          <div class="mt-6 flex flex-wrap gap-3">
+            <a href="/onderzoek/ai-adoption-mkb-nederland-2026/methodologie/" class="btn-primary text-sm px-5 py-2.5">
+              Lees volledige methodologie →
+            </a>
+          </div>
+          <p class="mt-4 text-xs text-slate-500">
+            Bevat: onderzoeksvraag, doelpopulatie, steekproefstrategie, vragenlijst-pijlers, data-analyse, beperkingen, ethiek/AVG, tijdlijn en BibTeX-citatie.
+          </p>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="card border border-slate-200 text-center">
+            <p class="text-3xl font-bold text-brand-indigo">6</p>
+            <p class="text-sm font-semibold text-navy mt-1">meetpijlers</p>
+            <p class="text-xs text-slate-500 mt-1">AI-readiness t/m AVG-bewustwording</p>
+          </div>
+          <div class="card border border-slate-200 text-center">
+            <p class="text-3xl font-bold text-brand-indigo">500+</p>
+            <p class="text-sm font-semibold text-navy mt-1">streefrespondenten</p>
+            <p class="text-xs text-slate-500 mt-1">Gewogen op CBS Statline</p>
+          </div>
+          <div class="card border border-slate-200 text-center">
+            <p class="text-3xl font-bold text-brand-indigo">CC-BY</p>
+            <p class="text-sm font-semibold text-navy mt-1">open data licentie</p>
+            <p class="text-xs text-slate-500 mt-1">Vrij citeerbaar met bronvermelding</p>
+          </div>
+          <div class="card border border-slate-200 text-center">
+            <p class="text-3xl font-bold text-brand-indigo">Q3</p>
+            <p class="text-sm font-semibold text-navy mt-1">definitief rapport</p>
+            <p class="text-xs text-slate-500 mt-1">September 2026 publicatie</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
