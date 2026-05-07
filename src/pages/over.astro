@@ -65,20 +65,24 @@ const faqSchema = [
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
-  '@id': 'https://aanloopai.nl/team/magahdogan/#person',
+  '@id': 'https://aanloopai.nl/over-ons/#mustafa-agah-dogan',
   name: 'Mustafa Agah Dogan',
   givenName: 'Mustafa',
   additionalName: 'Agah',
   familyName: 'Dogan',
-  jobTitle: 'Oprichter & CEO',
-  description: 'Oprichter en CEO van Aanloop AI B.V. Specialiseert zich in AI-implementatie voor het Nederlandse MKB: voice AI, WhatsApp Business, n8n workflow automatisering, ElevenLabs voice AI en custom AI agents. 20+ jaar tech-ervaring.',
-  url: 'https://aanloopai.nl/team/magahdogan/',
+  jobTitle: 'Oprichter & AI-strateeg',
+  description: 'Oprichter en AI-strateeg bij Aanloop AI B.V. Specialiseert zich in AI-implementatie voor het Nederlandse MKB: voice AI, WhatsApp Business, n8n workflow automatisering, ElevenLabs voice AI en custom AI agents. BSc Computer Engineering (2012), 20+ jaar IT-ervaring, voormalig AI-lead Big 4-consultancy.',
+  url: 'https://aanloopai.nl/over-ons/',
   image: {
     '@type': 'ImageObject',
     // TODO: vervang door echte profielfoto-URL zodra beschikbaar
     url: 'https://aanloopai.nl/brand/magahdogan.jpg',
     width: 400,
     height: 400,
+  },
+  alumniOf: {
+    '@type': 'EducationalOrganization',
+    name: 'BSc Computer Engineering 2012',
   },
   worksFor: {
     '@type': 'Organization',
@@ -87,26 +91,26 @@ const personSchema = {
     url: 'https://aanloopai.nl',
   },
   knowsAbout: [
-    'AI-receptionist voor MKB',
+    'AI agents',
+    'AI chatbots',
+    'AVG compliance',
+    'EU AI Act',
+    'MKB digitalisering',
+    'Cloudflare Workers',
+    'Schema.org structured data',
     'Voice AI met ElevenLabs',
     'WhatsApp Business AI',
     'n8n workflow automatisering',
-    'AI agents',
-    'AVG-compliance voor AI',
-    'EU AI Act',
-    'Wft-adviesgrenzen voor AI-toepassingen',
     'LLM integratie',
     'Custom AI workflows',
     'NEN 7510 voor zorgsector',
     'Self-hosted AI-infrastructuur',
   ],
-  knowsLanguage: ['nl', 'en'],
+  knowsLanguage: ['nl', 'en', 'tr'],
   nationality: { '@type': 'Country', name: 'Netherlands' },
   sameAs: [
-    // TODO: vervang door verified persoonlijk LinkedIn-profiel URL van Mustafa zodra bevestigd
     'https://www.linkedin.com/in/magahdogan/',
-    'https://aanloopai.nl/team/magahdogan/',
-    'https://aanloopai.nl/',
+    'https://aanloopai.nl/over-ons/',
   ],
 };
 
@@ -243,9 +247,9 @@ const breadcrumbSchema = {
         <div class="grid lg:grid-cols-3 gap-10 items-start reveal">
           <!-- Foto + contactinfo -->
           <div class="text-center lg:text-left">
-            <div class="aspect-square w-48 mx-auto lg:mx-0 bg-gradient-to-br from-indigo-50 to-emerald-50 rounded-2xl overflow-hidden ring-2 ring-slate-200 flex items-center justify-center mb-6">
+            <div class="aspect-square w-48 mx-auto lg:mx-0 bg-gradient-to-br from-navy to-brand-emerald rounded-2xl overflow-hidden ring-2 ring-slate-200 flex items-center justify-center mb-6">
               <!-- TODO: vervang door echte profielfoto src (400×400 webp). Bijv.: <Image src={import('../assets/images/magahdogan.jpg')} alt="Mustafa Agah Dogan, oprichter Aanloop AI" ... /> -->
-              <span class="text-5xl font-bold text-slate-400" aria-label="Profielfoto Mustafa Agah Dogan (placeholder)">DV</span>
+              <span class="text-5xl font-bold text-white tracking-tight" aria-label="Profielfoto Mustafa Agah Dogan (placeholder)">MA</span>
             </div>
             <div class="space-y-3">
               <a
@@ -440,14 +444,9 @@ const breadcrumbSchema = {
           <span class="eyebrow mb-3">Pers &amp; erkenning</span>
           <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mt-2">Persaandacht &amp; publicaties.</h2>
         </div>
-        {/* TODO: Vul in zodra persberichten, podcast-optredens of award-nominaties beschikbaar zijn */}
-        <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50/50 p-8 text-center reveal">
-          <p class="text-slate-500 text-sm leading-relaxed">
-            Aanloop AI is in 2024 opgericht en focust nu op het bedienen van klanten boven zelfpromotie. Zodra wij verschijnen in externe publicaties, podcasts of vakpers, publiceren we dat hier — eerlijk en verifieerbaar.
-          </p>
-          <p class="text-slate-400 text-xs mt-4 italic">
-            Interesse in een interview of samenwerking? Mail <a href="mailto:hello@aanloopai.nl" class="text-brand-indigo hover:underline">hello@aanloopai.nl</a>
-          </p>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center reveal">
+          <p class="text-slate-600 text-sm leading-relaxed font-medium">Pers- en media-vragen:</p>
+          <a href="mailto:magahdogan@aanloopai.nl" class="text-brand-indigo hover:underline text-sm mt-2 inline-block">magahdogan@aanloopai.nl</a>
         </div>
       </div>
     </div>
@@ -474,9 +473,10 @@ const breadcrumbSchema = {
     <div class="container-page">
       <div class="max-w-3xl mx-auto text-center">
         <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-4">Klaar om kennis te maken?</h2>
-        <p class="text-slate-600 mb-8">
+        <p class="text-slate-600 mb-4">
           Boek een gratis demo van 30 minuten. Mustafa laat u live zien wat AI concreet voor uw branche kan doen — geen verkooppraatje.
         </p>
+        <p class="text-sm text-slate-500 mb-8">Bekijk de <a href="/tarieven/" class="text-brand-indigo hover:underline font-medium">tarieven</a> — vanaf €597/mnd.</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a href="/demo-aanvragen/" class="btn-primary text-base px-8 py-4">
             Boek een gratis demo →

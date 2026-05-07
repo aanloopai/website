@@ -128,6 +128,7 @@ const sizes = ['1 persoon (ZZP)','2–10 medewerkers','11–50 medewerkers','51�
               <span class="text-sm text-slate-600">Ik ontvang graag AI-tips van Aanloop AI (max 1× per week, altijd afmeldbaar).</span>
             </label>
           </div>
+          <p id="form-error" class="text-sm text-red-600 mt-2 hidden" role="alert"></p>
           <div class="flex items-center justify-between">
             <button type="button" id="terug-2" class="btn-ghost text-sm"><svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg> Terug</button>
             <button type="submit" id="submit-btn" class="btn-primary px-8">
@@ -138,13 +139,7 @@ const sizes = ['1 persoon (ZZP)','2–10 medewerkers','11–50 medewerkers','51�
           </div>
           <p class="text-xs text-slate-400 mt-4 text-center">Wij nemen binnen <strong>1 werkdag</strong> contact op om een moment in te plannen.</p>
           <div class="mt-6 pt-5 border-t border-slate-100 text-center">
-            <p class="text-sm text-slate-600 mb-3">Liever direct een tijd kiezen?</p>
-            <a href="/demo-inplannen/" class="btn-outline text-sm inline-flex items-center gap-2">
-              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-              Open de online agenda
-            </a>
+            <p class="text-sm text-slate-500">Of bekijk onze open agenda <strong>na</strong> dit formulier.</p>
           </div>
         </div>
 
@@ -205,7 +200,13 @@ function v2(): boolean {
   const b = (document.getElementById('bedrijfsnaam') as HTMLInputElement).value.trim();
   const s = (document.getElementById('sector') as HTMLSelectElement).value;
   const g = (document.getElementById('grootte') as HTMLSelectElement).value;
-  if (!b||!s||!g) { alert('Vul alle verplichte velden in (Bedrijfsnaam, Sector en Grootte).'); return false; }
+  if (!b||!s||!g) {
+    const errEl = document.getElementById('form-error') as HTMLElement|null;
+    if (errEl) { errEl.textContent = 'Vul alle verplichte velden in (Bedrijfsnaam, Sector en Grootte).'; errEl.classList.remove('hidden'); errEl.scrollIntoView({behavior:'smooth',block:'center'}); }
+    return false;
+  }
+  const errEl2 = document.getElementById('form-error') as HTMLElement|null;
+  if (errEl2) errEl2.classList.add('hidden');
   return true;
 }
 
@@ -227,7 +228,13 @@ document.getElementById('demo-form')?.addEventListener('submit', async (e) => {
   e.preventDefault();
   const form = e.target as HTMLFormElement;
   const ck = document.getElementById('akkoord') as HTMLInputElement;
-  if (!ck?.checked) { alert('Ga akkoord met de privacyverklaring om door te gaan.'); return; }
+  if (!ck?.checked) {
+    const errEl = document.getElementById('form-error') as HTMLElement|null;
+    if (errEl) { errEl.textContent = 'Ga akkoord met de privacyverklaring om door te gaan.'; errEl.classList.remove('hidden'); errEl.scrollIntoView({behavior:'smooth',block:'center'}); }
+    return;
+  }
+  const errElOk = document.getElementById('form-error') as HTMLElement|null;
+  if (errElOk) errElOk.classList.add('hidden');
 
   const btn = document.getElementById('submit-btn') as HTMLButtonElement;
   const txt = document.getElementById('submit-txt') as HTMLElement;
@@ -260,7 +267,8 @@ document.getElementById('demo-form')?.addEventListener('submit', async (e) => {
     const msg = isTimeout
       ? 'Het versturen duurt te lang. Mogelijk een netwerk-issue.\n\nProbeer opnieuw of mail naar hello@aanloopai.nl.'
       : 'Er ging iets mis bij het versturen.\n\nFout: ' + (err?.message || 'Onbekende fout') + '\n\nProbeer opnieuw of stuur een e-mail naar hello@aanloopai.nl';
-    alert(msg);
+    const errElSubmit = document.getElementById('form-error') as HTMLElement|null;
+    if (errElSubmit) { errElSubmit.textContent = msg.replace(/\n/g, ' '); errElSubmit.classList.remove('hidden'); errElSubmit.scrollIntoView({behavior:'smooth',block:'center'}); }
     btn.disabled = false;
     txt.textContent = 'Demo aanvragen';
     ico?.classList.remove('hidden');
