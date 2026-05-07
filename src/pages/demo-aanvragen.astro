@@ -230,8 +230,11 @@ document.getElementById('demo-form')?.addEventListener('submit', async (e) => {
   spn?.classList.remove('hidden');
 
   const data = new FormData(form);
+  const ctrl = new AbortController();
+  const tid = setTimeout(() => ctrl.abort(), 30000);
   try {
-    const res = await fetch('/api/submit', { method: 'POST', body: data });
+    const res = await fetch('/api/submit', { method: 'POST', body: data, signal: ctrl.signal });
+    clearTimeout(tid);
     const text = await res.text();
     let json: any = {};
     try { json = JSON.parse(text); } catch { json = { message: text }; }
@@ -242,9 +245,13 @@ document.getElementById('demo-form')?.addEventListener('submit', async (e) => {
       throw new Error(`[HTTP ${res.status}] ${json.message || text || 'Onbekende fout'}`);
     }
   } catch (err: any) {
+    clearTimeout(tid);
     console.error('Demo form error:', err);
-    const msg = err?.message || 'Onbekende fout';
-    alert('Er ging iets mis bij het versturen.\n\nFout: ' + msg + '\n\nProbeer het nogmaals of stuur een e-mail naar hello@aanloopai.nl');
+    const isTimeout = err?.name === 'AbortError';
+    const msg = isTimeout
+      ? 'Het versturen duurt te lang. Mogelijk een netwerk-issue.\n\nProbeer opnieuw of mail naar hello@aanloopai.nl.'
+      : 'Er ging iets mis bij het versturen.\n\nFout: ' + (err?.message || 'Onbekende fout') + '\n\nProbeer opnieuw of stuur een e-mail naar hello@aanloopai.nl';
+    alert(msg);
     btn.disabled = false;
     txt.textContent = 'Demo aanvragen';
     ico?.classList.remove('hidden');

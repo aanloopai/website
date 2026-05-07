@@ -256,11 +256,15 @@ const type = url.searchParams.get('type') || 'contact';
     label.textContent = 'Versturen…';
     errorMsg?.classList.add('hidden');
 
-    try {
-      const res = await fetch('/api/submit', { method: 'POST', body: data });
-      const json = await res.json();
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 30000);
 
-      if (json.success) {
+    try {
+      const res = await fetch('/api/submit', { method: 'POST', body: data, signal: ctrl.signal });
+      clearTimeout(tid);
+      const json = await res.json().catch(() => ({ success: false, message: 'Ongeldig antwoord' }));
+
+      if (res.ok && json.success) {
         const _ctype = (document.querySelector('input[name="type"]:checked') as HTMLInputElement)?.value || 'contact';
         const _cvals: Record<string, number> = { demo: 200, offerte: 300, contact: 50 };
         (window as any)._track?.('generate_lead', {
@@ -275,10 +279,17 @@ const type = url.searchParams.get('type') || 'contact';
           window.location.href = '/bedankt/?type=contact';
         }, 1500);
       } else {
-        throw new Error(json.message || 'Onbekende fout');
+        throw new Error(json.message || `HTTP ${res.status}`);
       }
-    } catch (err) {
-      errorMsg?.classList.remove('hidden');
+    } catch (err: any) {
+      clearTimeout(tid);
+      const isTimeout = err?.name === 'AbortError';
+      if (errorMsg) {
+        errorMsg.textContent = isTimeout
+          ? '⏱ Het versturen duurt langer dan verwacht. Probeer opnieuw of mail naar hello@aanloopai.nl.'
+          : '✗ Er is iets misgegaan. Probeer opnieuw of mail naar hello@aanloopai.nl.';
+        errorMsg.classList.remove('hidden');
+      }
       console.error('Form error:', err);
     } finally {
       btn.disabled = false;

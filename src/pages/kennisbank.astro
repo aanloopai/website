@@ -944,17 +944,22 @@ const collectionSchema = {
     data.append('subject', 'Nieuwe nieuwsbrief-aanmelding (kennisbank) — aanloopai.nl');
     data.append('email', email);
     data.append('source', 'Kennisbank newsletter signup');
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 30000);
     try {
-      const res = await fetch('/api/submit', { method: 'POST', body: data });
-      const json = await res.json();
-      if (json.success) {
+      const res = await fetch('/api/submit', { method: 'POST', body: data, signal: ctrl.signal });
+      clearTimeout(tid);
+      const json = await res.json().catch(() => ({ success: false }));
+      if (res.ok && json.success) {
         btn.textContent = '✓ Ingeschreven!';
       } else {
-        throw new Error(json.message || 'fout');
+        throw new Error(json.message || `HTTP ${res.status}`);
       }
-    } catch (err) {
+    } catch (err: any) {
+      clearTimeout(tid);
       console.error('KB newsletter error:', err);
-      btn.textContent = 'Probeer opnieuw';
+      const isTimeout = err?.name === 'AbortError';
+      btn.textContent = isTimeout ? '⏱ Te lang — opnieuw' : 'Probeer opnieuw';
       btn.disabled = false;
     }
   });

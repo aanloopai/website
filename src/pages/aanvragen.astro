@@ -341,10 +341,14 @@ const steps = [
     data.append('form_type', 'aanvraag');
     data.append('subject', `Nieuwe aanvraag via aanloopai.nl — ${data.get('bedrijf') || 'onbekend bedrijf'}`);
 
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 30000);
+
     try {
-      const res = await fetch('/api/submit', { method: 'POST', body: data });
-      const json = await res.json();
-      if (json.success) {
+      const res = await fetch('/api/submit', { method: 'POST', body: data, signal: ctrl.signal });
+      clearTimeout(tid);
+      const json = await res.json().catch(() => ({ success: false, message: 'Ongeldig antwoord' }));
+      if (res.ok && json.success) {
         const _planParam = new URLSearchParams(window.location.search).get('plan') || 'groei';
         const _planValues: Record<string, number> = { starter: 597, groei: 1197 };
         const _planValue = _planValues[_planParam] || 597;
@@ -356,12 +360,16 @@ const steps = [
         });
         window.location.href = '/bedankt/?type=aanvraag';
       } else {
-        throw new Error(json.message || 'Onbekende fout');
+        throw new Error(json.message || `HTTP ${res.status}`);
       }
-    } catch (err) {
+    } catch (err: any) {
+      clearTimeout(tid);
       console.error('Aanvraag form error:', err);
+      const isTimeout = err?.name === 'AbortError';
       errorEl?.classList.remove('hidden');
-      if (errorEl) errorEl.textContent = 'Er ging iets mis. Probeer het nogmaals of mail hello@aanloopai.nl';
+      if (errorEl) errorEl.textContent = isTimeout
+        ? 'Het versturen duurt te lang. Probeer opnieuw of mail naar hello@aanloopai.nl.'
+        : 'Er ging iets mis. Probeer opnieuw of mail naar hello@aanloopai.nl.';
       btn.disabled = false;
       label.textContent = 'Bevestig aanvraag';
     }

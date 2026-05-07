@@ -740,11 +740,16 @@ const faqItems = [
       btnText.textContent = 'Versturen…';
       msg.classList.add('hidden');
 
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 30000);
+
       try {
         const res = await fetch('/api/submit', {
           method: 'POST',
           body: new FormData(form),
+          signal: ctrl.signal,
         });
+        clearTimeout(tid);
         const data = await res.json().catch(() => ({ success: false, message: 'Ongeldig antwoord' }));
 
         if (res.ok && data.success) {
@@ -752,10 +757,17 @@ const faqItems = [
           showMsg('✓ Rapport onderweg — controleer uw inbox.', 'success');
           form.reset();
         } else {
-          showMsg(data.message || 'Versturen mislukt — probeer opnieuw.', 'error');
+          showMsg(data.message || 'Versturen mislukt — probeer opnieuw of mail hello@aanloopai.nl.', 'error');
         }
-      } catch {
-        showMsg('Netwerkfout — probeer opnieuw.', 'error');
+      } catch (err: any) {
+        clearTimeout(tid);
+        const isTimeout = err?.name === 'AbortError';
+        showMsg(
+          isTimeout
+            ? '⏱ Het versturen duurt te lang. Probeer opnieuw of mail hello@aanloopai.nl.'
+            : 'Netwerkfout — probeer opnieuw of mail hello@aanloopai.nl.',
+          'error'
+        );
       } finally {
         btn.disabled = false;
         btnText.textContent = 'Stuur rapport per e-mail →';

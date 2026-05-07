@@ -931,18 +931,29 @@ const faqItems = [
       emailBtnText.textContent = 'Versturen…';
       emailMsg.classList.add('hidden');
 
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 30000);
+
       try {
-        const res = await fetch('/api/submit', { method: 'POST', body: new FormData(form) });
+        const res = await fetch('/api/submit', { method: 'POST', body: new FormData(form), signal: ctrl.signal });
+        clearTimeout(tid);
         const data = await res.json().catch(() => ({ success: false, message: 'Ongeldig antwoord' }));
         if (res.ok && data.success) {
           showEmailMsg('✓ Rapport onderweg — controleer uw inbox.', 'success');
           trackEvent('scan_email_sent', {});
           form.reset();
         } else {
-          showEmailMsg(data.message || 'Versturen mislukt — probeer opnieuw.', 'error');
+          showEmailMsg(data.message || 'Versturen mislukt — probeer opnieuw of mail hello@aanloopai.nl.', 'error');
         }
-      } catch {
-        showEmailMsg('Netwerkfout — probeer opnieuw.', 'error');
+      } catch (err: any) {
+        clearTimeout(tid);
+        const isTimeout = err?.name === 'AbortError';
+        showEmailMsg(
+          isTimeout
+            ? '⏱ Het versturen duurt te lang. Probeer opnieuw of mail hello@aanloopai.nl.'
+            : 'Netwerkfout — probeer opnieuw of mail hello@aanloopai.nl.',
+          'error'
+        );
       } finally {
         emailBtn.disabled = false;
         emailBtnText.textContent = 'Stuur rapport per e-mail →';
