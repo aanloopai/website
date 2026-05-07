@@ -39,11 +39,11 @@ const articleSchema = {
     logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
   },
   datePublished: '2026-05-06',
-  dateModified: '2026-05-06',
+  dateModified: '2026-05-07',
   mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-voor-pensioenadviseur-nederland-2026/',
   inLanguage: 'nl-NL',
   articleSection: 'Pensioenadvies & AI',
-  wordCount: 2000,
+  wordCount: 3200,
   about: [
     { '@type': 'Thing', name: 'Pensioenadviseur' },
     { '@type': 'Thing', name: 'Wft Pensioenadvies' },
@@ -71,6 +71,9 @@ const faqItems = [
   { question: 'Hoe gaat AI om met pensioenverevening bij scheiding en complexe casus?', answer: 'Pensioenverevening bij scheiding (Wvps 1995) is een specialistisch traject: ex-partners verdelen het tijdens-huwelijk-opgebouwde pensioen volgens de standaard verevening of via conversie-keuze, met aparte rechten op nabestaandenpensioen. AI doet alleen administratieve voorwerk: intake van scheidings-datum, datum huwelijk, betrokken pensioenuitvoerders, bestaande convenant-afspraken, en het opvragen van de pensioen-overzichten via mijnpensioenoverzicht.nl-volmacht. Bij elke vraag over verevenings-strategie, conversie-vs-verevening-keuze, of nabestaandenpensioen-impact escaleert AI direct naar de Wft-pensioenadviseur. Voor expat-scheidingen met buitenlandse pensioen-rechten of bilaterale belastingverdragen is de escalatie nog scherper — internationale pensioen is altijd complex advies en AI is daar geen partij in.' },
   { question: 'Wat is de gemiddelde ROI voor een MKB-pensioenadviseurs-kantoor?', answer: 'Voor een gemiddeld 3-5-FTE kantoor met 200-400 werkgever-klanten plus 100-200 particuliere pensioen-klanten en gemiddelde fee-mix (werkgever-advies 4.000-15.000 euro per traject; particulier-advies 750-2.500 euro per traject) ligt de ROI op 10-22 keer op 12-maand basis tijdens de WTP-transitie-piek. Vier hoofdwinsten: (1) transitie-conversie stijgt van 25 procent naar 60-75 procent door proactieve werkgever-recall — voor 4-FTE kantoor met 250 werkgever-klanten betekent dit 120.000-280.000 euro extra transitie-fee gedurende de transitie-window 2026-2028, (2) lead-conversie eerste-contact 25 naar 45 procent door 24/7 respons (30.000-80.000 euro extra fee per jaar), (3) adviseur-tijd op intake en routinevragen daalt 65-80 procent (50-90u/mnd vrijgespeeld voor advies-uren = 40.000-90.000 euro per jaar extra advies-omzet), (4) klant-portaal-vragen geautomatiseerd (mijnpensioenoverzicht-link, regeling-uitleg, AOW-info) — assistent-tijd 70 procent omlaag.' },
   { question: 'Werkt dit ook voor solo-pensioenadviseurs of grote pensioenadvies-kantoren?', answer: 'Ja. Solo-pensioenadviseur (1-2 FTE, vaak met 1 ondersteuner): identiek pattern met lagere onboarding-kosten — extra cruciaal voor solo omdat een pensioenadviseur in 2026-2028 niet zowel transitie-advies als operationele werkgever-recall en KYC-administratie kan combineren. Grote pensioenadvies-kantoren (Wft Pensioenadvies-vergunning binnen een breder financieel-advies-kantoor): integratie binnen de bestaande tech-stack mogelijk mits compliance-officer akkoord; vaak is een parallel-implementatie als extra kanaal voor de transitie-werkstroom een snellere route. Voor onafhankelijke Adfiz-aangesloten kantoren zonder vaste formule-stack: maximale flexibiliteit op uw bestaande Lifeguard/Pensioenflex/Helder Pensioen-combinatie.' },
+  { question: 'Hoe gaat AI om met DGA-pensioen, ODV-cleanup en FOR-VOR-trajecten?', answer: 'DGA-pensioen-trajecten zijn complex specialistisch werk: oudedagsverplichtingen (ODV) lopen bij veel directeur-grootaandeelhouders nog uit de pre-2017-periode, plus de uitfasering van pensioen-eigen-beheer en eventuele afkoop-voor-gereduceerd-tarief. AI doet uitsluitend administratief voorwerk: intake van vennootschap-data, fiscale jaarstukken, bestaande ODV-contracten, eventuele afkoop-historie en lopende belastingaangifte-context. Bij elke vraag over de strategie (afkopen vs doorlopen, omzetting naar lijfrente, FOR-VOR-keuze, fiscale optimalisatie) escaleert AI direct naar de Wft-pensioenadviseur in samenwerking met de fiscalist of accountant. DGA-pensioen is vaak grensvlak Wft Pensioenadvies plus belastingadvies — geen ruimte voor AI-tussenkomst op de inhoud.' },
+  { question: 'Wat doet AI bij expat-pensioen, grensarbeiders en internationale dubbel-belasting?', answer: 'Internationale pensioen-trajecten kennen extra complexiteit: belastingverdragen tussen Nederland en het buitenland (bijvoorbeeld Belgie, Duitsland, Verenigd Koninkrijk, Verenigde Staten), Wet beperking export uitkeringen, EU-coordinatie sociale zekerheid en bilateral pensioen-overdracht. AI doet alleen voorbereidend werk: intake van werk-historie per land, vermoedelijke pensioen-rechten in elk land, gewenste eindbestemming na pensionering, en het opvragen van mijnpensioenoverzicht-data plus equivalenten in het buitenland. Voor de inhoudelijke advies-vragen — welk land moet de uitkering uitkeren, hoe wordt dubbele belasting voorkomen, is een pensioen-overdracht zinvol — escaleert AI altijd naar de Wft-pensioenadviseur die met de internationale-fiscalist en eventueel een advocaat de strategie bepaalt.' },
+  { question: 'Waar trekt de AI de Wft-grens precies — concrete voorbeelden van wat AI wel en niet zegt?', answer: 'Wat AI wel zegt: feitelijk-informatieve antwoorden ("een premieregeling betekent dat de werkgever een vast premie inlegt en de uitkering afhankelijk is van het beleggingsresultaat"), procedurele toelichting ("de WTP-transitie-deadline is 1 januari 2028 en u kunt vanaf nu beginnen"), en operationele coordinatie ("ik zal de afspraak inplannen en uw regeling-document alvast voorbereiden"). Wat AI nooit zegt: passendheid-uitspraken ("solidair past beter voor uw sector"), keuze-advies ("ik adviseer u om over te stappen"), evenwichtigheid-oordelen ("uw oudere werknemers worden voldoende gecompenseerd"), of fiscaal-strategisch advies ("u kunt beter afkopen voor het gereduceerde tarief"). Bij elke vraag uit de tweede categorie schakelt AI direct door met de standaard formulering — geen ruimte voor schaduw-advies en geen overschrijding van de Wft-grens of AFM-norm Klantbelang Centraal.' },
 ];
 
 const automatableProcesses = [
@@ -299,6 +302,94 @@ const roiBreakdown = [
   </section>
 
   <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">WTP transitie-checklist</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wat werkgevers en pensioenadviseurs concreet moeten doen voor 1 januari 2028.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">De Wet toekomst pensioenen (in werking 1 juli 2023, transitie-uiterste-termijn 1 januari 2028) vereist dat alle werkgeverspensioenregelingen worden omgezet naar een premieregeling. Onderstaande tijdlijn is de praktische werkgever-checklist die uw kantoor met AI proactief kan begeleiden — administratief, niet inhoudelijk-adviserend.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Mijlpaal</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Wat moet er gebeuren</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">AI-bijdrage (administratief)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr><td class="py-3 px-4 font-semibold text-navy">T-24 maanden</td><td class="py-3 px-4 text-slate-700 text-xs">Inventarisatie regeling-type, deelnemersbestand, CAO-context.</td><td class="py-3 px-4 text-slate-600 text-xs">Werkgever-data verzamelen, intake-formulier, regeling-document opvragen.</td></tr>
+            <tr><td class="py-3 px-4 font-semibold text-navy">T-18 maanden</td><td class="py-3 px-4 text-slate-700 text-xs">Orienterend transitie-gesprek met Wft-pensioenadviseur.</td><td class="py-3 px-4 text-slate-600 text-xs">Afspraak inplannen, voorbereiding klaarzetten in Lifeguard.</td></tr>
+            <tr><td class="py-3 px-4 font-semibold text-navy">T-15 maanden</td><td class="py-3 px-4 text-slate-700 text-xs">Keuze solidair vs flexibel premiepensioen door werkgever.</td><td class="py-3 px-4 text-slate-600 text-xs">Geen — keuze-advies is 100% Wft-werk.</td></tr>
+            <tr><td class="py-3 px-4 font-semibold text-navy">T-12 maanden</td><td class="py-3 px-4 text-slate-700 text-xs">Evenwichtigheid-toets per generatie, OR/PVT-instemming.</td><td class="py-3 px-4 text-slate-600 text-xs">Communicatie OR/deelnemers, vraag-antwoord intake.</td></tr>
+            <tr><td class="py-3 px-4 font-semibold text-navy">T-9 maanden</td><td class="py-3 px-4 text-slate-700 text-xs">Uitvoerder-keuze (verzekeraar, PPI, pensioenfonds).</td><td class="py-3 px-4 text-slate-600 text-xs">Geen — uitvoerder-advies is 100% Wft-werk.</td></tr>
+            <tr><td class="py-3 px-4 font-semibold text-navy">T-6 maanden</td><td class="py-3 px-4 text-slate-700 text-xs">Implementatie-traject met uitvoerder.</td><td class="py-3 px-4 text-slate-600 text-xs">Project-coordinatie, deadline-monitoring, document-collectie.</td></tr>
+            <tr><td class="py-3 px-4 font-semibold text-navy">T-3 maanden</td><td class="py-3 px-4 text-slate-700 text-xs">Deelnemer-communicatie en informatie-verstrekking.</td><td class="py-3 px-4 text-slate-600 text-xs">Standaard-vragen deelnemers (regeling-uitleg, AOW-info).</td></tr>
+            <tr><td class="py-3 px-4 font-semibold text-navy">1 januari 2028</td><td class="py-3 px-4 text-slate-700 text-xs">Nieuwe regeling actief, oude regeling uitgefaseerd.</td><td class="py-3 px-4 text-slate-600 text-xs">Klant-portaal-vragen, regeling-status updates.</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Voor pensioenadviseurs-kantoren die deze tijdlijn proactief begeleiden voor 200-400 werkgever-klanten loopt de werklast eenmalig op tot 30-50 procent boven baseline in 2026-2027 — precies de periode waarin AI de administratieve coordinatie kan opvangen zonder dat de Wft-grens wordt geraakt.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Niet alle AI is gelijk</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">AI receptionist plus WhatsApp-agent versus algemene chatbot of traditionele assistent.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Voor pensioenadviseurs-kantoren maakt het type AI groot verschil — een algemene chatbot zonder Wft-bewustzijn kan binnen twee zinnen advies-grens overschrijden. Hieronder de drie opties op de criteria die voor een Wft-vergunde onderneming relevant zijn.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Criterium</th>
+              <th class="text-left py-3 px-4 font-bold text-brand-emerald">Aanloop AI receptionist</th>
+              <th class="text-left py-3 px-4 text-slate-700 font-medium">Algemene chatbot</th>
+              <th class="text-left py-3 px-4 text-slate-700 font-medium">Traditionele assistent</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            <tr><td class="py-3 px-4 font-semibold text-navy">Wft-bewuste rode-vlag-detection</td><td class="py-3 px-4 text-slate-700 text-xs">Ja, 10 keywords pre-geconfigureerd</td><td class="py-3 px-4 text-slate-600 text-xs">Nee — risico Wft-overschrijding</td><td class="py-3 px-4 text-slate-600 text-xs">Afhankelijk van persoonlijke training</td></tr>
+            <tr><td class="py-3 px-4 font-semibold text-navy">24/7 beschikbaarheid</td><td class="py-3 px-4 text-slate-700 text-xs">Ja, geen avond/weekend-gat</td><td class="py-3 px-4 text-slate-600 text-xs">Ja — maar zonder context-bewustzijn</td><td class="py-3 px-4 text-slate-600 text-xs">Nee, kantooruren</td></tr>
+            <tr><td class="py-3 px-4 font-semibold text-navy">Native koppeling Lifeguard/Helder</td><td class="py-3 px-4 text-slate-700 text-xs">Ja, native API</td><td class="py-3 px-4 text-slate-600 text-xs">Nee, generiek</td><td class="py-3 px-4 text-slate-600 text-xs">Ja, handmatig</td></tr>
+            <tr><td class="py-3 px-4 font-semibold text-navy">WTP-transitie-recall werkgevers</td><td class="py-3 px-4 text-slate-700 text-xs">Ja, deadline-monitoring + outreach</td><td class="py-3 px-4 text-slate-600 text-xs">Nee — geen client-portfolio context</td><td class="py-3 px-4 text-slate-600 text-xs">Handmatig, vaak gemist</td></tr>
+            <tr><td class="py-3 px-4 font-semibold text-navy">EU-only data + AVG-DPIA</td><td class="py-3 px-4 text-slate-700 text-xs">Ja, EU-residency + DPIA-template</td><td class="py-3 px-4 text-slate-600 text-xs">Vaak US-data-flow</td><td class="py-3 px-4 text-slate-600 text-xs">Ja, intern</td></tr>
+            <tr><td class="py-3 px-4 font-semibold text-navy">Wwft-pre-screening</td><td class="py-3 px-4 text-slate-700 text-xs">Ja, UBO + risk-flag protocol</td><td class="py-3 px-4 text-slate-600 text-xs">Nee</td><td class="py-3 px-4 text-slate-600 text-xs">Handmatig</td></tr>
+            <tr><td class="py-3 px-4 font-semibold text-navy">Maandkosten 4-FTE kantoor</td><td class="py-3 px-4 text-slate-700 text-xs">vanaf 597 euro per maand Marco+Emma</td><td class="py-3 px-4 text-slate-600 text-xs">29-99 euro per maand basic-tier</td><td class="py-3 px-4 text-slate-600 text-xs">3.500-5.500 euro FTE-loon</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Conclusie: een algemene chatbot is goedkoop maar Wft-onveilig — een Wft-overschrijding kost meer in AFM-onderzoek of KiFiD-procedure dan jaren chatbot-besparing. Een traditionele assistent is veilig maar mist 24/7 dekking. De combinatie van Wft-bewuste configuratie plus native pensioenadvies-integraties is wat een echte AI receptionist voor pensioenadviseurs onderscheidt.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Glossarium</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Pensioen plus AI — kerntermen voor uw kantoor.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Snelle naslag voor de termen die in deze pagina voorkomen. Voor inhoudelijke uitleg of advies-passendheid blijft uw Wft-pensioenadviseur het aanspreekpunt.</p>
+      </div>
+      <dl class="grid sm:grid-cols-2 gap-x-8 gap-y-5 text-sm reveal reveal-delay-1">
+        <div><dt class="font-semibold text-navy">WTP — Wet toekomst pensioenen</dt><dd class="mt-1 text-slate-600 text-xs">Wet in werking 1 juli 2023; transitie van eindloon/middelloon naar premieregeling uiterlijk 1 januari 2028.</dd></div>
+        <div><dt class="font-semibold text-navy">Premieregeling</dt><dd class="mt-1 text-slate-600 text-xs">Pensioenregeling waarbij werkgever een vaste premie inlegt; uitkering afhankelijk van beleggingsresultaat.</dd></div>
+        <div><dt class="font-semibold text-navy">Solidair vs flexibel premiepensioen</dt><dd class="mt-1 text-slate-600 text-xs">Twee WTP-keuze-varianten; keuze-advies is 100% Wft-werk.</dd></div>
+        <div><dt class="font-semibold text-navy">Evenwichtigheid-toets</dt><dd class="mt-1 text-slate-600 text-xs">Wettelijke check dat geen generatie onevenredig nadeel ondervindt bij transitie.</dd></div>
+        <div><dt class="font-semibold text-navy">AFM Klantbelang Centraal</dt><dd class="mt-1 text-slate-600 text-xs">Norm dat advies passend moet zijn bij klant-situatie; AI mag deze norm nooit raken.</dd></div>
+        <div><dt class="font-semibold text-navy">Wft Pensioenadvies-module</dt><dd class="mt-1 text-slate-600 text-xs">Diploma-vereiste voor natuurlijke personen die pensioen-advies verstrekken.</dd></div>
+        <div><dt class="font-semibold text-navy">KiFiD</dt><dd class="mt-1 text-slate-600 text-xs">Klachteninstituut Financiele Dienstverlening; onafhankelijke klachtenroute.</dd></div>
+        <div><dt class="font-semibold text-navy">Pensioenverevening (Wvps)</dt><dd class="mt-1 text-slate-600 text-xs">Verdeling tijdens-huwelijk-opgebouwd pensioen bij scheiding; standaard 50-50.</dd></div>
+        <div><dt class="font-semibold text-navy">DGA-pensioen + ODV</dt><dd class="mt-1 text-slate-600 text-xs">Oudedagsverplichting voor directeur-grootaandeelhouders; complex Wft-grensvlak met fiscaal.</dd></div>
+        <div><dt class="font-semibold text-navy">Wwft clientonderzoek</dt><dd class="mt-1 text-slate-600 text-xs">Wettelijk verplicht KYC-protocol; pensioenadviseurs zijn Wwft-instelling.</dd></div>
+        <div><dt class="font-semibold text-navy">mijnpensioenoverzicht.nl</dt><dd class="mt-1 text-slate-600 text-xs">Officieel overzicht alle Nederlandse pensioen-aanspraken; data via OAuth-volmacht.</dd></div>
+        <div><dt class="font-semibold text-navy">Lifeguard / Helder Pensioen / NetPlanner</dt><dd class="mt-1 text-slate-600 text-xs">Veelgebruikte Nederlandse pensioenadvies-software met AI-integratiepunten.</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl mx-auto">
       <div class="mb-10 reveal">
         <p class="eyebrow mb-3">Veelgestelde vragen</p>
