@@ -1,0 +1,641 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const faqItems = [
+  {
+    question: 'Wat is een AI-agent precies?',
+    answer: 'Een AI-agent is software die zelfstandig taken uitvoert namens uw bedrijf — zoals telefoon beantwoorden, WhatsApp-berichten afhandelen, e-mails sorteren of leads kwalificeren. Anders dan een eenvoudige chatbot kan een AI-agent acties ondernemen: afspraken inplannen in uw agenda, data opslaan in uw CRM en escaleren naar een medewerker wanneer dat nodig is. Aanloop AI levert managed AI-agents voor het Nederlandse MKB, volledig AVG-compliant en live binnen 7-14 werkdagen.',
+  },
+  {
+    question: 'Wat is het verschil tussen een AI-agent en een chatbot?',
+    answer: 'Een chatbot beantwoordt vragen op basis van vaste regels of scripts. Een AI-agent kan redeneren, meerdere stappen uitvoeren en integreren met externe systemen (agenda, CRM, ERP). Concreet: een chatbot zegt "stuur een e-mail naar info@bedrijf.nl". Een AI-agent plant zelf een afspraak in uw Google Calendar, stuurt de bevestiging en routeert de lead naar HubSpot — zonder menselijke tussenkomst.',
+  },
+  {
+    question: 'Hoe lang duurt de implementatie van een AI-agent?',
+    answer: 'Bij Aanloop AI is de standaard implementatietijd 7-14 werkdagen, afhankelijk van de complexiteit. Starter-pakketten (Marco telefoon of Emma WhatsApp) zijn gemiddeld in 7 werkdagen live. Omnichannel-oplossingen met meerdere CRM-koppelingen en enterprise-integraties vereisen 10-14 werkdagen. De AI-Website Bundel (website + Marco + Emma) heeft een trajectduur van 6-8 weken inclusief bouw, training en soft-launch.',
+  },
+  {
+    question: 'Krijg ik garantie op een AI-agent?',
+    answer: 'Ja. Aanloop AI levert een SLA met gegarandeerde uptime van 99,9% voor Enterprise-klanten. Voor Starter- en Growth-klanten monitoren we proactief en herstellen storingen binnen 4 uur tijdens werkdagen. Elke klant krijgt een verwerkersovereenkomst conform de AVG, een onboarding-traject van minimaal twee testrondes, en 30 dagen post-launch fine-tuning inbegrepen in het abonnement.',
+  },
+  {
+    question: 'Wat als de AI-agent niet werkt zoals verwacht?',
+    answer: 'Elke klant heeft een dashboard met live transcripts en gespreksopnames. Bij opmerkingen passen we het script binnen 24 uur aan. Aanloop AI hanteert een escalatieprotocol: als de AI-agent een vraag niet kan beantwoorden, schakelt hij door naar een medewerker via de methode die u kiest (Telegram, WhatsApp, SMS, e-mail of doorschakeling). U bepaalt de drempelwaarden zelf.',
+  },
+  {
+    question: 'Hoe wordt mijn data beschermd?',
+    answer: 'Alle data wordt verwerkt en bewaard in EU-datacenters (Amsterdam of Frankfurt), versleuteld at-rest en in-transit. Aanloop AI is een Nederlandse B.V. (KVK 88606902) en levert een verwerkersovereenkomst-template conform de AVG/UAVG. Voor zorg- en juridische klanten is een NEN 7510-compatibele opzet beschikbaar. We gebruiken n8n self-hosted voor workflow-automatisering — uw data blijft in Nederland.',
+  },
+  {
+    question: 'Kan ik tussentijds opzeggen?',
+    answer: 'Ja. Alle maandelijkse Aanloop AI-abonnementen zijn opzegbaar met één maand opzegtermijn. Bij jaarlijkse betaling ontvangt u circa 16% korting (Starter €497/mnd, Growth €997/mnd), maar bij vroegtijdige opzegging is er geen restitutie van het jaarlijkse bedrag. Bij opzegging exporteren we uw lead-data, transcripts en CRM-records naar u toe. Geen exit-kosten, geen lock-in.',
+  },
+  {
+    question: 'Wat als ik meerdere AI-agents wil?',
+    answer: 'U kunt beginnen met één agent (bijvoorbeeld Marco voor telefoon) en later uitbreiden met Emma (WhatsApp) of aanvullende modules. De AI-Website Bundel combineert website, Marco en Emma in één contract vanaf €4.950 setup + €397/mnd — aanzienlijk voordeliger dan losse afname. Voor multi-vestiging of enterprise-vraagstukken biedt het Partner-pakket op maat geprijsde oplossingen met dedicated account manager en SLA.',
+  },
+  {
+    question: 'Hoe meet ik de ROI van een AI-agent?',
+    answer: 'De meestgebruikte ROI-formule: (Bespaarde uren × uurtarief) + (Extra omzet door 24/7 bereikbaarheid) − Maandelijkse kosten AI-agent = Netto maandwinst. Gebruik onze Gratis AI ROI Calculator voor een sector-specifieke berekening. Gemiddelde terugverdientijd bij Aanloop AI-klanten: 3-6 maanden. Benchmarks: Marco bespaart gemiddeld 15-25 uur/week telefoondienst; Emma verwerkt 80-90% van WhatsApp-vragen zonder menselijke tussenkomst.',
+  },
+  {
+    question: 'Wordt de AI-agent onderhouden na implementatie?',
+    answer: 'Ja, dat is inbegrepen in het maandelijkse abonnement. Aanloop AI voert maandelijkse optimalisaties uit op basis van uw gespreksdata, past scripts aan bij gewijzigde bedrijfsprocessen en verwerkt updates van onderliggende AI-modellen. U hoeft niets zelf bij te houden. Voor inhoudelijke updates (nieuwe producten, gewijzigde FAQs) krijgt u een self-service dashboard en 2 uur trainingsvideo bij oplevering.',
+  },
+  {
+    question: 'Wat kost training van mijn personeel?',
+    answer: 'Aanloop AI levert bij oplevering 2 uur Loom-video-training over: dashboard-gebruik, transcripts lezen, script-aanpassingen initiëren en escalatie-instellingen wijzigen. Daarna is er 1 uur/maand telefonische support inbegrepen voor vragen over zelfbeheer. Extra training-sessies zijn beschikbaar op aanvraag. Personeelstraining voor AI-gebruik kost typisch 2-4 uur voor de eerste maand — daarna is het systeem intuïtief genoeg voor dagelijks gebruik.',
+  },
+  {
+    question: 'Hoe begin ik met een AI-agent?',
+    answer: 'Stap 1: Plan een gratis AI Scan van 30 minuten (geen verplichtingen). Stap 2: U ontvangt binnen 3 werkdagen een voorstel en demo. Stap 3: Bij akkoord starten we onboarding — u vult een vragenlijst in (1-2 uur), wij trainen de AI-agent. Stap 4: Live binnen 7-14 werkdagen. Geen technische kennis vereist. Geen scripts zelf schrijven. Aanloop AI doet alles — u beoordeelt het resultaat.',
+  },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': 'https://aanloopai.nl/kennisbank/hoeveel-kost-een-ai-agent/#article',
+  headline: 'Hoeveel kost een AI-agent? Compleet kostenoverzicht voor MKB Nederland 2026',
+  description: 'Transparant kostenoverzicht van alle AI-agent types voor het Nederlandse MKB. Setup, maandelijkse kosten, TCO 5 jaar, ROI-berekening en AVG-compliance. Prijzen direct afkomstig van Aanloop AI-dienstpaginas.',
+  author: { '@type': 'Person', '@id': 'https://aanloopai.nl/over-ons/#mustafa-agah-dogan', name: 'Mustafa Agah Dogan', jobTitle: 'Oprichter & AI-strateeg', url: 'https://aanloopai.nl/over-ons/', worksFor: { '@id': 'https://aanloopai.nl/#organization' } },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Aanloop AI',
+    url: 'https://aanloopai.nl',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-07',
+  dateModified: '2026-05-07',
+  inLanguage: 'nl-NL',
+  url: 'https://aanloopai.nl/kennisbank/hoeveel-kost-een-ai-agent/',
+  articleSection: 'AI Kosten & Tarieven',
+  about: {
+    '@type': 'Thing',
+    name: 'AI-agent kosten Nederland',
+    description: 'Kosten van AI-agents voor het Nederlandse MKB, inclusief setup, maandelijkse abonnementen, TCO en ROI-berekening.',
+  },
+  speakable: {
+    '@type': 'SpeakableSpecification',
+    cssSelector: ['h1', '.tl-dr-block', 'h2', '.speakable-summary'],
+  },
+  mainEntity: {
+    '@type': 'ItemList',
+    name: 'AI-agent kostenoverzicht MKB Nederland 2026',
+    description: 'Prijsoverzicht per AI-agent type bij Aanloop AI',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Marco — AI Telefoon-assistent', description: 'Starter €597/mnd, Growth €1.197/mnd. Setup Starter €495, Growth €795.' },
+      { '@type': 'ListItem', position: 2, name: 'Emma — AI WhatsApp + Chat', description: 'Starter €197/mnd standalone. Inbegrepen in Growth €1.197/mnd.' },
+      { '@type': 'ListItem', position: 3, name: 'AI Chatbot voor Website', description: 'Starter €800/mnd, Growth €2.000/mnd.' },
+      { '@type': 'ListItem', position: 4, name: 'AI Klantenservice Omnichannel', description: 'Starter €2.000/mnd, Growth €4.500/mnd.' },
+      { '@type': 'ListItem', position: 5, name: 'AI E-mail Assistent', description: 'Starter €600/mnd, Growth €1.800/mnd.' },
+      { '@type': 'ListItem', position: 6, name: 'AI Lead Qualification', description: 'Starter €1.100/mnd, Growth €2.800/mnd.' },
+      { '@type': 'ListItem', position: 7, name: 'AI Document Processing', description: 'Starter €1.200/mnd, Growth €3.000/mnd.' },
+      { '@type': 'ListItem', position: 8, name: 'AI HR Recruitment Assistent', description: 'Starter €1.500/mnd, Growth €3.500/mnd.' },
+      { '@type': 'ListItem', position: 9, name: 'AI Audit', description: 'Quick scan €0. Basis Audit €1.950 eenmalig.' },
+      { '@type': 'ListItem', position: 10, name: 'AI-Website Bundel', description: '€4.950 setup + €397/mnd. Inclusief website + Marco + Emma.' },
+    ],
+  },
+};
+
+const agentTypes = [
+  {
+    naam: 'Marco — AI Telefoon-assistent',
+    link: '/diensten/marco/',
+    starterMnd: '€597',
+    growthMnd: '€1.197',
+    setupStarter: '€495',
+    setupGrowth: '€795',
+    notes: 'Onbeperkte gesprekken vanaf Growth. Growth-bundel inclusief Emma WhatsApp.',
+  },
+  {
+    naam: 'Emma — AI WhatsApp + Chat',
+    link: '/diensten/emma/',
+    starterMnd: '€197',
+    growthMnd: 'Inbegrepen in Growth-bundel',
+    setupStarter: 'Op aanvraag',
+    setupGrowth: '€795 (bundel)',
+    notes: 'WhatsApp-conversatiekosten Meta (gem. €0,03–0,08/24u-venster) worden apart afgerekend bij Meta.',
+  },
+  {
+    naam: 'AI Chatbot voor Website',
+    link: '/diensten/ai-chatbot-website/',
+    starterMnd: '€800',
+    growthMnd: '€2.000',
+    setupStarter: 'Op aanvraag',
+    setupGrowth: 'Op aanvraag',
+    notes: '1 chatbot, kennisbank t/m 500 paginas (Starter). CRM-koppeling + A/B-testen (Growth).',
+  },
+  {
+    naam: 'AI Klantenservice Omnichannel',
+    link: '/diensten/ai-klantenservice-omnichannel/',
+    starterMnd: '€2.000',
+    growthMnd: '€4.500',
+    setupStarter: 'Op aanvraag',
+    setupGrowth: 'Op aanvraag',
+    notes: '5 kanalen tegelijk (telefoon, chat, WhatsApp, e-mail, social). Tot 500 gesprekken/mnd (Starter).',
+  },
+  {
+    naam: 'AI E-mail Assistent',
+    link: '/diensten/ai-email-assistent/',
+    starterMnd: '€600',
+    growthMnd: '€1.800',
+    setupStarter: 'Op aanvraag',
+    setupGrowth: 'Op aanvraag',
+    notes: '1 mailbox, tot 500 e-mails/dag (Starter). Meerdere mailboxen, CRM, meertalig (Growth).',
+  },
+  {
+    naam: 'AI Lead Qualification',
+    link: '/diensten/ai-lead-qualification/',
+    starterMnd: '€1.100',
+    growthMnd: '€2.800',
+    setupStarter: 'Op aanvraag',
+    setupGrowth: 'Op aanvraag',
+    notes: 'BANT-kwalificatiemodel. 1 kanaal, tot 200 leads/mnd (Starter). CRM-sync, onbeperkt (Growth).',
+  },
+  {
+    naam: 'AI Document Processing',
+    link: '/diensten/ai-document-processing/',
+    starterMnd: '€1.200',
+    growthMnd: '€3.000',
+    setupStarter: 'Op aanvraag',
+    setupGrowth: 'Op aanvraag',
+    notes: 'Tot 500 documenten/mnd (Starter). Onbeperkt, multi-ERP, advanced OCR (Growth).',
+  },
+  {
+    naam: 'AI HR Recruitment Assistent',
+    link: '/diensten/ai-hr-recruitment/',
+    starterMnd: '€1.500',
+    growthMnd: '€3.500',
+    setupStarter: 'Op aanvraag',
+    setupGrowth: 'Op aanvraag',
+    notes: '1 vacature tegelijk, pre-screening, planning (Starter). ATS-integratie, voice screening (Growth).',
+  },
+  {
+    naam: 'AI Audit',
+    link: '/diensten/audit/',
+    starterMnd: '€0 (Quick Scan)',
+    growthMnd: '€1.950 (Basis, eenmalig)',
+    setupStarter: '—',
+    setupGrowth: '—',
+    notes: 'Quick Scan: gratis 45-min adviesgesprek. Basis Audit: procesanalyse + ROI-matrix + roadmap, 14 werkdagen.',
+  },
+  {
+    naam: 'AI-Website Bundel',
+    link: '/diensten/ai-website-bundel-mkb-nederland/',
+    starterMnd: '€397/mnd',
+    growthMnd: 'Op aanvraag (Bundel Pro)',
+    setupStarter: '€4.950',
+    setupGrowth: 'Vanaf €11.500',
+    notes: 'Website + Marco + Emma in 1 contract. Bespaart ~€9.628 jaar 1 t.o.v. losse afname.',
+  },
+];
+---
+<BaseLayout
+  title="Hoeveel kost een AI-agent? Compleet kostenoverzicht MKB Nederland 2026"
+  description="Transparant overzicht van alle AI-agent kosten voor Nederlands MKB 2026. Setup, maandprijzen, TCO 5 jaar en ROI per type — direct van Aanloop AI-dienstpaginas. Prijzen vanaf €197/mnd."
+  schema={articleSchema}
+  faqSchema={faqItems}
+>
+  <!-- Hero -->
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Kosten &amp; Tarieven</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">
+          Hoeveel kost een AI-agent?<br/>Compleet kostenoverzicht voor MKB Nederland 2026
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">
+          Alle prijzen, setupkosten, TCO over 5 jaar en ROI-berekening voor elk AI-agent type bij Aanloop AI — gebaseerd op actuele dienstpaginas, geen schattingen.
+        </p>
+        <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500 reveal reveal-delay-3">
+          <span>7 mei 2026</span>
+          <span>·</span>
+          <span>15 min leestijd</span>
+          <span>·</span>
+          <a href="/team/magahdogan/" class="text-brand-indigo hover:underline">Mustafa Agah Dogan</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main content -->
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+
+      <!-- TL;DR -->
+      <div class="tl-dr-block bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-3">TL;DR — Direct antwoord</p>
+        <p class="text-sm text-slate-700 mb-4 speakable-summary">
+          Een AI-agent voor het Nederlandse MKB kost in 2026 <strong>€197–€4.500 per maand</strong> afhankelijk van het type, plus een eenmalige setupkost van <strong>€495–€4.950</strong>. De meest gevraagde combinatie — Marco (AI telefonist) + Emma (WhatsApp) — kost <strong>€1.197/mnd all-in</strong> in het Growth-pakket (setup €795). Alle prijzen zijn exclusief 21% BTW, maandelijks opzegbaar, zonder extra kosten per gesprek of bericht.
+        </p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs border-collapse">
+            <thead>
+              <tr class="bg-brand-indigo/10">
+                <th class="text-left p-2 font-bold text-navy">Type</th>
+                <th class="text-left p-2 font-bold text-navy">Setup</th>
+                <th class="text-left p-2 font-bold text-navy">Starter/mnd</th>
+                <th class="text-left p-2 font-bold text-navy">Growth/mnd</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-slate-200"><td class="p-2 text-slate-700">Marco (telefoon)</td><td class="p-2">€495–€795</td><td class="p-2 font-semibold">€597</td><td class="p-2 font-semibold">€1.197</td></tr>
+              <tr class="border-b border-slate-200 bg-slate-50"><td class="p-2 text-slate-700">Emma (WhatsApp)</td><td class="p-2">Inbegrepen</td><td class="p-2 font-semibold">€197</td><td class="p-2 font-semibold">Bundel</td></tr>
+              <tr class="border-b border-slate-200"><td class="p-2 text-slate-700">AI Chatbot website</td><td class="p-2">Op aanvraag</td><td class="p-2 font-semibold">€800</td><td class="p-2 font-semibold">€2.000</td></tr>
+              <tr class="border-b border-slate-200 bg-slate-50"><td class="p-2 text-slate-700">Omnichannel klantenservice</td><td class="p-2">Op aanvraag</td><td class="p-2 font-semibold">€2.000</td><td class="p-2 font-semibold">€4.500</td></tr>
+              <tr class="border-b border-slate-200"><td class="p-2 text-slate-700">E-mail assistent</td><td class="p-2">Op aanvraag</td><td class="p-2 font-semibold">€600</td><td class="p-2 font-semibold">€1.800</td></tr>
+              <tr class="border-b border-slate-200 bg-slate-50"><td class="p-2 text-slate-700">Lead Qualification</td><td class="p-2">Op aanvraag</td><td class="p-2 font-semibold">€1.100</td><td class="p-2 font-semibold">€2.800</td></tr>
+              <tr class="border-b border-slate-200"><td class="p-2 text-slate-700">Document Processing</td><td class="p-2">Op aanvraag</td><td class="p-2 font-semibold">€1.200</td><td class="p-2 font-semibold">€3.000</td></tr>
+              <tr class="border-b border-slate-200 bg-slate-50"><td class="p-2 text-slate-700">HR Recruitment</td><td class="p-2">Op aanvraag</td><td class="p-2 font-semibold">€1.500</td><td class="p-2 font-semibold">€3.500</td></tr>
+              <tr class="border-b border-slate-200"><td class="p-2 text-slate-700">AI Audit (eenmalig)</td><td class="p-2">—</td><td class="p-2 font-semibold">€0 (scan)</td><td class="p-2 font-semibold">€1.950</td></tr>
+              <tr class="bg-brand-indigo/5"><td class="p-2 font-bold text-navy">AI-Website Bundel</td><td class="p-2 font-bold">€4.950</td><td class="p-2 font-semibold" colspan="2">€397/mnd (incl. website + Marco + Emma)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="text-xs text-slate-500 mt-3">Alle prijzen excl. 21% BTW. Maandelijks opzegbaar. Bron: Aanloop AI dienstpaginas, mei 2026.</p>
+      </div>
+
+      <!-- Section 1: Kostenfactoren -->
+      <h2 class="text-2xl font-bold text-navy mt-12 mb-6">Wat bepaalt de prijs van een AI-agent?</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">
+        De prijs van een AI-agent is niet willekeurig. Vijf factoren bepalen samen wat u betaalt — begrijp deze factoren en u kunt snel inschatten welk budget u nodig heeft.
+      </p>
+      <div class="space-y-4 mb-10">
+        {[
+          {
+            nr: '01',
+            titel: 'Type taak en kanaal',
+            body: 'Spraak-AI (telefoon) is duurder dan tekst-AI (e-mail, chat) vanwege de hogere computationele belasting van realtime spraakherkenning en -synthese. Marco (telefoon) begint op €597/mnd; Emma (WhatsApp-tekst) al op €197/mnd. Omnichannel-oplossingen die vijf kanalen tegelijk bewaken, beginnen op €2.000/mnd.',
+          },
+          {
+            nr: '02',
+            titel: 'Volume — gesprekken, berichten of documenten',
+            body: 'Meer volume vereist meer rekenkracht en opslag. Starter-pakketten hanteren volumelimieten (bijv. tot 150 gesprekken/mnd voor Marco Starter). In Growth- en Enterprise-pakketten zijn volumes onbeperkt. Overschrijding bij Starter leidt doorgaans tot een upgrade-suggestie, niet tot extra facturen per gesprek — dat is expliciet beleid bij Aanloop AI.',
+          },
+          {
+            nr: '03',
+            titel: 'Complexiteit van integraties',
+            body: 'Een eenvoudige agenda-koppeling (Google Calendar) is inbegrepen in Starter. Koppeling met ERP-systemen (Exact, Twinfield), maatwerk-CRM of sectorspecifieke systemen (EPD voor zorg, DMS voor advocatuur) vereist extra configuratietijd en verhoogt de setupkost. Standaard-CRM-integraties (HubSpot, Pipedrive, Salesforce) zijn inbegrepen in Growth.',
+          },
+          {
+            nr: '04',
+            titel: 'Managed service vs. zelf bouwen',
+            body: 'Aanloop AI levert een managed service: implementatie, training, monitoring, updates en support zijn inbegrepen in het maandelijks abonnement. Zelf-service AI-platforms beginnen vanaf €99–€299/mnd maar vereisen interne AI-engineers voor bouw, onderhoud en compliance. Voor een MKB zonder eigen AI-team is de managed-aanpak doorgaans voordeliger op TCO-niveau.',
+          },
+          {
+            nr: '05',
+            titel: 'Compliance-eisen',
+            body: 'Standaard AVG-compliance is inbegrepen bij alle Aanloop AI-pakketten. Aanvullende eisen — NEN 7510 voor zorg, specifieke audit-logs voor financieel-juridisch, on-premise hosting — worden meegenomen in de offerte voor Enterprise of Partner-pakketten. De EU AI Act stelt eisen aan hoog-risico AI-toepassingen; Aanloop AI begeleidt klanten bij de risicoklassificatie zonder meerkosten.',
+          },
+        ].map(item => (
+          <div class="bg-white border border-slate-200 rounded-xl p-5">
+            <div class="flex gap-4">
+              <span class="text-2xl font-bold text-brand-indigo/30 leading-none flex-shrink-0">{item.nr}</span>
+              <div>
+                <p class="font-bold text-navy text-sm mb-2">{item.titel}</p>
+                <p class="text-sm text-slate-600 leading-relaxed">{item.body}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Section 2: Prijstabel per type -->
+      <h2 class="text-2xl font-bold text-navy mt-12 mb-6">Prijsoverzicht per AI-agent type (Aanloop AI, 2026)</h2>
+      <p class="text-slate-600 text-sm leading-relaxed mb-6">
+        Onderstaande prijzen zijn direct afkomstig van de Aanloop AI-dienstpaginas en actueel per mei 2026. Klik op de dienstnaam voor volledige specificaties. Enterprise-tarieven zijn altijd op maat — vraag een offerte aan via <a href="/tarieven/" class="text-brand-indigo hover:underline">/tarieven/</a>.
+      </p>
+      <div class="overflow-x-auto mb-4">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="bg-navy text-white">
+              <th class="text-left p-3 font-semibold rounded-tl-lg">AI-agent type</th>
+              <th class="text-left p-3 font-semibold">Setup</th>
+              <th class="text-left p-3 font-semibold">Starter/mnd</th>
+              <th class="text-left p-3 font-semibold rounded-tr-lg">Growth/mnd</th>
+            </tr>
+          </thead>
+          <tbody>
+            {agentTypes.map((a, i) => (
+              <tr class:list={['border-b border-slate-200', i % 2 === 1 ? 'bg-slate-50' : 'bg-white']}>
+                <td class="p-3">
+                  <a href={a.link} class="font-semibold text-brand-indigo hover:underline text-sm">{a.naam}</a>
+                  <p class="text-xs text-slate-500 mt-0.5">{a.notes}</p>
+                </td>
+                <td class="p-3 text-sm text-slate-700">{a.setupStarter}</td>
+                <td class="p-3 text-sm font-semibold text-navy">{a.starterMnd}</td>
+                <td class="p-3 text-sm font-semibold text-navy">{a.growthMnd}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-slate-500 mb-10">Excl. 21% BTW. Enterprise altijd op maat. Alle pakketten maandelijks opzegbaar met 1 maand opzegtermijn. Bij jaarbetaling ca. 16% korting.</p>
+
+      <!-- Section 3: Eenmalig vs maandelijks -->
+      <h2 class="text-2xl font-bold text-navy mt-12 mb-6">Eenmalige kosten vs. maandelijkse kosten</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">
+        Het kostenmodel van een AI-agent bestaat uit twee componenten die u van tevoren moet begrijpen.
+      </p>
+      <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white border border-slate-200 rounded-xl p-5">
+          <p class="font-bold text-navy mb-3">Eenmalige setupkosten</p>
+          <ul class="space-y-2 text-sm text-slate-600">
+            <li class="flex gap-2"><span class="text-brand-indigo mt-0.5">&#8226;</span>Implementatie en technische koppeling</li>
+            <li class="flex gap-2"><span class="text-brand-indigo mt-0.5">&#8226;</span>AI-training op uw kennisbank, FAQs en scripts</li>
+            <li class="flex gap-2"><span class="text-brand-indigo mt-0.5">&#8226;</span>Twee testrondes en acceptatiegesprek</li>
+            <li class="flex gap-2"><span class="text-brand-indigo mt-0.5">&#8226;</span>CRM- en agenda-koppeling inrichten</li>
+            <li class="flex gap-2"><span class="text-brand-indigo mt-0.5">&#8226;</span>Onboarding-training voor uw team (2 uur)</li>
+          </ul>
+          <p class="text-xs text-slate-500 mt-4">Typisch: €495 (Marco Starter) tot €4.950 (AI-Website Bundel). Op aanvraag voor overige diensten.</p>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-xl p-5">
+          <p class="font-bold text-navy mb-3">Maandelijkse abonnementskosten</p>
+          <ul class="space-y-2 text-sm text-slate-600">
+            <li class="flex gap-2"><span class="text-brand-indigo mt-0.5">&#8226;</span>Hosting en infrastructuur (EU-datacenters)</li>
+            <li class="flex gap-2"><span class="text-brand-indigo mt-0.5">&#8226;</span>Continu monitoren en proactief ingrijpen bij fouten</li>
+            <li class="flex gap-2"><span class="text-brand-indigo mt-0.5">&#8226;</span>Maandelijkse script-optimalisatie op uw conversatiedata</li>
+            <li class="flex gap-2"><span class="text-brand-indigo mt-0.5">&#8226;</span>AI-model-updates en veiligheidspatches</li>
+            <li class="flex gap-2"><span class="text-brand-indigo mt-0.5">&#8226;</span>Support via e-mail en telefoon</li>
+          </ul>
+          <p class="text-xs text-slate-500 mt-4">Geen extra kosten per gesprek, bericht of document. Vaste prijs per pakket.</p>
+        </div>
+      </div>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-10">
+        <p class="text-sm font-bold text-amber-800 mb-2">Let op bij vergelijken</p>
+        <p class="text-sm text-amber-700">Sommige aanbieders rekenen per gesprek (bijv. €0,50–€2,00/gesprek) of per minuut spraak. Bij 200 gesprekken/maand loopt dat snel op tot €100–€400 extra. Aanloop AI hanteert <strong>geen</strong> gespreks- of minuuttarief — het maandelijks abonnement is all-in.</p>
+      </div>
+
+      <!-- Section 4: In-house vs uitbesteden -->
+      <h2 class="text-2xl font-bold text-navy mt-12 mb-6">Vergelijking: in-house bouwen vs. uitbesteden</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">
+        Een AI-agent zelf bouwen is technisch mogelijk, maar vereist specifieke expertise en structurele onderhoudsinvestering. Hieronder een neutrale TCO-vergelijking voor een typische MKB-telefoon-AI (equivalent van Marco Starter).
+      </p>
+      <div class="overflow-x-auto mb-6">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="bg-slate-100">
+              <th class="text-left p-3 font-semibold text-navy">Kostenpost</th>
+              <th class="text-left p-3 font-semibold text-navy">In-house bouwen</th>
+              <th class="text-left p-3 font-semibold text-navy">Aanloop AI (Starter)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              ['Initiële bouw (engineer x 80 uur x €85/u)', '€6.800', '€0 (inbegrepen)'],
+              ['LLM API-kosten (OpenAI/Anthropic)', '€100–€400/mnd', 'Inbegrepen'],
+              ['Spraak-API (ElevenLabs of gelijkwaardig)', '€150–€600/mnd', 'Inbegrepen'],
+              ['Telefonie (Twilio of gelijkwaardig)', '€80–€250/mnd', 'Inbegrepen'],
+              ['Onderhoud (engineer x 8 uur/mnd x €85/u)', '€680/mnd', 'Inbegrepen'],
+              ['AVG-compliance (DPIA, DPA-template)', '€1.500–€3.000 eenmalig', 'Inbegrepen'],
+              ['Monitoring & uptime-garantie', 'Eigen SRE of €200–€500/mnd', 'Inbegrepen'],
+              ['Totaal jaar 1', '€18.400–€27.800', '€495 + (12 x €597) = €7.659'],
+            ].map(([post, inhouse, aanloop], i) => (
+              <tr class:list={['border-b border-slate-200', i % 2 === 1 ? 'bg-slate-50' : 'bg-white', i === 7 ? 'font-bold' : '']}>
+                <td class="p-3 text-slate-700">{post}</td>
+                <td class="p-3 text-red-600">{inhouse}</td>
+                <td class="p-3 text-brand-emerald font-medium">{aanloop}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-slate-500 mb-2">Aannames: NL-engineer uurtarief €85 (mediaan ZZP AI/ML 2026); LLM-kosten op basis van 150 gesprekken/mnd gem. 4 min; Twilio NL-tarieven. In-house setup excl. WCAG/NEN 7510 voor zorg.</p>
+      <p class="text-sm text-slate-600 mb-10">
+        <strong>Conclusie:</strong> In-house bouwen is zinvol voor bedrijven met meer dan 3 FTE technisch personeel die specifieke maatwerk-eisen hebben. Voor de meerderheid van het Nederlandse MKB levert uitbesteden een lagere TCO, snellere time-to-value (7 werkdagen vs. 3–6 maanden) en betere compliance-garanties.
+      </p>
+
+      <!-- Section 5: Inbegrepen -->
+      <h2 class="text-2xl font-bold text-navy mt-12 mb-6">Wat zit er inbegrepen bij Aanloop AI?</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">
+        Het maandelijkse Aanloop AI-abonnement is een managed service — geen kale softwarelicentie. Dit zijn de onderdelen die in elk pakket zijn inbegrepen, zonder extra factuur.
+      </p>
+      <div class="grid md:grid-cols-2 gap-4 mb-10">
+        {[
+          { titel: 'Implementatie & onboarding', body: 'Intake-analyse, AI-training op uw kennisbank en scripts, technische koppeling met agenda en CRM, twee testrondes, acceptatiegesprek en 2-uur team-training.' },
+          { titel: 'Hosting & infrastructuur', body: 'EU-datacenters (Amsterdam of Frankfurt), encryptie at-rest en in-transit, proactieve monitoring 24/7. SLA 99,9% uptime voor Enterprise.' },
+          { titel: 'Maandelijkse optimalisatie', body: 'Analyse van transcripts en conversatiepatronen, script-aanpassingen op basis van echte gesprekken, fijn-afstemming van escalatieprotocollen.' },
+          { titel: 'AI-model updates', body: 'Upgrades van onderliggende LLM- en spraak-modellen worden doorgevoerd zonder meerkosten of downtime. U profiteert automatisch van verbeteringen.' },
+          { titel: 'AVG/GDPR compliance', body: 'Verwerkersovereenkomst-template, recht-op-verwijdering-verwerking binnen 24 uur, configureerbare data-bewaartermijnen (7–365 dagen), EU-only dataverwerking.' },
+          { titel: 'EU AI Act ondersteuning', body: 'Aanloop AI begeleidt klanten bij risicoklassificatie onder de EU AI Act. Documentatiepakket voor conformiteitsbeoordeling inbegrepen zonder meerkosten.' },
+          { titel: 'Support', body: 'E-mail en telefoon-support tijdens werkdagen. Reactietijd minder dan 4 uur bij Growth- en Enterprise-pakketten. Script-aanpassingen bij klachten binnen 24 uur.' },
+          { titel: 'Overdraagbaarheid bij opzegging', body: 'Bij opzegging exporteert Aanloop AI alle lead-data, transcripts en CRM-records. Telefoonnummer kan worden teruggepord. Geen exit-kosten.' },
+        ].map(item => (
+          <div class="flex gap-3 p-4 bg-white border border-slate-200 rounded-xl">
+            <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <div>
+              <p class="font-bold text-navy text-sm">{item.titel}</p>
+              <p class="text-xs text-slate-600 mt-1 leading-relaxed">{item.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Section 6: TCO 5 jaar -->
+      <h2 class="text-2xl font-bold text-navy mt-12 mb-6">5-jaar TCO model — Typische MKB-case</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">
+        Totale eigendomskosten (TCO) over 5 jaar voor een typisch middelgroot MKB-bedrijf (20–50 medewerkers, 150–300 inkomende telefoongesprekken per maand) dat kiest voor Marco Growth-pakket.
+      </p>
+      <p class="text-xs text-slate-500 mb-6">Aannames: Growth-pakket €1.197/mnd (excl. BTW), setup €795 jaar 1. In-house-alternatief: 0,5 FTE receptionist/telefonist a €36.000/jaar bruto + werkgeverslasten 32% = €47.520/jaar.</p>
+      <div class="overflow-x-auto mb-6">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="bg-slate-100">
+              <th class="text-left p-3 font-semibold text-navy">Jaar</th>
+              <th class="text-right p-3 font-semibold text-navy">Aanloop AI (Growth)</th>
+              <th class="text-right p-3 font-semibold text-navy">In-house (0,5 FTE)</th>
+              <th class="text-right p-3 font-semibold text-navy">Besparing met AI</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[
+              ['Jaar 1', '€15.159', '€47.520', '€32.361'],
+              ['Jaar 2', '€14.364', '€47.520', '€33.156'],
+              ['Jaar 3', '€14.364', '€47.520', '€33.156'],
+              ['Jaar 4', '€14.364', '€47.520', '€33.156'],
+              ['Jaar 5', '€14.364', '€47.520', '€33.156'],
+              ['Totaal 5 jaar', '€72.615', '€237.600', '€164.985'],
+            ].map(([jaar, ai, inhouse, besparing], i) => (
+              <tr class:list={['border-b border-slate-200', i % 2 === 1 ? 'bg-slate-50' : 'bg-white', i === 5 ? 'font-bold bg-brand-indigo/5' : '']}>
+                <td class="p-3 text-slate-700">{jaar}</td>
+                <td class="p-3 text-right font-medium text-navy">{ai}</td>
+                <td class="p-3 text-right text-slate-600">{inhouse}</td>
+                <td class="p-3 text-right font-semibold text-brand-emerald">{besparing}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-slate-500 mb-10">Exclusief ROI-opwaartse effecten (meer leads door 24/7 bereikbaarheid, geen gemiste gesprekken buiten kantooruren). In-house-berekening excl. wervingskosten en ziekteverzuim. Aanloop AI-prijs excl. 21% BTW.</p>
+
+      <!-- Section 7: ROI breakeven -->
+      <h2 class="text-2xl font-bold text-navy mt-12 mb-6">ROI-breakeven berekening — wanneer betaalt het zich terug?</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">
+        De terugverdientijd van een AI-agent hangt af van uw sector en het huidige kostenniveau van de taken die de AI overneemt. Drie representatieve scenarios:
+      </p>
+      <div class="space-y-6 mb-10">
+        {[
+          {
+            label: 'Scenario A — Makelaar, Marco Starter (€597/mnd)',
+            rows: [
+              ['Besparing parttime receptionist (20u/week x €22/u)', '+€1.760/mnd'],
+              ['Extra omzet: 15% meer leads door 24/7 bereikbaarheid', '+€1.200/mnd'],
+              ['Kosten Marco Starter', '-€597/mnd'],
+              ['Netto maandwinst', '~€2.363/mnd'],
+            ],
+            breakeven: 'Minder dan 1 maand (setup €495 terugverdiend in week 1)',
+          },
+          {
+            label: 'Scenario B — Accountantskantoor, Emma WhatsApp Starter (€197/mnd)',
+            rows: [
+              ['Besparing: 5 uur/week minder routinevragen per medewerker (€30/u)', '+€600/mnd'],
+              ['Snellere reactietijd naar hogere klantretentie (schatting)', '+€400/mnd'],
+              ['Kosten Emma Starter', '-€197/mnd'],
+              ['Netto maandwinst', '~€803/mnd'],
+            ],
+            breakeven: 'Minder dan 1 maand',
+          },
+          {
+            label: 'Scenario C — Webshop, AI Chatbot Growth (€2.000/mnd)',
+            rows: [
+              ['Besparing: klantenservice 3 FTE x €2.200/mnd gedeeltelijk vervangen (50%)', '+€3.300/mnd'],
+              ['Conversie +12% door 24/7 aankoop-ondersteuning (webshop €80k/mnd x 12% x 20% marge)', '+€1.920/mnd'],
+              ['Kosten AI Chatbot Growth', '-€2.000/mnd'],
+              ['Netto maandwinst', '~€3.220/mnd'],
+            ],
+            breakeven: 'Minder dan 1 maand',
+          },
+        ].map(s => (
+          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+            <p class="text-sm font-bold text-navy mb-3">{s.label}</p>
+            <div class="space-y-2">
+              {s.rows.map(([label, val]) => (
+                <div class:list={['flex justify-between items-center text-xs py-1.5 border-b border-slate-200', val.startsWith('~') ? 'font-bold text-navy' : '']}>
+                  <span class="text-slate-600 pr-4">{label}</span>
+                  <span class:list={[val.startsWith('+') ? 'text-brand-emerald' : val.startsWith('-') ? 'text-red-500' : 'text-navy', 'font-semibold whitespace-nowrap']}>{val}</span>
+                </div>
+              ))}
+            </div>
+            <p class="text-xs text-brand-indigo font-medium mt-3">Terugverdientijd: {s.breakeven}</p>
+          </div>
+        ))}
+      </div>
+      <p class="text-xs text-slate-500 mb-10">Scenarios zijn illustratief op basis van sector-benchmarks en geanonimiseerde klantdata. Gebruik de <a href="/ai-roi-calculator/" class="text-brand-indigo hover:underline">Gratis AI ROI Calculator</a> voor uw specifieke situatie.</p>
+
+      <!-- Section 8: AVG/EU AI Act -->
+      <h2 class="text-2xl font-bold text-navy mt-12 mb-6">AVG en EU AI Act compliancekosten — geen verborgen kosten</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">
+        Compliance wordt regelmatig als verborgen kostenpost vergeten bij AI-implementaties. Bij Aanloop AI zijn alle standaard-compliance-onderdelen inbegrepen in het abonnement.
+      </p>
+      <div class="space-y-4 mb-10">
+        {[
+          { item: 'Verwerkersovereenkomst (DPA)', status: 'Inbegrepen', toelichting: 'AVG artikel 28-conform template. Ondertekening binnen 24 uur na akkoord.' },
+          { item: 'EU-only dataverwerking', status: 'Inbegrepen', toelichting: 'Data blijft in Amsterdam of Frankfurt. Geen US-overdracht.' },
+          { item: 'DPIA (Data Protection Impact Assessment)', status: 'Gratis template + begeleiding', toelichting: 'Voor hoog-risico verwerkingen (bijv. medische intake) levert Aanloop AI een DPIA-template en begeleidingsgesprek.' },
+          { item: 'Recht op verwijdering (AVG art. 17)', status: 'Inbegrepen', toelichting: 'Verzoeken worden verwerkt binnen 24 uur. Systeem ondersteunt geautomatiseerde verwijdering.' },
+          { item: 'EU AI Act risicoklassificatie', status: 'Inbegrepen (consult)', toelichting: 'Aanloop AI bepaalt samen met u of uw toepassing valt onder hoog-risico of laag-risico. Documentatiepakket inbegrepen.' },
+          { item: 'NEN 7510 / NEN 7512 (zorg)', status: 'Op aanvraag, geen meerkosten', toelichting: 'Configureerbare opzet met aparte tenant, pseudonimisering en audit-logs. Beschikbaar voor alle pakketten.' },
+          { item: 'Cookiebanner en privacybeleid', status: 'Inbegrepen bij AI-Website Bundel', toelichting: 'WCAG 2.2 AA-conforme cookiebanner inbegrepen in de AI-Website Bundel. Niet van toepassing voor standalone AI-agents.' },
+        ].map(item => (
+          <div class="flex gap-4 p-4 bg-white border border-slate-200 rounded-xl">
+            <div class="flex-1">
+              <div class="flex flex-wrap items-center gap-3 mb-1">
+                <p class="font-bold text-navy text-sm">{item.item}</p>
+                <span class="px-2 py-0.5 bg-brand-emerald/10 text-brand-emerald text-xs font-semibold rounded-full">{item.status}</span>
+              </div>
+              <p class="text-xs text-slate-600">{item.toelichting}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- USP Bundel highlight -->
+      <div class="bg-navy rounded-2xl p-6 mb-10 text-pearl">
+        <p class="eyebrow text-slate-400 mb-2">Meest voordelig voor starters</p>
+        <h3 class="text-xl font-bold text-pearl mb-3">AI-Website Bundel — €4.950 setup + €397/mnd</h3>
+        <p class="text-slate-300 text-sm leading-relaxed mb-4">
+          De AI-Website Bundel combineert een volledige website (tot 30 paginas, Schema.org, WCAG 2.2 AA), Marco AI-receptionist en Emma WhatsApp-agent in een enkel contract. Losse afname van dezelfde componenten kost jaar 1 circa <strong class="text-pearl">€19.342</strong>. De bundel kost jaar 1 <strong class="text-pearl">€9.714</strong> — een besparing van <strong class="text-brand-emerald">circa €9.628</strong>.
+        </p>
+        <a href="/diensten/ai-website-bundel-mkb-nederland/" class="inline-flex items-center gap-2 bg-pearl text-navy font-semibold text-sm px-4 py-2 rounded-lg hover:bg-white transition-colors">
+          Bekijk AI-Website Bundel
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+        </a>
+      </div>
+
+      <!-- Lees ook -->
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-10">
+        <p class="text-sm font-bold text-navy mb-3">Lees ook</p>
+        <ul class="space-y-2">
+          <li><a href="/diensten/marco/" class="text-sm text-brand-indigo hover:underline">Marco — AI Telefoon-assistent: volledige specificaties en prijzen</a></li>
+          <li><a href="/diensten/emma/" class="text-sm text-brand-indigo hover:underline">Emma — AI WhatsApp Bot: volledige specificaties en prijzen</a></li>
+          <li><a href="/diensten/audit/" class="text-sm text-brand-indigo hover:underline">AI Audit voor MKB — Basis €1.950: wat u krijgt</a></li>
+          <li><a href="/kennisbank/ai-agent-kosten-mkb/" class="text-sm text-brand-indigo hover:underline">AI Agent Kosten MKB — Starter vs Growth vs Enterprise vergelijking</a></li>
+          <li><a href="/ai-roi-calculator/" class="text-sm text-brand-indigo hover:underline">Gratis AI ROI Calculator — bereken uw terugverdientijd</a></li>
+          <li><a href="/tarieven/" class="text-sm text-brand-indigo hover:underline">Alle tarieven en pakketten — volledig overzicht</a></li>
+        </ul>
+      </div>
+
+      <!-- FAQ -->
+      <h2 class="text-2xl font-bold text-navy mt-12 mb-6">Veelgestelde vragen over AI-agent kosten</h2>
+      <div class="space-y-3 mb-10">
+        {faqItems.map(item => (
+          <details class="card group">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-sm font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+
+      <!-- Author byline -->
+      <div class="border-t border-slate-200 pt-8 flex items-start gap-4 mb-10">
+        <div class="w-12 h-12 rounded-full bg-brand-indigo/10 flex items-center justify-center flex-shrink-0 text-brand-indigo font-bold text-lg">M</div>
+        <div>
+          <a href="/team/magahdogan/" class="font-bold text-navy text-sm hover:underline">Mustafa Agah Dogan</a>
+          <p class="text-xs text-slate-500 mt-0.5">Oprichter &amp; CEO Aanloop AI · BSc Computer Engineering · 20+ jaar IT-implementaties · Big 4-achtergrond · Rotterdam. <a href="/team/magahdogan/" class="text-brand-indigo hover:underline">Volledig profiel</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sector cross-links -->
+  <section class="section-tight border-t border-slate-200">
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow mb-3">Relevant voor uw sector</p>
+      <h2 class="text-2xl font-bold tracking-tightest text-navy text-balance mb-6">
+        AI-kosten per branche — concrete voorbeelden
+      </h2>
+      <p class="text-slate-600 text-sm leading-relaxed mb-6">
+        De ROI van een AI-agent varieert sterk per sector. Bekijk de sector-specifieke paginas voor concrete use cases, prijzen en terugverdientijden.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <a href="/sectoren/horeca/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 rounded-lg text-sm font-medium text-navy transition-all">AI voor horeca</a>
+        <a href="/sectoren/vastgoed/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 rounded-lg text-sm font-medium text-navy transition-all">AI voor vastgoed</a>
+        <a href="/sectoren/accountancy/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 rounded-lg text-sm font-medium text-navy transition-all">AI voor accountancy</a>
+        <a href="/sectoren/zorg/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 rounded-lg text-sm font-medium text-navy transition-all">AI voor zorg</a>
+        <a href="/sectoren/ai-voor-zzp/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 rounded-lg text-sm font-medium text-navy transition-all">AI voor ZZP</a>
+        <a href="/sectoren/bouw/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 rounded-lg text-sm font-medium text-navy transition-all">AI voor bouw</a>
+        <a href="/sectoren/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">Alle sectoren</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance reveal">Weet wat een AI-agent voor uw bedrijf kost</h2>
+      <p class="mt-4 text-slate-300 leading-relaxed reveal reveal-delay-1">Vraag een gratis AI Scan aan. In 30 minuten krijgt u een gepersonaliseerd kostenvoorstel en ROI-berekening voor uw specifieke situatie — zonder verplichtingen.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
+        <a href="/demo-aanvragen/" class="btn-primary text-base px-6 py-3.5">Gratis demo aanvragen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk alle tarieven</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
