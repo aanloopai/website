@@ -23,28 +23,12 @@ const articleSchema = {
   wordCount: 2000,
 };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'n8n self-hosted opzetten voor MKB workflow-automatisering',
-  description: 'Stap-voor-stap: VPS provisioneren, n8n installeren, AVG-compliant configureren, eerste workflow opzetten. Doorlooptijd 5-10 werkdagen.',
-  totalTime: 'P10D',
-  estimatedCost: { '@type': 'MonetaryAmount', currency: 'EUR', value: '1500' },
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'EU-VPS provisioneren', text: 'VPS bij Hetzner (Falkenstein) of TransIP (Amsterdam) — minimaal 2 vCPU, 4 GB RAM, 40 GB SSD. Kosten 10-25 euro per maand.' },
-    { '@type': 'HowToStep', position: 2, name: 'n8n via Docker installeren', text: 'Docker en Docker Compose installeren. n8n image pullen, persistentstorage en PostgreSQL configureren. SSL via Caddy of Traefik reverse proxy.' },
-    { '@type': 'HowToStep', position: 3, name: 'AVG-compliant configuratie', text: 'Bewaartermijn voor execution-data instellen (30 dagen standaard). Encryption-at-rest activeren. Backup-schema inrichten met retention 90 dagen, EU-locatie.' },
-    { '@type': 'HowToStep', position: 4, name: 'Eerste use-case: e-mail naar CRM', text: 'Workflow opzetten: nieuwe e-mail in inbox triggert AI-classificatie, extractie van naam en bedrijf, automatische opvoer in HubSpot of Pipedrive met label.' },
-    { '@type': 'HowToStep', position: 5, name: 'Tweede use-case: factuur-OCR', text: 'PDF in inbox triggert OCR-extractie, AI-validatie, automatisch boeken in Exact Online of Moneybird. Twijfel-flag voor menselijke review.' },
-    { '@type': 'HowToStep', position: 6, name: 'Monitoring en uitbreiding', text: 'Wekelijks dashboard met execution-count, failures, gemiddelde duur. Maandelijks nieuwe workflow toevoegen op basis van bedrijfsbehoefte.' }],
-};
 ---
 
 <BaseLayout
   title="N8N Workflow Automatisering voor MKB — Gids 2026"
   description="Wat is n8n en hoe gebruikt u het voor workflow automatisering in uw bedrijf? Kosten, AVG-compliance en hoe Aanloop AI het voor u beheert."
-  schema={[articleSchema, howToSchema]}
+  schema={[articleSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

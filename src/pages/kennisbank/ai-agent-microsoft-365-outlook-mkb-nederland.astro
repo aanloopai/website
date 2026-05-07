@@ -35,23 +35,6 @@ const articleSchema = {
   "articleSection": "AI in Productiviteit",
 };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'AI agent in Microsoft 365 en Outlook implementeren voor MKB in 8 stappen',
-  description: 'Stappenplan om een AI agent op Microsoft 365 en Outlook in te richten voor email-triage, agenda-scheduling, document-Q&A en meeting-notes. Doorlooptijd circa 10 werkdagen voor een team van 5 tot 25 gebruikers.',
-  totalTime: 'P10D',
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Use-cases prioriteren', text: 'Selecteer 2 of 3 use-cases met hoogste ROI: typisch email-triage, agenda-scheduling en meeting-notes. Vermijd te brede scope bij start. Per use-case bepaal succescriteria (bijv. 50 procent minder tijd in inbox per dag, 80 procent meeting-notes auto-gegenereerd).' },
-    { '@type': 'HowToStep', position: 2, name: 'Licentie- en architectuur-keuze maken', text: 'Beslis Copilot for Microsoft 365 (30 euro per gebruiker per maand) versus custom Power Automate plus Azure OpenAI versus custom n8n plus Anthropic Claude EU. Voor 5 tot 25 gebruikers met standaard use-cases: Copilot. Voor specifieke flows of full data-sovereignty: custom build via Aanloop AI.' },
-    { '@type': 'HowToStep', position: 3, name: 'Tenant-instellingen en data-residentie configureren', text: 'In Microsoft 365 admin center: bevestig EU data residency (Microsoft EU Data Boundary, sinds 2025 volledig actief), schakel Copilot connector toegang in voor SharePoint en OneDrive, configureer Conditional Access policies, beperk welke teams toegang krijgen tijdens pilot.' },
-    { '@type': 'HowToStep', position: 4, name: 'Pilot-team selecteren en trainen', text: 'Begin met 3 tot 5 power-users uit verschillende rollen (sales, ops, finance). Geef 1-uurs Nederlandstalige hands-on training: prompt-patronen, hallucinatie-herkenning, escalatie-flow, AI-disclosure naar externe relaties. Geef pilot 2 weken.' },
-    { '@type': 'HowToStep', position: 5, name: 'Use-case 1 implementeren — email-triage', text: 'Configureer Outlook Copilot of custom Power Automate flow die binnenkomende mails categoriseert (urgent, normaal, nieuwsbrief, intern), draft-replies maakt voor bekende vraagtypen, en uitzonderingen flagt voor menselijke review. Test 3 dagen, meet tijdwinst.' },
-    { '@type': 'HowToStep', position: 6, name: 'Use-case 2 en 3 toevoegen — agenda en meeting-notes', text: 'Agenda: AI agent vindt vrij overlappend slot tussen 2 of meer gebruikers, stelt voor, plant na bevestiging. Meeting-notes: Teams meeting wordt getranscribeerd, action-items en besluiten geextraheerd, samenvatting per email naar deelnemers. Beide use-cases activeren incrementeel.' },
-    { '@type': 'HowToStep', position: 7, name: 'AVG-disclaimers en logging inrichten', text: 'In email-handtekening pilot-team: vermelding dat AI ondersteunt bij correspondentie (transparantie naar externe ontvangers, AI Act limited-risk plicht). Logging-laag: elke AI-actie gelogd in Microsoft Purview of custom database voor audit. AI-literacy training voor alle pilot-deelnemers documenteren.' },
-    { '@type': 'HowToStep', position: 8, name: 'Roll-out, meten en bijsturen', text: 'Na succesvolle pilot: roll-out in 2 golven (kantoorpersoneel eerst, externe-facing rollen tweede). Maandelijkse review: aantal AI-acties, tijdwinst per gebruiker, fout-frequentie, gebruikers-tevredenheid. Bijsturen op prompts, training en use-case-uitbreidingen.' }],
-};
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'AI agent voor Microsoft 365 en Outlook — MKB NL 2026', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-agent-microsoft-365-outlook-mkb-nederland/', inLanguage: 'nl-NL' };
 
@@ -69,7 +52,7 @@ const faqItems = [
 <BaseLayout
   title="AI agent voor Microsoft 365 en Outlook — MKB NL 2026"
   description="Wat doet een AI agent in M365 en Outlook concreet, Microsoft Copilot vs custom agent, 6 use-cases met ROI, AVG en EU AI Act overwegingen, en 8-stappen"
-  schema={[articleSchema, howToSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

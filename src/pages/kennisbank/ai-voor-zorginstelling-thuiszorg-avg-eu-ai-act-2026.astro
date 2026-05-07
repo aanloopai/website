@@ -35,23 +35,6 @@ const articleSchema = {
   "articleSection": "Zorg & AI",
 };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'AI inzetten in een zorginstelling of thuiszorg-organisatie compliant in 8 stappen',
-  description: 'Stappenplan voor zorgbestuurders, kwaliteitsmanagers en functionarissen-gegevensbescherming om AI in te zetten zonder AVG- of EU AI Act-overtreding. Doorlooptijd circa 21 werkdagen voor zorginstellingen met 20 tot 2.000 FTE en bijzondere persoonsgegevens (medische data) in proces.',
-  totalTime: 'P21D',
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Use-case afbakenen en risico-classificatie EU AI Act bepalen', text: 'Onderscheid drie risico-klassen onder EU AI Act voor zorgsector. Limited risk: planning, agenda-beheer, administratieve transcriptie, telefoon-triage als ondersteuning (mens-besluit), interne kennis-Q&A. High-risk Annex III: AI als medisch hulpmiddel (CE-keurmerk MDR plus AI Act conformity assessment), klinische beslissingsondersteuning op diagnose of medicatie, geautomatiseerde triage-besluit, biometrische identificatie patient, sociale-zekerheid-toegang. Verboden: real-time biometrische identificatie publieke ruimte, social scoring, emotie-detectie buiten therapie-context. Begin altijd met low-risk use-cases voor adoption.' },
-    { '@type': 'HowToStep', position: 2, name: 'DPIA en NEN 7510 baseline opstellen', text: 'Voor elke AI-use-case met bijzondere persoonsgegevens (gezondheid, BSN, zorgdossier) is een DPIA volgens AVG art. 35 verplicht. Combineer met NEN 7510 (informatie-beveiliging zorg) en NEN 7512 (vertrouwelijke communicatie). Bouw DPIA-template met: aard van de verwerking, noodzaak, evenredigheid, risico-analyse voor patient (re-identificatie, foutieve beslissing, doorbreking beroepsgeheim), mitigerende maatregelen. Laat valideren door FG of externe NEN 7510 auditor.' },
-    { '@type': 'HowToStep', position: 3, name: 'Datacenter, EU-residentie en encryptie inrichten', text: 'Kies EU-only infrastructuur: Hetzner Frankfurt of Scaleway Amsterdam voor compute, Anthropic Claude EU of Azure OpenAI in West-Europa voor LLM-laag, NEN 7510 gecertificeerde hosting voor productie (Cyso, Schuberg Philis, KPN ZorgMessenger). Encryptie at-rest met AES-256, encryptie in-transit met TLS 1.3 plus mTLS naar EPD-systemen. Geen US-routes (CLOUD Act risico voor patient-data). Verwerkersovereenkomst inclusief sub-processor-overzicht en EU-data-clausules.' },
-    { '@type': 'HowToStep', position: 4, name: 'EPD- en zorgsysteem-koppelingen scopen', text: 'Identificeer welk EPD: HiX (Chipsoft, ziekenhuizen), Epic (UMCs), Nedap Ons (thuiszorg en VVT), Pluriform (GGZ), Caress (gehandicaptenzorg), Promedico-VDF (huisartsen), of niche-systemen. Welke API of HL7 FHIR-koppeling beschikbaar. Service-account scope: read-only waar mogelijk, expliciet logboek-trail voor elke read en write. Pseudonimiseer patient-identifiers binnen AI-laag (vervang BSN door hash, koppel terug alleen op presentatie-laag bij geautoriseerde gebruiker).' },
-    { '@type': 'HowToStep', position: 5, name: 'Mens-in-de-loop en transparantie naar patient inrichten', text: 'AVG art. 22 verbiedt geautomatiseerde individuele besluiten met aanmerkelijke gevolgen — voor zorg betekent dit: AI mag adviseren, mens neemt besluit. Concreet: AI-suggestie voor triage-categorie wordt door triagist of arts bevestigd voor het effect heeft. Transparantie: patient-informatie via AVG art. 13 over AI-gebruik in proces, recht op uitleg en menselijke beoordeling. Plus EU AI Act art. 13 disclosure: gebruiker (zorgmedewerker) ziet expliciet dat AI ondersteunt en wat de beperkingen zijn.' },
-    { '@type': 'HowToStep', position: 6, name: 'Bias-audit en model-monitoring opzetten', text: 'AI-modellen vertonen vaak bias op leeftijd, geslacht, sociaaleconomische klasse of taalvaardigheid — voor zorg ethisch en juridisch onacceptabel. Bias-audit voorafgaand aan productie: test model op gebalanceerde patient-cohorten (leeftijd, geslacht, etniciteit, taalachtergrond), publiceer accuracy-metrics per subgroep. Drift-monitoring in productie: maandelijkse her-evaluatie. Bij significante divergentie: pas op niveau-trainings-data of voeg post-hoc-correctie toe. Documenteer alles voor EU AI Act Annex IV technische documentatie.' },
-    { '@type': 'HowToStep', position: 7, name: 'AI-literacy training, beroepsgeheim en functionaris-gegevensbescherming', text: 'EU AI Act art. 4 verplicht AI-literacy training voor alle gebruikers (deadline februari 2025, geldt nu). Voor zorg: training op AI-beperking, prompt-discipline, beroepsgeheim AVG art. 9 plus WGBO art. 7-457, bias-bewustzijn, escalatie-pad bij twijfel. FG (functionaris gegevensbescherming) wordt actief betrokken bij elke nieuwe AI-use-case. Verwerkingsregister-aanvulling met: doel, rechtsgrond (typisch uitvoering behandelovereenkomst plus gerechtvaardigd belang voor administratie), categorieen persoonsgegevens, ontvangers, bewaartermijn (15 jaar voor medisch dossier).' },
-    { '@type': 'HowToStep', position: 8, name: 'Pilot, evaluatie en stapsgewijze opschaling', text: 'Pilot eerst op 1 afdeling of 1 thuiszorg-team, 4 tot 8 weken, met expliciete kwaliteits- en veiligheids-monitoring. Wekelijkse multidisciplinaire evaluatie: AI-output-kwaliteit, gebruikers-tevredenheid, near-misses, echte misses. Pas bij groen licht uitbreiden naar volgende afdeling. Bij high-risk use-case (klinische beslissingsondersteuning): conformity assessment via aangemelde instantie (notified body) plus EU-database registratie verplicht voor productie-gebruik. Quartaal-review met IGJ-rapportage waar relevant.' }],
-};
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'AI voor zorg & thuiszorg NL — EU AI Act', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-voor-zorginstelling-thuiszorg-avg-eu-ai-act-2026/', inLanguage: 'nl-NL' };
 
@@ -71,7 +54,7 @@ const faqItems = [
 <BaseLayout
   title="AI voor zorg & thuiszorg NL — EU AI Act"
   description="Hoe een zorginstelling, thuiszorg-organisatie of GGZ-aanbieder AI inzet zonder AVG of EU AI Act overtreding: bijzondere persoonsgegevens art."
-  schema={[articleSchema, howToSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

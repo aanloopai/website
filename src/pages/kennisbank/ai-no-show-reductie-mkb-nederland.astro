@@ -35,22 +35,6 @@ const articleSchema = {
     "articleSection": "Klantenservice & AI",
   };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'AI no-show reductie opzetten voor MKB in 7 stappen',
-  description: 'Stap-voor-stap no-show percentages verlagen van 15-30 procent naar 4-9 procent met multi-touch herinneringen, vooraf-betaling en sentiment-aware afhandeling. Doorlooptijd 7 werkdagen.',
-  totalTime: 'P7D',
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Afspraak-systeem koppelen', text: 'Standaard koppelingen: Promedico, MicroHIS, Medicom, FysioRoadmap, Intramed, Salonized, Treatwell, Exquise, Oasys. Eigen-built systemen via API.' },
-    { '@type': 'HowToStep', position: 2, name: 'WhatsApp Business activeren', text: 'WhatsApp Business API via 360dialog, Twilio of CM.com. Onboarding 5-10 werkdagen inclusief Meta-verificatie.' },
-    { '@type': 'HowToStep', position: 3, name: 'Multi-touch herinneringsschema', text: 'WhatsApp T-48u (eerste herinnering), WhatsApp T-24u (bevestiging-verzoek), SMS T-12u (bij geen reactie), AI-belletje T-2u (laatste check). Reduceert no-show 60-70 procent.' },
-    { '@type': 'HowToStep', position: 4, name: 'No-show-fee in algemene voorwaarden', text: 'No-show-fee opnemen in algemene voorwaarden en bij iedere boeking expliciet communiceren. AI doet beide automatisch (voorwaarden checken, klant informeren).' },
-    { '@type': 'HowToStep', position: 5, name: 'Vooraf-betaling-flow voor risico-klanten', text: 'Voor klanten met no-show-historie: vooraf-betaling-aanbod via Mollie of Stripe payment-link in WhatsApp. Halveert no-show-risico verder.' },
-    { '@type': 'HowToStep', position: 6, name: 'Sentiment-aware opt-out', text: 'AI herkent negatief sentiment (stop hiermee, irritant) en past frequentie automatisch aan. Expliciete opt-out wordt gerespecteerd en gelogd.' },
-    { '@type': 'HowToStep', position: 7, name: 'Wekelijkse rapportage en iteratie', text: 'KPI-dashboard: no-show-percentage voor versus na, confirmation-rate per touchpoint, opt-out rate. Wekelijkse iteratie op timing en boodschap.' }],
-};
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'AI no-show reductie MKB NL 2026 |', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-no-show-reductie-mkb-nederland/', inLanguage: 'nl-NL' };
 
@@ -68,7 +52,7 @@ const faqItems = [
 <BaseLayout
   title="AI no-show reductie MKB NL 2026 |"
   description="Hoe AI no-show percentages voor MKB-bedrijven in Nederland verlaagt van 15-30 procent naar 4-9 procent."
-  schema={[articleSchema, howToSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

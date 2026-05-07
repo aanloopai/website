@@ -35,21 +35,6 @@ const articleSchema = {
     "articleSection": "AI Prijzen & ROI",
   };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'AI ROI berekenen voor uw MKB-bedrijf in 6 stappen',
-  description: 'Realistisch berekenen of een AI-investering zinvol is voor uw MKB. Met formules voor tijdwinst, lead-conversie, no-show reductie en personeelskosten. Doorlooptijd 1 werkdag.',
-  totalTime: 'P1D',
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Uitgangssituatie kwantificeren', text: 'Tel klantcontacten per week (telefoon, WhatsApp, e-mail), gemiddelde behandeltijd per contact en uurloon van klantenservice-medewerker. Dit is uw basis-cijfer.' },
-    { '@type': 'HowToStep', position: 2, name: 'Tijdwinst berekenen', text: 'Tijdwinst per maand = klantcontacten per maand x deflection-percentage (70-85 procent voor goed-getrainde AI) x gemiddelde behandeltijd. Vermenigvuldig met intern uurloon.' },
-    { '@type': 'HowToStep', position: 3, name: 'Lead-conversie meten', text: 'Aanvullend aantal leads dat zou worden gemist buiten kantooruren x gemiddelde lead-waarde x conversie-ratio. AI ontsluit 24/7 bereikbaarheid en vangt 30-40 procent extra leads.' },
-    { '@type': 'HowToStep', position: 4, name: 'No-show reductie waarderen', text: 'Voor afspraak-gedreven sectoren: aantal afspraken per maand x no-show-percentage (15-30 procent) x gemiddelde afspraak-omzet x reductie-factor (typisch 60-70 procent met AI-multi-touch).' },
-    { '@type': 'HowToStep', position: 5, name: 'Investering en doorlopende kosten', text: 'Eenmalig: onboarding (gratis bij Aanloop AI). Maandelijks: pakket-fee 197-1.197 euro. WhatsApp Meta-fee 0,03-0,08 euro per uniek 24u-venster.' },
-    { '@type': 'HowToStep', position: 6, name: 'ROI-formule toepassen en kiezen', text: 'ROI = (besparing + extra omzet - kosten) / kosten. Onder 3x ROI: kies losse module. 3-8x: standaard pakket. 8x+: custom pakket overwegen. Aanloop AI biedt ROI-garantie bij 12-maand contract.' }],
-};
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'AI ROI berekenen MKB NL 2026 |', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-roi-berekenen-mkb-nederland-2026/', inLanguage: 'nl-NL' };
 
@@ -67,7 +52,7 @@ const faqItems = [
 <BaseLayout
   title="AI ROI berekenen MKB NL 2026 |"
   description="Hoe u realistisch berekent of een AI investering voor uw MKB-bedrijf zinvol is. Met formules, sector-benchmarks en voorbeelden van besparingen vs investering."
-  schema={[articleSchema, howToSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

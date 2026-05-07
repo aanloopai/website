@@ -188,27 +188,6 @@ const toolSchema = {
   },
 };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'AI-readiness van uw MKB-bedrijf bepalen in 11 stappen',
-  description: 'Stappenplan om de AI-readiness van uw Nederlandse MKB-bedrijf te bepalen via de Aanloop AI-Readiness Scan. Doorlooptijd circa 3 minuten.',
-  totalTime: 'PT3M',
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Sector kiezen', text: 'Selecteer uw sector zodat sector-specifieke aanbevelingen mogelijk zijn.' },
-    { '@type': 'HowToStep', position: 2, name: 'Bedrijfsgrootte aangeven', text: 'Geef het aantal medewerkers (FTE) op — bepaalt de schaalbaarheid van AI-oplossingen.' },
-    { '@type': 'HowToStep', position: 3, name: 'Huidige tools selecteren', text: 'Kies welke tools u al gebruikt (CRM, ERP, helpdesk, VoIP, agenda) — bepaalt de digitale fundering.' },
-    { '@type': 'HowToStep', position: 4, name: 'Pijnpunten selecteren', text: 'Markeer uw 3 grootste pijnpunten waarbij AI direct waarde kan toevoegen.' },
-    { '@type': 'HowToStep', position: 5, name: 'Telefoon-volume opgeven', text: 'Schat uw dagelijks volume aan inkomende telefoongesprekken.' },
-    { '@type': 'HowToStep', position: 6, name: 'Handmatige uren opgeven', text: 'Schat hoeveel uur per week uw team besteedt aan repetitieve handmatige taken.' },
-    { '@type': 'HowToStep', position: 7, name: 'Budget aangeven', text: 'Geef uw maandelijks AI-budget op (indicatief — pakketten vanaf €597/mnd).' },
-    { '@type': 'HowToStep', position: 8, name: 'Urgentie aangeven', text: 'Geef de tijdslijn aan: verkennen / dit kwartaal / deze maand.' },
-    { '@type': 'HowToStep', position: 9, name: 'AVG-bewustzijn aangeven', text: 'Geef uw AVG-niveau aan (van geen idee tot DPIA gedaan).' },
-    { '@type': 'HowToStep', position: 10, name: 'AI-ervaring aangeven', text: 'Geef uw eerdere ervaring met AI-tools aan.' },
-    { '@type': 'HowToStep', position: 11, name: 'Datakwaliteit aangeven en resultaat aflezen', text: 'Geef aan hoe digitaal uw bedrijfsdata is. De scan berekent uw score (0–100), tier en sector-specifieke aanbevelingen.' },
-  ],
-};
 
 const faqItems = [
   { question: 'Wat is een AI-Readiness Scan?', answer: 'Een AI-Readiness Scan is een gestructureerde beoordeling van hoe klaar uw bedrijf is om AI-automatisering succesvol in te voeren. Onze gratis scan stelt 11 vragen over bedrijfsgrootte, tools, pijnpunten, AVG-status en datakwaliteit en geeft een score van 0–100 met concrete aanbevelingen.' },
@@ -223,7 +202,7 @@ const faqItems = [
 <BaseLayout
   title="Gratis AI-Readiness Scan"
   description="Gratis interactieve AI-Readiness Scan voor Nederlandse MKB. 11 vragen, 3 minuten — krijg uw score 0–100, tier-classificatie en sector-specifieke"
-  schema={[toolSchema, howToSchema]}
+  schema={[toolSchema]}
   faqSchema={faqItems}
 >
   <!-- Hero -->

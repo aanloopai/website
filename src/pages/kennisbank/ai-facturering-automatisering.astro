@@ -7,24 +7,8 @@ const faqItems = [
   { question: 'Is AI factuurverwerking AVG-compliant?', answer: 'Ja, mits correct geconfigureerd. Aanloop AI gebruikt n8n self-hosted, waardoor factuurdata uitsluitend op uw eigen server wordt verwerkt — in Nederland. Er worden geen gegevens naar buitenlandse AI-providers gestuurd.' },
   { question: 'Hoeveel kost AI factuurautomatisering?', answer: 'AI factuurautomatisering is onderdeel van een custom workflow via Aanloop AI. Kosten starten vanaf €4.500 eenmalig voor implementatie + €597/maand voor beheer en monitoring. De terugverdientijd is typisch 2-4 maanden.' }];
 const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: 'Hoe Automatiseer je Je Facturering met AI? (Stap-voor-Stap Gids)', author: { '@type': 'Person', name: 'Mustafa Agah Dogan', '@id': 'https://aanloopai.nl/team/magahdogan/#person', url: 'https://aanloopai.nl/team/magahdogan/', jobTitle: 'Oprichter & CEO Aanloop AI', sameAs: ['https://www.linkedin.com/in/magahdogan/'], worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' } }, publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2025-12-21', dateModified: '2026-04-21', inLanguage: 'nl-NL', articleSection: 'Finance & AI' };
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'Factuurverwerking automatiseren met AI en n8n in 6 stappen',
-  description: 'Stap-voor-stap: PDF-extractie via OCR, AI-classificatie, btw-validatie, automatisch boeken in Exact Online of Moneybird. Doorlooptijd 14-21 werkdagen.',
-  totalTime: 'P21D',
-  estimatedCost: { '@type': 'MonetaryAmount', currency: 'EUR', value: '4500' },
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Boekhoudpakket en API koppelen', text: 'Standaard koppelingen: Exact Online, Snelstart, Moneybird, Twinfield, AFAS. API-token genereren en n8n credentials configureren.' },
-    { '@type': 'HowToStep', position: 2, name: 'PDF-inbox monitoring opzetten', text: 'Gemonitorde mailbox (bijv. inkoop@) of Dropbox/SharePoint folder waar leveranciersfacturen binnenkomen. n8n trigger op nieuwe PDF-bijlagen.' },
-    { '@type': 'HowToStep', position: 3, name: 'OCR-extractie met AI-classificatie', text: 'PDF via OCR omgezet naar gestructureerde data. AI extraheert leverancier, factuurdatum, totaalbedrag, btw-percentages, kostenposten. Nauwkeurigheid 97-99 procent op gestructureerde facturen.' },
-    { '@type': 'HowToStep', position: 4, name: 'Validatie en duplicaat-check', text: 'AI controleert IBAN, KvK, btw-nummer (BTW-VIES) en vergelijkt tegen openstaande facturen om duplicaten te voorkomen.' },
-    { '@type': 'HowToStep', position: 5, name: 'Automatisch boeken of geflagd voor review', text: 'Vertrouwen boven 95 procent: direct geboekt in boekhoudpakket met juiste grootboekrekening. Vertrouwen onder 95 procent: geflagd voor menselijke review met voorgestelde boeking.' },
-    { '@type': 'HowToStep', position: 6, name: 'Rapportage en iteratie', text: 'Wekelijks dashboard met aantal facturen, doorlooptijd, fouten. Maandelijkse iteratie op classificatie-accuratesse via menselijke feedback-loop.' }],
-};
 ---
-<BaseLayout title="Hoe Automatiseer je Je Facturering met AI? (Stap-voor-Stap)" description="Leer hoe u uw factuurverwerking automatiseert met AI en n8n. Van PDF-extractie tot automatisch boeken in Exact Online. AVG-compliant, stap-voor-stap uitgelegd." schema={[schema, howToSchema]} faqSchema={faqItems}>
+<BaseLayout title="Hoe Automatiseer je Je Facturering met AI? (Stap-voor-Stap)" description="Leer hoe u uw factuurverwerking automatiseert met AI en n8n. Van PDF-extractie tot automatisch boeken in Exact Online. AVG-compliant, stap-voor-stap uitgelegd." schema={[schema]} faqSchema={faqItems}>
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-20">
       <div class="max-w-3xl">

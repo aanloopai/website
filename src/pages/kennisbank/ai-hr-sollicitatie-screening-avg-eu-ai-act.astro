@@ -35,23 +35,6 @@ const articleSchema = {
   "articleSection": "AI Compliance & AVG",
 };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'AI sollicitatie-screening AVG en EU AI Act conform implementeren in 8 stappen',
-  description: 'Stappenplan voor AVG en EU AI Act-conforme AI-gestuurde CV-screening en kandidaat-matching in een MKB HR-team. Doorlooptijd 14 werkdagen voor een lichte high-risk implementatie.',
-  totalTime: 'P14D',
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Use-case afbakenen en risico-scope vaststellen', text: 'Bepaal exact welke deeltaak de AI doet: alleen CV-parsing en sortering, of ook scoring en afwijzing. Hoe meer zelfstandige beslissing, hoe zwaarder de high-risk plichten. Voor MKB raden we aan AI alleen ondersteunend (parsing, eerste filtering, samenvatting) in te zetten en de definitieve shortlist altijd door een mens te laten bevestigen.' },
-    { '@type': 'HowToStep', position: 2, name: 'DPIA uitvoeren (AVG-verplicht)', text: 'Bij geautomatiseerde verwerking van sollicitatie-data is een Data Protection Impact Assessment verplicht onder AVG artikel 35. Documenteer doelbinding, rechtsgrond (gerechtvaardigd belang met afweging), datacategorieen, bewaartermijn (4 weken na sluiting vacature, 1 jaar bij toestemming), beveiligingsmaatregelen en restrisico.' },
-    { '@type': 'HowToStep', position: 3, name: 'Bias-audit en data governance inrichten', text: 'EU AI Act eist data governance op high-risk AI. Vraag uw leverancier om een bias-rapport (gender, leeftijd, etniciteit, beperking) of laat een onafhankelijke audit uitvoeren. Test op 200 historische sollicitaties: wijken AI-scores significant af tussen demografische groepen? Documenteer bevindingen en mitigaties.' },
-    { '@type': 'HowToStep', position: 4, name: 'Human-in-the-loop hard configureren', text: 'AVG artikel 22 verbiedt uitsluitend geautomatiseerde besluiten met aanmerkelijke gevolgen. Bij elke afwijzing of doorzet naar shortlist moet een mens de uiteindelijke beslissing nemen. Concreet: AI levert score plus toelichting, recruiter klikt expliciet bevestigen of overrulen voor elke beslissing. Geen bulk-afwijzing zonder review.' },
-    { '@type': 'HowToStep', position: 5, name: 'Transparantie naar kandidaten regelen', text: 'In de vacaturetekst en sollicitatie-bevestiging vermelden dat AI wordt gebruikt voor een eerste selectie. Bij afwijzing op basis van AI-input: geef de mogelijkheid tot menselijke heroverweging (AVG artikel 22 lid 3) en een toelichting op hoofdcriteria. Aanloop AI levert NL-talige template-teksten.' },
-    { '@type': 'HowToStep', position: 6, name: 'Logging en audit-trail (EU AI Act vereiste)', text: 'Elke AI-beslissing wordt automatisch gelogd: kandidaat-id (gepseudonimiseerd), AI-input (geanonimiseerde CV-data), AI-output (score plus reden), recruiter-actie (bevestigd of overrulled), modelversie, timestamp. Bewaartermijn minimaal 6 maanden voor audit, conform AI Act artikel 12.' },
-    { '@type': 'HowToStep', position: 7, name: 'Conformity assessment en CE-markering plannen', text: 'Vanaf 2 augustus 2026 is voor high-risk AI een conformity assessment verplicht voordat het systeem in gebruik wordt genomen. Voor MKB met ingekochte oplossingen: vraag de leverancier om de EU-verklaring van overeenstemming en CE-markering. Voor zelfgebouwde n8n-workflows: documenteer interne assessment of kies voor light-versie zonder eindbeslissing.' },
-    { '@type': 'HowToStep', position: 8, name: 'EU-database registratie en lopend beheer', text: 'Vanaf augustus 2026 moeten high-risk AI-systemen in werving worden geregistreerd in de EU-database (artikel 71). Wijs een verantwoordelijke aan voor lopend beheer: kwartaal-monitoring op bias-drift, jaarlijkse herziening DPIA, update van AI-disclaimer bij modelwijzigingen, training nieuwe HR-medewerkers in AI-literacy.' }],
-};
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'AI sollicitatie-screening AVG MKB NL 2026', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-hr-sollicitatie-screening-avg-eu-ai-act/', inLanguage: 'nl-NL' };
 
@@ -71,7 +54,7 @@ const faqItems = [
 <BaseLayout
   title="AI sollicitatie-screening AVG MKB NL 2026"
   description="AI in HR-screening (CV-parsing, kandidaat-matching, video-interview-analyse) is high-risk onder de EU AI Act."
-  schema={[articleSchema, howToSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

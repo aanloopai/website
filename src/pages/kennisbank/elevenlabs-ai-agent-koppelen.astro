@@ -6,22 +6,9 @@ const faqItems = [
   { question: 'Heb ik een ElevenLabs account nodig?', answer: 'Als u de integratie zelf beheert: ja. Als u werkt met Aanloop AI: nee. Aanloop AI beheert de ElevenLabs configuratie volledig voor u, inclusief stem, kennisbank en workflowkoppelingen.' },
   { question: 'Kan ElevenLabs Nederlands spreken?', answer: 'Ja. ElevenLabs heeft uitstekende Nederlandse stemmen beschikbaar die zeer natuurlijk klinken. De latency (vertraging tussen vraag en antwoord) is minder dan 1 seconde, waardoor gesprekken vloeiend verlopen.' },
   { question: 'Is ElevenLabs AVG-compliant?', answer: 'ElevenLabs verwerkt data op Europese servers. Voor maximale AVG-compliance combineert Aanloop AI ElevenLabs met n8n self-hosted: de gesprekstranscripties en klantdata blijven in Nederland, op uw eigen server.' }];
-const howToSchema = {
-  '@context': 'https://schema.org', '@type': 'HowTo',
-  name: 'ElevenLabs AI Agent koppelen aan je telefooncentrale',
-  description: 'Stap-voor-stap handleiding voor het koppelen van ElevenLabs voice AI aan uw bestaande telefoonsysteem.',
-  totalTime: 'PT30M',
-  supply: [{ '@type': 'HowToSupply', name: 'ElevenLabs account (of Aanloop AI beheert dit)' }, { '@type': 'HowToSupply', name: 'SIP-trunk of VoIP-provider (bijv. Voys, Twilio)' }],
-  step: [
-    { '@type': 'HowToStep', name: 'ElevenLabs agent configureren', text: 'Maak een ElevenLabs account aan, kies een Nederlandse stem en configureer de kennisbank met uw bedrijfsinformatie.' },
-    { '@type': 'HowToStep', name: 'SIP-trunk koppelen', text: 'Verbind ElevenLabs met uw telefoonsysteem via een SIP-trunk bij uw VoIP-provider.' },
-    { '@type': 'HowToStep', name: 'Gespreksrouting instellen', text: 'Bepaal wanneer calls naar de AI agent gaan (altijd, of alleen buiten kantooruren) en stel een fallback in naar menselijke medewerkers.' },
-    { '@type': 'HowToStep', name: 'n8n workflow koppelen', text: 'Verbind de AI agent met n8n voor acties: agenda bijwerken, CRM-lead aanmaken, e-mail versturen na gesprek.' },
-    { '@type': 'HowToStep', name: 'Testen en optimaliseren', text: 'Test de agent uitgebreid met echte gespreksscenario\'s en optimaliseer de kennisbank op basis van de resultaten.' }],
-};
 const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: 'ElevenLabs AI Agent Koppelen aan je Telefooncentrale (2026 Gids)', author: { '@type': 'Person', name: 'Mustafa Agah Dogan', '@id': 'https://aanloopai.nl/team/magahdogan/#person', url: 'https://aanloopai.nl/team/magahdogan/', jobTitle: 'Oprichter & CEO Aanloop AI', sameAs: ['https://www.linkedin.com/in/magahdogan/'], worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' } }, publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2026-05-09', dateModified: '2026-05-09', inLanguage: 'nl-NL', articleSection: 'AI Voice' };
 ---
-<BaseLayout title="ElevenLabs AI + Telefoonkoppeling 2026" description="Stap-voor-stap gids: ElevenLabs AI agent koppelen aan uw bestaande telefoonsysteem." schema={[schema, howToSchema]} faqSchema={faqItems}>
+<BaseLayout title="ElevenLabs AI + Telefoonkoppeling 2026" description="Stap-voor-stap gids: ElevenLabs AI agent koppelen aan uw bestaande telefoonsysteem." schema={[schema]} faqSchema={faqItems}>
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-20">
       <div class="max-w-3xl">

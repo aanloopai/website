@@ -96,35 +96,11 @@ const werkwijzeStappen = [
   },
 ];
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  '@id': 'https://aanloopai.nl/werkwijze/#howto',
-  name: 'Hoe Aanloop AI uw bedrijf op AI brengt — 5 stappen in 14 dagen',
-  description: 'Stap-voor-stap proces voor Nederlandse MKB-bedrijven die AI willen implementeren: van adviesgesprek tot live AI-assistent.',
-  totalTime: 'P14D',
-  inLanguage: 'nl-NL',
-  estimatedCost: { '@type': 'MonetaryAmount', currency: 'EUR', value: '197' },
-  supply: [{ '@type': 'HowToSupply', name: 'Bestaande website, telefoonnummer of WhatsApp Business account' }],
-  tool: [
-    { '@type': 'HowToTool', name: 'Aanloop AI dashboard' },
-    { '@type': 'HowToTool', name: 'CRM (HubSpot, Pipedrive, Salesforce — optioneel)' },
-    { '@type': 'HowToTool', name: 'Agenda (Google Workspace, Microsoft 365 — optioneel)' },
-  ],
-  step: werkwijzeStappen.map((stap, i) => ({
-    '@type': 'HowToStep',
-    position: i + 1,
-    name: stap.title,
-    text: `${stap.duration}: ${stap.details.join('. ')}`,
-    url: `https://aanloopai.nl/werkwijze/#stap-${i + 1}`,
-  })),
-};
 ---
 
 <BaseLayout
   title="Werkwijze · Live in 14 dagen"
   description="Hoe Aanloop AI werkt: van eerste adviesgesprek tot live AI-assistent in 14 dagen. Stap voor stap uitgelegd."
-  schema={howToSchema}
 >
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">

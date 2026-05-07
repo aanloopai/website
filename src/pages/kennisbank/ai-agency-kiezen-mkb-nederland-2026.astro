@@ -35,27 +35,6 @@ const articleSchema = {
   "articleSection": "AI Strategie",
 };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'AI agency selecteren voor uw MKB-bedrijf',
-  description: 'Stappenplan om in maximaal 5 werkdagen de juiste AI partner voor uw MKB te selecteren — van shortlist tot ondertekende overeenkomst.',
-  totalTime: 'P5D',
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Doel scherp formuleren', text: 'Schrijf in 1 zin het concrete probleem op dat AI moet oplossen — bijvoorbeeld 24/7 telefoon aannemen, no-shows verminderen of WhatsApp 100 dagelijkse vragen automatiseren. Zonder scherp doel kiest u op marketing-praatjes.' },
-    { '@type': 'HowToStep', position: 2, name: 'Shortlist van 3 tot 5 partijen', text: 'Verzamel kandidaten via Google, branche-verenigingen, LinkedIn en collega-MKB. Eis: KvK-registratie in Nederland, minimaal 2 jaar actief, openbare cases binnen uw sector. Sluit consumenten-tools en internationale resellers uit.' },
-    { '@type': 'HowToStep', position: 3, name: 'Tarieven-transparantie toetsen', text: 'Per kandidaat de volledige cost-of-ownership opvragen: maandtarief, setup, telefonie, API-fees, jaarlijkse stijging, kosten van uitbreiding. Wantrouw partijen die geen volledig bedrag op offerte willen zetten.' },
-    { '@type': 'HowToStep', position: 4, name: 'AVG en datalocatie verifieren', text: 'Eis schriftelijk waar klantdata wordt verwerkt en opgeslagen — Frankfurt, Amsterdam of niet-EU. Controleer verwerkersovereenkomst (DPA) op clausules over modeltraining (mag niet zonder toestemming) en sub-processors.' },
-    { '@type': 'HowToStep', position: 5, name: 'EU AI Act compliance vragen', text: 'Vraag per kandidaat naar risico-classificatie van de geleverde AI, transparantie-disclaimers, logging-policy en AI-literacy training. Geen antwoord betekent geen compliance — pas op voor reputatie- en handhavingsrisico vanaf 2026.' },
-    { '@type': 'HowToStep', position: 6, name: 'Cases en referenties opvragen', text: 'Eis minimaal 3 referent-klanten waarvan 1 binnen uw branche. Bel die klanten direct — niet alleen e-mail. Vraag naar onverwachte issues, snelheid van support en wat ze achteraf anders zouden doen.' },
-    { '@type': 'HowToStep', position: 7, name: 'Pilot of proefperiode afspreken', text: 'Geen pilot, geen handtekening. Minimaal 2 weken proeftijd waarin u zonder kosten of met beperkte kosten kunt opzeggen als de techniek of samenwerking niet bevalt. Vermijd jaarcontracten zonder pilot-clausule.' },
-    { '@type': 'HowToStep', position: 8, name: 'SLA en supporturen vastleggen', text: 'Schriftelijk: uptime-garantie minimaal 99,5 procent, response-tijd op kritieke issues binnen 1 uur kantoortijd, contact-kanalen (telefoon plus e-mail plus chat) en escalatie-pad bij downtime.' },
-    { '@type': 'HowToStep', position: 9, name: 'Open standaarden boven vendor lock-in', text: 'Vraag of de oplossing draait op open standaarden zoals n8n self-hosted of een proprietary platform. Bij vendor lock-in kunt u niet zomaar wisselen — u betaalt voor de rest van de levensduur het tarief van die ene leverancier.' },
-    { '@type': 'HowToStep', position: 10, name: 'Implementatie-tijdpad inschatten', text: 'Realistisch voor MKB: 7 tot 14 werkdagen tot live met klantgesprek-AI. Wees alert bij beloften van same-day go-live (vaak suggereert dat de leverancier geen serieuze training of testperiode doet).' },
-    { '@type': 'HowToStep', position: 11, name: 'Schaalbaarheid en upgrade-pad checken', text: 'Vraag naar upgrade-route binnen het portfolio (bijv. van 1-kanaal AI naar omnichannel, van Starter naar Growth). Kosten voor migratie moeten 0 of minimaal zijn. Een AI partner moet meegroeien zonder dat u opnieuw moet aanbesteden.' },
-    { '@type': 'HowToStep', position: 12, name: 'Beslissing en ondertekening', text: 'Vergelijk uw 3 tot 5 kandidaten op een scoringskaart per criterium. Kies de partij die op AVG, transparantie, branchecases en SLA het hoogst scoort — niet de goedkoopste. Onderteken pas na schriftelijke pilot-clausule en compliance-pakket.' }],
-};
 
 const speakableSchema = {
   '@context': 'https://schema.org',
@@ -83,7 +62,7 @@ const faqItems = [
 <BaseLayout
   title="AI Agency Kiezen NL 2026 — 12 Selectiecriteria MKB"
   description="Buyer guide voor MKB-ondernemers die een AI partner zoeken in 2026. 12 selectiecriteria, 8 red flags, scoringskaart en het volledige antwoord van Aanloop AI"
-  schema={[articleSchema, howToSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

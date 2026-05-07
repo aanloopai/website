@@ -40,21 +40,6 @@ const presetProfiles = [
   { id: 'dierenarts', label: 'Dierenartspraktijk', icon: '🐾', calls: 55, missed: 30, cv: 350, hours: 16, rate: 30, sectorIdx: 5 },
 ];
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'AI ROI berekenen voor uw MKB in 5 stappen',
-  description: 'Stappenplan om de ROI van AI-automatisering voor uw MKB-bedrijf te berekenen via de Aanloop AI ROI calculator. Doorlooptijd circa 60 seconden.',
-  totalTime: 'PT1M',
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Dagvolume inkomende telefoontjes invoeren', text: 'Vul het aantal inkomende telefoongesprekken per werkdag in. Schatting op basis van uw KPN/VoIP-rapportage of grove inschatting van uw team.' },
-    { '@type': 'HowToStep', position: 2, name: 'Percentage gemiste of slecht-afgehandelde calls', text: 'Schat hoeveel procent van inkomende calls op dit moment gemist worden of niet goed afgehandeld (geen terugbel, lange wachttijd, geen escalatie).' },
-    { '@type': 'HowToStep', position: 3, name: 'Gemiddelde nieuwe klantwaarde invullen', text: 'Vul de gemiddelde lifetime value van een nieuwe klant in. Voor solo-praktijk gebruik gemiddelde jaaromzet per klant; voor MKB jaaromzet/aantal klanten.' },
-    { '@type': 'HowToStep', position: 4, name: 'Manuele werkuren en uurtarief invoeren', text: 'Schat hoeveel uur per week uw team besteedt aan repetitieve handmatige taken (administratie, planning, FAQ, follow-ups) en welk uurtarief daarbij hoort.' },
-    { '@type': 'HowToStep', position: 5, name: 'Sector kiezen en resultaat aflezen', text: 'Selecteer uw sector — de calculator past sector-multipliers toe en toont uw geschatte jaarlijkse besparing, terugverdientijd, FTE-equivalent en aanbevolen Aanloop AI pakket.' },
-  ],
-};
 
 const faqItems = [
   { question: 'Hoe nauwkeurig is de AI ROI calculator?', answer: 'De calculator gebruikt gemiddelden gebaseerd op onze implementaties bij 500+ MKB-bedrijven in Nederland. De werkelijke besparing is afhankelijk van uw specifieke situatie. Onze gratis AI scan geeft een nauwkeurig, op maat gemaakt beeld.' },
@@ -66,7 +51,7 @@ const faqItems = [
 <BaseLayout
   title="AI ROI Calculator — Besparing"
   description="Bereken gratis hoeveel tijd en geld uw bedrijf bespaart met AI automatisering. Vul uw situatie in en zie direct uw ROI. Tool door Aanloop AI."
-  schema={[toolSchema, howToSchema]}
+  schema={[toolSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

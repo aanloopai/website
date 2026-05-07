@@ -35,22 +35,6 @@ const articleSchema = {
   "articleSection": "AI Modellen",
 };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'Het juiste LLM kiezen voor uw MKB-AI-stack in 7 stappen',
-  description: 'Selectie-stappenplan voor MKB-bestuurders en IT-managers om tussen ChatGPT, Claude en Gemini te kiezen voor productie-AI. Doorlooptijd circa 7 werkdagen voor MKB met 10 tot 250 FTE.',
-  totalTime: 'P7D',
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Use-case-cluster en AVG-context inventariseren', text: 'Lijst alle voorgenomen AI-use-cases met data-classificatie: (a) publiek of marketing-data (laag risico, US-gehoste mag), (b) bedrijfs-vertrouwelijk maar geen persoonsgegevens (medium, EU-region voorkeur), (c) persoonsgegevens of klantgevens (hoog, EU-residency verplicht), (d) bijzondere persoonsgegevens AVG art. 9 (zorg, financiele) of beroepsgeheim (advocatuur, accountancy) — kritiek, alleen NEN 7510 plus EU-stack. Prijsbenchmark eerst niet relevant; compliance bepaalt mogelijk-keuze-set.' },
-    { '@type': 'HowToStep', position: 2, name: 'Token-volumes en kostenmodel inschatten', text: 'Schat per use-case maandelijks input-tokens en output-tokens. Voorbeeld 10-FTE klantenservice met AI-suggesties: circa 5 miljoen input plus 1 miljoen output tokens per maand. Bereken kosten per provider met huidige tarieven (ChatGPT GPT-5 8 USD per miljoen input plus 24 per miljoen output, Claude 4.6 Sonnet 3 USD plus 15, Claude 4.7 Opus 15 plus 75, Gemini 2.5 Pro 1,25 USD plus 5, Gemini 2.5 Flash 0,30 USD plus 1,20). Verschil kan factor 5 tot 10 zijn afhankelijk van use-case.' },
-    { '@type': 'HowToStep', position: 3, name: 'NL-talige kwaliteit benchmarken op echte MKB-prompts', text: 'Maak een batch van 30 tot 50 representatieve prompts uit uw werkelijke MKB-context (e-mail-respons, document-samenvatting, klant-Q&A in NL, juridische tekst-uitleg, finance-rapport-classificatie). Run elke prompt op alle drie de modellen, laat 2 medewerkers blind beoordelen op accuratesse, NL-tone, en bruikbaarheid. Verschil is vaak verrassend per use-case — Claude wint typisch op nuanced NL-redactie, ChatGPT op generieke productiviteit, Gemini op multimodaal en lange context.' },
-    { '@type': 'HowToStep', position: 4, name: 'Tool-use, function-calling en agent-capability testen', text: 'Voor productie-agent-flows in n8n of Make.com is tool-calling kritiek. Test per provider: parameter-extractie uit user-tekst, multi-step planning, en JSON-output-betrouwbaarheid. Anthropic Claude levert typisch sterkste tool-use plus Computer Use API voor browser-automatisering. OpenAI GPT-5 sterk in function-calling met Structured Outputs. Gemini sterk in code-execution-tool plus search-grounding. Voor agent-heavy use-cases kan dit doorslaggevend zijn boven prijs.' },
-    { '@type': 'HowToStep', position: 5, name: 'EU-data-route en verwerkersovereenkomst valideren', text: 'OpenAI: ChatGPT Enterprise plus EU Data Residency, of Azure OpenAI in West-Europa met Microsoft sub-processor-pakket. Anthropic: Claude EU via direct Anthropic API met EU-region (Frankfurt of Dublin), of Bedrock in eu-west-1 plus eu-central-1. Google: Gemini via Vertex AI in europe-west4 (Eemshaven) of europe-west1 (Saint-Ghislain). Verifieer per route: verwerkersovereenkomst, sub-processor-overzicht, model-trainings-clausule (default opt-out), data-retentie (typisch 30 dagen voor abuse-monitoring). Belangrijk: ChatGPT Enterprise EU is duurder dan API-route; Claude direct API biedt EU plus zero-retention-instelling op Enterprise tier.' },
-    { '@type': 'HowToStep', position: 6, name: 'Latency, beschikbaarheid en fallback-strategie inrichten', text: 'Meet response-tijden met realistische prompt-lengtes (1k tokens input, 500 tokens output). Typisch 800 tot 1.500 milliseconden voor Claude EU directe API, 600 tot 1.200 voor GPT-5 standard tier, 400 tot 800 voor Gemini Flash. Voor real-time-toepassingen (telefoon-AI, chat) is Flash- of mini-tier vaak sterker. Bouw fallback-strategie: primary-model plus secondary bij rate-limit of outage — typisch Claude primary plus GPT als fallback, of vice versa. Aanloop AI bouwt dit standaard in op n8n.' },
-    { '@type': 'HowToStep', position: 7, name: 'Pilot, evaluatie en provider-keuze finaliseren', text: 'Pilot 4 tot 6 weken op 1 use-case met de winnende provider plus fallback. Wekelijkse evaluatie op accuracy, tijdwinst, gebruiker-tevredenheid, kosten-per-output. Bij groen licht: contract-keuze (typisch 12 maanden voor Enterprise tier of pay-as-you-go API met monthly-budget-cap). Documenteer in AI-stack-design plus disaster-recovery-plan. Quartaal-review op modellen-roadmap (nieuwe versies komen elk kwartaal — keep your options open).' }],
-};
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'ChatGPT vs Claude vs Gemini MKB NL', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/chatgpt-vs-claude-vs-gemini-mkb-nederland-2026/', inLanguage: 'nl-NL' };
 
@@ -69,7 +53,7 @@ const faqItems = [
 <BaseLayout
   title="ChatGPT vs Claude vs Gemini MKB NL"
   description="Welk AI-model is het beste voor uw MKB in 2026: OpenAI ChatGPT, Anthropic Claude of Google Gemini."
-  schema={[articleSchema, howToSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

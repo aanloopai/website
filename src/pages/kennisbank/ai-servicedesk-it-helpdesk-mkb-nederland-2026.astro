@@ -35,23 +35,6 @@ const articleSchema = {
   "articleSection": "Klantenservice & AI",
 };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'AI servicedesk en IT-helpdesk implementeren voor MKB in 8 stappen',
-  description: 'Stappenplan om een AI-laag op uw IT-servicedesk neer te zetten voor ticket-classificatie, eerste-lijn-support, knowledge-base-Q&A en escalatie-flow. Doorlooptijd circa 12 werkdagen voor een MKB met 50 tot 500 medewerkers en 200 tot 2000 tickets per maand.',
-  totalTime: 'P12D',
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Ticket-history en KB analyseren', text: 'Exporteer 6 tot 12 maanden ticket-history (Zendesk, Freshservice, Jira, GLPI of e-mail-helpdesk). Categoriseer top 20 ticket-types per volume. Identificeer welke 70 procent van tickets in 5 tot 10 categorieen valt — dat is de scope voor AI-deflectie. Inventariseer uw bestaande KB-artikelen en runbooks.' },
-    { '@type': 'HowToStep', position: 2, name: 'Platform- en LLM-keuze maken', text: 'Beslis Zendesk AI of Freshservice Freddy (low-code in bestaand ticketing-platform) versus ServiceNow Now Assist (enterprise) versus custom n8n plus Anthropic Claude EU (data-sovereignty en branche-flexibiliteit). Voor 200 tot 800 tickets per maand met standaard IT-vragen: native AI-laag van uw bestaande tool. Voor 800+ tickets met complexe interne systemen: custom build via Aanloop AI.' },
-    { '@type': 'HowToStep', position: 3, name: 'Knowledge-base RAG-laag inrichten', text: 'Indexeer uw KB-artikelen, runbooks, IT-policies, software-documentatie en eerdere tickets in een vector-database (Weaviate, Pinecone, of Postgres pgvector). Bij Zendesk AI of Freshservice Freddy: gebruik native artikel-koppeling. Bij custom build: chunk documenten op 500 tot 800 tokens, embed met EU-hosted model (Cohere EU of OpenAI EU), bewaar metadata (categorie, system, recency).' },
-    { '@type': 'HowToStep', position: 4, name: 'Ticket-classificatie en routing-flow bouwen', text: 'AI categoriseert binnenkomende tickets (wachtwoord-reset, software-installatie, hardware-defect, netwerk-probleem, account-wijziging, et cetera), bepaalt urgentie (P1 tot P4), en routeert naar juiste team. Bij hoge confidence: directe oplossing met KB-antwoord. Bij lage confidence of P1-P2: escalatie naar tier-1 engineer met AI-context-briefing.' },
-    { '@type': 'HowToStep', position: 5, name: 'Eerste-lijn AI-agent live in pilot-team', text: 'Activeer AI-agent in pilot-portaal (Microsoft Teams-bot, Slack-bot of self-service-portaal) voor 1 afdeling van 30 tot 50 medewerkers. AI lost direct op (wachtwoord, KB-search, status-vraag) of opent ticket met volledig context. Gebruiker kan altijd "ik wil een mens" zeggen voor escalatie. Pilot-duur 2 weken.' },
-    { '@type': 'HowToStep', position: 6, name: 'Geautomatiseerde acties en runbooks koppelen', text: 'Voor 5 tot 10 standaard-runbooks: laat AI-agent acties uitvoeren via API (Active Directory wachtwoord-reset, MFA-token-resync, software-license-toekenning via Microsoft 365 of Google Workspace, VPN-account-aanmaak, printer-driver-push). Elke automatische actie wordt gelogd en is reversible bij fout.' },
-    { '@type': 'HowToStep', position: 7, name: 'AVG en EU AI Act compliance-stack inrichten', text: 'AI-disclosure in self-service-portaal en Teams-bot, AI-literacy training voor IT-team en pilot-eindgebruikers, logging-laag voor audit (welke ticket, welke AI-actie, welk antwoord, welke bron), retention-policy voor ticket-data (typisch 2 jaar conform AVG-minimum), DPIA bij geautomatiseerde acties op personeelsdata. Aanloop AI levert NL-talige template-pakket.' },
-    { '@type': 'HowToStep', position: 8, name: 'Roll-out, meting en bijsturen', text: 'Na pilot: roll-out in 2 of 3 golven (kantoorpersoneel, externe-facing rollen, executive-tier laatste). Maandelijkse review van 5 metrics: deflectie-percentage (zelf-opgelost zonder mens), MTTR (mean time to resolve), CSAT, hallucinatie-incidenten, kosten per ticket. Itereer op categorisatie-prompts en KB-content-gaps.' }],
-};
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'AI servicedesk en IT-helpdesk MKB Nederland — gids 2026', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-servicedesk-it-helpdesk-mkb-nederland-2026/', inLanguage: 'nl-NL' };
 
@@ -70,7 +53,7 @@ const faqItems = [
 <BaseLayout
   title="AI servicedesk en IT-helpdesk MKB Nederland — gids 2026"
   description="Hoe automatiseert u uw IT-servicedesk met AI: ticket-classificatie, eerste-lijn-support, knowledge-base-Q&A en intelligente escalatie."
-  schema={[articleSchema, howToSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

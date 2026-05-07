@@ -35,23 +35,6 @@ const articleSchema = {
   "articleSection": "Finance & AI",
 };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'AI cashflow-prognose en 13-week-forecast implementeren voor MKB in 8 stappen',
-  description: 'Stappenplan om AI-gestuurde cashflow-forecasting neer te zetten met boekhouding-integratie, debiteuren- en crediteuren-modellen, scenario-analyse en CFO-dashboard. Doorlooptijd circa 14 werkdagen voor MKB met 1 tot 50 miljoen euro omzet en 200 tot 5.000 facturen per maand.',
-  totalTime: 'P14D',
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Boekhouding en historische data analyseren', text: 'Identificeer welke boekhouding-suite u gebruikt (Twinfield, Exact Online, AFAS Profit, Visma e-Accounting, Yuki, Snelstart, Moneybird) en welke API of export-route beschikbaar is. Exporteer 24 maanden historische data: openstaande debiteuren, betaalgedrag per klant, openstaande crediteuren, vaste lasten, seizoenspatronen, BTW-cycles. Bepaal grootste cashflow-volatiliteits-bronnen (typisch 5 tot 10 grote klanten of leveranciers).' },
-    { '@type': 'HowToStep', position: 2, name: 'Forecast-horizon en granulariteit kiezen', text: 'Standaard MKB-stack: 13-week rolling forecast op week-basis voor operationele controle, plus 12-maanden forecast op maand-basis voor strategie en bank-rapportage. Per horizon: bepaal categorie-granulariteit (alleen totaal, of opgesplitst naar debiteuren/crediteuren/vaste-lasten/loon/BTW/investeringen). Voor banken (Rabobank, ING) typisch 12-maand maandelijks plus toelichting per categorie.' },
-    { '@type': 'HowToStep', position: 3, name: 'Debiteuren-betaalgedrag-model bouwen', text: 'Per klant: bereken historische gemiddelde betalingstermijn (afgeleid van factuurdatum vs ontvangstdatum), variantie, seizoenspatroon. AI-model voorspelt voor elke openstaande factuur: verwachte ontvangstdatum (gemiddelde plus klant-specifieke vertraging plus seizoens-correctie). Belangrijk: gewogen op factuur-grootte, niet aantal — een 50.000 euro factuur weegt zwaarder dan 50 facturen van 100 euro.' },
-    { '@type': 'HowToStep', position: 4, name: 'Crediteuren- en vaste-lasten-flow modelleren', text: 'Crediteuren: koppel aan inkoop-orderboek of contract-database, voorspel uitgaande betalingen met betalings-termijn-policy (typisch 30 dagen netto na factuurdatum, kalibreer per leverancier). Vaste lasten: huur, loon, abonnementen, leasing, verzekering — meestal voorspelbaar binnen 1 tot 3 procent. BTW-aangifte cycles (kwartaal of maand) als aparte cashflow-pieken.' },
-    { '@type': 'HowToStep', position: 5, name: 'Scenario-analyse en stress-test inrichten', text: 'Drie standaard-scenarios: best-case (alle klanten betalen op tijd, geen onverwachte uitgaven), base-case (huidige model-prognose), worst-case (top-3 klanten betalen 30 dagen later, plus 5 procent extra onverwachte uitgaven). Plus custom what-if scenarios: wat als grootste klant 60 dagen vertraging heeft, wat als rente-stijging op lopende lening, wat als nieuwe loonkosten Q4. Output: minimum-cash-positie-grafiek per scenario.' },
-    { '@type': 'HowToStep', position: 6, name: 'CFO-dashboard en alert-flow inrichten', text: 'Wekelijks CFO-dashboard met: 13-week-cashflow-grafiek (best/base/worst), top-5 risico-debiteuren met betalings-status en geschatte impact, top-3 grootste crediteuren-piek deze maand, BTW-piek, lopende lening-aflossingen. Alerts: e-mail of Slack-notificatie als forecast onder veiligheids-buffer dreigt te zakken, of als grootste klant 7 dagen over termijn is.' },
-    { '@type': 'HowToStep', position: 7, name: 'AVG, AI Act en finance-compliance inrichten', text: 'Finance-data zit op klant- en leveranciers-niveau (KvK-nummers, IBAN, factuur-bedragen) — verwerking onder AVG. Zorg voor: scoped service-account naar boekhouding-API met read-only-rechten waar mogelijk, EU-VPS voor AI-engine en data-store, verwerkersovereenkomst met AI-leverancier (Anthropic Claude EU, OpenAI EU), verwerkingsregister-aanvulling, en AI-literacy training voor controllers en finance-team. Geen high-risk EU AI Act classificatie tenzij credit-scoring wordt toegevoegd (dan high-risk).' },
-    { '@type': 'HowToStep', position: 8, name: 'Roll-out, kalibratie en model-bijsturing', text: 'Pilot eerst alleen op 13-week-forecast voor 4 weken voordat 12-maanden forecast en alerts erbij komen. Wekelijkse forecast-vs-actual-vergelijking: meet absolute fout per week en per categorie, identificeer systematische bias (bijv. model overschat altijd debiteuren-ontvangsten in december). Maandelijkse model-recalibratie. Quartaal-review met CFO of accountant op forecast-betrouwbaarheid en scenario-keuzes.' }],
-};
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'AI cashflow & forecasting MKB NL 2026', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-cashflow-prognose-finance-mkb-nederland-2026/', inLanguage: 'nl-NL' };
 
@@ -70,7 +53,7 @@ const faqItems = [
 <BaseLayout
   title="AI cashflow & forecasting MKB NL 2026"
   description="Hoe automatiseert u 13-week en 12-maand cashflow-prognose met AI: koppeling Twinfield/Exact/AFAS/Yuki, debiteuren-betaalgedrag-model, scenario-analyse"
-  schema={[articleSchema, howToSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

@@ -35,23 +35,6 @@ const articleSchema = {
   "articleSection": "AI Compliance & AVG",
 };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'EU AI Act compliance regelen voor uw MKB-bedrijf',
-  description: 'Stappenplan om uw AI-tools (telefoon, WhatsApp, chat, document-AI) EU AI Act conform te maken. Doorlooptijd circa 8 werkdagen.',
-  totalTime: 'P8D',
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'AI-inventarisatie maken', text: 'Lijst alle AI-tools die uw organisatie gebruikt: voicebot, WhatsApp-bot, chatbot, document-OCR, e-mail-classifier, AI-features in CRM. Per tool: leverancier, doel, type data, gebruikers.' },
-    { '@type': 'HowToStep', position: 2, name: 'Risico-categorie bepalen per tool', text: 'Toets per AI-tool tegen de 4 categorieen: unacceptable risk (verboden), high risk (zware compliance), limited risk (transparantie-plicht), minimal risk (geen verplichtingen). Klantgesprek-AI valt typisch onder limited risk.' },
-    { '@type': 'HowToStep', position: 3, name: 'Transparantie-disclaimer toevoegen', text: 'Voor limited-risk AI: aan begin van elk gesprek expliciet melden dat de gebruiker met AI praat. Marco: u spreekt met de virtuele receptionist van bedrijfsnaam. Emma: bij eerste WhatsApp-bericht van AI ik ben de AI-assistent van bedrijfsnaam.' },
-    { '@type': 'HowToStep', position: 4, name: 'Logging en audit-trail inrichten', text: 'Elk AI-gesprek wordt gelogd: input, output, timestamp, escalatie naar mens, gebruikte modelversie. Bewaartermijn minimaal 6 maanden voor audit-controle. Aanloop AI heeft logging standaard ingebouwd.' },
-    { '@type': 'HowToStep', position: 5, name: 'Menselijke escalatie standaard maken', text: 'Configureer dat bij twijfel, klacht of expliciete vraag van gebruiker direct doorverbinding naar een mens plaatsvindt. AI Act vereist altijd betekenisvolle menselijke supervisie bij high-impact beslissingen.' },
-    { '@type': 'HowToStep', position: 6, name: 'AI-literacy training organiseren', text: 'Vanaf februari 2025 verplicht: medewerkers die met AI werken moeten basistraining krijgen over werking, beperkingen en risicos. Aanloop AI levert een 1-uurs e-learning bij onboarding.' },
-    { '@type': 'HowToStep', position: 7, name: 'Verwerkersovereenkomst aanvullen', text: 'Naast bestaande AVG-DPA: AI-specifieke clausules over modeltraining (geen klantdata gebruikt), modelversies (notification bij major updates), explainability (op verzoek toelichting AI-beslissing).' },
-    { '@type': 'HowToStep', position: 8, name: 'Klantcommunicatie aanpassen', text: 'Privacy statement aanvullen met AI-paragraaf. Optioneel: pagina ai-policy met overzicht welke AI uw bedrijf gebruikt en welke garanties (transparantie, geen training, EU-data, menselijke supervisie). Bouwt vertrouwen.' }],
-};
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'EU AI Act MKB NL 2026 — checklist', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/eu-ai-act-mkb-nederland-2026/', inLanguage: 'nl-NL' };
 
@@ -67,7 +50,7 @@ const faqItems = [
 <BaseLayout
   title="EU AI Act MKB Nederland 2026 - Checklist, Deadlines en Boetes"
   description="Wat moet uw MKB nu regelen onder de EU AI Act? Risico-categorieen, transparantie-plicht, AI-literacy, deadlines tot 2027 en boetes tot 35 miljoen euro."
-  schema={[articleSchema, howToSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

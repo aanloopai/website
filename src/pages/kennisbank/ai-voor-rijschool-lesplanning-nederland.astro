@@ -33,23 +33,6 @@ const articleSchema = {
     "articleSection": "AI per Sector",
   };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'AI lesplanning, examenadministratie en betalingen voor Nederlandse rijschool opzetten',
-  description: 'Stap-voor-stap rijschool-AI: rijschoolsoftware koppelen, WhatsApp-flow opzetten, no-show reduceren met multi-touch herinneringen. Doorlooptijd 7-14 werkdagen.',
-  totalTime: 'P14D',
-  estimatedCost: { '@type': 'MonetaryAmount', currency: 'EUR', value: '297' },
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Rijschoolsoftware koppelen', text: 'Directe koppeling met DriveLogic of Lesgever activeren. Voor andere systemen via API of CSV-import. Onboarding 1-2 weken.' },
-    { '@type': 'HowToStep', position: 2, name: 'WhatsApp Business activeren namens instructeur', text: 'WhatsApp Business API aanvragen, transparante AI-paragraaf opnemen in algemene voorwaarden. Leerlingen weten dat AI eerstelijns vragen verwerkt.' },
-    { '@type': 'HowToStep', position: 3, name: 'CBR-koppeling voor examenstatus', text: 'Examenaanvragen, examenuitslagen en hertesten automatisch verwerken via CBR-koppeling of statussite-monitoring.' },
-    { '@type': 'HowToStep', position: 4, name: 'Multi-channel no-show reductie', text: 'WhatsApp herinnering T-24u, SMS T-12u, AI-belletje T-2u. Multi-touch verhoogt confirmation-rate naar 95+ procent en reduceert no-show 70 procent.' },
-    { '@type': 'HowToStep', position: 5, name: 'Minderjarigen opt-in flow', text: 'Voor leerlingen 16-18: ouders geven vooraf toestemming voor AI-communicatie via standaard opt-in flow.' },
-    { '@type': 'HowToStep', position: 6, name: 'Ziekmelding-automation instructeur', text: 'Bij ziekmelding instructeur stuurt AI automatisch alle leerlingen van die dag een verzet-bericht en plant zo mogelijk vervangende instructeur in.' },
-    { '@type': 'HowToStep', position: 7, name: 'Lesgeld-administratie en herinneringen', text: 'Openstaande facturen tracken, betaalherinneringen versturen via Mollie- of Stripe-koppeling, automatisch incasso-flow voor langlopend openstaand bedrag.' }],
-};
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'AI voor rijschool NL 2026', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-voor-rijschool-lesplanning-nederland/', inLanguage: 'nl-NL' };
 
@@ -64,7 +47,7 @@ const faqItems = [
 <BaseLayout
   title="AI voor rijschool NL 2026"
   description="Hoe een AI assistent lesplanning, examenaanvragen en lesgeld-administratie voor Nederlandse rijscholen automatiseert."
-  schema={[articleSchema, howToSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

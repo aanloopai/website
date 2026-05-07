@@ -35,23 +35,6 @@ const articleSchema = {
   "articleSection": "Sales & AI",
 };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'AI lead scoring en MQL-to-SQL flow implementeren voor MKB B2B in 8 stappen',
-  description: 'Stappenplan om AI-lead-scoring neer te zetten met scoring-criteria, CRM-integratie, hand-off-flow naar account-executives en feedback-loop voor model-bijsturing. Doorlooptijd circa 14 werkdagen voor een MKB met 200 tot 2.000 leads per maand uit website, ads en outbound.',
-  totalTime: 'P14D',
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Bestaande lead-data en conversie-funnel analyseren', text: 'Exporteer 12 maanden CRM-data: leads, MQLs, SQLs, gewonnen en verloren deals. Bepaal historische conversie-percentages per kanaal (organic, paid, outbound, referral) en per ICP-segment. Identificeer welke 5 tot 10 attributen het sterkst correleren met gewonnen deals (functie-titel, bedrijfsgrootte, branche, technologie-stack, engagement-score op website).' },
-    { '@type': 'HowToStep', position: 2, name: 'Scoring-framework kiezen', text: 'Beslis tussen rule-based scoring (BANT, MEDDIC of CHAMP met handmatige punten-toekenning), predictive scoring (HubSpot Predictive of Salesforce Einstein die op uw historische data leert), of AI-generative scoring (Claude EU plus uw ICP-prompt voor zero-shot of few-shot scoring zonder veel historie). Voor MKB met 100+ historische gewonnen deals: predictive. Voor minder data of nieuwe ICP: AI-generative met few-shot.' },
-    { '@type': 'HowToStep', position: 3, name: 'CRM-integratie en data-flow inrichten', text: 'Koppel scoring-engine aan CRM (HubSpot, Salesforce, Pipedrive, Teamleader Focus). Bij webform-submission: real-time enrichment via Apollo.io of Clearbit (functie, bedrijfsgrootte, branche), real-time scoring, automatische lifecycle-stage update (lead -> MQL -> SQL), automatische assignment aan AE bij SQL-drempel. Hard-stop bij hoog risico of out-of-ICP: niet automatisch SQL maken.' },
-    { '@type': 'HowToStep', position: 4, name: 'AI-enrichment en intent-data koppelen', text: 'Automatische enrichment voor elke lead: bedrijfsdata (KvK-nummer, omzet-band via DataProvider.com, FTE), persoons-data (LinkedIn-functie, anciënniteit), engagement-signalen (paginas bezocht, content gedownload, e-mail-opens, demo-aangevraagd). Voor outbound: koppel intent-data van 6sense of Bombora om bedrijven te scoren op aankoopintentie voordat AE belt.' },
-    { '@type': 'HowToStep', position: 5, name: 'Tone en hand-off-flow naar account-executives definieren', text: 'Bij MQL-drempel: AI-gegenereerde lead-briefing voor AE met (a) waarom score hoog, (b) top 3 talking points, (c) recente engagement-signalen, (d) suggested first message. Bij SQL-drempel: automatische meeting-link of demo-call inplanning via /afspraak/ of Calendly. Bij out-of-ICP: nurture-flow in plaats van verkoopcontact.' },
-    { '@type': 'HowToStep', position: 6, name: 'AVG-compliance en transparantie inrichten', text: 'Lead-scoring valt onder AVG artikel 22 (geautomatiseerde besluiten met juridisch of vergelijkbaar effect). Bij hard-stop op leads moet betrokkene recht op uitleg krijgen. Praktisch: AI-scoring geldt als ondersteunend (AE bevestigt assignment), niet als final besluit. Documenteer in privacy-statement, verwerkingsregister, en DPIA. AI-disclosure niet verplicht naar lead toe maar wel best-practice.' },
-    { '@type': 'HowToStep', position: 7, name: 'Feedback-loop en model-bijsturing inrichten', text: 'Bij elke gewonnen of verloren deal: automatisch feedback naar scoring-engine (was-MQL-juist, was-SQL-juist). Maandelijkse model-recalibratie op nieuwste data. Quartaal-review van ICP-criteria zelf — markt verandert, ICP moet meebewegen. Plus 30 minuten per maand met sales-team om edge-cases te bespreken (te hoge scores, te lage scores).' },
-    { '@type': 'HowToStep', position: 8, name: 'Roll-out, meting en bijsturen', text: 'Pilot eerst op 1 kanaal (bijv. organic web-forms) gedurende 4 weken voordat ads en outbound erbij komen. Maandelijkse review van 5 metrics: MQL-to-SQL conversion (target 25 tot 40 procent), SQL-to-Won conversion (target 15 tot 30 procent), AE-tijd per gewonnen deal, gemiddelde sales-cycle-lengte, lead-rejection-rate. Itereer op scoring-thresholds en feature-set.' }],
-};
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'AI lead scoring en B2B-sales-funnel MKB Nederland — 2026', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-lead-scoring-b2b-sales-mkb-nederland-2026/', inLanguage: 'nl-NL' };
 
@@ -70,7 +53,7 @@ const faqItems = [
 <BaseLayout
   title="AI lead scoring en B2B-sales-funnel MKB Nederland — 2026"
   description="Hoe automatiseert u lead scoring en MQL-to-SQL hand-off met AI: scoring-criteria (BANT, MEDDIC, custom AI), CRM-integratie"
-  schema={[articleSchema, howToSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

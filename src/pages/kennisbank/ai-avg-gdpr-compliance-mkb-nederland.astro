@@ -35,22 +35,6 @@ const articleSchema = {
     "articleSection": "AI Compliance & AVG",
   };
 
-const howToSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'HowTo',
-  name: 'AVG-compliant AI inschakelen in uw MKB-bedrijf',
-  description: 'Stappenplan om AI (WhatsApp-assistent, voicebot, chatbot) AVG-compliant in te zetten: leverancierscheck, DPA, datalokatie, privacystatement en betrokkenenrechten. Doorlooptijd circa 5 werkdagen.',
-  totalTime: 'P5D',
-  inLanguage: 'nl-NL',
-  step: [
-    { '@type': 'HowToStep', position: 1, name: 'Leverancier toetsen op EU-only en sub-verwerkers', text: 'Controleer of leverancier verwerking binnen EU houdt en of sub-verwerkers (OpenAI, Anthropic) onder EU-DPF en met no-training-toezegging werken. Vraag sub-verwerkerslijst op.' },
-    { '@type': 'HowToStep', position: 2, name: 'Verwerkersovereenkomst (DPA) tekenen', text: 'Standaard DPA met clausules voor datalokatie, bewaartermijn, sub-verwerkers, beveiliging (ISO 27001), incident-meldplicht binnen 72 uur en data-export bij contracteinde.' },
-    { '@type': 'HowToStep', position: 3, name: 'Datalokatie en bewaartermijn instellen', text: 'EU-datacenter bevestigen (Frankfurt of Amsterdam). Bewaartermijn instellen op 30, 90 of 180 dagen afhankelijk van use-case en wettelijke plichten.' },
-    { '@type': 'HowToStep', position: 4, name: 'Privacystatement aanvullen', text: 'Template-paragraaf opnemen: wij gebruiken AI-assistenten (telefoon, WhatsApp, chat) van leverancier, verwerking binnen EU, doel klantservice, bewaartermijn X dagen, klantrechten op inzage, correctie en vergetelheid.' },
-    { '@type': 'HowToStep', position: 5, name: 'Opening-statement voor telefoongesprekken', text: 'Marco-receptionist opent met dit gesprek wordt opgenomen voor kwaliteit en training. AI verwerkt uw vraag, voor complexe zaken verbinden we u door. Voldoet aan informatieplicht.' },
-    { '@type': 'HowToStep', position: 6, name: 'Verwerkingsregister bijwerken', text: 'AI-verwerking opnemen in artikel 30-register: doel, categorieen betrokkenen, gegevenscategorieen, ontvangers, bewaartermijn, beveiligingsmaatregelen.' },
-    { '@type': 'HowToStep', position: 7, name: 'Betrokkenenrechten-flow inrichten', text: 'Centrale e-mail of dashboard voor inzage-, correctie- en vergetelverzoeken. Aanloop AI levert binnen 30 dagen volledige data-export of bewijs van verwijdering.' }],
-};
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'AI en AVG-compliance MKB NL 2026 |', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/', inLanguage: 'nl-NL' };
 
@@ -68,7 +52,7 @@ const faqItems = [
 <BaseLayout
   title="AI en AVG-compliance MKB NL 2026 |"
   description="Hoe u als Nederlands MKB-bedrijf AI-tools (WhatsApp-assistent, voicebot, chatbot) inzet binnen AVG-eisen."
-  schema={[articleSchema, howToSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">
