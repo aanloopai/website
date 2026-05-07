@@ -78,7 +78,7 @@ const PRESERVE_STRINGS = [
   '+31624741597',
   '+31 6 24 74 15 97',
   'Aanloop AI',
-  'Daan Verhoeven',
+  'Mustafa Agah Dogan',
 ];
 
 function parseUnifiedDiff(diffText) {

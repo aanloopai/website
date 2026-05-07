@@ -7,7 +7,7 @@
  *
  * Tasks:
  * a) speakable enhancement on WebPage schema (BaseLayout)
- * b) Person schema enrichment (Daan Verhoeven — image, knowsAbout, jobTitle, alumniOf)
+ * b) Person schema enrichment (Mustafa Agah Dogan — image, knowsAbout, jobTitle, alumniOf)
  * c) Organization sameAs expansion with placeholder markers
  * d) articleSection + wordCount on kennisbank pages
  * e) FAQPage schema wrapping for sector pages + tarieven
@@ -95,7 +95,7 @@ const speakableSchema = {
   console.log('[OK] BaseLayout.astro: added speakable schema (1 change)');
 }
 
-// ── TASK B: Person schema enrichment (Daan Verhoeven) ────────────────
+// ── TASK B: Person schema enrichment (Mustafa Agah Dogan) ────────────────
 
 function enrichPersonSchema() {
   const baseLayoutPath = path.join(SRC_DIR, 'layouts', 'BaseLayout.astro');
@@ -123,17 +123,17 @@ function enrichPersonSchema() {
     founderBlock.includes('knowsAbout:') ||
     founderBlock.includes('alumniOf:')
   ) {
-    console.log('[SKIP] Person (Daan Verhoeven): already enriched');
+    console.log('[SKIP] Person (Mustafa Agah Dogan): already enriched');
     return;
   }
 
   // Enrich the Person object
   const enrichedPerson = `founder: {
     '@type': 'Person',
-    '@id': 'https://aanloopai.nl/team/daan-verhoeven/#person',
-    name: 'Daan Verhoeven',
-    url: 'https://aanloopai.nl/team/daan-verhoeven/',
-    image: 'https://aanloopai.nl/team/daan-verhoeven.jpg',
+    '@id': 'https://aanloopai.nl/team/magahdogan/#person',
+    name: 'Mustafa Agah Dogan',
+    url: 'https://aanloopai.nl/team/magahdogan/',
+    image: 'https://aanloopai.nl/team/magahdogan.jpg',
     jobTitle: 'Oprichter, CEO Aanloop AI',
     knowsAbout: [
       'Artificial intelligence',
@@ -152,7 +152,7 @@ function enrichPersonSchema() {
     ],
     alumniOf: 'Aanloop AI fanboys network',
     worksFor: { '@id': 'https://aanloopai.nl/#organization' },
-    sameAs: ['https://www.linkedin.com/in/daanverhoeven/'],
+    sameAs: ['https://www.linkedin.com/in/magahdogan/'],
   },`;
 
   content = content.replace(
@@ -163,7 +163,7 @@ function enrichPersonSchema() {
   fs.writeFileSync(baseLayoutPath, content, 'utf8');
   STATS.personEnrichment++;
   STATS.filesModified++;
-  console.log('[OK] BaseLayout.astro: Person (Daan Verhoeven) enriched with image, knowsAbout, jobTitle, alumniOf (1 change)');
+  console.log('[OK] BaseLayout.astro: Person (Mustafa Agah Dogan) enriched with image, knowsAbout, jobTitle, alumniOf (1 change)');
 }
 
 // ── TASK C: Organization sameAs expansion ─────────────────────────
@@ -199,7 +199,7 @@ function expandOrgSameAs() {
   }
 
   const expandedSameAs = `sameAs: [
-    'https://www.linkedin.com/in/daanverhoeven/',
+    'https://www.linkedin.com/in/magahdogan/',
     'https://www.kvk.nl/zoeken/?source=all&q=88606902',
     'https://github.com/aanloopai',
     'https://www.youtube.com/@aanloopai',
@@ -391,7 +391,7 @@ try {
   enhanceBaseLayoutSpeakable();
   console.log();
 
-  console.log('Task B: Person schema enrichment (Daan Verhoeven)');
+  console.log('Task B: Person schema enrichment (Mustafa Agah Dogan)');
   enrichPersonSchema();
   console.log();
 
