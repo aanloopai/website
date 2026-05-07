@@ -1,6 +1,8 @@
 # Emerce 100 — Aanmeldpakket Aanloop AI BV
 **Deadline: 1 juni 2026 | Editie 2027**
 
+> **Updated 2026-05-07:** Founder-naam (Mustafa Agah Dogan), oprichtingsjaar (2023), klantaantal (80+, 7 sectoren) en contactgegevens (magahdogan@aanloopai.nl) gecorrigeerd om overeen te komen met de live website (`/over/`, `/team/magahdogan/`). Indien deze cijfers wijzigen op de site, moet dit document opnieuw worden gesynchroniseerd vóór indiening.
+
 ---
 
 ## HOE WERKT EMERCE 100?
@@ -29,7 +31,7 @@ Aanvullend wordt de Net Promoter Score (NPS) gemeten. Bedrijven die minimaal 15 
 
 ### 1.1 Bedrijfsomschrijving (200–300 woorden, NL)
 
-> Aanloop AI is een Nederlandse AI-dienstverlener gespecialiseerd in de toepassing van kunstmatige intelligentie voor het midden- en kleinbedrijf. Het bedrijf is in 2024 opgericht door Daan Verhoeven en is gevestigd in Rotterdam (KvK: 88606902).
+> Aanloop AI is een Nederlandse AI-dienstverlener gespecialiseerd in de toepassing van kunstmatige intelligentie voor het midden- en kleinbedrijf. Het bedrijf is in 2023 opgericht door Mustafa Agah Dogan (bijna 20 jaar ervaring in technologie en processautomatisering) en is gevestigd in Rotterdam (KvK: 88606902).
 >
 > Het kernaanbod bestaat uit drie producten: **Marco**, een AI-receptionist die telefonische klantvragen 24/7 afhandelt; **Emma**, een WhatsApp-gebaseerde conversatie-AI voor klantenservice en leadopvolging; en de **AI-Website Bundel**, een geintegreerd pakket waarbij een bedrijfswebsite wordt gecombineerd met AI-automatisering voor leadgeneratie en klantencontact.
 >
@@ -37,7 +39,7 @@ Aanvullend wordt de Net Promoter Score (NPS) gemeten. Bedrijven die minimaal 15 
 >
 > Prijsstelling is transparant en toegankelijk: het Starter-pakket begint bij 597 euro per maand, het Groei-pakket bij 1.197 euro per maand — beide inclusief onboarding en doorlopende support. Hiermee positioneert Aanloop AI zich bewust als betaalbaar alternatief voor maatwerk AI-trajecten die voor MKB-bedrijven financieel onhaalbaar zijn.
 >
-> Aanloop AI bedient inmiddels meer dan 500 MKB-klanten in uiteenlopende sectoren, waaronder zorg, zakelijke dienstverlening, retail, financiele diensten en e-commerce. Het bedrijf werkt AVG-compliant en houdt rekening met sectorspecifieke wet- en regelgeving, zoals Wft-kaders bij financieel-adviserende toepassingen.
+> Aanloop AI bedient inmiddels 80+ MKB-klanten verdeeld over zeven sectoren, waaronder zorg, zakelijke dienstverlening, retail, financiele diensten en e-commerce. Het bedrijf werkt AVG-compliant en houdt rekening met sectorspecifieke wet- en regelgeving, zoals Wft-kaders bij financieel-adviserende toepassingen.
 
 ---
 
@@ -46,7 +48,7 @@ Aanvullend wordt de Net Promoter Score (NPS) gemeten. Bedrijven die minimaal 15 
 **Waarom verdient Aanloop AI een plek in de Emerce 100?**
 
 1. **MKB-first AI in Nederland op schaal**
-   Aanloop AI is een van de weinige AI-bureaus in Nederland die uitsluitend op het MKB focust, met een gestandaardiseerd productaanbod dat snelle implementatie mogelijk maakt. Meer dan 500 klanten in minder dan twee jaar toont marktacceptatie.
+   Aanloop AI is een van de weinige AI-bureaus in Nederland die uitsluitend op het MKB focust, met een gestandaardiseerd productaanbod dat snelle implementatie mogelijk maakt. 80+ klanten verdeeld over 7 sectoren — kwaliteit boven volume, met sectorspecifieke compliance-kennis (Wft, NEN 7510, AVG-by-design).
 
 2. **Nederlandse datasovereiniteit als structureel onderscheidend vermogen**
    Alle verwerking vindt plaats binnen de EU, op zelf-beheerde infrastructuur. In een periode waar AVG-handhaving aanscherpt en MKB-bedrijven zich bewust worden van datarisico's bij Amerikaanse cloudproviders, is dit een concrete en controleerbare propositie — geen marketingbelofte.
@@ -66,13 +68,13 @@ Aanvullend wordt de Net Promoter Score (NPS) gemeten. Bedrijven die minimaal 15 
 
 | Prestatie | Detail |
 |---|---|
-| Klantenbestand | 500+ MKB-klanten bediend (intern verifiëren voor indiening) |
+| Klantenbestand | 80+ MKB-klanten bediend, actief in 7 sectoren |
 | Productlancering | Marco (voice AI), Emma (WhatsApp AI), AI-Website Bundel — alle drie productief |
 | Sectorbereik | Zorg, zakelijke dienstverlening, retail, financien, e-commerce, dierenzorg, horeca |
 | Technologiestack | n8n self-hosted + ElevenLabs voice engine — EU-only dataverwerking |
 | Prijsinnovatie | Gestandaardiseerd MKB-prijsmodel (597–1.197 euro/mnd) vs. marktgemiddelde uurtarief |
 | Compliance | AVG-by-design architectuur, Wft-bewust positionering in regulated advisory |
-| Oprichting | 2024, Rotterdam — organische groei zonder externe financieringsronde |
+| Oprichting | 2023, Rotterdam — organische groei zonder externe financieringsronde |
 
 ---
 
@@ -86,31 +88,31 @@ Aanvullend wordt de Net Promoter Score (NPS) gemeten. Bedrijven die minimaal 15 
 
 ---
 
-### 1.5 Founder bio — Daan Verhoeven
+### 1.5 Founder bio — Mustafa Agah Dogan
 
-> Daan Verhoeven is oprichter en CEO van Aanloop AI BV. Hij richtte het bedrijf in 2024 op vanuit de overtuiging dat AI-technologie toegankelijk en betaalbaar moet zijn voor elk Nederlands MKB-bedrijf — niet alleen voor grote corporates met dedicated IT-teams.
+> Mustafa Agah Dogan is oprichter en CEO van Aanloop AI BV. Hij richtte het bedrijf in 2023 op na bijna 20 jaar ervaring in technologie en processautomatisering, waaronder rollen bij Big-4 advieskantoren. De aanleiding was concreet: een bevriende fysiotherapeut in Rotterdam liep elke maand duizenden euro's mis door gemiste telefoontjes buiten kantoortijden. Drie AI-bureaus offreerden 50.000+ euro budgetten of leverden alleen PowerPoints. Mustafa bouwde de oplossing zelf — drie maanden later beantwoordde een AI-assistent elke oproep.
 >
-> Zijn aanpak is praktisch: in plaats van maatwerk AI-trajecten ontwikkelde hij gestandaardiseerde producten (Marco, Emma, AI-Website Bundel) die snel implementeerbaar zijn zonder technische kennis bij de klant. De focus op Nederlandse datasovereiniteit en transparante prijsstelling reflecteert zijn overtuiging dat vertrouwen en eerlijkheid de basis zijn van duurzame klantrelaties.
+> Zijn aanpak is praktisch: in plaats van maatwerk AI-trajecten ontwikkelde hij gestandaardiseerde producten (Marco voice AI, Emma WhatsApp AI, AI-Website Bundel) die snel implementeerbaar zijn zonder technische kennis bij de klant. Praktische expertise omvat ElevenLabs voice AI, WhatsApp Business-integraties, n8n self-hosted workflow automatisering, op maat gebouwde AI agents, en de regelgevende kaders rondom AVG-compliance, EU AI Act, NEN 7510 (zorgsector) en Wft-adviesgrenzen voor financiele toepassingen.
 >
-> Verhoeven opereert vanuit Rotterdam en bedient klanten door heel Nederland in uiteenlopende sectoren.
+> Mustafa opereert vanuit Rotterdam en bedient klanten door heel Nederland in zorg, advocatuur, accountancy, bouw, horeca, retail en zakelijke dienstverlening. Hij publiceert regelmatig over AI-implementatie via de kennisbank op aanloopai.nl — gebaseerd op directe klantdata en implementatiepraktijk, niet op theoretische frameworks.
 
 ---
 
 ### 1.6 Klantgetuigenis
 
-**Status: anoniem als placeholder — Daan dient voor indiening een named testimonial te verkrijgen.**
+**Status: anoniem als placeholder — Mustafa dient voor indiening een named testimonial te verkrijgen.**
 
 > "Dankzij Marco hoeven we buiten kantooruren geen telefoontjes meer te missen. Klanten krijgen direct antwoord, en wij zien de volgende ochtend een nette samenvatting. Het heeft onze klanttevredenheid merkbaar verbeterd zonder extra personeel."
 > — **[Naam + functie + bedrijfsnaam — IN TE VULLEN]**, MKB-klant Aanloop AI
 
-**Actie voor Daan:** Vraag 2–3 tevreden klanten om schriftelijke toestemming voor gebruik van naam en bedrijfsnaam bij de aanmelding. Een named testimonial versterkt de aanmelding aanzienlijk.
+**Actie voor Mustafa:** Vraag 2–3 tevreden klanten om schriftelijke toestemming voor gebruik van naam en bedrijfsnaam bij de aanmelding. Een named testimonial versterkt de aanmelding aanzienlijk.
 
 ---
 
 ## DEEL 2 — EMAIL AAN BOBBIE VAN BAAL
 
 **Aan:** bobbie.van.baal@emerce.nl
-**Van:** [daan@aanloopai.nl — aanpassen naar correct adres]
+**Van:** magahdogan@aanloopai.nl
 **Onderwerp:** Aanmelding Emerce 100 2027 — Aanloop AI, AI-dienstverlener voor Nederlands MKB
 
 ---
@@ -119,7 +121,7 @@ Beste Bobbie,
 
 Via deze weg meld ik namens Aanloop AI BV onze kandidatuur aan voor de Emerce 100 editie 2027.
 
-Aanloop AI is een in 2024 opgericht Rotterdam AI-bureau dat uitsluitend focust op het Nederlandse MKB. Wij maken AI-toepassingen — voice AI, WhatsApp-automatisering en AI-websites — bereikbaar voor bedrijven die geen enterprise-budget hebben maar wel willen profiteren van de productiviteitswinsten die AI biedt. Met meer dan 500 MKB-klanten in sectoren als zorg, financien, retail en zakelijke dienstverlening hebben we in korte tijd een solide positie opgebouwd.
+Aanloop AI is een in 2023 opgericht Rotterdam AI-bureau dat uitsluitend focust op het Nederlandse MKB. Wij maken AI-toepassingen — voice AI, WhatsApp-automatisering en AI-websites — bereikbaar voor bedrijven die geen enterprise-budget hebben maar wel willen profiteren van de productiviteitswinsten die AI biedt. Met 80+ MKB-klanten verdeeld over zeven sectoren — zorg, financien, retail, zakelijke dienstverlening, e-commerce, dierenzorg en horeca — combineren wij sectorbreedte met sectorspecifieke compliance-kennis (Wft, NEN 7510, AVG-by-design).
 
 Wat ons onderscheidt van andere AI-bureaus:
 
@@ -133,7 +135,7 @@ Ik stuur graag een perskit, factsheet en aanvullende informatie toe op verzoek.
 
 Met vriendelijke groet,
 
-**Daan Verhoeven**
+**Mustafa Agah Dogan**
 CEO, Aanloop AI BV
 Rotterdam | www.aanloopai.nl
 KvK: 88606902
@@ -149,7 +151,7 @@ De perskit ondersteunt zowel de Emerce 100-aanmelding als toekomstige PR- en GEO
 | Item | Formaat | Notities |
 |---|---|---|
 | Bedrijfsprofiel (1 pagina) | PDF | Zie factsheet-template hieronder |
-| Oprichtersfoto Daan Verhoeven | JPG, min. 1200x1200px | Professionele achtergrond, zakelijk |
+| Oprichtersfoto Mustafa Agah Dogan | JPG, min. 1200x1200px | Professionele achtergrond, zakelijk |
 | Logo Aanloop AI (volledig kleur) | SVG + PNG transparant | Wit + donkere variant beide aanleveren |
 | Logo Aanloop AI (zwart/wit) | SVG + PNG | Voor print en grijstinten |
 | Productscreenshots (Marco, Emma, AI-Website) | JPG/PNG | Minimaal 1 per product, schermresolutie |
@@ -175,15 +177,15 @@ AANLOOP AI BV — BEDRIJFSFACTSHEET
 BEDRIJF
   Naam:          Aanloop AI BV
   KvK:           88606902
-  Opgericht:     2024
+  Opgericht:     2023
   Vestiging:     Rotterdam, Nederland
   Website:       www.aanloopai.nl
   Sector:        AI-dienstverlening, MKB-focus
 
 CONTACT
-  CEO / Founder: Daan Verhoeven
-  E-mail:        [daan@aanloopai.nl — aanpassen]
-  LinkedIn:      [URL invullen]
+  CEO / Founder: Mustafa Agah Dogan
+  E-mail:        magahdogan@aanloopai.nl
+  LinkedIn:      https://www.linkedin.com/in/magahdogan/
 
 KERNPRODUCTEN
   Marco              AI-receptionist (voice AI, 24/7 telefonische afhandeling)
@@ -201,8 +203,8 @@ TECHNOLOGIE
   - AVG-compliant architectuur, data binnen EU
 
 KLANTEN
-  500+ MKB-bedrijven (zorg, financien, retail, zakelijke diensten,
-  e-commerce, dierenzorg, horeca)
+  80+ MKB-bedrijven verdeeld over 7 sectoren (zorg, financien,
+  retail, zakelijke diensten, e-commerce, dierenzorg, horeca)
 
 ONDERSCHEIDEND VERMOGEN
   - Nederlandse datasovereiniteit (geen data naar VS)
