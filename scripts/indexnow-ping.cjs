@@ -44,8 +44,9 @@ function extractUrlsFromSitemap() {
     );
     return urls;
   } catch (error) {
+    const AUTO_MODE = process.env.INDEXNOW_PING === '1' || process.env.CF_PAGES === '1';
     console.error('[ERROR] Failed to parse sitemap:', error.message);
-    process.exit(1);
+    process.exit(AUTO_MODE ? 0 : 1);
   }
 }
 
@@ -95,12 +96,22 @@ function postToIndexNow(payload) {
  * Main execution
  */
 async function main() {
+  // Auto-mode = invoked from postbuild via env trigger; never break build on failure.
+  const AUTO_MODE = process.env.INDEXNOW_PING === '1' || process.env.CF_PAGES === '1';
+  const SCRIPT_INVOCATION = process.env.npm_lifecycle_event || 'manual';
+
+  if (SCRIPT_INVOCATION === 'postbuild' && !AUTO_MODE) {
+    console.log('[IndexNow] postbuild auto-skip (set CF_PAGES=1 or INDEXNOW_PING=1 to enable)');
+    process.exit(0);
+  }
+
   console.log('[IndexNow] Extracting URLs from sitemap...');
   const urls = extractUrlsFromSitemap();
   console.log(`[IndexNow] Found ${urls.length} URLs`);
 
   if (urls.length === 0) {
     console.warn('[WARN] No URLs found in sitemap');
+    if (AUTO_MODE) process.exit(0);
     return;
   }
 
@@ -124,7 +135,8 @@ async function main() {
     process.exit(0);
   } catch (error) {
     console.error('[ERROR] IndexNow API request failed:', error.message);
-    process.exit(1);
+    // In AUTO_MODE never break build — IndexNow will retry on next build/push.
+    process.exit(AUTO_MODE ? 0 : 1);
   }
 }
 
