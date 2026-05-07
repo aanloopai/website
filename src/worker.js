@@ -101,6 +101,49 @@ const CORS_HEADERS = {
   'access-control-allow-headers': 'content-type',
 };
 
+// Security headers — applied to all asset responses.
+// Mirrors public/_headers, which Cloudflare Workers-with-Assets does not honor for HTML routes.
+// Source-of-truth lives here in the Worker; _headers is kept for Pages-style fallback only.
+const CSP_POLICY = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com https://elevenlabs.io https://*.elevenlabs.io https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api.web3forms.com https://*.elevenlabs.io https://www.clarity.ms; frame-ancestors 'none'; frame-src 'none';";
+
+const SECURITY_HEADERS = {
+  'strict-transport-security': 'max-age=63072000; includeSubDomains; preload',
+  'x-content-type-options': 'nosniff',
+  'x-frame-options': 'DENY',
+  'referrer-policy': 'strict-origin-when-cross-origin',
+  'permissions-policy': 'camera=(), microphone=(), geolocation=(self)',
+  'content-security-policy': CSP_POLICY,
+};
+
+function cacheControlFor(pathname) {
+  if (pathname.startsWith('/_astro/') || pathname.startsWith('/brand/') || pathname.startsWith('/fonts/')) {
+    return 'public, max-age=31536000, immutable';
+  }
+  if (pathname === '/sitemap.xml' || pathname === '/image-sitemap.xml' || pathname === '/llms.txt' || pathname === '/llms-full.txt') {
+    return 'public, max-age=300, s-maxage=3600';
+  }
+  if (pathname === '/robots.txt') {
+    return 'public, max-age=3600, s-maxage=86400';
+  }
+  if (pathname === '/humans.txt') {
+    return 'public, max-age=86400';
+  }
+  return 'public, max-age=300, s-maxage=86400, stale-while-revalidate=604800';
+}
+
+function applySecurityHeaders(response, pathname) {
+  const headers = new Headers(response.headers);
+  for (const [k, v] of Object.entries(SECURITY_HEADERS)) {
+    headers.set(k, v);
+  }
+  headers.set('cache-control', cacheControlFor(pathname));
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers,
+  });
+}
+
 function escapeHtml(s) {
   return String(s ?? '')
     .replace(/&/g, '&amp;')
@@ -350,7 +393,8 @@ export default {
     }
 
     if (env.ASSETS) {
-      return env.ASSETS.fetch(request);
+      const assetResponse = await env.ASSETS.fetch(request);
+      return applySecurityHeaders(assetResponse, url.pathname);
     }
     return new Response('Not configured: ASSETS binding missing in wrangler.toml', { status: 500 });
   },
