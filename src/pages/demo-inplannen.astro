@@ -1,143 +1,254 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-// =============================================================================
-// AGENDA-EMBED CONFIG — vul GOOGLE_BOOKING_URL in zodra de Appointment Schedule
-// is aangemaakt in Google Calendar (calendar.google.com/calendar/appointments).
-//
-// Setup-instructie (eenmalig, ~5 min):
-//   1. Open https://calendar.google.com (ingelogd als doganagahm@gmail.com)
-//   2. + Create -> "Appointment schedule"
-//   3. Title: "Aanloop AI — 30 min strategiegesprek"
-//   4. Duration: 30 minuten
-//   5. General availability:
-//        Maandag tm donderdag : 10:00-15:00
-//        Vrijdag              : 10:00-12:00 (alleen 10:00 + 11:00 slots)
-//        Zaterdag/zondag      : niet beschikbaar
-//   6. Calendars checked for conflicts: doganagahm@gmail.com (busy slots auto-hidden)
-//   7. Booking page -> "Share" -> kopieer "Booking link"
-//   8. Plak die volledige URL hieronder als GOOGLE_BOOKING_URL.
-//   9. Commit + push -> live.
-//
-// Tot die URL is gezet toont de pagina een handmatige booking-flow (WhatsApp /
-// e-mail / telefoon) zodat geen lead verdwijnt. Geen 'open form' tussenstap meer.
-// =============================================================================
-const GOOGLE_BOOKING_URL: string | null = null; // <- vervang door volledige Google booking URL
-const isLive = !!GOOGLE_BOOKING_URL && !(GOOGLE_BOOKING_URL as string).includes('PASTE');
+const title = 'Plan een 30-min strategiegesprek — Aanloop AI';
+const description = 'Boek direct een 30-min strategiegesprek met Mustafa Agah Dogan (founder Aanloop AI). Native Aanloop-booking met Google Calendar + Google Meet — geen iframe.';
 ---
-<BaseLayout
-  title="Plan een AI-strategiegesprek — 30 min, online"
-  description="Plan direct een 30-minuten AI-strategiegesprek in onze agenda. Alleen op werkdagen ma-do 10:00-15:00 en vrijdag 10:00-11:00. Geen verplichting."
-  noindex={true}
->
-  <section class="border-b border-slate-200 hero-gradient">
-    <div class="container-page py-14 lg:py-20">
-      <div class="max-w-3xl">
-        <div class="flex items-center gap-4 mb-6 reveal">
-          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
-          <span class="eyebrow">Plan een tijdslot</span>
+
+<BaseLayout title={title} description={description}>
+  <main class="bg-midnight text-pearl min-h-screen">
+    <section class="mx-auto max-w-3xl px-6 py-16 lg:py-24">
+      <h1 class="text-3xl lg:text-4xl font-bold mb-4">Plan een 30-min strategiegesprek</h1>
+      <p class="text-lg text-pearl/80 mb-8">
+        Geen sales-pitch. Een directe call met Mustafa Agah Dogan (founder Aanloop AI) over jouw situatie,
+        AI-kansen voor je MKB, en of we passen.
+      </p>
+
+      <div id="booking-widget" class="border border-pearl/10 rounded-2xl p-6 bg-midnight/60">
+        <div id="step-day" class="space-y-4">
+          <h2 class="text-xl font-semibold">1. Kies een dag</h2>
+          <div id="day-tabs" class="flex flex-wrap gap-2"></div>
+          <div id="loading-msg" class="text-sm text-pearl/60 hidden">Beschikbaarheid laden...</div>
+          <div id="error-msg" class="text-sm text-rose-300 hidden" role="alert"></div>
         </div>
-        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">Kies een tijdslot in onze agenda</h1>
-        <p class="mt-5 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">
-          Selecteer hieronder direct een 30-minuten <strong>online strategiegesprek</strong> via Google Meet. Beschikbaar op werkdagen
-          <strong>ma-do 10:00-15:00</strong> en <strong>vrijdag 10:00-11:00</strong>. Volgeboekte momenten zijn automatisch grijs.
-        </p>
-      </div>
-    </div>
-  </section>
 
-  <section class="section">
-    <div class="container-page">
-      <div class="grid lg:grid-cols-3 gap-10">
+        <div id="step-slot" class="space-y-4 mt-8 hidden">
+          <h2 class="text-xl font-semibold">2. Kies een tijd</h2>
+          <div id="slot-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+          <p id="no-slots" class="text-sm text-pearl/60 hidden">Geen vrije slots op deze dag — kies een andere.</p>
+        </div>
 
-        <aside class="lg:col-span-1 reveal">
-          <h2 class="text-lg font-bold text-navy mb-5">Wat behandelen we?</h2>
-          <ul class="space-y-4 mb-8">
-            {[
-              { icon: '🎯', t: 'Uw situatie', d: 'Uw processen en grootste tijdverspillers.' },
-              { icon: '🤖', t: 'Live AI demo', d: 'Een werkende AI-agent op maat — live in het gesprek.' },
-              { icon: '💶', t: 'ROI berekening', d: 'Concrete tijdsbesparing en opbrengst voor uw schaal.' },
-              { icon: '🗺️', t: 'Stappenplan', d: 'Een 90-dagen roadmap om direct mee te starten.' },
-            ].map(i => (
-              <li class="flex gap-3">
-                <span class="text-xl flex-shrink-0">{i.icon}</span>
-                <div><p class="font-semibold text-navy text-sm">{i.t}</p><p class="text-sm text-slate-500 mt-0.5">{i.d}</p></div>
-              </li>
-            ))}
-          </ul>
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
-            <p class="text-xs font-bold text-navy uppercase tracking-wide mb-3">Wat u mag verwachten</p>
-            <ul class="space-y-2 text-sm text-slate-600">
-              {['100% vrijblijvend','30 min, online via Google Meet','Geen verkooppraatje','KvK 88606902 · Rotterdam'].map(t => (
-                <li class="flex items-center gap-2"><svg class="w-4 h-4 text-brand-emerald flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>{t}</li>
-              ))}
-            </ul>
+        <form id="step-form" class="space-y-4 mt-8 hidden" novalidate>
+          <h2 class="text-xl font-semibold">3. Jouw gegevens</h2>
+          <p class="text-sm text-pearl/70" id="selected-slot-label"></p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <label class="block">
+              <span class="text-sm font-medium">Naam *</span>
+              <input name="name" required minlength="2" class="mt-1 w-full rounded-lg bg-midnight border border-pearl/20 px-3 py-2 text-pearl" />
+            </label>
+            <label class="block">
+              <span class="text-sm font-medium">Email *</span>
+              <input name="email" type="email" required class="mt-1 w-full rounded-lg bg-midnight border border-pearl/20 px-3 py-2 text-pearl" />
+            </label>
+            <label class="block">
+              <span class="text-sm font-medium">Telefoon</span>
+              <input name="phone" type="tel" inputmode="tel" class="mt-1 w-full rounded-lg bg-midnight border border-pearl/20 px-3 py-2 text-pearl" />
+            </label>
+            <label class="block">
+              <span class="text-sm font-medium">Bedrijf</span>
+              <input name="company" class="mt-1 w-full rounded-lg bg-midnight border border-pearl/20 px-3 py-2 text-pearl" />
+            </label>
           </div>
-        </aside>
+          <label class="block">
+            <span class="text-sm font-medium">Wat wil je bespreken? (optioneel)</span>
+            <textarea name="message" rows="3" class="mt-1 w-full rounded-lg bg-midnight border border-pearl/20 px-3 py-2 text-pearl"></textarea>
+          </label>
+          <button type="submit" id="submit-btn" class="w-full sm:w-auto px-6 py-3 rounded-xl bg-brand-blue text-white font-semibold hover:bg-brand-blue/90 disabled:opacity-50 disabled:cursor-not-allowed transition">
+            Bevestig boeking
+          </button>
+          <p id="submit-status" class="text-sm hidden" role="status"></p>
+        </form>
 
-        <div class="lg:col-span-2 reveal reveal-delay-1">
-
-          {isLive ? (
-            <>
-              <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-sm bg-white">
-                <iframe
-                  src={GOOGLE_BOOKING_URL!}
-                  title="Aanloop AI — afspraak inplannen"
-                  class="w-full"
-                  style="border:0; min-height:780px"
-                  loading="lazy"
-                  referrerpolicy="strict-origin-when-cross-origin"
-                  allow="fullscreen"
-                ></iframe>
-              </div>
-              <p class="mt-3 text-xs text-slate-500 text-center">
-                Werkt het venster niet? <a href={GOOGLE_BOOKING_URL!} target="_blank" rel="noopener noreferrer" class="text-brand-indigo underline">Open de agenda in een nieuw tabblad</a>.
-              </p>
-            </>
-          ) : (
-            <div class="rounded-2xl border-2 border-dashed border-amber-300 bg-amber-50 p-8 text-center">
-              <p class="text-3xl mb-3" aria-hidden="true">📅</p>
-              <p class="font-bold text-navy mb-2">De online agenda wordt nu geactiveerd</p>
-              <p class="text-sm text-slate-600 mb-6 max-w-md mx-auto">
-                We verbinden onze Google Calendar met deze pagina. Tot die tijd kunt u via een van de onderstaande opties direct een moment inplannen — we reageren binnen 2 uur op werkdagen.
-              </p>
-              <div class="inline-flex items-center gap-2 text-xs font-medium text-amber-800 bg-amber-100 px-3 py-1.5 rounded-full">
-                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                Tijdelijke handmatige booking
-              </div>
-            </div>
-          )}
-
-          <div class:list={['mt-8 grid sm:grid-cols-3 gap-3', isLive ? 'opacity-90' : '']}>
-            <a href="https://wa.me/31624741597?text=Hallo%2C%20ik%20wil%20graag%20een%20gratis%20AI-strategiegesprek%20inplannen%20bij%20Aanloop%20AI." target="_blank" rel="noopener" class="flex items-center gap-3 p-4 bg-white border border-slate-200 hover:border-green-400 rounded-xl transition-all group">
-              <svg class="w-6 h-6 text-green-600 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-              <div>
-                <p class="font-semibold text-navy text-sm leading-tight">WhatsApp</p>
-                <p class="text-xs text-slate-500 mt-0.5">Reactie &lt; 2u</p>
-              </div>
-            </a>
-            <a href="mailto:hello@aanloopai.nl?subject=Strategiegesprek%20inplannen&body=Hallo%2C%20ik%20wil%20graag%20een%20gratis%20AI-strategiegesprek%20van%2030%20min%20inplannen.%20Een%20paar%20moment-voorkeuren%20zijn..." class="flex items-center gap-3 p-4 bg-white border border-slate-200 hover:border-brand-indigo rounded-xl transition-all group">
-              <svg class="w-6 h-6 text-brand-indigo flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-              <div>
-                <p class="font-semibold text-navy text-sm leading-tight">E-mail</p>
-                <p class="text-xs text-slate-500 mt-0.5">hello@aanloopai.nl</p>
-              </div>
-            </a>
-            <a href="tel:+31624741597" class="flex items-center gap-3 p-4 bg-white border border-slate-200 hover:border-brand-amber rounded-xl transition-all group">
-              <svg class="w-6 h-6 text-brand-amber flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
-              <div>
-                <p class="font-semibold text-navy text-sm leading-tight">Bellen</p>
-                <p class="text-xs text-slate-500 mt-0.5">Ma-vr 09-17</p>
-              </div>
-            </a>
-          </div>
-
-          <p class="mt-6 text-xs text-slate-500 text-center">
-            Liever eerst een gedetailleerde aanvraag insturen? <a href="/demo-aanvragen/" class="text-brand-indigo hover:underline">Vul het demo-formulier in</a> — we plannen dan zelf een moment voor u.
+        <div id="step-confirmed" class="hidden space-y-4 mt-8">
+          <h2 class="text-xl font-semibold text-emerald-300">Boeking bevestigd</h2>
+          <p class="text-sm text-pearl/80">Je ontvangt een Google Calendar uitnodiging + bevestigingsmail. De Google Meet link staat hieronder en in de uitnodiging.</p>
+          <p id="meet-link-wrap" class="text-sm hidden">
+            <a id="meet-link" href="#" class="text-brand-blue hover:underline" target="_blank" rel="noopener">Open Google Meet</a>
           </p>
-
         </div>
       </div>
-    </div>
-  </section>
+
+      <p class="mt-8 text-xs text-pearl/50">
+        Ma-do 10:00-15:00 / Vr 10:00-12:00 (Europe/Amsterdam). Booking systeem: Google Calendar + Meet.
+      </p>
+    </section>
+
+    <script type="module">
+      const TIMEZONE = 'Europe/Amsterdam';
+      const dayTabs = document.getElementById('day-tabs');
+      const slotGrid = document.getElementById('slot-grid');
+      const loadingMsg = document.getElementById('loading-msg');
+      const errorMsg = document.getElementById('error-msg');
+      const stepSlot = document.getElementById('step-slot');
+      const stepForm = document.getElementById('step-form');
+      const noSlotsMsg = document.getElementById('no-slots');
+      const selectedSlotLabel = document.getElementById('selected-slot-label');
+      const stepConfirmed = document.getElementById('step-confirmed');
+      const submitBtn = document.getElementById('submit-btn');
+      const submitStatus = document.getElementById('submit-status');
+      const meetLinkWrap = document.getElementById('meet-link-wrap');
+      const meetLink = document.getElementById('meet-link');
+
+      let allSlots = [];
+      let selectedSlot = null;
+      let activeDay = null;
+
+      function fmtNL(date, opts) {
+        return new Intl.DateTimeFormat('nl-NL', { timeZone: TIMEZONE, ...opts }).format(date);
+      }
+
+      function buildDays() {
+        const days = [];
+        for (let i = 0; i < 14; i++) {
+          const d = new Date();
+          d.setDate(d.getDate() + i);
+          const iso = d.toISOString().slice(0, 10);
+          const dow = fmtNL(d, { weekday: 'short' });
+          if (dow === 'za' || dow === 'zo') continue;
+          days.push({ iso, label: `${dow} ${fmtNL(d, { day: 'numeric', month: 'short' })}` });
+          if (days.length >= 7) break;
+        }
+        return days;
+      }
+
+      function renderDayTabs(days) {
+        dayTabs.innerHTML = '';
+        for (const d of days) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.dataset.day = d.iso;
+          btn.className = 'px-3 py-2 rounded-lg border border-pearl/20 hover:border-brand-blue text-sm transition';
+          btn.textContent = d.label;
+          btn.addEventListener('click', () => selectDay(d.iso, btn));
+          dayTabs.appendChild(btn);
+        }
+      }
+
+      function selectDay(iso, btn) {
+        activeDay = iso;
+        document.querySelectorAll('#day-tabs button').forEach((b) => {
+          b.classList.toggle('bg-brand-blue', b === btn);
+          b.classList.toggle('text-white', b === btn);
+          b.classList.toggle('border-brand-blue', b === btn);
+        });
+        renderSlots();
+      }
+
+      function renderSlots() {
+        const slotsToday = allSlots.filter((s) => s.start.slice(0, 10) === activeDay);
+        slotGrid.innerHTML = '';
+        if (slotsToday.length === 0) {
+          noSlotsMsg.classList.remove('hidden');
+        } else {
+          noSlotsMsg.classList.add('hidden');
+          for (const s of slotsToday) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            const time = fmtNL(new Date(s.start), { hour: '2-digit', minute: '2-digit' });
+            btn.className = 'px-3 py-2 rounded-lg border border-pearl/20 hover:border-brand-blue hover:bg-brand-blue/10 text-sm transition';
+            btn.textContent = time;
+            btn.addEventListener('click', () => selectSlot(s, btn));
+            slotGrid.appendChild(btn);
+          }
+        }
+        stepSlot.classList.remove('hidden');
+        stepForm.classList.add('hidden');
+      }
+
+      function selectSlot(s, btn) {
+        selectedSlot = s;
+        document.querySelectorAll('#slot-grid button').forEach((b) => {
+          b.classList.toggle('bg-brand-blue', b === btn);
+          b.classList.toggle('text-white', b === btn);
+        });
+        const startD = new Date(s.start);
+        selectedSlotLabel.textContent = `Geselecteerd: ${fmtNL(startD, { weekday: 'long', day: 'numeric', month: 'long' })} om ${fmtNL(startD, { hour: '2-digit', minute: '2-digit' })}`;
+        stepForm.classList.remove('hidden');
+        stepForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      async function loadAvailability() {
+        loadingMsg.classList.remove('hidden');
+        errorMsg.classList.add('hidden');
+        const days = buildDays();
+        renderDayTabs(days);
+        const ctrl = new AbortController();
+        const tid = setTimeout(() => ctrl.abort(), 30_000);
+        try {
+          const r = await fetch('/api/calendar/availability?dates=' + days.map((d) => d.iso).join(','), { signal: ctrl.signal });
+          clearTimeout(tid);
+          if (!r.ok) {
+            const data = await r.json().catch(() => ({}));
+            throw new Error(data.error || `HTTP ${r.status}`);
+          }
+          const data = await r.json();
+          allSlots = data.slots || [];
+          if (days.length > 0) {
+            const firstDayBtn = dayTabs.querySelector('button');
+            selectDay(days[0].iso, firstDayBtn);
+          }
+        } catch (err) {
+          clearTimeout(tid);
+          errorMsg.textContent = `Kon agenda niet laden: ${err.message}. Probeer opnieuw of mail hello@aanloopai.nl.`;
+          errorMsg.classList.remove('hidden');
+        } finally {
+          loadingMsg.classList.add('hidden');
+        }
+      }
+
+      stepForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!selectedSlot) return;
+        submitBtn.disabled = true;
+        const originalLabel = submitBtn.textContent;
+        submitBtn.textContent = 'Bezig met boeken...';
+        submitStatus.classList.add('hidden');
+        const data = new FormData(stepForm);
+        const payload = {
+          slot: selectedSlot,
+          name: data.get('name'),
+          email: data.get('email'),
+          phone: data.get('phone') || '',
+          company: data.get('company') || '',
+          message: data.get('message') || '',
+        };
+        const ctrl = new AbortController();
+        const tid = setTimeout(() => ctrl.abort(), 30_000);
+        try {
+          const r = await fetch('/api/calendar/book', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+            signal: ctrl.signal,
+          });
+          clearTimeout(tid);
+          const result = await r.json().catch(() => ({}));
+          if (!r.ok || !result.ok) throw new Error(result.error || `HTTP ${r.status}`);
+          stepForm.classList.add('hidden');
+          stepSlot.classList.add('hidden');
+          document.getElementById('step-day').classList.add('hidden');
+          stepConfirmed.classList.remove('hidden');
+          if (result.meetLink) {
+            meetLink.href = result.meetLink;
+            meetLink.textContent = result.meetLink;
+            meetLinkWrap.classList.remove('hidden');
+          }
+          stepConfirmed.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } catch (err) {
+          clearTimeout(tid);
+          const isTimeout = err.name === 'AbortError';
+          submitStatus.textContent = isTimeout
+            ? 'Time-out. Controleer je internet en probeer opnieuw, of mail hello@aanloopai.nl.'
+            : `Boeking mislukt: ${err.message}. Probeer opnieuw of mail hello@aanloopai.nl.`;
+          submitStatus.className = 'text-sm text-rose-300';
+          submitStatus.classList.remove('hidden');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel;
+        }
+      });
+
+      loadAvailability();
+    </script>
+  </main>
 </BaseLayout>
