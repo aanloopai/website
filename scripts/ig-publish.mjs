@@ -77,9 +77,8 @@ async function composioFetch(method, urlPath, body) {
 async function findIgConnection() {
   if (CONNECTION_OVERRIDE) {
     console.log(`Using connection override: ${CONNECTION_OVERRIDE}`);
-    return CONNECTION_OVERRIDE;
+    return { id: CONNECTION_OVERRIDE, uuid: CONNECTION_OVERRIDE };
   }
-  // v3 connected accounts endpoint
   let d;
   try {
     d = await composioFetch("GET", "/api/v3/connected_accounts?toolkit_slugs=instagram&status=ACTIVE");
@@ -99,20 +98,62 @@ async function findIgConnection() {
   if (!ig) {
     throw new Error(`No active Instagram connection. Raw: ${JSON.stringify(d).slice(0, 500)}`);
   }
-  console.log(`Found IG connection: ${ig.id || ig.connectedAccountId} status=${ig.status}`);
-  return ig.id || ig.connectedAccountId;
+  const publicId = ig.id || ig.connectedAccountId;
+  const uuid = ig.uuid || ig.connection_uuid || ig.connectedAccountUuid || null;
+  console.log(`Found IG connection: id=${publicId} uuid=${uuid} status=${ig.status}`);
+  console.log(`Connection raw fields: ${JSON.stringify(Object.keys(ig))}`);
+  // If uuid missing, fetch detail
+  let resolvedUuid = uuid;
+  if (!resolvedUuid && publicId) {
+    try {
+      const det = await composioFetch("GET", `/api/v3/connected_accounts/${publicId}`);
+      resolvedUuid = det.uuid || det.id || publicId;
+      console.log(`Fetched detail; uuid resolved to: ${resolvedUuid}`);
+    } catch (e) {
+      console.warn(`Detail fetch failed, falling back to public id: ${e.message}`);
+      resolvedUuid = publicId;
+    }
+  }
+  return { id: publicId, uuid: resolvedUuid || publicId };
 }
 
-async function executeAction(actionSlug, connectionId, input) {
-  // Try v3 actions endpoint first; fall back to v2.
-  const v3Body = { connected_account_id: connectionId, arguments: input };
-  const v2Body = { connectedAccountId: connectionId, input };
-  try {
-    return await composioFetch("POST", `/api/v3/tools/execute/${actionSlug}`, v3Body);
-  } catch (e3) {
-    console.warn(`v3 execute failed: ${e3.message}`);
-    return await composioFetch("POST", `/api/v2/actions/${actionSlug}/execute`, v2Body);
+async function executeAction(actionSlug, connection, input) {
+  const slugVariants = [actionSlug, actionSlug.toLowerCase(), actionSlug.toUpperCase()];
+  const errors = [];
+
+  // Try v3 with each slug variant + public id
+  for (const slug of slugVariants) {
+    try {
+      return await composioFetch("POST", `/api/v3/tools/execute/${slug}`, {
+        connected_account_id: connection.id,
+        arguments: input,
+      });
+    } catch (e) {
+      errors.push(`v3/${slug}/id: ${e.message.slice(0, 200)}`);
+    }
+    try {
+      return await composioFetch("POST", `/api/v3/tools/execute/${slug}`, {
+        connected_account_id: connection.uuid,
+        arguments: input,
+      });
+    } catch (e) {
+      errors.push(`v3/${slug}/uuid: ${e.message.slice(0, 200)}`);
+    }
   }
+
+  // Try v2 with both ids
+  for (const cid of [connection.uuid, connection.id]) {
+    try {
+      return await composioFetch("POST", `/api/v2/actions/${actionSlug}/execute`, {
+        connectedAccountId: cid,
+        input,
+      });
+    } catch (e) {
+      errors.push(`v2/${actionSlug}/${cid}: ${e.message.slice(0, 200)}`);
+    }
+  }
+
+  throw new Error(`All execute attempts failed for ${actionSlug}:\n  ${errors.join("\n  ")}`);
 }
 
 function pickId(resp) {
