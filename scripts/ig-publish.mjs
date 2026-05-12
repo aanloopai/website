@@ -1,13 +1,16 @@
 #!/usr/bin/env node
-// IG photo publisher. Reads marketing/instagram/wave-2-schedule.json,
-// publishes one due-and-unposted slot to @aanloop.ai via Meta Graph API,
-// writes media_id + permalink + posted_at back.
+// IG photo publisher via Composio Platform API.
+// Reads marketing/instagram/wave-2-schedule.json, finds the next due unpublished
+// slot, posts via Composio (which holds the working Meta auth chain), writes
+// media_id + permalink + posted_at back.
 //
 // Env:
-//   META_LL_TOKEN      — long-lived Page access token (required for live runs)
-//   GRAPH_API_VERSION  — default v21.0
-//   SCHEDULE_PATH      — default marketing/instagram/wave-2-schedule.json
-//   DRY_RUN            — '1' = skip Graph API writes, print plan only
+//   COMPOSIO_API_KEY        — Composio Platform API key (required for live runs)
+//   COMPOSIO_CONNECTION_ID  — optional override for IG connection (e.g. ca_xxx)
+//   COMPOSIO_API_BASE       — default https://backend.composio.dev
+//   SCHEDULE_PATH           — default marketing/instagram/wave-2-schedule.json
+//   DRY_RUN                 — '1' = skip API calls, print plan only
+//   VALIDATE_ONLY           — '1' = list IG connection only, no posting
 
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -18,17 +21,17 @@ const REPO_ROOT = path.resolve(path.dirname(__filename), "..");
 const SCHEDULE_PATH = process.env.SCHEDULE_PATH
   ? path.resolve(process.env.SCHEDULE_PATH)
   : path.join(REPO_ROOT, "marketing", "instagram", "wave-2-schedule.json");
-const GRAPH_VERSION = process.env.GRAPH_API_VERSION || "v21.0";
-const TOKEN = (process.env.META_LL_TOKEN || "").trim();
+
+const API_KEY = (process.env.COMPOSIO_API_KEY || "").trim();
+const BASE = (process.env.COMPOSIO_API_BASE || "https://backend.composio.dev").replace(/\/+$/, "");
+const CONNECTION_OVERRIDE = (process.env.COMPOSIO_CONNECTION_ID || "").trim();
 const DRY = process.env.DRY_RUN === "1";
 const VALIDATE_ONLY = process.env.VALIDATE_ONLY === "1";
 
-const GRAPH_BASE = `https://graph.facebook.com/${GRAPH_VERSION}`;
-
-function maskToken(t) {
-  if (!t) return "(empty)";
-  if (t.length <= 12) return "(short)";
-  return `${t.slice(0, 6)}...${t.slice(-4)} len=${t.length}`;
+function maskKey(k) {
+  if (!k) return "(empty)";
+  if (k.length <= 12) return "(short)";
+  return `${k.slice(0, 6)}...${k.slice(-4)} len=${k.length}`;
 }
 
 async function readSchedule() {
@@ -44,18 +47,17 @@ function findDuePost(sched, nowMs) {
   return sched.posts.find((p) => p.posted_at === null && new Date(p.slot_iso).getTime() <= nowMs);
 }
 
-async function graphCall(method, pathSuffix, params) {
-  const url = `${GRAPH_BASE}${pathSuffix}`;
-  const opts = { method, headers: {} };
-  let finalUrl = url;
-  if (method === "GET") {
-    const qs = new URLSearchParams(params || {}).toString();
-    finalUrl = qs ? `${url}?${qs}` : url;
-  } else {
-    opts.headers["Content-Type"] = "application/x-www-form-urlencoded";
-    opts.body = new URLSearchParams(params || {}).toString();
-  }
-  const res = await fetch(finalUrl, opts);
+async function composioFetch(method, urlPath, body) {
+  const url = `${BASE}${urlPath}`;
+  const res = await fetch(url, {
+    method,
+    headers: {
+      "x-api-key": API_KEY,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  });
   const text = await res.text();
   let data;
   try {
@@ -64,82 +66,87 @@ async function graphCall(method, pathSuffix, params) {
     data = { _raw: text };
   }
   if (!res.ok) {
-    const msg = JSON.stringify(data);
-    throw new Error(`Graph ${method} ${pathSuffix} HTTP ${res.status}: ${msg}`);
+    throw new Error(`Composio ${method} ${urlPath} HTTP ${res.status}: ${JSON.stringify(data)}`);
+  }
+  if (data && data.successful === false) {
+    throw new Error(`Composio ${method} ${urlPath} successful=false: ${JSON.stringify(data)}`);
   }
   return data;
 }
 
-async function validateToken(igUserId) {
-  console.log(`Token: ${maskToken(TOKEN)}`);
-  // List recent IG media — confirms token is bound to ig_user_id and has IG access.
-  // Avoids endpoints that need pages_read_engagement / instagram_basic.
-  const d = await graphCall("GET", `/${igUserId}/media`, {
-    fields: "id,timestamp",
-    limit: "1",
-    access_token: TOKEN,
-  });
-  const count = (d.data || []).length;
-  if (count > 0) {
-    const latest = d.data[0];
-    console.log(`IG access OK. Latest media id=${latest.id} ts=${latest.timestamp}`);
-  } else {
-    console.log(`IG access OK. No media yet on account ${igUserId}.`);
+async function findIgConnection() {
+  if (CONNECTION_OVERRIDE) {
+    console.log(`Using connection override: ${CONNECTION_OVERRIDE}`);
+    return CONNECTION_OVERRIDE;
   }
-  return d;
-}
-
-async function createContainer(igUserId, imageUrl, caption) {
-  return graphCall("POST", `/${igUserId}/media`, {
-    image_url: imageUrl,
-    caption,
-    access_token: TOKEN,
-  });
-}
-
-async function publishContainer(igUserId, creationId) {
-  return graphCall("POST", `/${igUserId}/media_publish`, {
-    creation_id: creationId,
-    access_token: TOKEN,
-  });
-}
-
-async function fetchPermalink(mediaId) {
-  return graphCall("GET", `/${mediaId}`, {
-    fields: "permalink,timestamp",
-    access_token: TOKEN,
-  });
-}
-
-async function waitContainerReady(creationId, maxSeconds = 90) {
-  const deadline = Date.now() + maxSeconds * 1000;
-  let last = "";
-  while (Date.now() < deadline) {
-    const d = await graphCall("GET", `/${creationId}`, {
-      fields: "status_code,status",
-      access_token: TOKEN,
-    });
-    last = d.status_code || d.status || "";
-    console.log(`  container ${creationId} status=${last}`);
-    if (last === "FINISHED") return;
-    if (last === "ERROR" || last === "EXPIRED") throw new Error(`Container failed: ${last}`);
-    await new Promise((r) => setTimeout(r, 3000));
+  // v3 connected accounts endpoint
+  let d;
+  try {
+    d = await composioFetch("GET", "/api/v3/connected_accounts?toolkit_slugs=instagram&status=ACTIVE");
+  } catch (e) {
+    console.warn(`v3 connected_accounts failed: ${e.message}`);
+    try {
+      d = await composioFetch("GET", "/api/v1/connectedAccounts?appNames=instagram&status=ACTIVE");
+    } catch (e2) {
+      throw new Error(`Both v3 and v1 connection list failed. v3: ${e.message} | v1: ${e2.message}`);
+    }
   }
-  throw new Error(`Container not ready within ${maxSeconds}s (last status=${last})`);
+  const items = d.items || d.data || d.connectedAccounts || [];
+  const ig = items.find((it) => {
+    const slug = (it.toolkit?.slug || it.appName || it.appUniqueName || "").toLowerCase();
+    return slug === "instagram";
+  });
+  if (!ig) {
+    throw new Error(`No active Instagram connection. Raw: ${JSON.stringify(d).slice(0, 500)}`);
+  }
+  console.log(`Found IG connection: ${ig.id || ig.connectedAccountId} status=${ig.status}`);
+  return ig.id || ig.connectedAccountId;
+}
+
+async function executeAction(actionSlug, connectionId, input) {
+  // Try v3 actions endpoint first; fall back to v2.
+  const v3Body = { connected_account_id: connectionId, arguments: input };
+  const v2Body = { connectedAccountId: connectionId, input };
+  try {
+    return await composioFetch("POST", `/api/v3/tools/execute/${actionSlug}`, v3Body);
+  } catch (e3) {
+    console.warn(`v3 execute failed: ${e3.message}`);
+    return await composioFetch("POST", `/api/v2/actions/${actionSlug}/execute`, v2Body);
+  }
+}
+
+function pickId(resp) {
+  // Result envelope variations
+  if (!resp) return null;
+  if (resp.data && resp.data.id) return resp.data.id;
+  if (resp.data && resp.data.data && resp.data.data.id) return resp.data.data.id;
+  if (resp.response_data && resp.response_data.id) return resp.response_data.id;
+  if (resp.id) return resp.id;
+  return null;
+}
+
+function pickField(resp, key) {
+  if (!resp) return null;
+  if (resp.data && resp.data[key] != null) return resp.data[key];
+  if (resp.data && resp.data.data && resp.data.data[key] != null) return resp.data.data[key];
+  if (resp.response_data && resp.response_data[key] != null) return resp.response_data[key];
+  return resp[key] ?? null;
 }
 
 async function main() {
-  if (!TOKEN && !DRY) {
-    console.error("META_LL_TOKEN missing or empty after trim");
+  if (!API_KEY && !DRY) {
+    console.error("COMPOSIO_API_KEY missing or empty after trim");
     process.exit(2);
   }
+  console.log(`Composio API key: ${maskKey(API_KEY)}`);
+  console.log(`Composio base: ${BASE}`);
 
   const sched = await readSchedule();
 
   if (VALIDATE_ONLY) {
-    console.log("VALIDATE_ONLY=1 — IG quota + token check, no post.");
-    await validateToken(sched.ig_user_id);
-    console.log("Token OK. Exiting.");
+    console.log("VALIDATE_ONLY=1 — list IG connection, no post.");
+    const cid = await findIgConnection();
+    console.log(`Validated connection id: ${cid}`);
     return;
   }
 
@@ -162,38 +169,44 @@ async function main() {
   console.log(`Caption length: ${due.caption.length} chars`);
 
   if (DRY) {
-    console.log("DRY_RUN=1 - skipping Graph API calls.");
+    console.log("DRY_RUN=1 - skipping Composio API calls.");
     return;
   }
 
-  console.log(`Token: ${maskToken(TOKEN)}`);
-  console.log(`\nCreating media container...`);
-  const created = await createContainer(sched.ig_user_id, imageUrl, due.caption);
-  const creationId = created.id;
+  const connectionId = await findIgConnection();
+
+  console.log(`\nCreating media container via Composio...`);
+  const createResp = await executeAction("INSTAGRAM_POST_IG_USER_MEDIA", connectionId, {
+    ig_user_id: sched.ig_user_id,
+    image_url: imageUrl,
+    caption: due.caption,
+  });
+  const creationId = pickId(createResp);
+  if (!creationId) throw new Error(`No creation id in response: ${JSON.stringify(createResp).slice(0, 500)}`);
   console.log(`Container created: ${creationId}`);
 
-  console.log(`\nWaiting for container FINISHED...`);
-  await waitContainerReady(creationId, 90);
-
-  console.log(`\nPublishing container...`);
-  const pub = await publishContainer(sched.ig_user_id, creationId);
-  const mediaId = pub.id;
+  console.log(`\nPublishing container via Composio...`);
+  const pubResp = await executeAction("INSTAGRAM_POST_IG_USER_MEDIA_PUBLISH", connectionId, {
+    ig_user_id: sched.ig_user_id,
+    creation_id: creationId,
+    max_wait_seconds: 90,
+  });
+  const mediaId = pickId(pubResp);
+  if (!mediaId) throw new Error(`No media id in publish response: ${JSON.stringify(pubResp).slice(0, 500)}`);
   console.log(`Published media: ${mediaId}`);
 
   let permalink = null;
   let timestamp = null;
   try {
-    const det = await fetchPermalink(mediaId);
-    permalink = det.permalink || null;
-    timestamp = det.timestamp || null;
+    const detail = await executeAction("INSTAGRAM_GET_IG_MEDIA", connectionId, { ig_media_id: mediaId });
+    permalink = pickField(detail, "permalink");
+    timestamp = pickField(detail, "timestamp");
     console.log(`Permalink: ${permalink}`);
   } catch (e) {
     console.warn(`Permalink fetch failed: ${e.message}`);
   }
 
-  due.posted_at = timestamp
-    ? new Date(timestamp).toISOString()
-    : new Date().toISOString();
+  due.posted_at = timestamp ? new Date(timestamp).toISOString() : new Date().toISOString();
   due.media_id = mediaId;
   due.permalink = permalink;
   await writeSchedule(sched);

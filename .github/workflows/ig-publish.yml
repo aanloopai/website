@@ -46,7 +46,8 @@ jobs:
 
       - name: Run IG publisher
         env:
-          META_LL_TOKEN: ${{ secrets.META_LL_TOKEN }}
+          COMPOSIO_API_KEY: ${{ secrets.COMPOSIO_API_KEY }}
+          COMPOSIO_CONNECTION_ID: ${{ secrets.COMPOSIO_CONNECTION_ID }}
           DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '' }}
           VALIDATE_ONLY: ${{ github.event.inputs.validate_only == 'true' && '1' || '' }}
         run: node scripts/ig-publish.mjs
