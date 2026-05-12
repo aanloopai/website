@@ -1,0 +1,162 @@
+name: IG Reels Auto-Publish
+
+# Renders due Reel slots from marketing/instagram/wave-N-reels-schedule.json
+# via moviepy, commits the MP4 (so it can be served from aanloopai.nl/social-feed/reels/),
+# then publishes via Meta Graph API REELS endpoint. Runs Mon/Wed/Fri 07:00 UTC
+# (CEST 09:00) plus 08:00 UTC (CET 09:00) so cadence holds across DST.
+
+on:
+  schedule:
+    - cron: '0 7 * * 1,3,5'
+    - cron: '0 8 * * 1,3,5'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Skip Graph API publish (preview only)'
+        required: false
+        default: 'false'
+      validate_only:
+        description: 'Token + account check, no posting'
+        required: false
+        default: 'false'
+      slot:
+        description: 'Force a specific slot id (e.g. reel-001-ai-fouten-mkb)'
+        required: false
+
+permissions:
+  contents: write
+  issues: write
+
+env:
+  REEL_FONT_BLACK: /usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf
+  REEL_FONT_BOLD: /usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf
+  REEL_FONT_REG: /usr/share/fonts/truetype/liberation/LiberationSans-Regular.ttf
+
+jobs:
+  publish:
+    name: Render + publish next Reel slot
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency:
+      group: ig-reels-publish
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 1
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install ffmpeg + Liberation fonts
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fonts-liberation fonts-dejavu-core ffmpeg
+
+      - name: Install Python deps
+        run: pip install --quiet "moviepy>=2.0.0" "Pillow>=10.0.0"
+
+      - name: Render due Reel(s)
+        env:
+          SLOT_OVERRIDE: ${{ github.event.inputs.slot }}
+        run: |
+          if [ -n "$SLOT_OVERRIDE" ]; then
+            python scripts/render-ig-reel.py --slot "$SLOT_OVERRIDE"
+          else
+            python scripts/render-ig-reel.py --all
+          fi
+
+      - name: Commit rendered MP4(s)
+        run: |
+          if git diff --quiet public/social-feed/reels/; then
+            echo "No new MP4s to commit."
+            exit 0
+          fi
+          git config user.name "aanloop-reels-bot"
+          git config user.email "bot@aanloopai.nl"
+          git add public/social-feed/reels/
+          git commit -m "chore(reels): render Reel MP4(s) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push origin master
+
+      - name: Wait 90s for site rebuild (Cloudflare Pages / Vercel)
+        if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.validate_only != 'true' }}
+        run: sleep 90
+
+      - name: Run Reels publisher
+        env:
+          IG_PAGE_ACCESS_TOKEN: ${{ secrets.IG_PAGE_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '' }}
+          VALIDATE_ONLY: ${{ github.event.inputs.validate_only == 'true' && '1' || '' }}
+        run: node scripts/ig-publish-reel.mjs
+
+      - name: Commit schedule update
+        if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.validate_only != 'true' }}
+        run: |
+          if git diff --quiet marketing/instagram/wave-*-reels-schedule.json; then
+            echo "No schedule changes."
+            exit 0
+          fi
+          git config user.name "aanloop-reels-bot"
+          git config user.email "bot@aanloopai.nl"
+          git add marketing/instagram/wave-*-reels-schedule.json
+          git commit -m "chore(reels): record Reel publish $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push origin master
+
+      - name: Open failure issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = 'ig-reels-publish-fail';
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const title = `IG Reels publish workflow failed (run ${context.runId})`;
+            const body = [
+              `Run: ${runUrl}`,
+              `Triggered by: ${context.eventName}`,
+              `Branch: ${context.ref}`,
+              ``,
+              `Common causes:`,
+              `- IG_PAGE_ACCESS_TOKEN expired (refresh long-lived token, 60d cycle)`,
+              `- video_url not reachable yet (site rebuild took >90s; rerun workflow)`,
+              `- moviepy render OOM (Reel >15s + complex compositing)`,
+              `- Graph API container status_code ERROR (check journal in step 'Run Reels publisher')`,
+              ``,
+              `Auto-opened by .github/workflows/ig-reels-publish.yml`,
+            ].join('\n');
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: label,
+              per_page: 5,
+            });
+            if (existing.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.data[0].number,
+                body: `Failure again: ${runUrl}`,
+              });
+              core.info(`Commented on existing issue #${existing.data[0].number}`);
+            } else {
+              const issue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: [label],
+              });
+              core.info(`Opened issue #${issue.data.number}`);
+            }
