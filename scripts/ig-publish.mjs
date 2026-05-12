@@ -72,18 +72,19 @@ async function graphCall(method, pathSuffix, params) {
 
 async function validateToken(igUserId) {
   console.log(`Token: ${maskToken(TOKEN)}`);
-  // Use IG-specific endpoint that only requires instagram_content_publish (the scope we have).
-  // /me requires pages_read_engagement which is not in our scope set.
-  const d = await graphCall("GET", `/${igUserId}/content_publishing_limit`, {
+  // List recent IG media — confirms token is bound to ig_user_id and has IG access.
+  // Avoids endpoints that need pages_read_engagement / instagram_basic.
+  const d = await graphCall("GET", `/${igUserId}/media`, {
+    fields: "id,timestamp",
+    limit: "1",
     access_token: TOKEN,
   });
-  const usage = d.data && d.data[0];
-  if (usage) {
-    console.log(
-      `IG quota: ${usage.quota_usage || 0}/${usage.config?.quota_total || 25} posts in last 24h (config period ${usage.config?.quota_duration || 86400}s)`,
-    );
+  const count = (d.data || []).length;
+  if (count > 0) {
+    const latest = d.data[0];
+    console.log(`IG access OK. Latest media id=${latest.id} ts=${latest.timestamp}`);
   } else {
-    console.log(`Quota check OK (raw: ${JSON.stringify(d)})`);
+    console.log(`IG access OK. No media yet on account ${igUserId}.`);
   }
   return d;
 }
