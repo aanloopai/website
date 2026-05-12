@@ -166,8 +166,7 @@ async function main() {
     return;
   }
 
-  await validateToken(sched.ig_user_id);
-
+  console.log(`Token: ${maskToken(TOKEN)}`);
   console.log(`\nCreating media container...`);
   const created = await createContainer(sched.ig_user_id, imageUrl, due.caption);
   const creationId = created.id;
