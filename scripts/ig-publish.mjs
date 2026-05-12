@@ -18,9 +18,27 @@ import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const REPO_ROOT = path.resolve(path.dirname(__filename), "..");
-const SCHEDULE_PATH = process.env.SCHEDULE_PATH
-  ? path.resolve(process.env.SCHEDULE_PATH)
-  : path.join(REPO_ROOT, "marketing", "instagram", "wave-2-schedule.json");
+const SCHEDULE_DIR = path.join(REPO_ROOT, "marketing", "instagram");
+
+async function resolveSchedulePath() {
+  if (process.env.SCHEDULE_PATH) return path.resolve(process.env.SCHEDULE_PATH);
+  const entries = await fs.readdir(SCHEDULE_DIR);
+  const waves = entries
+    .filter((f) => /^wave-\d+-schedule\.json$/.test(f))
+    .sort((a, b) => {
+      const na = parseInt(a.match(/wave-(\d+)/)[1], 10);
+      const nb = parseInt(b.match(/wave-(\d+)/)[1], 10);
+      return na - nb;
+    });
+  if (!waves.length) throw new Error(`No wave-N-schedule.json in ${SCHEDULE_DIR}`);
+  for (const f of [...waves].reverse()) {
+    const sched = JSON.parse(await fs.readFile(path.join(SCHEDULE_DIR, f), "utf8"));
+    if ((sched.posts || []).some((p) => p.posted_at === null)) {
+      return path.join(SCHEDULE_DIR, f);
+    }
+  }
+  return path.join(SCHEDULE_DIR, waves[waves.length - 1]);
+}
 
 const API_KEY = (process.env.COMPOSIO_API_KEY || "").trim();
 const BASE = (process.env.COMPOSIO_API_BASE || "https://backend.composio.dev").replace(/\/+$/, "");
@@ -34,13 +52,13 @@ function maskKey(k) {
   return `${k.slice(0, 6)}...${k.slice(-4)} len=${k.length}`;
 }
 
-async function readSchedule() {
-  const raw = await fs.readFile(SCHEDULE_PATH, "utf8");
+async function readSchedule(p) {
+  const raw = await fs.readFile(p, "utf8");
   return JSON.parse(raw);
 }
 
-async function writeSchedule(sched) {
-  await fs.writeFile(SCHEDULE_PATH, JSON.stringify(sched, null, 2) + "\n", "utf8");
+async function writeSchedule(p, sched) {
+  await fs.writeFile(p, JSON.stringify(sched, null, 2) + "\n", "utf8");
 }
 
 function findDuePost(sched, nowMs) {
@@ -182,7 +200,9 @@ async function main() {
   console.log(`Composio API key: ${maskKey(API_KEY)}`);
   console.log(`Composio base: ${BASE}`);
 
-  const sched = await readSchedule();
+  const schedulePath = await resolveSchedulePath();
+  console.log(`Schedule: ${path.relative(REPO_ROOT, schedulePath)}`);
+  const sched = await readSchedule(schedulePath);
 
   if (VALIDATE_ONLY) {
     console.log("VALIDATE_ONLY=1 — list IG connection + available tools, no post.");
@@ -273,7 +293,7 @@ async function main() {
   due.posted_at = timestamp ? new Date(timestamp).toISOString() : new Date().toISOString();
   due.media_id = mediaId;
   due.permalink = permalink;
-  await writeSchedule(sched);
+  await writeSchedule(schedulePath, sched);
   console.log(`\nUpdated schedule for ${due.id}.`);
 }
 

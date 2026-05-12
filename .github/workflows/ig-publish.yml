@@ -22,6 +22,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   publish:
@@ -44,6 +45,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Validate schedule
+        run: node scripts/validate-ig-schedule.mjs
+
       - name: Run IG publisher
         env:
           COMPOSIO_API_KEY: ${{ secrets.COMPOSIO_API_KEY }}
@@ -55,12 +59,55 @@ jobs:
       - name: Commit schedule update
         if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.validate_only != 'true' }}
         run: |
-          if git diff --quiet marketing/instagram/wave-2-schedule.json; then
+          if git diff --quiet marketing/instagram/wave-*-schedule.json; then
             echo "No schedule changes."
             exit 0
           fi
           git config user.name "aanloop-ig-bot"
           git config user.email "bot@aanloopai.nl"
-          git add marketing/instagram/wave-2-schedule.json
+          git add marketing/instagram/wave-*-schedule.json
           git commit -m "chore(social): record IG publish $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push origin master
+
+      - name: Open failure issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = 'ig-publish-fail';
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const title = `IG publish workflow failed (run ${context.runId})`;
+            const body = [
+              `Run: ${runUrl}`,
+              `Triggered by: ${context.eventName}`,
+              `Branch: ${context.ref}`,
+              ``,
+              `Open the failed step ('Run IG publisher') for the verbose error JSON. Token/connection issues typically log as 'Composio POST .../execute HTTP 4xx'.`,
+              ``,
+              `Auto-opened by .github/workflows/ig-publish.yml`,
+            ].join('\n');
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: label,
+              per_page: 5,
+            });
+            if (existing.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.data[0].number,
+                body: `Failure again: ${runUrl}`,
+              });
+              core.info(`Commented on existing issue #${existing.data[0].number}`);
+            } else {
+              const issue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: [label],
+              });
+              core.info(`Opened issue #${issue.data.number}`);
+            }
