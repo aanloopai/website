@@ -13,7 +13,10 @@ NAVY = "#0F172A"
 PEARL = "#F1F5F9"
 PEARL_DIM = "#94A3B8"
 INDIGO = "#4338CA"
+ROSE = "#E11D48"
+AMBER = "#D97706"
 EMERALD = "#047857"
+BRAND_ACCENTS = (INDIGO, ROSE, AMBER, EMERALD)
 
 FONT_REG = r"C:\Windows\Fonts\segoeuib.ttf"
 FONT_BLACK = r"C:\Windows\Fonts\seguibl.ttf"
@@ -45,30 +48,53 @@ def draw_line(d: ImageDraw.ImageDraw, y: int, w: int, fill: str, thickness: int 
 
 
 def draw_wordmark(d: ImageDraw.ImageDraw, baseline_y: int) -> None:
+    """Footer wordmark 'aanloop ai' (compact, dimmed pearl). Top signature carries huisstijl 4-strip."""
     f = font(FONT_REG, 38)
-    w, h = text_size(d, "aanloop", f)
-    d.text(((SIZE - w) // 2, baseline_y - h), "aanloop", fill=PEARL_DIM, font=f, anchor="lt")
+    text = "aanloop ai"
+    w, h = text_size(d, text, f)
+    x_text = (SIZE - w) // 2
+    y_text = baseline_y - h
+    d.text((x_text, y_text), text, fill=PEARL_DIM, font=f, anchor="lt")
+
+
+def draw_brand_signature_top(d: ImageDraw.ImageDraw, y: int = 70) -> None:
+    """Optional brand-signature 4-strip header (small, centered, ties post to huisstijl)."""
+    total_w = 280
+    strip_w = total_w // 4
+    strip_h = 6
+    x0_base = (SIZE - total_w) // 2
+    for i, color in enumerate(BRAND_ACCENTS):
+        x0 = x0_base + i * strip_w
+        x1 = x0 + strip_w if i < 3 else x0_base + total_w
+        d.rectangle([x0, y, x1, y + strip_h], fill=color)
 
 
 def post_01() -> None:
     img = Image.new("RGB", (SIZE, SIZE), NAVY)
     d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
 
-    f_big = font(FONT_BLACK, 200)
+    f_big = font(FONT_BLACK, 170)
     f_sub = font(FONT_LIGHT, 40)
-    _, h_big = text_size(d, "aanloop", f_big)
-    _, h_sub = text_size(d, "AI-agents voor Nederlands MKB", f_sub)
+    _, h_big = text_size(d, "aanloop ai", f_big)
     line_thickness = 6
-    gap1 = 48
+    gap1 = 36
     gap2 = 50
+    _, h_sub = text_size(d, "AI-agents voor het Nederlands MKB", f_sub)
     block_h = h_big + gap1 + line_thickness + gap2 + h_sub
-    y = (SIZE - block_h) // 2
+    y = (SIZE - block_h) // 2 - 30
 
-    y = draw_centered(d, "aanloop", y, f_big, PEARL)
+    y = draw_centered(d, "aanloop ai", y, f_big, PEARL)
     y += gap1
-    y = draw_line(d, y, 160, INDIGO, line_thickness)
-    y += gap2
-    draw_centered(d, "AI-agents voor Nederlands MKB", y, f_sub, PEARL)
+    strip_total_w = 540
+    strip_w = strip_total_w // 4
+    x0_base = (SIZE - strip_total_w) // 2
+    for i, color in enumerate(BRAND_ACCENTS):
+        x0 = x0_base + i * strip_w
+        x1 = x0 + strip_w if i < 3 else x0_base + strip_total_w
+        d.rectangle([x0, y, x1, y + line_thickness], fill=color)
+    y += line_thickness + gap2
+    draw_centered(d, "AI-agents voor het Nederlands MKB", y, f_sub, PEARL)
 
     img.save(OUT_DIR / "post-01-brand-intro.png", "PNG", optimize=True)
 
@@ -76,6 +102,7 @@ def post_01() -> None:
 def post_02() -> None:
     img = Image.new("RGB", (SIZE, SIZE), NAVY)
     d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
 
     f_huge = font(FONT_BLACK, 360)
     f_sub = font(FONT_LIGHT, 46)
@@ -130,6 +157,7 @@ def _draw_subtitle_with_dot(d: ImageDraw.ImageDraw, text: str, y: int, f: ImageF
 def post_03() -> None:
     img = Image.new("RGB", (SIZE, SIZE), NAVY)
     d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
 
     f_label = font(FONT_REG, 26)
     label = "MARCO   —   AI-RECEPTIONISTE"
@@ -165,6 +193,7 @@ def _draw_chat_bubble(d: ImageDraw.ImageDraw, cx: int, cy: int, w: int, h: int, 
 def post_04() -> None:
     img = Image.new("RGB", (SIZE, SIZE), NAVY)
     d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
 
     f_label = font(FONT_REG, 26)
     label = "EMMA   —   AI-CHATBOT"
@@ -183,6 +212,7 @@ def post_04() -> None:
 def post_05() -> None:
     img = Image.new("RGB", (SIZE, SIZE), NAVY)
     d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
 
     f_huge = font(FONT_BLACK, 200)
     f_sub = font(FONT_LIGHT, 46)
