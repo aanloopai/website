@@ -23,9 +23,12 @@ const __filename = fileURLToPath(import.meta.url);
 const REPO_ROOT = path.resolve(path.dirname(__filename), "..");
 const SCHEDULE_DIR = path.join(REPO_ROOT, "marketing", "linkedin");
 
-const TOKEN = (process.env.LINKEDIN_ACCESS_TOKEN || "").trim();
-const MEMBER_ID = (process.env.LINKEDIN_MEMBER_ID || "").trim();
-const ORG_ID = (process.env.LINKEDIN_ORG_ID || "").trim();
+function cleanEnv(v) {
+  return (v || "").replace(/\s+/g, "");
+}
+const TOKEN = cleanEnv(process.env.LINKEDIN_ACCESS_TOKEN);
+const MEMBER_ID = cleanEnv(process.env.LINKEDIN_MEMBER_ID);
+const ORG_ID = cleanEnv(process.env.LINKEDIN_ORG_ID);
 const AUTHOR_TYPE = (process.env.AUTHOR_TYPE || "person").trim();
 const DRY = process.env.DRY_RUN === "1";
 const VALIDATE_ONLY = process.env.VALIDATE_ONLY === "1";
