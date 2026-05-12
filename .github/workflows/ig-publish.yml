@@ -1,9 +1,11 @@
 name: Instagram Auto-Publish
 
-# Publishes the next due slot from marketing/instagram/wave-2-schedule.json
-# to @aanloop.ai via Meta Graph API. Runs Mon/Wed/Fri at 07:07 UTC (CEST 09:07)
-# and at 08:07 UTC (CET 09:07) so cadence holds across DST.
-# The publish script is idempotent: each slot has posted_at and won't re-fire.
+# Publishes the next due slot from marketing/instagram/wave-N-schedule.json
+# to @aanloop.ai via Meta Graph API (direct, v19.0). Runs Mon/Wed/Fri at
+# 07:07 UTC (CEST 09:07) and at 08:07 UTC (CET 09:07) so cadence holds
+# across DST. The publish script is idempotent: each slot has posted_at
+# and won't re-fire.
+# Migrated off Composio Rube on 2026-05-12 ahead of Rube EOL 2026-05-15.
 
 on:
   schedule:
@@ -50,8 +52,8 @@ jobs:
 
       - name: Run IG publisher
         env:
-          COMPOSIO_API_KEY: ${{ secrets.COMPOSIO_API_KEY }}
-          COMPOSIO_CONNECTION_ID: ${{ secrets.COMPOSIO_CONNECTION_ID }}
+          META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
+          IG_BUSINESS_ACCOUNT_ID: ${{ secrets.IG_BUSINESS_ACCOUNT_ID }}
           DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '' }}
           VALIDATE_ONLY: ${{ github.event.inputs.validate_only == 'true' && '1' || '' }}
         run: node scripts/ig-publish.mjs
@@ -82,7 +84,7 @@ jobs:
               `Triggered by: ${context.eventName}`,
               `Branch: ${context.ref}`,
               ``,
-              `Open the failed step ('Run IG publisher') for the verbose error JSON. Token/connection issues typically log as 'Composio POST .../execute HTTP 4xx'.`,
+              `Open the failed step ('Run IG publisher') for the verbose error JSON. Token issues typically log as 'Graph POST .../media HTTP 4xx' with an error.code/error.message. Container processing failures show as 'Container ... status=ERROR'.`,
               ``,
               `Auto-opened by .github/workflows/ig-publish.yml`,
             ].join('\n');

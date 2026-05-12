@@ -1,6 +1,6 @@
 # Instagram Auto-Publish — Setup
 
-GitHub Actions cron publishes one due slot from `wave-2-schedule.json` to `@aanloop.ai` every Mo/We/Fr 09:00 CET. Onafhankelijk van Composio Rube (EOL 2026-05-15).
+GitHub Actions cron publishes one due slot from `wave-N-schedule.json` to `@aanloop.ai` every Mo/We/Fr 09:00 CET via **direct Meta Graph API (v19.0)**. Composio Rube migratie afgerond 2026-05-12, vooruitlopend op Rube EOL 2026-05-15.
 
 ## Componenten
 
@@ -64,24 +64,43 @@ curl -s "https://graph.facebook.com/v21.0/debug_token?input_token={PAGE_TOKEN}&a
 
 `expires_at` moet `0` zijn (no expiry).
 
-### 2. GitHub Secret toevoegen
+### 2. IG Business Account ID ophalen
 
-GitHub repo `aanloopai/website` → **Settings → Secrets and variables → Actions → New repository secret**:
+```bash
+curl -s "https://graph.facebook.com/v21.0/{PAGE_ID}?fields=instagram_business_account&access_token={PAGE_TOKEN}"
+```
 
-- Name: `META_LL_TOKEN`
-- Value: het Page Access Token uit Stap D
+Response: `{"instagram_business_account":{"id":"27079267511690071"},"id":"{PAGE_ID}"}` → noteer het `instagram_business_account.id`.
 
-### 3. Workflow inschakelen
+### 3. GitHub Secrets toevoegen
+
+GitHub repo → **Settings → Secrets and variables → Actions → New repository secret**:
+
+| Secret name | Waarde |
+|-------------|--------|
+| `META_PAGE_ACCESS_TOKEN` | Page Access Token uit Stap D |
+| `IG_BUSINESS_ACCOUNT_ID` | IG business account id uit stap 2 |
+
+Verwijder oude Composio-secrets als ze nog bestaan: `COMPOSIO_API_KEY`, `COMPOSIO_CONNECTION_ID`.
+
+### 4. Workflow inschakelen
 
 `.github/workflows/ig-publish.yml` is al in master. GitHub activeert cron automatisch nadat het bestand op de default branch staat.
 
-### 4. Test-run
+### 5. Test-run
 
 GitHub repo → **Actions → Instagram Auto-Publish → Run workflow** (master):
-- Input `dry_run`: `true` (eerste run om token + schedule te valideren, geen Graph API)
-- Output in run-log moet eerste due-slot tonen of "No due post"
 
-Daarna `dry_run: false` voor echte publish (alleen als slot nu due is).
+- Eerst `validate_only: true` → publisher print `Token /me` + `IG account` regels zonder posten.
+- Daarna `dry_run: true` → publisher resolvt due-slot + image-URL, geen Graph-call.
+- Tot slot `dry_run: false` voor echte publish (alleen als een slot nu due is).
+
+Lokaal:
+
+```bash
+META_PAGE_ACCESS_TOKEN=... IG_BUSINESS_ACCOUNT_ID=... VALIDATE_ONLY=1 node scripts/ig-publish.mjs
+META_PAGE_ACCESS_TOKEN=... IG_BUSINESS_ACCOUNT_ID=... DRY_RUN=1     node scripts/ig-publish.mjs
+```
 
 ## Schedule beheren
 
@@ -120,8 +139,8 @@ Long-lived Page tokens vervallen niet, **behalve** als:
 - Page-admin wijzigt
 - Meta de app of token revokeert
 
-Bij failure HTTP 190 (`OAuthException`): herhaal Stap B-D, update `META_LL_TOKEN` secret.
+Bij failure HTTP 190 (`OAuthException`): herhaal Stap B-D, update `META_PAGE_ACCESS_TOKEN` secret.
 
 ## Composio onafhankelijkheid
 
-Deze pipeline gebruikt **Meta Graph API direct**. Geen Composio-dependency. Werkt na 2026-05-15 (Composio Rube EOL).
+Deze pipeline gebruikt **Meta Graph API direct (v19.0)**. Geen Composio-dependency. Migratie afgerond 2026-05-12, vooruitlopend op Composio Rube EOL 2026-05-15.
