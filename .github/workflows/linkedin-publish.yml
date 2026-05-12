@@ -1,0 +1,114 @@
+name: LinkedIn Auto-Publish
+
+# Publishes the next due slot from marketing/linkedin/wave-N-schedule.json
+# via the LinkedIn /v2/ugcPosts API. Runs Tue/Thu at 07:00 UTC (CEST 09:00)
+# and at 08:00 UTC (CET 09:00) so cadence holds across DST.
+# Mustafa personal profile posts work today. Company-page posts require
+# Marketing Developer Platform approval; set AUTHOR_TYPE=organization and add
+# LINKEDIN_ORG_ID secret once approved.
+
+on:
+  schedule:
+    - cron: '0 7 * * 2,4'
+    - cron: '0 8 * * 2,4'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Skip API calls (preview only)'
+        required: false
+        default: 'false'
+      validate_only:
+        description: 'Token + identity check, no posting'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  publish:
+    name: Publish next LinkedIn slot
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: linkedin-publish
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run LinkedIn publisher
+        env:
+          LINKEDIN_ACCESS_TOKEN: ${{ secrets.LINKEDIN_ACCESS_TOKEN }}
+          LINKEDIN_MEMBER_ID: ${{ secrets.LINKEDIN_MEMBER_ID }}
+          LINKEDIN_ORG_ID: ${{ secrets.LINKEDIN_ORG_ID }}
+          AUTHOR_TYPE: ${{ vars.LINKEDIN_AUTHOR_TYPE || 'person' }}
+          DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '' }}
+          VALIDATE_ONLY: ${{ github.event.inputs.validate_only == 'true' && '1' || '' }}
+        run: node scripts/linkedin-publish.mjs
+
+      - name: Commit schedule update
+        if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.validate_only != 'true' }}
+        run: |
+          if git diff --quiet marketing/linkedin/wave-*-schedule.json; then
+            echo "No schedule changes."
+            exit 0
+          fi
+          git config user.name "aanloop-li-bot"
+          git config user.email "bot@aanloopai.nl"
+          git add marketing/linkedin/wave-*-schedule.json
+          git commit -m "chore(social): record LinkedIn publish $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push origin master
+
+      - name: Open failure issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = 'linkedin-publish-fail';
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const title = `LinkedIn publish workflow failed (run ${context.runId})`;
+            const body = [
+              `Run: ${runUrl}`,
+              `Triggered by: ${context.eventName}`,
+              `Branch: ${context.ref}`,
+              ``,
+              `Open the failed step ('Run LinkedIn publisher') for the verbose error JSON. Common causes: LINKEDIN_ACCESS_TOKEN expired (60d for personal scope, refresh via OAuth), missing w_organization_social scope when posting on the company page, or image-upload POST failure.`,
+              ``,
+              `Auto-opened by .github/workflows/linkedin-publish.yml`,
+            ].join('\n');
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: label,
+              per_page: 5,
+            });
+            if (existing.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.data[0].number,
+                body: `Failure again: ${runUrl}`,
+              });
+              core.info(`Commented on existing issue #${existing.data[0].number}`);
+            } else {
+              const issue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: [label],
+              });
+              core.info(`Opened issue #${issue.data.number}`);
+            }
