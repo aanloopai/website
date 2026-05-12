@@ -1,9 +1,20 @@
 name: IG DM Bot Deploy
 
-# Deploys scripts/ig-dm-bot.mjs + marketing/instagram/dm-templates.json to
-# Hetzner host via rsync over SSH and restarts the systemd service.
-# Trigger: push to master touching the bot script, templates, or this workflow.
-# Manual: workflow_dispatch.
+# Self-bootstrapping deploy for the Instagram DM auto-reply bot.
+# First run: installs prerequisites (Node, nginx, certbot), creates user/dirs,
+# obtains TLS cert, drops bot code, writes env-file from GitHub secrets, starts
+# systemd unit. Subsequent runs: rsync bot+templates, restart service.
+#
+# Required GitHub secrets:
+#   Hetzner access:
+#     HETZNER_SSH_PRIVATE_KEY   ed25519 private key (PEM, incl BEGIN/END)
+#     HETZNER_SSH_USER          'root' (or sudo-enabled deploy user)
+#     HETZNER_HOST              178.104.100.94
+#   IG bot:
+#     IG_PAGE_ACCESS_TOKEN      Meta long-lived Page token
+#     IG_USER_ID                IG Business User ID (numeric)
+#     IG_WEBHOOK_VERIFY_TOKEN   Random 32+ char string (must match Meta App webhook)
+#     IG_APP_SECRET             Meta App Secret (from Settings -> Basic)
 
 on:
   push:
@@ -20,9 +31,9 @@ permissions:
 
 jobs:
   deploy:
-    name: Rsync + restart on Hetzner
+    name: Bootstrap + deploy on Hetzner
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 12
     concurrency:
       group: ig-dm-deploy
       cancel-in-progress: false
@@ -34,6 +45,29 @@ jobs:
           ref: master
           fetch-depth: 1
 
+      - name: Verify required secrets
+        env:
+          HETZNER_SSH_PRIVATE_KEY: ${{ secrets.HETZNER_SSH_PRIVATE_KEY }}
+          HETZNER_SSH_USER: ${{ secrets.HETZNER_SSH_USER }}
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+          IG_PAGE_ACCESS_TOKEN: ${{ secrets.IG_PAGE_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_WEBHOOK_VERIFY_TOKEN: ${{ secrets.IG_WEBHOOK_VERIFY_TOKEN }}
+          IG_APP_SECRET: ${{ secrets.IG_APP_SECRET }}
+        run: |
+          missing=0
+          for var in HETZNER_SSH_PRIVATE_KEY HETZNER_SSH_USER HETZNER_HOST IG_PAGE_ACCESS_TOKEN IG_USER_ID IG_WEBHOOK_VERIFY_TOKEN IG_APP_SECRET; do
+            if [ -z "${!var}" ]; then
+              echo "::error::Missing secret: $var"
+              missing=1
+            fi
+          done
+          if [ $missing -eq 1 ]; then
+            echo "::error::Add the secrets above in Settings -> Secrets and variables -> Actions."
+            exit 1
+          fi
+          echo "All required secrets present."
+
       - name: Setup SSH key
         env:
           HETZNER_SSH_PRIVATE_KEY: ${{ secrets.HETZNER_SSH_PRIVATE_KEY }}
@@ -42,13 +76,16 @@ jobs:
           mkdir -p ~/.ssh
           printf '%s\n' "$HETZNER_SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
           chmod 0600 ~/.ssh/id_ed25519
-          ssh-keyscan -H "$HETZNER_HOST" >> ~/.ssh/known_hosts
+          ssh-keyscan -H "$HETZNER_HOST" >> ~/.ssh/known_hosts 2>/dev/null
 
-      - name: Rsync bot + templates
+      - name: Rsync deploy directory + bot code + templates
         env:
           HETZNER_SSH_USER: ${{ secrets.HETZNER_SSH_USER }}
           HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
         run: |
+          # Ensure base dirs exist on the host (idempotent)
+          ssh -i ~/.ssh/id_ed25519 "${HETZNER_SSH_USER}@${HETZNER_HOST}" \
+            "mkdir -p /opt/aanloop-ig-dm/{scripts,marketing/instagram,deploy/ig-dm,data}"
           rsync -avz \
             -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes" \
             scripts/ig-dm-bot.mjs \
@@ -57,26 +94,62 @@ jobs:
             -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes" \
             marketing/instagram/dm-templates.json \
             "${HETZNER_SSH_USER}@${HETZNER_HOST}:/opt/aanloop-ig-dm/marketing/instagram/"
+          rsync -avz \
+            -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes" \
+            deploy/ig-dm/ \
+            "${HETZNER_SSH_USER}@${HETZNER_HOST}:/opt/aanloop-ig-dm/deploy/ig-dm/"
 
-      - name: Restart systemd unit
+      - name: Bootstrap host (idempotent install.sh)
+        env:
+          HETZNER_SSH_USER: ${{ secrets.HETZNER_SSH_USER }}
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+          IG_PAGE_ACCESS_TOKEN: ${{ secrets.IG_PAGE_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_WEBHOOK_VERIFY_TOKEN: ${{ secrets.IG_WEBHOOK_VERIFY_TOKEN }}
+          IG_APP_SECRET: ${{ secrets.IG_APP_SECRET }}
+        run: |
+          ssh -i ~/.ssh/id_ed25519 "${HETZNER_SSH_USER}@${HETZNER_HOST}" \
+            "IG_PAGE_ACCESS_TOKEN='${IG_PAGE_ACCESS_TOKEN}' \
+             IG_USER_ID='${IG_USER_ID}' \
+             IG_WEBHOOK_VERIFY_TOKEN='${IG_WEBHOOK_VERIFY_TOKEN}' \
+             IG_APP_SECRET='${IG_APP_SECRET}' \
+             bash /opt/aanloop-ig-dm/deploy/ig-dm/install.sh"
+
+      - name: Start / restart systemd unit
         env:
           HETZNER_SSH_USER: ${{ secrets.HETZNER_SSH_USER }}
           HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
         run: |
-          ssh -i ~/.ssh/id_ed25519 \
-            "${HETZNER_SSH_USER}@${HETZNER_HOST}" \
+          ssh -i ~/.ssh/id_ed25519 "${HETZNER_SSH_USER}@${HETZNER_HOST}" \
             "sudo systemctl restart aanloop-ig-dm && sudo systemctl is-active aanloop-ig-dm"
+
+      - name: Wait for service warmup
+        run: sleep 4
 
       - name: Health check
         run: |
-          for i in 1 2 3 4 5; do
+          for i in 1 2 3 4 5 6 7 8 9 10; do
             if curl -fsS --max-time 5 https://ig-dm.aanloopai.nl/health; then
               echo
               echo "Health OK"
               exit 0
             fi
-            echo "Health attempt $i failed; retrying in 3s"
-            sleep 3
+            echo "Health attempt $i failed; retrying in 5s"
+            sleep 5
           done
-          echo "Health check failed after 5 attempts" >&2
+          echo "::error::Health check failed after 10 attempts. Check journalctl -u aanloop-ig-dm on host."
           exit 1
+
+      - name: Webhook verify self-test
+        env:
+          IG_WEBHOOK_VERIFY_TOKEN: ${{ secrets.IG_WEBHOOK_VERIFY_TOKEN }}
+        run: |
+          challenge="test-$(date +%s)"
+          response=$(curl -fsS --max-time 5 \
+            "https://ig-dm.aanloopai.nl/webhook?hub.mode=subscribe&hub.verify_token=${IG_WEBHOOK_VERIFY_TOKEN}&hub.challenge=${challenge}" \
+            || true)
+          if [ "$response" = "$challenge" ]; then
+            echo "Webhook GET verify OK"
+          else
+            echo "::warning::Webhook verify mismatch. Expected '$challenge', got '$response'. Meta App webhook config must use the same IG_WEBHOOK_VERIFY_TOKEN."
+          fi
