@@ -70,11 +70,22 @@ async function graphCall(method, pathSuffix, params) {
   return data;
 }
 
-async function validateToken() {
+async function validateToken(igUserId) {
   console.log(`Token: ${maskToken(TOKEN)}`);
-  const me = await graphCall("GET", "/me", { fields: "id,name,category", access_token: TOKEN });
-  console.log(`Token belongs to Page: ${me.name} (id=${me.id}, category=${me.category || "n/a"})`);
-  return me;
+  // Use IG-specific endpoint that only requires instagram_content_publish (the scope we have).
+  // /me requires pages_read_engagement which is not in our scope set.
+  const d = await graphCall("GET", `/${igUserId}/content_publishing_limit`, {
+    access_token: TOKEN,
+  });
+  const usage = d.data && d.data[0];
+  if (usage) {
+    console.log(
+      `IG quota: ${usage.quota_usage || 0}/${usage.config?.quota_total || 25} posts in last 24h (config period ${usage.config?.quota_duration || 86400}s)`,
+    );
+  } else {
+    console.log(`Quota check OK (raw: ${JSON.stringify(d)})`);
+  }
+  return d;
 }
 
 async function createContainer(igUserId, imageUrl, caption) {
@@ -122,14 +133,15 @@ async function main() {
     process.exit(2);
   }
 
+  const sched = await readSchedule();
+
   if (VALIDATE_ONLY) {
-    console.log("VALIDATE_ONLY=1 — token + Page sanity check, no schedule read, no post.");
-    await validateToken();
+    console.log("VALIDATE_ONLY=1 — IG quota + token check, no post.");
+    await validateToken(sched.ig_user_id);
     console.log("Token OK. Exiting.");
     return;
   }
 
-  const sched = await readSchedule();
   const now = Date.now();
   const due = findDuePost(sched, now);
 
@@ -153,7 +165,7 @@ async function main() {
     return;
   }
 
-  await validateToken();
+  await validateToken(sched.ig_user_id);
 
   console.log(`\nCreating media container...`);
   const created = await createContainer(sched.ig_user_id, imageUrl, due.caption);
