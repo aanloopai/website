@@ -1,0 +1,33 @@
+[Unit]
+Description=Aanloop Instagram DM auto-reply bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=aanloop
+Group=aanloop
+WorkingDirectory=/opt/aanloop-ig-dm
+EnvironmentFile=/etc/aanloop-ig-dm.env
+ExecStart=/usr/bin/node /opt/aanloop-ig-dm/scripts/ig-dm-bot.mjs
+Restart=on-failure
+RestartSec=5
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=aanloop-ig-dm
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/aanloop-ig-dm/data
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictNamespaces=true
+LockPersonality=true
+RestrictRealtime=true
+MemoryDenyWriteExecute=true
+
+[Install]
+WantedBy=multi-user.target

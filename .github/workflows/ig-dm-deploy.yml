@@ -1,0 +1,82 @@
+name: IG DM Bot Deploy
+
+# Deploys scripts/ig-dm-bot.mjs + marketing/instagram/dm-templates.json to
+# Hetzner host via rsync over SSH and restarts the systemd service.
+# Trigger: push to master touching the bot script, templates, or this workflow.
+# Manual: workflow_dispatch.
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'scripts/ig-dm-bot.mjs'
+      - 'marketing/instagram/dm-templates.json'
+      - 'deploy/ig-dm/**'
+      - '.github/workflows/ig-dm-deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Rsync + restart on Hetzner
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: ig-dm-deploy
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 1
+
+      - name: Setup SSH key
+        env:
+          HETZNER_SSH_PRIVATE_KEY: ${{ secrets.HETZNER_SSH_PRIVATE_KEY }}
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$HETZNER_SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 0600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "$HETZNER_HOST" >> ~/.ssh/known_hosts
+
+      - name: Rsync bot + templates
+        env:
+          HETZNER_SSH_USER: ${{ secrets.HETZNER_SSH_USER }}
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+        run: |
+          rsync -avz \
+            -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes" \
+            scripts/ig-dm-bot.mjs \
+            "${HETZNER_SSH_USER}@${HETZNER_HOST}:/opt/aanloop-ig-dm/scripts/"
+          rsync -avz \
+            -e "ssh -i ~/.ssh/id_ed25519 -o StrictHostKeyChecking=yes" \
+            marketing/instagram/dm-templates.json \
+            "${HETZNER_SSH_USER}@${HETZNER_HOST}:/opt/aanloop-ig-dm/marketing/instagram/"
+
+      - name: Restart systemd unit
+        env:
+          HETZNER_SSH_USER: ${{ secrets.HETZNER_SSH_USER }}
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+        run: |
+          ssh -i ~/.ssh/id_ed25519 \
+            "${HETZNER_SSH_USER}@${HETZNER_HOST}" \
+            "sudo systemctl restart aanloop-ig-dm && sudo systemctl is-active aanloop-ig-dm"
+
+      - name: Health check
+        run: |
+          for i in 1 2 3 4 5; do
+            if curl -fsS --max-time 5 https://ig-dm.aanloopai.nl/health; then
+              echo
+              echo "Health OK"
+              exit 0
+            fi
+            echo "Health attempt $i failed; retrying in 3s"
+            sleep 3
+          done
+          echo "Health check failed after 5 attempts" >&2
+          exit 1
