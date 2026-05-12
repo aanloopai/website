@@ -4,10 +4,10 @@
 // writes media_id + permalink + posted_at back.
 //
 // Env:
-//   META_LL_TOKEN      — long-lived Page access token (required)
+//   META_LL_TOKEN      — long-lived Page access token (required for live runs)
 //   GRAPH_API_VERSION  — default v21.0
 //   SCHEDULE_PATH      — default marketing/instagram/wave-2-schedule.json
-//   DRY_RUN            — '1' = skip Graph API, print only
+//   DRY_RUN            — '1' = skip Graph API writes, print plan only
 
 import fs from "node:fs/promises";
 import path from "node:path";
@@ -19,10 +19,17 @@ const SCHEDULE_PATH = process.env.SCHEDULE_PATH
   ? path.resolve(process.env.SCHEDULE_PATH)
   : path.join(REPO_ROOT, "marketing", "instagram", "wave-2-schedule.json");
 const GRAPH_VERSION = process.env.GRAPH_API_VERSION || "v21.0";
-const TOKEN = process.env.META_LL_TOKEN || "";
+const TOKEN = (process.env.META_LL_TOKEN || "").trim();
 const DRY = process.env.DRY_RUN === "1";
+const VALIDATE_ONLY = process.env.VALIDATE_ONLY === "1";
 
 const GRAPH_BASE = `https://graph.facebook.com/${GRAPH_VERSION}`;
+
+function maskToken(t) {
+  if (!t) return "(empty)";
+  if (t.length <= 12) return "(short)";
+  return `${t.slice(0, 6)}...${t.slice(-4)} len=${t.length}`;
+}
 
 async function readSchedule() {
   const raw = await fs.readFile(SCHEDULE_PATH, "utf8");
@@ -37,42 +44,71 @@ function findDuePost(sched, nowMs) {
   return sched.posts.find((p) => p.posted_at === null && new Date(p.slot_iso).getTime() <= nowMs);
 }
 
-async function graph(method, pathSuffix, body) {
+async function graphCall(method, pathSuffix, params) {
   const url = `${GRAPH_BASE}${pathSuffix}`;
-  const opts = { method, headers: { "Content-Type": "application/json" } };
-  if (body) opts.body = JSON.stringify(body);
-  const res = await fetch(url, opts);
-  const data = await res.json().catch(() => ({}));
+  const opts = { method, headers: {} };
+  let finalUrl = url;
+  if (method === "GET") {
+    const qs = new URLSearchParams(params || {}).toString();
+    finalUrl = qs ? `${url}?${qs}` : url;
+  } else {
+    opts.headers["Content-Type"] = "application/x-www-form-urlencoded";
+    opts.body = new URLSearchParams(params || {}).toString();
+  }
+  const res = await fetch(finalUrl, opts);
+  const text = await res.text();
+  let data;
+  try {
+    data = JSON.parse(text);
+  } catch {
+    data = { _raw: text };
+  }
   if (!res.ok) {
-    throw new Error(
-      `Graph ${method} ${pathSuffix} failed: HTTP ${res.status} ${JSON.stringify(data)}`,
-    );
+    const msg = JSON.stringify(data);
+    throw new Error(`Graph ${method} ${pathSuffix} HTTP ${res.status}: ${msg}`);
   }
   return data;
 }
 
+async function validateToken() {
+  console.log(`Token: ${maskToken(TOKEN)}`);
+  const me = await graphCall("GET", "/me", { fields: "id,name,category", access_token: TOKEN });
+  console.log(`Token belongs to Page: ${me.name} (id=${me.id}, category=${me.category || "n/a"})`);
+  return me;
+}
+
 async function createContainer(igUserId, imageUrl, caption) {
-  const params = new URLSearchParams({ image_url: imageUrl, caption, access_token: TOKEN });
-  return graph("POST", `/${igUserId}/media?${params.toString()}`);
+  return graphCall("POST", `/${igUserId}/media`, {
+    image_url: imageUrl,
+    caption,
+    access_token: TOKEN,
+  });
 }
 
 async function publishContainer(igUserId, creationId) {
-  const params = new URLSearchParams({ creation_id: creationId, access_token: TOKEN });
-  return graph("POST", `/${igUserId}/media_publish?${params.toString()}`);
+  return graphCall("POST", `/${igUserId}/media_publish`, {
+    creation_id: creationId,
+    access_token: TOKEN,
+  });
 }
 
 async function fetchPermalink(mediaId) {
-  const params = new URLSearchParams({ fields: "permalink,timestamp", access_token: TOKEN });
-  return graph("GET", `/${mediaId}?${params.toString()}`);
+  return graphCall("GET", `/${mediaId}`, {
+    fields: "permalink,timestamp",
+    access_token: TOKEN,
+  });
 }
 
-async function waitContainerReady(creationId, maxSeconds = 60) {
+async function waitContainerReady(creationId, maxSeconds = 90) {
   const deadline = Date.now() + maxSeconds * 1000;
   let last = "";
   while (Date.now() < deadline) {
-    const params = new URLSearchParams({ fields: "status_code,status", access_token: TOKEN });
-    const d = await graph("GET", `/${creationId}?${params.toString()}`);
+    const d = await graphCall("GET", `/${creationId}`, {
+      fields: "status_code,status",
+      access_token: TOKEN,
+    });
     last = d.status_code || d.status || "";
+    console.log(`  container ${creationId} status=${last}`);
     if (last === "FINISHED") return;
     if (last === "ERROR" || last === "EXPIRED") throw new Error(`Container failed: ${last}`);
     await new Promise((r) => setTimeout(r, 3000));
@@ -82,8 +118,15 @@ async function waitContainerReady(creationId, maxSeconds = 60) {
 
 async function main() {
   if (!TOKEN && !DRY) {
-    console.error("META_LL_TOKEN missing");
+    console.error("META_LL_TOKEN missing or empty after trim");
     process.exit(2);
+  }
+
+  if (VALIDATE_ONLY) {
+    console.log("VALIDATE_ONLY=1 — token + Page sanity check, no schedule read, no post.");
+    await validateToken();
+    console.log("Token OK. Exiting.");
+    return;
   }
 
   const sched = await readSchedule();
@@ -100,39 +143,52 @@ async function main() {
   }
 
   const imageUrl = `${sched.image_base_url}/${due.image}`;
-  console.log(`Publishing ${due.id} (slot ${due.slot_iso}) -> ${imageUrl}`);
+  console.log(`Slot: ${due.id} (slot_iso=${due.slot_iso})`);
+  console.log(`Image URL: ${imageUrl}`);
   console.log(`Caption first line: ${due.caption.split("\n")[0].slice(0, 80)}`);
+  console.log(`Caption length: ${due.caption.length} chars`);
 
   if (DRY) {
     console.log("DRY_RUN=1 - skipping Graph API calls.");
     return;
   }
 
+  await validateToken();
+
+  console.log(`\nCreating media container...`);
   const created = await createContainer(sched.ig_user_id, imageUrl, due.caption);
   const creationId = created.id;
-  console.log(`Container: ${creationId}`);
+  console.log(`Container created: ${creationId}`);
 
-  await waitContainerReady(creationId, 60);
+  console.log(`\nWaiting for container FINISHED...`);
+  await waitContainerReady(creationId, 90);
+
+  console.log(`\nPublishing container...`);
   const pub = await publishContainer(sched.ig_user_id, creationId);
   const mediaId = pub.id;
   console.log(`Published media: ${mediaId}`);
 
   let permalink = null;
+  let timestamp = null;
   try {
     const det = await fetchPermalink(mediaId);
     permalink = det.permalink || null;
+    timestamp = det.timestamp || null;
+    console.log(`Permalink: ${permalink}`);
   } catch (e) {
     console.warn(`Permalink fetch failed: ${e.message}`);
   }
 
-  due.posted_at = new Date().toISOString();
+  due.posted_at = timestamp
+    ? new Date(timestamp).toISOString()
+    : new Date().toISOString();
   due.media_id = mediaId;
   due.permalink = permalink;
   await writeSchedule(sched);
-  console.log(`Updated schedule for ${due.id}.`);
+  console.log(`\nUpdated schedule for ${due.id}.`);
 }
 
 main().catch((e) => {
-  console.error(e.stack || e.message);
+  console.error(`\nFATAL: ${e.stack || e.message}`);
   process.exit(1);
 });

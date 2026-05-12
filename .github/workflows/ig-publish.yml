@@ -15,6 +15,10 @@ on:
         description: 'Skip Graph API calls (preview only)'
         required: false
         default: 'false'
+      validate_only:
+        description: 'Token + Page identity check, no posting'
+        required: false
+        default: 'false'
 
 permissions:
   contents: write
@@ -44,10 +48,11 @@ jobs:
         env:
           META_LL_TOKEN: ${{ secrets.META_LL_TOKEN }}
           DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '' }}
+          VALIDATE_ONLY: ${{ github.event.inputs.validate_only == 'true' && '1' || '' }}
         run: node scripts/ig-publish.mjs
 
       - name: Commit schedule update
-        if: ${{ github.event.inputs.dry_run != 'true' }}
+        if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.validate_only != 'true' }}
         run: |
           if git diff --quiet marketing/instagram/wave-2-schedule.json; then
             echo "No schedule changes."
