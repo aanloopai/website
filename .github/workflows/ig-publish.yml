@@ -1,0 +1,60 @@
+name: Instagram Auto-Publish
+
+# Publishes the next due slot from marketing/instagram/wave-2-schedule.json
+# to @aanloop.ai via Meta Graph API. Runs Mon/Wed/Fri at 07:07 UTC (CEST 09:07)
+# and at 08:07 UTC (CET 09:07) so cadence holds across DST.
+# The publish script is idempotent: each slot has posted_at and won't re-fire.
+
+on:
+  schedule:
+    - cron: '7 7 * * 1,3,5'
+    - cron: '7 8 * * 1,3,5'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Skip Graph API calls (preview only)'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    name: Publish next IG slot
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: ig-publish
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run IG publisher
+        env:
+          META_LL_TOKEN: ${{ secrets.META_LL_TOKEN }}
+          DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '' }}
+        run: node scripts/ig-publish.mjs
+
+      - name: Commit schedule update
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        run: |
+          if git diff --quiet marketing/instagram/wave-2-schedule.json; then
+            echo "No schedule changes."
+            exit 0
+          fi
+          git config user.name "aanloop-ig-bot"
+          git config user.email "bot@aanloopai.nl"
+          git add marketing/instagram/wave-2-schedule.json
+          git commit -m "chore(social): record IG publish $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push origin master

@@ -240,12 +240,187 @@ def post_05() -> None:
     img.save(OUT_DIR / "post-05-roi-3-6-mnd.png", "PNG", optimize=True)
 
 
+def post_06_eu_ai_act() -> None:
+    """Wave 2.1 — EU AI Act 5 stappen MKB."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    f_label = font(FONT_REG, 26)
+    draw_centered(d, "EU AI ACT  —  MKB", 260, f_label, PEARL_DIM)
+
+    f_huge = font(FONT_BLACK, 200)
+    f_sub = font(FONT_LIGHT, 44)
+    _, h_huge = text_size(d, "5 stappen", f_huge)
+    line_thickness = 6
+    gap1 = 60
+    gap2 = 55
+    lines = ["om compliant te zijn", "voor 2 augustus 2026"]
+    _, h_line = text_size(d, lines[0], f_sub)
+    line_spacing = 16
+
+    y = 340
+    y = draw_centered(d, "5 stappen", y, f_huge, PEARL)
+    y += gap1
+    y = draw_line(d, y, 200, ROSE, line_thickness)
+    y += gap2
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_sub, PEARL)
+        y += line_spacing
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "post-06-eu-ai-act.png", "PNG", optimize=True)
+
+
+def post_07_horeca_case() -> None:
+    """Wave 2.2 — Horeca case (geanonimiseerd)."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    f_label = font(FONT_REG, 26)
+    draw_centered(d, "KLANT  —  HORECA, AMSTERDAM", 260, f_label, PEARL_DIM)
+
+    f_huge = font(FONT_BLACK, 360)
+    _, h_huge = text_size(d, "0", f_huge)
+    line_thickness = 6
+    gap1 = 60
+    gap2 = 50
+
+    y = 360
+    y = draw_centered(d, "0", y, f_huge, PEARL)
+    y += gap1
+    y = draw_line(d, y, 200, AMBER, line_thickness)
+    y += gap2
+    f_sub = font(FONT_LIGHT, 44)
+    lines = ["gemiste oproepen", "tijdens de avondservice"]
+    _, h_line = text_size(d, lines[0], f_sub)
+    line_spacing = 16
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_sub, PEARL)
+        y += line_spacing
+
+    f_after = font(FONT_REG, 28)
+    draw_centered(d, "na 60 dagen met Marco", y + 30, f_after, PEARL_DIM)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "post-07-horeca-case.png", "PNG", optimize=True)
+
+
+def post_08_founder_pov() -> None:
+    """Wave 2.3 — Founder POV (Mustafa stelling, no portrait yet)."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    f_label = font(FONT_REG, 26)
+    draw_centered(d, "MUSTAFA  —  FOUNDER · AANLOOP AI", 260, f_label, PEARL_DIM)
+
+    f_quote = font(FONT_BLACK, 110)
+    quote_lines = [
+        "“Ik accepteer",
+        "geen vendor",
+        "lock-in.",
+        "Jij ook niet.”",
+    ]
+    _, h_line = text_size(d, quote_lines[0], f_quote)
+    line_spacing = 10
+    block_h = len(quote_lines) * h_line + (len(quote_lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 30
+    for ln in quote_lines:
+        y = draw_centered(d, ln, y, f_quote, PEARL)
+        y += line_spacing
+
+    y += 30
+    line_thickness = 6
+    y = draw_line(d, y, 160, INDIGO, line_thickness)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "post-08-founder-pov.png", "PNG", optimize=True)
+
+
+def post_09_roi_tool() -> None:
+    """Wave 2.4 — ROI-rekentool teaser."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    f_label = font(FONT_REG, 26)
+    draw_centered(d, "GRATIS TOOL  —  AANLOOPAI.NL", 260, f_label, PEARL_DIM)
+
+    f_huge = font(FONT_BLACK, 220)
+    _, h_huge = text_size(d, "60 sec.", f_huge)
+    line_thickness = 6
+    gap1 = 60
+    gap2 = 50
+
+    y = 380
+    y = draw_centered(d, "60 sec.", y, f_huge, PEARL)
+    y += gap1
+    y = draw_line(d, y, 200, EMERALD, line_thickness)
+    y += gap2
+    f_sub = font(FONT_LIGHT, 44)
+    lines = ["Bereken de ROI", "van een AI-agent"]
+    _, h_line = text_size(d, lines[0], f_sub)
+    line_spacing = 16
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_sub, PEARL)
+        y += line_spacing
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "post-09-roi-tool.png", "PNG", optimize=True)
+
+
+def post_10_counter_objection() -> None:
+    """Wave 2.5 — Counter-objection 'AI is onbetrouwbaar'."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    f_label = font(FONT_REG, 26)
+    draw_centered(d, "BEZWAAR  —  ONTKRACHT", 260, f_label, PEARL_DIM)
+
+    f_obj = font(FONT_BLACK, 70)
+    obj_lines = [
+        "“Maar AI is",
+        "toch onbetrouwbaar?”",
+    ]
+    _, h_obj = text_size(d, obj_lines[0], f_obj)
+    line_spacing_obj = 10
+    block_h_obj = len(obj_lines) * h_obj + (len(obj_lines) - 1) * line_spacing_obj
+    y = 360
+    for ln in obj_lines:
+        y = draw_centered(d, ln, y, f_obj, PEARL_DIM)
+        y += line_spacing_obj
+
+    y += 50
+    line_thickness = 6
+    y = draw_line(d, y, 200, ROSE, line_thickness)
+    y += 50
+
+    f_answer = font(FONT_BLACK, 64)
+    answer_lines = ["Met juiste guardrails", "haalbaar in 14 dagen"]
+    _, h_ans = text_size(d, answer_lines[0], f_answer)
+    line_spacing_ans = 10
+    for ln in answer_lines:
+        y = draw_centered(d, ln, y, f_answer, PEARL)
+        y += line_spacing_ans
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "post-10-counter-objection.png", "PNG", optimize=True)
+
+
 def main() -> None:
     post_01()
     post_02()
     post_03()
     post_04()
     post_05()
+    post_06_eu_ai_act()
+    post_07_horeca_case()
+    post_08_founder_pov()
+    post_09_roi_tool()
+    post_10_counter_objection()
     for p in sorted(OUT_DIR.glob("post-*.png")):
         print(f"{p.name}\t{p.stat().st_size} bytes")
 
