@@ -231,22 +231,24 @@ async function main() {
 
   const connectionId = await findIgConnection();
 
-  console.log(`\nCreating media container via Composio...`);
-  const createResp = await executeAction("INSTAGRAM_POST_IG_USER_MEDIA", connectionId, {
+  console.log(`\nCreating media container via Composio (INSTAGRAM_CREATE_MEDIA_CONTAINER)...`);
+  const createResp = await executeAction("INSTAGRAM_CREATE_MEDIA_CONTAINER", connectionId, {
     ig_user_id: sched.ig_user_id,
     image_url: imageUrl,
     caption: due.caption,
   });
+  console.log(`Create response keys: ${JSON.stringify(Object.keys(createResp || {}))}`);
   const creationId = pickId(createResp);
   if (!creationId) throw new Error(`No creation id in response: ${JSON.stringify(createResp).slice(0, 500)}`);
   console.log(`Container created: ${creationId}`);
 
-  console.log(`\nPublishing container via Composio...`);
-  const pubResp = await executeAction("INSTAGRAM_POST_IG_USER_MEDIA_PUBLISH", connectionId, {
+  console.log(`\nPublishing container via Composio (INSTAGRAM_CREATE_POST)...`);
+  const pubResp = await executeAction("INSTAGRAM_CREATE_POST", connectionId, {
     ig_user_id: sched.ig_user_id,
     creation_id: creationId,
     max_wait_seconds: 90,
   });
+  console.log(`Publish response keys: ${JSON.stringify(Object.keys(pubResp || {}))}`);
   const mediaId = pickId(pubResp);
   if (!mediaId) throw new Error(`No media id in publish response: ${JSON.stringify(pubResp).slice(0, 500)}`);
   console.log(`Published media: ${mediaId}`);
@@ -254,9 +256,15 @@ async function main() {
   let permalink = null;
   let timestamp = null;
   try {
-    const detail = await executeAction("INSTAGRAM_GET_IG_MEDIA", connectionId, { ig_media_id: mediaId });
-    permalink = pickField(detail, "permalink");
-    timestamp = pickField(detail, "timestamp");
+    const detail = await executeAction("INSTAGRAM_GET_USER_MEDIA", connectionId, {
+      ig_user_id: sched.ig_user_id,
+      limit: 1,
+    });
+    const first = (detail?.data?.data?.[0]) || (detail?.data?.[0]) || null;
+    if (first) {
+      permalink = first.permalink || null;
+      timestamp = first.timestamp || null;
+    }
     console.log(`Permalink: ${permalink}`);
   } catch (e) {
     console.warn(`Permalink fetch failed: ${e.message}`);
