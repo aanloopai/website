@@ -185,9 +185,24 @@ async function main() {
   const sched = await readSchedule();
 
   if (VALIDATE_ONLY) {
-    console.log("VALIDATE_ONLY=1 — list IG connection, no post.");
-    const cid = await findIgConnection();
-    console.log(`Validated connection id: ${cid}`);
+    console.log("VALIDATE_ONLY=1 — list IG connection + available tools, no post.");
+    const conn = await findIgConnection();
+    console.log(`Validated connection: id=${conn.id} uuid=${conn.uuid}`);
+    try {
+      const tools = await composioFetch(
+        "GET",
+        "/api/v3/tools?toolkit_slug=instagram&limit=200",
+      );
+      const items = tools.items || tools.data || [];
+      console.log(`\nAvailable Instagram tools (${items.length}):`);
+      for (const t of items) {
+        const slug = t.slug || t.name || t.action;
+        const desc = (t.description || t.name || "").toString().slice(0, 90);
+        console.log(`  - ${slug}: ${desc}`);
+      }
+    } catch (e) {
+      console.warn(`Tool list failed: ${e.message}`);
+    }
     return;
   }
 
