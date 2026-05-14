@@ -1,14 +1,21 @@
 #!/usr/bin/env node
 // IG photo publisher via Composio Platform API.
-// Reads marketing/instagram/wave-2-schedule.json, finds the next due unpublished
+// Reads marketing/instagram/wave-N-schedule.json, finds the next due unpublished
 // slot, posts via Composio (which holds the working Meta auth chain), writes
 // media_id + permalink + posted_at back.
+//
+// After a successful feed post the publisher ALSO attempts to publish the same
+// image as a Story to @aanloop.ai. The story step is best-effort: if Composio
+// rejects media_type=STORIES the feed post is still considered successful and
+// the story failure is logged but does not fail the workflow. Per-slot opt-out
+// via `"story_enabled": false` in the schedule entry.
 //
 // Env:
 //   COMPOSIO_API_KEY        — Composio Platform API key (required for live runs)
 //   COMPOSIO_CONNECTION_ID  — optional override for IG connection (e.g. ca_xxx)
 //   COMPOSIO_API_BASE       — default https://backend.composio.dev
-//   SCHEDULE_PATH           — default marketing/instagram/wave-2-schedule.json
+//   SCHEDULE_PATH           — default marketing/instagram/wave-N-schedule.json
+//   STORY_DISABLE           — '1' = globally skip the story step
 //   DRY_RUN                 — '1' = skip API calls, print plan only
 //   VALIDATE_ONLY           — '1' = list IG connection only, no posting
 
@@ -31,7 +38,8 @@ async function resolveSchedulePath() {
       return na - nb;
     });
   if (!waves.length) throw new Error(`No wave-N-schedule.json in ${SCHEDULE_DIR}`);
-  for (const f of [...waves].reverse()) {
+  // Pick lowest-N wave with any pending slot, so earlier waves finish before later ones.
+  for (const f of waves) {
     const sched = JSON.parse(await fs.readFile(path.join(SCHEDULE_DIR, f), "utf8"));
     if ((sched.posts || []).some((p) => p.posted_at === null)) {
       return path.join(SCHEDULE_DIR, f);
@@ -45,6 +53,7 @@ const BASE = (process.env.COMPOSIO_API_BASE || "https://backend.composio.dev").r
 const CONNECTION_OVERRIDE = (process.env.COMPOSIO_CONNECTION_ID || "").trim();
 const DRY = process.env.DRY_RUN === "1";
 const VALIDATE_ONLY = process.env.VALIDATE_ONLY === "1";
+const STORY_DISABLE = process.env.STORY_DISABLE === "1";
 
 function maskKey(k) {
   if (!k) return "(empty)";
@@ -192,6 +201,29 @@ function pickField(resp, key) {
   return resp[key] ?? null;
 }
 
+async function publishStory(connection, igUserId, imageUrl) {
+  console.log(`\nCreating STORIES container (media_type=STORIES)...`);
+  const createResp = await executeAction("INSTAGRAM_CREATE_MEDIA_CONTAINER", connection, {
+    ig_user_id: igUserId,
+    image_url: imageUrl,
+    media_type: "STORIES",
+  });
+  const creationId = pickId(createResp);
+  if (!creationId) throw new Error(`No creation id in STORIES response: ${JSON.stringify(createResp).slice(0, 500)}`);
+  console.log(`Story container created: ${creationId}`);
+
+  console.log(`Publishing STORIES container...`);
+  const pubResp = await executeAction("INSTAGRAM_CREATE_POST", connection, {
+    ig_user_id: igUserId,
+    creation_id: creationId,
+    max_wait_seconds: 90,
+  });
+  const storyId = pickId(pubResp);
+  if (!storyId) throw new Error(`No story media id: ${JSON.stringify(pubResp).slice(0, 500)}`);
+  console.log(`Story published: ${storyId}`);
+  return storyId;
+}
+
 async function main() {
   if (!API_KEY && !DRY) {
     console.error("COMPOSIO_API_KEY missing or empty after trim");
@@ -293,6 +325,26 @@ async function main() {
   due.posted_at = timestamp ? new Date(timestamp).toISOString() : new Date().toISOString();
   due.media_id = mediaId;
   due.permalink = permalink;
+
+  const storyEnabled = due.story_enabled !== false;
+  if (STORY_DISABLE) {
+    console.log("\nStory step disabled via STORY_DISABLE=1.");
+  } else if (!storyEnabled) {
+    console.log(`\nStory step skipped for ${due.id} (story_enabled=false).`);
+  } else {
+    try {
+      const storyId = await publishStory(connectionId, sched.ig_user_id, imageUrl);
+      due.story_media_id = storyId;
+      due.story_posted_at = new Date().toISOString();
+      delete due.story_error;
+    } catch (e) {
+      console.warn(`\nStory publish failed (non-fatal): ${e.message}`);
+      due.story_media_id = null;
+      due.story_posted_at = null;
+      due.story_error = String(e.message || e).slice(0, 300);
+    }
+  }
+
   await writeSchedule(schedulePath, sched);
   console.log(`\nUpdated schedule for ${due.id}.`);
 }

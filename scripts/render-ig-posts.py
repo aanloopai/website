@@ -410,6 +410,158 @@ def post_10_counter_objection() -> None:
     img.save(OUT_DIR / "post-10-counter-objection.png", "PNG", optimize=True)
 
 
+def post_11_eu_data() -> None:
+    """Wave 3.1 — EU data sovereignty + AVG-conform."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    f_label = font(FONT_REG, 26)
+    draw_centered(d, "JOUW DATA  -  EU-SERVERS  -  AVG", 260, f_label, PEARL_DIM)
+
+    f_huge = font(FONT_BLACK, 280)
+    line_thickness = 6
+    gap1 = 60
+    gap2 = 55
+
+    y = 340
+    y = draw_centered(d, "100%", y, f_huge, PEARL)
+    y += gap1
+    y = draw_line(d, y, 220, EMERALD, line_thickness)
+    y += gap2
+
+    f_sub = font(FONT_LIGHT, 44)
+    lines = ["EU-data sovereignty.", "Geen export, geen lock-in."]
+    _, h_line = text_size(d, lines[0], f_sub)
+    line_spacing = 16
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_sub, PEARL)
+        y += line_spacing
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "post-11-eu-data.png", "PNG", optimize=True)
+
+
+def post_12_cost_compare() -> None:
+    """Wave 3.2 — Cost compare: human telefonist vs Marco."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    f_label = font(FONT_REG, 26)
+    draw_centered(d, "KOSTENVERGELIJKING  -  PER MAAND", 260, f_label, PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 150)
+    f_small = font(FONT_LIGHT, 38)
+
+    label_y = 360
+    draw_centered(d, "Telefonist", label_y, f_small, PEARL_DIM)
+    y_human = label_y + 60
+    draw_centered(d, "EUR 3.500", y_human, f_big, ROSE)
+
+    mid_y = y_human + 200
+    line_thickness = 6
+    draw_line(d, mid_y, 200, AMBER, line_thickness)
+
+    draw_centered(d, "Marco AI-agent", mid_y + 60, f_small, PEARL_DIM)
+    y_marco = mid_y + 120
+    draw_centered(d, "EUR 597", y_marco, f_big, EMERALD)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "post-12-cost-compare.png", "PNG", optimize=True)
+
+
+def post_13_seven_days() -> None:
+    """Wave 3.3 — 7 dagen tot live."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    f_label = font(FONT_REG, 26)
+    draw_centered(d, "VAN INTAKE TOT PRODUCTIE", 260, f_label, PEARL_DIM)
+
+    f_huge = font(FONT_BLACK, 380)
+    line_thickness = 6
+    gap1 = 70
+    gap2 = 60
+
+    y = 340
+    y = draw_centered(d, "7", y, f_huge, PEARL)
+    y += gap1
+    y = draw_line(d, y, 200, INDIGO, line_thickness)
+    y += gap2
+
+    f_sub = font(FONT_LIGHT, 46)
+    lines = ["dagen tot een live", "AI-agent in jouw bedrijf"]
+    _, h_line = text_size(d, lines[0], f_sub)
+    line_spacing = 16
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_sub, PEARL)
+        y += line_spacing
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "post-13-seven-days.png", "PNG", optimize=True)
+
+
+def post_14_starter_groei() -> None:
+    """Wave 3.4 — Tarieven Starter / Groei transparant."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    f_label = font(FONT_REG, 26)
+    draw_centered(d, "TRANSPARANTE TARIEVEN  -  PER MAAND", 260, f_label, PEARL_DIM)
+
+    f_pkg = font(FONT_BLACK, 96)
+    f_price = font(FONT_BLACK, 140)
+
+    y = 360
+    draw_centered(d, "STARTER", y, f_pkg, PEARL_DIM)
+    draw_centered(d, "EUR 597", y + 110, f_price, EMERALD)
+
+    line_thickness = 6
+    draw_line(d, y + 290, 220, AMBER, line_thickness)
+
+    y2 = y + 360
+    draw_centered(d, "GROEI", y2, f_pkg, PEARL_DIM)
+    draw_centered(d, "EUR 1.197", y2 + 110, f_price, INDIGO)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "post-14-starter-groei.png", "PNG", optimize=True)
+
+
+def post_15_whatsapp_67() -> None:
+    """Wave 3.5 — WhatsApp 67% statistic."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    f_label = font(FONT_REG, 26)
+    draw_centered(d, "WHATSAPP  -  NEDERLANDSE CONSUMENT", 260, f_label, PEARL_DIM)
+
+    f_huge = font(FONT_BLACK, 360)
+    line_thickness = 6
+    gap1 = 70
+    gap2 = 60
+
+    y = 340
+    y = draw_centered(d, "67%", y, f_huge, PEARL)
+    y += gap1
+    y = draw_line(d, y, 220, EMERALD, line_thickness)
+    y += gap2
+
+    f_sub = font(FONT_LIGHT, 42)
+    lines = ["verwacht antwoord", "binnen 1 uur"]
+    _, h_line = text_size(d, lines[0], f_sub)
+    line_spacing = 16
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_sub, PEARL)
+        y += line_spacing
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "post-15-whatsapp-67.png", "PNG", optimize=True)
+
+
 def main() -> None:
     post_01()
     post_02()
@@ -421,6 +573,11 @@ def main() -> None:
     post_08_founder_pov()
     post_09_roi_tool()
     post_10_counter_objection()
+    post_11_eu_data()
+    post_12_cost_compare()
+    post_13_seven_days()
+    post_14_starter_groei()
+    post_15_whatsapp_67()
     for p in sorted(OUT_DIR.glob("post-*.png")):
         print(f"{p.name}\t{p.stat().st_size} bytes")
 
