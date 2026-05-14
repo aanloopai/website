@@ -1,16 +1,17 @@
 name: LinkedIn Auto-Publish
 
 # Publishes the next due slot from marketing/linkedin/wave-N-schedule.json
-# via the LinkedIn /v2/ugcPosts API. Runs Tue/Thu at 07:00 UTC (CEST 09:00)
-# and at 08:00 UTC (CET 09:00) so cadence holds across DST.
+# via the LinkedIn /v2/ugcPosts API. Cadence Mon/Wed/Thu 09:00 CET (3 per week)
+# via dual cron: 07:00 UTC (CEST) and 08:00 UTC (CET) so the 09:00 CET slot
+# fires across DST.
 # Mustafa personal profile posts work today. Company-page posts require
 # Marketing Developer Platform approval; set AUTHOR_TYPE=organization and add
 # LINKEDIN_ORG_ID secret once approved.
 
 on:
   schedule:
-    - cron: '0 7 * * 2,4'
-    - cron: '0 8 * * 2,4'
+    - cron: '0 7 * * 1,3,4'
+    - cron: '0 8 * * 1,3,4'
   workflow_dispatch:
     inputs:
       dry_run:
