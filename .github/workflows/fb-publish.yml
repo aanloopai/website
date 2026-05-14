@@ -1,17 +1,14 @@
-name: Facebook Auto-Publish
+name: Facebook Auto-Publish (DISABLED — cross-post via Meta Business Suite)
 
-# Publishes the next due slot from marketing/facebook/wave-N-schedule.json
-# to the Aanloop AI Facebook Page via Meta Graph API v19.0.
-# Daily 09:00 + 17:00 CET cadence, DST-safe (CEST 09:00 = 07:00 UTC, CET 09:00
-# = 08:00 UTC; CEST 17:00 = 15:00 UTC, CET 17:00 = 16:00 UTC). Mirrors IG cadence
-# zodat IG + FB samen 2x per dag posten met dezelfde content.
+# DISABLED 2026-05-14 — IG + FB Pages linked via Meta Business Suite
+# (Page-level cross-post setting). Elke IG-post verschijnt automatisch op
+# de FB Page zonder aparte cron. Workflow blijft beschikbaar via
+# workflow_dispatch voor handmatige re-enable.
+#
+# Re-enable: voeg `schedule:` keys terug + provision FB_PAGE_ID +
+# FB_PAGE_ACCESS_TOKEN secrets.
 
 on:
-  schedule:
-    - cron: '0 7 * * *'
-    - cron: '0 8 * * *'
-    - cron: '0 15 * * *'
-    - cron: '0 16 * * *'
   workflow_dispatch:
     inputs:
       dry_run:
