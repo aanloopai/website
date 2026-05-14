@@ -53,8 +53,8 @@ jobs:
 
       - name: Run IG publisher
         env:
-          COMPOSIO_API_KEY: ${{ secrets.COMPOSIO_API_KEY }}
-          COMPOSIO_CONNECTION_ID: ${{ secrets.COMPOSIO_CONNECTION_ID }}
+          IG_PAGE_ACCESS_TOKEN: ${{ secrets.IG_PAGE_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
           DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '' }}
           VALIDATE_ONLY: ${{ github.event.inputs.validate_only == 'true' && '1' || '' }}
         run: node scripts/ig-publish.mjs
@@ -85,7 +85,7 @@ jobs:
               `Triggered by: ${context.eventName}`,
               `Branch: ${context.ref}`,
               ``,
-              `Open the failed step ('Run IG publisher') for the verbose error JSON. Token/connection issues typically log as 'Composio POST .../execute HTTP 4xx'.`,
+              `Open the failed step ('Run IG publisher') for the verbose error JSON. Token issues typically log as 'POST /{ig_user_id}/media HTTP 4xx'.`,
               ``,
               `Auto-opened by .github/workflows/ig-publish.yml`,
             ].join('\n');

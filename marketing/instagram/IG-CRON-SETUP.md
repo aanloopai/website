@@ -1,14 +1,14 @@
 # Instagram Auto-Publish — Setup
 
-GitHub Actions cron publishes one due slot from `wave-2-schedule.json` to `@aanloop.ai` every Mo/We/Fr 09:00 CET. Onafhankelijk van Composio Rube (EOL 2026-05-15).
+GitHub Actions cron publishes one due slot from `wave-N-schedule.json` to `@aanloop.ai` every dag 09:00 + 17:00 CET. Onafhankelijk van Composio Rube (EOL 2026-05-15).
 
 ## Componenten
 
 | Bestand | Rol |
 |---------|-----|
-| `.github/workflows/ig-publish.yml` | Cron schedule (Mo/We/Fr 07:07 + 08:07 UTC, DST-safe) |
+| `.github/workflows/ig-publish.yml` | Cron schedule (daily 07/08/15/16 UTC = 09+17 CET, DST-safe) |
 | `scripts/ig-publish.mjs` | Publisher: vindt due-slot, Graph API call, commit terug |
-| `marketing/instagram/wave-2-schedule.json` | 5-slot schedule met captions + `posted_at`-state |
+| `marketing/instagram/wave-N-schedule.json` | Schedule met captions + `posted_at`-state, lowest-N pending wave auto-pick |
 | `scripts/render-ig-posts.py` | Pillow render-pipeline (huisstijl) |
 | `public/social-feed/*.png` | Live images, served from `aanloopai.nl/social-feed/` |
 
@@ -68,8 +68,12 @@ curl -s "https://graph.facebook.com/v21.0/debug_token?input_token={PAGE_TOKEN}&a
 
 GitHub repo `aanloopai/website` → **Settings → Secrets and variables → Actions → New repository secret**:
 
-- Name: `META_LL_TOKEN`
+- Name: `IG_PAGE_ACCESS_TOKEN`
 - Value: het Page Access Token uit Stap D
+- Name: `IG_USER_ID`
+- Value: IG Business Account id (default uit `wave-N-schedule.json` `ig_user_id`, kan overrul'd worden via secret)
+
+Same secrets als `ig-publish-reel.mjs` + `scripts/ig-dm-bot.mjs` (re-use).
 
 ### 3. Workflow inschakelen
 
@@ -85,17 +89,9 @@ Daarna `dry_run: false` voor echte publish (alleen als slot nu due is).
 
 ## Schedule beheren
 
-`wave-2-schedule.json` heeft 5 slots. Volgorde:
+`wave-3-schedule.json` heeft 8 slots (2026-05-14 t/m 2026-05-17, daily 09:00 + 17:00 CET, mirror op FB).
 
-| Slot | Datum (CET) | Pillar | Image |
-|------|-------------|--------|-------|
-| wave2-01 | Wo 2026-05-13 09:00 | EU AI Act | post-06 |
-| wave2-02 | Vr 2026-05-15 09:00 | Horeca case | post-07 |
-| wave2-03 | Ma 2026-05-18 09:00 | Founder POV | post-08 |
-| wave2-04 | Wo 2026-05-20 09:00 | ROI-rekentool | post-09 |
-| wave2-05 | Vr 2026-05-22 09:00 | Counter-objection | post-10 |
-
-Volgende wave: nieuwe schedule-file `wave-3-schedule.json` + update `SCHEDULE_PATH` env-variabele in workflow, óf vervang `wave-2-schedule.json` met nieuwe slots (alle `posted_at: null`).
+Volgende wave: nieuwe schedule-file `wave-4-schedule.json` met alle `posted_at: null`. Publisher pakt automatisch lowest-N wave met pending slots.
 
 ## Idempotentie
 
@@ -120,7 +116,7 @@ Long-lived Page tokens vervallen niet, **behalve** als:
 - Page-admin wijzigt
 - Meta de app of token revokeert
 
-Bij failure HTTP 190 (`OAuthException`): herhaal Stap B-D, update `META_LL_TOKEN` secret.
+Bij failure HTTP 190 (`OAuthException`): herhaal Stap B-D, update `IG_PAGE_ACCESS_TOKEN` secret.
 
 ## Composio onafhankelijkheid
 
