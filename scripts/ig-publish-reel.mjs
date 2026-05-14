@@ -24,10 +24,10 @@ const REPO_ROOT = path.resolve(path.dirname(__filename), "..");
 const SCHEDULE_DIR = path.join(REPO_ROOT, "marketing", "instagram");
 
 const TOKEN = (process.env.IG_PAGE_ACCESS_TOKEN || "").trim();
-const IG_USER_ID = (process.env.IG_USER_ID || "").trim();
+const IG_ID_OVERRIDE = (process.env.IG_USER_ID || "").trim();
 const DRY = process.env.DRY_RUN === "1";
 const VALIDATE_ONLY = process.env.VALIDATE_ONLY === "1";
-const GRAPH = "https://graph.facebook.com/v19.0";
+const GRAPH = "https://graph.instagram.com/v23.0";
 
 function mask(s) {
   if (!s) return "(empty)";
@@ -123,24 +123,30 @@ async function pollContainerReady(containerId, { maxWaitSec = 180, intervalSec =
 
 async function main() {
   if (!DRY) {
-    if (!TOKEN || !IG_USER_ID) {
-      console.error("IG_PAGE_ACCESS_TOKEN and IG_USER_ID required (or DRY_RUN=1)");
+    if (!TOKEN) {
+      console.error("IG_PAGE_ACCESS_TOKEN required (or DRY_RUN=1)");
       process.exit(2);
     }
   }
+  console.log(`Graph base: ${GRAPH}`);
   console.log(`Token: ${mask(TOKEN)}`);
-  console.log(`IG user: ${IG_USER_ID}`);
-
-  if (VALIDATE_ONLY) {
-    console.log("VALIDATE_ONLY=1 — fetch account info, no posting");
-    const me = await graphGet(`/${IG_USER_ID}`, { fields: "id,username,name,profile_picture_url" });
-    console.log(`Account: ${JSON.stringify(me)}`);
-    return;
-  }
 
   const schedulePath = await resolveSchedulePath();
   console.log(`Schedule: ${path.relative(REPO_ROOT, schedulePath)}`);
   const sched = await readSchedule(schedulePath);
+  const igUserId = IG_ID_OVERRIDE || sched.ig_user_id;
+  if (!igUserId) {
+    console.error("IG_USER_ID empty and schedule.ig_user_id missing");
+    process.exit(2);
+  }
+  console.log(`IG user: ${igUserId}`);
+
+  if (VALIDATE_ONLY) {
+    console.log("VALIDATE_ONLY=1 — fetch account info, no posting");
+    const me = await graphGet(`/${igUserId}`, { fields: "id,username,name,profile_picture_url" });
+    console.log(`Account: ${JSON.stringify(me)}`);
+    return;
+  }
 
   const due = findDuePost(sched, Date.now());
   if (!due) {
@@ -163,7 +169,7 @@ async function main() {
   }
 
   console.log(`\nCreating REELS container...`);
-  const createResp = await graphPost(`/${IG_USER_ID}/media`, {
+  const createResp = await graphPost(`/${igUserId}/media`, {
     media_type: "REELS",
     video_url: videoUrl,
     caption: due.caption,
@@ -177,7 +183,7 @@ async function main() {
   await pollContainerReady(containerId, { maxWaitSec: 180, intervalSec: 6 });
 
   console.log(`\nPublishing...`);
-  const pubResp = await graphPost(`/${IG_USER_ID}/media_publish`, {
+  const pubResp = await graphPost(`/${igUserId}/media_publish`, {
     creation_id: containerId,
   });
   const mediaId = pubResp.id;
