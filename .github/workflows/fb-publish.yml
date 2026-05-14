@@ -1,0 +1,111 @@
+name: Facebook Auto-Publish
+
+# Publishes the next due slot from marketing/facebook/wave-N-schedule.json
+# to the Aanloop AI Facebook Page via Meta Graph API v19.0.
+# Cadence Tue/Thu at 07:00 UTC (CEST 09:00) and 08:00 UTC (CET 09:00) so the
+# 09:00 CET slot fires across DST changes.
+# Mirrors ig-publish.yml + linkedin-publish.yml patterns.
+
+on:
+  schedule:
+    - cron: '0 7 * * 2,4'
+    - cron: '0 8 * * 2,4'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Skip Graph API calls (preview only)'
+        required: false
+        default: 'false'
+      validate_only:
+        description: 'Page identity check, no posting'
+        required: false
+        default: 'false'
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  publish:
+    name: Publish next FB slot
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    concurrency:
+      group: fb-publish
+      cancel-in-progress: false
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+          fetch-depth: 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Facebook publisher
+        env:
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+          FB_PAGE_ACCESS_TOKEN: ${{ secrets.FB_PAGE_ACCESS_TOKEN }}
+          DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '' }}
+          VALIDATE_ONLY: ${{ github.event.inputs.validate_only == 'true' && '1' || '' }}
+        run: node scripts/fb-publish.mjs
+
+      - name: Commit schedule update
+        if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.validate_only != 'true' }}
+        run: |
+          if git diff --quiet marketing/facebook/wave-*-schedule.json; then
+            echo "No schedule changes."
+            exit 0
+          fi
+          git config user.name "aanloop-fb-bot"
+          git config user.email "bot@aanloopai.nl"
+          git add marketing/facebook/wave-*-schedule.json
+          git commit -m "chore(social): record FB publish $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+          git push origin master
+
+      - name: Open failure issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = 'fb-publish-fail';
+            const runUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const title = `FB publish workflow failed (run ${context.runId})`;
+            const body = [
+              `Run: ${runUrl}`,
+              `Triggered by: ${context.eventName}`,
+              `Branch: ${context.ref}`,
+              ``,
+              `Open the failed step ('Run Facebook publisher') for the verbose error JSON. Common causes: FB_PAGE_ACCESS_TOKEN expired (rotate via developers.facebook.com → Graph API Explorer → exchange short-lived for long-lived), missing pages_manage_posts scope, or the token's /me id doesn't match FB_PAGE_ID.`,
+              ``,
+              `Auto-opened by .github/workflows/fb-publish.yml`,
+            ].join('\n');
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: label,
+              per_page: 5,
+            });
+            if (existing.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.data[0].number,
+                body: `Failure again: ${runUrl}`,
+              });
+              core.info(`Commented on existing issue #${existing.data[0].number}`);
+            } else {
+              const issue = await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+                labels: [label],
+              });
+              core.info(`Opened issue #${issue.data.number}`);
+            }
