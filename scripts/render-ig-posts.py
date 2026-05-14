@@ -308,20 +308,20 @@ def post_07_horeca_case() -> None:
 
 
 def post_08_founder_pov() -> None:
-    """Wave 2.3 — Founder POV (Mustafa stelling, no portrait yet)."""
+    """Wave 2.3 — Brand stance (company-voice, geen persoonlijke attribution)."""
     img = Image.new("RGB", (SIZE, SIZE), NAVY)
     d = ImageDraw.Draw(img)
     draw_brand_signature_top(d)
 
     f_label = font(FONT_REG, 26)
-    draw_centered(d, "MUSTAFA  —  FOUNDER · AANLOOP AI", 260, f_label, PEARL_DIM)
+    draw_centered(d, "AANLOOP AI  ·  TRANSPARANT MKB-AI", 260, f_label, PEARL_DIM)
 
     f_quote = font(FONT_BLACK, 110)
     quote_lines = [
-        "“Ik accepteer",
-        "geen vendor",
+        "Geen vendor",
         "lock-in.",
-        "Jij ook niet.”",
+        "Open",
+        "architectuur.",
     ]
     _, h_line = text_size(d, quote_lines[0], f_quote)
     line_spacing = 10
