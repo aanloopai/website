@@ -53,7 +53,7 @@ jobs:
 
       - name: Run IG publisher
         env:
-          IG_PAGE_ACCESS_TOKEN: ${{ secrets.IG_PAGE_ACCESS_TOKEN }}
+          IG_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           DRY_RUN: ${{ github.event.inputs.dry_run == 'true' && '1' || '' }}
           VALIDATE_ONLY: ${{ github.event.inputs.validate_only == 'true' && '1' || '' }}
