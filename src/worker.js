@@ -111,7 +111,7 @@ const SECURITY_HEADERS = {
   'x-content-type-options': 'nosniff',
   'x-frame-options': 'DENY',
   'referrer-policy': 'strict-origin-when-cross-origin',
-  'permissions-policy': 'camera=(), microphone=(), geolocation=(self)',
+  'permissions-policy': 'camera=(), microphone=(self), geolocation=(self)',
   'content-security-policy': CSP_POLICY,
 };
 
