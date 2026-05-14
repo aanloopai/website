@@ -31,8 +31,8 @@ const SCHEDULE_DIR = path.join(REPO_ROOT, "marketing", "instagram");
 
 const TOKEN = (process.env.IG_PAGE_ACCESS_TOKEN || "").trim();
 const IG_ID_OVERRIDE = (process.env.IG_USER_ID || "").trim();
-const GRAPH_VERSION = (process.env.GRAPH_API_VERSION || "v19.0").trim();
-const GRAPH = `https://graph.facebook.com/${GRAPH_VERSION}`;
+const GRAPH_VERSION = (process.env.GRAPH_API_VERSION || "v23.0").trim();
+const GRAPH = `https://graph.instagram.com/${GRAPH_VERSION}`;
 const MAX_WAIT_SEC = Math.max(10, parseInt(process.env.PUBLISH_MAX_WAIT_SEC || "90", 10));
 const DRY = process.env.DRY_RUN === "1";
 const VALIDATE_ONLY = process.env.VALIDATE_ONLY === "1";
