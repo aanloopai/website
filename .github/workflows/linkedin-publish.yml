@@ -1,17 +1,15 @@
-name: LinkedIn Auto-Publish
+name: LinkedIn Auto-Publish (DISABLED — wacht op Company Page approval)
 
-# Publishes the next due slot from marketing/linkedin/wave-N-schedule.json
-# via the LinkedIn /v2/ugcPosts API. Cadence Mon/Wed/Thu 09:00 CET (3 per week)
-# via dual cron: 07:00 UTC (CEST) and 08:00 UTC (CET) so the 09:00 CET slot
-# fires across DST.
-# Mustafa personal profile posts work today. Company-page posts require
-# Marketing Developer Platform approval; set AUTHOR_TYPE=organization and add
-# LINKEDIN_ORG_ID secret once approved.
+# DISABLED 2026-05-14 — posts gaan vanuit personal LinkedIn profile
+# (urn:li:person:zJG7ukELVK) → naam + foto van persoon zichtbaar als poster.
+# Brand-only company-voice vereist Company Page posts; LinkedIn Marketing
+# Developer Platform approval pending. Cron blijft uit tot AUTHOR_TYPE=
+# organization + LINKEDIN_ORG_ID toegevoegd kunnen worden.
+#
+# Re-enable: voeg `schedule:` keys terug, AUTHOR_TYPE=organization, en
+# provision LINKEDIN_ORG_ID secret.
 
 on:
-  schedule:
-    - cron: '0 7 * * 1,3,4'
-    - cron: '0 8 * * 1,3,4'
   workflow_dispatch:
     inputs:
       dry_run:
