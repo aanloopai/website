@@ -45,7 +45,8 @@ async function resolveSchedulePath() {
     .filter((f) => /^wave-\d+-schedule\.json$/.test(f))
     .sort((a, b) => parseInt(a.match(/wave-(\d+)/)[1], 10) - parseInt(b.match(/wave-(\d+)/)[1], 10));
   if (!waves.length) throw new Error(`No wave-N-schedule.json in ${SCHEDULE_DIR}`);
-  for (const f of [...waves].reverse()) {
+  // Pick lowest-N wave with any pending slot.
+  for (const f of waves) {
     const sched = JSON.parse(await fs.readFile(path.join(SCHEDULE_DIR, f), "utf8"));
     if ((sched.posts || []).some((p) => p.posted_at === null)) {
       return path.join(SCHEDULE_DIR, f);
