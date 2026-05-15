@@ -5,16 +5,40 @@ import dashboardMockup from '../assets/images/dashboard-mockup.png';
 
 // ── Pricing logic ──────────────────────────────────────────────
 // Market research (NL AI bureau markt, mei 2026):
-// - Basis AI receptionist tools: €75–€300/mnd (zelf instellen, geen begeleiding)
+// - Basis AI receptionist tools: €50–€300/mnd (zelf instellen, geen begeleiding)
 // - Managed AI bureau (beheerd, getraind): €500–€1.200/mnd
 // - Aanloop AI positionering: premium managed service, NL-native voice AI
 // - USP: 7-dagenlive, ElevenLabs NL stem, beheerd = premium gerechtvaardigd
-// Prijsstrategie: 3 pakketten, helder, geen addon-verwarring
-// Starter: laagdrempelig instap → groei-pad
+// Prijsstrategie: 4 pakketten, helder, geen addon-verwarring
+// Lite:    instap zonder setup-fee → verdedigt €149-299 segment vs Voicelabs/AI-Receptionisten
+// Starter: laagdrempelig managed instap → groei-pad
 // Groei:   meest gekozene → combo Marco+Emma = volledige automatisering
 // Partner: voor serieuze MKB's, maatwerk + dedicated
 
 const plans = [
+  {
+    id: 'lite',
+    name: 'Lite',
+    tagline: 'Instap — laagdrempelig testen, geen setup',
+    price: { monthly: 249, annual: 219 },
+    badge: 'Geen setup',
+    highlight: false,
+    includes: 'Marco — AI Telefoniste (Lite)',
+    features: [
+      { text: 'Marco — AI telefoniste (24/7)', included: true },
+      { text: 'Tot 50 gesprekken/maand', included: true },
+      { text: '1 standaard callscript', included: true },
+      { text: 'Lead-melding via e-mail', included: true },
+      { text: 'Agenda-integratie (Google / Outlook)', included: true },
+      { text: 'Basis dashboard', included: true },
+      { text: 'Live binnen 5 werkdagen', included: true },
+      { text: 'Eenmalige setup', included: false },
+      { text: 'CRM-integratie', included: false },
+      { text: 'WhatsApp AI (Emma)', included: false },
+    ],
+    cta: 'Start met Lite',
+    ctaHref: '/aanvragen/?plan=lite',
+  },
   {
     id: 'starter',
     name: 'Starter',
@@ -87,6 +111,7 @@ const plans = [
 ];
 
 const eenmaligSetup = [
+  { plan: 'Lite', prijs: '€0', desc: 'Geen eenmalige setup — self-onboarding via standaard script en call-flow' },
   { plan: 'Starter', prijs: '€495', desc: 'Eenmalig — inclusief intake, training, configuratie en go-live begeleiding' },
   { plan: 'Groei', prijs: '€795', desc: 'Eenmalig — inclusief Marco + Emma setup, CRM-koppeling en testfase' },
   { plan: 'Partner', prijs: 'Op offerte', desc: 'Afhankelijk van scope, integraties en workflows' },
@@ -104,25 +129,51 @@ const faqs = [
 ];
 
 const vergelijkRows = [
-  ['Gesprekken per maand', '150', 'Onbeperkt', 'Onbeperkt'],
-  ['AI Telefoniste (Marco)', '✓', '✓', '✓'],
-  ['WhatsApp AI (Emma)', '—', '✓', '✓'],
-  ['Callscripts', '1', '3', 'Onbeperkt'],
-  ['Agenda-integratie', '✓', '✓', '✓'],
-  ['CRM-integratie', '—', '✓', '✓'],
-  ['Workflow automation', '—', 'Basis', 'Custom'],
-  ['Lead-melding Telegram', '—', '✓', '✓'],
-  ['Gespreksopnames', '—', '✓', '✓'],
-  ['Dedicated account manager', '—', '—', '✓'],
-  ['SLA 99.9% uptime', '—', '—', '✓'],
-  ['Support reactietijd', '< 24 uur', '< 4 uur', '< 1 uur'],
-  ['Live binnen', '10 dgn', '7 dgn', '14 dgn'],
+  ['Gesprekken per maand', '50', '150', 'Onbeperkt', 'Onbeperkt'],
+  ['AI Telefoniste (Marco)', '✓', '✓', '✓', '✓'],
+  ['WhatsApp AI (Emma)', '—', '—', '✓', '✓'],
+  ['Callscripts', 'Standaard', '1 op maat', '3 op maat', 'Onbeperkt'],
+  ['Agenda-integratie', '✓', '✓', '✓', '✓'],
+  ['CRM-integratie', '—', '—', '✓', '✓'],
+  ['Workflow automation', '—', '—', 'Basis', 'Custom'],
+  ['Lead-melding Telegram', '—', '—', '✓', '✓'],
+  ['Gespreksopnames', '—', '—', '✓', '✓'],
+  ['Dedicated account manager', '—', '—', '—', '✓'],
+  ['SLA 99.9% uptime', '—', '—', '—', '✓'],
+  ['Support reactietijd', '< 48 uur', '< 24 uur', '< 4 uur', '< 1 uur'],
+  ['Eenmalige setup', '€0', '€495', '€795', 'Op offerte'],
+  ['Live binnen', '5 dgn', '10 dgn', '7 dgn', '14 dgn'],
 ];
 
 // Product + Offer schema per tier — AI Overview citation trigger (P1 audit fix)
 const productOfferGraph = {
   '@context': 'https://schema.org',
   '@graph': [
+    {
+      '@type': 'Product',
+      '@id': 'https://aanloopai.nl/tarieven/#lite',
+      name: 'Aanloop AI — Lite',
+      description: 'AI telefoniste Marco Lite voor Nederlandse MKB. 50 gesprekken per maand, standaard callscript, agenda-integratie. Geen eenmalige setup-kosten. Live binnen 5 werkdagen.',
+      brand: { '@type': 'Brand', name: 'Aanloop AI' },
+      category: 'AI Voice Agent / AI Receptionist',
+      offers: {
+        '@type': 'Offer',
+        price: '249',
+        priceCurrency: 'EUR',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '249',
+          priceCurrency: 'EUR',
+          unitText: 'maand',
+          referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
+        },
+        availability: 'https://schema.org/InStock',
+        url: 'https://aanloopai.nl/aanvragen/?plan=lite',
+        seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
+        priceValidUntil: '2026-12-31',
+      },
+    },
     {
       '@type': 'Product',
       '@id': 'https://aanloopai.nl/tarieven/#starter',
@@ -175,6 +226,56 @@ const productOfferGraph = {
     },
     {
       '@type': 'Product',
+      '@id': 'https://aanloopai.nl/tarieven/#emma-lite',
+      name: 'Aanloop AI — Emma Lite (WhatsApp standalone instap)',
+      description: 'WhatsApp AI-agent Emma Lite voor Nederlandse MKB. Tot 500 berichten per maand, standaard FAQ-training, WhatsApp Business API, NL/EN auto-detect. Geen setup-kosten, maandelijks opzegbaar.',
+      brand: { '@type': 'Brand', name: 'Aanloop AI' },
+      category: 'AI WhatsApp Bot Software',
+      offers: {
+        '@type': 'Offer',
+        price: '49',
+        priceCurrency: 'EUR',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '49',
+          priceCurrency: 'EUR',
+          unitText: 'maand',
+          referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
+        },
+        availability: 'https://schema.org/InStock',
+        url: 'https://aanloopai.nl/aanvragen/?plan=emma-lite',
+        seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
+        priceValidUntil: '2026-12-31',
+      },
+    },
+    {
+      '@type': 'Product',
+      '@id': 'https://aanloopai.nl/tarieven/#emma-standard',
+      name: 'Aanloop AI — Emma Standard (WhatsApp standalone)',
+      description: 'WhatsApp AI-agent Emma Standard voor Nederlandse MKB. Onbeperkte berichten, eigen FAQ + productcatalogus, native Shopify/WooCommerce/Magento, CRM-koppeling HubSpot/Pipedrive, multilingual NL/EN/FR/DE.',
+      brand: { '@type': 'Brand', name: 'Aanloop AI' },
+      category: 'AI WhatsApp Bot Software',
+      offers: {
+        '@type': 'Offer',
+        price: '197',
+        priceCurrency: 'EUR',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '197',
+          priceCurrency: 'EUR',
+          unitText: 'maand',
+          referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
+        },
+        availability: 'https://schema.org/InStock',
+        url: 'https://aanloopai.nl/aanvragen/?plan=emma-standard',
+        seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
+        priceValidUntil: '2026-12-31',
+      },
+    },
+    {
+      '@type': 'Product',
       '@id': 'https://aanloopai.nl/tarieven/#partner',
       name: 'Aanloop AI — Partner',
       description: 'Volledige AI automatisering op maat met dedicated account manager, custom n8n workflows, multi-team routing, SLA 99.9%, on-premise/private cloud optie en maatwerk CRM/ERP integraties.',
@@ -212,7 +313,7 @@ const valueCompareRows = [
 
 <BaseLayout
   title="AI-Agent Prijs Nederland 2026 — Tarieven Aanloop AI"
-  description="AI-agent prijs Nederland 2026: transparante tarieven voor AI chatbot kosten en AI receptionist voor MKB. Starter vanaf €597/mnd, Groei €1.197/mnd. Geen verborgen kosten."
+  description="AI-agent prijs Nederland 2026: transparante tarieven voor AI chatbot kosten en AI receptionist voor MKB. Lite vanaf €249/mnd zonder setup, Starter €597/mnd, Groei €1.197/mnd. Geen verborgen kosten."
   schema={productOfferGraph}
   faqSchema={faqs.map(f => ({ question: f.q, answer: f.a }))}
 >
@@ -258,7 +359,7 @@ const valueCompareRows = [
   <!-- Pricing cards -->
   <section class="section">
     <div class="container-page">
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
         {plans.map((plan) => (
           <div class:list={[
             'relative rounded-2xl p-8 flex flex-col reveal',
@@ -352,6 +453,62 @@ const valueCompareRows = [
           ))}
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Emma standalone WhatsApp tiers — verdedigt €11-99 budget-MKB segment -->
+  <section class="section-tight">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-8 reveal">
+        <p class="eyebrow mb-2">WhatsApp standalone</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">
+          Alleen Emma — WhatsApp AI zonder Marco?
+        </h2>
+        <p class="mt-3 text-slate-600 leading-relaxed max-w-2xl">
+          Wilt u alleen WhatsApp-automatisering? Emma is ook standalone af te nemen — zonder Marco-pakket. Twee tarieven, beide AVG-compliant, EU-data, native Shopify/WooCommerce/HubSpot.
+        </p>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-6 reveal reveal-delay-1">
+        <div class="border border-slate-200 rounded-2xl p-6 bg-white">
+          <p class="text-xs font-semibold uppercase tracking-widest text-brand-indigo mb-1">Emma Lite</p>
+          <p class="text-xl font-bold text-navy mb-2">WhatsApp instap</p>
+          <div class="flex items-baseline gap-1 mb-3">
+            <span class="text-4xl font-bold text-navy">€49</span>
+            <span class="text-sm text-slate-500">/maand</span>
+          </div>
+          <p class="text-xs text-slate-400 mb-4">excl. btw · maandelijks opzegbaar · geen setup</p>
+          <ul class="space-y-2 text-sm mb-6">
+            <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span><span>Tot 500 berichten per maand</span></li>
+            <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span><span>Standaard FAQ-training (geen maatwerk)</span></li>
+            <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span><span>WhatsApp Business API (Meta-verified)</span></li>
+            <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span><span>NL/EN auto-detect</span></li>
+            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span><span class="text-slate-400">CRM-koppeling</span></li>
+            <li class="flex items-start gap-2"><span class="text-slate-300 mt-0.5">—</span><span class="text-slate-400">Eigen kennisbank-import</span></li>
+          </ul>
+          <a href="/aanvragen/?plan=emma-lite" class="btn-outline text-sm w-full justify-center">Start met Emma Lite</a>
+        </div>
+        <div class="border-2 border-navy rounded-2xl p-6 bg-white shadow-lg">
+          <p class="text-xs font-semibold uppercase tracking-widest text-brand-indigo mb-1">Emma Standard</p>
+          <p class="text-xl font-bold text-navy mb-2">WhatsApp full-feature</p>
+          <div class="flex items-baseline gap-1 mb-3">
+            <span class="text-4xl font-bold text-navy">€197</span>
+            <span class="text-sm text-slate-500">/maand</span>
+          </div>
+          <p class="text-xs text-slate-400 mb-4">excl. btw · maandelijks opzegbaar · setup op offerte</p>
+          <ul class="space-y-2 text-sm mb-6">
+            <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span><span>Onbeperkte berichten</span></li>
+            <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span><span>Eigen FAQ + productcatalogus + interne docs</span></li>
+            <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span><span>Native Shopify/WooCommerce/Magento</span></li>
+            <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span><span>CRM-koppeling (HubSpot/Pipedrive)</span></li>
+            <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span><span>Multilingual NL/EN/FR/DE (ES/IT/PL op aanvraag)</span></li>
+            <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span><span>Handover-protocol naar uw team</span></li>
+          </ul>
+          <a href="/aanvragen/?plan=emma-standard" class="btn-primary text-sm w-full justify-center">Start met Emma Standard</a>
+        </div>
+      </div>
+      <p class="text-center text-xs text-slate-500 mt-6">
+        WhatsApp-conversatiekosten van Meta (€0,03–€0,08 per 24-uurs venster) worden direct door Meta gefactureerd, niet door Aanloop. Emma is gratis inbegrepen vanaf het Groei-pakket.
+      </p>
     </div>
   </section>
 
@@ -528,19 +685,21 @@ const valueCompareRows = [
         <table class="w-full text-sm border-collapse">
           <thead>
             <tr class="border-b border-slate-200">
-              <th class="text-left py-4 pr-6 text-slate-500 font-medium w-1/2">Functie</th>
-              <th class="text-center py-4 px-4 font-bold text-navy">Starter<br/><span class="text-xs font-normal text-slate-400">€597/mnd</span></th>
-              <th class="text-center py-4 px-4 font-bold text-navy bg-navy/5 rounded-t-xl">Groei<br/><span class="text-xs font-normal text-slate-400">€1.197/mnd</span></th>
-              <th class="text-center py-4 px-4 font-bold text-navy">Partner<br/><span class="text-xs font-normal text-slate-400">Op maat</span></th>
+              <th class="text-left py-4 pr-6 text-slate-500 font-medium w-2/5">Functie</th>
+              <th class="text-center py-4 px-3 font-bold text-navy">Lite<br/><span class="text-xs font-normal text-slate-400">€249/mnd</span></th>
+              <th class="text-center py-4 px-3 font-bold text-navy">Starter<br/><span class="text-xs font-normal text-slate-400">€597/mnd</span></th>
+              <th class="text-center py-4 px-3 font-bold text-navy bg-navy/5 rounded-t-xl">Groei<br/><span class="text-xs font-normal text-slate-400">€1.197/mnd</span></th>
+              <th class="text-center py-4 px-3 font-bold text-navy">Partner<br/><span class="text-xs font-normal text-slate-400">Op maat</span></th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
-            {vergelijkRows.map(([feature, starter, groei, partner]) => (
+            {vergelijkRows.map(([feature, lite, starter, groei, partner]) => (
               <tr>
                 <td class="py-3 pr-6 text-slate-700">{feature}</td>
-                <td class="py-3 px-4 text-center text-slate-500">{starter}</td>
-                <td class="py-3 px-4 text-center text-navy font-medium bg-navy/5">{groei}</td>
-                <td class="py-3 px-4 text-center text-slate-500">{partner}</td>
+                <td class="py-3 px-3 text-center text-slate-500">{lite}</td>
+                <td class="py-3 px-3 text-center text-slate-500">{starter}</td>
+                <td class="py-3 px-3 text-center text-navy font-medium bg-navy/5">{groei}</td>
+                <td class="py-3 px-3 text-center text-slate-500">{partner}</td>
               </tr>
             ))}
           </tbody>
