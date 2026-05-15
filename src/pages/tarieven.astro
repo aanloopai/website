@@ -110,6 +110,87 @@ const plans = [
   },
 ];
 
+// SEO + GEO services pricing — published transparency (memory: SEO/GEO geen gepubliceerde tarieven was Q1-gat)
+const seoGeoPlans = [
+  {
+    id: 'seo-audit',
+    name: 'SEO Audit',
+    type: 'Eenmalig',
+    price: '€495',
+    unit: 'eenmalig',
+    desc: 'Volledige technische audit van uw website: Core Web Vitals, schema-markup, indexability, interne linking. Levert prioriteit-actieplan + 30-dagen implementatie-roadmap.',
+    features: ['Core Web Vitals analyse (LCP/INP/CLS)', 'Schema.org gap-analyse', 'Indexability + crawlability check', 'Interne link-structuur audit', 'Concurrentie SERP-analyse top 10 keywords', 'Prioriteit-actieplan (Q1/Q2)'],
+    cta: 'SEO Audit aanvragen',
+    href: '/aanvragen/?dienst=seo-audit',
+  },
+  {
+    id: 'seo-setup',
+    name: 'SEO Setup',
+    type: 'Eenmalig',
+    price: '€1.950',
+    unit: 'eenmalig',
+    desc: 'Tech-SEO + 10 pagina\'s SEO-optimaal opgeleverd: meta + schema + interne linking + Core Web Vitals fix. Live binnen 4 weken.',
+    features: ['Tech-SEO implementatie volledig', '10 pagina\'s zoekwoord-geoptimaliseerd', 'Schema.org markup per pagina', 'Core Web Vitals optimalisatie', 'Interne link-architectuur', 'GA4 + GSC setup + monitoring'],
+    cta: 'SEO Setup aanvragen',
+    href: '/aanvragen/?dienst=seo-setup',
+  },
+  {
+    id: 'seo-maand',
+    name: 'SEO Maandelijks',
+    type: 'Maand',
+    price: '€795',
+    unit: '/maand',
+    desc: '3 nieuwe pagina\'s + maandelijkse optimalisatie + GSC-monitoring + rapportage. Maandelijks opzegbaar, ideaal post-Setup.',
+    features: ['3 nieuwe pagina\'s per maand (zoekwoord-onderzoek + content)', 'Maandelijkse Core Web Vitals monitoring', 'GSC ranking + click-rapportage', 'Schema-updates + bug-fixes', 'Concurrentie-tracking maandelijks', 'Strategie-call 30min/maand'],
+    cta: 'SEO Maandelijks starten',
+    href: '/aanvragen/?dienst=seo-maand',
+  },
+  {
+    id: 'geo-quickscan',
+    name: 'GEO Quick Scan',
+    type: 'Gratis',
+    price: '€0',
+    unit: 'gratis',
+    desc: 'Gratis 20-min AI-citability scan: hoe vindbaar bent u in ChatGPT, Claude, Perplexity, Gemini? Levert composite GEO-score 0-100.',
+    features: ['ChatGPT/Claude/Perplexity citability test', 'AI-bot access check (robots.txt + headers)', 'Schema.org sameAs + author detection', 'llms.txt aanwezigheid + kwaliteit', 'Composite GEO-score (0-100)', 'Top-3 quick-wins voor uw site'],
+    cta: 'Gratis GEO Scan',
+    href: '/aanvragen/?dienst=geo-quickscan',
+  },
+  {
+    id: 'geo-setup',
+    name: 'GEO Setup',
+    type: 'Eenmalig',
+    price: '€1.450',
+    unit: 'eenmalig',
+    desc: 'Volledige GEO-implementatie: schema + llms.txt + AI-bot config + Person/Author markup. Citaties in AI-platforms binnen 4-6 weken.',
+    features: ['llms.txt + llms-full.txt generatie', 'Schema.org Author/Person/Organization', 'AI-crawler access (robots + headers)', 'Speakable + sameAs implementatie', 'AI-Overview triggering structuur', 'Composite GEO-score +20-40 punten'],
+    cta: 'GEO Setup aanvragen',
+    href: '/aanvragen/?dienst=geo-setup',
+  },
+  {
+    id: 'geo-maand',
+    name: 'GEO Maandelijks',
+    type: 'Maand',
+    price: '€595',
+    unit: '/maand',
+    desc: 'Maandelijkse AI-platform tracking + content-updates voor citation-frequency. Citation-rapportage per platform.',
+    features: ['Maandelijkse AI-citation tracking (5 platforms)', 'Citation-frequency per platform-rapport', 'Content-updates voor citation-trigger', 'Schema-evolutie (nieuwe types)', 'Platform-algorithm changes monitoring', 'Strategie-call 30min/maand'],
+    cta: 'GEO Maandelijks starten',
+    href: '/aanvragen/?dienst=geo-maand',
+  },
+  {
+    id: 'seo-geo-bundel',
+    name: 'SEO + GEO Bundel',
+    type: 'Maand',
+    price: '€1.195',
+    unit: '/maand',
+    desc: 'SEO Maandelijks + GEO Maandelijks gecombineerd. Bespaart €195/maand vs losse afname. Eén strategie, één team.',
+    features: ['Alles van SEO Maandelijks', 'Alles van GEO Maandelijks', 'Geintegreerde traditioneel + AI strategie', 'Eén maandelijks rapport (SERP + AI-citations)', 'Bespaart €195/maand vs losse afname', 'Prioriteit support (binnen 4 uur)'],
+    cta: 'Bundel starten',
+    href: '/aanvragen/?dienst=seo-geo-bundel',
+  },
+];
+
 const eenmaligSetup = [
   { plan: 'Lite', prijs: '€0', desc: 'Geen eenmalige setup — self-onboarding via standaard script en call-flow' },
   { plan: 'Starter', prijs: '€495', desc: 'Eenmalig — inclusief intake, training, configuratie en go-live begeleiding' },
@@ -273,6 +354,77 @@ const productOfferGraph = {
         eligibleRegion: { '@type': 'Country', name: 'Nederland' },
         priceValidUntil: '2026-12-31',
       },
+    },
+    {
+      '@type': 'Service',
+      '@id': 'https://aanloopai.nl/tarieven/#seo-audit',
+      name: 'SEO Audit Nederland',
+      serviceType: 'SEO Audit',
+      description: 'Volledige technische SEO-audit voor Nederlandse MKB-website: Core Web Vitals, schema-markup, indexability, interne linking. Levert prioriteit-actieplan + 30-dagen implementatie-roadmap.',
+      provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+      areaServed: { '@type': 'Country', name: 'Nederland' },
+      audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
+      offers: { '@type': 'Offer', price: '495', priceCurrency: 'EUR', availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/aanvragen/?dienst=seo-audit', priceValidUntil: '2026-12-31' },
+    },
+    {
+      '@type': 'Service',
+      '@id': 'https://aanloopai.nl/tarieven/#seo-setup',
+      name: 'SEO Setup Pakket Nederland',
+      serviceType: 'SEO Setup',
+      description: 'Tech-SEO + 10 pagina-optimalisatie + schema + Core Web Vitals + GA4/GSC setup. Live binnen 4 weken.',
+      provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+      areaServed: { '@type': 'Country', name: 'Nederland' },
+      offers: { '@type': 'Offer', price: '1950', priceCurrency: 'EUR', availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/aanvragen/?dienst=seo-setup', priceValidUntil: '2026-12-31' },
+    },
+    {
+      '@type': 'Service',
+      '@id': 'https://aanloopai.nl/tarieven/#seo-maand',
+      name: 'SEO Maandelijks Nederland',
+      serviceType: 'SEO Monthly Service',
+      description: 'Maandelijkse SEO-content + monitoring + rapportage voor MKB Nederland. 3 nieuwe pagina\'s per maand, GSC-monitoring, schema-updates.',
+      provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+      areaServed: { '@type': 'Country', name: 'Nederland' },
+      offers: { '@type': 'Offer', price: '795', priceCurrency: 'EUR', priceSpecification: { '@type': 'UnitPriceSpecification', price: '795', priceCurrency: 'EUR', unitText: 'maand' }, availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/aanvragen/?dienst=seo-maand', priceValidUntil: '2026-12-31' },
+    },
+    {
+      '@type': 'Service',
+      '@id': 'https://aanloopai.nl/tarieven/#geo-quickscan',
+      name: 'GEO Quick Scan Gratis',
+      serviceType: 'GEO Audit',
+      description: 'Gratis 20-minuten AI-citability scan voor Nederlandse MKB-websites: ChatGPT/Claude/Perplexity/Gemini citability, robots.txt + headers check, schema en llms.txt analyse, composite GEO-score 0-100.',
+      provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+      areaServed: { '@type': 'Country', name: 'Nederland' },
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR', availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/aanvragen/?dienst=geo-quickscan' },
+    },
+    {
+      '@type': 'Service',
+      '@id': 'https://aanloopai.nl/tarieven/#geo-setup',
+      name: 'GEO Setup Pakket Nederland',
+      serviceType: 'GEO Setup',
+      description: 'Volledige Generative Engine Optimization: schema.org Author/Person, llms.txt + llms-full.txt, AI-crawler access, Speakable, AI-Overview triggering. Citaties in AI-platforms binnen 4-6 weken.',
+      provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+      areaServed: { '@type': 'Country', name: 'Nederland' },
+      offers: { '@type': 'Offer', price: '1450', priceCurrency: 'EUR', availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/aanvragen/?dienst=geo-setup', priceValidUntil: '2026-12-31' },
+    },
+    {
+      '@type': 'Service',
+      '@id': 'https://aanloopai.nl/tarieven/#geo-maand',
+      name: 'GEO Maandelijks AI-Citation Tracking',
+      serviceType: 'GEO Monthly Service',
+      description: 'Maandelijkse AI-platform tracking voor Nederlandse MKB: citation-frequency per platform (ChatGPT, Claude, Perplexity, Gemini, Bing Copilot), content-updates voor citation-trigger, schema-evolutie.',
+      provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+      areaServed: { '@type': 'Country', name: 'Nederland' },
+      offers: { '@type': 'Offer', price: '595', priceCurrency: 'EUR', priceSpecification: { '@type': 'UnitPriceSpecification', price: '595', priceCurrency: 'EUR', unitText: 'maand' }, availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/aanvragen/?dienst=geo-maand', priceValidUntil: '2026-12-31' },
+    },
+    {
+      '@type': 'Service',
+      '@id': 'https://aanloopai.nl/tarieven/#seo-geo-bundel',
+      name: 'SEO + GEO Maandelijkse Bundel Nederland',
+      serviceType: 'SEO + GEO Combined',
+      description: 'Maandelijkse SEO + GEO bundel voor Nederlandse MKB: traditioneel SERP + AI-citation tracking gecombineerd. Bespaart €195/maand vs losse afname. Eén strategie, één team, één rapportage.',
+      provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+      areaServed: { '@type': 'Country', name: 'Nederland' },
+      offers: { '@type': 'Offer', price: '1195', priceCurrency: 'EUR', priceSpecification: { '@type': 'UnitPriceSpecification', price: '1195', priceCurrency: 'EUR', unitText: 'maand' }, availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/aanvragen/?dienst=seo-geo-bundel', priceValidUntil: '2026-12-31' },
     },
     {
       '@type': 'Product',
@@ -509,6 +661,51 @@ const valueCompareRows = [
       <p class="text-center text-xs text-slate-500 mt-6">
         WhatsApp-conversatiekosten van Meta (€0,03–€0,08 per 24-uurs venster) worden direct door Meta gefactureerd, niet door Aanloop. Emma is gratis inbegrepen vanaf het Groei-pakket.
       </p>
+    </div>
+  </section>
+
+  <!-- SEO + GEO services pricing — gepubliceerde tarieven (transparantie-gat fix) -->
+  <section class="section-tight bg-slate-50/60">
+    <div class="container-page max-w-6xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">SEO + GEO Diensten</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">
+          SEO + GEO tarieven — vindbaar in Google én ChatGPT.
+        </h2>
+        <p class="mt-3 text-slate-600 leading-relaxed max-w-3xl">
+          Traditionele SEO én Generative Engine Optimization (GEO) voor zichtbaarheid in zowel Google SERP als AI-platforms (ChatGPT, Claude, Perplexity, Gemini). Volledig gepubliceerde tarieven — geen offerte-only games.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 reveal reveal-delay-1">
+        {seoGeoPlans.map(p => (
+          <div class:list={[
+            'rounded-xl border bg-white p-5 flex flex-col',
+            p.id === 'seo-geo-bundel' ? 'border-2 border-navy shadow-lg' : 'border-slate-200',
+          ]}>
+            <div class="mb-3 flex items-start justify-between gap-3">
+              <div>
+                <p class="text-[10px] font-semibold uppercase tracking-widest text-brand-indigo mb-1">{p.type}</p>
+                <p class="text-base font-bold text-navy">{p.name}</p>
+              </div>
+              <div class="text-right">
+                <span class="text-2xl font-bold text-navy whitespace-nowrap">{p.price}</span>
+                <p class="text-[10px] text-slate-400">{p.unit}</p>
+              </div>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed mb-4">{p.desc}</p>
+            <ul class="space-y-1.5 mb-5 flex-1">
+              {p.features.map(f => (
+                <li class="flex items-start gap-1.5 text-xs text-slate-700">
+                  <svg class="w-3 h-3 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  <span>{f}</span>
+                </li>
+              ))}
+            </ul>
+            <a href={p.href} class:list={['text-xs w-full justify-center', p.id === 'seo-geo-bundel' ? 'btn-primary' : 'btn-outline']}>{p.cta}</a>
+          </div>
+        ))}
+      </div>
+      <p class="text-center text-xs text-slate-500 mt-6">Alle SEO/GEO tarieven excl. 21% btw · Maandelijks opzegbaar · Eenmalig = factuur na oplevering · Bundels combineerbaar met Marco/Emma pakketten</p>
     </div>
   </section>
 
