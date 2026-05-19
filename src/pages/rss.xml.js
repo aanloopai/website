@@ -33,7 +33,7 @@ const articles = [
   { slug: 'ai-makelaar-software', title: 'AI Makelaar Software — Tools voor Vastgoed Nederland', date: '2026-05-01', description: 'Software-keuze voor makelaars in 2026.' },
   { slug: 'ai-telefoonassistent-bedrijven', title: 'AI Telefoonassistent voor Bedrijven', date: '2026-05-01', description: 'AI als eerstelijns telefoonassistent: 24/7, NL-talig, agenda-koppeling.' },
   { slug: 'elevenlabs-ai-agent-koppelen', title: 'ElevenLabs AI Agent Koppelen aan Telefooncentrale', date: '2026-05-01', description: 'Stap-voor-stap ElevenLabs voice AI koppelen via SIP-trunk. HowTo schema.' },
-  { slug: 'ai-voor-accountantskantoor-nederland', title: 'AI voor Accountantskantoor Nederland', date: '2026-05-01', description: 'AI voor accountancy: factuur-OCR, btw-aangiftes, debiteurenbeheer.' },
+  { slug: 'ai-voor-accountantskantoor-nederland-2026', title: 'AI voor Accountantskantoor Nederland', date: '2026-05-01', description: 'AI voor accountancy: factuur-OCR, btw-aangiftes, debiteurenbeheer.' },
 ];
 
 export async function GET() {
