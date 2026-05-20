@@ -10,7 +10,13 @@
     "postbuild": "node scripts/indexnow-ping.cjs",
     "preview": "astro preview",
     "astro": "astro",
-    "indexnow": "node scripts/indexnow-ping.cjs"
+    "indexnow": "node scripts/indexnow-ping.cjs",
+    "sitemap": "node scripts/build-sitemap.cjs",
+    "seo:score": "node scripts/seo-scorecard.cjs",
+    "seo:score:full": "node scripts/seo-scorecard.cjs --check-external --psi",
+    "seo:links": "node scripts/seo-link-integrity.cjs --check-external",
+    "seo:fix": "node scripts/seo-autofix.cjs",
+    "seo:fix:apply": "node scripts/seo-autofix.cjs --apply"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.2",

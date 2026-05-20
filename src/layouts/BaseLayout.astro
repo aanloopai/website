@@ -230,6 +230,8 @@ const websiteSchema = {
 const speakableSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
+  name: fullTitle,
+  url: canonical,
   speakable: {
     '@type': 'SpeakableSpecification',
     cssSelector: ['h1', 'main p:first-of-type', '.eyebrow + h2 + p', '[data-speakable]'],
@@ -347,9 +349,8 @@ const allSchemas = [
       })();
     </script>
 
-    <!-- Canonical & Hreflang -->
+    <!-- Canonical & Hreflang (NL-only site: one language tag + x-default) -->
     <link rel="canonical" href={canonical} />
-    <link rel="alternate" hreflang="nl-NL" href={canonical} />
     <link rel="alternate" hreflang="nl" href={canonical} />
     <link rel="alternate" hreflang="x-default" href={canonical} />
 

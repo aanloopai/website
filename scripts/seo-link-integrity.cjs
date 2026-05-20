@@ -1,7 +1,11 @@
 #!/usr/bin/env node
-// Walk dist/ HTML output, extract every internal href, resolve against disk
-// pages + sitemap URLs, and report broken internal links + suspicious external
-// links. Detects Q1.5 (404 candidates) + Q2.7 (broken outgoing) preconditions.
+// Walk dist/ HTML output, extract every href, resolve internal links against
+// disk pages, and (with --check-external) run live HTTP checks on every unique
+// external URL to find broken outgoing links (Semrush "broken external links").
+//
+// Usage:
+//   node scripts/seo-link-integrity.cjs                  internal only (fast)
+//   node scripts/seo-link-integrity.cjs --check-external live external checks
 const fs = require('fs');
 const path = require('path');
 
@@ -9,6 +13,9 @@ const ROOT = path.join(__dirname, '..');
 const DIST = path.join(ROOT, 'dist');
 const SITEMAP = path.join(ROOT, 'public', 'sitemap.xml');
 const SITE = 'https://aanloopai.nl';
+const CHECK_EXTERNAL = process.argv.includes('--check-external');
+const TIMEOUT_MS = 9000;
+const CONCURRENCY = 12;
 
 if (!fs.existsSync(DIST)) {
   console.error('No dist/ directory — run "npm run build" first.');
@@ -42,12 +49,14 @@ const knownUrls = new Set();
 for (const f of htmlFiles) knownUrls.add(SITE + urlForHtmlFile(f));
 
 const brokenLinks = new Map();
-const externalLinks = new Map();
+const externalLinks = new Map();   // host -> count
+const externalUrls = new Map();    // full URL -> Set(source pages)
 
 const HREF_RE = /<a\b[^>]*?\bhref=(["'])([^"'#]*?)\1/gi;
 
 for (const file of htmlFiles) {
   const html = fs.readFileSync(file, 'utf8');
+  const src = path.relative(DIST, file).replace(/\\/g, '/');
   for (const m of html.matchAll(HREF_RE)) {
     const raw = m[2].trim();
     if (!raw) continue;
@@ -68,43 +77,109 @@ for (const file of htmlFiles) {
       if (/\.(png|jpe?g|gif|svg|webp|avif|ico|css|js|woff2?|ttf|eot|pdf|xml|json|webmanifest|txt)$/i.test(normalised)) continue;
       if (!knownUrls.has(normalised)) {
         if (!brokenLinks.has(normalised)) brokenLinks.set(normalised, new Set());
-        brokenLinks.get(normalised).add(path.relative(DIST, file).replace(/\\/g, '/'));
+        brokenLinks.get(normalised).add(src);
       }
     } else {
       const u = new URL(url);
+      if (u.protocol !== 'http:' && u.protocol !== 'https:') continue;
       const host = u.hostname.replace(/^www\./, '');
       externalLinks.set(host, (externalLinks.get(host) || 0) + 1);
+      // wa.me / WhatsApp deeplinks are not crawlable health signals — skip live check
+      if (host === 'wa.me' || host === 'api.whatsapp.com') continue;
+      const clean = `${u.protocol}//${u.host}${u.pathname}${u.search}`;
+      if (!externalUrls.has(clean)) externalUrls.set(clean, new Set());
+      externalUrls.get(clean).add(src);
     }
   }
 }
 
-console.log('=== AANLOOPAI INTERNAL-LINK INTEGRITY ===');
+console.log('=== AANLOOPAI LINK INTEGRITY ===');
 console.log(`HTML pages: ${htmlFiles.length}`);
 console.log(`Sitemap URLs: ${sitemapUrls.size}`);
 console.log(`Known disk URLs: ${knownUrls.size}`);
 console.log('');
 
 const broken = Array.from(brokenLinks.entries()).sort((a, b) => b[1].size - a[1].size);
-console.log(`--- Q1.5 Broken internal links (target URLs not on disk): ${broken.length} ---`);
+console.log(`--- Broken internal links (target not on disk): ${broken.length} ---`);
 for (const [url, sources] of broken) {
   const arr = Array.from(sources);
-  console.log(`  ${url}  (referenced from ${sources.size} page${sources.size > 1 ? 's' : ''}):`);
+  console.log(`  ${url}  (from ${sources.size} page${sources.size > 1 ? 's' : ''})`);
   arr.slice(0, 5).forEach((s) => console.log(`    - ${s}`));
   if (arr.length > 5) console.log(`    ...+${arr.length - 5} more`);
 }
 console.log('');
 
 const ext = Array.from(externalLinks.entries()).sort((a, b) => b[1] - a[1]);
-console.log('--- External link domains (top 20): ---');
+console.log(`--- External link domains (top 20 of ${ext.length}): ---`);
 ext.slice(0, 20).forEach(([host, n]) => console.log(`  ${n.toString().padStart(5)}  ${host}`));
+console.log(`Unique external URLs (excl. wa.me): ${externalUrls.size}`);
 
-const out = {
-  brokenInternal: broken.map(([url, set]) => ({
-    url,
-    referencedFrom: Array.from(set),
-  })),
-  externalDomains: ext.map(([host, count]) => ({ host, count })),
-};
-fs.writeFileSync(path.join(ROOT, 'scripts', 'seo-link-integrity-output.json'), JSON.stringify(out, null, 2));
-console.log('');
-console.log('Output: scripts/seo-link-integrity-output.json');
+async function checkUrl(url) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+  const headers = { 'User-Agent': 'Mozilla/5.0 (compatible; AanloopLinkCheck/1.0)' };
+  try {
+    let res = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: ctrl.signal, headers });
+    // Some servers reject HEAD (405/501/403) — retry with GET
+    if (res.status === 405 || res.status === 501 || res.status === 403) {
+      res = await fetch(url, { method: 'GET', redirect: 'follow', signal: ctrl.signal, headers });
+    }
+    clearTimeout(timer);
+    // 999 = LinkedIn anti-bot status; the link works for real users, not broken.
+    const ok = res.status < 400 || res.status === 999;
+    return { url, status: res.status, ok };
+  } catch (err) {
+    clearTimeout(timer);
+    return { url, status: 0, ok: false, error: err.name === 'AbortError' ? 'timeout' : (err.code || err.message) };
+  }
+}
+
+async function runExternalChecks() {
+  const urls = Array.from(externalUrls.keys());
+  const results = [];
+  let i = 0;
+  console.log(`\n--- Live-checking ${urls.length} external URLs (concurrency ${CONCURRENCY}) ---`);
+  async function worker() {
+    while (i < urls.length) {
+      const idx = i++;
+      const r = await checkUrl(urls[idx]);
+      results.push(r);
+      if (!r.ok) console.log(`  BROKEN  [${r.status || r.error}]  ${r.url}`);
+    }
+  }
+  await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+  return results;
+}
+
+(async () => {
+  let brokenExternal = [];
+  if (CHECK_EXTERNAL) {
+    const results = await runExternalChecks();
+    brokenExternal = results
+      .filter((r) => !r.ok)
+      .map((r) => ({
+        url: r.url,
+        status: r.status,
+        error: r.error || null,
+        referencedFrom: Array.from(externalUrls.get(r.url) || []),
+      }))
+      .sort((a, b) => b.referencedFrom.length - a.referencedFrom.length);
+    console.log(`\nBroken external URLs: ${brokenExternal.length} / ${results.length}`);
+  } else {
+    console.log('\n(external links not checked — pass --check-external for live HTTP checks)');
+  }
+
+  const out = {
+    generatedAt: new Date().toISOString(),
+    htmlPages: htmlFiles.length,
+    brokenInternal: broken.map(([url, set]) => ({ url, referencedFrom: Array.from(set) })),
+    externalDomains: ext.map(([host, count]) => ({ host, count })),
+    externalUrlsChecked: CHECK_EXTERNAL ? externalUrls.size : 0,
+    brokenExternal,
+  };
+  fs.writeFileSync(
+    path.join(ROOT, 'scripts', 'seo-link-integrity-output.json'),
+    JSON.stringify(out, null, 2)
+  );
+  console.log('\nOutput: scripts/seo-link-integrity-output.json');
+})();

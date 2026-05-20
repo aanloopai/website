@@ -1,0 +1,253 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'AI Marketing Bureau',
+  serviceType: 'AI Marketing',
+  description: 'AI marketing bureau voor het Nederlandse MKB: automatisering van lead-generatie, lead-kwalificatie en klantcommunicatie via AI-receptionist, WhatsApp-agent en custom workflows. Starter €597 per maand, Groei €1.197 per maand.',
+  provider: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    url: 'https://aanloopai.nl',
+  },
+  areaServed: { '@type': 'Country', name: 'Nederland' },
+  audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland (5-200 medewerkers)' },
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'AI Marketing pakketten',
+    itemListElement: [
+      { '@type': 'Offer', name: 'Starter', price: '597.00', priceCurrency: 'EUR', description: 'Marco AI-receptionist die inbound marketing-leads opvangt, tot 150 gesprekken per maand, agenda-integratie, lead-melding via e-mail. Live binnen 10 werkdagen.' },
+      { '@type': 'Offer', name: 'Groei', price: '1197.00', priceCurrency: 'EUR', description: 'Marco AI-receptionist plus Emma WhatsApp-marketing-agent, onbeperkte gesprekken, CRM-integratie (HubSpot/Pipedrive), lead-nurturing workflows. Live binnen 7 werkdagen.' },
+      { '@type': 'Offer', priceSpecification: { '@type': 'PriceSpecification', priceCurrency: 'EUR', valueAddedTaxIncluded: false }, name: 'Partner', priceCurrency: 'EUR', description: 'Marco plus Emma plus custom n8n marketing-workflows op maat, multi-team routing, dedicated account manager. Prijs op offerte.' },
+    ],
+  },
+};
+
+const faqItems = [
+  { question: 'Wat is een AI marketing bureau?', answer: 'Een AI marketing bureau is een bureau dat marketingprocessen automatiseert met kunstmatige intelligentie in plaats van die processen uitsluitend handmatig uit te voeren. Aanloop AI richt zich specifiek op het automatiseren van lead-generatie, lead-kwalificatie en klantcommunicatie. Wij vangen inbound leads op met een AI-receptionist, beantwoorden marketing-vragen via WhatsApp en synchroniseren contacten met uw CRM — 24/7, zonder personeelskosten.' },
+  { question: 'Doet een AI marketing bureau ook advertenties en creatie?', answer: 'Aanloop AI is in de eerste plaats een AI-automatiseringsbureau, geen klassiek reclamebureau. Wij kopen geen advertentieruimte en maken geen campagnebeelden of video. Onze focus ligt op het automatiseren van lead-opvolging en klantcommunicatie. Voor advertentie-inkoop en creatieve productie werkt u met een traditioneel bureau; wij zorgen ervoor dat de leads die uit die campagnes komen direct en consistent worden opgevolgd.' },
+  { question: 'Voor welke MKB-bedrijven werkt AI marketing?', answer: 'AI marketing-automatisering werkt het best bij Nederlandse MKB-bedrijven met een meetbare inbound-stroom: telefoontjes, formulieren of WhatsApp-berichten van potentiele klanten. Denk aan installatiebedrijven, adviesbureaus, makelaars, webshops, praktijken en B2B-dienstverleners. Heeft u nauwelijks inbound, dan levert lead-opvolging weinig op en is generatie eerst nodig.' },
+  { question: 'Wat kost een AI marketing bureau in Nederland?', answer: 'Aanloop AI hanteert vaste maandtarieven. Starter kost €597 per maand en bevat Marco, de AI-receptionist die inbound marketing-leads opvangt. Groei kost €1.197 per maand en voegt Emma, de WhatsApp-agent, plus CRM-integratie en lead-nurturing toe. Partner is maatwerk op offerte. Alle prijzen zijn exclusief 21% btw. De setup-kosten worden eenmalig apart gefactureerd.' },
+  { question: 'Hoe snel is AI marketing-automatisering live?', answer: 'Het Starter-pakket is gemiddeld binnen 10 werkdagen live, het Groei-pakket binnen 7 werkdagen en het Partner-pakket binnen 14 werkdagen afhankelijk van de scope. Na de gratis AI-scan trainen we de agents op uw aanbod, openingstijden en kwalificatievragen, koppelen we agenda en CRM en draaien we een korte testronde voordat het verkeer volledig live gaat.' },
+  { question: 'Is AI marketing-automatisering AVG-compliant?', answer: 'Ja. Aanloop AI verwerkt persoonsgegevens uitsluitend binnen de EU en sluit een verwerkersovereenkomst conform AVG artikel 28. Bewaartermijnen zijn instelbaar en lead-data wordt alleen gebruikt voor het overeengekomen marketingdoel. Voor zorg- en juridische sectoren bouwen we extra waarborgen in. Aanloop AI B.V. is geregistreerd in Rotterdam onder KVK 88606902.' },
+  { question: 'Vervangt AI marketing mijn marketeer of marketingbureau?', answer: 'Nee. AI marketing-automatisering vervangt de repetitieve uitvoering — leads opvangen, kwalificeren, eerste vragen beantwoorden en data bijwerken — niet de strategie. Uw marketeer of bureau blijft verantwoordelijk voor positionering, campagnekeuzes en creatie. De AI-agents zorgen ervoor dat geen enkele lead blijft liggen en dat opvolging altijd binnen seconden gebeurt.' },
+  { question: 'Hoe meet ik het rendement van AI marketing?', answer: 'U meet het rendement aan drie cijfers: het aantal opgevangen leads dat anders verloren was gegaan, de gemiddelde reactietijd op een nieuwe lead en de tijd die uw team bespaart op handmatige opvolging. In het Aanloop AI-dashboard ziet u per dag, week en kanaal hoeveel gesprekken zijn afgehandeld en hoeveel leads zijn doorgezet naar uw salesteam.' },
+];
+---
+
+<BaseLayout
+  title="AI Marketing Bureau voor het MKB | Aanloop AI"
+  description="AI marketing bureau voor het Nederlandse MKB: automatiseer lead-generatie, kwalificatie en klantcommunicatie. Vaste prijzen vanaf €597 per maand, live binnen 7-14 dagen."
+  schema={serviceSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">AI Marketing · Nederland</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI Marketing Bureau voor het Nederlandse MKB
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Aanloop AI automatiseert het deel van marketing waar de meeste omzet weglekt: lead-opvolging. Wij vangen inbound leads op met een AI-receptionist, kwalificeren ze, beantwoorden vragen via WhatsApp en synchroniseren alles met uw CRM — 24/7, in vloeiend Nederlands. Geen advertentieverhalen, wel meetbare lead-automatisering vanaf €597 per maand.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI-scan (30 min)</a>
+          <a href="/tarieven/" class="btn-secondary">Bekijk tarieven</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Wat is een AI marketing bureau?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Een AI marketing bureau is een bureau dat marketingprocessen automatiseert met kunstmatige intelligentie, in plaats van die processen volledig met de hand uit te voeren. Waar een traditioneel marketingbureau vooral mensuren inzet — een marketeer die belt, een medewerker die formulieren naloopt, een tekstschrijver die e-mails opstelt — laat een AI marketing bureau software dat repetitieve werk doen. Het resultaat is sneller, consistenter en 24 uur per dag actief.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Het belangrijkste verschil zit in de uitvoering. Een klassiek bureau is sterk in <strong class="text-navy">strategie, positionering en creatie</strong>: campagne-ideeen, advertenties, beeldmateriaal. Een AI marketing bureau is sterk in <strong class="text-navy">uitvoering op schaal</strong>: elke binnenkomende lead binnen seconden te woord staan, kwalificeren, opvolgen en vastleggen — zonder dat er een mens hoeft mee te kijken.</p>
+      <p class="text-slate-700 leading-relaxed">Het is belangrijk om eerlijk te zijn over wat Aanloop AI wel en niet doet. Aanloop AI is in de kern een AI-automatiseringsbureau. Wij kopen geen advertentieruimte in en produceren geen campagnebeelden of video. Onze rol binnen marketing is scherp afgebakend: <strong class="text-navy">lead-generatie ondersteunen, leads kwalificeren en klantcommunicatie automatiseren</strong>. Dat is precies het deel waar in het Nederlandse MKB de meeste leads blijven liggen — omdat niemand op tijd terugbelt of antwoordt.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Wat doet een AI marketing bureau?</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">In de praktijk dekt AI-marketing een aantal concrete taken. Hieronder leest u wat Aanloop AI voor Nederlandse MKB-bedrijven automatiseert.</p>
+      <div class="space-y-5">
+        <div class="card p-6 bg-white">
+          <h3 class="text-lg font-bold text-navy mb-2">Lead-generatie ondersteunen</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Elke campagne, advertentie of vermelding levert telefoontjes, formulieren en WhatsApp-berichten op. Een AI-agent zorgt ervoor dat elk van die contactmomenten direct wordt opgepakt — ook buiten kantooruren en in het weekend. Geen gemiste oproep is een verloren marketingbudget.</p>
+        </div>
+        <div class="card p-6 bg-white">
+          <h3 class="text-lg font-bold text-navy mb-2">Lead-kwalificatie</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Niet elke lead is een goede lead. De AI-agent stelt uw kwalificatievragen — budget, urgentie, locatie, type aanvraag — en bepaalt of een lead direct naar sales gaat of in een nurturing-traject blijft. Uw salesteam spreekt alleen serieuze prospects.</p>
+        </div>
+        <div class="card p-6 bg-white">
+          <h3 class="text-lg font-bold text-navy mb-2">Marketing-automatisering</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Custom workflows synchroniseren elke nieuwe lead automatisch met uw CRM, plannen een opvolg-actie en starten een nurturing-reeks. Geen handmatig overtypen, geen leads die tussen wal en schip vallen.</p>
+        </div>
+        <div class="card p-6 bg-white">
+          <h3 class="text-lg font-bold text-navy mb-2">Klantcommunicatie via WhatsApp en voice</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">Marco neemt de telefoon aan in vloeiend Nederlands, Emma beantwoordt WhatsApp-berichten. Standaard vragen over openingstijden, prijzen, beschikbaarheid en levering worden direct afgehandeld, complexe gevallen escaleren naar een mens.</p>
+        </div>
+        <div class="card p-6 bg-white">
+          <h3 class="text-lg font-bold text-navy mb-2">Rapportage en inzicht</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">In het dashboard ziet u per dag, week en kanaal hoeveel leads zijn opgevangen, hoe snel ze zijn opgevolgd en hoeveel zijn doorgezet naar sales. Zo weet u precies welk marketingkanaal rendeert.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-2">AI marketing vs traditionele marketing</h2>
+      <p class="text-sm text-slate-600 mb-6">Geen vervanging, maar een aanvulling. Het verschil zit in uitvoering en snelheid.</p>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Aspect</th>
+              <th class="text-left p-4 font-semibold text-navy">Traditionele marketing</th>
+              <th class="text-left p-4 font-semibold text-navy">AI marketing-automatisering</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bg-white"><td class="p-4 font-medium text-navy">Lead-opvolging</td><td class="p-4 text-slate-700">Tijdens kantooruren, afhankelijk van beschikbaarheid</td><td class="p-4 text-slate-700">24/7, binnen seconden</td></tr>
+            <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Reactietijd</td><td class="p-4 text-slate-700">Minuten tot uren, soms dagen</td><td class="p-4 text-slate-700">Direct, consistent</td></tr>
+            <tr class="bg-white"><td class="p-4 font-medium text-navy">Schaalbaarheid</td><td class="p-4 text-slate-700">Meer leads vraagt meer personeel</td><td class="p-4 text-slate-700">Onbeperkt gelijktijdige gesprekken</td></tr>
+            <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Strategie en creatie</td><td class="p-4 text-slate-700">Sterk — campagne-ideeen, beeld, video</td><td class="p-4 text-slate-700">Niet de focus van Aanloop AI</td></tr>
+            <tr class="bg-white"><td class="p-4 font-medium text-navy">Consistentie</td><td class="p-4 text-slate-700">Variabel per medewerker</td><td class="p-4 text-slate-700">100 procent volgens script</td></tr>
+            <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Kosten</td><td class="p-4 text-slate-700">Per uur of per campagne</td><td class="p-4 text-slate-700">Vast bedrag per maand</td></tr>
+            <tr class="bg-white"><td class="p-4 font-medium text-navy">CRM-registratie</td><td class="p-4 text-slate-700">Handmatig, foutgevoelig</td><td class="p-4 text-slate-700">Automatisch gesynchroniseerd</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-slate-500 mt-3">De sterkste opzet combineert beide: een traditioneel bureau voor strategie en creatie, AI-automatisering voor uitvoering en opvolging.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Voor welke MKB-bedrijven werkt AI marketing?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">AI marketing-automatisering levert het meeste op bij Nederlandse MKB-bedrijven met een meetbare inbound-stroom. Met andere woorden: er moeten regelmatig potentiele klanten contact opnemen via telefoon, formulier of WhatsApp. Die contactmomenten zijn de leads die geautomatiseerd kunnen worden opgevangen en gekwalificeerd.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">In de praktijk zien wij sterke resultaten bij installatie- en bouwbedrijven die spoedaanvragen binnenkrijgen, bij advies- en accountantskantoren met een gestage stroom intake-vragen, bij makelaars en vastgoedpartijen, bij webshops met klantvragen over levering en retour, en bij B2B-dienstverleners die offerte-aanvragen ontvangen. Ook praktijken in de zorg en dienstverlening profiteren, mits de communicatie binnen duidelijke kaders blijft.</p>
+      <p class="text-slate-700 leading-relaxed">Heeft uw bedrijf nauwelijks inbound — bijvoorbeeld omdat er nog geen vindbaarheid of campagne loopt — dan levert lead-opvolging alleen weinig op. In dat geval is eerst werken aan generatie en vindbaarheid logischer. Tijdens de gratis AI-scan beoordelen wij eerlijk of automatisering in uw situatie zin heeft.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Hoe Aanloop AI marketing-processen automatiseert</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">Aanloop AI werkt met drie bouwstenen. Samen vormen ze een geautomatiseerde laag bovenop uw bestaande marketing.</p>
+      <div class="space-y-4">
+        <div class="flex gap-4">
+          <span class="shrink-0 w-10 h-10 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">M</span>
+          <div>
+            <h3 class="text-lg font-bold text-navy mb-1"><a href="/diensten/marco/" class="hover:underline">Marco — voor inbound leads</a></h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Marco is de AI-receptionist die uw telefoon aanneemt. Elke beller die op uw campagne, advertentie of vermelding reageert wordt direct te woord gestaan, ook 's avonds en in het weekend. Marco voert de intake, beantwoordt standaard vragen en zet de gekwalificeerde lead door naar uw team.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <span class="shrink-0 w-10 h-10 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">E</span>
+          <div>
+            <h3 class="text-lg font-bold text-navy mb-1"><a href="/diensten/emma/" class="hover:underline">Emma — voor WhatsApp-marketing</a></h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Emma is de AI WhatsApp-agent. Steeds meer Nederlandse consumenten en bedrijven stellen hun eerste vraag via WhatsApp. Emma beantwoordt die berichten direct, kwalificeert de aanvraag en zorgt dat geen enkel bericht onbeantwoord blijft — het kanaal waar leads anders het snelst afhaken.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <span class="shrink-0 w-10 h-10 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">W</span>
+          <div>
+            <h3 class="text-lg font-bold text-navy mb-1">Custom AI Workflows — voor CRM en nurturing</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">Met custom workflows op basis van n8n synchroniseren wij elke nieuwe lead automatisch met uw CRM, starten een nurturing-reeks en plannen opvolg-acties. Zie ook onze pagina over <a href="/diensten/ai-lead-qualification/" class="text-brand-indigo hover:underline">AI lead-kwalificatie</a> voor de scoringslogica achter dit proces.</p>
+          </div>
+        </div>
+      </div>
+      <p class="text-slate-700 leading-relaxed mt-6">Voor wie de marketing-uitvoering verder wil automatiseren, koppelt Aanloop AI dit aan diensten als de <a href="/diensten/ai-social-media-agent/" class="text-brand-indigo hover:underline">AI social-media-agent</a> en de <a href="/diensten/ai-seo-content-generator/" class="text-brand-indigo hover:underline">AI SEO-content-generator</a>. Zo wordt niet alleen de opvolging, maar ook een deel van de contentproductie geautomatiseerd.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Wat levert het op?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Het rendement van AI marketing-automatisering is concreet en meetbaar. Het draait om drie effecten.</p>
+      <ul class="space-y-3 text-slate-700">
+        <li class="flex gap-3"><span class="shrink-0 text-brand-emerald font-bold">1.</span><div><strong class="text-navy">Geen leads die blijven liggen.</strong> Onderzoek naar lead-opvolging laat al jaren zien dat de kans op een conversie sterk daalt zodra de eerste reactie langer dan een paar minuten op zich laat wachten. Een AI-agent reageert binnen seconden, elk uur van de dag. Marketingbudget dat anders weglekt via gemiste oproepen en onbeantwoorde berichten wordt zo benut.</div></li>
+        <li class="flex gap-3"><span class="shrink-0 text-brand-emerald font-bold">2.</span><div><strong class="text-navy">Snellere lead-opvolging.</strong> Waar handmatige opvolging afhankelijk is van beschikbaarheid, is automatische opvolging direct en consistent. Uw salesteam ontvangt alleen gekwalificeerde leads en verspilt geen tijd aan aanvragen die niet passen.</div></li>
+        <li class="flex gap-3"><span class="shrink-0 text-brand-emerald font-bold">3.</span><div><strong class="text-navy">24/7 bereikbaarheid.</strong> Veel inbound komt binnen buiten kantooruren. Met automatisering is uw bedrijf altijd bereikbaar, zonder avond- of weekenddiensten voor uw medewerkers.</div></li>
+      </ul>
+      <p class="text-slate-700 leading-relaxed mt-4">Wij beloven geen vaste percentages of gegarandeerde omzetstijging — dat hangt af van uw inbound-volume en aanbod. Wat wij wel garanderen is meetbaarheid: in het dashboard ziet u zwart op wit hoeveel leads zijn opgevangen en hoe snel ze zijn opgevolgd.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Wat kost een AI marketing bureau?</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">Aanloop AI werkt met vaste, transparante maandtarieven. Geen offerte-only games, geen kosten per gesprek. Alle bedragen zijn exclusief 21% btw; de eenmalige setup wordt apart gefactureerd.</p>
+      <div class="grid sm:grid-cols-2 gap-5 mb-6">
+        <div class="card p-6 bg-white border border-slate-200">
+          <p class="text-xs font-semibold uppercase tracking-widest text-brand-indigo mb-1">Starter</p>
+          <div class="flex items-baseline gap-1 mb-3"><span class="text-4xl font-bold text-navy">€597</span><span class="text-sm text-slate-500">/maand</span></div>
+          <p class="text-sm text-slate-600 leading-relaxed">Marco AI-receptionist die inbound marketing-leads opvangt, tot 150 gesprekken per maand, agenda-integratie en lead-melding via e-mail. Live binnen 10 werkdagen.</p>
+        </div>
+        <div class="card p-6 bg-white border-2 border-navy shadow-lg">
+          <p class="text-xs font-semibold uppercase tracking-widest text-brand-indigo mb-1">Groei — meest gekozen</p>
+          <div class="flex items-baseline gap-1 mb-3"><span class="text-4xl font-bold text-navy">€1.197</span><span class="text-sm text-slate-500">/maand</span></div>
+          <p class="text-sm text-slate-600 leading-relaxed">Marco plus Emma WhatsApp-agent, onbeperkte gesprekken, CRM-integratie en lead-nurturing workflows. Live binnen 7 werkdagen.</p>
+        </div>
+      </div>
+      <p class="text-slate-700 leading-relaxed">Heeft u behoefte aan maatwerk-workflows, multi-team routing en een dedicated account manager? Dan is het <strong class="text-navy">Partner</strong>-pakket op maat de juiste keuze; de prijs daarvan stellen we op offerte vast. Een volledig overzicht met alle inbegrepen functies vindt u op de <a href="/tarieven/" class="text-brand-indigo hover:underline">tarievenpagina</a>.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Veelgestelde vragen</h2>
+      <div class="space-y-3">
+        {faqItems.map((item) => (
+          <details class="card bg-white p-5 group">
+            <summary class="font-semibold text-navy cursor-pointer list-none flex justify-between items-center gap-4">
+              {item.question}
+              <span class="text-brand-indigo group-open:rotate-45 transition-transform text-xl leading-none">+</span>
+            </summary>
+            <p class="text-sm text-slate-600 leading-relaxed mt-3">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder lezen</h2>
+      <ul class="space-y-3 text-slate-700">
+        <li><a href="/ai-agency-nederland/" class="text-brand-indigo hover:underline">AI-agency Nederland — de volledige gids (pillar)</a></li>
+        <li><a href="/diensten/marco/" class="text-brand-indigo hover:underline">Marco — AI-receptionist voor inbound leads</a></li>
+        <li><a href="/diensten/emma/" class="text-brand-indigo hover:underline">Emma — AI WhatsApp-agent</a></li>
+        <li><a href="/diensten/ai-lead-qualification/" class="text-brand-indigo hover:underline">AI lead-kwalificatie — automatisch leads scoren</a></li>
+        <li><a href="/diensten/ai-social-media-agent/" class="text-brand-indigo hover:underline">AI social-media-agent</a></li>
+        <li><a href="/diensten/ai-seo-content-generator/" class="text-brand-indigo hover:underline">AI SEO-content-generator</a></li>
+        <li><a href="/kennisbank/ai-voor-marketingbureau-nederland-2026/" class="text-brand-indigo hover:underline">AI voor het marketingbureau — kennisbank-gids 2026</a></li>
+        <li><a href="/tarieven/" class="text-brand-indigo hover:underline">Tarieven — alle pakketten en prijzen</a></li>
+        <li><a href="/gratis-ai-scan/" class="text-brand-indigo hover:underline">Gratis AI-scan aanvragen</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance">Klaar om uw marketing-leads te automatiseren?</h2>
+      <p class="mt-4 text-slate-300">Plan een gratis AI-scan van 30 minuten. We laten zien welk deel van uw lead-opvolging geautomatiseerd kan worden — eerlijk, met cijfers, zonder verkooppraat. Liever eerst de prijzen bekijken? Dat kan ook.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI-scan</a>
+        <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk tarieven</a>
+      </div>
+      <p class="mt-6 text-xs text-slate-400">Aanloop AI B.V. · Rotterdam · KVK 88606902 · hello@aanloopai.nl</p>
+    </div>
+  </section>
+</BaseLayout>

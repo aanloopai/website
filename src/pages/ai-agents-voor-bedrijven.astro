@@ -1,0 +1,297 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const serviceSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'AI Agents voor Bedrijven',
+  serviceType: 'AI Agent Ontwikkeling',
+  description: 'AI agents voor het Nederlandse MKB: autonome systemen die telefoon, WhatsApp, e-mail en documentverwerking zelfstandig afhandelen. Voice-agent Marco en WhatsApp-agent Emma, AVG-compliant, live binnen 7-14 werkdagen.',
+  provider: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    url: 'https://aanloopai.nl',
+  },
+  areaServed: { '@type': 'Country', name: 'Nederland' },
+  audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
+  offers: [
+    { '@type': 'Offer', name: 'Starter', price: '597.00', priceCurrency: 'EUR' },
+    { '@type': 'Offer', name: 'Groei', price: '1197.00', priceCurrency: 'EUR' },
+  ],
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'AI Agent Pakketten',
+    itemListElement: [
+      { '@type': 'Offer', name: 'Starter', price: '597.00', priceCurrency: 'EUR', description: 'Marco AI-telefoon-agent, tot 150 gesprekken per maand, 1 callscript op maat, agenda-integratie. Eenmalige setup EUR 495.' },
+      { '@type': 'Offer', name: 'Groei', price: '1197.00', priceCurrency: 'EUR', description: 'Marco + Emma WhatsApp-agent, onbeperkte gesprekken, CRM-integratie, dashboard met opnames. Eenmalige setup EUR 795.' },
+      { '@type': 'Offer', priceSpecification: { '@type': 'PriceSpecification', priceCurrency: 'EUR', valueAddedTaxIncluded: false }, name: 'Partner', priceCurrency: 'EUR', description: 'Marco + Emma + custom AI-workflows op maat, dedicated account manager, SLA. Prijs op aanvraag.' },
+    ],
+  },
+};
+
+const agentTypes = [
+  { naam: 'Voice-agent (telefoon)', text: 'Neemt inkomende telefoongesprekken aan, voert intake, plant afspraken en routeert naar uw team. Bij Aanloop heet deze agent Marco.', link: '/diensten/marco/' },
+  { naam: 'WhatsApp-agent', text: 'Beantwoordt WhatsApp-berichten 24/7, kwalificeert leads en plant afspraken in. Bij Aanloop heet deze agent Emma.', link: '/diensten/emma/' },
+  { naam: 'E-mail-agent', text: 'Sorteert, prioriteert en beantwoordt inkomende e-mail autonoom, escaleert complexe berichten naar een medewerker.', link: '/diensten/ai-email-assistent/' },
+  { naam: 'Document-agent', text: 'Leest facturen, bonnen, contracten en formulieren, haalt gestructureerde data eruit en boekt door naar uw administratie.', link: '/diensten/ai-document-processing/' },
+  { naam: 'Workflow-agent', text: 'Verbindt systemen en voert meerstaps-processen zelfstandig uit, gebouwd op self-hosted n8n. Custom per bedrijf.', link: '/diensten/custom/' },
+];
+
+const taken = [
+  'Telefoon opnemen, intake voeren en afspraken in de agenda zetten',
+  'WhatsApp- en chatgesprekken voeren en leads kwalificeren',
+  'Inkomende e-mail sorteren, prioriteren en beantwoorden',
+  'Facturen en bonnen lezen en doorboeken naar de administratie',
+  'Offertes opstellen op basis van uw prijslijst en regels',
+  'Afspraken bevestigen en no-show-herinneringen versturen',
+  'Klantvragen 24/7 beantwoorden uit uw eigen kennisbank',
+  'Data tussen systemen synchroniseren (CRM, agenda, boekhouding)',
+  'Complexe of emotionele gevallen herkennen en escaleren naar een mens',
+];
+
+const sectorVoorbeelden = [
+  { sector: 'Installatiebedrijf', text: 'Voice-agent filtert spoedoproepen (lekkage, storing) en plant reguliere afspraken, terwijl de monteur op locatie werkt.' },
+  { sector: 'Webshop', text: 'WhatsApp-agent beantwoordt vragen over bezorging en retouren, e-mail-agent verwerkt orderbevestigingen automatisch.' },
+  { sector: 'Accountantskantoor', text: 'Document-agent leest aangeleverde bonnen en facturen en zet ze gestructureerd klaar, scheelt uren handmatig invoerwerk.' },
+  { sector: 'Huisartsen- en zorgpraktijk', text: 'Voice-agent doet eerstelijns-triage volgens uw protocol en zet spoedgevallen direct door naar de waarnemer.' },
+  { sector: 'Makelaar', text: 'WhatsApp- en voice-agent vangen bezichtigingsaanvragen op buiten kantooruren en plannen ze automatisch in.' },
+  { sector: 'B2B-dienstverlener', text: 'Workflow-agent koppelt website-leads aan het CRM, stuurt een eerste reactie en plant een kennismaking.' },
+];
+
+const faqItems = [
+  { question: 'Wat is een AI agent voor bedrijven?', answer: 'Een AI agent is een autonoom softwaresysteem dat een afgebakende bedrijfstaak zelfstandig uitvoert: telefoon aannemen, WhatsApp beantwoorden, e-mail sorteren of documenten verwerken. Anders dan een eenvoudige chatbot kan een agent zelf beslissen welke actie nodig is, systemen aansturen (agenda, CRM, boekhouding) en pas escaleren naar een mens wanneer een geval te complex is.' },
+  { question: 'Wat is het verschil tussen een AI agent en een chatbot?', answer: 'Een chatbot beantwoordt vragen binnen een afgebakend script en blijft in het chatvenster. Een AI agent is doelgericht en autonoom: hij neemt beslissingen, voert acties uit in andere systemen en handelt een taak van begin tot eind af. Een chatbot vertelt wanneer uw kantoor open is, een AI agent plant daadwerkelijk de afspraak in uw agenda.' },
+  { question: 'Welke soorten AI agents zijn er voor het MKB?', answer: 'De meest gebruikte typen zijn de voice-agent (telefonie), de WhatsApp-agent (berichten), de e-mail-agent (inbox-afhandeling), de document-agent (facturen en formulieren verwerken) en de workflow-agent (processen over meerdere systemen). Aanloop AI levert deze als Marco (voice), Emma (WhatsApp) en Custom AI Workflows.' },
+  { question: 'Wat kosten AI agents voor bedrijven?', answer: 'Bij Aanloop AI start het Starter-pakket op EUR 597 per maand (Marco voice-agent, tot 150 gesprekken, eenmalige setup EUR 495). Het Groei-pakket kost EUR 1.197 per maand (Marco plus Emma, onbeperkt, setup EUR 795). Het Partner-pakket met custom workflows is op maat geprijsd. Alle bedragen zijn exclusief 21% btw en maandelijks opzegbaar.' },
+  { question: 'Hoe lang duurt het om een AI agent te implementeren?', answer: 'Een standaard voice- of WhatsApp-agent van Aanloop AI is live binnen 7 tot 14 werkdagen. Dat omvat de intake, het trainen van de agent op uw kennisbank en bedrijfstoon, de integratie met agenda en CRM, en een testronde met echte scenario s. Custom workflow-agents kunnen iets langer duren afhankelijk van de scope.' },
+  { question: 'Zijn AI agents AVG-compliant?', answer: 'Ja. Aanloop AI verwerkt data uitsluitend binnen de EU en sluit een verwerkersovereenkomst af conform AVG artikel 28. Bewaartermijnen zijn instelbaar en gevoelige gevallen worden naar een mens geescaleerd. Custom workflow-agents draaien op self-hosted n8n, zodat uw data binnen uw eigen omgeving blijft.' },
+  { question: 'Vervangt een AI agent mijn medewerkers?', answer: 'Nee, een AI agent neemt het repetitieve eerstelijnswerk over: standaardvragen, intake, plannen en data-invoer. Uw medewerkers houden tijd over voor complexe, persoonlijke en commerciele gesprekken. De beste opzet is hybride: de agent vangt het volume op en escaleert wat menselijk oordeel vereist.' },
+  { question: 'Werkt een AI agent met mijn bestaande systemen?', answer: 'Ja. Marco en Emma koppelen native met agenda s (Google, Outlook), CRM-systemen (HubSpot, Pipedrive) en uw bestaande telefoonnummer via SIP-trunk. Custom workflow-agents op n8n kunnen aansluiten op vrijwel elk systeem met een API, inclusief boekhoudpakketten en ERP.' },
+];
+---
+
+<BaseLayout
+  title="AI Agents voor Bedrijven — Slimme Automatisering MKB"
+  description="AI agents voor bedrijven: autonome voice-, WhatsApp-, e-mail- en document-agents voor het Nederlandse MKB. AVG-compliant, live binnen 7-14 werkdagen, vanaf EUR 597/mnd."
+  schema={serviceSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Cluster-gids · AI Agents voor Bedrijven</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI Agents voor Bedrijven — Slimme Automatisering voor het MKB
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Een AI agent is een autonoom systeem dat een complete bedrijfstaak zelfstandig uitvoert — telefoon aannemen, WhatsApp beantwoorden, e-mail sorteren of documenten verwerken. Voor het Nederlandse MKB betekent dat 24/7 bereikbaarheid, lagere kosten en medewerkers die tijd overhouden voor het werk dat er echt toe doet. In deze gids: wat AI agents zijn, welke typen er bestaan, wat ze kosten en hoe u ze implementeert.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI-scan — ontdek uw kansen</a>
+          <a href="/tarieven/" class="btn-secondary">Bekijk tarieven</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Wat is een AI agent?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Een <strong class="text-navy">AI agent</strong> is een autonoom softwaresysteem dat een afgebakende taak van begin tot eind zelfstandig uitvoert. Het systeem combineert een groot taalmodel (LLM) met toegang tot uw bedrijfssystemen: het begrijpt een verzoek, bepaalt welke actie nodig is, voert die actie uit, en escaleert pas naar een mens wanneer een geval buiten zijn bereik valt.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Het belangrijkste verschil met een <strong class="text-navy">chatbot</strong> zit in de autonomie. Een chatbot beantwoordt vragen binnen een vast script en blijft in het chatvenster. Een AI agent is doelgericht: hij <em>handelt</em>. Waar een chatbot vertelt wanneer uw kantoor open is, plant een AI agent daadwerkelijk de afspraak in uw agenda, stuurt een bevestiging en zet de lead in uw CRM.</p>
+      <p class="text-slate-700 leading-relaxed">Voor een MKB-bedrijf is een AI agent geen experimenteel speeltje meer, maar een concrete medewerker-vervanger voor repetitief werk. Aanloop AI bouwt AI agents specifiek voor het Nederlandse MKB — in vloeiend Nederlands, AVG-compliant en live binnen 7 tot 14 werkdagen. Lees ook onze uitleg <a href="/kennisbank/wat-is-een-ai-agent/" class="text-brand-indigo hover:underline">wat is een AI agent</a> en de <a href="/kennisbank/ai-agent-vs-chatbot/" class="text-brand-indigo hover:underline">vergelijking AI agent vs chatbot</a>.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-2">Soorten AI agents voor bedrijven</h2>
+      <p class="text-sm text-slate-600 mb-8">Er zijn vijf typen AI agents die voor het MKB direct waarde leveren. Veel bedrijven combineren er meerdere.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {agentTypes.map((a) => (
+          <a href={a.link} class="card card-interactive p-6 hover:border-navy hover:shadow-md transition-all bg-white">
+            <h3 class="text-lg font-bold text-navy mb-2">{a.naam}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed mb-3">{a.text}</p>
+            <p class="text-xs font-medium text-brand-indigo">Meer over deze agent →</p>
+          </a>
+        ))}
+      </div>
+      <p class="text-slate-700 leading-relaxed mt-6">De voice-agent en WhatsApp-agent zijn de snelste manieren om te starten, omdat ze direct het telefoon- en berichtenvolume opvangen. De e-mail-, document- en workflow-agents pakken het werk achter de schermen aan. Wilt u processen breder automatiseren? Bekijk dan onze pagina over <a href="/ai-automatisering/" class="text-brand-indigo hover:underline">AI-automatisering</a>.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Wat kan een AI agent voor uw bedrijf doen?</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">AI agents nemen het repetitieve, voorspelbare deel van uw werk over. Concreet betekent dat onder meer:</p>
+      <ul class="space-y-3 mb-6">
+        {taken.map((t) => (
+          <li class="flex items-start gap-3 text-slate-700">
+            <span class="shrink-0 mt-1 w-5 h-5 rounded-full bg-brand-emerald/10 text-brand-emerald flex items-center justify-center text-xs font-bold">✓</span>
+            <span class="leading-relaxed">{t}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="text-slate-700 leading-relaxed">De winst zit niet alleen in kostenbesparing. Een AI agent reageert binnen seconden, werkt 24/7 zonder pauzes en behandelt elke klant met dezelfde consistente kwaliteit. Daardoor verliest u geen leads meer buiten kantooruren en houden uw medewerkers tijd over voor het complexe, commerciele en persoonlijke werk waar mensen onmisbaar zijn.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-2">AI agent vs chatbot vs RPA</h2>
+      <p class="text-sm text-slate-600 mb-6">Drie technologieen die vaak door elkaar worden gehaald — hier is het verschil.</p>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Eigenschap</th>
+              <th class="text-left p-4 font-semibold text-navy">Chatbot</th>
+              <th class="text-left p-4 font-semibold text-navy">RPA</th>
+              <th class="text-left p-4 font-semibold text-navy">AI agent</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="bg-white"><td class="p-4 font-medium text-navy">Werkwijze</td><td class="p-4 text-slate-700">Scripted antwoorden</td><td class="p-4 text-slate-700">Vaste klik-regels</td><td class="p-4 text-slate-700">Begrijpt context, beslist zelf</td></tr>
+            <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Omgaan met onverwacht</td><td class="p-4 text-slate-700">Loopt vast</td><td class="p-4 text-slate-700">Breekt af bij afwijking</td><td class="p-4 text-slate-700">Past zich aan of escaleert</td></tr>
+            <tr class="bg-white"><td class="p-4 font-medium text-navy">Acties in systemen</td><td class="p-4 text-slate-700">Beperkt of geen</td><td class="p-4 text-slate-700">Ja, strikt voorgeprogrammeerd</td><td class="p-4 text-slate-700">Ja, doelgericht en flexibel</td></tr>
+            <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Natuurlijke taal</td><td class="p-4 text-slate-700">Basaal</td><td class="p-4 text-slate-700">Niet van toepassing</td><td class="p-4 text-slate-700">Vloeiend, meertalig</td></tr>
+            <tr class="bg-white"><td class="p-4 font-medium text-navy">Onderhoud</td><td class="p-4 text-slate-700">Scripts handmatig bijwerken</td><td class="p-4 text-slate-700">Breekt bij UI-wijziging</td><td class="p-4 text-slate-700">Leert van data, lichter onderhoud</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-slate-700 leading-relaxed mt-6">Kort samengevat: een <strong class="text-navy">chatbot</strong> praat, <strong class="text-navy">RPA</strong> (Robotic Process Automation) klikt voorgeprogrammeerde stappen af, en een <strong class="text-navy">AI agent</strong> denkt en handelt. RPA is sterk bij volstrekt voorspelbare processen, maar breekt zodra er iets afwijkt. Een AI agent gaat juist goed om met variatie — dat maakt hem geschikt voor klantcontact en intake, waar geen twee gesprekken identiek zijn.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">AI agents van Aanloop AI: Marco en Emma</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Aanloop AI B.V. is gevestigd in Rotterdam (KVK 88606902, opgericht in 2024) en bouwt AI agents specifiek voor het Nederlandse MKB. Onze agents zijn geen generiek buitenlands product, maar Nederlandstalig, AVG-compliant en volledig beheerd — wij brengen ze voor u live en blijven ze maandelijks verbeteren.</p>
+      <div class="grid sm:grid-cols-2 gap-5 my-6">
+        <div class="card p-6 bg-white border border-slate-200">
+          <h3 class="text-lg font-bold text-navy mb-2">Marco — AI-receptionist</h3>
+          <p class="text-sm text-slate-600 leading-relaxed mb-3">De voice-agent die uw telefoon aanneemt. 24/7 bereikbaar in vloeiend Nederlands via ElevenLabs-stemtechnologie, plant afspraken, kwalificeert leads en routeert naar uw CRM.</p>
+          <a href="/diensten/marco/" class="text-xs font-medium text-brand-indigo hover:underline">Bekijk Marco →</a>
+        </div>
+        <div class="card p-6 bg-white border border-slate-200">
+          <h3 class="text-lg font-bold text-navy mb-2">Emma — AI WhatsApp-agent</h3>
+          <p class="text-sm text-slate-600 leading-relaxed mb-3">De WhatsApp-agent die berichten 24/7 beantwoordt, vragen afhandelt uit uw kennisbank en leads kwalificeert — zonder dat uw team de telefoon hoeft te pakken.</p>
+          <a href="/diensten/emma/" class="text-xs font-medium text-brand-indigo hover:underline">Bekijk Emma →</a>
+        </div>
+      </div>
+      <p class="text-slate-700 leading-relaxed">Naast Marco en Emma levert Aanloop <a href="/diensten/custom/" class="text-brand-indigo hover:underline">Custom AI Workflows</a>: document-, e-mail- en workflow-agents gebouwd op self-hosted n8n. Daarmee blijft uw data binnen uw eigen omgeving en is vrijwel elk proces met een API te automatiseren. Samen vormen deze agents een complete digitale frontoffice — bekijk het volledige aanbod op onze pillar-pagina <a href="/ai-agency-nederland/" class="text-brand-indigo hover:underline">AI agency Nederland</a>.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-2">Voorbeelden per sector</h2>
+      <p class="text-sm text-slate-600 mb-8">Hoe verschillende MKB-sectoren AI agents in de praktijk inzetten.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {sectorVoorbeelden.map((s) => (
+          <div class="card p-6 bg-white border border-slate-200">
+            <h3 class="text-lg font-bold text-navy mb-2">{s.sector}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{s.text}</p>
+          </div>
+        ))}
+      </div>
+      <p class="text-slate-700 leading-relaxed mt-6">In vrijwel elke MKB-sector geldt hetzelfde patroon: het telefoon-, bericht- en e-mailvolume kost onevenredig veel tijd en er gaan leads verloren buiten kantooruren. Een AI agent vangt dat volume op en geeft uw mensen de ruimte voor het werk dat marge oplevert.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Hoe implementeer je AI agents in je bedrijf?</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">AI agents inzetten hoeft geen lang IT-project te zijn. Aanloop AI hanteert een vaste werkwijze in vier stappen, waarmee uw agent doorgaans <strong class="text-navy">live is binnen 7 tot 14 werkdagen</strong>.</p>
+      <ol class="space-y-4 text-slate-700">
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">1</span><div><strong class="text-navy">Gratis AI-scan</strong> — in 30 minuten brengen we uw inkomende stromen, knelpunten en gewenste integraties in kaart en bepalen we welk type agent het meeste oplevert.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">2</span><div><strong class="text-navy">Training en configuratie</strong> — we trainen de agent op uw kennisbank, FAQ, bedrijfstoon en escalatieprotocol, en stellen de gespreks- of verwerkingsregels in.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">3</span><div><strong class="text-navy">Integraties koppelen</strong> — agenda, CRM, telefoonnummer (via SIP-trunk), WhatsApp Business of boekhoudpakket worden aangesloten zodat de agent echt acties kan uitvoeren.</div></li>
+        <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">4</span><div><strong class="text-navy">Live en optimaliseren</strong> — na een testronde gaat de agent live. Daarna verbeteren we hem maandelijks op basis van echte gespreksdata en feedback.</div></li>
+      </ol>
+      <p class="text-slate-700 leading-relaxed mt-6">U hoeft zelf geen prompts te schrijven of koppelingen te bouwen — als beheerde dienst nemen wij het hele traject voor onze rekening. Start met de <a href="/gratis-ai-scan/" class="text-brand-indigo hover:underline">gratis AI-scan</a> om te zien wat voor uw bedrijf haalbaar is.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Wat kosten AI agents voor bedrijven?</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">Aanloop AI werkt met vaste, transparante maandpakketten — geen kosten per gesprek of per bericht. Alle bedragen zijn exclusief 21% btw en maandelijks opzegbaar.</p>
+      <div class="space-y-4 mb-6">
+        <div class="card p-6 bg-white border border-slate-200">
+          <div class="flex items-baseline justify-between gap-4 flex-wrap">
+            <h3 class="text-lg font-bold text-navy">Starter — €597/mnd</h3>
+            <span class="text-xs text-slate-500">eenmalige setup €495</span>
+          </div>
+          <p class="text-sm text-slate-600 leading-relaxed mt-2">Marco AI-telefoon-agent, tot 150 gesprekken per maand, 1 callscript op maat, agenda-integratie en dashboard. De laagdrempelige instap in AI-automatisering.</p>
+        </div>
+        <div class="card p-6 bg-white border-2 border-navy shadow-md">
+          <div class="flex items-baseline justify-between gap-4 flex-wrap">
+            <h3 class="text-lg font-bold text-navy">Groei — €1.197/mnd</h3>
+            <span class="text-xs text-slate-500">eenmalige setup €795 · meest gekozen</span>
+          </div>
+          <p class="text-sm text-slate-600 leading-relaxed mt-2">Marco én Emma met onbeperkte gesprekken, CRM-integratie (HubSpot, Pipedrive) en dashboard met opnames. Telefoon én WhatsApp volledig geautomatiseerd.</p>
+        </div>
+        <div class="card p-6 bg-white border border-slate-200">
+          <div class="flex items-baseline justify-between gap-4 flex-wrap">
+            <h3 class="text-lg font-bold text-navy">Partner — op maat</h3>
+            <span class="text-xs text-slate-500">offerte binnen 24 uur</span>
+          </div>
+          <p class="text-sm text-slate-600 leading-relaxed mt-2">Marco + Emma + custom AI-workflows (document-, e-mail- en workflow-agents op n8n), dedicated account manager en SLA. Voor bedrijven die breed willen automatiseren.</p>
+        </div>
+      </div>
+      <p class="text-slate-700 leading-relaxed">Ter vergelijking: één parttime-receptioniste kost al snel €2.200 tot €3.500 bruto per maand. Een AI agent levert 24/7 bereikbaarheid voor een fractie daarvan. Het volledige overzicht inclusief SEO/GEO-diensten vindt u op de <a href="/tarieven/" class="text-brand-indigo hover:underline">tarievenpagina</a>.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Veelgestelde vragen</h2>
+      <div class="space-y-3">
+        {faqItems.map((item) => (
+          <details class="group rounded-xl border border-slate-200 bg-white p-5">
+            <summary class="flex cursor-pointer items-center justify-between gap-4 font-semibold text-navy">
+              {item.question}
+              <span class="text-brand-indigo transition-transform group-open:rotate-45 text-xl leading-none">+</span>
+            </summary>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder lezen</h2>
+      <ul class="space-y-3 text-slate-700">
+        <li><a href="/ai-agency-nederland/" class="text-brand-indigo hover:underline">AI agency Nederland — de complete pillar-gids</a></li>
+        <li><a href="/diensten/marco/" class="text-brand-indigo hover:underline">Marco — onze AI-telefoon-agent (productpagina)</a></li>
+        <li><a href="/diensten/emma/" class="text-brand-indigo hover:underline">Emma — onze AI WhatsApp-agent (productpagina)</a></li>
+        <li><a href="/diensten/custom/" class="text-brand-indigo hover:underline">Custom AI Workflows — document-, e-mail- en workflow-agents</a></li>
+        <li><a href="/diensten/ai-document-processing/" class="text-brand-indigo hover:underline">AI document processing — facturen en formulieren verwerken</a></li>
+        <li><a href="/diensten/ai-email-assistent/" class="text-brand-indigo hover:underline">AI e-mail assistent — inbox automatisch afhandelen</a></li>
+        <li><a href="/kennisbank/wat-is-een-ai-agent/" class="text-brand-indigo hover:underline">Wat is een AI agent? — uitleg in de kennisbank</a></li>
+        <li><a href="/kennisbank/ai-agent-vs-chatbot/" class="text-brand-indigo hover:underline">AI agent vs chatbot — het verschil uitgelegd</a></li>
+        <li><a href="/ai-automatisering/" class="text-brand-indigo hover:underline">AI-automatisering voor het MKB</a></li>
+        <li><a href="/tarieven/" class="text-brand-indigo hover:underline">Tarieven — alle pakketten en prijzen</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance">Welke AI agent past bij uw bedrijf?</h2>
+      <p class="mt-4 text-slate-300">Gratis 30-minuten AI-scan. We laten zien welke taken in uw bedrijf zich lenen voor een AI agent — met een concrete inschatting van tijdwinst en kosten, geen marketingverhalen. Neem direct contact op via hello@aanloopai.nl.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI-scan</a>
+        <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk tarieven</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Onderzoek — Aanloop AI',
+  url: 'https://aanloopai.nl/onderzoek/',
+  description: 'Origineel, citeerbaar onderzoek van Aanloop AI naar AI-adoptie in het Nederlandse MKB. Open data onder CC-BY 4.0.',
+  isPartOf: { '@id': 'https://aanloopai.nl/#website' },
+  publisher: { '@id': 'https://aanloopai.nl/#organization' },
+  inLanguage: 'nl-NL',
+};
+
+const studies = [
+  {
+    title: 'AI-adoptie Nederlands MKB 2026',
+    url: '/onderzoek/ai-adoption-mkb-nederland-2026/',
+    desc: 'Doorlopend onderzoek naar AI-gebruik in het Nederlandse MKB: sector-adoption, top use cases, barrieres en ROI. Voorlopige bevindingen op basis van 312 respondenten t/m mei 2026; definitief rapport Q3 2026.',
+    tag: 'Peilingsstudie · CC-BY 4.0',
+  },
+  {
+    title: 'Methodologie — AI Adoption MKB Nederland 2026',
+    url: '/onderzoek/ai-adoption-mkb-nederland-2026/methodologie/',
+    desc: 'Volledige onderzoeksverantwoording: onderzoeksvraag, doelpopulatie, steekproeftrekking, vragenlijst-ontwerp, data-analyse, beperkingen, ethiek/AVG en tijdlijn. Inclusief BibTeX-citatie.',
+    tag: 'Methodologie · ScholarlyArticle',
+  },
+];
+---
+
+<BaseLayout
+  title="Onderzoek — AI-adoptie Nederlands MKB | Aanloop AI"
+  description="Origineel, citeerbaar onderzoek van Aanloop AI naar AI-adoptie in het Nederlandse MKB. Sector-adoption, use cases en barrieres — open data onder CC-BY 4.0."
+  schema={schema}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Onderzoek</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          Origineel onderzoek naar AI in het Nederlandse MKB
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Aanloop AI publiceert citeerbaar, transparant onderzoek naar de adoptie van AI in het Nederlandse midden- en kleinbedrijf. Alle data wordt na publicatie vrijgegeven onder CC-BY 4.0, zodat pers, analisten en onderzoekers ermee verder kunnen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Publicaties</h2>
+      <div class="grid grid-cols-1 gap-5">
+        {studies.map((s) => (
+          <a href={s.url} class="card card-interactive p-6 hover:border-navy hover:shadow-md transition-all bg-white">
+            <p class="text-xs font-medium text-brand-indigo mb-2">{s.tag}</p>
+            <h3 class="text-lg font-bold text-navy mb-2">{s.title}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed mb-3">{s.desc}</p>
+            <p class="text-xs font-medium text-brand-indigo">Lees verder →</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Citeren en hergebruik</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Het onderzoek van Aanloop AI is bedoeld om geciteerd te worden. U mag cijfers en grafieken gebruiken in eigen publicaties of presentaties, mits u attribueert naar <em>Aanloop AI — AI-adoptie onderzoek Nederlands MKB 2026</em> met een link naar de betreffende pagina.</p>
+      <p class="text-slate-700 leading-relaxed">Voor persvragen, volledige datasets of grafieken in PNG/SVG: <a href="mailto:hello@aanloopai.nl" class="text-brand-indigo hover:underline">hello@aanloopai.nl</a>. Zie ook de <a href="/branche-statistieken-mkb-ai-nederland/" class="text-brand-indigo hover:underline">branche-statistieken MKB AI Nederland</a> en de <a href="/kennisbank/" class="text-brand-indigo hover:underline">kennisbank</a>.</p>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance">Doe mee aan het onderzoek</h2>
+      <p class="mt-4 text-slate-300">Vul de enquete in (4-6 minuten) en ontvang een persoonlijke AI-benchmark plus het volledige rapport zodra het verschijnt.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        <a href="/onderzoek/ai-adoption-mkb-nederland-2026/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Naar het onderzoek</a>
+        <a href="/gratis-ai-scan/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Gratis AI Scan</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,279 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'AI Agency Nederland — Wat een AI Bureau voor uw MKB Doet',
+  description: 'Wat is een AI agency, wat doet een AI bureau concreet, wanneer heeft uw bedrijf er een nodig en wat kost het? Complete pillar-gids voor Nederlandse MKB-ondernemers met checklist en prijzen.',
+  author: {
+    '@type': 'Person',
+    name: 'Mustafa Agah Dogan',
+    '@id': 'https://aanloopai.nl/team/magahdogan/#person',
+    url: 'https://aanloopai.nl/team/magahdogan/',
+    jobTitle: 'Oprichter & CEO Aanloop AI',
+    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+  },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-05-20',
+  dateModified: '2026-05-20',
+  mainEntityOfPage: 'https://aanloopai.nl/ai-agency-nederland/',
+  inLanguage: 'nl-NL',
+};
+
+const services = [
+  { title: 'AI automatisering', text: 'Repetitieve bedrijfsprocessen — offerte-aanvragen, factuurverwerking, leadkwalificatie, data-overdracht tussen systemen — worden door AI overgenomen. Een AI agency bouwt deze workflows, test ze en houdt ze draaiend.', link: '/ai-automatisering/' },
+  { title: 'AI agents', text: 'Autonome AI-medewerkers die een afgebakende taak zelfstandig uitvoeren: een gesprek voeren, een vraag beantwoorden, een afspraak plannen of een actie in uw CRM uitvoeren — zonder dat een mens elke stap aanstuurt.', link: '/ai-agents-voor-bedrijven/' },
+  { title: 'AI receptionist', text: 'Een spraak-AI die uw telefoon 24/7 aanneemt in vloeiend Nederlands, intake voert, afspraken plant en kwalificeert. Bij Aanloop is dit Marco — onze AI-telefoniste voor het Nederlandse MKB.', link: '/diensten/marco/' },
+  { title: 'WhatsApp & chat automation', text: 'Een AI-agent die WhatsApp- en chatberichten van klanten direct beantwoordt, leads kwalificeert en afhaakte bestellingen terughaalt. Bij Aanloop heet deze agent Emma.', link: '/diensten/emma/' },
+  { title: 'Custom AI workflows', text: 'Maatwerk-koppelingen tussen uw bestaande software (CRM, ERP, agenda, boekhouding) waarin AI de besluitvorming doet. Gebouwd op self-hosted n8n in Nederland, volledig AVG-proof.', link: '/diensten/custom/' },
+  { title: 'AI consultancy & strategie', text: 'Voordat er iets gebouwd wordt: een eerlijke analyse van waar AI in uw bedrijf wél en niet rendeert. Een goed AI bureau begint met de vraag of automatisering überhaupt loont — niet met een verkooppraatje.', link: '/gratis-ai-scan/' },
+];
+
+const comparison = [
+  { row: 'Strategie + advies', diy: 'U bepaalt zelf wat haalbaar is', agency: 'AI agency adviseert op basis van ervaring' },
+  { row: 'Implementatie', diy: 'Zelf prompts, scripts en koppelingen bouwen', agency: 'Bureau bouwt, test en levert werkend op' },
+  { row: 'Tijdsinvestering ondernemer', diy: '30-80 uur leren + bouwen', agency: '2-4 uur intake, daarna ontzorgd' },
+  { row: 'Doorlooptijd tot live', diy: 'Onvoorspelbaar — weken tot maanden', agency: '7-14 werkdagen (Aanloop)' },
+  { row: 'AVG & datacompliance', diy: 'Zelf verwerkers-overeenkomsten regelen', agency: 'Geregeld — EU-data, self-hosted in NL' },
+  { row: 'Onderhoud & updates', diy: 'Uzelf, naast uw kernactiviteit', agency: 'Bureau monitort en optimaliseert maandelijks' },
+  { row: 'Aanspreekpunt bij storing', diy: 'Vendor-tickets, vaak in het Engels', agency: 'Direct contact met NL implementatie-team' },
+  { row: 'Maandelijkse kosten', diy: '€50-€300 tool-abonnement', agency: '€597-€1.197 managed service' },
+  { row: 'Verborgen kosten', diy: 'Eigen uren + leergeld + foutherstel', agency: 'Vast bedrag, voorspelbaar' },
+];
+
+const checklist = [
+  { point: 'Nederlands gevestigd en KvK-geregistreerd', why: 'Een NL-bureau is aansprakelijk onder Nederlands recht, kent de markt en is bereikbaar in uw tijdzone. Vraag altijd het KvK-nummer op.' },
+  { point: 'Transparante, gepubliceerde tarieven', why: 'Bureaus die alleen "offerte op aanvraag" hanteren, maken vergelijken onmogelijk. Heldere maandprijzen zijn een teken van zelfvertrouwen.' },
+  { point: 'AVG-compliant met EU-datacenters', why: 'Vraag waar data wordt verwerkt en opgeslagen. Voor zorg, juridisch en financieel werk is EU-only verwerking geen luxe maar een eis.' },
+  { point: 'Bewezen techniek, geen experimenteel platform', why: 'Een agency dat bouwt op volwassen componenten (gevestigde LLM-, voice- en automatiseringstools) levert stabieler op dan een bureau dat alles zelf herontwikkelt.' },
+  { point: 'Eerlijk over wat AI níet kan', why: 'Een betrouwbaar AI bureau bouwt altijd een escalatiepad naar een mens in en belooft geen 100% automatisering waar dat onrealistisch is.' },
+  { point: 'Maandelijks opzegbaar, geen jaarcontract-dwang', why: 'Lange contracten zonder exit verbergen vaak een zwak product. Wie vertrouwt op de eigen dienst, durft maandelijkse opzegbaarheid aan te bieden.' },
+  { point: 'Concrete doorlooptijd en onboarding-plan', why: 'Een professioneel bureau geeft vooraf een realistische live-datum en een stappenplan, geen vage "het komt wel goed".' },
+  { point: 'Meetbare resultaten en rapportage', why: 'Vraag hoe succes wordt gemeten: gemiste-gesprekken-reductie, leadconversie, bespaarde uren. Geen cijfers betekent geen sturing.' },
+];
+
+const steps = [
+  { n: 1, title: 'Gratis AI-scan (30 min)', text: 'We brengen uw inkomende verkeer, knelpunten en huidige tooling in kaart. U krijgt een eerlijk oordeel of automatisering in uw geval rendeert — ook als het antwoord nee is.' },
+  { n: 2, title: 'Voorstel met vaste prijs', text: 'Op basis van de scan ontvangt u een concreet voorstel: welke AI-agent, welke koppelingen, welke doorlooptijd en welk vast maandbedrag. Geen open einde.' },
+  { n: 3, title: 'Bouw & training', text: 'We trainen de AI op uw kennisbank, bedrijfstoon en escalatieprotocol, koppelen agenda en CRM en testen met echte scenario\'s. Live binnen 7-14 werkdagen.' },
+  { n: 4, title: 'Live + maandelijkse optimalisatie', text: 'Na go-live monitoren we de prestaties en verbeteren we elke maand op basis van uw data. U houdt één vast aanspreekpunt — geen ticketsysteem.' },
+];
+
+const faqItems = [
+  { question: 'Wat is een AI agency precies?', answer: 'Een AI agency is een gespecialiseerd bureau dat kunstmatige intelligentie inzet om bedrijfsprocessen te automatiseren. Het bureau adviseert over wat haalbaar is, bouwt de AI-oplossing (zoals een AI-receptionist, chatagent of geautomatiseerde workflow), koppelt deze aan uw bestaande systemen en houdt alles draaiend. Anders dan bij losse AI-tools die u zelf instelt, levert een AI agency een beheerde, werkende dienst op maat.' },
+  { question: 'Wat is het verschil tussen een AI agency en een marketingbureau?', answer: 'Een traditioneel marketingbureau richt zich op zichtbaarheid: campagnes, content en advertenties om klanten te bereiken. Een AI agency richt zich op operationele automatisering: processen sneller, goedkoper en 24/7 laten draaien zonder extra personeel. De disciplines overlappen — een AI agency kan ook AI-marketing doen — maar het kernverschil is dat een AI bureau bouwt aan uw bedrijfsvoering, niet alleen aan uw vindbaarheid.' },
+  { question: 'Wat doet een AI agency concreet voor mijn bedrijf?', answer: 'Een AI agency levert doorgaans: AI-automatisering van repetitieve taken (offertes, facturen, data-overdracht), AI-agents die zelfstandig taken uitvoeren, een AI-receptionist die uw telefoon aanneemt, WhatsApp- en chatautomatisering, custom workflow-koppelingen tussen uw software, en strategisch advies over waar AI in uw bedrijf rendeert. Bij Aanloop AI vertaalt zich dat in Marco (AI-telefoniste), Emma (WhatsApp-agent) en custom n8n-workflows.' },
+  { question: 'Heeft mijn MKB-bedrijf een AI agency nodig?', answer: 'Een AI agency loont vooral als u structureel telefoon of berichten mist buiten kantooruren, als medewerkers veel tijd kwijt zijn aan repetitief werk, als groei wordt geremd door personeelstekort, of als u losse AI-tools probeerde maar ze niet werkend kreeg. Heeft u weinig inkomend verkeer en geen automatiseerbare processen, dan is een agency mogelijk overbodig — een eerlijk bureau zegt dat ook.' },
+  { question: 'Wat kost een AI agency in Nederland?', answer: 'Aanloop AI hanteert vaste pakketten: Starter €597 per maand (Marco AI-telefoniste tot 150 gesprekken, eenmalige setup €495), Groei €1.197 per maand (Marco met onbeperkte gesprekken plus Emma WhatsApp-agent, setup €795) en Partner op maat voor custom workflows. Bij jaarbetaling geldt circa 16% korting. Alle prijzen zijn exclusief 21% btw en maandelijks opzegbaar.' },
+  { question: 'Hoe kies ik het juiste AI bureau in Nederland?', answer: 'Let op: een Nederlands KvK-geregistreerd bedrijf, transparante gepubliceerde tarieven, AVG-compliance met EU-datacenters, gebruik van bewezen techniek, eerlijkheid over wat AI niet kan, maandelijkse opzegbaarheid, een concrete doorlooptijd en meetbare rapportage. Een bureau dat alleen "offerte op aanvraag" hanteert of 100% automatisering belooft, verdient extra kritische vragen.' },
+  { question: 'Is een AI agency-oplossing AVG-compliant?', answer: 'Dat hangt af van het bureau. Aanloop AI verwerkt gegevens uitsluitend binnen de EU en draait de automatiseringslaag op self-hosted n8n in Nederland. Voor LLM- en voice-componenten zijn verwerkersovereenkomsten afgesloten. Vraag elk bureau expliciet waar data wordt verwerkt en opgeslagen — voor zorg, juridisch en financieel werk is EU-only verwerking een harde eis.' },
+  { question: 'Hoe lang duurt het voordat een AI-oplossing live is?', answer: 'Bij Aanloop AI bent u binnen 7 tot 14 werkdagen live, afhankelijk van het pakket. Het traject bestaat uit een gratis AI-scan, een voorstel met vaste prijs, de bouw- en trainingsfase met integratie van agenda en CRM, en daarna go-live met maandelijkse optimalisatie. Custom Partner-trajecten met complexe workflows kunnen iets langer duren.' },
+  { question: 'Vervangt een AI agency mijn personeel?', answer: 'Nee. Een AI agency neemt repetitief, voorspelbaar werk over — gemiste telefoontjes, standaardvragen, data-invoer — zodat uw mensen tijd overhouden voor werk dat oordeelsvermogen, empathie en onderhandeling vraagt. De beste opzet is hybride: AI vangt de eerste lijn op, mensen behandelen de complexe gevallen. Aanloop bouwt daarom altijd een escalatiepad naar uw team in.' },
+];
+---
+
+<BaseLayout
+  title="AI Agency Nederland — Wat een AI Bureau Voor U Doet"
+  description="Wat is een AI agency, wat doet een AI bureau concreet en wat kost het? Complete gids voor Nederlandse MKB-ondernemers met checklist en tarieven vanaf €597 per maand."
+  schema={articleSchema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Pillar-gids · AI Agency Nederland</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI Agency Nederland — Wat een AI Bureau voor uw MKB Doet
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Steeds meer Nederlandse MKB-ondernemers horen de term "AI agency" of "AI bureau", maar wat doet zo'n bureau nu eigenlijk — en wanneer loont het? Deze pillar-gids legt het rustig uit: de definitie, de diensten, het verschil met zelf-service AI-tools, een keuze-checklist en de tarieven. Geen hype, wel concrete antwoorden.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a href="/gratis-ai-scan/" class="btn-primary">Gratis 30-min AI scan</a>
+          <a href="/tarieven/" class="btn-secondary">Bekijk tarieven</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Wat is een AI agency?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Een <strong class="text-navy">AI agency</strong> — in het Nederlands ook wel een <strong class="text-navy">AI bureau</strong> — is een gespecialiseerd dienstverlener dat kunstmatige intelligentie inzet om concrete bedrijfsprocessen te verbeteren of over te nemen. Het bureau doet drie dingen die u zelf zou moeten doen als u losse AI-tools koopt: het <em>adviseert</em> over wat in uw situatie haalbaar en rendabel is, het <em>bouwt</em> de oplossing en koppelt die aan uw bestaande software, en het <em>houdt het draaiend</em> met monitoring en maandelijkse verbeteringen.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Het kernverschil met een willekeurig AI-abonnement uit de webshop is dat een AI agency een <strong class="text-navy">beheerde dienst</strong> levert. U koopt geen software die u zelf moet leren configureren — u koopt een werkend resultaat. Voor de meeste MKB-ondernemers is dat het verschil tussen "ik ben er drie maanden mee bezig geweest en het werkt half" en "het draait sinds week twee".</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Het is belangrijk om een AI agency te onderscheiden van twee aanverwante typen bureaus. Een <strong class="text-navy">traditioneel digitaal bureau</strong> bouwt websites, webshops en apps — het levert digitale producten op. Een <strong class="text-navy">marketingbureau</strong> richt zich op zichtbaarheid: campagnes, content, advertenties en SEO om u gevonden te laten worden. Een AI agency richt zich op iets anders: de <em>operationele kant</em> van uw bedrijf. Het zorgt dat processen sneller, goedkoper en 24 uur per dag doorlopen, vaak zonder dat u extra mensen hoeft aan te nemen.</p>
+      <p class="text-slate-700 leading-relaxed">De grenzen vervagen wel. Een modern AI bureau zoals Aanloop AI doet naast operationele automatisering ook AI-gedreven <a href="/ai-marketing-bureau/" class="text-brand-indigo hover:underline">AI-marketing</a> en bouwt AI-ready websites. Maar de toetssteen blijft hetzelfde: een AI agency wordt afgerekend op of uw bedrijf <em>meetbaar efficiënter</em> draait — niet alleen op hoeveel bezoekers uw site trekt.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-2">Wat doet een AI agency concreet?</h2>
+      <p class="text-sm text-slate-600 mb-8">De zes kerndiensten waar een Nederlands AI bureau het MKB mee helpt — bij Aanloop AI geleverd als vaste pakketten.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {services.map((s) => (
+          <a href={s.link} class="card card-interactive p-6 hover:border-navy hover:shadow-md transition-all bg-white">
+            <h3 class="text-lg font-bold text-navy mb-2">{s.title}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed mb-3">{s.text}</p>
+            <p class="text-xs font-medium text-brand-indigo flex items-center gap-1">Meer lezen →</p>
+          </a>
+        ))}
+      </div>
+      <p class="text-sm text-slate-700 leading-relaxed mt-8">In de praktijk begint een goed AI bureau niet met het duurste pakket, maar met de vraag <em>welk</em> proces de meeste tijd of omzet kost. Voor een installatiebedrijf is dat vaak de gemiste telefoon tijdens werk; voor een webshop de WhatsApp-vragen buiten kantooruren; voor een accountantskantoor de repetitieve documentverwerking. De diensten hierboven zijn de bouwstenen — de kunst is de juiste combinatie voor úw bedrijf.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-2">AI agency vs zelf-service AI-tools</h2>
+      <p class="text-sm text-slate-600 mb-6">Een eerlijke vergelijking: een beheerde AI-dienst tegenover het zelf installeren van AI-software.</p>
+      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm">
+          <thead class="bg-slate-50">
+            <tr>
+              <th class="text-left p-4 font-semibold text-navy">Aspect</th>
+              <th class="text-left p-4 font-semibold text-navy">Zelf-service AI-tools (DIY)</th>
+              <th class="text-left p-4 font-semibold text-navy">AI agency (managed)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {comparison.map((row, i) => (
+              <tr class={i % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'}>
+                <td class="p-4 font-medium text-navy">{row.row}</td>
+                <td class="p-4 text-slate-700">{row.diy}</td>
+                <td class="p-4 text-slate-700">{row.agency}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-slate-500 mt-3">Prijzen indicatief, gebaseerd op Aanloop AI marktdata 2026.</p>
+      <p class="text-slate-700 leading-relaxed mt-6">Zelf-service tools lijken op papier voordeliger: een abonnement van €50 tot €300 per maand klinkt aantrekkelijk naast een managed service. Maar de echte kosten van de DIY-route zitten verstopt. Een AVG-veilige implementatie, het tunen van scripts en het koppelen van uw CRM kosten al snel 30 tot 80 uur intern werk — tijd die u of uw mensen niet aan klanten besteden. Tel daar het leergeld bij op van de eerste mislukte configuraties, en het prijsvoordeel verdampt. Een AI agency neemt dat hele traject én het risico over voor een vast bedrag.</p>
+      <p class="text-slate-700 leading-relaxed mt-4">De DIY-route is niet altijd verkeerd. Heeft u zelf technische kennis in huis, draait het om een eenvoudige toepassing en is compliance geen issue? Dan kan een zelf-service tool prima werken. Maar voor de meeste MKB-ondernemers is de tijd die automatisering moet besparen, niet de tijd die ze willen steken in het zelf bouwen ervan.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Wanneer heeft uw bedrijf een AI agency nodig?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Niet elk bedrijf heeft een AI agency nodig, en een eerlijk bureau zal dat ook zeggen. Maar er zijn duidelijke signalen die erop wijzen dat automatisering rendeert. Herkent u twee of meer van de volgende situaties, dan loont een gesprek met een AI bureau vrijwel zeker.</p>
+      <ul class="space-y-3 text-slate-700 leading-relaxed mb-4">
+        <li class="flex gap-3"><span class="text-brand-indigo font-bold">→</span><div><strong class="text-navy">U mist structureel telefoon of berichten.</strong> Elk gemist gesprek buiten kantooruren is een potentiële klant die naar de concurrent gaat. Een AI-receptionist vangt dat verkeer 24/7 op.</div></li>
+        <li class="flex gap-3"><span class="text-brand-indigo font-bold">→</span><div><strong class="text-navy">Uw mensen zijn veel tijd kwijt aan repetitief werk.</strong> Offerte-aanvragen overtypen, afspraken inplannen, dezelfde vragen beantwoorden — werk dat AI consistent en foutloos overneemt.</div></li>
+        <li class="flex gap-3"><span class="text-brand-indigo font-bold">→</span><div><strong class="text-navy">Groei wordt geremd door personeelstekort.</strong> U wilt meer klanten aan, maar kunt geen mensen vinden. AI-agents schalen mee zonder werving, inwerktijd of verloop.</div></li>
+        <li class="flex gap-3"><span class="text-brand-indigo font-bold">→</span><div><strong class="text-navy">U probeerde losse AI-tools, maar kreeg ze niet werkend.</strong> Een veelvoorkomende reden om alsnog voor een agency te kiezen: de techniek bestaat wel, maar de implementatie kostte meer tijd dan u had.</div></li>
+        <li class="flex gap-3"><span class="text-brand-indigo font-bold">→</span><div><strong class="text-navy">Compliance is voor uw sector kritisch.</strong> In zorg, juridische en financiële dienstverlening moet datacompliance kloppen. Een agency met EU-datacenters en verwerkersovereenkomsten neemt dat risico weg.</div></li>
+      </ul>
+      <p class="text-slate-700 leading-relaxed">Herkent u hier niets in — weinig inkomend verkeer, geen automatiseerbare processen, geen groeidruk — dan is een AI agency op dit moment waarschijnlijk overbodig. Dat is een legitieme uitkomst van een goede <a href="/gratis-ai-scan/" class="text-brand-indigo hover:underline">AI-scan</a>, en een bureau dat dat eerlijk zegt, verdient juist uw vertrouwen.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Hoe kiest u het juiste AI bureau in Nederland?</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">De markt voor AI-diensten groeit snel, en niet elke aanbieder is even betrouwbaar. Gebruik onderstaande checklist om kaf van koren te scheiden. Een professioneel AI bureau kan op elk punt een helder antwoord geven.</p>
+      <div class="space-y-4">
+        {checklist.map((c, i) => (
+          <div class="card p-5 bg-white border border-slate-200">
+            <div class="flex gap-4">
+              <span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">{i + 1}</span>
+              <div>
+                <h3 class="text-base font-bold text-navy mb-1">{c.point}</h3>
+                <p class="text-sm text-slate-600 leading-relaxed">{c.why}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p class="text-slate-700 leading-relaxed mt-6">Een laatste tip: vraag naar concrete voorbeelden uit uw eigen sector. Een AI bureau dat al met vergelijkbare bedrijven heeft gewerkt, kent de valkuilen — en kan u laten zien wat realistisch is in plaats van wat goed klinkt.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Wat kost een AI agency?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">De prijs van een AI agency hangt af van wat u nodig heeft, maar transparantie hoort de norm te zijn. Aanloop AI publiceert daarom vaste pakketprijzen — geen "offerte op aanvraag" voor de standaarddiensten.</p>
+      <ul class="space-y-3 text-slate-700 leading-relaxed mb-4">
+        <li class="flex gap-3"><span class="text-brand-indigo font-bold">·</span><div><strong class="text-navy">Starter — €597 per maand.</strong> Marco, onze AI-telefoniste, tot 150 gesprekken per maand. Eenmalige setup €495. Ideaal als eerste stap in AI-automatisering.</div></li>
+        <li class="flex gap-3"><span class="text-brand-indigo font-bold">·</span><div><strong class="text-navy">Groei — €1.197 per maand.</strong> Marco met onbeperkte gesprekken plus Emma, onze WhatsApp AI-agent. Eenmalige setup €795. Het meest gekozen pakket voor MKB-bedrijven die telefoon én chat willen automatiseren.</div></li>
+        <li class="flex gap-3"><span class="text-brand-indigo font-bold">·</span><div><strong class="text-navy">Partner — op maat.</strong> Marco en Emma plus custom AI-workflows op self-hosted n8n, met dedicated begeleiding. Voor bedrijven met complexere automatiseringsbehoeften.</div></li>
+      </ul>
+      <p class="text-slate-700 leading-relaxed mb-4">Alle prijzen zijn exclusief 21% btw en de abonnementen zijn <strong class="text-navy">maandelijks opzegbaar</strong> — geen jaarcontract-dwang. Bij jaarbetaling geldt circa 16% korting. U bent doorgaans binnen 7 tot 14 werkdagen live.</p>
+      <p class="text-slate-700 leading-relaxed">Om deze bedragen in perspectief te plaatsen: een parttime receptionist of telefoniste kost al snel €1.500 tot €2.500 bruto per maand, werkt alleen tijdens kantooruren en is één persoon tegelijk. Een AI-agent neemt onbeperkt gesprekken aan, 24 uur per dag, voor een fractie van die kosten. Voor het volledige overzicht en de actuele tarieven, zie de <a href="/tarieven/" class="text-brand-indigo hover:underline">tarievenpagina</a>.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Aanloop AI — uw AI agency in Nederland</h2>
+      <p class="text-slate-700 leading-relaxed mb-4"><strong class="text-navy">Aanloop AI B.V.</strong> is een Nederlands AI bureau, gevestigd in Rotterdam en in 2024 opgericht door <a href="/team/magahdogan/" class="text-brand-indigo hover:underline">Mustafa Agah Dogan</a> (CEO). We zijn ingeschreven bij de Kamer van Koophandel onder KvK-nummer 88606902. We bouwen geen experimentele showcases — we leveren beheerde AI-diensten die het Nederlandse MKB direct helpen.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Onze focus ligt op drie producten. <strong class="text-navy">Marco</strong> is onze AI-receptionist: een spraak-AI die uw telefoon 24/7 aanneemt in vloeiend Nederlands. <strong class="text-navy">Emma</strong> is onze WhatsApp AI-agent, die chatberichten beantwoordt en leads kwalificeert. En met <strong class="text-navy">Custom AI Workflows</strong> bouwen we maatwerk-automatisering op self-hosted n8n. We werken met bewezen techniek — ElevenLabs voor natuurlijke Nederlandse stemmen, Dify en toonaangevende taalmodellen van OpenAI en Anthropic — zodat u op stabiliteit kunt rekenen.</p>
+      <p class="text-slate-700 leading-relaxed mb-6">Wat ons onderscheidt als AI agency: <strong class="text-navy">de automatiseringslaag draait self-hosted in Nederland en alle data blijft binnen de EU</strong>. Dat maakt onze oplossingen AVG-compliant — een harde eis voor klanten in de zorg, de juridische en de financiële sector. Daarbij publiceren we onze tarieven, bieden we maandelijkse opzegbaarheid en houdt u één vast aanspreekpunt in plaats van een anoniem ticketsysteem.</p>
+      <h3 class="text-xl font-bold text-navy mb-4">Onze werkwijze in 4 stappen</h3>
+      <ol class="space-y-4 text-slate-700">
+        {steps.map((s) => (
+          <li class="flex gap-4">
+            <span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">{s.n}</span>
+            <div><strong class="text-navy">{s.title}</strong> — {s.text}</div>
+          </li>
+        ))}
+      </ol>
+      <p class="text-slate-700 leading-relaxed mt-6">Wilt u weten of een AI agency voor uw bedrijf rendeert? Begin met een vrijblijvende <a href="/gratis-ai-scan/" class="text-brand-indigo hover:underline">gratis AI-scan</a>. We zijn ook direct bereikbaar via hello@aanloopai.nl of WhatsApp op +31 6 2474 1597. Werkt u liever lokaal? Bekijk dan onze <a href="/locaties/" class="text-brand-indigo hover:underline">locatiepagina's</a> voor regio-specifieke informatie.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Veelgestelde vragen</h2>
+      <div class="space-y-3">
+        {faqItems.map((item) => (
+          <details class="group card bg-white border border-slate-200 p-0 overflow-hidden">
+            <summary class="cursor-pointer list-none p-5 flex items-start justify-between gap-4 font-semibold text-navy hover:bg-slate-50/60 transition-colors">
+              <span>{item.question}</span>
+              <span class="shrink-0 text-brand-indigo transition-transform group-open:rotate-45 text-xl leading-none">+</span>
+            </summary>
+            <div class="px-5 pb-5 text-sm text-slate-600 leading-relaxed">{item.answer}</div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder lezen</h2>
+      <ul class="space-y-3 text-slate-700">
+        <li><a href="/kennisbank/wat-is-een-ai-agency/" class="text-brand-indigo hover:underline">Wat is een AI agency — uitgebreide kennisbank-uitleg</a></li>
+        <li><a href="/ai-automatisering/" class="text-brand-indigo hover:underline">AI automatisering voor het MKB — wat het oplevert</a></li>
+        <li><a href="/ai-agents-voor-bedrijven/" class="text-brand-indigo hover:underline">AI agents voor bedrijven — hoe ze werken</a></li>
+        <li><a href="/ai-marketing-bureau/" class="text-brand-indigo hover:underline">AI-marketingbureau — AI-gedreven zichtbaarheid</a></li>
+        <li><a href="/diensten/marco/" class="text-brand-indigo hover:underline">Marco — onze AI-receptionist (productpagina)</a></li>
+        <li><a href="/diensten/emma/" class="text-brand-indigo hover:underline">Emma — onze WhatsApp AI-agent (productpagina)</a></li>
+        <li><a href="/diensten/custom/" class="text-brand-indigo hover:underline">Custom AI Workflows — maatwerk-automatisering</a></li>
+        <li><a href="/tarieven/" class="text-brand-indigo hover:underline">Tarieven — transparante prijzen per pakket</a></li>
+        <li><a href="/kennisbank/" class="text-brand-indigo hover:underline">Kennisbank — alle gidsen over AI voor het MKB</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
+    <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
+    <div class="container-page relative max-w-3xl">
+      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance">Op zoek naar een AI agency voor uw MKB?</h2>
+      <p class="mt-4 text-slate-300">Begin met een gratis 30-minuten AI-scan. We laten eerlijk zien of — en waar — AI in uw bedrijf rendeert. Met cijfers, geen marketingverhalen.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan</a>
+        <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk tarieven</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
