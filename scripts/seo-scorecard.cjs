@@ -129,8 +129,10 @@ const categories = [];
 {
   const trueOrphans = orphan?.trueOrphans?.length || 0;
   const ctxOrphans = orphan?.contextualOrphans?.length || 0;
-  // true orphans (zero inbound) are warnings; contextual orphans (few inbound) are notices
-  const score = orphan ? clamp(100 - trueOrphans * 5 - ctxOrphans * 1) : 0;
+  // Score on TRUE orphans only (zero internal inbound — the standard Ahrefs/Semrush
+  // definition). Contextual orphans (linked via footer/nav but not body content)
+  // are reported as a notice but not penalised.
+  const score = orphan ? clamp(100 - trueOrphans * 8) : 0;
   categories.push({
     key: 'Content/Orphans',
     weight: 15,

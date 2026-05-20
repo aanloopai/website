@@ -50,7 +50,9 @@ function fullTitle(t) {
   return t.length + TITLE_SUFFIX.length <= TITLE_MAX ? t + TITLE_SUFFIX : t;
 }
 
-const files = walk(PAGES_DIR);
+// Skip dynamic-route files ([slug].astro) — they have no single canonical URL
+// and are not individually sitemap-listed.
+const files = walk(PAGES_DIR).filter((f) => !/\[[^\]]+\]/.test(path.relative(PAGES_DIR, f)));
 const sitemap = fs.readFileSync(SITEMAP, 'utf8');
 const sitemapUrls = new Set(
   Array.from(sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)).map((m) => m[1].trim())

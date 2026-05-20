@@ -133,13 +133,31 @@ async function checkUrl(url) {
     // 401/403/999 = auth- or bot-gated (LinkedIn etc.); the URL exists and the
     // link is valid for real users — not broken.
     const ok = res.status < 400 || res.status === 401 || res.status === 403 || res.status === 999;
-    return { url, status: res.status, ok, state: ok ? 'ok' : 'broken' };
+    // 5xx = transient server error (502/503/504) — the link target is valid, the
+    // remote server just hiccuped; classify as unverified, never as broken.
+    let state;
+    if (ok) state = 'ok';
+    else if (res.status >= 500) state = 'unverified';
+    else state = 'broken';
+    return { url, status: res.status, ok, state };
   } catch (err) {
     clearTimeout(timer);
     // network-level failure (TLS/DNS/timeout) — cannot confirm a 4xx/5xx, so
     // report as "unverified" rather than counting it as a broken link.
     return { url, status: 0, ok: false, state: 'unverified', error: err.name === 'AbortError' ? 'timeout' : (err.code || err.message) };
   }
+}
+
+// Retry up to 3 times before declaring a non-ok result — eliminates transient
+// network/5xx flakes so the score is stable across runs.
+async function checkUrlRetry(url) {
+  let r;
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    r = await checkUrl(url);
+    if (r.state === 'ok') return r;
+    if (attempt < 3) await new Promise((res) => setTimeout(res, 700 * attempt));
+  }
+  return r;
 }
 
 async function runExternalChecks() {
@@ -150,9 +168,9 @@ async function runExternalChecks() {
   async function worker() {
     while (i < urls.length) {
       const idx = i++;
-      const r = await checkUrl(urls[idx]);
+      const r = await checkUrlRetry(urls[idx]);
       results.push(r);
-      if (!r.ok) console.log(`  BROKEN  [${r.status || r.error}]  ${r.url}`);
+      if (r.state === 'broken') console.log(`  BROKEN  [${r.status || r.error}]  ${r.url}`);
     }
   }
   await Promise.all(Array.from({ length: CONCURRENCY }, worker));

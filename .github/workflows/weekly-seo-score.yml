@@ -1,0 +1,64 @@
+name: Weekly SEO Scorecard
+
+# Bouwt de site, draait de SEO Health Score (scripts/seo-scorecard.cjs) met
+# live externe-link-checks, en publiceert het resultaat in de job-summary.
+# Faalt als de score onder 100 zakt — zo wordt elke SEO-regressie zichtbaar.
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'   # elke maandag 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  seo-score:
+    name: SEO Health Score
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Build site
+        run: npm run build
+
+      - name: Run SEO scorecard
+        run: node scripts/seo-scorecard.cjs --check-external
+
+      - name: Publish score + gate on 100
+        run: |
+          node -e "
+            const d = require('./scripts/seo-scorecard-output.json');
+            const fs = require('fs');
+            let md = '## SEO Health Score: ' + d.total + '/100 — ' + d.grade + '\n\n';
+            md += '| Categorie | Gewicht | Score |\n|---|---|---|\n';
+            for (const c of d.categories) md += '| ' + c.key + ' | ' + c.weight + '% | ' + (c.score === null ? 'n/a' : c.score) + ' |\n';
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, md);
+            if (d.total < 100) {
+              console.log('::error::SEO Health Score ' + d.total + '/100 — onder de drempel van 100. Zie samenvatting voor details.');
+              process.exit(1);
+            }
+            console.log('SEO Health Score ' + d.total + '/100 — OK.');
+          "
+
+      - name: Upload scorecard artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seo-scorecard
+          path: |
+            scripts/seo-scorecard-output.json
+            scripts/seo-link-integrity-output.json
+            scripts/seo-audit-output.json
+            scripts/seo-orphan-output.json
+          retention-days: 90
