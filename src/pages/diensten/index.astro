@@ -50,11 +50,20 @@ const collectionSchema = {
     })),
   },
 };
+
+const faqItems = [
+  { question: 'Welke AI-diensten biedt Aanloop AI aan?', answer: 'Aanloop AI biedt 18 diensten voor het Nederlandse MKB: kant-en-klare AI-assistenten (Marco AI-receptionist, Emma WhatsApp-agent, AI telefoon-assistent), website- en webshop-bouw, de AI-Website Bundel, en gespecialiseerde AI-agents zoals document processing, e-mail-assistent, lead-qualification, omnichannel klantenservice en custom workflows.' },
+  { question: 'Wat kost een AI-dienst bij Aanloop AI?', answer: 'De prijzen zijn vast en transparant. Kant-en-klare assistenten starten bij €597/maand (Marco, Starter-pakket), de Groei-bundel met Marco + Emma kost €1.197/maand. Gespecialiseerde diensten lopen van €600 tot €2.000/maand. De AI-Website Bundel start bij €4.950 setup + €397/maand. Custom workflows zijn op maat geprijsd. Alle prijzen exclusief 21% btw, maandelijks opzegbaar.' },
+  { question: 'Hoe snel is een AI-dienst live?', answer: 'Kant-en-klare AI-assistenten zoals Marco en Emma zijn live binnen 7 tot 14 werkdagen. Website- en webshop-trajecten duren 4 tot 8 weken. Custom workflows hangen af van de scope; na de gratis AI-scan ontvangt u een exacte planning.' },
+  { question: 'Kan ik diensten los afnemen of alleen als bundel?', answer: 'Beide. U kunt elke dienst los afnemen, of kiezen voor een bundel met meer voordeel. De AI-Website Bundel combineert website, Marco en Emma in één traject met één factuur en bespaart in jaar 1 ruim €8.000 ten opzichte van losse afname.' },
+  { question: 'Welke AI-dienst past het beste bij mijn bedrijf?', answer: 'Dat hangt af van uw grootste knelpunt. Mist u telefonische bereikbaarheid, dan past Marco. Krijgt u veel WhatsApp-vragen, dan Emma. Heeft u een uniek proces, dan een custom workflow. Twijfelt u, plan dan de gratis AI-scan van 30 minuten — wij analyseren uw processen en adviseren de meest rendabele aanpak met ROI-berekening.' },
+];
 ---
 <BaseLayout
   title="Alle Diensten — Websites, Webshops & AI"
   description="AI-implementatie voor het MKB: 18 diensten. AI-Website Bundel, website + webshop, AI-receptionist Marco, WhatsApp-agent Emma en document processing."
   schema={collectionSchema}
+  faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">
@@ -147,6 +156,27 @@ const collectionSchema = {
               </div>
             </div>
           </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section bg-slate-50 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">FAQ</p>
+        <h2 class="text-2xl font-bold text-navy">Veelgestelde vragen over onze diensten</h2>
+      </div>
+      <div class="space-y-3">
+        {faqItems.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.question}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
         ))}
       </div>
     </div>
