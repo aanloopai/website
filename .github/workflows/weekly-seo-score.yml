@@ -1,8 +1,12 @@
 name: Weekly SEO Scorecard
 
-# Bouwt de site, draait de SEO Health Score (scripts/seo-scorecard.cjs) met
-# live externe-link-checks, en publiceert het resultaat in de job-summary.
-# Faalt als de score onder 100 zakt — zo wordt elke SEO-regressie zichtbaar.
+# Wekelijks: bouwt de site en scoort de SEO health (scripts/seo-scorecard.cjs).
+# Bij score < 100:
+#   1. past veilige, deterministische auto-fixes toe (seo-autofix --apply) en
+#      commit die naar master, daarna herscoren;
+#   2. blijft het onder 100, dan wordt een GitHub-issue geopend/bijgewerkt
+#      (label seo-regression) en faalt de job — regressie-alarm.
+# Komt de score (terug) op 100, dan wordt een open regressie-issue gesloten.
 
 on:
   schedule:
@@ -10,13 +14,14 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
+  issues: write
 
 jobs:
   seo-score:
     name: SEO Health Score
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,10 +37,31 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Run SEO scorecard
+      - name: Initial SEO scorecard
         run: node scripts/seo-scorecard.cjs --check-external
 
-      - name: Publish score + gate on 100
+      - name: Self-heal when below 100
+        run: |
+          SCORE=$(node -e "console.log(require('./scripts/seo-scorecard-output.json').total)")
+          echo "Initiële score: $SCORE/100"
+          if [ "$SCORE" -lt 100 ]; then
+            echo "Onder 100 — veilige auto-fixes toepassen"
+            node scripts/seo-autofix.cjs --apply
+            npm run build
+            node scripts/seo-scorecard.cjs --check-external
+            if ! git diff --quiet; then
+              git config user.name "aanloop-seo-bot"
+              git config user.email "seo-bot@aanloopai.nl"
+              git add -A
+              git commit -m "chore: SEO auto-heal — veilige fixes door weekly scorecard"
+              git push
+              echo "Auto-heal commit gepusht."
+            else
+              echo "Auto-fix leverde geen wijzigingen op."
+            fi
+          fi
+
+      - name: Publish score summary
         run: |
           node -e "
             const d = require('./scripts/seo-scorecard-output.json');
@@ -44,11 +70,6 @@ jobs:
             md += '| Categorie | Gewicht | Score |\n|---|---|---|\n';
             for (const c of d.categories) md += '| ' + c.key + ' | ' + c.weight + '% | ' + (c.score === null ? 'n/a' : c.score) + ' |\n';
             fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, md);
-            if (d.total < 100) {
-              console.log('::error::SEO Health Score ' + d.total + '/100 — onder de drempel van 100. Zie samenvatting voor details.');
-              process.exit(1);
-            }
-            console.log('SEO Health Score ' + d.total + '/100 — OK.');
           "
 
       - name: Upload scorecard artifact
@@ -62,3 +83,58 @@ jobs:
             scripts/seo-audit-output.json
             scripts/seo-orphan-output.json
           retention-days: 90
+
+      - name: Open, update or close regression issue
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const d = JSON.parse(fs.readFileSync('scripts/seo-scorecard-output.json', 'utf8'));
+            const { owner, repo } = context.repo;
+            const existing = await github.rest.issues.listForRepo({
+              owner, repo, state: 'open', labels: 'seo-regression', per_page: 10,
+            });
+
+            if (d.total >= 100) {
+              for (const iss of existing.data) {
+                await github.rest.issues.createComment({
+                  owner, repo, issue_number: iss.number,
+                  body: 'SEO Health Score is terug op 100/100 — automatisch gesloten.',
+                });
+                await github.rest.issues.update({ owner, repo, issue_number: iss.number, state: 'closed' });
+              }
+              return;
+            }
+
+            const today = new Date().toISOString().slice(0, 10);
+            const rows = d.categories.map((c) =>
+              `| ${c.key} | ${c.weight}% | ${c.score == null ? 'n/a' : c.score} | ${c.detail} |`
+            ).join('\n');
+            const body = [
+              `**SEO Health Score: ${d.total}/100 — ${d.grade}** (${today})`,
+              '',
+              'Auto-heal (veilige fixes) heeft de score niet tot 100 kunnen herstellen — handmatige actie nodig.',
+              '',
+              '| Categorie | Gewicht | Score | Detail |',
+              '|---|---|---|---|',
+              rows,
+              '',
+              'Draai lokaal `npm run seo:fix` voor de volledige actielijst en `npm run seo:score` om te verifiëren.',
+            ].join('\n');
+            const title = `[auto] SEO Health Score ${d.total}/100 — onder 100`;
+
+            if (existing.data.length) {
+              await github.rest.issues.createComment({ owner, repo, issue_number: existing.data[0].number, body });
+            } else {
+              await github.rest.issues.create({ owner, repo, title, body, labels: ['seo-regression'] });
+            }
+
+      - name: Gate on 100
+        run: |
+          SCORE=$(node -e "console.log(require('./scripts/seo-scorecard-output.json').total)")
+          if [ "$SCORE" -lt 100 ]; then
+            echo "::error::SEO Health Score $SCORE/100 — onder 100. Zie het seo-regression issue en de samenvatting."
+            exit 1
+          fi
+          echo "SEO Health Score $SCORE/100 — OK."
