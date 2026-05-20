@@ -66,9 +66,16 @@ for (const u of allUrls) {
   inboundContextual.set(u, new Set());
 }
 
+// noindex pages are orphan by design (404, post-submit, verification files) —
+// exclude them so the audit only flags real, indexable orphans.
+const noindexUrls = new Set();
+
 for (const file of htmlFiles) {
   const sourceUrl = urlForHtmlFile(file);
   const fullHtml = fs.readFileSync(file, 'utf8');
+  if (/<meta[^>]+name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(fullHtml)) {
+    noindexUrls.add(sourceUrl);
+  }
   const bodyHtml = stripChrome(fullHtml);
 
   for (const [scope, html] of [['all', fullHtml], ['contextual', bodyHtml]]) {
@@ -92,8 +99,12 @@ const rows = Array.from(allUrls).map((u) => ({
   inboundContextual: inboundContextual.get(u).size,
 })).sort((a, b) => a.inboundContextual - b.inboundContextual || a.inboundAll - b.inboundAll);
 
-const orphansContextual = rows.filter((r) => r.inboundContextual === 0);
-const orphansTotal = rows.filter((r) => r.inboundAll === 0);
+// well-known / verification files are not content pages — orphan by design
+const WELL_KNOWN = /^\/(google[0-9a-f]+|\.well-known)\//i;
+const isReal = (r) => !noindexUrls.has(r.url) && !WELL_KNOWN.test(r.url);
+
+const orphansContextual = rows.filter((r) => r.inboundContextual === 0 && isReal(r));
+const orphansTotal = rows.filter((r) => r.inboundAll === 0 && isReal(r));
 
 console.log('=== AANLOOPAI ORPHAN AUDIT ===');
 console.log(`Total HTML pages: ${htmlFiles.length}`);

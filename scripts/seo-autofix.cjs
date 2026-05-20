@@ -94,6 +94,12 @@ if (links?.brokenExternal?.length) {
 } else if (links && links.externalUrlsChecked === 0) {
   manual.push('Externe links niet live-gecheckt — draai: node scripts/seo-link-integrity.cjs --check-external');
 }
+if (links?.unverifiedExternal?.length) {
+  manual.push(`${links.unverifiedExternal.length} externe link(s) NIET te verifiëren (bot-block/TLS/timeout — geen bevestigde 4xx). Steekproef handmatig controleren:`);
+  links.unverifiedExternal.slice(0, 20).forEach((b) =>
+    manual.push(`    [${b.error || 'fout'}]  ${b.url}`)
+  );
+}
 
 // ── REPORT: orphans ───────────────────────────────────────────────
 if (orphan?.trueOrphans?.length) {

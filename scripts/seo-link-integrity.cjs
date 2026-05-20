@@ -117,20 +117,28 @@ console.log(`Unique external URLs (excl. wa.me): ${externalUrls.size}`);
 async function checkUrl(url) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
-  const headers = { 'User-Agent': 'Mozilla/5.0 (compatible; AanloopLinkCheck/1.0)' };
+  // Real browser UA — many sites (gov, branch-orgs) bot-block non-browser agents
+  // with a 403/404, which would otherwise look like a dead link.
+  const headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+  };
   try {
     let res = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: ctrl.signal, headers });
-    // Some servers reject HEAD (405/501/403) — retry with GET
-    if (res.status === 405 || res.status === 501 || res.status === 403) {
+    // Many servers reject or mis-handle HEAD (405/501/403/404) — retry with GET
+    if (res.status === 405 || res.status === 501 || res.status === 403 || res.status === 404) {
       res = await fetch(url, { method: 'GET', redirect: 'follow', signal: ctrl.signal, headers });
     }
     clearTimeout(timer);
-    // 999 = LinkedIn anti-bot status; the link works for real users, not broken.
-    const ok = res.status < 400 || res.status === 999;
-    return { url, status: res.status, ok };
+    // 401/403/999 = auth- or bot-gated (LinkedIn etc.); the URL exists and the
+    // link is valid for real users — not broken.
+    const ok = res.status < 400 || res.status === 401 || res.status === 403 || res.status === 999;
+    return { url, status: res.status, ok, state: ok ? 'ok' : 'broken' };
   } catch (err) {
     clearTimeout(timer);
-    return { url, status: 0, ok: false, error: err.name === 'AbortError' ? 'timeout' : (err.code || err.message) };
+    // network-level failure (TLS/DNS/timeout) — cannot confirm a 4xx/5xx, so
+    // report as "unverified" rather than counting it as a broken link.
+    return { url, status: 0, ok: false, state: 'unverified', error: err.name === 'AbortError' ? 'timeout' : (err.code || err.message) };
   }
 }
 
@@ -153,18 +161,27 @@ async function runExternalChecks() {
 
 (async () => {
   let brokenExternal = [];
+  let unverifiedExternal = [];
   if (CHECK_EXTERNAL) {
     const results = await runExternalChecks();
+    const toEntry = (r) => ({
+      url: r.url,
+      status: r.status,
+      error: r.error || null,
+      referencedFrom: Array.from(externalUrls.get(r.url) || []),
+    });
     brokenExternal = results
-      .filter((r) => !r.ok)
-      .map((r) => ({
-        url: r.url,
-        status: r.status,
-        error: r.error || null,
-        referencedFrom: Array.from(externalUrls.get(r.url) || []),
-      }))
+      .filter((r) => r.state === 'broken')
+      .map(toEntry)
+      .sort((a, b) => b.referencedFrom.length - a.referencedFrom.length);
+    unverifiedExternal = results
+      .filter((r) => r.state === 'unverified')
+      .map(toEntry)
       .sort((a, b) => b.referencedFrom.length - a.referencedFrom.length);
     console.log(`\nBroken external URLs: ${brokenExternal.length} / ${results.length}`);
+    if (unverifiedExternal.length) {
+      console.log(`Unverified (network/TLS/timeout, not confirmed broken): ${unverifiedExternal.length}`);
+    }
   } else {
     console.log('\n(external links not checked — pass --check-external for live HTTP checks)');
   }
@@ -176,6 +193,7 @@ async function runExternalChecks() {
     externalDomains: ext.map(([host, count]) => ({ host, count })),
     externalUrlsChecked: CHECK_EXTERNAL ? externalUrls.size : 0,
     brokenExternal,
+    unverifiedExternal,
   };
   fs.writeFileSync(
     path.join(ROOT, 'scripts', 'seo-link-integrity-output.json'),
