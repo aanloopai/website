@@ -25,7 +25,7 @@ const articles = [
   { slug: 'ai-automatisering-mkb', title: 'AI Automatisering voor MKB — Praktische Gids 2026', date: '2026-05-01', description: 'Welke processen kunt u automatiseren met AI? Speakable schema.' },
   { slug: 'ai-agent-voorbeelden', title: '5 Voorbeelden van AI Agents voor Nederlandse Bedrijven', date: '2026-05-04', description: 'Concrete voorbeelden van AI agents in MKB Nederland. Speakable schema.' },
   { slug: 'ai-agent-kosten-mkb', title: 'AI Agent Kosten voor MKB Nederland — Pakketprijzen 2026', date: '2026-05-01', description: 'Wat kost een AI agent? Pakketten, custom-prijzen en kostendrijvers.' },
-  { slug: 'ai-prijzen-vergelijking-mkb-2026', title: 'AI Prijzen Vergelijking voor MKB Nederland 2026', date: '2026-05-01', description: 'Marktprijzen vergeleken: Aanloop AI, ChatGPT, custom builds.' },
+  { slug: 'ai-prijzen-vergelijking-mkb-nederland-2026', title: 'AI Prijzen Vergelijking voor MKB Nederland 2026', date: '2026-05-01', description: 'Marktprijzen vergeleken: Aanloop AI, ChatGPT, custom builds.' },
   { slug: 'ai-receptionist-vs-ai-telefoniste-vergelijking', title: 'AI Receptionist vs AI Telefoniste — Wat is het Verschil?', date: '2026-05-01', description: 'Twee termen voor verschillende oplossingen. Wat past bij uw MKB?' },
   { slug: 'ai-voicebot-vs-chatbot-mkb-vergelijking', title: 'AI Voicebot vs Chatbot voor MKB — Vergelijking', date: '2026-05-01', description: 'Voice of text AI? Wanneer welke kiezen voor uw MKB.' },
   { slug: 'ai-klantenservice-voor-mkb-2026', title: 'AI Klantenservice voor MKB 2026 — Volledige Gids', date: '2026-05-01', description: 'AI inzetten voor klantenservice: kanalen, kosten, ROI en stappenplan.' },
