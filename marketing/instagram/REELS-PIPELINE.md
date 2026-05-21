@@ -198,3 +198,118 @@ Aanrader voor wave-4:
 3. **Test publish:** Verwijder `dry_run`, run opnieuw. Check IG-app voor Reel + permalink terug in schedule JSON.
 4. **Wacht op cron:** Eerstvolgende slot = Wed 2026-05-13 09:00 CET (`reel-001`).
 5. **Na auto-publish:** Audio toevoegen in IG-app (zie Audio-strategie hierboven).
+
+
+---
+
+## AI Image Generation — gen-ai-image.py
+
+Ken-Burns templates en diversiteits-posts vereisen echte fotorealisistische achtergronden.
+`scripts/gen-ai-image.py` genereert deze via **Google Imagen 4** (of Gemini Flash als fallback)
+op het `gen-lang-client-0479672868` Vertex AI project.
+
+### Setup
+
+```bash
+pip install google-genai pillow
+export GOOGLE_CLOUD_PROJECT=gen-lang-client-0479672868
+export GOOGLE_CLOUD_LOCATION=us-central1
+gcloud auth application-default login
+```
+
+### Scenes
+
+#### NL-MKB scenes (1080×1080 PNG → `public/social-feed/ai-images/`)
+
+| ID | Categorie | Beschrijving |
+|----|-----------|--------------|
+| `cafe-eigenaar-bezig` | horeca | Café-eigenaar achter de bar, ochtend sfeer |
+| `cafe-avond-drukte` | horeca | Drukke avonddienst, geulen amber-licht |
+| `cafe-telefoon-gemist` | horeca | Smartphone op bar met gemiste oproep |
+| `receptie-vriendelijk` | receptie | Receptioniste aan modern bureau |
+| `receptie-tablet-overzicht` | receptie | Receptionist met tablet agenda-overzicht |
+| `receptie-lege-balie-avond` | receptie | Lege balie avond — aanleiding voor AI-coverage |
+| `webshop-eigenaar-laptop` | webshop | Webshop-eigenaar laptop + dozen thuis-kantoor |
+| `webshop-pakket-verzenden` | webshop | Handen pakken pakket in — close-up |
+| `webshop-klant-chat-desktop` | webshop | Klant met chat-widget op desktop |
+| `vakman-offerte-aanvraag` | bouw | Vakman bij busje met smartphone notificatie |
+| `divers-team-mkb` | diversity | Divers MKB-team in open-plan kantoor |
+| `divers-vrouwelijke-ondernemer` | diversity | Vrouwelijke ondernemer standing desk |
+| `divers-oudere-eigenaar-ai` | diversity | 58-jarige eigenaar tablet in winkel |
+| `divers-multicultureel-klantenservice` | diversity | Multicultureel klantenservice-team |
+
+#### Ken-Burns achtergronden (1080×1920 PNG → `public/social-feed/reels/backgrounds/`)
+
+| ID | Beschrijving |
+|----|--------------|
+| `kb-cafe-ochtend` | Leeg café interieur, ochtend warm licht |
+| `kb-amsterdam-straat` | Amsterdam gracht golden hour, geen mensen |
+| `kb-kantoor-uitzicht` | Modern kantoor, vloer-tot-plafond ramen |
+| `kb-webshop-warehouse` | Netjes e-commerce magazijn, daglicht |
+| `kb-abstract-gradient-navy` | Navy→indigo gradient brand-background |
+
+### Gebruik
+
+```bash
+# Alles genereren (NL-MKB + Ken-Burns)
+python scripts/gen-ai-image.py --all
+
+# Alleen Ken-Burns achtergronden (voor reels)
+python scripts/gen-ai-image.py --kenburns
+
+# Alleen diversiteits-posts
+python scripts/gen-ai-image.py --diversity
+
+# Eén scene
+python scripts/gen-ai-image.py --scene cafe-eigenaar-bezig
+
+# JSON-manifest van alle scene-IDs
+python scripts/gen-ai-image.py --manifest
+
+# Goedkopere/snellere Gemini Flash (minder kwaliteit)
+python scripts/gen-ai-image.py --kenburns --model gemini
+```
+
+### Integratie met Ken-Burns reels
+
+Nadat `--kenburns` gelopen heeft, kun je de background PNG direct als `image:` veld
+gebruiken in je reel-slot:
+
+```json
+{
+  "template": "ken-burns",
+  "image": "public/social-feed/reels/backgrounds/kb-cafe-ochtend.png",
+  "headline": "Elke oproep beantwoord\nterwijl jij de zaak runt",
+  "sub": "Marco AI-telefoniste · 24/7 bereikbaar",
+  "cta": "aanloopai.nl/diensten/marco"
+}
+```
+
+Zie `marketing/instagram/wave-4-reels-schedule.json` voor volledige voorbeelden.
+
+### Kosten indicatie (Vertex AI, mei 2026)
+
+| Model | Prijs/afbeelding | Kwaliteit |
+|-------|-----------------|-----------|
+| Imagen 4 (`imagen-4.0-generate-001`) | ~$0.04 | Fotorealistisch, aanbevolen |
+| Gemini Flash (`gemini-2.0-flash-preview-image-generation`) | ~$0.01 | Goed, sneller, iets minder detail |
+
+Alle 19 scenes in één keer = ~$0.76 met Imagen 4. Cache-hit als PNG al bestaat.
+
+### GitHub Actions integratie (optioneel)
+
+Voeg toe aan `.github/workflows/ig-reels-publish.yml` om backgrounds auto-te genereren
+als ze ontbreken, vóór render:
+
+```yaml
+- name: Generate Ken-Burns backgrounds (if missing)
+  env:
+    GOOGLE_CLOUD_PROJECT: gen-lang-client-0479672868
+  run: |
+    pip install google-genai pillow
+    gcloud auth application-default login --quiet || true
+    python scripts/gen-ai-image.py --kenburns
+```
+
+> **Let op:** GitHub Actions vereist Workload Identity Federation of een service-account key
+> als secret (`GOOGLE_APPLICATION_CREDENTIALS_JSON`) om Vertex AI te authenticeren.
