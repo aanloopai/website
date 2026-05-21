@@ -289,7 +289,7 @@ def render_ken_burns(spec: dict, out_path: Path) -> None:
     from moviepy import VideoClip
     kb_clip = VideoClip(zoom_frame, duration=duration)
 
-    overlay_bg = ColorClip(size=(W, H), color=(0, 0, 0)).with_opacity(0.45).with_duration(duration)
+    overlay_bg = ColorClip(size=(W, H), color=(0, 0, 0)).with_opacity(0.55).with_duration(duration)
 
     layers = [kb_clip, overlay_bg]
     layers.extend(brand_strip(duration))
