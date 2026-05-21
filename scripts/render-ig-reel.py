@@ -25,8 +25,9 @@ from moviepy import (
     CompositeVideoClip,
     ImageClip,
     TextClip,
+    vfx,
 )
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 REPO = Path(__file__).resolve().parent.parent
 TEMPLATES_DIR = REPO / "marketing" / "instagram" / "reels" / "templates"
@@ -242,12 +243,147 @@ def render_ken_burns(spec: dict, out_path: Path) -> None:
     out.write_videofile(str(out_path), fps=FPS, codec="libx264", audio=False, preset="medium", threads=4, logger=None)
 
 
+# --- chat-reveal: animated chat-UI mockup (product-in-action) -----------------
+
+import numpy as np
+
+CHAT_BG = "#EAE6DF"
+EMERALD_LIVE = "#22C55E"
+
+
+def _wrap_pil(d: "ImageDraw.ImageDraw", text: str, f: "ImageFont.FreeTypeFont", max_w: int) -> list[str]:
+    lines: list[str] = []
+    for para in text.split("\n"):
+        cur = ""
+        for word in para.split(" "):
+            trial = f"{cur} {word}".strip()
+            if d.textlength(trial, font=f) <= max_w or not cur:
+                cur = trial
+            else:
+                lines.append(cur)
+                cur = word
+        lines.append(cur)
+    return lines
+
+
+def _bubble_png(text: str, meta: str, side: str) -> Image.Image:
+    """Render a single chat bubble as an RGBA image."""
+    pad_x, pad_y, radius = 34, 26, 32
+    f = ImageFont.truetype(FONT_REG, 46)
+    fm = ImageFont.truetype(FONT_REG, 30)
+    probe = ImageDraw.Draw(Image.new("RGBA", (4, 4)))
+    lines = _wrap_pil(probe, text, f, 600)
+    line_h = f.getmetrics()[0] + f.getmetrics()[1] + 10
+    text_w = max(probe.textlength(ln, font=f) for ln in lines)
+    bw = int(text_w) + 2 * pad_x
+    if meta:  # widen so the right-aligned timestamp never clips
+        bw = max(bw, int(probe.textlength(meta, font=fm)) + 2 * pad_x)
+    bh = line_h * len(lines) + 2 * pad_y + (16 if meta else 0)
+    img = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    if side == "out":
+        fill, ink, corners = hex_to_rgb(INDIGO), hex_to_rgb(PEARL), (True, True, False, True)
+    else:
+        fill, ink, corners = (255, 255, 255), hex_to_rgb("#1E293B"), (True, True, True, False)
+    d.rounded_rectangle([0, 0, bw, bh], radius=radius, fill=fill, corners=corners)
+    y = pad_y
+    for ln in lines:
+        d.text((pad_x, y), ln, font=f, fill=ink)
+        y += line_h
+    if meta:
+        mcol = (199, 210, 254) if side == "out" else hex_to_rgb(PEARL_DIM)
+        mw = d.textlength(meta, font=fm)
+        d.text((bw - pad_x - mw, bh - pad_y - 6), meta, font=fm, fill=mcol)
+    return img
+
+
+def _chat_header_png(agent: str, role: str) -> Image.Image:
+    h = 230
+    img = Image.new("RGBA", (W, h), hex_to_rgb(INDIGO))
+    d = ImageDraw.Draw(img)
+    for i, c in enumerate((INDIGO, ROSE, AMBER, EMERALD)):
+        d.rectangle([W // 4 * i, 0, W // 4 * (i + 1), 9], fill=hex_to_rgb(c))
+    # avatar
+    cx, cy, r = 132, h // 2 + 8, 66
+    d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=hex_to_rgb(NAVY))
+    fa = ImageFont.truetype(FONT_BLACK, 74)
+    aw = d.textlength(agent[0].upper(), font=fa)
+    am = fa.getmetrics()
+    d.text((cx - aw / 2, cy - (am[0] + am[1]) / 2 + 2), agent[0].upper(), font=fa, fill=hex_to_rgb(PEARL))
+    d.text((232, 62), agent, font=ImageFont.truetype(FONT_BLACK, 62), fill=hex_to_rgb(PEARL))
+    dy = 162
+    d.ellipse([236, dy - 10, 256, dy + 10], fill=hex_to_rgb(EMERALD_LIVE))
+    d.text((272, dy - 24), role, font=ImageFont.truetype(FONT_REG, 35), fill=(199, 210, 254))
+    return img
+
+
+def _chat_footer_png(headline: str, stat: str) -> Image.Image:
+    h = 320
+    img = Image.new("RGBA", (W, h), hex_to_rgb(NAVY))
+    d = ImageDraw.Draw(img)
+    fp = ImageFont.truetype(FONT_BLACK, 40)
+    pw = d.textlength(stat, font=fp) + 60
+    px0 = (W - pw) / 2
+    d.rounded_rectangle([px0, 40, px0 + pw, 110], radius=35, fill=hex_to_rgb(EMERALD))
+    d.text((px0 + 30, 52), stat, font=fp, fill=hex_to_rgb(PEARL))
+    fh = ImageFont.truetype(FONT_BOLD, 46)
+    for i, ln in enumerate(headline.split("\n")):
+        lw = d.textlength(ln, font=fh)
+        d.text(((W - lw) / 2, 150 + i * 58), ln, font=fh, fill=hex_to_rgb(PEARL))
+    fw = ImageFont.truetype(FONT_REG, 33)
+    wm = "aanloopai.nl"
+    d.text(((W - d.textlength(wm, font=fw)) / 2, h - 58), wm, font=fw, fill=hex_to_rgb(PEARL_DIM))
+    return img
+
+
+def _img_clip(pil_img: Image.Image, duration: float) -> ImageClip:
+    return ImageClip(np.array(pil_img), transparent=True).with_duration(duration)
+
+
+def render_chat_reveal(spec: dict, out_path: Path) -> None:
+    """Animated chat mockup — bubbles pop in sequentially with a slide-up."""
+    agent = spec["agent"]
+    role = spec["role"]
+    turns = spec["turns"][:3]
+    headline = spec["headline"]
+    stat = spec["stat"]
+
+    intro, per, outro = 1.4, 2.4, 2.8
+    duration = round(intro + per * len(turns) + outro, 2)
+
+    bg = ColorClip(size=(W, H), color=hex_to_rgb(CHAT_BG)).with_duration(duration)
+    header = _img_clip(_chat_header_png(agent, role), duration).with_position((0, 0))
+    footer_png = _chat_footer_png(headline, stat)
+    footer = _img_clip(footer_png, duration).with_position((0, H - footer_png.height))
+
+    layers = [bg, header]
+    y = 300
+    for i, turn in enumerate(turns):
+        side = "out" if turn["from"] == "agent" else "in"
+        bub = _bubble_png(turn["text"], turn.get("meta", ""), side)
+        x = W - 60 - bub.width if side == "out" else 60
+        start = intro + i * per
+        clip = (
+            _img_clip(bub, duration - start)
+            .with_start(start)
+            .with_position(lambda t, x=x, y=y: (x, y + int(40 * max(0.0, 1.0 - t / 0.4))))
+            .with_effects([vfx.CrossFadeIn(0.3)])
+        )
+        layers.append(clip)
+        y += bub.height + 30
+    layers.append(footer)
+
+    out = CompositeVideoClip(layers, size=(W, H))
+    out.write_videofile(str(out_path), fps=FPS, codec="libx264", audio=False, preset="medium", threads=4, logger=None)
+
+
 RENDERERS = {
     "hook-card": render_hook_card,
     "talking-stat": render_talking_stat,
     "quote-reveal": render_quote_reveal,
     "before-after": render_before_after,
     "ken-burns": render_ken_burns,
+    "chat-reveal": render_chat_reveal,
 }
 
 
