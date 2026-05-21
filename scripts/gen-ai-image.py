@@ -413,20 +413,31 @@ ALL_SCENES = NL_MKB_SCENES + KENBURNS_SCENES
 # Batch runners
 # ---------------------------------------------------------------------------
 
-def run_scene(scene: dict, model_key: str = "imagen") -> Path:
+def run_scene(scene: dict, model_key: str = "imagen") -> Path | None:
     model = MODEL_GEMINI if model_key == "gemini" else MODEL_IMAGEN
     is_kb = scene["category"] == "kenburns"
     out_dir = KENBURNS_DIR if is_kb else AI_IMAGES_DIR
     w, h = (1080, 1920) if is_kb else (1080, 1080)
     out_path = out_dir / f"{scene['id']}.png"
-    return generate_image(
-        prompt=scene["prompt"],
-        out_path=out_path,
-        model=model,
-        width=w,
-        height=h,
-        negative_prompt=NEGATIVE,
-    )
+    # Imagen occasionally returns a transient 503 — retry, never crash the batch.
+    last_err = None
+    for attempt in range(1, 5):
+        try:
+            return generate_image(
+                prompt=scene["prompt"],
+                out_path=out_path,
+                model=model,
+                width=w,
+                height=h,
+                negative_prompt=NEGATIVE,
+            )
+        except Exception as e:  # noqa: BLE001 — transient API errors
+            last_err = e
+            wait = attempt * 8
+            print(f"  attempt {attempt}/4 failed ({str(e)[:90]}); retry in {wait}s", file=sys.stderr)
+            time.sleep(wait)
+    print(f"  SKIPPED {scene['id']} after 4 attempts: {last_err}", file=sys.stderr)
+    return None
 
 
 def run_all_mkb(model_key: str = "imagen") -> None:
