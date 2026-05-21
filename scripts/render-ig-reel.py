@@ -216,6 +216,12 @@ def render_before_after(spec: dict, out_path: Path) -> None:
 
 
 def render_ken_burns(spec: dict, out_path: Path) -> None:
+    """Ken-Burns effect: slow zoom-in on AI-generated background image.
+
+    Zoom goes from 100% → 115% over the clip duration, creating a subtle
+    parallax / documentary feel. Works with both 1:1 (post) and 9:16 (reel)
+    source images — the renderer always outputs W×H (1080×1920).
+    """
     image_path = REPO / spec["image"]
     if not image_path.exists():
         raise FileNotFoundError(f"Ken-burns image not found: {image_path}")
@@ -223,15 +229,41 @@ def render_ken_burns(spec: dict, out_path: Path) -> None:
     sub = spec.get("sub", "")
     cta = spec.get("cta", "aanloopai.nl/ig")
     duration = 10.0
+    zoom_start = 1.0   # initial scale factor (relative to canvas)
+    zoom_end   = 1.15  # final scale factor — 15% zoom-in over duration
 
-    base = ImageClip(str(image_path)).with_duration(duration).resized(height=int(H * 1.2))
-    if base.w < W:
-        base = base.resized(width=int(W * 1.2))
-    base = base.with_position(("center", "center"))
+    # --- oversized base so we have room to zoom without black bars ---
+    raw = ImageClip(str(image_path))
+    # Scale so that at max zoom (zoom_end) the image still fills the canvas
+    scale = max(W / raw.w, H / raw.h) * zoom_end * 1.02
+    raw = raw.resized(width=int(raw.w * scale), height=int(raw.h * scale))
+
+    bw, bh = raw.w, raw.h
+
+    def zoom_frame(t: float):
+        """Return frame at time t with linear zoom applied."""
+        progress = t / duration
+        factor = zoom_start + (zoom_end - zoom_start) * progress
+        # current visible size at this zoom level
+        vis_w = int(W / factor * factor)   # == W (no scaling needed for crop)
+        vis_h = int(H / factor * factor)   # == H
+        # scale the raw frame
+        scaled_w = int(bw * factor)
+        scaled_h = int(bh * factor)
+        # crop center
+        x0 = (scaled_w - W) // 2
+        y0 = (scaled_h - H) // 2
+        frame = raw.get_frame(0)  # static image
+        import cv2
+        resized = cv2.resize(frame, (scaled_w, scaled_h), interpolation=cv2.INTER_LANCZOS4)
+        return resized[y0:y0 + H, x0:x0 + W]
+
+    from moviepy import VideoClip
+    kb_clip = VideoClip(zoom_frame, duration=duration)
 
     overlay_bg = ColorClip(size=(W, H), color=(0, 0, 0)).with_opacity(0.45).with_duration(duration)
 
-    layers = [base, overlay_bg]
+    layers = [kb_clip, overlay_bg]
     layers.extend(brand_strip(duration))
     layers.append(text(headline, FONT_BLACK, 100, PEARL, duration, ("center", 700), 0.5))
     if sub:
