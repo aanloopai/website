@@ -1,0 +1,517 @@
+"""Generate AI images for aanloop NL-MKB scenes using Google Imagen 4
+via the Vertex AI / google-genai SDK.
+
+Models supported:
+  - imagen-4.0-generate-001         (Imagen 4, best quality)
+  - gemini-2.0-flash-preview-image-generation  (Gemini Flash, faster/cheaper)
+
+Outputs PNG files to:
+  public/social-feed/ai-images/<scene_id>.png
+  public/social-feed/reels/backgrounds/<scene_id>.png  (Ken-Burns backgrounds)
+
+Usage:
+  # Generate all NL-MKB scenes
+  python scripts/gen-ai-image.py --all
+
+  # Single scene
+  python scripts/gen-ai-image.py --scene cafe-eigenaar-bezig
+
+  # Only Ken-Burns reel backgrounds
+  python scripts/gen-ai-image.py --kenburns
+
+  # Diversity/inclusion batch
+  python scripts/gen-ai-image.py --diversity
+
+  # Use Gemini Flash instead of Imagen 4 (cheaper, faster)
+  python scripts/gen-ai-image.py --all --model gemini
+
+Setup:
+  pip install google-genai pillow
+  export GOOGLE_CLOUD_PROJECT=gen-lang-client-0479672868
+  export GOOGLE_CLOUD_LOCATION=us-central1   # or europe-west4
+  gcloud auth application-default login
+"""
+from __future__ import annotations
+
+import argparse
+import base64
+import json
+import os
+import sys
+import time
+from pathlib import Path
+
+# ---------------------------------------------------------------------------
+# Dirs
+# ---------------------------------------------------------------------------
+REPO = Path(__file__).resolve().parent.parent
+AI_IMAGES_DIR = REPO / "public" / "social-feed" / "ai-images"
+KENBURNS_DIR  = REPO / "public" / "social-feed" / "reels" / "backgrounds"
+for _d in (AI_IMAGES_DIR, KENBURNS_DIR):
+    _d.mkdir(parents=True, exist_ok=True)
+
+# ---------------------------------------------------------------------------
+# Google GenAI client (Vertex AI backend)
+# ---------------------------------------------------------------------------
+PROJECT  = os.environ.get("GOOGLE_CLOUD_PROJECT", "gen-lang-client-0479672868")
+LOCATION = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
+
+MODEL_IMAGEN = "imagen-4.0-generate-001"
+MODEL_GEMINI = "gemini-2.0-flash-preview-image-generation"
+
+
+def _get_client():
+    try:
+        from google import genai
+        from google.genai import types as gtypes
+        client = genai.Client(vertexai=True, project=PROJECT, location=LOCATION)
+        return client, gtypes
+    except ImportError:
+        print("ERROR: google-genai not installed. Run: pip install google-genai", file=sys.stderr)
+        sys.exit(1)
+
+
+def generate_image(prompt: str, out_path: Path, model: str = MODEL_IMAGEN,
+                   width: int = 1080, height: int = 1080,
+                   negative_prompt: str = "") -> Path:
+    """Generate one image and save as PNG. Returns the path."""
+    if out_path.exists():
+        print(f"  cache hit: {out_path.name}", file=sys.stderr)
+        return out_path
+
+    client, gtypes = _get_client()
+    print(f"  generating: {out_path.name} ({model}) ...", file=sys.stderr)
+
+    if model == MODEL_GEMINI:
+        response = client.models.generate_content(
+            model=model,
+            contents=prompt,
+            config=gtypes.GenerateContentConfig(
+                response_modalities=["IMAGE", "TEXT"],
+                image_generation_config=gtypes.ImageGenerationConfig(
+                    number_of_images=1,
+                )
+            ),
+        )
+        for part in response.candidates[0].content.parts:
+            if part.inline_data is not None:
+                img_bytes = base64.b64decode(part.inline_data.data)
+                out_path.write_bytes(img_bytes)
+                print(f"  saved: {out_path.name}", file=sys.stderr)
+                return out_path
+        raise RuntimeError(f"No image in Gemini response for: {out_path.name}")
+
+    else:
+        # Imagen 4 path
+        aspect = "1:1"
+        if width == 1080 and height == 1920:
+            aspect = "9:16"
+        elif width == 1920 and height == 1080:
+            aspect = "16:9"
+
+        cfg_kwargs = dict(
+            number_of_images=1,
+            output_mime_type="image/png",
+            aspect_ratio=aspect,
+        )
+        if negative_prompt:
+            cfg_kwargs["negative_prompt"] = negative_prompt
+
+        response = client.models.generate_images(
+            model=model,
+            prompt=prompt,
+            config=gtypes.GenerateImagesConfig(**cfg_kwargs),
+        )
+        if response.generated_images:
+            img_bytes = response.generated_images[0].image.image_bytes
+            out_path.write_bytes(img_bytes)
+            print(f"  saved: {out_path.name}", file=sys.stderr)
+            return out_path
+        raise RuntimeError(f"No image returned for: {out_path.name}")
+
+
+# ---------------------------------------------------------------------------
+# Shared style suffixes
+# ---------------------------------------------------------------------------
+BRAND_SUFFIX = (
+    "Professional photography style. Warm natural lighting. "
+    "Dutch small business aesthetic — authentic, approachable, modern. "
+    "No text overlays, no watermarks."
+)
+
+NEGATIVE = (
+    "text, watermark, logo, blurry, low quality, distorted faces, "
+    "cartoon, illustration, oversaturated"
+)
+
+# ---------------------------------------------------------------------------
+# NL-MKB scene definitions
+# ---------------------------------------------------------------------------
+NL_MKB_SCENES: list[dict] = [
+
+    # ── CAFE / HORECA ────────────────────────────────────────────────────────
+    {
+        "id": "cafe-eigenaar-bezig",
+        "label": "Cafe owner busy at counter",
+        "category": "horeca",
+        "prompt": (
+            "A Dutch cafe owner in their 40s, warm smile, standing behind a "
+            "wooden bar counter preparing coffee. Cozy Amsterdam brown cafe "
+            "atmosphere, soft morning light through canal-side windows, "
+            "artisan cups and a La Marzocco espresso machine visible. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "cafe-avond-drukte",
+        "label": "Busy cafe evening service",
+        "category": "horeca",
+        "prompt": (
+            "Interior of a busy Dutch cafe in the evening. Warm amber lighting, "
+            "tables full of guests, one staff member taking an order on a tablet. "
+            "Brick walls, wooden beams, candles on tables. "
+            "Bokeh background with laughter and energy. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "cafe-telefoon-gemist",
+        "label": "Phone ringing unanswered on counter",
+        "category": "horeca",
+        "prompt": (
+            "Close-up of a smartphone on a wooden cafe counter, screen lit up "
+            "showing an incoming call. Blurred background of a busy restaurant "
+            "kitchen through a pass-through window. Shallow depth of field. "
+            + BRAND_SUFFIX
+        ),
+    },
+
+    # ── RECEPTIE / KANTOOR ───────────────────────────────────────────────────
+    {
+        "id": "receptie-vriendelijk",
+        "label": "Friendly receptionist at modern desk",
+        "category": "receptie",
+        "prompt": (
+            "A friendly female Dutch receptionist in her 30s at a clean modern "
+            "reception desk with a large monitor, headset nearby. Light, airy "
+            "Dutch office interior -- white walls, plants, soft daylight. "
+            "Professional but approachable. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "receptie-tablet-overzicht",
+        "label": "Receptionist reviewing tablet overview",
+        "category": "receptie",
+        "prompt": (
+            "A Dutch business receptionist looking at a tablet showing an "
+            "appointment calendar or dashboard. Modern minimalist office lobby "
+            "with glass partition walls, natural light. Clean and efficient feel. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "receptie-lege-balie-avond",
+        "label": "Empty reception desk in evening",
+        "category": "receptie",
+        "prompt": (
+            "An empty modern reception desk in the evening -- office lights dimmed, "
+            "a ringing phone on the desk, no one present. Conveying missed calls "
+            "and the need for 24/7 AI coverage. Dutch corporate office aesthetic. "
+            + BRAND_SUFFIX
+        ),
+    },
+
+    # ── WEBSHOP / E-COMMERCE ─────────────────────────────────────────────────
+    {
+        "id": "webshop-eigenaar-laptop",
+        "label": "Webshop owner at laptop",
+        "category": "webshop",
+        "prompt": (
+            "A Dutch webshop owner in their 30s working on a laptop at a tidy "
+            "home-office desk with product boxes visible in the background. "
+            "Natural light from a window, a cup of coffee nearby, focused yet "
+            "relaxed atmosphere. Small e-commerce business feel. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "webshop-pakket-verzenden",
+        "label": "Packing parcels for webshop orders",
+        "category": "webshop",
+        "prompt": (
+            "Close-up hands of a Dutch small business owner packing a cardboard "
+            "parcel with brown tape on a wooden table. Printed shipping labels, "
+            "bubble wrap, and product boxes softly visible. Warm daylight. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "webshop-klant-chat-desktop",
+        "label": "Customer chatting on webshop desktop",
+        "category": "webshop",
+        "prompt": (
+            "Over-the-shoulder view of a Dutch consumer at a desktop computer "
+            "browsing a clean e-commerce product page. A chat widget is open in "
+            "the bottom-right corner of the screen. Cozy home setting, soft lamp "
+            "light. "
+            + BRAND_SUFFIX
+        ),
+    },
+
+    # ── BOUW / VAKMAN ────────────────────────────────────────────────────────
+    {
+        "id": "vakman-offerte-aanvraag",
+        "label": "Tradesman receiving phone enquiry",
+        "category": "bouw",
+        "prompt": (
+            "A Dutch tradesman (plumber or painter) in work clothes outdoors near "
+            "a white van, looking at a smartphone screen showing a new message "
+            "notification. Residential Dutch street with brick houses in background. "
+            + BRAND_SUFFIX
+        ),
+    },
+
+    # ── DIVERSITEIT ──────────────────────────────────────────────────────────
+    {
+        "id": "divers-team-mkb",
+        "label": "Diverse Dutch SME team",
+        "category": "diversity",
+        "prompt": (
+            "A diverse group of four Dutch small business employees -- different "
+            "ethnicities and genders, ages 25-50 -- having a casual standing "
+            "meeting in a modern open-plan office. Friendly, collaborative energy. "
+            "Natural light, plants, whiteboard in background. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "divers-vrouwelijke-ondernemer",
+        "label": "Female entrepreneur at laptop",
+        "category": "diversity",
+        "prompt": (
+            "A confident Dutch female entrepreneur of South-Asian descent in her "
+            "30s at a standing desk with a laptop. Modern Dutch office, large "
+            "windows with city view, plants, clean Scandinavian aesthetic. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "divers-oudere-eigenaar-ai",
+        "label": "Older business owner using AI on tablet",
+        "category": "diversity",
+        "prompt": (
+            "A Dutch business owner in their late 50s, silver hair, using a tablet "
+            "in their small retail shop -- looking pleased and confident. "
+            "Shelving with products behind, warm shop lighting, authentic Dutch "
+            "retail atmosphere. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "divers-multicultureel-klantenservice",
+        "label": "Multicultural customer service team",
+        "category": "diversity",
+        "prompt": (
+            "Two Dutch customer service agents -- one woman of Moroccan background "
+            "and one man of Surinamese background -- both with headsets on, "
+            "smiling at their monitors. Modern open-plan office with soft natural "
+            "light, potted plants, inclusive workplace feel. "
+            + BRAND_SUFFIX
+        ),
+    },
+]
+
+# ---------------------------------------------------------------------------
+# Ken-Burns reel background scenes (9:16, 1080x1920)
+# ---------------------------------------------------------------------------
+KENBURNS_SCENES: list[dict] = [
+    {
+        "id": "kb-cafe-ochtend",
+        "label": "Ken-Burns: cafe morning",
+        "category": "kenburns",
+        "prompt": (
+            "Wide cinematic shot of an empty Dutch brown cafe interior just before "
+            "opening -- soft morning light filtering through tall canal-side windows, "
+            "wooden tables, fresh coffee cups on counter. Warm amber tones. "
+            "No people, no text. Shot on 35mm film aesthetic, 9:16 vertical. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "kb-amsterdam-straat",
+        "label": "Ken-Burns: Amsterdam street",
+        "category": "kenburns",
+        "prompt": (
+            "Cinematic vertical shot of a quiet Amsterdam canal street at golden "
+            "hour -- brick houses, cobblestones, bicycles, soft bokeh. "
+            "No people visible, peaceful urban Dutch atmosphere. "
+            "9:16 vertical orientation, filmic color grading. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "kb-kantoor-uitzicht",
+        "label": "Ken-Burns: modern office view",
+        "category": "kenburns",
+        "prompt": (
+            "Looking through large floor-to-ceiling windows of a modern Dutch "
+            "office at a city skyline in soft daylight. Clean interior edge -- "
+            "a plant, a desk corner. Minimal, corporate yet human. "
+            "9:16 vertical, cinematic wide angle. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "kb-webshop-warehouse",
+        "label": "Ken-Burns: small warehouse",
+        "category": "kenburns",
+        "prompt": (
+            "Interior of a tidy Dutch small e-commerce warehouse -- wooden shelves "
+            "with product boxes, natural light from skylights, clean floor. "
+            "Organized, optimistic small business atmosphere. No people. "
+            "9:16 vertical, documentary style. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "kb-abstract-gradient-navy",
+        "label": "Ken-Burns: abstract brand gradient",
+        "category": "kenburns",
+        "prompt": (
+            "Abstract smooth gradient background transitioning from deep navy blue "
+            "to rich indigo, with subtle light-leak bokeh circles in rose and amber. "
+            "Minimal, modern, brand-safe. 9:16 vertical, suitable as video background. "
+            + BRAND_SUFFIX
+        ),
+    },
+]
+
+ALL_SCENES = NL_MKB_SCENES + KENBURNS_SCENES
+
+
+# ---------------------------------------------------------------------------
+# Batch runners
+# ---------------------------------------------------------------------------
+
+def run_scene(scene: dict, model_key: str = "imagen") -> Path:
+    model = MODEL_GEMINI if model_key == "gemini" else MODEL_IMAGEN
+    is_kb = scene["category"] == "kenburns"
+    out_dir = KENBURNS_DIR if is_kb else AI_IMAGES_DIR
+    w, h = (1080, 1920) if is_kb else (1080, 1080)
+    out_path = out_dir / f"{scene['id']}.png"
+    return generate_image(
+        prompt=scene["prompt"],
+        out_path=out_path,
+        model=model,
+        width=w,
+        height=h,
+        negative_prompt=NEGATIVE,
+    )
+
+
+def run_all_mkb(model_key: str = "imagen") -> None:
+    print(f"=== NL-MKB scenes ({len(NL_MKB_SCENES)} total) ===", file=sys.stderr)
+    for scene in NL_MKB_SCENES:
+        run_scene(scene, model_key)
+        time.sleep(1)
+
+
+def run_kenburns(model_key: str = "imagen") -> None:
+    print(f"=== Ken-Burns backgrounds ({len(KENBURNS_SCENES)} total) ===", file=sys.stderr)
+    for scene in KENBURNS_SCENES:
+        run_scene(scene, model_key)
+        time.sleep(1)
+
+
+def run_diversity(model_key: str = "imagen") -> None:
+    diversity = [s for s in NL_MKB_SCENES if s["category"] == "diversity"]
+    print(f"=== Diversity scenes ({len(diversity)} total) ===", file=sys.stderr)
+    for scene in diversity:
+        run_scene(scene, model_key)
+        time.sleep(1)
+
+
+def print_manifest() -> None:
+    manifest = {
+        "nl_mkb_scenes": [
+            {"id": s["id"], "label": s["label"], "category": s["category"]}
+            for s in NL_MKB_SCENES
+        ],
+        "kenburns_scenes": [
+            {"id": s["id"], "label": s["label"]}
+            for s in KENBURNS_SCENES
+        ],
+    }
+    print(json.dumps(manifest, indent=2, ensure_ascii=False))
+
+
+# ---------------------------------------------------------------------------
+# Ken-Burns reel schedule helper
+# ---------------------------------------------------------------------------
+
+def kenburns_slot_spec(scene_id: str, headline: str,
+                       sub: str = "", cta: str = "aanloopai.nl/ig") -> dict:
+    """Return a reel slot dict (ken-burns template) for wave-N-reels-schedule.json."""
+    return {
+        "template": "ken-burns",
+        "image": f"public/social-feed/reels/backgrounds/{scene_id}.png",
+        "headline": headline,
+        "sub": sub,
+        "cta": cta,
+    }
+
+
+# ---------------------------------------------------------------------------
+# CLI
+# ---------------------------------------------------------------------------
+
+def main() -> int:
+    ap = argparse.ArgumentParser(
+        description="Generate AI images for aanloop NL-MKB content."
+    )
+    ap.add_argument("--scene",     help="Generate a single scene by ID")
+    ap.add_argument("--all",       action="store_true", help="All NL-MKB + Ken-Burns scenes")
+    ap.add_argument("--kenburns",  action="store_true", help="Ken-Burns reel backgrounds only")
+    ap.add_argument("--diversity", action="store_true", help="Diversity scenes only")
+    ap.add_argument("--manifest",  action="store_true", help="Print scene manifest as JSON and exit")
+    ap.add_argument(
+        "--model",
+        choices=["imagen", "gemini"],
+        default="imagen",
+        help="imagen = Imagen 4 (default, best quality) | gemini = Gemini 2.0 Flash (faster/cheaper)",
+    )
+    args = ap.parse_args()
+
+    if args.manifest:
+        print_manifest()
+        return 0
+
+    if args.scene:
+        match = next((s for s in ALL_SCENES if s["id"] == args.scene), None)
+        if not match:
+            ids = [s["id"] for s in ALL_SCENES]
+            print(f"Scene '{args.scene}' not found.\nAvailable:\n" + "\n".join(ids), file=sys.stderr)
+            return 2
+        run_scene(match, args.model)
+        return 0
+
+    if args.kenburns:
+        run_kenburns(args.model)
+        return 0
+
+    if args.diversity:
+        run_diversity(args.model)
+        return 0
+
+    if args.all:
+        run_all_mkb(args.model)
+        run_kenburns(args.model)
+        return 0
+
+    ap.print_help()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
