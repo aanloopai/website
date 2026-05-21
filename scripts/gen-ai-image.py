@@ -51,24 +51,45 @@ for _d in (AI_IMAGES_DIR, KENBURNS_DIR):
     _d.mkdir(parents=True, exist_ok=True)
 
 # ---------------------------------------------------------------------------
-# Google GenAI client (Vertex AI backend)
+# Google GenAI client
 # ---------------------------------------------------------------------------
+# Two backends, selected automatically:
+#   - API-key mode (default): GEMINI_API_KEY from env or .env.local. No gcloud,
+#     no ADC — just a billing-enabled Google AI Studio key.
+#   - Vertex AI mode: set GENAI_BACKEND=vertex (needs gcloud ADC + a GCP project).
 PROJECT  = os.environ.get("GOOGLE_CLOUD_PROJECT", "gen-lang-client-0479672868")
 LOCATION = os.environ.get("GOOGLE_CLOUD_LOCATION", "us-central1")
+BACKEND  = os.environ.get("GENAI_BACKEND", "apikey").lower()
 
 MODEL_IMAGEN = "imagen-4.0-generate-001"
-MODEL_GEMINI = "gemini-2.0-flash-preview-image-generation"
+MODEL_GEMINI = "gemini-2.5-flash-image"
+
+
+def _load_api_key() -> str:
+    key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if key:
+        return key
+    env = REPO / ".env.local"
+    if env.exists():
+        for line in env.read_text(encoding="utf-8").splitlines():
+            if line.strip().startswith("GEMINI_API_KEY="):
+                return line.split("=", 1)[1].strip()
+    print("ERROR: GEMINI_API_KEY not found (env or .env.local).", file=sys.stderr)
+    sys.exit(1)
 
 
 def _get_client():
     try:
         from google import genai
         from google.genai import types as gtypes
-        client = genai.Client(vertexai=True, project=PROJECT, location=LOCATION)
-        return client, gtypes
     except ImportError:
         print("ERROR: google-genai not installed. Run: pip install google-genai", file=sys.stderr)
         sys.exit(1)
+    if BACKEND == "vertex":
+        client = genai.Client(vertexai=True, project=PROJECT, location=LOCATION)
+    else:
+        client = genai.Client(api_key=_load_api_key())
+    return client, gtypes
 
 
 def generate_image(prompt: str, out_path: Path, model: str = MODEL_IMAGEN,
@@ -86,16 +107,13 @@ def generate_image(prompt: str, out_path: Path, model: str = MODEL_IMAGEN,
         response = client.models.generate_content(
             model=model,
             contents=prompt,
-            config=gtypes.GenerateContentConfig(
-                response_modalities=["IMAGE", "TEXT"],
-                image_generation_config=gtypes.ImageGenerationConfig(
-                    number_of_images=1,
-                )
-            ),
+            config=gtypes.GenerateContentConfig(response_modalities=["IMAGE"]),
         )
         for part in response.candidates[0].content.parts:
             if part.inline_data is not None:
-                img_bytes = base64.b64decode(part.inline_data.data)
+                data = part.inline_data.data
+                # SDK returns raw bytes; tolerate a base64 str too.
+                img_bytes = data if isinstance(data, (bytes, bytearray)) else base64.b64decode(data)
                 out_path.write_bytes(img_bytes)
                 print(f"  saved: {out_path.name}", file=sys.stderr)
                 return out_path
@@ -114,7 +132,8 @@ def generate_image(prompt: str, out_path: Path, model: str = MODEL_IMAGEN,
             output_mime_type="image/png",
             aspect_ratio=aspect,
         )
-        if negative_prompt:
+        # negative_prompt is Vertex-only — the Gemini Developer API rejects it.
+        if negative_prompt and BACKEND == "vertex":
             cfg_kwargs["negative_prompt"] = negative_prompt
 
         response = client.models.generate_images(
