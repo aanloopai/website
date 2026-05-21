@@ -269,10 +269,25 @@ def load_schedule(p: Path) -> dict:
         return json.load(f)
 
 
+def find_due(sched: dict) -> dict | None:
+    """First unpublished slot whose slot_iso is in the past — mirrors the
+    publisher's findDuePost so render and publish always target the same slot."""
+    from datetime import datetime, timezone
+
+    now = datetime.now(timezone.utc)
+    for s in sched["posts"]:
+        if s.get("posted_at") is not None:
+            continue
+        if datetime.fromisoformat(s["slot_iso"]) <= now:
+            return s
+    return None
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--schedule", default=str(REPO / "marketing" / "instagram" / "wave-3-reels-schedule.json"))
     ap.add_argument("--slot", help="Render a single slot by id")
+    ap.add_argument("--due", action="store_true", help="Render only the next due unpublished slot")
     ap.add_argument("--all", action="store_true", help="Render every unpublished slot")
     args = ap.parse_args()
 
@@ -288,10 +303,16 @@ def main() -> int:
         if not targets:
             print(f"slot {args.slot} not found", file=sys.stderr)
             return 2
+    elif args.due:
+        due = find_due(sched)
+        if due is None:
+            print("No due reel slot — nothing to render.", file=sys.stderr)
+            return 0
+        targets = [due]
     elif args.all:
         targets = [s for s in sched["posts"] if s.get("posted_at") is None]
     else:
-        print("specify --slot <id> or --all", file=sys.stderr)
+        print("specify --slot <id>, --due or --all", file=sys.stderr)
         return 2
 
     for slot in targets:
