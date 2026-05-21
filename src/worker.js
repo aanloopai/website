@@ -5,6 +5,17 @@
 //   BREVO_API_KEY = xkeysib-...
 // Required binding (wrangler.toml [assets] block):
 //   binding = "ASSETS"
+//
+// Native Google Calendar booking — additional bindings required:
+//   KV namespace GOOGLE_TOKENS, env GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET /
+//   GOOGLE_OAUTH_INIT_KEY (+ optional BOOKING_CALENDAR_ID)
+
+import {
+  handleAvailability,
+  handleBook,
+  handleGoogleInitiate,
+  handleGoogleCallback,
+} from './lib/calendar-routes.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -390,6 +401,23 @@ export default {
         return handleSubmit(request, env);
       }
       return jsonResponse({ success: false, message: 'Method not allowed. Use POST.' }, 405);
+    }
+
+    // Native Google Calendar booking API (powers /demo-inplannen/)
+    if (url.pathname === '/api/calendar/availability') {
+      return handleAvailability(request, env);
+    }
+    if (url.pathname === '/api/calendar/book') {
+      if (request.method === 'OPTIONS') {
+        return new Response(null, { headers: CORS_HEADERS });
+      }
+      return handleBook(request, env);
+    }
+    if (url.pathname === '/api/google/initiate') {
+      return handleGoogleInitiate(request, env);
+    }
+    if (url.pathname === '/api/google/callback') {
+      return handleGoogleCallback(request, env);
     }
 
     if (env.ASSETS) {

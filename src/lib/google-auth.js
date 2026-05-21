@@ -7,7 +7,7 @@ const EXPIRY_BUFFER_MS = 60_000;
 
 export async function getAccessToken(env) {
   if (!env.GOOGLE_TOKENS) {
-    throw new Error('KV namespace GOOGLE_TOKENS not bound. Configure in Cloudflare Pages settings.');
+    throw new Error('KV namespace GOOGLE_TOKENS not bound. Configure in Cloudflare Worker settings.');
   }
   const stored = await env.GOOGLE_TOKENS.get(KV_KEY, 'json');
   if (!stored) {
