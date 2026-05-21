@@ -35,8 +35,9 @@ function generateSlots(dateStr) {
         timeZone: TIMEZONE, hour: '2-digit', hour12: false,
       }).format(sample);
       const nlHour = parseInt(nlHourStr, 10);
-      const offsetHours = h - nlHour;
-      const realUtc = new Date(`${dateStr}T${String(h - offsetHours).padStart(2, '0')}:${String(m).padStart(2, '0')}:00Z`);
+      // nlHour = h + tzOffset; to land slot at NL-local hour h, UTC = h - tzOffset.
+      const tzOffset = nlHour - h;
+      const realUtc = new Date(`${dateStr}T${String(h - tzOffset).padStart(2, '0')}:${String(m).padStart(2, '0')}:00Z`);
       const endUtc = new Date(realUtc.getTime() + SLOT_MINUTES * 60_000);
       slots.push({ start: realUtc.toISOString(), end: endUtc.toISOString() });
     }
