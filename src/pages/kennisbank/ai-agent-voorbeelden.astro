@@ -1,12 +1,20 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 const faqItems = [
-  { question: 'Wat zijn de beste voorbeelden van AI agents voor Nederlandse bedrijven?', answer: 'De meest succesvolle AI agent toepassingen in Nederland zijn: AI telefonisten voor makelaars en advocaten, WhatsApp reserveringsagents voor horeca, lead-kwalificatie agents voor B2B-bedrijven, en factuurverwerking-agents voor accountants en logistieke bedrijven.' },
-  { question: 'Hoe lang duurt het om een AI agent te implementeren?', answer: 'Bij Aanloop AI duurt een standaard implementatie 7 werkdagen. Complexere integraties met meerdere systemen kunnen 3-4 weken duren. We hanteren een gestructureerd implementatieproces: scan, ontwerp, bouw, test, go-live.' },
-  { question: 'Kan een AI agent mijn bestaande software koppelen?', answer: 'Ja. Aanloop AI koppelt AI agents via n8n aan bijna elk systeem: HubSpot, Pipedrive, Exact, e-mail servers, Calendly, Slack en meer. Heeft u een maatwerkoplossing? We bouwen een API-koppeling.' },
-  { question: 'Zijn AI agents ook geschikt voor ZZP\'ers?', answer: 'Absoluut. Een ZZP\'er kan enorm profiteren van een AI telefonist die calls aanneemt terwijl u werkt. Zo mist u nooit een lead. Aanloop AI biedt een Starter pakket speciaal voor kleine bedrijven en ZZP\'ers vanaf €597/maand.' },
-  { question: 'Wat is het meest populaire AI agent gebruik voor MKB?', answer: 'Het meest voorkomende gebruik is de AI receptionist: een agent die telefoontjes aanneemt, afspraken inplant en leads verwerkt — 24/7, zonder extra personeel. Daarna volgt WhatsApp AI voor klantcommunicatie en workflow-automatisering voor administratieve taken.' }];
-const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: '5 Voorbeelden van AI Agents voor Nederlandse Bedrijven (2026)', author: { '@type': 'Person', '@id': 'https://aanloopai.nl/over-ons/#mustafa-agah-dogan', name: 'Mustafa Agah Dogan', jobTitle: 'Oprichter & AI-strateeg', url: 'https://aanloopai.nl/over-ons/', worksFor: { '@id': 'https://aanloopai.nl/#organization' } }, publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2026-01-26', dateModified: '2026-04-29', inLanguage: 'nl-NL', articleSection: 'AI Agents' };
+  { question: 'Wat zijn de beste voorbeelden van AI agents voor Nederlandse bedrijven?', answer: 'De meest succesvolle AI agent toepassingen in Nederland zijn: AI telefonisten voor makelaars en advocaten, WhatsApp reserveringsagents voor horeca, lead-kwalificatie agents voor B2B-bedrijven, en factuurverwerking-agents voor accountants en logistieke bedrijven. Wat deze use-cases gemeen hebben: een hoog volume aan repetitieve interacties en een duidelijk patroon dat de AI kan leren.' },
+  { question: 'Hoe lang duurt het om een AI agent te implementeren?', answer: 'Bij Aanloop AI duurt een standaard implementatie 7 werkdagen. Complexere integraties met meerdere systemen kunnen 3-4 weken duren. We hanteren een gestructureerd implementatieproces: scan, ontwerp, bouw, test, go-live. De pilot draait altijd eerst op een deel van het volume voordat de agent volledig live gaat.' },
+  { question: 'Kan een AI agent mijn bestaande software koppelen?', answer: 'Ja. Aanloop AI koppelt AI agents via n8n aan bijna elk systeem: HubSpot, Pipedrive, Exact, e-mail servers, Calendly, Cal.com, Slack en meer. Heeft u een maatwerkoplossing? We bouwen een API-koppeling. Het uitgangspunt is dat de agent zich aan uw bestaande software aanpast, niet andersom.' },
+  { question: 'Zijn AI agents ook geschikt voor ZZP\'ers?', answer: 'Absoluut. Een ZZP\'er kan enorm profiteren van een AI telefonist die calls aanneemt terwijl u werkt. Zo mist u nooit een lead. Aanloop AI biedt een Lite-instap speciaal voor kleine bedrijven en ZZP\'ers vanaf €249/maand voor één kanaal, en een volwaardige AI-agent vanaf €597/maand.' },
+  { question: 'Wat is het meest populaire AI agent gebruik voor MKB?', answer: 'Het meest voorkomende gebruik is de AI receptionist: een agent die telefoontjes aanneemt, afspraken inplant en leads verwerkt — 24/7, zonder extra personeel. Daarna volgt WhatsApp AI voor klantcommunicatie en workflow-automatisering voor administratieve taken zoals factuurverwerking.' },
+  { question: 'Wat is het verschil tussen een AI agent en een chatbot?', answer: 'Een chatbot volgt een vaste beslisboom en kan hoogstens informatie tonen. Een AI agent begrijpt natuurlijke taal, redeneert met uw kennisbank en voert zelfstandig acties uit: een afspraak in de agenda zetten, een lead in het CRM aanmaken, een factuur boeken. Het verschil is autonomie — een chatbot praat, een AI agent handelt af.' },
+  { question: 'Hoeveel kost een AI agent voor een Nederlands MKB-bedrijf?', answer: 'Een AI-telefonist (Marco) of WhatsApp-agent (Emma) bij Aanloop AI begint vanaf €597/maand. Een Lite-instap voor één afgebakend kanaal is er vanaf €249/maand. Custom workflow-agents met meerdere systeemkoppelingen worden op maat geprijsd, doorgaans €6.000–€14.000 eenmalig plus maandelijks beheer. Een gratis AI scan geeft u een concrete prijsindicatie.' },
+  { question: 'Welke ROI leveren AI agents op?', answer: 'De terugverdientijd ligt voor de meeste MKB-toepassingen tussen 2 en 6 maanden. De winst zit in drie componenten: directe besparing op personeels- en administratiekosten, minder gemiste omzet doordat geen call of bericht meer onbeantwoord blijft, en hogere conversie door snellere reactietijden. Voor een €597-abonnement is de break-even doorgaans bereikt bij 12–15 uur tijdsbesparing per maand.' },
+  { question: 'Zijn AI agents AVG- en EU AI Act-compliant?', answer: 'Aanloop AI bouwt AI agents op n8n self-hosted infrastructuur binnen de EU, met verwerkersovereenkomst en DPIA-template waar nodig. Onder de EU AI Act vallen klantenservice-agents onder "beperkt risico": de kernverplichting is dat klanten weten dat zij met AI communiceren. Sinds februari 2025 geldt bovendien een AI-geletterdheidsplicht voor medewerkers, die wij als korte training meeleveren.' },
+  { question: 'Wat gebeurt er als de AI agent een vraag niet kan beantwoorden?', answer: 'Een goed geconfigureerde AI agent escaleert bewust naar een mens bij onbekende vragen, klachten, negatief sentiment of een expliciet verzoek om een medewerker. De agent gokt geen antwoord — hij draagt de vraag over mét volledige context, zodat uw medewerker direct verder kan. Royale escalatieregels zijn essentieel: liever te vaak doorzetten dan een fout antwoord dat klantvertrouwen kost.' },
+  { question: 'Kan één AI agent meerdere taken tegelijk doen?', answer: 'Technisch kan dat, maar in de praktijk adviseren we te starten met één agent voor één hoofdtaak op één kanaal. Pas wanneer die stabiel draait, voegt u een tweede taak of kanaal toe. Bedrijven die direct alles tegelijk willen, lopen vast op rommelige klantervaring. Gefaseerd uitbreiden levert betrouwbaardere resultaten.' },
+  { question: 'In welke sectoren werken AI agents het beste?', answer: 'AI agents leveren de hoogste ROI in sectoren met veel inkomende routine-interacties: vastgoed en makelaardij, horeca, accountancy, advocatuur, zorg, logistiek, webshops en de bouw. De gemene deler is volume en herhaling. Sectoren met sterk wisselende, sterk inhoudelijke interacties profiteren minder van volledige automatisering, maar wel van AI-ondersteunde triage.' },
+  { question: 'Hoe meet ik of mijn AI agent succesvol is?', answer: 'Leg vóór de start een nulmeting vast en volg daarna 3–4 KPI\'s: percentage automatisch afgehandelde interacties (resolution rate), gemiste calls of berichten, gemiddelde reactietijd en klanttevredenheid (CSAT). Een succesvolle agent handelt na maand 3 doorgaans 60–80% van eerstelijns-interacties zelfstandig af.' }];
+const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: '5 Voorbeelden van AI Agents voor Nederlandse Bedrijven (2026)', author: { '@type': 'Person', '@id': 'https://aanloopai.nl/over-ons/#mustafa-agah-dogan', name: 'Mustafa Agah Dogan', jobTitle: 'Oprichter & AI-strateeg', url: 'https://aanloopai.nl/over-ons/', worksFor: { '@id': 'https://aanloopai.nl/#organization' } }, publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2026-01-26', dateModified: '2026-05-21', inLanguage: 'nl-NL', articleSection: 'AI Agents', wordCount: 3200 };
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: '5 Voorbeelden van AI Agents voor Nederlandse Bedrijven (2026)', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-agent-voorbeelden/', inLanguage: 'nl-NL' };
 ---
 <BaseLayout title="5 Voorbeelden AI Agents NL (2026)" description="Concrete voorbeelden van AI agents die Nederlandse MKB-bedrijven succesvol inzetten. Van AI receptionist voor makelaars tot WhatsApp agent voor horeca." schema={[schema, speakableSchema]} faqSchema={faqItems}>
@@ -88,12 +96,76 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
         ))}
       </div>
 
+      <h2 class="text-2xl font-bold text-navy mt-12 mb-4">Wat maakt een AI agent geschikt voor een bepaalde taak?</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De vijf voorbeelden hierboven zijn niet willekeurig gekozen. Ze delen drie eigenschappen die elke succesvolle AI-agent-toepassing kenmerken. <strong class="text-navy">Ten eerste volume:</strong> de taak komt vaak genoeg terug om automatisering te rechtvaardigen — een makelaar die acht calls per dag mist, een restaurant met vijftig WhatsApp-berichten. <strong class="text-navy">Ten tweede een herkenbaar patroon:</strong> hoewel elke klant het anders verwoordt, vallen de meeste verzoeken in een beperkt aantal categorieën die de AI kan leren. <strong class="text-navy">Ten derde een duidelijke afhandeling:</strong> er is een concrete actie aan het einde — een afspraak inplannen, een lead kwalificeren, een factuur boeken — die de agent zelf kan uitvoeren of gestructureerd kan doorzetten.</p>
+      <p class="text-slate-600 leading-relaxed mb-6">Omgekeerd zijn taken die zeldzaam, sterk wisselend of zwaar inhoudelijk zijn minder geschikt voor volledige automatisering. Een complexe juridische adviesvraag, een gevoelige klacht of een onderhandeling vraagt menselijk oordeel. Een goede AI-agent herkent dat en escaleert — hij gokt niet.</p>
+
+      <h2 class="text-2xl font-bold text-navy mt-12 mb-4">Vergelijking: de vijf agent-typen naast elkaar</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Welk type AI-agent past bij uw bedrijf? Onderstaande tabel zet de vijf voorbeelden naast elkaar op kanaal, complexiteit en typische implementatieduur. De besparingscijfers zijn sector-benchmarks op basis van gangbare uurtarieven en gemiddeld interactievolume in het Nederlandse MKB — geen specifieke klant-cases.</p>
+      <div class="overflow-x-auto mb-8">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b-2 border-slate-200">
+              <th class="text-left py-3 pr-4 font-semibold text-navy">Agent-type</th>
+              <th class="text-left py-3 px-4 font-semibold text-navy">Kanaal</th>
+              <th class="text-left py-3 px-4 font-semibold text-navy">Complexiteit</th>
+              <th class="text-left py-3 px-4 font-semibold text-navy">Implementatie</th>
+              <th class="text-left py-3 pl-4 font-semibold text-brand-emerald">Typische besparing</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {[
+              ['AI receptionist', 'Telefonie', 'Laag', '7 werkdagen', '15–25 uur/week'],
+              ['WhatsApp reserveringsagent', 'WhatsApp', 'Laag', '7 werkdagen', '10–20 uur/week'],
+              ['AI intake-screening', 'Telefonie', 'Middel', '10–14 werkdagen', '8–15 uur/week'],
+              ['Lead-kwalificatie agent', 'E-mail / web', 'Middel', '14–21 werkdagen', '6–12 uur/week'],
+              ['Factuurverwerking-agent', 'E-mail / PDF', 'Hoog', '3–4 weken', '15–25 uur/week']].map(([t, k, c, i, b]) => (
+              <tr>
+                <td class="py-3 pr-4 font-medium text-slate-700">{t}</td>
+                <td class="py-3 px-4 text-slate-600">{k}</td>
+                <td class="py-3 px-4 text-slate-600">{c}</td>
+                <td class="py-3 px-4 text-slate-600">{i}</td>
+                <td class="py-3 pl-4 text-brand-emerald font-medium">{b}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-12 mb-4">Hoe een AI agent technisch werkt</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Achter elk van de vijf voorbeelden zit dezelfde architectuur met drie lagen. De <strong class="text-navy">begripslaag</strong> is een groot taalmodel (LLM) — bijvoorbeeld OpenAI of Anthropic Claude — dat de intentie van de klant herkent, ongeacht hoe het verzoek verwoord is. De <strong class="text-navy">kennislaag</strong> werkt met RAG (Retrieval-Augmented Generation): uw bedrijfsdocumenten, FAQ\'s en procesbeschrijvingen worden geïndexeerd in een vector-database, zodat de agent antwoorden geeft op basis van úw informatie en niet uit het algemene internet. De <strong class="text-navy">actielaag</strong> ten slotte koppelt via n8n aan uw agenda, CRM en boekhouding, zodat de agent niet alleen praat maar ook handelt.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Het verschil met een klassieke chatbot is fundamenteel. Een chatbot volgt een vaste beslisboom ("druk 1 voor verkoop, 2 voor service") en kan hoogstens een vooraf geschreven antwoord tonen. Een AI-agent begrijpt vrije taal, redeneert met context en voert zelfstandig de afsluitende handeling uit. Voor de techniek van zo\'n koppelingslaag is de <a href="https://docs.n8n.io/" target="_blank" rel="external" class="text-brand-indigo underline hover:text-navy">officiële n8n-documentatie</a> een goede naslag; voor de modellen zelf de <a href="https://platform.openai.com/docs/overview" target="_blank" rel="external" class="text-brand-indigo underline hover:text-navy">OpenAI-platformdocumentatie</a>.</p>
+      <p class="text-slate-600 leading-relaxed mb-6">Voor een MKB-ondernemer is deze techniek grotendeels onzichtbaar: u levert de bedrijfskennis, Aanloop AI levert en onderhoudt de infrastructuur. Het <a href="https://www.cbs.nl/nl-nl/nieuws/2024/29/ruim-1-op-de-8-bedrijven-gebruikte-ai-in-2023" target="_blank" rel="external" class="text-brand-indigo underline hover:text-navy">CBS</a> meldde dat in 2023 al ruim 1 op de 8 Nederlandse bedrijven AI gebruikte — de drempel is inmiddels laag genoeg voor vrijwel elk MKB.</p>
+
+      <h2 class="text-2xl font-bold text-navy mt-12 mb-4">Van voorbeeld naar implementatie: vijf stappen</h2>
+      <div class="space-y-3 mb-8">
+        {[
+          { n: '1', t: 'Gratis AI scan', d: 'We analyseren uw interactievolume en processen en bepalen welk agent-type de hoogste ROI levert. Inclusief een nulmeting van uw huidige situatie.' },
+          { n: '2', t: 'Ontwerp van de conversatieflow', d: 'We brengen de meest voorkomende vraag-categorieën in kaart, ontwerpen de gespreksflow en leggen de escalatieregels vast — wanneer draagt de agent over aan een mens?' },
+          { n: '3', t: 'Bouw en koppeling', d: 'We bouwen de agent, vullen de kennisbank met uw documenten en koppelen via n8n aan uw agenda, CRM of boekhouding.' },
+          { n: '4', t: 'Pilot op een deel van het volume', d: 'De agent gaat live op 20–30% van uw interacties. Twee tot vier weken intensieve monitoring; de agent leert van correcties.' },
+          { n: '5', t: 'Opschalen en optimaliseren', d: 'Bij bewezen resultaat schaalt de agent naar 100% van het kanaal. Maandelijkse review op KPI\'s, daarna eventueel een tweede kanaal.' }].map(s => (
+          <div class="flex gap-4 items-start">
+            <span class="w-8 h-8 rounded-full bg-brand-indigo text-white flex items-center justify-center font-bold text-sm flex-shrink-0">{s.n}</span>
+            <div>
+              <p class="font-bold text-navy text-sm mb-0.5">{s.t}</p>
+              <p class="text-sm text-slate-600">{s.d}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-12 mb-4">AVG, EU AI Act en verantwoorde inzet</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI-agent die klantcontact afhandelt, verwerkt persoonsgegevens — namen, telefoonnummers, e-mailadressen. Twee regelkaders zijn relevant. De <strong class="text-navy">AVG</strong> vraagt om EU-dataverwerking, een verwerkersovereenkomst, een aangevuld verwerkingsregister en — bij geautomatiseerde besluiten over personen — een DPIA. De <a href="https://www.autoriteitpersoonsgegevens.nl/themas/algoritmes-ai" target="_blank" rel="external" class="text-brand-indigo underline hover:text-navy">Autoriteit Persoonsgegevens</a> publiceert hierover concrete richtlijnen.</p>
+      <p class="text-slate-600 leading-relaxed mb-6">De <strong class="text-navy">EU AI Act</strong> plaatst klantenservice-agents in de categorie <em>beperkt risico</em>. De kernverplichting is transparantie: uw klant moet weten dat hij met AI communiceert. Sinds februari 2025 geldt bovendien een AI-geletterdheidsplicht voor medewerkers. De officiële uitleg vindt u op het <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="external" class="text-brand-indigo underline hover:text-navy">EU-portaal over de AI Act</a>. Aanloop AI bouwt de transparantievermeldingen standaard in de agent-flows in en levert de verplichte AI-basistraining mee.</p>
+
       <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8">
         <p class="text-sm font-bold text-navy mb-3">Lees ook</p>
         <ul class="space-y-2">
           <li><a href="/kennisbank/wat-is-een-ai-agent/" class="text-sm text-brand-indigo hover:underline">Wat is een AI Agent? De Complete Gids voor MKB in 2026 →</a></li>
           <li><a href="/kennisbank/ai-agent-kosten-mkb/" class="text-sm text-brand-indigo hover:underline">Hoeveel kost een AI agent in Nederland? (2026 prijzen) →</a></li>
           <li><a href="/kennisbank/ai-workflow-automation/" class="text-sm text-brand-indigo hover:underline">AI Workflow Automation: Complete Uitleg voor Beginners →</a></li>
+          <li><a href="/kennisbank/ai-automatisering-mkb/" class="text-sm text-brand-indigo hover:underline">AI Automatisering voor MKB — Praktische Gids →</a></li>
         </ul>
       </div>
 

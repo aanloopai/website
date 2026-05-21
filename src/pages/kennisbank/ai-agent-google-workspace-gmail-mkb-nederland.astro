@@ -24,7 +24,7 @@ const articleSchema = {
     }
   },
   "datePublished": "2026-03-26",
-  "dateModified": "2026-04-30",
+  "dateModified": "2026-05-21",
   "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-agent-google-workspace-gmail-mkb-nederland/",
   "inLanguage": "nl-NL",
   "articleSection": "AI in Productiviteit",
@@ -107,8 +107,8 @@ const faqItems = [
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">AVG en EU AI Act — wat moet u regelen</h2>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Data-residentie:</strong> Google Workspace biedt sinds Business Plus de Data Regions-functie waarmee u covered data at rest in EU-only kunt vasthouden (datacenters Belgie europe-west1, Nederland europe-west4, Frankfurt europe-west3, Dublin europe-west1). Voor Vertex AI prompt-verwerking kiest u expliciet de EU-region in de admin console of het Google Cloud-project. Gemini-prompts en outputs worden niet gebruikt voor model-training en zijn niet zichtbaar voor andere klanten — Google bevestigt dit contractueel in de Workspace Customer Agreement. Voor Business Standard zonder Data Regions geldt globale data-flow met EU-as-primary, wat voor veel MKB voldoende is maar niet voor zorginstellingen of overheidsleveranciers. Documenteer uw keuze in uw verwerkingsregister.</p>
-      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">EU AI Act classificatie:</strong> een AI agent in Google Workspace en Gmail valt onder limited risk in de EU AI Act — gebruikers en betrokkenen moeten weten dat AI ondersteunt. Praktisch: vermelding in Gmail-handtekening (bijv. delen van deze correspondentie kunnen door AI worden ondersteund), interne tooling-overview met AI-disclosure, AI-literacy training voor alle gebruikers (verplicht sinds februari 2025). Geen high-risk plichten zoals conformity assessment, mits AI niet wordt ingezet voor sollicitatie-screening, kredietbeoordeling, biometrische identificatie of medische beslissingen.</p>
-      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">AVG verplichtingen:</strong> bij geautomatiseerde correspondentie met externe relaties geldt AVG artikel 13 — transparantie over AI-gebruik en AI-disclosure. Bij gebruik van persoonsgegevens van klanten in AI-prompts (bijv. samenvatting van klantgesprekken in Meet): documenteer in uw verwerkingsregister. AI-output mag geen rechtelijke besluiten nemen zonder menselijke tussenkomst (artikel 22). Verwerkersovereenkomst met Google of uw AI-leverancier: standaard ingeregeld bij Workspace Customer Agreement met EU Standard Contractual Clauses, voor custom builds aanvullen met AI-clausules.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">EU AI Act classificatie:</strong> een AI agent in Google Workspace en Gmail valt onder limited risk in de <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="external" class="text-brand-indigo hover:underline">EU AI Act</a> — gebruikers en betrokkenen moeten weten dat AI ondersteunt. Praktisch: vermelding in Gmail-handtekening (bijv. delen van deze correspondentie kunnen door AI worden ondersteund), interne tooling-overview met AI-disclosure, AI-literacy training voor alle gebruikers (verplicht sinds februari 2025). Geen high-risk plichten zoals conformity assessment, mits AI niet wordt ingezet voor sollicitatie-screening, kredietbeoordeling, biometrische identificatie of medische beslissingen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">AVG verplichtingen:</strong> bij geautomatiseerde correspondentie met externe relaties geldt <a href="https://www.autoriteitpersoonsgegevens.nl/themas/basis-avg/avg-algemeen" target="_blank" rel="external" class="text-brand-indigo hover:underline">AVG artikel 13</a> — transparantie over AI-gebruik en AI-disclosure. Bij gebruik van persoonsgegevens van klanten in AI-prompts (bijv. samenvatting van klantgesprekken in Meet): documenteer in uw verwerkingsregister. AI-output mag geen rechtelijke besluiten nemen zonder menselijke tussenkomst (artikel 22). Verwerkersovereenkomst met Google of uw AI-leverancier: standaard ingeregeld bij Workspace Customer Agreement met EU Standard Contractual Clauses, voor custom builds aanvullen met AI-clausules.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Praktische compliance-checklist Workspace AI:</strong> (1) bevestig of Data Regions is ingeschakeld op EU-only (Business Plus en hoger), (2) documenteer welke AI-tools u gebruikt in uw verwerkingsregister, (3) stel een AI-disclaimer in Gmail-handtekening pilot-team in, (4) lever 1-uurs AI-literacy training met certificaten aan alle gebruikers, (5) configureer logging via Workspace Audit Log of custom BigQuery-database, (6) verwerkersovereenkomst aanvullen waar nodig. Aanloop AI levert een NL-talige template-pakket voor punten 2 tot en met 6.</p>
     </div>
   </section>
@@ -176,6 +176,20 @@ const faqItems = [
           </details>
         ))}
       </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-4">Bronnen en verdere informatie</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Deze gids steunt op de officiele EU- en Nederlandse kaders voor AI en gegevensbescherming, plus de leveranciersdocumentatie van de genoemde platforms.</p>
+      <ul class="space-y-2 text-slate-700">
+        <li>&middot; <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">EU AI Act &mdash; Europese Commissie</a> &mdash; risico-classificatie, transparantieplicht en AI-literacy-verplichtingen.</li>
+        <li>&middot; <a href="https://www.autoriteitpersoonsgegevens.nl/themas/basis-avg/avg-algemeen" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">Autoriteit Persoonsgegevens &mdash; AVG algemeen</a> &mdash; transparantieplicht (artikel 13), verwerkingsregister en geautomatiseerde besluiten.</li>
+        <li>&middot; <a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">AVG (verordening 2016/679, EUR-Lex)</a> &mdash; integrale verordeningstekst, artikel 13 en 22.</li>
+        <li>&middot; <a href="https://support.google.com/a/answer/14114704" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">Google Workspace &mdash; Gemini en databescherming</a> &mdash; officiele documentatie over data-gebruik en model-training.</li>
+        <li>&middot; <a href="https://cloud.google.com/vertex-ai/docs" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">Google Vertex AI &mdash; documentatie</a> &mdash; EU-regio-selectie en Generative AI API voor custom agents.</li>
+      </ul>
     </div>
   </section>
 

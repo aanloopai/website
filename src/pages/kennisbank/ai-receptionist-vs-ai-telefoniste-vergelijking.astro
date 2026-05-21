@@ -1,11 +1,16 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
+// GEO content-depth expansion (2026-05-21): kennisbank-artikel uitgediept van ~1.2k naar 3.5k+ woorden
+// voor AI-citeerbaarheid. Terminologie-vergelijking AI receptionist / AI telefoniste / AI telefoonassistent.
+// Canonieke tarieven: Starter 597 euro/mnd (setup 495), Groei 1.197 euro/mnd (setup 795),
+// Emma standalone vanaf 197 euro/mnd. Verboden introductie-tarieven: 297/497/697/797/897.
+
 const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": "AI Receptionist vs AI Telefoniste vs AI Telefoonassistent: Complete Vergelijking 2026",
-    "description": "Complete vergelijking: AI receptionist vs AI telefoniste vs AI telefoonassistent. Verschillen in functionaliteit, prijs, sectorpasvorm en use cases.",
+    "description": "Complete vergelijking: AI receptionist vs AI telefoniste vs AI telefoonassistent. Verschillen in functionaliteit, prijs, sectorpasvorm, AVG/EU AI Act-context en use cases voor het Nederlandse MKB.",
     "author": {
       "@type": "Person",
       "@id": "https://aanloopai.nl/over-ons/#mustafa-agah-dogan",
@@ -24,28 +29,76 @@ const articleSchema = {
       }
     },
     "datePublished": "2026-01-25",
-    "dateModified": "2026-04-18",
+    "dateModified": "2026-05-21",
     "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-receptionist-vs-ai-telefoniste-vergelijking/",
     "inLanguage": "nl-NL",
     "articleSection": "AI Telefonie",
+    "wordCount": 3600,
+    "about": [
+      { "@type": "Thing", "name": "AI receptionist" },
+      { "@type": "Thing", "name": "AI telefoniste" },
+      { "@type": "Thing", "name": "AI telefoonassistent" },
+      { "@type": "Thing", "name": "AI telefonie MKB Nederland" },
+    ],
   };
 
 const faqItems = [
-  { question: 'Wat is het verschil tussen AI receptionist en AI telefoniste?', answer: 'AI receptionist is gestandaardiseerd voor afsprakenbeheer en lead-kwalificatie (Marco). AI telefoniste is gefocust op klantcontact en customer service (Emma).' },
-  { question: 'Wanneer kies ik AI telefoonassistent in plaats van AI receptionist?', answer: 'AI telefoonassistent is voor grotere organisaties (25+ medewerkers) met meerdere afdelingen, IVR-menus en complexe routing.' },
-  { question: 'Wat zijn de prijzen?', answer: 'AI receptionist: 297-497 euro per maand. AI telefoniste: 197-397 euro per maand. AI telefoonassistent: 497-1.297 euro per maand.' },
-  { question: 'Welke is geschikt voor mijn schoonheidssalon?', answer: 'AI receptionist (Marco Starter 297 euro per maand) is meest geschikt — afsprakenfocus, plug-and-play, live in 7 dagen.' },
-  { question: 'Welke is geschikt voor mijn webshop?', answer: 'AI telefoniste (Emma 197-397 euro per maand) — gefocust op productvragen, retouren, klantenservice.' },
-  { question: 'Welke is geschikt voor mijn advocatenkantoor met 50 partners?', answer: 'AI telefoonassistent (497-1.297 euro per maand) — IVR voor afdelingen, multi-team routing, NEN 7510-opzet.' },
-  { question: 'Kan ik combineren?', answer: 'Ja. Veel MKB-bedrijven kiezen Marco (afspraken) plus Emma (WhatsApp klantenservice) voor 494-894 euro per maand totaal.' },
-  { question: 'Hoe lang duurt implementatie per categorie?', answer: 'AI receptionist: 7 werkdagen. AI telefoniste: 7 werkdagen. AI telefoonassistent: 14-21 werkdagen.' }];
+  { question: 'Wat is het verschil tussen een AI receptionist en een AI telefoniste?', answer: 'De termen worden in de Nederlandse markt vaak door elkaar gebruikt, maar er is een functioneel onderscheid. Een AI receptionist is geoptimaliseerd voor de front-desk-rol: inkomende oproepen aannemen, bezoekers aankondigen, afspraken inplannen en leads kwalificeren — een gestandaardiseerde plug-and-play oplossing voor solo-ondernemers en kleine MKB-bedrijven. Een AI telefoniste legt de nadruk op gespreksafhandeling en doorverbinden: oproepen routeren, klantvragen beantwoorden en customer service-taken oppakken. In de praktijk vervult de telefoon-agent Marco van Aanloop AI beide rollen in een product; het onderscheid zit vooral in welke taken u prioriteert bij de configuratie.' },
+  { question: 'Wanneer kies ik een AI telefoonassistent in plaats van een AI receptionist?', answer: 'Een AI telefoonassistent is bedoeld voor grotere organisaties (circa 25 tot 250 medewerkers) met meerdere afdelingen, een IVR-menustructuur en intent-gebaseerde multi-team routing. Kies de telefoonassistent-configuratie als u oproepen moet routeren naar verschillende praktijkgroepen, teams of vestigingen, of als u SSO en role-based toegang nodig heeft. Voor een solo-praktijk, kleine winkel of ZZP-onderneming is dat overgedimensioneerd — daar volstaat een AI receptionist met basis-callscripts.' },
+  { question: 'Wat kosten een AI receptionist, AI telefoniste en AI telefoonassistent in 2026?', answer: 'Bij Aanloop AI hanteren wij canonieke vaste tarieven, exclusief 21% btw. De Starter (Marco AI receptionist/telefoniste, 150 gesprekken per maand) kost 597 euro per maand met 495 euro eenmalige setup. De Groei (Marco onbeperkt plus Emma WhatsApp-agent) kost 1.197 euro per maand met 795 euro setup. Emma standalone als WhatsApp-agent start vanaf 197 euro per maand. Een AI telefoonassistent met multi-team routing valt onder het Partner-pakket op offerte, omdat de prijs afhangt van het aantal afdelingen en de gewenste integraties.' },
+  { question: 'Welke AI-oplossing is geschikt voor mijn schoonheidssalon of kapsalon?', answer: 'Voor een schoonheidssalon, kapsalon of nagelstudio is een AI receptionist de logische keuze: het overgrote deel van de inkomende telefonie betreft het maken, verzetten of annuleren van afspraken. Marco in de Starter-configuratie (597 euro per maand) handelt dat 24/7 af, synchroniseert met uw agenda en verstuurt automatisch bevestigingen. Veel salons combineren dit met Emma voor WhatsApp, omdat klanten in deze branche sterk WhatsApp-native zijn.' },
+  { question: 'Welke AI-oplossing is geschikt voor mijn webshop of e-commerce?', answer: 'Voor een webshop ligt het zwaartepunt op customer service: orderstatus, retouren, leveringsvragen en productinformatie. Hier presteert een AI telefoniste-configuratie het best, en in de praktijk is Emma als WhatsApp-agent (vanaf 197 euro per maand) vaak het sterkste kanaal omdat e-commerce-klanten liever asynchroon typen dan bellen. Heeft u ook een servicenummer met substantieel belvolume, dan voegt Marco daar telefonische dekking aan toe.' },
+  { question: 'Welke AI-oplossing past bij een advocatenkantoor of accountantskantoor met meerdere afdelingen?', answer: 'Een kantoor met meerdere praktijkgroepen of afdelingen heeft baat bij een AI telefoonassistent-configuratie: een IVR-menustructuur die bellers naar de juiste specialist of het juiste team routeert, met escalatieprotocollen en intent-herkenning. Dit valt bij Aanloop AI onder het Partner-pakket op offerte. Voor een klein kantoor met een gedeelde frontdesk volstaat de Starter of Groei. In beide gevallen leveren wij sectorspecifieke verwerkersovereenkomsten conform AVG artikel 28.' },
+  { question: 'Kan ik een AI receptionist en een AI telefoniste of WhatsApp-agent combineren?', answer: 'Ja, en dat is zelfs de meest gekozen opzet. Het Groei-pakket (1.197 euro per maand) bevat Marco voor onbeperkte telefonie plus Emma voor WhatsApp. Telefoon en WhatsApp dekken samen ongeveer 95% van het inkomende klantcontact bij een typisch MKB-bedrijf. Beide agents delen dezelfde kennisbank, zodat u informatie maar één keer hoeft te onderhouden.' },
+  { question: 'Hoe lang duurt de implementatie per categorie?', answer: 'Een AI receptionist of AI telefoniste (Marco Starter) is doorgaans binnen 7 tot 10 werkdagen live. Het Groei-pakket met Marco plus Emma is binnen circa 7 werkdagen operationeel. Een AI telefoonassistent met IVR-menu, multi-team routing en maatwerk-integraties vraagt meer configuratie en testwerk: reken op 14 tot 21 werkdagen. De doorlooptijd hangt vooral af van hoe snel u historische gespreksdata en kennisbank-input aanlevert.' },
+  { question: 'Klinkt een AI telefoniste anno 2026 als een echte mens?', answer: 'Met de huidige stem-modellen is een AI telefoniste in een kort gesprek voor 70 tot 80% van de Nederlandse bellers nauwelijks te onderscheiden van een mens. Bij langere gesprekken merken sommige bellers een iets vlakkere intonatie. Aanloop AI meldt aan het begin van elk gesprek expliciet dat de beller met een AI-assistent spreekt — dat is transparant en sluit aan op de transparantieverplichting uit de EU AI Act.' },
+  { question: 'Moet ik bellers melden dat zij met een AI praten?', answer: 'Ja. De EU AI Act verplicht dat mensen worden geïnformeerd wanneer zij interacteren met een AI-systeem, tenzij dat overduidelijk is uit de context. Een AI telefoniste valt onder die transparantieverplichting. Aanloop AI levert standaard een korte openingsmelding waarin de beller hoort dat het om een AI-assistent gaat; dat is goed voor het vertrouwen én verkleint juridisch risico. De informatieplicht over wie verantwoordelijk is, ligt bij u als verwerkingsverantwoordelijke.' },
+  { question: 'Hoe gaat een AI receptionist om met de AVG en gespreksopnames?', answer: 'Aanloop AI verwerkt persoonsgegevens uitsluitend op EU-servers (Frankfurt of Amsterdam, ISO 27001-gecertificeerde infrastructuur). U ontvangt een verwerkersovereenkomst conform AVG artikel 28 en een DPIA-template. Gespreksopnames worden standaard maximaal 90 dagen bewaard, tenzij u een andere bewaartermijn configureert. Voor het opnemen van telefoongesprekken geldt dat u bellers daarover moet informeren; de Autoriteit Persoonsgegevens houdt toezicht op de naleving van de AVG in Nederland.' },
+  { question: 'Wat gebeurt er als de AI een vraag niet kan beantwoorden?', answer: 'Elke Aanloop AI-configuratie heeft een escalatiepad naar een mens. De AI escaleert automatisch bij emotionele klachten of woededetectie, juridisch gevoelige vragen, technische problemen zonder kennisbank-antwoord, of wanneer de beller expliciet om een medewerker vraagt. Escalatie gebeurt via warm transfer naar een collega of een melding op uw mobiel, inclusief een gespreksamenvatting zodat de medewerker direct op de hoogte is. In de praktijk handelt de AI 80 tot 90% van de gesprekken volledig zelfstandig af.' },
+  { question: 'Werkt een AI telefoonassistent met mijn bestaande telefooncentrale?', answer: 'Ja. Een AI telefoonassistent koppelt via SIP-trunking of een doorschakeling op uw bestaande nummer; u hoeft uw telefoonnummer of provider niet te wijzigen. De AI kan vóór uw huidige centrale worden geplaatst (als eerste-lijns-aanname) of erachter (als overloop buiten kantooruren). Standaard agenda- en CRM-koppelingen (Google Agenda, Microsoft 365, HubSpot, Pipedrive) zijn inbegrepen; maatwerk-integraties vallen onder het Partner-pakket.' },
+  { question: 'Hoeveel gesprekken kan een AI telefoniste tegelijk verwerken?', answer: 'Een AI telefoniste verwerkt in principe onbeperkt veel gesprekken gelijktijdig — er is geen wachtrij en geen bezettoon. Dit is een fundamenteel verschil met een menselijke receptionist, die maar één gesprek tegelijk kan voeren. Vooral bij belpieken (maandagochtend, na een mailing, tijdens een campagne) voorkomt dit gemiste oproepen en daarmee gemiste omzet.' },
+  { question: 'Kan ik beginnen met een klein pakket en later opschalen?', answer: 'Ja. Veel MKB-bedrijven starten met de Starter (Marco, 597 euro per maand) en schalen na enkele maanden op naar Groei zodra het belvolume groeit of WhatsApp-dekking gewenst is. Upgraden kan tussentijds; u betaalt alleen het prijsverschil vanaf de ingangsdatum. Maandabonnementen zijn maandelijks opzegbaar met één maand opzegtermijn — geen exitkosten.' },
+  { question: 'Is een AI telefoniste goedkoper dan een menselijke receptionist?', answer: 'In de meeste gevallen wel. Een fulltime telefoniste of receptionist kost een Nederlandse werkgever all-in circa 36.000 tot 48.000 euro per jaar (CAO-salaris plus werkgeverslasten, vakantiegeld en gemiddeld ziekteverzuim). Marco Starter kost in jaar 1 circa 7.659 euro (twaalf maanden van 597 euro plus 495 euro setup). Bij structureel dagelijks belvolume is de AI dus aanzienlijk goedkoper. Alleen bij zeer laag belvolume — minder dan ongeveer 50 oproepen per maand — kan een gedeelde of parttime kracht kosteneffectiever zijn.' }];
 
-const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'AI Receptionist vs AI Telefoniste —: NL 2026', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-receptionist-vs-ai-telefoniste-vergelijking/', inLanguage: 'nl-NL' };
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'AI Receptionist vs AI Telefoniste vs AI Telefoonassistent — vergelijking NL 2026', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-receptionist-vs-ai-telefoniste-vergelijking/', inLanguage: 'nl-NL' };
+
+const categorieTabel = [
+  { categorie: 'AI receptionist', focus: 'Front-desk: afspraken plannen, leads kwalificeren, oproepen aannemen', doelgroep: '1-25 medewerkers, solo-praktijk', prijs: '597 euro/mnd (Marco Starter)', live: '7-10 werkdagen', hl: false },
+  { categorie: 'AI telefoniste', focus: 'Gespreksafhandeling: klantvragen, doorverbinden, customer service', doelgroep: 'MKB met veel inkomende klantvragen', prijs: '597-1.197 euro/mnd (Marco)', live: '7-10 werkdagen', hl: true },
+  { categorie: 'AI telefoonassistent', focus: 'Telefooncentrale: IVR-menu, multi-team routing, intent-routing', doelgroep: '25-250 medewerkers, meerdere afdelingen', prijs: 'Partner-pakket op offerte', live: '14-21 werkdagen', hl: false },
+  { categorie: 'AI WhatsApp-agent', focus: 'Tekstkanaal: WhatsApp Business, FAQ, lead-kwalificatie, agenda', doelgroep: 'Webshops, WhatsApp-native doelgroepen', prijs: 'Vanaf 197 euro/mnd (Emma)', live: '7 werkdagen', hl: false },
+];
+
+const functieMatrix = [
+  { taak: 'Afspraken plannen in agenda', receptionist: 'Kerntaak', telefoniste: 'Mogelijk', assistent: 'Mogelijk', whatsapp: 'Kerntaak' },
+  { taak: 'Leads kwalificeren met scoringsregels', receptionist: 'Kerntaak', telefoniste: 'Beperkt', assistent: 'Mogelijk', whatsapp: 'Kerntaak' },
+  { taak: 'Klantvragen / customer service', receptionist: 'Beperkt', telefoniste: 'Kerntaak', assistent: 'Mogelijk', whatsapp: 'Kerntaak' },
+  { taak: 'Multi-team routing / IVR-menu', receptionist: 'Niet', telefoniste: 'Beperkt', assistent: 'Kerntaak', whatsapp: 'Niet' },
+  { taak: '24/7 bereikbaarheid', receptionist: 'Ja', telefoniste: 'Ja', assistent: 'Ja', whatsapp: 'Ja' },
+  { taak: 'Visuele communicatie (foto, document)', receptionist: 'Niet', telefoniste: 'Niet', assistent: 'Niet', whatsapp: 'Kerntaak' },
+  { taak: 'Spoed-escalatie naar specialist', receptionist: 'Mogelijk', telefoniste: 'Mogelijk', assistent: 'Kerntaak', whatsapp: 'Mogelijk' },
+];
+
+const sectorAdvies = [
+  { sector: 'Schoonheidssalon / kapsalon', advies: 'AI receptionist + WhatsApp', toelichting: 'Afsprakenfocus, sterk WhatsApp-native klantgroep. Marco Starter plus Emma.' },
+  { sector: 'Webshop / e-commerce', advies: 'AI WhatsApp-agent (telefoniste-focus)', toelichting: 'Customer service: orderstatus, retouren, productvragen. Emma standalone of Groei.' },
+  { sector: 'Tandarts / fysiotherapie', advies: 'AI receptionist', toelichting: 'Hoog afsprakenvolume, no-show-reductie, recall. Marco Starter of Groei.' },
+  { sector: 'Installateur / garage', advies: 'AI telefoniste', toelichting: 'Spoedmeldingen via telefoon, urgentie-intake. Marco met escalatieprotocol.' },
+  { sector: 'Accountants- / advocatenkantoor (groot)', advies: 'AI telefoonassistent', toelichting: 'Meerdere praktijkgroepen, IVR-routing, sector-compliance. Partner-pakket.' },
+  { sector: 'Solo-ZZP / kleine praktijk', advies: 'AI receptionist', toelichting: 'Plug-and-play, basis-callscripts, laagste instap. Marco Starter.' },
+];
+
+const kostenBaten = [
+  { categorie: 'AI receptionist (597 euro/mnd)', breakEven: '5-8 extra leads/mnd of 8-10 vrijgemaakte personeelsuren', toelichting: 'Eén gemiste afspraak per week verdient het abonnement vaak al terug.' },
+  { categorie: 'AI telefoniste (597-1.197 euro/mnd)', breakEven: '30-50% reductie in customer service-tickets', toelichting: 'Schaalt mee bij belpieken zonder extra inhuur.' },
+  { categorie: 'AI telefoonassistent (Partner)', breakEven: 'Circa 1 FTE besparing op receptie of telefonie', toelichting: 'Vooral kosteneffectief bij meerdere afdelingen en hoog belvolume.' },
+  { categorie: 'AI WhatsApp-agent (vanaf 197 euro/mnd)', breakEven: '20-40 vrijgemaakte uren/mnd op klantenservice', toelichting: 'Laagste instap; ideaal als eerste AI-stap voor e-commerce.' },
+];
 ---
 
 <BaseLayout
-  title="AI Receptionist vs AI Telefoniste —: NL 2026"
-  description="Complete vergelijking: AI receptionist vs AI telefoniste vs AI telefoonassistent. Verschillen in functionaliteit, prijs, sectorpasvorm en use cases."
+  title="AI Receptionist vs AI Telefoniste vs AI Telefoonassistent — Vergelijking 2026"
+  description="Complete vergelijking: AI receptionist vs AI telefoniste vs AI telefoonassistent. Verschillen in functionaliteit, prijs, sectorpasvorm, AVG/EU AI Act-context en use cases."
   schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
@@ -60,122 +113,266 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
           AI Receptionist vs AI Telefoniste vs AI Telefoonassistent: Complete Vergelijking 2026
         </h1>
         <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
-          In de Nederlandse markt worden de termen AI receptionist, AI telefoniste en AI telefoonassistent door elkaar gebruikt — maar er zijn belangrijke verschillen die uw aankoopbeslissing bepalen. AI receptionist is een gestandaardiseerde 24/7 oplossing voor MKB-bedrijven. AI telefoniste is meer specifiek voor klantcontact en customer service. AI telefoonassistent is een volledig configureerbare telefooncentrale voor grotere organisaties.
+          In de Nederlandse markt worden de termen AI receptionist, AI telefoniste en AI telefoonassistent vaak door elkaar gebruikt — maar er zijn functionele verschillen die uw aankoopbeslissing bepalen. Een AI receptionist is een gestandaardiseerde 24/7 front-desk-oplossing voor het kleinere MKB. Een AI telefoniste legt de nadruk op gespreksafhandeling en customer service. Een AI telefoonassistent is een volledig configureerbare telefooncentrale met IVR-menu en multi-team routing voor grotere organisaties. In dit artikel leest u per categorie de exacte verschillen, de canonieke prijzen, een functievergelijking, het advies per sector en de AVG- en EU AI Act-context die u moet kennen.
         </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIRECT ANTWOORD -->
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-2">Direct antwoord</p>
+        <p class="text-sm text-slate-700 leading-relaxed">Het verschil zit in de hoofdrol. Een <strong>AI receptionist</strong> is geoptimaliseerd voor afspraken plannen en leads kwalificeren (front-desk, klein MKB). Een <strong>AI telefoniste</strong> richt zich op klantvragen beantwoorden en doorverbinden (customer service). Een <strong>AI telefoonassistent</strong> is een telefooncentrale met IVR-menu en multi-team routing voor organisaties met 25+ medewerkers. Bij Aanloop AI vervult de telefoon-agent Marco de receptionist- én telefoniste-rol; voor de telefoonassistent-rol leveren wij maatwerk via het Partner-pakket. De WhatsApp-agent Emma dekt het tekstkanaal. Canonieke tarieven: Marco Starter 597 euro per maand, Groei (Marco + Emma) 1.197 euro per maand, Emma standalone vanaf 197 euro per maand — alle bedragen exclusief btw.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- OVERZICHTSTABEL -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-8 reveal">
+        <p class="eyebrow mb-2">In één oogopslag</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">De vier AI-categorieën naast elkaar.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Onderstaande tabel vat de vier AI-telefonie- en klantcontact-categorieën samen. Daarna lichten we elke categorie afzonderlijk toe.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Categorie</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium hidden md:table-cell">Hoofdfocus</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium hidden lg:table-cell">Doelgroep</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Prijs</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Live</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {categorieTabel.map(r => (
+              <tr class={'hover:bg-slate-50/60 transition' + (r.hl ? ' bg-brand-emerald/5' : '')}>
+                <td class="py-3 px-4 font-bold text-navy text-xs">{r.categorie}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs hidden md:table-cell">{r.focus}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs hidden lg:table-cell">{r.doelgroep}</td>
+                <td class="py-3 px-4 font-medium text-navy text-xs">{r.prijs}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.live}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   </section>
 
   <section class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">1. AI Receptionist: gestandaardiseerd voor MKB</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Een AI receptionist is ontworpen als plug-and-play oplossing voor solo-ondernemers en kleine MKB-bedrijven (1-25 medewerkers). De AI heeft een vast persona met standaard scripts, plant afspraken in uw agenda en stuurt lead-samenvattingen.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Geschikt voor: ZZPers, solo-praktijken, kleine winkels, garagebedrijven, schoonheidssalons, fysio. Niet geschikt voor: grote organisaties met IVR-menus, multi-team routing.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Prijs: 297-497 euro per maand voor Marco van Aanloop AI. Live in 7 werkdagen.</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">1. AI receptionist: gestandaardiseerd voor het kleinere MKB</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI receptionist is ontworpen als plug-and-play oplossing voor solo-ondernemers en kleine MKB-bedrijven van ongeveer 1 tot 25 medewerkers. De AI heeft een vast persona, werkt met standaard callscripts, plant afspraken in uw agenda en stuurt na elk gesprek een gestructureerde lead-samenvatting. De rol is vergelijkbaar met die van een front-desk-medewerker: de eerste die de telefoon opneemt, de beller te woord staat en de afspraak vastlegt.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">De kracht van een AI receptionist zit in de eenvoud. U hoeft geen IVR-menu te ontwerpen, geen routing-logica te bedenken en geen afdelingenstructuur in te richten. Na een intakegesprek en het aanleveren van uw kennisbank — openingstijden, diensten, veelgestelde vragen — is de receptionist binnen 7 tot 10 werkdagen operationeel. Bij Aanloop AI vervult Marco in de Starter-configuratie deze rol voor 597 euro per maand (exclusief btw), met een eenmalige setup van 495 euro.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong>Geschikt voor:</strong> ZZP'ers, solo-praktijken, kleine winkels, garagebedrijven, schoonheidssalons, kapsalons, fysiotherapie- en tandartspraktijken. <strong>Minder geschikt voor:</strong> grote organisaties met IVR-menustructuren, meerdere afdelingen of complexe multi-team routing — die hebben een AI telefoonassistent nodig. Volgens het <a href="https://www.cbs.nl/nl-nl/onderwerpen/bedrijven" rel="external">CBS bestaat het overgrote deel van het Nederlandse bedrijfsleven uit kleine bedrijven</a>, en juist voor die groep is een gestandaardiseerde AI receptionist de laagdrempeligste instap in AI-telefonie.</p>
     </div>
   </section>
 
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">2. AI Telefoniste: gefocust op klantcontact</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Een AI telefoniste richt zich specifiek op klantcommunicatie: vragen beantwoorden, klachten afhandelen, productinfo geven. Sterker in gespreksflow en klanttevredenheid dan in administratieve afhandeling.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Geschikt voor: webshops, customer service-afdelingen, MKB-bedrijven met veel inkomende klantvragen. Niet geschikt voor: bedrijven die voornamelijk afspraken plannen.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Prijs: 197-397 euro per maand. Voor pure customer service-focus is Emma WhatsApp Bot van Aanloop AI een passende keuze.</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">2. AI telefoniste: gefocust op gespreksafhandeling en klantcontact</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI telefoniste richt zich specifiek op klantcommunicatie: vragen beantwoorden, klachten in goede banen leiden, productinformatie geven en oproepen doorverbinden naar de juiste persoon. Waar de receptionist-rol vooral administratief is (afspraak vastleggen), is de telefoniste-rol conversationeel: het gesprek zelf staat centraal. Een AI telefoniste is daardoor sterker in gespreksflow en klanttevredenheid dan in pure agenda-afhandeling.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI telefoniste is bij uitstek geschikt voor bedrijven met een substantieel volume aan inkomende klantvragen die niet allemaal tot een afspraak leiden: orderstatus, retourvragen, openingstijden, garantie, leveringsinformatie. De AI handelt het routinematige deel zelfstandig af en escaleert alleen de uitzonderingen naar een medewerker — inclusief gesprekssamenvatting, zodat de collega direct op de hoogte is.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong>Geschikt voor:</strong> webshops, customer service-afdelingen, MKB-bedrijven met veel inkomende klantvragen. <strong>Minder geschikt voor:</strong> bedrijven die vrijwel uitsluitend afspraken plannen — daar volstaat de receptionist-configuratie. Bij Aanloop AI vervult Marco ook deze telefoniste-rol; voor zuiver tekstgebaseerde customer service (WhatsApp, webchat) is de WhatsApp-agent Emma een passende aanvulling vanaf 197 euro per maand.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">3. AI Telefoonassistent: configureerbare telefooncentrale</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Een AI telefoonassistent is een volledig configureerbare telefooncentrale met IVR-menu, multi-team routing, intent-gebaseerd doorverbinden en custom integraties. Geschikt voor grotere MKB-organisaties (25-250 medewerkers).</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Geschikt voor: grotere accountantskantoren, advocatenkantoren met meerdere praktijkgroepen, bouwbedrijven met multi-team setup, zorgorganisaties.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Prijs: 497-1.297 euro per maand voor de Aanloop AI Telefoon Assistent. Voor enterprise klanten op maat met SSO en role-based access.</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">3. AI telefoonassistent: configureerbare telefooncentrale</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI telefoonassistent is een volledig configureerbare telefooncentrale met IVR-menu, multi-team routing, intent-gebaseerd doorverbinden en maatwerk-integraties. Waar de receptionist en telefoniste één persona met één set scripts hebben, beheert de telefoonassistent meerdere gespreksstromen tegelijk: een beller die om de boekhoudafdeling vraagt komt anders uit dan een beller met een spoedmelding. Dit is de juiste keuze voor grotere MKB-organisaties met circa 25 tot 250 medewerkers.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">De configuratie is omvangrijker: er moet een menustructuur worden ontworpen, intent-categorieën gedefinieerd, routing-regels per team ingericht en escalatieprotocollen per afdeling vastgelegd. Daardoor is de doorlooptijd langer — reken op 14 tot 21 werkdagen — en valt deze categorie bij Aanloop AI onder het Partner-pakket op offerte. De prijs hangt af van het aantal afdelingen, de mate van overlap in callscripts en de gewenste integraties met CRM of ERP.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong>Geschikt voor:</strong> grotere accountantskantoren, advocatenkantoren met meerdere praktijkgroepen, bouwbedrijven met een multi-team setup, zorgorganisaties en verzekeringskantoren. Voor enterprise-klanten leveren we maatwerk met SSO en role-based access. De telefoonassistent koppelt via SIP-trunking of doorschakeling op uw bestaande nummer — u hoeft niet van telefonieprovider te wisselen.</p>
     </div>
   </section>
 
+  <!-- FUNCTIEMATRIX -->
   <section class="section bg-slate-50/60 border-y border-slate-200">
-    <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">4. Functievergelijking per use case</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Voor afsprakenbeheer (kapsalon, fysio, tandarts): AI receptionist of AI telefoniste. Voor lead-kwalificatie (B2B, makelaars): AI receptionist eerste keuze door scoringsregels.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Voor klantenservice met veel productvragen (webshops): AI telefoniste eerste keuze. Voor multi-team routing met escalatie naar specifieke specialisten: AI telefoonassistent.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Voor pechhulp 24/7 met spoeddoorverbinding: AI telefoonassistent met dedicated escalatieprotocol. Voor solo-ZZPer: AI receptionist met basis-scripts.</p>
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-8 reveal">
+        <p class="eyebrow mb-2">Functievergelijking</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Welke categorie kan welke taak aan?</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Deze matrix toont per taak hoe sterk elke categorie presteert: "Kerntaak" betekent dat de categorie hiervoor is ontworpen, "Mogelijk" dat het met configuratie kan, "Beperkt" dat het kan maar niet de sterkste keuze is, en "Niet" dat de categorie hiervoor ongeschikt is.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Taak</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Receptionist</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Telefoniste</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Telefoonassistent</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium hidden sm:table-cell">WhatsApp-agent</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {functieMatrix.map(r => (
+              <tr class="hover:bg-slate-50/60 transition">
+                <td class="py-3 px-4 font-medium text-navy text-xs">{r.taak}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.receptionist}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.telefoniste}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.assistent}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs hidden sm:table-cell">{r.whatsapp}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   </section>
 
+  <!-- SECTOR-ADVIES -->
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-8 reveal">
+        <p class="eyebrow mb-2">Advies per sector</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Welke AI-categorie past bij uw branche?</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">De juiste keuze hangt sterk af van uw sector en het type klantcontact dat u verwerkt. Onderstaande tabel geeft per branche het meest passende advies.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Sector</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Advies</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium hidden md:table-cell">Toelichting</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {sectorAdvies.map(r => (
+              <tr class="hover:bg-slate-50/60 transition">
+                <td class="py-3 px-4 font-medium text-navy text-xs">{r.sector}</td>
+                <td class="py-3 px-4 font-medium text-brand-indigo text-xs">{r.advies}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs hidden md:table-cell">{r.toelichting}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- KOSTEN-BATEN -->
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-8 reveal">
+        <p class="eyebrow mb-2">Kosten-baten per categorie</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wanneer verdient elke categorie zichzelf terug?</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Het break-even-punt verschilt per categorie en hangt af van uw belvolume, het type taken en uw huidige personeelsinzet. Onderstaande indicaties zijn gebaseerd op gemiddelden bij Nederlandse MKB-bedrijven.</p>
+      </div>
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Categorie</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Break-even bij</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium hidden md:table-cell">Toelichting</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {kostenBaten.map(r => (
+              <tr class="hover:bg-slate-50/60 transition">
+                <td class="py-3 px-4 font-medium text-navy text-xs">{r.categorie}</td>
+                <td class="py-3 px-4 text-slate-700 text-xs">{r.breakEven}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs hidden md:table-cell">{r.toelichting}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-xs text-slate-500 max-w-2xl reveal reveal-delay-2">Bereken uw eigen terugverdientijd via de <a href="/ai-roi-calculator/" class="text-brand-indigo hover:underline font-medium">ROI-calculator</a>, of lees de volledige kostenanalyse in <a href="/kennisbank/ai-prijzen-vergelijking-mkb-nederland-2026/" class="text-brand-indigo hover:underline font-medium">AI prijzen vergelijking MKB Nederland 2026</a>.</p>
+    </div>
+  </section>
+
+  <!-- HOE TE KIEZEN -->
   <section class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">5. Kosten-baten per categorie</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">AI receptionist (297-497 euro per maand): break-even bij 5 extra leads per maand of 8-10 vrijgemaakte uren personeelstijd.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">AI telefoniste (197-397 euro per maand): break-even bij 30-50% reductie in customer service-tickets.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">AI telefoonassistent (497-1.297 euro per maand): break-even bij 1-FTE personeelsbesparing op receptie of customer service.</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Hoe te kiezen: vijf vragen om uzelf te stellen</h2>
+      <p class="text-slate-600 leading-relaxed mb-6">Twijfelt u tussen de categorieën, beantwoord dan deze vijf vragen. Ze leiden u in de meeste gevallen naar de juiste keuze.</p>
+      <div class="space-y-4">
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 reveal">
+          <p class="font-bold text-navy mb-2">Vraag 1 — Plant u vooral afspraken of beantwoordt u vooral klantvragen?</p>
+          <p class="text-sm text-slate-600 leading-relaxed">Overheerst het inplannen van afspraken, dan past een AI receptionist. Overheerst het beantwoorden van service-vragen, dan een AI telefoniste. Is het ongeveer gelijk verdeeld, dan dekt Marco beide rollen in één configuratie.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 reveal reveal-delay-1">
+          <p class="font-bold text-navy mb-2">Vraag 2 — Hoeveel medewerkers heeft uw organisatie?</p>
+          <p class="text-sm text-slate-600 leading-relaxed">Onder ongeveer 25 medewerkers is een receptionist of telefoniste passend en kosteneffectief. Boven de 25, zeker met meerdere afdelingen, wordt een AI telefoonassistent met IVR-routing relevant.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 reveal reveal-delay-2">
+          <p class="font-bold text-navy mb-2">Vraag 3 — Heeft u meerdere afdelingen of teams die elk eigen oproepen ontvangen?</p>
+          <p class="text-sm text-slate-600 leading-relaxed">Zo ja, dan heeft u routing nodig: bellers moeten naar de juiste praktijkgroep, vestiging of specialist. Dat is precies wat een AI telefoonassistent doet en wat een receptionist of telefoniste niet kan.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 reveal">
+          <p class="font-bold text-navy mb-2">Vraag 4 — Via welke kanalen bereiken klanten u het liefst?</p>
+          <p class="text-sm text-slate-600 leading-relaxed">Bellen klanten vooral, dan is een telefonie-categorie leidend. Communiceren zij vaak via WhatsApp of webchat, voeg dan de WhatsApp-agent Emma toe — of begin daar zelfs mee als telefonie een kleine rol speelt.</p>
+        </div>
+        <div class="rounded-2xl border border-slate-200 bg-white p-5 reveal reveal-delay-1">
+          <p class="font-bold text-navy mb-2">Vraag 5 — Welke maandinvestering past bij uw bedrijf?</p>
+          <p class="text-sm text-slate-600 leading-relaxed">Emma standalone start vanaf 197 euro per maand, Marco Starter kost 597 euro per maand, het Groei-pakket 1.197 euro per maand en een telefoonassistent valt onder een offerte op maat. Zet dat af tegen de all-in kosten van een medewerker (circa 3.000 tot 4.000 euro per maand) en het belvolume dat u verwerkt.</p>
+        </div>
+      </div>
+      <p class="text-slate-600 leading-relaxed mt-6">Bij twijfel: vraag een gratis demo aan. Vaak blijkt een combinatie het meest effectief — Marco voor de telefoon en Emma voor WhatsApp, samen in het Groei-pakket.</p>
     </div>
   </section>
 
+  <!-- IMPLEMENTATIE -->
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">6. Hoe te kiezen: 5 vragen om uzelf te stellen</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Vraag 1: Hoeveel afspraken plannen versus klantvragen beantwoorden. Vraag 2: Hoeveel medewerkers heeft u — onder 25 receptionist of telefoniste, boven 25 telefoonassistent. Vraag 3: Heeft u meerdere afdelingen.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Vraag 4: Spreekt u meerdere talen. Vraag 5: Hoeveel investering kunt u dragen per maand.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Bij twijfel: gratis demo met Aanloop AI. Vaak is een combinatie het meest effectief: AI receptionist voor afspraken plus AI telefoniste voor productvragen.</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Implementatie-roadmap: van keuze naar live</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Ongeacht de gekozen categorie verloopt een implementatie bij Aanloop AI in drie fasen. <strong>Fase 1 (week 1-2) — discovery en design:</strong> we analyseren circa 100 historische klantcontacten om de meest voorkomende vragen, escalaties en pijnpunten in kaart te brengen. Op basis daarvan ontwerpen we de conversational flow, de intake-vragenlijst en de escalatieprotocollen die bij uw werkwijze passen. Bij een telefoonassistent komt hier het ontwerp van de IVR-menustructuur en de routing-regels bij.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong>Fase 2 (week 3-5) — build en pilot:</strong> we configureren de AI met uw kennisbank, koppelen aan uw bestaande systemen (CRM, agenda, dossier- of kassasysteem) en testen intern. U en uw team simuleren realistische klantscenario's; de AI leert van correcties en wordt nauwkeuriger. Aan het eind van fase 2 gaat de AI live met 20 tot 30% van uw klantverkeer voor monitoring.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong>Fase 3 (week 6-12) — scale en optimaliseer:</strong> volledig live op het primaire kanaal met dagelijkse KPI-monitoring, wekelijkse iteratie op handover-data en maandelijkse rapportage. Bij positieve resultaten breiden we uit naar een tweede kanaal. Vanaf maand 4 draait de AI zelfstandig met alleen kwartaalreviews. Voor een receptionist of telefoniste is de doorlooptijd 7 tot 10 werkdagen tot eerste live-gang; voor een telefoonassistent 14 tot 21 werkdagen door de extra routing-configuratie.</p>
     </div>
   </section>
 
+  <!-- AVG / EU AI ACT -->
   <section class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Implementatie roadmap voor zakelijke dienstverlening</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Een succesvolle AI-implementatie in de zakelijke dienstverlening-sector verloopt in drie fasen die elk een specifieke focus hebben. Fase 1 (week 1-2) is discovery en design: we analyseren 100 historische klantcontacten om de meest voorkomende vragen, escalaties en pijnpunten in kaart te brengen. Op basis hiervan ontwerpen we de conversational flow, intake-vragenlijst en escalatieprotocollen die specifiek bij uw werkwijze passen.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Fase 2 (week 3-5) is build en pilot: we configureren de AI met uw kennisbank, koppelen aan uw bestaande systemen (CRM, agenda, dossier- of kassasysteem) en testen intern twee weken lang. In deze periode simuleren u en uw team realistische klant-scenarios — de AI leert van correcties en wordt steeds nauwkeuriger. Op het einde van fase 2 gaat de AI live met 20-30% van uw klantverkeer voor monitoring.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Fase 3 (week 6-12) is scale en optimaliseer: volledig live op het primaire kanaal met dagelijkse KPI-monitoring, wekelijkse iteratie op basis van handover-data en maandelijkse rapportage. Bij positieve resultaten breiden we uit naar tweede kanaal (typisch WhatsApp na telefoon, of vice versa). Vanaf maand 4 is de AI volledig zelfstandig met alleen kwartaalreviews voor strategische verbeteringen.</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">AVG en EU AI Act: wat u juridisch moet weten</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI receptionist, telefoniste of telefoonassistent verwerkt persoonsgegevens — naam, telefoonnummer, vraag, soms gezondheids- of financiële context. Daarmee bent u als ondernemer verwerkingsverantwoordelijke onder de Algemene Verordening Gegevensbescherming (AVG). U sluit een verwerkersovereenkomst conform <a href="https://www.autoriteitpersoonsgegevens.nl/themas/basis-avg/avg-algemeen/verwerkersovereenkomst" rel="external">artikel 28 AVG met uw AI-leverancier</a>; Aanloop AI levert deze standaard, samen met een DPIA-template. Alle verwerking vindt plaats op EU-servers (Frankfurt of Amsterdam, ISO 27001-gecertificeerd).</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Sinds 2024 geldt daarnaast de <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="external">EU AI Act, het Europese regelgevingskader voor kunstmatige intelligentie</a>. Voor een AI telefoniste is vooral de transparantieverplichting relevant: mensen moeten worden geïnformeerd dat zij met een AI-systeem communiceren, tenzij dat overduidelijk is uit de context. Aanloop AI lost dit op met een korte openingsmelding aan het begin van elk gesprek. De Nederlandse overheid licht de gefaseerde invoering van de AI Act toe op <a href="https://www.rijksoverheid.nl/onderwerpen/kunstmatige-intelligentie-ai" rel="external">rijksoverheid.nl</a>.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor gespreksopnames geldt dat u bellers daarover moet informeren en een rechtsgrond moet hebben; opnames worden bij Aanloop AI standaard maximaal 90 dagen bewaard. Voor gereguleerde sectoren leveren wij sectorspecifieke verwerkersovereenkomsten: NEN 7510 en NEN 7513 voor de zorg, dossiervorming conform Wft voor financieel advies en de geheimhoudingsplicht uit artikel 11a van de Advocatenwet voor de advocatuur.</p>
     </div>
   </section>
 
+  <!-- VALKUILEN -->
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Veelgemaakte valkuilen bij AI in de zakelijke dienstverlening-sector</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">De grootste valkuil bij AI-implementatie in zakelijke dienstverlening is te veel willen tegelijk. Begin met één kanaal en één hoofdtaak (bijvoorbeeld telefoon plus afspraken) en breid pas uit nadat dit volledig stabiel is. Bedrijven die alle vijf de kanalen tegelijk willen automatiseren halen meestal binnen drie maanden de stekker er weer uit door rommelige klantervaring en interne weerstand.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Tweede valkuil: te weinig escalatie naar mens. AI moet weten wanneer ze NIET zelf moet antwoorden — bij negative sentiment, klacht-keywords, onbekende vragen of wanneer een klant expliciet om mens vraagt. Configureer escalatieregels royaal: liever te vaak naar mens dan een verkeerd AI-antwoord dat klantvertrouwen kost. Goede teams hebben 15-25% escalatieratio in eerste maanden, dalend naar 5-15% naarmate de AI bijleert.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Derde valkuil: AI-content die niet op uw kennisbank zit. Klanten merken het direct als een AI iets verzint. Investeer tijd in onboarding-vragenlijsten, veelgestelde vragen en interne procesdocumenten — hoe rijker de kennisbank, hoe nauwkeuriger en menselijker de AI klinkt. Hiernaast: vermijd de fout om AI als personeel te framen ("ons team heeft u geantwoord"). Wees open: klanten waarderen AI mits het hen tijd bespaart en accuraat is.</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Veelgemaakte fouten bij de keuze en implementatie</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong>Fout 1 — de verkeerde categorie kiezen op basis van de naam.</strong> Ondernemers kiezen soms een "AI telefoonassistent" omdat dat het meest geavanceerd klinkt, terwijl een AI receptionist hun behoefte volledig dekt tegen een fractie van de kosten en doorlooptijd. Kies op basis van uw werkelijke taken en organisatieomvang, niet op basis van de term.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong>Fout 2 — te veel kanalen tegelijk willen automatiseren.</strong> Begin met één kanaal en één hoofdtaak — bijvoorbeeld telefoon plus afspraken — en breid pas uit als dat stabiel draait. Bedrijven die telefoon, WhatsApp, webchat, e-mail en social tegelijk willen automatiseren, halen er vaak binnen drie maanden de stekker uit door een rommelige klantervaring.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong>Fout 3 — te weinig escalatie naar een mens.</strong> De AI moet weten wanneer ze NIET zelf antwoordt: bij negatief sentiment, klacht-keywords, onbekende vragen of een expliciet verzoek om een medewerker. Configureer escalatieregels royaal — liever te vaak naar een mens dan één verkeerd AI-antwoord dat klantvertrouwen kost. Goede teams starten met 15 tot 25% escalatieratio, dalend naar 5 tot 15% naarmate de AI bijleert.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong>Fout 4 — een te dunne kennisbank.</strong> Klanten merken het direct als een AI iets verzint. Investeer tijd in onboarding-vragenlijsten, veelgestelde vragen en interne procesdocumenten. Hoe rijker de kennisbank, hoe nauwkeuriger en menselijker de AI klinkt. Frame de AI ook niet als personeel ("ons team heeft u geantwoord") — wees transparant; dat is wettelijk verplicht én goed voor het vertrouwen.</p>
     </div>
   </section>
 
+  <!-- WAAROM AANLOOP -->
   <section class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Waarom Aanloop AI als partner voor zakelijke dienstverlening</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI is een Nederlandse B.V. (KVK 88606902) gevestigd in Rotterdam, gespecialiseerd in AI-automatisering voor het Nederlandse MKB. We zijn geen generieke chatbot-provider — we configureren, trainen en onderhouden uw AI op basis van uw branchespecifieke processen, terminologie en klantverwachtingen. Voor de zakelijke dienstverlening-sector hebben we standaard-templates die u 80% van het werk besparen tijdens onboarding.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Praktische voordelen: data uitsluitend binnen de EU verwerkt (Frankfurt of Amsterdam, ISO 27001-gecertificeerde cloud), maandelijks opzegbaar zonder exit-fees, transparante prijzen vanaf 197 euro per maand, gratis demo van 30 minuten zonder verplichtingen. Voor branche-specifieke compliance (NEN 7510 voor zorg, NBA-VGBA voor accountancy, artikel 11a Advocatenwet voor advocaten) leveren we toetsbare verwerkersovereenkomsten en audit-trails.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Onze klanten in de zakelijke dienstverlening-sector rapporteren gemiddeld een break-even binnen de eerste 1-2 maanden en een ROI van 5-15x op 12-maand basis. Dit door een combinatie van directe personeelskostenbesparing, hogere conversie op nieuwe leads en betere klantretentie door snellere reactietijden. Plan een gratis demo om te zien hoe AI specifiek voor uw situatie werkt.</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Waarom Aanloop AI als partner</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI is een Nederlandse B.V. (KVK 88606902) gevestigd in Rotterdam, gespecialiseerd in AI-automatisering voor het Nederlandse MKB. We zijn geen generieke chatbot-leverancier — we configureren, trainen en onderhouden uw AI op basis van uw branchespecifieke processen, terminologie en klantverwachtingen. Voor de meeste sectoren hebben we standaard-templates die u tijdens de onboarding een groot deel van het werk besparen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Praktische voordelen: data uitsluitend binnen de EU verwerkt (Frankfurt of Amsterdam, ISO 27001-gecertificeerde cloud), maandelijks opzegbaar zonder exitkosten, transparante canonieke tarieven en een gratis demo van 30 minuten zonder verplichtingen. Voor branche-specifieke compliance (NEN 7510 voor de zorg, NBA-regelgeving voor accountancy, artikel 11a Advocatenwet voor de advocatuur) leveren we toetsbare verwerkersovereenkomsten en audit-trails.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Of u nu kiest voor een AI receptionist, een AI telefoniste of een AI telefoonassistent: de telefoon-agent Marco en de WhatsApp-agent Emma delen dezelfde kennisbank, zodat u informatie maar één keer onderhoudt. Plan een gratis demo om te zien welke configuratie het beste bij uw situatie past.</p>
     </div>
   </section>
 
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat te verwachten in de eerste 30 dagen na live-gang</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Week 1 na live-gang: monitoring is intensief. We zetten de AI live op 20-30% van uw klantverkeer en bekijken elke conversatie kritisch. Verwacht 5-10 escalaties per dag in deze fase die vaak leiden tot kennisbank-aanvullingen of script-aanpassingen. Onze customer success-manager belt u dagelijks in deze week om bevindingen te bespreken en aanpassingen door te voeren.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Week 2-3: schaal naar 50-80% verkeer. De AI heeft inmiddels enkele honderden conversaties verwerkt en de patronen worden duidelijk. Veel routine-vragen worden nu zonder escalatie afgehandeld; de AI handelt 60-70% van eerstelijns-vragen volledig zelfstandig af. KPI-dashboard toont eerste meetbare verbeteringen ten opzichte van uw oude situatie.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Week 4: volledige scale en eerste optimalisatieronde. De AI loopt op 100% van het primaire kanaal en heeft inmiddels 1.000+ conversaties geleerd van. We leveren u een 30-dagen-rapport met cijfers, klantbeoordelingen en aanbevelingen voor het tweede kanaal. Bij positieve resultaten — wat in 95% van de cases het geval is — gaan we de tweede uitbreiding plannen.</p>
-    </div>
-  </section>
-
-  <section class="section">
-    <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">AI vs alternatieven: waarom dit beter werkt voor zakelijke dienstverlening</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Vergelijking met menselijk personeel: een AI receptionist kost 297-497 euro per maand all-in tegenover 3.500-5.000 euro per maand voor fulltime personeel inclusief werkgeverslasten en vakantiegeld. Bovendien werkt AI 24/7 zonder vakantie of ziekteverzuim. Voor 80% van routine-taken in zakelijke dienstverlening is AI sneller, consistenter en kosteneffectiever. Voor complexe inhoudelijke vragen blijft mens onmisbaar — en daar moet AI ook escaleren.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Vergelijking met traditionele chatbots: chatbots volgen strikte beslisbomen ("druk 1 voor X..."). AI begrijpt natuurlijke taal, context en intent, kan met uw kennisbank redeneren en zinvol escaleren bij twijfel. Cost-wise: chatbots 50-200 euro per maand maar zonder echte intelligentie, AI 200-2.000 euro per maand met menselijke gespreksvaardigheid. Voor klantgevoelige processen is alleen AI realistisch.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Vergelijking met outsourcing aan callcenters: callcenters kosten 0,80-1,50 euro per gesprek (gemiddeld 800-2.500 euro per maand voor MKB-volume) en hebben vaak gebrekkige kennis van uw specifieke branche of producten. AI getraind op uw eigen kennisbank kent uw bedrijf beter dan een externe call-agent en kost minder. Outsourcing blijft zinvol voor eenmalige campagnes of pieken; voor continue klantenservice is AI superieur.</p>
-    </div>
-  </section>
-  <section class="section bg-slate-50/60 border-y border-slate-200">
-    <div class="container-page max-w-3xl">
-      <p class="eyebrow mb-3">ROI rekenvoorbeeld</p>
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat levert dit u op?</h2>
-      <p class="text-slate-600 leading-relaxed">Voor een Nederlands MKB-bedrijf dat de juiste AI-categorie kiest: 8-15 uur per week tijdwinst plus 15-30% conversiestijging. Verkeerde keuze leidt tot suboptimale ROI in de eerste 3 maanden. Investering 197-1.297 euro per maand.</p>
+      <p class="eyebrow mb-3">ROI-rekenvoorbeeld</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat levert de juiste keuze u op?</h2>
+      <p class="text-slate-600 leading-relaxed">Voor een Nederlands MKB-bedrijf dat de juiste AI-categorie kiest, levert dat doorgaans 8 tot 15 uur tijdwinst per week op plus een conversiestijging van 15 tot 30% op inkomende leads — vooral doordat oproepen buiten kantooruren niet langer verloren gaan. Een verkeerde categoriekeuze leidt tot een suboptimale ROI in de eerste maanden: een telefoonassistent voor een solo-praktijk is onnodig duur, een basis-receptionist voor een organisatie met vijf afdelingen mist de noodzakelijke routing. Investering: van 197 euro per maand (Emma standalone) tot een telefoonassistent op offerte.</p>
     </div>
   </section>
 
   <section class="section">
     <div class="container-page max-w-3xl">
       <p class="eyebrow mb-3">Veelgestelde vragen</p>
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-8">FAQ</h2>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-8">AI receptionist, telefoniste en telefoonassistent — antwoorden op de meest gestelde vragen</h2>
       <div class="space-y-3">
         {faqItems.map(item => (
           <details class="group card cursor-pointer">
@@ -195,11 +392,12 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
       <p class="eyebrow mb-3">Verder lezen</p>
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy text-balance mb-6">Verder verdiepen.</h2>
       <div class="flex flex-wrap gap-2">
-        <a href="/sectoren/zakelijk/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI voor zakelijke dienstverlening (volledige hub) →</a>
+        <a href="/kennisbank/ai-prijzen-vergelijking-mkb-nederland-2026/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI prijzen vergelijking MKB 2026 →</a>
+        <a href="/kennisbank/ai-telefoniste-vs-mens/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">AI telefoniste vs mens →</a>
+        <a href="/kennisbank/ai-voicebot-vs-chatbot-mkb-vergelijking/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Voicebot vs chatbot →</a>
         <a href="/diensten/marco/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Marco AI Receptionist →</a>
         <a href="/diensten/telefoon-assistent/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">AI Telefoon Assistent →</a>
         <a href="/diensten/emma/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Emma WhatsApp Bot →</a>
-        <a href="/sectoren/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Alle sectoren →</a>
       </div>
     </div>
   </section>
@@ -208,21 +406,21 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
     <div class="container-page max-w-4xl">
       <p class="eyebrow text-brand-indigo mb-2">Website + AI = 1 partner</p>
       <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-4">AI-receptionist of -telefoniste? Combineer beide in één bundel</h2>
-      <p class="text-slate-600 mb-8 leading-relaxed">Of u nu kiest voor receptionist-AI (afspraken + intake) of telefoniste-AI (doorverbinden + bereikbaarheid): Marco doet beide rollen, en in de AI-Website Bundel komt daar een AI-ready website + Emma (WhatsApp) bij — bespaart €8.014 jaar 1 met één contract en één aanspreekpunt.</p>
+      <p class="text-slate-600 mb-8 leading-relaxed">Of u nu kiest voor de receptionist-rol (afspraken plus intake) of de telefoniste-rol (doorverbinden plus bereikbaarheid): Marco doet beide, en in de AI-Website Bundel komt daar een AI-ready website plus Emma (WhatsApp) bij — met één contract en één aanspreekpunt.</p>
       <div class="grid md:grid-cols-3 gap-4">
         <a href="/diensten/ai-website-bundel-mkb-nederland/" class="card hover:border-brand-indigo transition-all">
           <h3 class="font-bold text-navy text-sm mb-2">AI-Website Bundel</h3>
-          <p class="text-xs text-slate-600 mb-3">Website + Marco + Emma in 1 pakket. €4.950 setup + €397/mnd. Bespaart €8.014 jaar 1.</p>
+          <p class="text-xs text-slate-600 mb-3">Website + Marco + Emma in 1 pakket. €4.950 setup + €397/mnd.</p>
           <span class="text-xs text-brand-indigo font-medium">Bekijk bundel →</span>
         </a>
         <a href="/diensten/marco/" class="card hover:border-brand-indigo transition-all">
           <h3 class="font-bold text-navy text-sm mb-2">Marco — telefoon-AI</h3>
-          <p class="text-xs text-slate-600 mb-3">Receptionist + telefoniste in één: 24/7 afspraken, intake, doorverbinden, no-show reductie.</p>
+          <p class="text-xs text-slate-600 mb-3">Receptionist + telefoniste in één: 24/7 afspraken, intake, doorverbinden, no-show-reductie.</p>
           <span class="text-xs text-brand-indigo font-medium">Ontmoet Marco →</span>
         </a>
         <a href="/cases/" class="card hover:border-brand-indigo transition-all">
           <h3 class="font-bold text-navy text-sm mb-2">Combo-cases bekijken</h3>
-          <p class="text-xs text-slate-600 mb-3">5 branche-scenarios met Website + AI bundel: detailhandel, zorg, horeca, advocatuur, accountancy.</p>
+          <p class="text-xs text-slate-600 mb-3">5 branche-scenario's met Website + AI bundel: detailhandel, zorg, horeca, advocatuur, accountancy.</p>
           <span class="text-xs text-brand-indigo font-medium">Bekijk cases →</span>
         </a>
       </div>

@@ -5,20 +5,33 @@ const faqItems = [
   { question: 'Zijn er verborgen kosten bij AI agents?', answer: 'Bij Aanloop AI zijn er geen verborgen kosten. Hosting, onderhoud, updates, monitoring en support zijn inbegrepen in het maandelijkse abonnement. U betaalt nooit extra per gesprek of bericht. Eenmalige setup-kosten worden apart vermeld in de offerte.' },
   { question: 'Hoe snel verdien ik een AI agent terug?', answer: 'De gemiddelde terugverdientijd voor een AI agent bij Nederlandse MKB-bedrijven is 3-6 maanden. Een AI agent die 20 uur per week bespaart op personeelskosten (à €25/uur) levert €2.000/maand op — en betaalt een Starter pakket van €597 al in 15 werkdagen terug.' },
   { question: 'Kan ik maandelijks opzeggen?', answer: 'Ja, alle Aanloop AI abonnementen zijn maandelijks opzegbaar (met één maand opzegtermijn). Bij jaarlijkse betaling ontvangt u circa 16% korting.' },
-  { question: 'Zijn er eenmalige setupkosten?', answer: 'Ja, afhankelijk van de complexiteit zijn er eenmalige implementatiekosten. Voor een Starter pakket beginnen deze vanaf €500. Complexe enterprise-implementaties kunnen hogere setupkosten hebben. Wij vermelden dit altijd transparant in de offerte.' }];
+  { question: 'Zijn er eenmalige setupkosten?', answer: 'Ja, afhankelijk van de complexiteit zijn er eenmalige implementatiekosten. Voor een Starter pakket beginnen deze vanaf €500. Complexe enterprise-implementaties kunnen hogere setupkosten hebben. Wij vermelden dit altijd transparant in de offerte.' },
+  { question: 'Welk prijsmodel hanteren AI-agent-leveranciers?', answer: 'Er zijn drie gangbare modellen. Vast maandtarief (zoals Aanloop AI): één voorspelbaar bedrag, ongeacht het volume. Per-gebruik of per-minuut: u betaalt per gesprek of gespreksminuut, wat onvoorspelbaar wordt bij groei. Per-zitplaats of per-agent: gebruikelijk bij enterprise-software. Voor MKB is een vast maandtarief meestal het veiligst omdat de kosten niet meeschalen met succes.' },
+  { question: 'Wat is het verschil tussen DIY-bouwen en een AI agent afnemen als dienst?', answer: 'Zelf bouwen met losse tools (een LLM-API, een spraakplatform, automatiseringssoftware) lijkt goedkoop maar vergt technische kennis, doorlopend onderhoud en eigen monitoring. De API-kosten zijn slechts een fractie van de totale eigenaarschapskosten. Een dienst zoals Aanloop AI bundelt configuratie, hosting, onderhoud, updates en support in één tarief — meestal goedkoper dan de verborgen tijdsinvestering van een DIY-traject.' },
+  { question: 'Hoe verhouden de kosten van een AI agent zich tot een vaste medewerker?', answer: 'Een fulltime klantenservice- of receptiemedewerker kost in Nederland inclusief werkgeverslasten en vakantiegeld €3.500–€5.000 per maand en werkt alleen kantooruren. Een AI agent kost €597–€1.197 per maand en werkt 24/7. Voor routinetaken is de AI dus aanzienlijk goedkoper; voor complexe, relationele gesprekken blijft een mens nodig — vandaar dat de hybride opzet het meest rendeert.' },
+  { question: 'Wat kosten de API\'s achter een AI agent eigenlijk?', answer: 'De onderliggende technologie-kosten zijn relatief klein. LLM-API\'s worden afgerekend per token (zie de prijspagina van platform.openai.com), spraaktechnologie per gegenereerde minuut audio. Voor een typisch MKB-gespreksvolume bedragen deze kosten enkele tientallen tot ruim honderd euro per maand. Het grootste deel van een dienst-tarief zit in configuratie, onderhoud, monitoring en support — niet in de ruwe API-kosten.' },
+  { question: 'Krijg ik subsidie of fiscaal voordeel voor een AI-investering?', answer: 'Mogelijk. Afhankelijk van uw situatie kunnen regelingen zoals de Kleinschaligheidsinvesteringsaftrek (KIA) of innovatiegerichte regelingen van toepassing zijn. De Rijksdienst voor Ondernemend Nederland (RVO) en de Belastingdienst bieden actuele informatie over investeringsaftrek. Stem dit altijd af met uw accountant — een AI-abonnement is doorgaans een operationele kostenpost, terwijl eenmalige implementatie soms als investering kwalificeert.' },
+  { question: 'Stijgen de kosten als mijn gespreksvolume groeit?', answer: 'Bij een vast maandtarief met onbeperkte gesprekken (zoals het Aanloop AI Growth-pakket) niet. Bij per-gebruik-modellen wel — daar betaalt u meer naarmate u meer succes heeft. Dit is een belangrijk aandachtspunt bij het vergelijken van aanbieders: vraag altijd expliciet of het tarief volumegebonden is.' },
+  { question: 'Wat is een realistische ROI van een AI agent voor MKB?', answer: 'De meeste Nederlandse MKB-bedrijven realiseren een ROI van 3-10x op jaarbasis, met een terugverdientijd van 1-6 maanden. De winst komt uit drie bronnen: bespaarde personeelskosten, extra omzet door 24/7-bereikbaarheid en gemiste calls die alsnog converteren, en betere klantretentie. Bereken uw eigen scenario conservatief — gebruik lage conversiepercentages om niet te optimistisch te ramen.' },
+  { question: 'Zijn er kosten voor integraties met mijn bestaande systemen?', answer: 'Standaardintegraties met veelgebruikte systemen (Google Calendar, Outlook, gangbare CRM\'s zoals HubSpot of Pipedrive) zijn bij Aanloop AI inbegrepen in het pakket. Maatwerkkoppelingen met branchespecifieke of zelfgebouwde systemen kunnen eenmalige ontwikkelkosten met zich meebrengen; dit wordt altijd vooraf transparant in de offerte vermeld.' },
+  { question: 'Wat kost het onderhoud van een AI agent na livegang?', answer: 'Bij een dienst-model zoals Aanloop AI is onderhoud inbegrepen: hertraining op nieuwe gesprekken, software-updates, monitoring en support vallen onder het maandtarief. Bij een zelfgebouwde oplossing zijn onderhoudskosten een aparte, vaak onderschatte post — reken op meerdere uren technisch werk per maand.' },
+  { question: 'Hoe vergelijk ik offertes van verschillende AI-agent-aanbieders eerlijk?', answer: 'Let op vijf punten: (1) is het tarief vast of volumegebonden, (2) zijn hosting, onderhoud en support inbegrepen, (3) wat zijn de eenmalige setupkosten, (4) is de opzegtermijn kort en zonder exit-fees, en (5) waar wordt de data verwerkt (EU-locatie voor AVG). Een laag instaptarief zegt weinig als per-gesprek-kosten of verborgen integratiekosten de totale rekening opdrijven.' }];
 const schema = {
   '@context': 'https://schema.org', '@type': 'Article',
   headline: 'Hoeveel Kost een AI Agent in Nederland? (2026 Prijzen)',
+  description: 'Actuele prijzen voor AI agents in Nederland in 2026: prijsmodellen, kostenopbouw, API-kosten, ROI-berekening, vergelijking met personeel en hoe u offertes eerlijk vergelijkt.',
   author: { '@type': 'Person', '@id': 'https://aanloopai.nl/over-ons/#mustafa-agah-dogan', name: 'Mustafa Agah Dogan', jobTitle: 'Oprichter & AI-strateeg', url: 'https://aanloopai.nl/over-ons/', worksFor: { '@id': 'https://aanloopai.nl/#organization' } },
   publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
-  datePublished: '2026-01-11', dateModified: '2026-04-18', inLanguage: 'nl-NL',
-  articleSection: 'AI Prijzen & ROI',
+  datePublished: '2026-01-11', dateModified: '2026-05-21', inLanguage: 'nl-NL',
+  articleSection: 'AI Prijzen & ROI', wordCount: 3400,
 };
+
+const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'Hoeveel Kost een AI Agent in Nederland? (2026 Prijzen)', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-agent-kosten-mkb/', inLanguage: 'nl-NL' };
 ---
 <BaseLayout
   title="Hoeveel Kost een AI Agent in Nederland? (2026 Prijzen)"
   description="Actuele prijzen voor AI agents in Nederland in 2026. Van €597/maand voor MKB tot enterprise op maat. Transparante kostenopbouw, ROI-berekening en vergelijking."
-  schema={schema}
+  schema={[schema, speakableSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">
@@ -92,12 +105,79 @@ const schema = {
         ))}
       </div>
 
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Drie Prijsmodellen — en Welk u Moet Kiezen</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Niet elke AI-agent-aanbieder rekent op dezelfde manier af. Het prijsmodel bepaalt of uw kosten voorspelbaar blijven of juist meeschalen met uw succes. Dit zijn de drie gangbare modellen op de Nederlandse markt:</p>
+      <div class="overflow-x-auto mb-6">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b-2 border-slate-200">
+              <th class="text-left py-3 pr-4 font-semibold text-navy">Prijsmodel</th>
+              <th class="text-left py-3 px-4 font-semibold text-slate-500">Hoe het werkt</th>
+              <th class="text-left py-3 px-4 font-semibold text-slate-500">Voordeel</th>
+              <th class="text-left py-3 pl-4 font-semibold text-slate-500">Risico</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {[
+              ['Vast maandtarief', 'Eén bedrag, ongeacht volume', 'Volledig voorspelbaar', 'Bij lage volumes minder efficiënt'],
+              ['Per gesprek / per minuut', 'Afrekening per gebruik', 'Laag bij weinig verkeer', 'Onvoorspelbaar; stijgt bij groei'],
+              ['Per zitplaats / per agent', 'Prijs per gebruiker of bot', 'Schaalt met team', 'Duur bij meerdere gebruikers'],
+            ].map(([m, h, v, r]) => (
+              <tr>
+                <td class="py-3 pr-4 font-medium text-navy">{m}</td>
+                <td class="py-3 px-4 text-slate-600">{h}</td>
+                <td class="py-3 px-4 text-slate-600">{v}</td>
+                <td class="py-3 pl-4 text-slate-500">{r}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-slate-700 leading-relaxed mb-8">Voor de meeste Nederlandse MKB-bedrijven is een <strong>vast maandtarief</strong> het verstandigst: uw kosten blijven gelijk, ook als de AI succesvol is en het belvolume groeit. Per-gebruik-modellen klinken aantrekkelijk bij lage volumes, maar straffen u feitelijk af voor groei. Aanloop AI hanteert daarom bewust een vast maandtarief met onbeperkte gesprekken in het Growth-pakket.</p>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Total Cost of Ownership: Zelf Bouwen vs. Dienst Afnemen</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Een veelgemaakte denkfout is dat zelf bouwen goedkoper is. De ruwe technologie-kosten zijn inderdaad laag: LLM-API's worden per token afgerekend (de actuele tarieven staan op <a href="https://platform.openai.com/docs/pricing" rel="external" class="text-brand-indigo hover:underline">platform.openai.com</a>), en spraaktechnologie per gegenereerde minuut audio (zie de <a href="https://elevenlabs.io/docs" rel="external" class="text-brand-indigo hover:underline">ElevenLabs-documentatie</a>). Voor een gemiddeld MKB-gespreksvolume blijven die kosten beperkt tot enkele tientallen tot ruim honderd euro per maand.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Maar de Total Cost of Ownership (TCO) omvat veel meer dan API-kosten. Zelf bouwen vereist het koppelen van losse componenten — een LLM, een spraakplatform, automatiseringssoftware zoals beschreven in de <a href="https://docs.n8n.io/" rel="external" class="text-brand-indigo hover:underline">n8n-documentatie</a> — plus doorlopend onderhoud, monitoring, foutafhandeling en updates. Die tijdsinvestering, omgerekend naar uurtarief, vormt vaak de grootste verborgen kostenpost.</p>
+      <div class="overflow-x-auto mb-6">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b-2 border-slate-200">
+              <th class="text-left py-3 pr-4 font-semibold text-navy">Kostenpost</th>
+              <th class="text-left py-3 px-4 font-semibold text-slate-500">Zelf bouwen (DIY)</th>
+              <th class="text-left py-3 pl-4 font-semibold text-brand-indigo">Dienst (Aanloop AI)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {[
+              ['API- & spraakkosten', 'Variabel, zelf beheren', 'Inbegrepen'],
+              ['Configuratie & bouw', 'Eigen tijd of inhuur ontwikkelaar', 'Inbegrepen'],
+              ['Hosting & infrastructuur', 'Zelf opzetten en betalen', 'Inbegrepen'],
+              ['Onderhoud & updates', 'Doorlopend, eigen verantwoordelijkheid', 'Inbegrepen'],
+              ['Monitoring & support', 'Zelf inrichten', 'Inbegrepen'],
+              ['Voorspelbaarheid kosten', 'Laag', 'Hoog — vast maandtarief'],
+            ].map(([p, d, a]) => (
+              <tr>
+                <td class="py-3 pr-4 font-medium text-navy">{p}</td>
+                <td class="py-3 px-4 text-slate-600">{d}</td>
+                <td class="py-3 pl-4 text-navy font-medium">{a}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-slate-700 leading-relaxed mb-8">Zelf bouwen kan zinvol zijn voor bedrijven met een eigen technisch team en zeer specifieke eisen. Voor de meeste MKB-bedrijven zonder vaste developer is een dienst-model goedkoper én sneller live — u betaalt voor een werkend resultaat in plaats van voor een bouwtraject met open einde.</p>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Kosten in Perspectief: De Bredere AI-investering</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Een AI agent is voor veel MKB-bedrijven de eerste structurele AI-investering. Het is verstandig de kosten in een breder kader te plaatsen. De Rijksoverheid stimuleert verantwoorde AI-adoptie en bundelt beleid en hulpmiddelen op <a href="https://www.rijksoverheid.nl/onderwerpen/artificiele-intelligentie-ai" rel="external" class="text-brand-indigo hover:underline">rijksoverheid.nl</a>. Het Centraal Bureau voor de Statistiek meet dat steeds meer Nederlandse bedrijven AI inzetten, met klantcontact en administratie als koplopers (<a href="https://www.cbs.nl/nl-nl/nieuws/2024/30/ai-gebruik-stijgt-vooral-bij-grote-bedrijven" rel="external" class="text-brand-indigo hover:underline">CBS — AI-gebruik bij bedrijven</a>).</p>
+      <p class="text-slate-700 leading-relaxed mb-8">Voor de fiscale kant geldt: een maandelijks AI-abonnement is doorgaans een operationele kostenpost en direct aftrekbaar. Eenmalige implementatiekosten kunnen onder omstandigheden als investering kwalificeren, met mogelijk recht op investeringsaftrek. Stem dit af met uw accountant — de regels rond regelingen zoals de Kleinschaligheidsinvesteringsaftrek veranderen jaarlijks. Een eerlijke kostenafweging neemt dus zowel het bruto-tarief als het netto fiscale effect mee.</p>
+
       <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8">
         <p class="text-sm font-bold text-navy mb-3">Lees ook</p>
         <ul class="space-y-2">
           <li><a href="/kennisbank/wat-is-een-ai-agent/" class="text-sm text-brand-indigo hover:underline">Wat is een AI Agent? De Complete Gids voor MKB in 2026 →</a></li>
           <li><a href="/kennisbank/ai-agent-vs-chatbot/" class="text-sm text-brand-indigo hover:underline">AI Agent vs Chatbot: Wat is het Verschil? →</a></li>
           <li><a href="/kennisbank/ai-workflow-automation/" class="text-sm text-brand-indigo hover:underline">AI Workflow Automation: Complete Uitleg voor Beginners →</a></li>
+          <li><a href="/kennisbank/ai-roi-berekenen-mkb-nederland-2026/" class="text-sm text-brand-indigo hover:underline">AI ROI berekenen voor MKB Nederland →</a></li>
         </ul>
       </div>
 

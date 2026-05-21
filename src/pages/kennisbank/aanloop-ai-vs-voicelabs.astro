@@ -125,10 +125,10 @@ const pijlers = [
     titel: 'EU-datasovereiniteit en compliance-bewijslast',
     samenvatting: 'Aanloop AI vermeldt expliciet EU-only datacenters (Frankfurt en Amsterdam), AVG-verwerkersovereenkomst standaard inbegrepen, NEN 7510 op aanvraag voor zorg, en gestructureerde data-redactie. Voor Voicelabs is per mei 2026 geen expliciete datacenter-locatie of NEN-status op de publieke website vermeld. Voor gereguleerde sectoren (zorg, juridisch, financieel-advies, overheid) is publieke compliance-bewijslast een risk-mitigation-instrument.',
     paragrafen: [
-      'AVG-verantwoordelijkheid ligt altijd bij de verwerkings-verantwoordelijke (uw MKB-bedrijf), niet bij de verwerker (de AI-aanbieder). Maar de bewijslast — datacenter-locatie, sub-processors, technische maatregelen, certificeringen — moet bij audit, klacht of incident reproduceerbaar zijn. Een aanbieder die deze bewijsstukken proactief publiceert, vermindert uw eigen documentatie-werk.',
+      'AVG-verantwoordelijkheid ligt altijd bij de verwerkings-verantwoordelijke (uw MKB-bedrijf), niet bij de verwerker (de AI-aanbieder) — zie de uitleg van de Autoriteit Persoonsgegevens over de rolverdeling verwerkingsverantwoordelijke en verwerker (zie de bronnenlijst onderaan). Maar de bewijslast — datacenter-locatie, sub-processors, technische maatregelen, certificeringen — moet bij audit, klacht of incident reproduceerbaar zijn. Een aanbieder die deze bewijsstukken proactief publiceert, vermindert uw eigen documentatie-werk.',
       'Aanloop AI publiceert per mei 2026 op de tarieven- en sector-paginas expliciet: data-residency in Frankfurt (CWWE) en Amsterdam (Equinix AM5), n8n self-hosted op Docker Compose binnen EU-grenzen, ElevenLabs voice-pijp via EU-API-endpoint, AVG-verwerkersovereenkomst-template per koppeling met klant-tooling, AVG artikel 30 verwerkings-logging, NEN 7510-baseline op aanvraag voor zorgklanten en automatische BSN- en bankgegevens-redactie in archief-transcripts. End-to-end TLS 1.3 op alle gegevens-transit.',
       'Voor Voicelabs is op de publieke website per mei 2026 geen specifieke datacenter-locatie of certificerings-status vermeld. Dit is geen indicatie dat Voicelabs niet AVG-conform werkt — alleen dat de evaluatie-stap "vraag de actuele Verwerkersovereenkomst, datacenter-locatie en eventuele certificeringen op" expliciet onderdeel moet zijn van uw inkoop-traject voordat u contracteert.',
-      'Voor gereguleerde sectoren weegt deze bewijslast extra zwaar. In zorg geldt NEN 7510 als de Nederlandse industrie-standaard voor informatiebeveiliging in de gezondheidssector. In financieel-advies (Wft) geldt artikel 4:11 Wft over zorgplicht en de DNB-Beleidsregel Informatiebeveiliging. Voor advocaten en notarissen geldt de NOvA-gedragsregels en het notariaat-tuchtrecht over geheimhouding van clientdossiers. In al deze sectoren versterkt expliciet-publieke compliance-documentatie uw eigen audit-trail.',
+      'Voor gereguleerde sectoren weegt deze bewijslast extra zwaar. In zorg geldt NEN 7510 als de Nederlandse industrie-standaard voor informatiebeveiliging in de gezondheidssector. In financieel-advies (Wft) geldt artikel 4:11 Wft over zorgplicht en de DNB-Beleidsregel Informatiebeveiliging. Voor advocaten en notarissen geldt de NOvA-gedragsregels en het notariaat-tuchtrecht over geheimhouding van clientdossiers. De toepasselijke EU-kaders — AVG en de EU AI Act — staan integraal raadpleegbaar via de officiele bronnen in de bronnenlijst onderaan deze pagina. In al deze sectoren versterkt expliciet-publieke compliance-documentatie uw eigen audit-trail.',
       'Verifieerbare bron: aanloopai.nl/over/ + sector-specifieke /kennisbank/-paginas (Aanloop), voicelabs.nl publieke website per mei 2026 (Voicelabs — expliciet vermeld in deze paragraaf wegens niet-expliciete data-residency-publicatie).',
     ],
   },
@@ -311,6 +311,25 @@ const pijlers = [
             </a>
           ))}
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bronnen -->
+  <section class="section bg-slate-50 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mx-auto">
+        <div class="mb-8">
+          <span class="eyebrow mb-3">Bronnen en verdere informatie</span>
+          <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mt-2">Officiele bronnen voor uw eigen onderzoek.</h2>
+        </div>
+        <ul class="space-y-3 text-sm text-slate-700">
+          <li>&middot; <a href="https://www.autoriteitpersoonsgegevens.nl/themas/internet-slimme-apparaten/algoritmes-ai" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">Autoriteit Persoonsgegevens &mdash; Algoritmes &amp; AI</a> &mdash; Nederlandse toezichthouder, richtlijnen voor AI in combinatie met persoonsgegevens.</li>
+          <li>&middot; <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">EU AI Act &mdash; Europese Commissie</a> &mdash; risico-classificatie en transparantieplicht voor AI-systemen zoals voicebots.</li>
+          <li>&middot; <a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">AVG (verordening 2016/679, EUR-Lex)</a> &mdash; integrale tekst over verwerkersovereenkomsten en data-residency.</li>
+          <li>&middot; <a href="https://www.nen.nl/" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">NEN 7510 &mdash; informatiebeveiliging in de zorg</a> &mdash; relevant bij evaluatie van voice-AI voor zorgklanten.</li>
+          <li>&middot; <a href="https://elevenlabs.io/docs" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">ElevenLabs &mdash; technische documentatie</a> &mdash; de Nederlandse voice-engine die Aanloop AI voor Marco inzet.</li>
+        </ul>
       </div>
     </div>
   </section>

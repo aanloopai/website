@@ -24,7 +24,7 @@ const articleSchema = {
     }
   },
   "datePublished": "2025-12-31",
-  "dateModified": "2026-04-07",
+  "dateModified": "2026-05-21",
   "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-cashflow-prognose-finance-mkb-nederland-2026/",
   "inLanguage": "nl-NL",
   "articleSection": "Finance & AI",
@@ -110,9 +110,9 @@ const faqItems = [
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">AVG, EU AI Act en finance-compliance</h2>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Data-residentie en service-account-scopes:</strong> finance-data bevat zakelijke persoonsgegevens (klant-naam, contact-persoon, IBAN, factuur-bedragen) — verwerking onder AVG. Service-account naar boekhouding-API krijgt waar mogelijk read-only-rechten. Twinfield API-token: read-only voor cashflow-use-case. Exact Online OAuth: scope beperken tot read-only Sales en Purchase. AFAS Connector: read-only profiel. Voor on-premise pakketten (sommige King-installaties, custom ERP): SQL-readonly-user met IP-whitelist plus audit-trail. EU-VPS verplicht (Hetzner Frankfurt, Scaleway Amsterdam) voor de AI-engine en data-store.</p>
-      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">EU AI Act classificatie:</strong> cashflow-forecasting voor interne planning valt onder limited risk — gebruiker (controller, CFO) moet weten dat AI ondersteunt. AI-disclosure in dashboard plus AI-literacy training (verplicht februari 2025) voor finance-team. Geen high-risk plichten zolang AI niet wordt ingezet voor: kredietwaardigheids-beoordeling van klanten, geautomatiseerde leen-besluiten, of HR-finance-besluiten op personeelsdata. Bij toevoeging van credit-scoring (klant op factuur of niet): high-risk classificatie, conformity assessment, EU-database registratie en DPIA verplicht — dat is een aparte use-case die we niet standaard meeleveren.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">EU AI Act classificatie:</strong> cashflow-forecasting voor interne planning valt onder limited risk in de <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="external" class="text-brand-indigo hover:underline">EU AI Act</a> — gebruiker (controller, CFO) moet weten dat AI ondersteunt. AI-disclosure in dashboard plus AI-literacy training (verplicht februari 2025) voor finance-team. Geen high-risk plichten zolang AI niet wordt ingezet voor: kredietwaardigheids-beoordeling van klanten, geautomatiseerde leen-besluiten, of HR-finance-besluiten op personeelsdata. Bij toevoeging van credit-scoring (klant op factuur of niet): high-risk classificatie, conformity assessment, EU-database registratie en DPIA verplicht — dat is een aparte use-case die we niet standaard meeleveren.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">AVG-verplichtingen specifiek voor finance-AI:</strong> (1) Verwerkingsregister-aanvulling met "AI cashflow-forecasting", doel (interne financiele planning), rechtsgrond (gerechtvaardigd belang plus uitvoering arbeidsovereenkomst voor controller-rol), categorieen persoonsgegevens (zakelijke klant- en leveranciers-data, geen consumenten-data), bewaartermijn (typisch 7 jaar conform fiscale bewaarplicht). (2) Verwerkersovereenkomst met AI-leverancier (Anthropic, OpenAI, of Aanloop AI) inclusief sub-processor-overzicht en EU-data-clausules. (3) AI-literacy training voor finance-team (1 uur, NL-talig, met certificaat). (4) Logging-laag voor audit (welke prompt, welke retrieved data, welke forecast-output, welk tijdstempel). Aanloop AI levert NL-talig template-pakket.</p>
-      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Branche-specifieke compliance:</strong> bij accountantskantoren plus advocatenkantoren plus zorginstellingen extra voorzichtigheid wegens beroepsgeheim plus NEN-7510 (zorg). Aanloop AI splitst dan per-klant data in eigen tenant-instances zodat klant-data niet kruist tussen forecast-modellen. Voor financieel-toezichthoudende organisaties (banken, verzekeraars, pensioenfondsen): aanvullende DNB-rapportage-eisen plus eventuele BCBS239 data-lineage — neem dat mee in de implementatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Branche-specifieke compliance:</strong> bij accountantskantoren plus advocatenkantoren plus zorginstellingen extra voorzichtigheid wegens beroepsgeheim plus NEN-7510 (zorg). Aanloop AI splitst dan per-klant data in eigen tenant-instances zodat klant-data niet kruist tussen forecast-modellen. Voor financieel-toezichthoudende organisaties (banken, verzekeraars, pensioenfondsen): aanvullende toezicht-eisen van <a href="https://www.afm.nl/" target="_blank" rel="external" class="text-brand-indigo hover:underline">AFM</a> en DNB-rapportage-eisen plus eventuele BCBS239 data-lineage — neem dat mee in de implementatie.</p>
     </div>
   </section>
 
@@ -179,6 +179,20 @@ const faqItems = [
           </details>
         ))}
       </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-4">Bronnen en verdere informatie</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">AI-forecasting op finance-data raakt aan AVG, de EU AI Act en financieel toezicht. Hieronder de officiele bronnen voor verdere verdieping.</p>
+      <ul class="space-y-2 text-slate-700">
+        <li>&middot; <a href="https://www.afm.nl/" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">Autoriteit Financiele Markten (AFM)</a> &mdash; toezicht op financiele dienstverlening, relevant bij credit-scoring en advies-grenzen.</li>
+        <li>&middot; <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">EU AI Act &mdash; Europese Commissie</a> &mdash; risico-classificatie; high-risk bij geautomatiseerde krediet-besluiten.</li>
+        <li>&middot; <a href="https://www.autoriteitpersoonsgegevens.nl/themas/basis-avg/avg-algemeen" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">Autoriteit Persoonsgegevens &mdash; AVG algemeen</a> &mdash; verwerking van zakelijke persoonsgegevens en geautomatiseerde besluiten (artikel 22).</li>
+        <li>&middot; <a href="https://www.belastingdienst.nl/wps/wcm/connect/nl/btw/btw" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">Belastingdienst &mdash; BTW</a> &mdash; aangifte-cycli en bewaarplicht die de cashflow-prognose voeden.</li>
+        <li>&middot; <a href="https://www.cbs.nl/nl-nl/economie/financiele-en-zakelijke-diensten" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">CBS &mdash; Financiele en zakelijke diensten</a> &mdash; macrocijfers voor scenario-aannames.</li>
+      </ul>
     </div>
   </section>
 

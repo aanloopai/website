@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const today = new Date().toISOString().split('T')[0];
+const dateModified = '2026-05-21';
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -11,7 +12,7 @@ const articleSchema = {
   author: { '@type': 'Person', '@id': 'https://aanloopai.nl/over-ons/#mustafa-agah-dogan', name: 'Mustafa Agah Dogan', jobTitle: 'Oprichter & AI-strateeg', url: 'https://aanloopai.nl/over-ons/', worksFor: { '@id': 'https://aanloopai.nl/#organization' } },
   publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
   datePublished: today,
-  dateModified: today,
+  dateModified,
   mainEntityOfPage: 'https://aanloopai.nl/kennisbank/ai-voor-restaurant-nederland/',
   inLanguage: 'nl-NL',
   articleSection: 'AI per Sector',
@@ -87,7 +88,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
   <section class="section">
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">5. Compliance: AVG, allergenen en HACCP-protocollen</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Nederlandse restaurants zijn verplicht om allergeneninformatie correct te verstrekken (Verordening EU 1169/2011) en gastdata AVG-compliant te bewaren. Een goed geïmplementeerde AI agent volgt uw HACCP-protocollen, geeft alleen geverifieerde allergeneninformatie en bewaart conversaties in EU-datacenters met encryption at-rest.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Nederlandse restaurants zijn verplicht om allergeneninformatie correct te verstrekken (<a href="https://eur-lex.europa.eu/legal-content/NL/TXT/?uri=CELEX:32011R1169" rel="external" target="_blank" class="text-brand-indigo hover:underline">Verordening EU 1169/2011</a>) en gastdata AVG-compliant te bewaren. Een goed geïmplementeerde AI agent volgt uw HACCP-protocollen, geeft alleen geverifieerde allergeneninformatie en bewaart conversaties in EU-datacenters met encryption at-rest. De <a href="https://www.autoriteitpersoonsgegevens.nl/" rel="external" target="_blank" class="text-brand-indigo hover:underline">Autoriteit Persoonsgegevens</a> houdt toezicht op de verwerking van gastgegevens; de <a href="https://www.nvwa.nl/" rel="external" target="_blank" class="text-brand-indigo hover:underline">NVWA</a> controleert de allergenen- en voedselveiligheidsverplichtingen.</p>
     </div>
   </section>
 
@@ -113,6 +114,33 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
             <p class="mt-3 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
           </details>
         ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-8">
+        <p class="eyebrow mb-2">Bronnen en verdere informatie</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Onafhankelijke bronnen voor uw eigen onderzoek.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="https://www.khn.nl/" rel="external" target="_blank" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Koninklijke Horeca Nederland (KHN)</p>
+          <p class="text-slate-600 mt-1 text-xs">Brancheorganisatie voor de Nederlandse horeca — cijfers, regelgeving en ondernemersondersteuning.</p>
+        </a>
+        <a href="https://eur-lex.europa.eu/legal-content/NL/TXT/?uri=CELEX:32011R1169" rel="external" target="_blank" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">EU-Verordening 1169/2011 — voedselinformatie</p>
+          <p class="text-slate-600 mt-1 text-xs">De Europese verplichting tot correcte allergenen- en voedselinformatie aan consumenten.</p>
+        </a>
+        <a href="https://www.nvwa.nl/" rel="external" target="_blank" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">NVWA — Nederlandse Voedsel- en Warenautoriteit</p>
+          <p class="text-slate-600 mt-1 text-xs">Toezicht op voedselveiligheid, HACCP en allergenen-informatie in de horeca.</p>
+        </a>
+        <a href="https://www.autoriteitpersoonsgegevens.nl/" rel="external" target="_blank" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Autoriteit Persoonsgegevens</p>
+          <p class="text-slate-600 mt-1 text-xs">AVG-toezichthouder — verwerking en bewaring van gast- en reserveringsgegevens.</p>
+        </a>
       </div>
     </div>
   </section>

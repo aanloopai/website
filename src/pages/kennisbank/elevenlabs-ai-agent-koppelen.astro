@@ -6,7 +6,7 @@ const faqItems = [
   { question: 'Heb ik een ElevenLabs account nodig?', answer: 'Als u de integratie zelf beheert: ja. Als u werkt met Aanloop AI: nee. Aanloop AI beheert de ElevenLabs configuratie volledig voor u, inclusief stem, kennisbank en workflowkoppelingen.' },
   { question: 'Kan ElevenLabs Nederlands spreken?', answer: 'Ja. ElevenLabs heeft uitstekende Nederlandse stemmen beschikbaar die zeer natuurlijk klinken. De latency (vertraging tussen vraag en antwoord) is minder dan 1 seconde, waardoor gesprekken vloeiend verlopen.' },
   { question: 'Is ElevenLabs AVG-compliant?', answer: 'ElevenLabs verwerkt data op Europese servers. Voor maximale AVG-compliance combineert Aanloop AI ElevenLabs met n8n self-hosted: de gesprekstranscripties en klantdata blijven in Nederland, op uw eigen server.' }];
-const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: 'ElevenLabs AI Agent Koppelen aan je Telefooncentrale (2026 Gids)', author: { '@type': 'Person', '@id': 'https://aanloopai.nl/over-ons/#mustafa-agah-dogan', name: 'Mustafa Agah Dogan', jobTitle: 'Oprichter & AI-strateeg', url: 'https://aanloopai.nl/over-ons/', worksFor: { '@id': 'https://aanloopai.nl/#organization' } }, publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2026-05-09', dateModified: '2026-05-09', inLanguage: 'nl-NL', articleSection: 'AI Voice' };
+const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: 'ElevenLabs AI Agent Koppelen aan je Telefooncentrale (2026 Gids)', author: { '@type': 'Person', '@id': 'https://aanloopai.nl/over-ons/#mustafa-agah-dogan', name: 'Mustafa Agah Dogan', jobTitle: 'Oprichter & AI-strateeg', url: 'https://aanloopai.nl/over-ons/', worksFor: { '@id': 'https://aanloopai.nl/#organization' } }, publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2026-05-09', dateModified: '2026-05-21', inLanguage: 'nl-NL', articleSection: 'AI Voice' };
 ---
 <BaseLayout title="ElevenLabs AI + Telefoonkoppeling 2026" description="Stap-voor-stap gids: ElevenLabs AI agent koppelen aan uw bestaande telefoonsysteem." schema={[schema]} faqSchema={faqItems}>
   <section class="border-b border-slate-200 hero-gradient">
@@ -32,7 +32,7 @@ const schema = { '@context': 'https://schema.org', '@type': 'Article', headline:
       </div>
 
       <h2 class="text-2xl font-bold text-navy mt-10 mb-4" id="stap-1">Stap 1: ElevenLabs Agent Configureren</h2>
-      <p class="text-slate-700 leading-relaxed mb-4">Log in op uw ElevenLabs account en navigeer naar "Conversational AI". Maak een nieuwe agent aan en configureer:</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Log in op uw ElevenLabs account en navigeer naar "Conversational AI". De volledige configuratie-opties staan beschreven in de <a href="https://elevenlabs.io/docs/conversational-ai/overview" target="_blank" rel="external noopener noreferrer" class="text-brand-indigo underline hover:text-navy">officiële ElevenLabs Conversational AI-documentatie</a>. Maak een nieuwe agent aan en configureer:</p>
       <ul class="space-y-2 text-sm text-slate-700 mb-6">
         <li class="flex items-start gap-2"><span class="font-bold">Stem:</span> Kies een Nederlandse stem (bijv. "Charlotte" of upload een kloonafstem)</li>
         <li class="flex items-start gap-2"><span class="font-bold">Systeem-prompt:</span> Beschrijf uw bedrijf, welke vragen de agent mag beantwoorden en wanneer hij doorverbindt</li>
@@ -41,7 +41,7 @@ const schema = { '@context': 'https://schema.org', '@type': 'Article', headline:
       </ul>
 
       <h2 class="text-2xl font-bold text-navy mt-10 mb-4" id="stap-2">Stap 2: SIP-trunk Koppelen</h2>
-      <p class="text-slate-700 leading-relaxed mb-4">Verbind ElevenLabs met uw telefoonsysteem via een SIP-trunk:</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Verbind ElevenLabs met uw telefoonsysteem via een SIP-trunk. ElevenLabs ondersteunt zowel native telefonie als externe SIP-trunking; zie de <a href="https://elevenlabs.io/docs/conversational-ai/phone-numbers/sip-trunking" target="_blank" rel="external noopener noreferrer" class="text-brand-indigo underline hover:text-navy">SIP-trunking handleiding van ElevenLabs</a> en voor Twilio de <a href="https://www.twilio.com/docs/sip-trunking" target="_blank" rel="external noopener noreferrer" class="text-brand-indigo underline hover:text-navy">Twilio Elastic SIP Trunking-documentatie</a>:</p>
       <div class="space-y-3 mb-6">
         {[
           { provider: 'Voys (populair in NL)', steps: 'Voeg een nieuw SIP-account toe in het Voys-portaal. Kopieer de SIP-credentials naar ElevenLabs "Phone Numbers" → "Import". Wijs het telefoonnummer toe aan de AI agent.' },
@@ -81,6 +81,17 @@ const schema = { '@context': 'https://schema.org', '@type': 'Article', headline:
           <li><a href="/kennisbank/voice-ai-klantenservice/" class="text-sm text-brand-indigo hover:underline">Voice AI Agents voor Klantenservice: Werkt het Echt? →</a></li>
           <li><a href="/kennisbank/ai-telefoniste-vs-mens/" class="text-sm text-brand-indigo hover:underline">AI Telefoniste vs Mens: Kostenbesparing & Kwaliteit →</a></li>
           <li><a href="/kennisbank/wat-is-een-ai-agent/" class="text-sm text-brand-indigo hover:underline">Wat is een AI Agent? De Complete Gids voor MKB →</a></li>
+        </ul>
+      </div>
+
+      <div class="bg-white border border-slate-200 rounded-xl p-6 mb-8">
+        <p class="text-sm font-bold text-navy mb-3">Bronnen en verdere informatie</p>
+        <ul class="space-y-2 text-sm text-slate-600">
+          <li><a href="https://elevenlabs.io/docs/conversational-ai/overview" target="_blank" rel="external noopener noreferrer" class="text-brand-indigo hover:underline">ElevenLabs — Conversational AI documentatie</a></li>
+          <li><a href="https://elevenlabs.io/docs/conversational-ai/phone-numbers/sip-trunking" target="_blank" rel="external noopener noreferrer" class="text-brand-indigo hover:underline">ElevenLabs — SIP-trunking koppelen</a></li>
+          <li><a href="https://www.twilio.com/docs/sip-trunking" target="_blank" rel="external noopener noreferrer" class="text-brand-indigo hover:underline">Twilio — Elastic SIP Trunking documentatie</a></li>
+          <li><a href="https://docs.n8n.io/" target="_blank" rel="external noopener noreferrer" class="text-brand-indigo hover:underline">n8n — workflow automatisering documentatie</a></li>
+          <li><a href="https://www.autoriteitpersoonsgegevens.nl/themas/algoritmes-ai" target="_blank" rel="external noopener noreferrer" class="text-brand-indigo hover:underline">Autoriteit Persoonsgegevens — Algoritmes &amp; AI</a></li>
         </ul>
       </div>
 

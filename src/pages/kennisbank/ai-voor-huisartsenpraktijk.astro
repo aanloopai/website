@@ -24,7 +24,7 @@ const articleSchema = {
       }
     },
     "datePublished": "2026-04-30",
-    "dateModified": "2026-04-30",
+    "dateModified": "2026-05-21",
     "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-voor-huisartsenpraktijk/",
     "inLanguage": "nl-NL",
     "articleSection": "Zorg & AI",
@@ -69,7 +69,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
   <section class="section">
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">1. Triage volgens NHG-protocol</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Een AI agent voert triage volgens uw eigen NHG-conforme protocol: vragen over symptomen, duur, urgentie, koortsmeting, ademhalingsritme. Op basis van het protocol classificeert de AI de oproep als U1 (spoed), U2 (snel terugbellen), U3 (afspraak vandaag), U4 (afspraak deze week) of U5 (zelfzorgadvies plus afspraakoptie).</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI agent voert triage volgens uw eigen <a href="https://www.nhg.org/" rel="external" target="_blank" class="text-brand-indigo hover:underline">NHG</a>-conforme protocol: vragen over symptomen, duur, urgentie, koortsmeting, ademhalingsritme. Op basis van het protocol classificeert de AI de oproep als U1 (spoed), U2 (snel terugbellen), U3 (afspraak vandaag), U4 (afspraak deze week) of U5 (zelfzorgadvies plus afspraakoptie).</p>
       <p class="text-slate-600 leading-relaxed mb-4">Voor U1 (spoed): direct doorverbinden naar de waarnemend arts of dienstpost (HAP) via SMS plus telefoon. Bij geen reactie binnen 60 seconden escalatie naar tweede collega plus 112-instructie aan patient indien levensbedreigend.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Voor U3-U5: directe inplanning in EPD-agenda met de juiste consulttijd. De patient krijgt direct een bevestiging via WhatsApp met de voorbereidingsinstructies.</p>
     </div>
@@ -105,7 +105,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
   <section class="section">
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">5. Compliance: NEN 7510, AVG, BIG-registratie</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Huisartsenpraktijken vallen onder NEN 7510 (informatiebeveiliging in zorg) en AVG. AI-systemen moeten patientdata binnen Nederland of EU verwerken, voldoen aan NEN 7510-eisen voor logging, encryption en toegangscontroles.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Huisartsenpraktijken vallen onder <a href="https://www.nen.nl/" rel="external" target="_blank" class="text-brand-indigo hover:underline">NEN 7510</a> (informatiebeveiliging in zorg) en de AVG, waarop de <a href="https://www.autoriteitpersoonsgegevens.nl/" rel="external" target="_blank" class="text-brand-indigo hover:underline">Autoriteit Persoonsgegevens</a> toezicht houdt. AI-systemen moeten patientdata binnen Nederland of EU verwerken, voldoen aan NEN 7510-eisen voor logging, encryption en toegangscontroles.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI: Nederlandse B.V. (KVK 88606902), NEN 7510-compatibele opzet met dedicated tenant per praktijk, ISO 27001 cloud-infrastructuur in Frankfurt of Amsterdam, role-based access, audit-logging.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Voor praktijken die aan ZorgDomein of LSP zijn gekoppeld: de AI raakt deze flows niet aan. Patientcommunicatie via AI wordt gelogd in EPD voor BIG-toetsbaarheid.</p>
     </div>
@@ -186,6 +186,33 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
             <p class="mt-3 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
           </details>
         ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="mb-8">
+        <p class="eyebrow mb-2">Bronnen en verdere informatie</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Onafhankelijke bronnen voor uw eigen onderzoek.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 text-sm">
+        <a href="https://www.nhg.org/" rel="external" target="_blank" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">NHG — Nederlands Huisartsen Genootschap</p>
+          <p class="text-slate-600 mt-1 text-xs">NHG-Standaarden, NHG-TriageWijzer en kwaliteitsbeleid voor huisartsenpraktijken.</p>
+        </a>
+        <a href="https://www.nen.nl/" rel="external" target="_blank" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">NEN — NEN 7510 informatiebeveiliging zorg</p>
+          <p class="text-slate-600 mt-1 text-xs">De norm voor informatiebeveiliging bij verwerking van patiëntgegevens.</p>
+        </a>
+        <a href="https://www.igj.nl/" rel="external" target="_blank" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">IGJ — Inspectie Gezondheidszorg en Jeugd</p>
+          <p class="text-slate-600 mt-1 text-xs">Kwaliteitstoezicht op de Nederlandse eerstelijns huisartsenzorg.</p>
+        </a>
+        <a href="https://www.autoriteitpersoonsgegevens.nl/" rel="external" target="_blank" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-indigo hover:shadow-sm transition">
+          <p class="font-semibold text-navy">Autoriteit Persoonsgegevens — Zorg</p>
+          <p class="text-slate-600 mt-1 text-xs">AVG en NEN 7510 voor zorgverleners; DPIA-verplichtingen.</p>
+        </a>
       </div>
     </div>
   </section>

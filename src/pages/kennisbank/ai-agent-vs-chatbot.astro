@@ -13,15 +13,20 @@ const faqItems = [
   { question: 'Wat is een AI agent precies en hoe werkt het?', answer: 'Een AI agent is een softwaresysteem dat zelfstandig een doel nastreeft door meerdere stappen te plannen en uit te voeren zonder dat een mens elke stap goedkeurt. Het systeem gebruikt een taalmodel om instructies te begrijpen, koppelt aan externe tools (agenda, CRM, webshop-API) en voert acties uit. Een chatbot geeft alleen antwoorden; een AI agent boekt ook de afspraak, werkt het CRM bij en stuurt de bevestigingsmail — alles in één gespreksflow zonder menselijke tussenkomst.' },
   { question: 'Wat is het verschil tussen een AI chatbot en een AI assistent?', answer: 'Een AI chatbot is doorgaans kanaalgebonden (WhatsApp, webchat) en reageert op inkomende vragen. Een AI assistent heeft een bredere scope: hij kan proactief handelen, taken initiëren en over meerdere kanalen werken. Een AI agent gaat nog een stap verder door volledig autonoom meerstaps-workflows af te handelen — van eerste vraag tot CRM-entry en agenda-boeking. De termen worden in de praktijk door elkaar gebruikt, maar het onderscheid in autonomie en actiegerichtheid is bepalend.' },
   { question: 'Kan een AI chatbot leren van eerdere gesprekken?', answer: 'Traditionele rule-based chatbots leren niet — hun antwoorden liggen vast in scripts. Moderne AI chatbots op basis van grote taalmodellen hebben contextbegrip binnen een gesprek, maar leren niet automatisch bij tussen sessies. Periodieke verbetering van de kennisbank en scripts op basis van gespreksanalyses is de praktische aanpak. Structureel zelf-lerend gedrag vereist fine-tuning of retrieval-augmented generation (RAG) — een technische keuze die per use-case wordt bepaald.' },
-  { question: 'Hoe kies ik tussen een AI agent en een chatbot voor mijn MKB-bedrijf?', answer: 'Kies een eenvoudige chatbot als u alleen statische FAQ-vragen wil beantwoorden en geen acties hoeft te automatiseren. Kies een AI agent als u afspraken wil plannen, leads wil kwalificeren, CRM wil bijwerken of klantdata wil opzoeken in realtime. Voor de meeste Nederlandse MKB-bedrijven levert een AI agent aanzienlijk meer ROI: de hogere prijs wordt terugverdiend doordat de agent daadwerkelijk werk overneemt in plaats van alleen informatie te verstrekken.' }];
+  { question: 'Hoe kies ik tussen een AI agent en een chatbot voor mijn MKB-bedrijf?', answer: 'Kies een eenvoudige chatbot als u alleen statische FAQ-vragen wil beantwoorden en geen acties hoeft te automatiseren. Kies een AI agent als u afspraken wil plannen, leads wil kwalificeren, CRM wil bijwerken of klantdata wil opzoeken in realtime. Voor de meeste Nederlandse MKB-bedrijven levert een AI agent aanzienlijk meer ROI: de hogere prijs wordt terugverdiend doordat de agent daadwerkelijk werk overneemt in plaats van alleen informatie te verstrekken.' },
+  { question: 'Wat is het verschil tussen een rule-based chatbot en een AI-chatbot?', answer: 'Een rule-based chatbot werkt met vooraf geprogrammeerde beslisbomen en sleutelwoorden — buiten dat script kan hij niets. Een AI-chatbot gebruikt een groot taalmodel en begrijpt natuurlijke taal en context binnen een gesprek. Een AI agent gaat nóg verder: hij plant en voert zelfstandig meerstaps-acties uit in externe systemen. De drie vormen vertegenwoordigen een oplopende schaal van autonomie.' },
+  { question: 'Hoe verhoudt een AI agent zich tot een voicebot of telefoonassistent?', answer: 'Een voicebot of AI telefoonassistent is een AI agent die werkt via het spraakkanaal. De onderliggende intelligentie — contextbegrip, beslissingen, acties — is gelijk; alleen de in- en uitvoer verschilt (spraak in plaats van tekst). Marco van Aanloop AI is een voice-agent, Emma een tekst-agent voor WhatsApp en webchat.' },
+  { question: 'Kan ik klein beginnen met een chatbot en later upgraden naar een AI agent?', answer: 'Ja, en dat is vaak een verstandige route. U start met een afgebakende use-case en breidt uit zodra de waarde is bewezen. Houd er rekening mee dat een rule-based chatbot en een AI agent technisch verschillende systemen zijn — de kennisbank en gespreksdata zijn meestal herbruikbaar, maar de scriptlogica wordt vervangen door modelgestuurde redenering.' },
+  { question: 'Welke risico\'s heeft een AI agent die een chatbot niet heeft?', answer: 'Doordat een AI agent zelfstandig acties uitvoert, zijn de risico\'s hoger: een verkeerde boeking, een onjuiste CRM-mutatie of een hallucinatie met gevolgen. Goede mitigatie bestaat uit duidelijke actie-grenzen, bevestigingsstappen bij onomkeerbare acties, training uitsluitend op een geverifieerde kennisbank, en logging van elke actie voor controle.' }];
 
 const schema = {
   '@context': 'https://schema.org', '@type': 'Article',
   headline: 'AI Agent vs Chatbot: Wat is het Verschil? (2026 Vergelijking)',
+  description: 'Het verschil tussen een AI agent en een chatbot uitgelegd: autonomie, acties, kanalen, kosten, AVG en EU AI Act. Wat is slimmer voor uw MKB-bedrijf in 2026?',
   author: { '@type': 'Person', '@id': 'https://aanloopai.nl/over-ons/#mustafa-agah-dogan', name: 'Mustafa Agah Dogan', jobTitle: 'Oprichter & AI-strateeg', url: 'https://aanloopai.nl/over-ons/', worksFor: { '@id': 'https://aanloopai.nl/#organization' } },
   publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
-  datePublished: '2026-01-15', dateModified: '2026-04-23', inLanguage: 'nl-NL',
-  articleSection: 'AI Agents',
+  datePublished: '2026-01-15', dateModified: '2026-05-21', inLanguage: 'nl-NL',
+  articleSection: 'AI Agents', wordCount: 3600,
 };
 
 const speakableSchema = {
@@ -112,12 +117,61 @@ const speakableSchema = {
         <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> AVG-compliance en dataopslag in Nederland belangrijk is</li>
       </ul>
 
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Drie Niveaus: Rule-based Chatbot, AI-chatbot, AI Agent</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">"Chatbot" en "AI agent" zijn geen tweedeling maar uiteinden van een schaal. Er liggen drie duidelijk verschillende niveaus tussen, en het is belangrijk te weten welk niveau u nodig heeft — want het bepaalt de kosten, de implementatietijd en de waarde.</p>
+      <div class="overflow-x-auto mb-6">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b-2 border-slate-200">
+              <th class="text-left py-3 pr-4 font-semibold text-navy">Niveau</th>
+              <th class="text-left py-3 px-4 font-semibold text-slate-500">Technologie</th>
+              <th class="text-left py-3 px-4 font-semibold text-slate-500">Kan acties uitvoeren?</th>
+              <th class="text-left py-3 pl-4 font-semibold text-slate-500">Typisch gebruik</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {[
+              ['1. Rule-based chatbot', 'Beslisbomen, sleutelwoorden', 'Nee — alleen vaste antwoorden', 'Statische FAQ, openingstijden'],
+              ['2. AI-chatbot', 'Groot taalmodel (LLM)', 'Beperkt — informatie, geen externe acties', 'Vrije Q&A, kennisbank-zoeken'],
+              ['3. AI agent', 'LLM + tool-koppelingen + planning', 'Ja — agenda, CRM, e-mail, API\'s', 'Afspraken, leadkwalificatie, workflows'],
+            ].map(([n, t, a, g]) => (
+              <tr>
+                <td class="py-3 pr-4 font-medium text-navy">{n}</td>
+                <td class="py-3 px-4 text-slate-600">{t}</td>
+                <td class="py-3 px-4 text-slate-600">{a}</td>
+                <td class="py-3 pl-4 text-slate-500">{g}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-slate-700 leading-relaxed mb-8">Het kantelpunt zit tussen niveau 2 en 3: een AI agent koppelt aan externe tools en kan daadwerkelijk werk uit handen nemen. Anthropic, het bedrijf achter Claude, omschrijft een agent als een systeem dat "het LLM dynamisch zijn eigen processen en tool-gebruik laat aansturen" — een wezenlijk verschil met een chatbot die alleen reageert (zie de Anthropic-publicatie <a href="https://www.anthropic.com/engineering/building-effective-agents" rel="external" class="text-brand-indigo hover:underline">Building Effective Agents</a>). De technische bouwstenen — function calling, tool-gebruik — zijn gedocumenteerd in de <a href="https://platform.openai.com/docs/guides/function-calling" rel="external" class="text-brand-indigo hover:underline">OpenAI-documentatie over function calling</a>.</p>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Praktijkvoorbeeld: Eén Klantvraag, Twee Uitkomsten</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Stel: een klant belt of appt "Ik wil graag volgende week dinsdag langskomen voor een afspraak." Het verschil tussen een chatbot en een AI agent wordt dan direct concreet.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-5">
+          <p class="font-bold text-navy text-sm mb-2">Chatbot</p>
+          <p class="text-sm text-slate-600">Herkent het woord "afspraak", toont een vast bericht: "U kunt een afspraak maken via deze link" of "Een medewerker neemt contact met u op." De klant moet zelf verder — en haakt vaak af.</p>
+        </div>
+        <div class="bg-brand-indigo/5 border border-brand-indigo/20 rounded-xl p-5">
+          <p class="font-bold text-brand-indigo text-sm mb-2">AI Agent</p>
+          <p class="text-sm text-slate-700">Begrijpt "volgende week dinsdag", checkt realtime de agenda, biedt twee vrije tijdsloten aan, boekt de afspraak na bevestiging, legt een record aan in het CRM en stuurt een bevestiging per e-mail of WhatsApp. Klaar in één gesprek.</p>
+        </div>
+      </div>
+      <p class="text-slate-700 leading-relaxed mb-8">Dit illustreert waarom de prijsvergelijking misleidend kan zijn: een chatbot van €100/maand die niets afhandelt is duurder dan een AI agent van €597/maand die de afspraak daadwerkelijk boekt — gemeten naar resultaat per euro.</p>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">AVG en EU AI Act: Wat Verandert er bij een AI Agent?</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Omdat een AI agent meer en complexere persoonsgegevens verwerkt dan een eenvoudige chatbot — en bovendien acties uitvoert — zijn de compliance-eisen strikter. Onder de AVG betekent dit een verwerkersovereenkomst met de leverancier, een Record of Processing Activities, dataverwerking binnen de EU en transparantie over opname. De Autoriteit Persoonsgegevens biedt hierover concrete handvatten op <a href="https://www.autoriteitpersoonsgegevens.nl/themas/algemene-informatie-avg" rel="external" class="text-brand-indigo hover:underline">autoriteitpersoonsgegevens.nl</a>.</p>
+      <p class="text-slate-700 leading-relaxed mb-8">De <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="external" class="text-brand-indigo hover:underline">EU AI Act</a> classificeert klantenservice-AI — of het nu een chatbot of een agent is — als beperkt risico, met transparantie als kernverplichting. Pas wanneer u AI inzet voor HR-screening of kredietbeoordeling komt u in de hoog-risico-categorie met een verplichte conformity assessment. Voor de typische MKB-toepassing (klantcontact, afspraken, leads) geldt dat niet. Meer hierover in onze gids <a href="/kennisbank/eu-ai-act-mkb-nederland-2026/" class="text-brand-indigo hover:underline">EU AI Act voor MKB</a>.</p>
+
       <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-8">
         <p class="text-sm font-bold text-navy mb-3">Lees ook</p>
         <ul class="space-y-2">
           <li><a href="/kennisbank/wat-is-een-ai-agent/" class="text-sm text-brand-indigo hover:underline">Wat is een AI Agent? De Complete Gids voor MKB in 2026 →</a></li>
           <li><a href="/kennisbank/ai-agent-kosten-mkb/" class="text-sm text-brand-indigo hover:underline">Hoeveel kost een AI agent in Nederland? (2026 prijzen) →</a></li>
           <li><a href="/kennisbank/voice-ai-klantenservice/" class="text-sm text-brand-indigo hover:underline">Voice AI Agents voor Klantenservice: Werkt het Echt? →</a></li>
+          <li><a href="/kennisbank/ai-voicebot-vs-chatbot-mkb-vergelijking/" class="text-sm text-brand-indigo hover:underline">AI Voicebot vs Chatbot — vergelijking →</a></li>
         </ul>
       </div>
 

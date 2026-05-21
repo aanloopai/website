@@ -24,7 +24,7 @@ const articleSchema = {
     }
   },
   "datePublished": "2026-04-25",
-  "dateModified": "2026-04-30",
+  "dateModified": "2026-05-21",
   "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-meertalige-klantenservice-mkb-nederland-2026/",
   "inLanguage": "nl-NL",
   "articleSection": "Klantenservice & AI",
@@ -109,7 +109,7 @@ const faqItems = [
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">AVG, GDPR en BDSG — grensoverschrijdende compliance</h2>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Data-residentie:</strong> bij DE-klanten valt verwerking onder GDPR (Europees) plus BDSG (Bundesdatenschutzgesetz, Duitse aanvulling). Praktisch verschil met AVG: geen, maar Duitse Datenschutzbeauftragte zijn in audit-context strikter dan Nederlandse FG. Configureer LLM en vector-store op EU-VPS (Hetzner Frankfurt is favoriet bij DE-klanten, Scaleway Amsterdam alternatief). Anthropic Claude EU-region of Azure OpenAI in West-Europe. DeepL Pro Advanced is GDPR-conform en host data in EU. Documenteer in verwerkingsregister met expliciete vermelding van GDPR-DE-context.</p>
-      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">EU AI Act classificatie:</strong> AI-klantenservice valt onder limited risk in de EU AI Act — gebruiker moet weten dat hij met AI praat. Praktisch in 3 talen: NL "U communiceert met onze AI-assistent. Typ 'medewerker' voor een collega.", EN "You are chatting with our AI assistant. Type 'agent' for a human.", DE "Sie kommunizieren mit unserem KI-Assistenten. Tippen Sie 'Mitarbeiter' für einen Kollegen." AI-literacy training voor klantenservice-team in NL volstaat als alle medewerkers NL spreken. Geen high-risk plichten zolang AI niet wordt ingezet voor sollicitatie-screening of biometrische identificatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">EU AI Act classificatie:</strong> AI-klantenservice valt onder limited risk in de <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="external" class="text-brand-indigo hover:underline">EU AI Act</a> — gebruiker moet weten dat hij met AI praat. Praktisch in 3 talen: NL "U communiceert met onze AI-assistent. Typ 'medewerker' voor een collega.", EN "You are chatting with our AI assistant. Type 'agent' for a human.", DE "Sie kommunizieren mit unserem KI-Assistenten. Tippen Sie 'Mitarbeiter' für einen Kollegen." AI-literacy training voor klantenservice-team in NL volstaat als alle medewerkers NL spreken. Geen high-risk plichten zolang AI niet wordt ingezet voor sollicitatie-screening of biometrische identificatie.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Klacht- en juridische bescherming per taal:</strong> bij geautomatiseerde besluiten (bijv. AI weigert een terugbetaling) heeft elke EU-klant recht op uitleg (AVG artikel 22). Implementeer in alle 3 talen: NL "Ik kan deze terugbetaling niet automatisch verwerken. Een collega neemt contact op binnen 24 uur.", EN "I cannot automatically process this refund. A colleague will contact you within 24 hours.", DE "Ich kann diese Rückerstattung nicht automatisch bearbeiten. Ein Kollege wird sich innerhalb von 24 Stunden mit Ihnen in Verbindung setzen." Plus logging in alle talen voor audit. Voor Duitse klanten: Impressum-vermelding met FG-contact-info verplicht (TMG paragraaf 5).</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Praktische compliance-checklist meertalig:</strong> (1) AVG-disclaimer in chat-welkom in NL+EN+DE, (2) verwerkersovereenkomst met Anthropic, OpenAI of DeepL ondertekend met EU-data-clausules, (3) verwerkingsregister-aanvulling met "AI-klantenservice meertalig", talen-scope, rechtsgrond, bewaartermijn, (4) escalatie-template "recht op uitleg" in alle 3 talen, (5) DPIA bij geautomatiseerde besluiten op klantdata (annuleringen, terugbetalingen), (6) AI-literacy training voor team, (7) Impressum-pagina met FG-contact bij DACH-targeting. Aanloop AI levert NL-talig template-pakket plus DE en EN versies van klant-facing teksten.</p>
     </div>
@@ -177,6 +177,20 @@ const faqItems = [
           </details>
         ))}
       </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-4">Bronnen en verdere informatie</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Meertalige AI-klantenservice raakt aan grensoverschrijdende privacy, de EU AI Act en vertaaltechnologie. Hieronder de officiele bronnen voor verdere verdieping.</p>
+      <ul class="space-y-2 text-slate-700">
+        <li>&middot; <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">EU AI Act &mdash; Europese Commissie</a> &mdash; transparantieplicht voor AI in klantcontact, in alle talen.</li>
+        <li>&middot; <a href="https://www.autoriteitpersoonsgegevens.nl/themas/basis-avg/avg-algemeen" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">Autoriteit Persoonsgegevens &mdash; AVG algemeen</a> &mdash; verwerking van klantgegevens, ook bij grensoverschrijdende DACH-context.</li>
+        <li>&middot; <a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">AVG / GDPR (verordening 2016/679, EUR-Lex)</a> &mdash; integrale tekst, beschikbaar in alle EU-talen.</li>
+        <li>&middot; <a href="https://www.deepl.com/pro-data-security" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">DeepL &mdash; databeveiliging en GDPR</a> &mdash; documentatie over EU-data-residency van de vertaal-engine.</li>
+        <li>&middot; <a href="https://docs.anthropic.com/" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">Anthropic &mdash; technische documentatie</a> &mdash; referentie voor de meertalige Claude-modellen.</li>
+      </ul>
     </div>
   </section>
 

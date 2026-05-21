@@ -1,0 +1,324 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "AI Receptionist Kiezen — Vergelijkingsgids voor het MKB (2026)",
+  "description": "Objectieve vergelijkingsgids voor MKB-ondernemers die een AI receptionist of telefoonagent zoeken. 12 selectiecriteria — latency, talen, integraties, agenda-koppeling, doorschakeling, AVG en EU-hosting, prijsmodellen, implementatietijd, nummerportering en escalatie — met vergelijkingstabellen, kostenmodel en FAQ.",
+  "author": {
+    "@type": "Person",
+    "@id": "https://aanloopai.nl/over-ons/#mustafa-agah-dogan",
+    "name": "Mustafa Agah Dogan",
+    "jobTitle": "Oprichter & AI-strateeg",
+    "url": "https://aanloopai.nl/over-ons/",
+    "worksFor": { "@id": "https://aanloopai.nl/#organization" }
+  },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://aanloopai.nl/#organization",
+    "name": "Aanloop AI",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://aanloopai.nl/logo-mark-light-1024.png"
+    }
+  },
+  "datePublished": "2026-05-21",
+  "dateModified": "2026-05-21",
+  "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-receptionist-kiezen-vergelijkingsgids-mkb-nederland/",
+  "inLanguage": "nl-NL",
+  "articleSection": "AI Telefonie",
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'AI Receptionist Kiezen — Vergelijkingsgids MKB 2026',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
+  url: 'https://aanloopai.nl/kennisbank/ai-receptionist-kiezen-vergelijkingsgids-mkb-nederland/',
+  inLanguage: 'nl-NL'
+};
+
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://aanloopai.nl/" },
+    { "@type": "ListItem", "position": 2, "name": "Kennisbank", "item": "https://aanloopai.nl/kennisbank/" },
+    { "@type": "ListItem", "position": 3, "name": "AI Receptionist Kiezen — Vergelijkingsgids MKB", "item": "https://aanloopai.nl/kennisbank/ai-receptionist-kiezen-vergelijkingsgids-mkb-nederland/" }
+  ]
+};
+
+const criteriaRows = [
+  { criterium: 'Latency (reactiesnelheid)', controle: 'Reactie binnen 700-1.000 ms; meet live, niet op verkooppraatje', risico: 'Trage AI klinkt robotachtig; bellers haken af' },
+  { criterium: 'Talen en taalkwaliteit', controle: 'Native Nederlands, u/je-vorm, accenten; extra talen indien nodig', risico: 'Engelse modellen zonder NL-finetuning klinken fout' },
+  { criterium: 'Integraties (CRM, agenda, ticketing)', controle: 'Koppeling met uw bestaande systemen, open API of n8n', risico: 'Eiland-oplossing zonder data-uitwisseling' },
+  { criterium: 'Agenda-koppeling', controle: 'Real-time tweerichtingssync met Google/Outlook/praktijksoftware', risico: 'Dubbele boekingen, handmatig overtypen' },
+  { criterium: 'Doorschakeling en warm transfer', controle: 'Kan live doorverbinden naar mens met gesprekscontext', risico: 'Beller moet verhaal opnieuw vertellen' },
+  { criterium: 'AVG en EU-hosting', controle: 'Verwerking in EU (Frankfurt/Amsterdam), DPA, geen modeltraining', risico: 'Persoonsgegevens buiten EU; AVG-overtreding' },
+  { criterium: 'Prijsmodel', controle: 'All-in maandtarief; per-minuut versus flat fee helder', risico: 'Verborgen telefonie- en API-kosten' },
+  { criterium: 'Implementatietijd', controle: '7-14 werkdagen inclusief training en testfase', risico: 'Same-day go-live slaat training over' },
+  { criterium: 'Telefoonnummer-portering', controle: 'Bestaand nummer behouden of porteren binnen redelijke termijn', risico: 'Nieuw nummer = verlies van vindbaarheid' },
+  { criterium: 'Escalatie en fallback', controle: 'Duidelijke regels wanneer mens overneemt; fallback bij twijfel', risico: 'AI verzint antwoorden in plaats van te escaleren' },
+  { criterium: 'Rapportage en gesprekslogs', controle: 'Inzicht in gesprekken, gemiste oproepen, oplos-percentage', risico: 'Geen zicht op kwaliteit; sturen onmogelijk' },
+  { criterium: 'Contract en opzegtermijn', controle: 'Maandelijks opzegbaar na pilot; SLA met uptime-garantie', risico: 'Jaarcontract zonder uitstapclausule' }
+];
+
+const priceRows = [
+  { model: 'Flat fee per maand', werking: 'Vast bedrag, onbeperkt of ruim belvolume', past: 'Voorspelbaar belvolume, MKB met budgetzekerheid', let: 'Controleer of er een fair-use-grens geldt' },
+  { model: 'Per-minuut tarief', werking: 'Afrekenen per gespreksminuut', past: 'Laag of sterk wisselend belvolume', let: 'Bij piekmaanden kan de rekening oplopen' },
+  { model: 'Per-gesprek tarief', werking: 'Vast bedrag per afgehandeld gesprek', past: 'Korte, gestandaardiseerde gesprekken', let: 'Lange gesprekken zijn relatief duur' },
+  { model: 'Setup + maandfee', werking: 'Eenmalige inrichtingskosten plus vast maandtarief', past: 'Maatwerk-inrichting met integraties', let: 'Vraag wat de setup precies omvat' }
+];
+
+const faqItems = [
+  { question: 'Wat is een AI receptionist en wat doet die precies?', answer: 'Een AI receptionist is een spraakgestuurde telefoonagent die inkomende oproepen 24/7 aanneemt, de beller te woord staat in natuurlijk Nederlands, afspraken inplant in uw agenda, veelgestelde vragen beantwoordt en bij complexe situaties doorverbindt naar een medewerker of een terugbelverzoek aanmaakt. Voor het MKB vervangt of ontlast een AI receptionist de telefonische bereikbaarheid zonder dat er een medewerker fysiek bij de telefoon hoeft te zitten.' },
+  { question: 'Wat is het belangrijkste criterium bij het kiezen van een AI receptionist?', answer: 'Er is geen enkel belangrijkste criterium — het hangt af van uw situatie. Voor een tandarts of fysiotherapeut weegt de agenda-koppeling het zwaarst, omdat de hele waarde in foutloos inplannen zit. Voor een zorgpraktijk wegen AVG en EU-hosting dubbel. Voor een bedrijf met internationale klanten telt meertaligheid. Gebruik de twaalf criteria in deze gids als checklist en geef de criteria die uw bedrijfsproces raken een dubbele weging.' },
+  { question: 'Hoe snel moet een AI receptionist reageren tijdens een gesprek?', answer: 'De reactietijd — latency — bepaalt of een gesprek natuurlijk aanvoelt. Een goede AI receptionist reageert binnen ongeveer 700 tot 1.000 milliseconden. Daarboven ontstaan ongemakkelijke stiltes en klinkt de AI robotachtig, wat bellers doet afhaken. Meet dit zelf tijdens een live demo met echte vragen; vertrouw niet op een verkooppraatje. Latency wordt bepaald door spraakherkenning, het taalmodel en spraaksynthese samen.' },
+  { question: 'Welke talen moet een AI receptionist beheersen?', answer: 'Voor het Nederlandse MKB is native-niveau Nederlands de basis: correcte u- en je-vorm, omgang met regionale accenten, Nederlandse adres- en datumnotatie. Heeft u internationale klanten of toeristen, dan zijn Engels en eventueel Duits waardevol. Belangrijk: een AI die op een Engels model draait zonder Nederlandse finetuning klinkt vaak onnatuurlijk. Test elke kandidaat live met Nederlandstalige gesprekken voordat u beslist.' },
+  { question: 'Hoe werkt de agenda-koppeling van een AI receptionist?', answer: 'Een goede agenda-koppeling is een real-time, tweerichtings-synchronisatie met uw agenda — Google Agenda, Outlook of branchespecifieke praktijksoftware. De AI ziet welke tijdsloten vrij zijn, boekt direct een afspraak en die afspraak verschijnt onmiddellijk in uw agenda. Tweerichtingssync betekent ook dat handmatig ingevoerde afspraken zichtbaar zijn voor de AI, zodat dubbele boekingen worden voorkomen. Vraag expliciet met welke agendasystemen wordt gekoppeld en of de sync real-time is.' },
+  { question: 'Wat is warm transfer en waarom is het belangrijk?', answer: 'Warm transfer betekent dat de AI receptionist een gesprek live doorverbindt naar een medewerker en daarbij de context meegeeft — wie belt, waarover en wat er al besproken is. Bij een koude doorschakeling moet de beller het hele verhaal opnieuw vertellen, wat irritatie geeft. Voor MKB-bedrijven waar complexe of gevoelige gesprekken naar een mens moeten, is warm transfer een belangrijk onderscheidend criterium.' },
+  { question: 'Moet een AI receptionist data binnen de EU verwerken?', answer: 'Ja, dat is sterk aan te raden. Een AI receptionist verwerkt persoonsgegevens — namen, telefoonnummers, gespreksinhoud, soms gezondheids- of financiele informatie. Onder de AVG bent u verwerkingsverantwoordelijke. Eis dat de verwerking en opslag binnen de EU plaatsvinden, bij voorkeur in Frankfurt of Amsterdam, en dat een verwerkersovereenkomst expliciet uitsluit dat uw data wordt gebruikt voor het trainen van AI-modellen. Controleer dit per laag: het taalmodel, de telefonie en de hosting.' },
+  { question: 'Welke prijsmodellen zijn er voor een AI receptionist?', answer: 'Er zijn vier gangbare modellen. Een flat fee per maand geeft een vast bedrag bij voorspelbaar belvolume. Een per-minuut tarief rekent af per gespreksminuut en past bij laag of wisselend volume. Een per-gesprek tarief is een vast bedrag per afgehandeld gesprek. En een setup-plus-maandfee combineert eenmalige inrichtingskosten met een vast maandtarief. Vergelijk altijd de all-in kosten over een vol jaar, inclusief telefonie- en API-kosten, niet alleen het instaptarief.' },
+  { question: 'Wat is een redelijke prijs voor een AI receptionist in Nederland?', answer: 'Voor het MKB ligt een AI receptionist met agenda-koppeling en standaard integraties typisch tussen 200 en 600 euro per maand all-in. Een eenvoudige opzet zonder integraties kan lager; omnichannel-oplossingen met meerdere kanalen en maatwerk liggen hoger. Setup-kosten varieren van 0 tot circa 800 euro eenmalig. Tarieven onder 100 euro per maand wijzen meestal op een consumenten-tool; tarieven die fors hoger liggen zonder extra functionaliteit zijn vaak verkoopmarge.' },
+  { question: 'Hoe lang duurt de implementatie van een AI receptionist?', answer: 'Voor een AI receptionist bij een MKB-bedrijf is 7 tot 14 werkdagen realistisch. De eerste dagen gaan naar intake en het vastleggen van uw kennisbank: openingstijden, diensten, veelgestelde vragen, doorverwijsregels. Daarna volgt configuratie, een trainingsronde en een testfase met begeleiding, en daarna de go-live. Wie een same-day go-live belooft, slaat de trainings- en testfase over — de gesprekskwaliteit valt dan tegen.' },
+  { question: 'Kan ik mijn bestaande telefoonnummer behouden bij een AI receptionist?', answer: 'In de meeste gevallen wel. Er zijn twee routes: nummerportering, waarbij uw bestaande nummer naar de telefonie-provider van de AI-oplossing wordt overgezet, of doorschakeling, waarbij uw huidige nummer blijft staan en de oproepen worden doorgeschakeld naar de AI. Doorschakeling is sneller in te regelen; portering is definitiever. Vraag uw leverancier welke route mogelijk is en hoeveel werkdagen een portering kost. Uw nummer behouden is belangrijk: het staat op drukwerk, in Google en bij bestaande klanten.' },
+  { question: 'Wat gebeurt er als de AI receptionist een vraag niet kan beantwoorden?', answer: 'Dat is precies waar het escalatie- en fallback-mechanisme voor dient. Een goede AI receptionist verzint geen antwoord, maar herkent dat een vraag buiten zijn bereik valt en escaleert: doorverbinden naar een medewerker, een terugbelverzoek aanmaken of een bericht doorsturen. Vraag bij elke kandidaat hoe de escalatieregels werken en test tijdens de demo bewust een onverwachte vraag. Een AI die liever verzint dan escaleert, is een risico voor uw klantrelatie.' },
+  { question: 'Welk inzicht krijg ik in de gesprekken van mijn AI receptionist?', answer: 'Een volwaardige AI receptionist levert rapportage: een overzicht van afgehandelde gesprekken, gemiste oproepen, ingeplande afspraken, het oplos-percentage en transcripten of samenvattingen per gesprek. Dit inzicht is nodig om de kwaliteit te bewaken en de kennisbank bij te sturen. Een oplossing zonder rapportage is een blackbox — u weet dan niet of klanten goed worden geholpen.' },
+  { question: 'Is een AI receptionist geschikt voor mijn branche?', answer: 'AI receptionists worden in uiteenlopende MKB-branches gebruikt: tandarts- en fysiotherapiepraktijken, garagebedrijven, schoonheidssalons, dierenartspraktijken, installatiebedrijven en advocatenkantoren. De gemene deler is een hoog volume aan telefonische afspraken of routinevragen. Voor branches met gevoelige gegevens — zorg, juridisch, financieel — gelden extra eisen rond AVG en informatiebeveiliging. Voor zeer specialistische of emotioneel beladen gesprekken blijft een mens onmisbaar; de AI vangt dan het routinedeel af.' },
+  { question: 'Wat is het verschil tussen een AI receptionist en een traditionele antwoorddienst?', answer: 'Een traditionele antwoorddienst is een callcenter met menselijke telefonisten die uw oproepen aannemen, vaak tegen een per-gesprek tarief en met beperkte openingstijden. Een AI receptionist neemt oproepen 24/7 aan, kan direct in uw agenda boeken en integreert met uw systemen, tegen een doorgaans lager en voorspelbaarder tarief. Een antwoorddienst kan beter omgaan met emotioneel complexe gesprekken; een AI receptionist is sterker in snelheid, beschikbaarheid en consistente afhandeling van routine.' },
+  { question: 'Hoe verhoudt Marco van Aanloop AI zich tot deze criteria?', answer: 'Marco is de AI receptionist en telefoonagent van Aanloop AI en is ontworpen om aan de twaalf criteria in deze gids te voldoen: native Nederlandstalig met u/je-herkenning, real-time agenda-koppeling met Google en Outlook, EU-hosting in Frankfurt of Amsterdam met verwerkersovereenkomst en geen modeltraining op klantdata, een all-in maandtarief zonder verborgen telefoniekosten, doorschakeling met context, duidelijke escalatieregels en rapportage per gesprek. Marco is gebouwd op een open n8n-stack, zodat er geen vendor lock-in ontstaat. Het is een van meerdere opties in de Nederlandse markt — gebruik de criteria om Marco objectief naast andere kandidaten te leggen.' }
+];
+---
+
+<BaseLayout
+  title="AI Receptionist Kiezen — Vergelijkingsgids MKB 2026"
+  description="Objectieve vergelijkingsgids voor MKB-ondernemers die een AI receptionist of telefoonagent zoeken. 12 selectiecriteria, vergelijkingstabellen, prijsmodellen en FAQ — criteria-gebaseerd, geen merkenranglijst."
+  schema={[articleSchema, speakableSchema, breadcrumbSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Kennisbank · Vergelijkingsgids</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          AI Receptionist kiezen — vergelijkingsgids voor het MKB (2026)
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
+          Een AI receptionist neemt 24/7 uw telefoon aan, plant afspraken in uw agenda en beantwoordt routinevragen — zonder dat er een medewerker bij de telefoon hoeft te zitten. Maar de Nederlandse markt biedt sterk uiteenlopende oplossingen. Deze vergelijkingsgids geeft u twaalf objectieve selectiecriteria — van latency, talen en integraties tot agenda-koppeling, doorschakeling, AVG-hosting, prijsmodellen, implementatietijd, nummerportering en escalatie. Met vergelijkingstabellen op criteria, een kostenmodel en een uitgebreide FAQ — zodat u zelf een onderbouwde keuze maakt in plaats van te varen op verkooppraatjes.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat is een AI receptionist</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI receptionist — ook wel AI telefoonagent of AI telefoniste genoemd — is een spraakgestuurde toepassing die inkomende telefoongesprekken automatisch afhandelt. De AI neemt de oproep aan, begroet de beller in natuurlijk Nederlands, begrijpt de vraag, en handelt af: een afspraak inplannen, een veelgestelde vraag beantwoorden, een terugbelverzoek noteren of doorverbinden naar een medewerker. Anders dan een keuzemenu of een eenvoudige voicebot voert een moderne AI receptionist een echt gesprek, herkent context en past zich aan de beller aan.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor het Nederlandse MKB lost een AI receptionist een concreet probleem op: telefonische bereikbaarheid kost tijd, onderbreekt het werk en is buiten kantooruren vaak afwezig. Een gemiste oproep is een gemiste klant of een gemiste afspraak. Een AI receptionist vangt dat af — 24 uur per dag, zonder wachtrij, zonder dat een medewerker de hele dag bij de telefoon zit. Voor een tandartspraktijk betekent dat geen onderbroken behandelingen meer; voor een garagebedrijf geen oproepen die tijdens het sleutelen verloren gaan.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Een AI receptionist is geen vervanging voor elk telefoongesprek. Emotioneel beladen, juridisch gevoelige of zeer specialistische gesprekken horen bij een mens thuis. De kracht zit in het afvangen van het routinedeel — afspraken maken, openingstijden doorgeven, standaardvragen beantwoorden — zodat uw medewerkers zich op de gesprekken richten waar menselijk contact echt waarde toevoegt. De beste opzet is dan ook een AI receptionist met een heldere escalatieregel naar een mens.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Het verschil met een traditionele antwoorddienst of callcenter is drieledig: beschikbaarheid (de AI werkt 24/7 zonder meerkosten voor avonden en weekenden), integratie (de AI boekt direct in uw agenda en CRM) en kosten (een doorgaans lager en voorspelbaarder tarief). Een antwoorddienst met menselijke telefonisten blijft sterker in empathie en improvisatie; een AI receptionist wint op snelheid, consistentie en beschikbaarheid. Welke past, hangt af van uw gesprekstypen — wat ons bij de selectiecriteria brengt.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">De 12 selectiecriteria — wat echt telt</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">1. Latency — reactiesnelheid in het gesprek.</strong> Latency is de tijd tussen het einde van wat de beller zegt en het begin van het antwoord van de AI. Het is het criterium dat een gesprek natuurlijk of robotachtig laat aanvoelen. Een goede AI receptionist reageert binnen ongeveer 700 tot 1.000 milliseconden. Daarboven ontstaan ongemakkelijke stiltes en haken bellers af. Latency wordt bepaald door drie stappen samen: spraakherkenning, het taalmodel dat het antwoord formuleert en de spraaksynthese. Wat u vraagt: meet de reactietijd zelf tijdens een live demo met echte vragen. Red flag: een leverancier die latency niet wil demonstreren of het wegwuift als technisch detail.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">2. Talen en taalkwaliteit.</strong> Voor het Nederlandse MKB is native-niveau Nederlands de ondergrens: correcte u- en je-vorm, omgang met regionale accenten, Nederlandse datum-, adres- en bedragnotatie. Een AI die op een Engels model draait zonder Nederlandse finetuning klinkt onnatuurlijk — en uw klanten merken dat direct. Heeft u internationale klanten of toeristen, dan zijn Engels en eventueel Duits waardevol; let dan op of de AI vloeiend wisselt van taal binnen een gesprek. Wat u vraagt: een live demo in het Nederlands met een paar lastige zinnen. Red flag: alleen Engelstalige demo's, of een AI die formeel en informeel door elkaar haalt.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">3. Integraties met uw bestaande systemen.</strong> Een AI receptionist die niet koppelt met uw CRM, agenda of ticketing-systeem is een eiland: gegevens moeten dan handmatig worden overgetypt. Vraag met welke systemen de oplossing integreert en hoe — via een standaard-API, via een koppelplatform als n8n, of helemaal niet. Open integraties betekenen dat de AI past in uw bestaande werkwijze in plaats van andersom. Wat u vraagt: noem uw huidige systemen en laat de leverancier concreet uitleggen hoe de koppeling werkt. Red flag: vage antwoorden of een gesloten platform zonder koppelmogelijkheden.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">4. Agenda-koppeling.</strong> Voor de meeste MKB-bedrijven die een AI receptionist inzetten, zit de kern van de waarde in foutloos afspraken inplannen. Een goede agenda-koppeling is een real-time, tweerichtings-synchronisatie met Google Agenda, Outlook of uw branchespecifieke praktijksoftware. Real-time betekent dat een geboekte afspraak meteen verschijnt; tweerichting betekent dat handmatig ingevoerde afspraken zichtbaar zijn voor de AI, zodat dubbele boekingen onmogelijk zijn. Wat u vraagt: met welke agendasystemen koppelt de oplossing en is de sync echt real-time? Red flag: een eenrichtings-sync of een agenda die periodiek wordt bijgewerkt in plaats van direct.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">5. Doorschakeling en warm transfer.</strong> Niet elk gesprek hoort bij de AI. Het criterium is hoe soepel de AI doorverbindt naar een mens. Bij een warm transfer geeft de AI de context mee — wie belt, waarover, wat al besproken is — zodat de beller zijn verhaal niet opnieuw hoeft te vertellen. Bij een koude doorschakeling begint de beller bij nul, wat irritatie geeft. Wat u vraagt: kan de AI live doorverbinden met gesprekscontext, en wat gebeurt er als niemand opneemt? Red flag: alleen koude doorschakeling, of helemaal geen doorverbindfunctie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">6. AVG-compliance en EU-hosting.</strong> Een AI receptionist verwerkt persoonsgegevens: namen, telefoonnummers, gespreksinhoud, soms gezondheids- of financiele informatie. Onder de AVG bent u verwerkingsverantwoordelijke. Eis dat verwerking en opslag binnen de EU plaatsvinden — Frankfurt of Amsterdam zijn standaard — en dat een verwerkersovereenkomst expliciet uitsluit dat uw data wordt gebruikt voor modeltraining. Controleer dit per laag: taalmodel, telefonie en hosting. De <a href="https://autoriteitpersoonsgegevens.nl/" rel="external" class="text-brand-indigo hover:underline">Autoriteit Persoonsgegevens</a> publiceert richtsnoeren voor AI. Wat u vraagt: waar staat onze data fysiek, en krijg ik een standaard verwerkersovereenkomst? Red flag: vaagheid over de datacenter-locatie of een datacenter buiten de EU.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">7. Prijsmodel.</strong> AI receptionists worden op verschillende manieren afgerekend: flat fee per maand, per-minuut, per-gesprek of setup-plus-maandfee. Het verkeerde model voor uw belvolume kan tot een onaangename rekening leiden. Belangrijker dan het instaptarief is het all-in jaarbedrag: vraag expliciet naar telefonie-kosten, kosten voor het taalmodel, eventuele fair-use-grenzen en jaarlijkse stijging. Wat u vraagt: een offerte met 1 totaalbedrag voor 12 maanden inclusief alles. Red flag: een vanaf-prijs zonder all-in offerte, of losse add-ons die het werkelijke tarief verhogen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">8. Implementatietijd.</strong> Realistisch voor een AI receptionist bij een MKB-bedrijf is 7 tot 14 werkdagen. Die tijd is nodig voor intake, het vullen van de kennisbank (openingstijden, diensten, veelgestelde vragen, doorverwijsregels), configuratie, een trainingsronde en een testfase met begeleiding. Een same-day go-live klinkt aantrekkelijk maar betekent dat de trainings- en testfase wordt overgeslagen — de gesprekskwaliteit valt dan tegen. Wat u vraagt: hoe ziet het implementatietraject er stap voor stap uit? Red flag: een belofte om binnen een dag live te zijn zonder testfase.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">9. Telefoonnummer-portering.</strong> Uw bestaande telefoonnummer staat op drukwerk, op uw website, in Google en bij bestaande klanten — dat nummer kwijtraken kost vindbaarheid. Er zijn twee routes: portering, waarbij het nummer overgaat naar de telefonie-provider van de AI-oplossing, of doorschakeling, waarbij uw huidige nummer blijft staan en oproepen worden doorgeschakeld. Doorschakeling is sneller in te regelen; portering is definitiever. Wat u vraagt: kan ik mijn nummer behouden, via welke route, en hoeveel werkdagen kost een portering? Red flag: een leverancier die alleen met een nieuw nummer werkt.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">10. Escalatie en fallback.</strong> Het verschil tussen een betrouwbare en een riskante AI receptionist zit in wat er gebeurt bij een vraag die de AI niet kan beantwoorden. Een goede AI verzint geen antwoord, maar herkent zijn grenzen en escaleert: doorverbinden, een terugbelverzoek aanmaken of een bericht doorsturen. De escalatieregels moeten helder en instelbaar zijn. Wat u vraagt: wat gebeurt er bij een onverwachte vraag, en kan ik zelf bepalen wanneer een mens overneemt? Test dit tijdens de demo met een bewust lastige vraag. Red flag: een AI die liever verzint dan toegeeft dat hij iets niet weet.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">11. Rapportage en gesprekslogs.</strong> Zonder inzicht in de gesprekken stuurt u blind. Een volwaardige AI receptionist levert rapportage: afgehandelde gesprekken, gemiste oproepen, ingeplande afspraken, oplos-percentage en transcripten of samenvattingen per gesprek. Dat inzicht gebruikt u om de kennisbank bij te sturen en de kwaliteit te bewaken. Wat u vraagt: welk dashboard en welke rapportage krijg ik, en kan ik gesprekken terugluisteren of teruglezen? Red flag: een blackbox-oplossing zonder zicht op wat er met uw klanten gebeurt.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">12. Contract, SLA en opzegtermijn.</strong> Marktconform is een contract dat maandelijks opzegbaar is na een pilot van twee weken, met een SLA die een uptime-garantie noemt — minimaal 99,5 procent — en een escalatie-pad bij storingen. Een AI receptionist die uitvalt, betekent dat uw telefoon niet wordt opgenomen; de uptime-garantie is dus geen formaliteit. Wat u vraagt: is er een pilot, hoe is de opzegtermijn en wat staat er in de SLA? Red flag: een jaarcontract zonder pilot of uitstapclausule.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-8">
+        <p class="eyebrow mb-2">Vergelijkingstabel</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance">De 12 criteria — wat u controleert en welk risico u loopt</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Gebruik deze tabel als checklist bij elke kandidaat. Niet als ranglijst van merken, maar als objectief raamwerk om aanbieders zelf te toetsen.</p>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[24%]">Criterium</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[40%]">Wat u controleert</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[36%]">Risico bij verwaarlozing</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {criteriaRows.map((r, i) => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-navy text-xs">{i + 1}. {r.criterium}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.controle}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.risico}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-8">
+        <p class="eyebrow mb-2">Prijsmodellen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance">Vier prijsmodellen — welk model past bij uw belvolume</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Het juiste prijsmodel hangt af van hoeveel en hoe regelmatig u belverkeer heeft. Vergelijk altijd het all-in jaarbedrag, niet het instaptarief.</p>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200 bg-slate-50">
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[18%]">Model</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[26%]">Werking</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[28%]">Past bij</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium w-[28%]">Let op</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {priceRows.map(r => (
+              <tr>
+                <td class="py-3 px-4 font-semibold text-navy text-xs">{r.model}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.werking}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.past}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{r.let}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Kostenmodel — wat een AI receptionist realistisch kost</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De Nederlandse markt voor AI receptionists kent in 2026 grofweg drie prijssegmenten. Het <strong class="text-navy">instap-segment (circa 150 tot 300 euro per maand)</strong> dekt een eenvoudige opzet: telefoon aannemen, standaardvragen beantwoorden, beperkte of geen integraties. Geschikt voor ZZP'ers en kleine praktijken met een overzichtelijk belvolume. Het <strong class="text-navy">midden-segment (circa 300 tot 600 euro per maand)</strong> voegt real-time agenda-koppeling, integratie met CRM of praktijksoftware, doorschakeling met context en rapportage toe — de zone waar de meeste MKB-bedrijven optimaal zitten. Het <strong class="text-navy">uitgebreide segment (600 euro per maand en hoger)</strong> dekt omnichannel-oplossingen, maatwerk-integraties en meerdere telefoonlijnen of afdelingen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Bovenop het maandtarief komen mogelijk eenmalige setup-kosten — van 0 tot circa 800 euro, afhankelijk van de complexiteit van de inrichting en het aantal integraties. Vraag bij elke offerte expliciet wat de setup omvat: alleen configuratie, of ook het vullen van de kennisbank, het inregelen van integraties en een trainingsronde. Let ook op terugkerende kosten die buiten het maandtarief vallen: telefonie-kosten naar mobiel of buitenland, kosten voor het taalmodel bij per-minuut-afrekening, en de jaarlijkse tariefstijging.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Zet de kosten af tegen het alternatief. Een AI receptionist in het midden-segment kost over een jaar typisch 4.000 tot 8.000 euro all-in. Een parttime telefonist of receptioniste kost een veelvoud daarvan en dekt geen avonden, weekenden of vakanties. Een traditionele antwoorddienst rekent vaak per gesprek af, wat bij hoog volume snel oploopt. De financiele afweging valt voor veel MKB-bedrijven met substantieel belverkeer in het voordeel van een AI receptionist uit — maar reken het door met uw eigen belvolume, want bij weinig oproepen kan een per-gesprek antwoorddienst goedkoper zijn. Ons artikel over <a href="/kennisbank/ai-telefoonagent-starter-tco-mkb-nederland/" class="text-brand-indigo hover:underline">de total cost of ownership van een AI telefoonagent</a> geeft een gedetailleerde rekenmethode.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Branche-overwegingen — niet elke praktijk weegt gelijk</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De twaalf criteria gelden voor iedereen, maar het gewicht verschilt per branche. Pas de weging aan op uw eigen situatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Zorgpraktijken (tandarts, fysiotherapie, huisarts).</strong> Hier wegen agenda-koppeling, AVG en EU-hosting het zwaarst. De AI verwerkt gezondheidsgegevens, dus de verwerkersovereenkomst, de datacenter-locatie en een informatiebeveiligings-werkproces conform <a href="https://www.nen.nl/nen-7510-1-2024-nl" rel="external" class="text-brand-indigo hover:underline">NEN 7510</a> zijn geen extra's maar voorwaarden. De agenda-koppeling moet foutloos zijn — een dubbele boeking in een behandelagenda is een direct probleem.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Garagebedrijven en installatiebedrijven.</strong> Hier telt vooral beschikbaarheid en escalatie. Monteurs en installateurs kunnen de telefoon overdag niet aannemen; de AI vangt dat af. Doorschakeling met context is belangrijk voor spoedgevallen — een lekkage of een auto met pech moet snel bij de juiste persoon terechtkomen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Schoonheidssalons, kappers en dierenartspraktijken.</strong> Hoog volume aan afspraakgesprekken, vaak ook buiten openingstijden. Agenda-koppeling en een natuurlijke, vriendelijke gesprekstoon zijn doorslaggevend. Rapportage helpt om te zien welke tijdsloten populair zijn.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Advocaten- en advieskantoren.</strong> Hier wegen taalkwaliteit, vertrouwelijkheid en escalatie zwaar. Veel gesprekken zijn gevoelig en horen bij een mens; de AI filtert en plant in. AVG en de uitsluiting van modeltraining op gespreksinhoud zijn cruciaal. Onze sectorpagina <a href="/kennisbank/ai-voor-advocatenkantoor-nederland-2026/" class="text-brand-indigo hover:underline">AI voor advocatenkantoren</a> gaat hier dieper op in.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">De gemene deler: maak vooraf expliciet welke gesprekstypen u door de AI wilt laten afhandelen en welke altijd naar een mens moeten. Die afbakening bepaalt welke criteria voor u dubbel tellen — en daarmee welke aanbieder het beste past.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Marco van Aanloop AI — getoetst aan de criteria</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI is een in Rotterdam gevestigd AI-bureau (KvK 88606902), opgericht door Mustafa Agah Dogan. Marco is de AI receptionist en telefoonagent uit het portfolio van Aanloop AI. Ter illustratie van hoe de twaalf criteria in de praktijk uitpakken, hier feitelijk hoe Marco zich tot elk criterium verhoudt — bedoeld als een voorbeeld dat aan de criteria voldoet, niet als ranglijst-aanbeveling. Toets Marco net zo kritisch als elke andere kandidaat.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Latency en taalkwaliteit:</strong> Marco is gefinetuned op Nederlandstalige conversatie met herkenning van u- en je-vorm, regionale accenten en Nederlandse notatie; de reactiesnelheid is bedoeld om gesprekken natuurlijk te laten verlopen en is live te demonstreren. <strong class="text-navy">Integraties en agenda-koppeling:</strong> Marco koppelt real-time met Google Agenda en Outlook en is gebouwd op een open n8n-stack, waardoor integratie met CRM- en praktijksoftware mogelijk is zonder gesloten platform. <strong class="text-navy">Doorschakeling en escalatie:</strong> Marco verbindt door naar een medewerker met gesprekscontext en hanteert instelbare escalatieregels, zodat de AI bij twijfel niet verzint maar overdraagt.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">AVG en EU-hosting:</strong> alle klantdata wordt verwerkt en opgeslagen binnen de EU (Frankfurt of Amsterdam), met een standaard verwerkersovereenkomst en een expliciete clausule die modeltraining op klantdata uitsluit. <strong class="text-navy">Prijsmodel:</strong> Marco hanteert een all-in maandtarief dat publiek staat op de <a href="/tarieven/" class="text-brand-indigo hover:underline">tarieven-pagina</a>, zonder verborgen telefonie- of API-kosten. <strong class="text-navy">Implementatietijd:</strong> de inrichting duurt doorgaans 7 tot 14 werkdagen inclusief trainings- en testfase. <strong class="text-navy">Nummerportering:</strong> uw bestaande nummer kan via portering of doorschakeling worden behouden. <strong class="text-navy">Rapportage:</strong> per gesprek zijn samenvattingen en cijfers beschikbaar. <strong class="text-navy">Contract:</strong> maandelijks opzegbaar na een pilot van twee weken, met een uptime-SLA.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Of Marco voor u de juiste keuze is, hangt af van uw branche, belvolume en specifieke eisen. De waarde van deze gids zit in het objectieve raamwerk: leg Marco en elke andere kandidaat naast de twaalf criteria en de vergelijkingstabel, vraag bij iedereen een live demo en een all-in offerte, en kies op feiten. Wilt u Marco zelf beoordelen, vraag dan een <a href="/gratis-ai-scan/" class="text-brand-indigo hover:underline">gratis AI-scan</a> aan of bekijk de <a href="/kennisbank/ai-receptionist-vs-ai-telefoniste-vergelijking/" class="text-brand-indigo hover:underline">vergelijking van AI receptionist-categorieen</a>.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Stappenplan — zo kiest u in vier stappen</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Stap 1: bepaal uw gesprekstypen.</strong> Schrijf op welke telefoongesprekken uw bedrijf binnenkrijgt en welke daarvan routine zijn (afspraken, openingstijden, standaardvragen) en welke een mens vereisen. Die afbakening bepaalt welke van de twaalf criteria voor u dubbel tellen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Stap 2: stel een shortlist van 3 tot 5 aanbieders op.</strong> Selecteer op harde criteria vooraf: Nederlandse vestiging, EU-hosting, publieke of opvraagbare tarieven, en koppeling met uw agendasysteem. Zo vergelijkt u alleen serieuze kandidaten.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Stap 3: vraag bij elke kandidaat een live demo en een all-in offerte.</strong> Test tijdens de demo de latency, de Nederlandse taalkwaliteit, een bewust lastige vraag (voor de escalatie) en de agenda-koppeling. Vraag de offerte als 1 totaalbedrag voor 12 maanden. Reduceer tot twee finalisten.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Stap 4: draai een pilot van twee weken.</strong> Laat de twee finalisten met dezelfde meetcriteria proefdraaien — reactiesnelheid, oplos-percentage, aantal correcte boekingen. Vul daarna de vergelijkingstabel in, kies op feiten en regel het exit-scenario (data-eigendom, exportformaat) voordat u tekent.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Vijf veelgemaakte fouten bij het kiezen van een AI receptionist</h2>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 1: kiezen op een gepolijste verkoopdemo.</strong> Een demo waarin de AI vlekkeloos antwoordt, is makkelijk te ensceneren — de AI is dan voorbereid op precies de vragen die langskomen. Wat telt is hoe de AI omgaat met de tien tot twintig procent gesprekken die afwijken van het script: onverwachte vragen, onduidelijke intenties, bellers die door elkaar praten. Vraag tijdens de demo bewust om een rand-scenario en let op of de AI netjes escaleert in plaats van te improviseren met een fout antwoord.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 2: het maandtarief vergelijken in plaats van de all-in jaarkosten.</strong> Twee oplossingen van 300 euro per maand kunnen totaal verschillen. De een is volledig inclusief telefonie, setup, support en taalmodel-kosten; de ander rekent die posten los af. Bij een per-minuut model kan een drukke maand de rekening fors opdrijven. Vraag altijd om het verwachte all-in jaarbedrag bij uw eigen geschatte belvolume, en laat de leverancier voorrekenen wat een piekmaand kost.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 3: de agenda-koppeling onderschatten.</strong> Voor de meeste praktijken zit de echte waarde in foutloos inplannen. Toch wordt de agenda-koppeling vaak afgedaan als een technisch detail. Een eenrichtings-sync of een agenda die maar elk kwartier wordt bijgewerkt, leidt tot dubbele boekingen en handwerk. Test de koppeling tijdens de pilot met echte afspraken in uw eigen agenda — niet alleen in een demo-omgeving.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 4: de pilot overslaan vanwege tijdsdruk.</strong> Wie snel bereikbaar wil zijn, is geneigd direct een jaarcontract te tekenen. Maar juist de pilot van twee weken laat zien of de AI uw specifieke klantvragen aankan, of de Nederlandse taalkwaliteit klopt en of de samenwerking soepel loopt. Twee weken testen is altijd goedkoper dan een jaar vastzitten aan een oplossing die in de praktijk tegenvalt.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 5: nummerbehoud en exit pas achteraf regelen.</strong> Veel ondernemers denken bij het tekenen niet na over twee dingen: of hun bestaande telefoonnummer behouden blijft, en wat er bij het einde van de samenwerking met hun data en kennisbank gebeurt. Beide moet u vooraf vastleggen. Een nieuw telefoonnummer kost vindbaarheid; een oplossing zonder data-export houdt u gevangen. Regel het nummerbehoud en de exit-procedure voordat u tekent — daarna heeft u geen onderhandelingspositie meer.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">AI receptionist, AI telefoniste of AI telefoonassistent — een kwestie van schaal</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">In de Nederlandse markt worden de termen AI receptionist, AI telefoniste en AI telefoonassistent vaak door elkaar gebruikt. Voor uw selectie is het nuttig het onderscheid te kennen, want het bepaalt welk type oplossing bij uw organisatie past.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Een <strong class="text-navy">AI receptionist</strong> is doorgaans een gestandaardiseerde, plug-and-play oplossing gericht op solo-ondernemers en kleine MKB-bedrijven. De focus ligt op afspraken inplannen, veelgestelde vragen beantwoorden en lead-kwalificatie. Een <strong class="text-navy">AI telefoniste</strong> is meer gericht op klantcontact en customer service — productvragen, retouren, statusvragen — en past goed bij webshops en dienstverleners. Een <strong class="text-navy">AI telefoonassistent</strong> is een uitgebreidere oplossing voor grotere organisaties met meerdere afdelingen, een keuzemenu en complexe routing tussen teams.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor de meeste MKB-bedrijven met 1 tot 25 medewerkers is een AI receptionist of AI telefoniste de juiste categorie; de telefoonassistent is bedoeld voor organisaties die het volume en de structuur van een echte telefooncentrale hebben. Bepaal eerst in welke categorie u valt — dat versmalt uw shortlist meteen. De criteria in deze gids gelden voor alle drie de categorieen; alleen het gewicht van bijvoorbeeld routing en doorschakeling verschilt. Onze pagina <a href="/kennisbank/ai-receptionist-vs-ai-telefoniste-vergelijking/" class="text-brand-indigo hover:underline">AI receptionist vs AI telefoniste vs AI telefoonassistent</a> behandelt dit onderscheid in detail.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Bronnen en officiele regelgeving</h2>
+      <p class="text-slate-600 leading-relaxed mb-4">De regelgevende criteria in deze gids verwijzen naar officiele, primaire bronnen. Gebruik ze om de antwoorden van een aanbieder zelf te verifieren.</p>
+      <ul class="text-slate-600 leading-relaxed space-y-3 list-disc pl-5">
+        <li><a href="https://www.rijksoverheid.nl/onderwerpen/privacy-en-persoonsgegevens" rel="external" class="text-brand-indigo hover:underline">Rijksoverheid — Privacy en persoonsgegevens (AVG)</a>: overheidsuitleg over de verplichtingen bij het verwerken van persoonsgegevens.</li>
+        <li><a href="https://autoriteitpersoonsgegevens.nl/" rel="external" class="text-brand-indigo hover:underline">Autoriteit Persoonsgegevens</a>: de Nederlandse toezichthouder, met richtsnoeren voor AI, algoritmes en de datalek-meldplicht.</li>
+        <li><a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="external" class="text-brand-indigo hover:underline">Europese Commissie — Regulatory framework on AI</a>: het officiele kader van de EU AI Act, met de transparantieverplichting voor AI in gesprekken.</li>
+        <li><a href="https://www.cbs.nl/" rel="external" class="text-brand-indigo hover:underline">Centraal Bureau voor de Statistiek</a>: statistieken over AI-gebruik en digitalisering bij Nederlandse bedrijven.</li>
+        <li><a href="https://www.nen.nl/nen-7510-1-2024-nl" rel="external" class="text-brand-indigo hover:underline">NEN 7510</a>: de Nederlandse norm voor informatiebeveiliging in de zorg, relevant bij een AI receptionist die medische gegevens verwerkt.</li>
+        <li><a href="https://www.acm.nl/nl/onderwerpen/telecommunicatie" rel="external" class="text-brand-indigo hover:underline">Autoriteit Consument & Markt — Telecommunicatie</a>: informatie over nummerbehoud en nummerportering in Nederland.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Aanverwante kennisbank</p>
+      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Verder lezen voor MKB-ondernemers</h2>
+      <ul class="text-slate-600 leading-relaxed space-y-3 list-disc pl-5">
+        <li><a href="/kennisbank/ai-agency-kiezen-mkb-nederland-2026/" class="text-brand-indigo hover:underline">AI agency kiezen — 14 selectiecriteria voor het MKB</a></li>
+        <li><a href="/kennisbank/ai-receptionist-vs-ai-telefoniste-vergelijking/" class="text-brand-indigo hover:underline">AI receptionist vs AI telefoniste vs AI telefoonassistent — complete vergelijking</a></li>
+        <li><a href="/kennisbank/ai-telefoonagent-starter-tco-mkb-nederland/" class="text-brand-indigo hover:underline">Total cost of ownership van een AI telefoonagent</a></li>
+        <li><a href="/kennisbank/ai-telefoniste-vs-mens/" class="text-brand-indigo hover:underline">AI telefoniste versus een menselijke receptioniste</a></li>
+        <li><a href="/kennisbank/ai-voicebot-vs-chatbot-mkb-vergelijking/" class="text-brand-indigo hover:underline">Voicebot versus chatbot — welk kanaal past bij uw MKB</a></li>
+        <li><a href="/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/" class="text-brand-indigo hover:underline">AVG en GDPR compliance bij AI-implementatie voor MKB</a></li>
+        <li><a href="/kennisbank/eu-ai-act-mkb-nederland-2026/" class="text-brand-indigo hover:underline">EU AI Act voor MKB Nederland 2026</a></li>
+        <li><a href="/tarieven/" class="text-brand-indigo hover:underline">Aanloop AI tarieven — transparant en publiek</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50 border-y border-slate-200">
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow text-brand-indigo mb-2">Marco zelf beoordelen</p>
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-4">Leg Marco naast uw eigen criteria</h2>
+      <p class="text-slate-600 mb-8 leading-relaxed">Deze gids geeft u het raamwerk; de keuze maakt u zelf. Wilt u Marco — de AI receptionist van Aanloop AI — objectief toetsen aan de twaalf criteria, vraag dan een gratis AI-scan aan of bekijk de tarieven. We geven een eerlijk advies, ook als Marco niet de juiste partij voor u blijkt te zijn.</p>
+      <div class="grid md:grid-cols-3 gap-4">
+        <a href="/gratis-ai-scan/" class="card hover:border-brand-indigo transition-all">
+          <h3 class="font-bold text-navy text-sm mb-2">Gratis AI-scan</h3>
+          <p class="text-xs text-slate-600 mb-3">30-minuten haalbaarheidstoets voor uw situatie. Eerlijk advies, geen verkooppraatje.</p>
+          <span class="text-xs text-brand-indigo font-medium">Plan een scan →</span>
+        </a>
+        <a href="/tarieven/" class="card hover:border-brand-indigo transition-all">
+          <h3 class="font-bold text-navy text-sm mb-2">Transparante tarieven</h3>
+          <p class="text-xs text-slate-600 mb-3">All-in maandtarief publiek op de website. Geen vanaf-prijzen, geen verborgen kosten.</p>
+          <span class="text-xs text-brand-indigo font-medium">Bekijk tarieven →</span>
+        </a>
+        <a href="/kennisbank/ai-receptionist-vs-ai-telefoniste-vergelijking/" class="card hover:border-brand-indigo transition-all">
+          <h3 class="font-bold text-navy text-sm mb-2">Categorie-vergelijking</h3>
+          <p class="text-xs text-slate-600 mb-3">Receptionist, telefoniste of telefoonassistent — welke categorie past bij uw bedrijf.</p>
+          <span class="text-xs text-brand-indigo font-medium">Lees vergelijking →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

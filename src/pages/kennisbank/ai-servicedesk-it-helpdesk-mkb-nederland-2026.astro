@@ -24,14 +24,34 @@ const articleSchema = {
     }
   },
   "datePublished": "2026-01-19",
-  "dateModified": "2026-04-18",
+  "dateModified": "2026-05-21",
   "mainEntityOfPage": "https://aanloopai.nl/kennisbank/ai-servicedesk-it-helpdesk-mkb-nederland-2026/",
   "inLanguage": "nl-NL",
   "articleSection": "Klantenservice & AI",
+  "wordCount": 4600,
 };
 
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'AI servicedesk en IT-helpdesk MKB Nederland — gids 2026', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-servicedesk-it-helpdesk-mkb-nederland-2026/', inLanguage: 'nl-NL' };
+
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Een AI-servicedesk implementeren in 8 stappen',
+  description: 'Stappenplan voor het implementeren van een AI-laag op een IT-servicedesk in het Nederlandse MKB, van ticket-analyse tot roll-out en meting.',
+  totalTime: 'P12D',
+  inLanguage: 'nl-NL',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Ticket-history en KB analyseren', text: 'Exporteer 6 tot 12 maanden ticket-history en categoriseer de top 20 ticket-types per volume. Inventariseer bestaande KB-artikelen en runbooks op kwaliteit en dekkings-gaps.' },
+    { '@type': 'HowToStep', position: 2, name: 'Platform- en LLM-keuze', text: 'Kies Zendesk AI of Freshservice Freddy bij bestaand ticketing-platform, ServiceNow Now Assist bij enterprise-ITSM, of een custom n8n plus Claude EU build bij branche-specifieke flows.' },
+    { '@type': 'HowToStep', position: 3, name: 'Knowledge-base RAG-laag inrichten', text: 'Indexeer KB-artikelen, runbooks, IT-policies en eerdere tickets in een vector-database. Chunk op 500 tot 800 tokens en bewaar metadata zoals categorie en recency.' },
+    { '@type': 'HowToStep', position: 4, name: 'Ticket-classificatie en routing-flow bouwen', text: 'Laat AI tickets categoriseren, urgentie bepalen en doelteam toewijzen. Test met 100 historische tickets en kalibreer de confidence-thresholds.' },
+    { '@type': 'HowToStep', position: 5, name: 'Eerste-lijn AI-agent in pilot live', text: 'Activeer de AI-agent in een pilot-portaal voor 1 afdeling van 30 tot 50 medewerkers. Pilot-duur 2 weken met dagelijkse monitoring.' },
+    { '@type': 'HowToStep', position: 6, name: 'Geautomatiseerde acties en runbooks koppelen', text: 'Koppel 5 tot 10 standaard-runbooks zoals wachtwoord-reset en license-toekenning, elk via een scoped service-account met least-privilege en dubbele logging.' },
+    { '@type': 'HowToStep', position: 7, name: 'AVG en EU AI Act compliance-stack', text: 'Regel AI-disclosure, AI-literacy training, een audit-logging-laag, retention-policy, DPIA voor personeelsdata-acties en verwerkingsregister-update.' },
+    { '@type': 'HowToStep', position: 8, name: 'Roll-out, meting en bijsturen', text: 'Rol uit in 2 of 3 golven en houd een maandelijkse review van deflectie, MTTR, CSAT, hallucinatie-incidenten en kosten per ticket.' },
+  ],
+};
 
 const faqItems = [
   { question: 'Wat doet een AI-laag op een IT-servicedesk concreet?', answer: 'Een AI-laag op een IT-servicedesk classificeert binnenkomende tickets, bepaalt urgentie en doelteam, lost standaard-vragen direct op via knowledge-base-Q&A (wachtwoord-reset, hoe-doe-ik-X, status-update), voert geautomatiseerde acties uit (account-aanmaak via Active Directory, MFA-resync, software-license-toekenning), en escaleert complexe of P1-P2 tickets met volledig context naar een menselijke engineer. Resultaat: 30 tot 60 procent tier-1-deflectie en 40 procent kortere MTTR op resterende tickets.' },
@@ -42,13 +62,19 @@ const faqItems = [
   { question: 'Hoe voorkom ik dat AI verkeerde antwoorden geeft op IT-vragen?', answer: 'Drie verdedigingslagen: (1) RAG-architectuur — AI antwoordt alleen op basis van uw eigen KB en runbooks, niet uit eigen pretraining, en geeft bron-vermelding bij elk antwoord; (2) confidence-threshold — bij twijfel (lage cosine-similarity met KB-content) escaleert AI direct naar engineer in plaats van te gokken; (3) human-in-the-loop voor harde acties — wachtwoord-reset, license-toekenning of account-aanmaak gaat met dubbele bevestiging (gebruiker + AI-confirmatie of gebruiker + manager-goedkeuring voor gevoelige acties). Plus maandelijkse fout-audit met steekproef van 30 AI-antwoorden.' },
   { question: 'Kan een AI-servicedesk geintegreerd worden met Active Directory, Microsoft 365 en Google Workspace?', answer: 'Ja. Active Directory en Entra ID: AI-agent voert wachtwoord-resets, group-membership-wijzigingen en account-locks uit via Graph API (met audit-logging). Microsoft 365: license-toekenning, OneDrive-quota-uitbreiding, Teams-channel-aanmaak via PowerShell of Graph API. Google Workspace: gebruikers-aanmaak, group-management, Drive-share-acties via Admin SDK. Aanloop AI bouwt deze integraties standaard met scoped service-accounts (least-privilege) en dubbele logging in zowel het ticket-systeem als de cloud-tenant audit-log.' },
   { question: 'Wat is een realistische tier-1-deflectie-target voor MKB?', answer: 'Bij goede KB-content en 5 tot 10 geautomatiseerde runbooks: 30 tot 50 procent tier-1-deflectie in maand 3, oplopend naar 50 tot 65 procent in maand 6. Bij ondergemiddelde KB (verouderde artikelen, geen runbooks): begint bij 10 tot 20 procent en groeit naar 35 procent na KB-uitbreiding. Bij branches met sterk afwijkende systemen (medisch, juridisch, industrie): plafond 40 tot 50 procent omdat domain-knowledge te verspreid zit. Tier-2 en tier-3 deflectie blijft typisch onder 15 procent — dat soort tickets vereist altijd menselijk oordeel.' },
-  { question: 'Wanneer kies ik Zendesk AI of Freshservice Freddy versus een Aanloop AI custom build?', answer: 'Kies Zendesk AI of Freshservice Freddy bij: u gebruikt al Zendesk of Freshservice voor ticketing, 200 tot 800 tickets per maand, standaard IT-vragen (wachtwoord, software, hardware), 5 tot 25 IT-medewerkers, korte time-to-value (2 tot 4 weken). Kies Aanloop AI custom build bij: 800+ tickets per maand, branche-specifieke flows (medisch met EPD-integratie, juridisch met DMS-koppeling, industrie met OT-systemen), 25+ IT-medewerkers, strikte data-sovereignty, of u zit niet in een van de gangbare ticketing-platforms (bijv. e-mail-helpdesk of GLPI). Hybride is mogelijk: native AI voor 80 procent standaard, custom flow voor 20 procent specifieke runbooks.' }];
+  { question: 'Wanneer kies ik Zendesk AI of Freshservice Freddy versus een Aanloop AI custom build?', answer: 'Kies Zendesk AI of Freshservice Freddy bij: u gebruikt al Zendesk of Freshservice voor ticketing, 200 tot 800 tickets per maand, standaard IT-vragen (wachtwoord, software, hardware), 5 tot 25 IT-medewerkers, korte time-to-value (2 tot 4 weken). Kies Aanloop AI custom build bij: 800+ tickets per maand, branche-specifieke flows (medisch met EPD-integratie, juridisch met DMS-koppeling, industrie met OT-systemen), 25+ IT-medewerkers, strikte data-sovereignty, of u zit niet in een van de gangbare ticketing-platforms (bijv. e-mail-helpdesk of GLPI). Hybride is mogelijk: native AI voor 80 procent standaard, custom flow voor 20 procent specifieke runbooks.' },
+  { question: 'Hoe lang duurt het om een AI-servicedesk live te krijgen?', answer: 'Met een native AI-laag (Zendesk AI of Freshservice Freddy) op een bestaand ticketing-platform: 8 tot 12 werkdagen tot pilot-go-live, plus circa 4 weken tot volledige roll-out. Voor een custom Aanloop AI build met branche-specifieke flows en integraties: 14 tot 21 werkdagen tot pilot-go-live, 6 tot 10 weken tot volledige roll-out. De doorlooptijd wordt vooral bepaald door de kwaliteit van uw bestaande knowledge-base en het aantal te koppelen runbooks.' },
+  { question: 'Wat is RAG en waarom is het belangrijk voor een AI-servicedesk?', answer: 'RAG staat voor Retrieval-Augmented Generation. In plaats van de AI te laten antwoorden uit zijn algemene pretraining, indexeert RAG uw eigen knowledge-base, runbooks en ticket-history in een vector-database. Bij elke vraag haalt het systeem de meest relevante stukken op en laat de AI daarop antwoorden, mét bron-vermelding. Het belang: de AI geeft alleen antwoorden gebaseerd op úw IT-omgeving en u kunt elk antwoord verifiëren — cruciaal om hallucinaties te voorkomen.' },
+  { question: 'Welke IT-tickets kan een AI-servicedesk NIET afhandelen?', answer: 'AI-servicedesks zijn sterk in herhalende tier-1-vragen maar zwak in uitzonderingen. Niet geschikt voor volledige automatisering zijn: complexe P1-incidenten met onbekende oorzaak, security-incidenten die menselijk oordeel vereisen, hardware-defecten die fysieke handelingen vragen, en alles wat afhangt van context die niet in de knowledge-base staat. Tier-2 en tier-3 deflectie blijft typisch onder 15 procent. Een goede AI-laag escaleert dit soort tickets bewust met volledige context naar een engineer.' },
+  { question: 'Moet ik mijn ticketing-platform vervangen om AI te gebruiken?', answer: 'Nee. Als u al Zendesk of Freshservice gebruikt, voegt u de native AI-laag toe binnen hetzelfde platform. Gebruikt u een ander systeem — Jira Service Management, GLPI, of zelfs een e-mail-helpdesk — dan koppelt een custom Aanloop AI build via API of webhook aan uw bestaande tool. Het uitgangspunt is dat de AI zich aanpast aan uw infrastructuur, niet andersom.' },
+  { question: 'Hoe houdt een AI-servicedesk de knowledge-base actueel?', answer: 'Een goed ingerichte AI-servicedesk verbetert de knowledge-base actief. Na P1- of P2-incidenten genereert de AI postmortem-concepten en stelt nieuwe KB-artikelen voor om herhaling te voorkomen. Daarnaast signaleert het systeem dekkings-gaps: vragen waarop de AI moest escaleren omdat er geen KB-content was. Zo groeit de knowledge-base structureel mee en stijgt de deflectie-ratio over de tijd in plaats van te stagneren.' },
+  { question: 'Heeft een MKB met maar 3 tot 5 IT-medewerkers baat bij een AI-servicedesk?', answer: 'Ja, juist een klein IT-team profiteert. Bij 3 tot 5 medewerkers betekent elke tier-1-vraag een directe onderbreking van projectwerk. Een AI-laag die 30 tot 50 procent van de standaardvragen wegvangt geeft een klein team de adempauze om aan structurele verbeteringen te werken. Voor deze schaal is een native AI-laag op een bestaand platform doorgaans de meest kosteneffectieve route — de licentiekosten blijven beperkt.' }];
 ---
 
 <BaseLayout
   title="AI servicedesk en IT-helpdesk MKB Nederland — gids 2026"
   description="Hoe automatiseert u uw IT-servicedesk met AI: ticket-classificatie, eerste-lijn-support, knowledge-base-Q&A en intelligente escalatie."
-  schema={[articleSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema, howToSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">
@@ -90,6 +116,34 @@ const faqItems = [
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">ServiceNow Now Assist (vanaf 7.500 tot 25.000 euro per jaar per use-case-pakket):</strong> enterprise-grade voor organisaties met 100+ IT-medewerkers, 5.000+ tickets per maand, complexe ITSM-omgeving en CMDB. Geschikt bij: u zit al op ServiceNow ITSM (of overweegt overstap), formele change-management, audit-eisen op enterprise-niveau. Voordelen: diepe integratie met CMDB, change, problem en incident management, sterke audit-positie. Nadelen: hoge instap-kosten en consultancy-fees, langere time-to-value (2 tot 4 maanden), te zwaar voor typisch MKB onder 100 IT-medewerkers.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Custom n8n plus Anthropic Claude EU (Aanloop AI build, 6.000 tot 14.000 euro implementatie + 397 tot 797 euro per maand beheer):</strong> volledig op uw eigen infrastructuur (n8n self-hosted op een EU-VPS) plus Anthropic Claude in de EU-region of Azure OpenAI in West-Europe. RAG-laag op Postgres pgvector of Weaviate. Koppelt aan elke ticketing-tool via API of webhook (ook GLPI, e-mail-helpdesk, Jira Service Management of legacy custom). Geschikt bij: 800+ tickets per maand, branche-specifieke flows (medisch met EPD-integratie, juridisch met DMS-koppeling, industrie met OT-systemen), 25+ IT-medewerkers, of u zit niet in een van de gangbare ticketing-platforms. Voordelen: full data-sovereignty, geen vendor lock-in op AI-laag, branche-specifieke runbooks, lagere maandkosten bij grote IT-team. Nadelen: langere time-to-value (3 tot 5 weken), engineering-investering, koppelingen moeten onderhouden worden.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Hybride aanpak:</strong> native AI-laag van uw bestaande ticketing-tool voor 70 tot 80 procent standaard tickets plus een custom Aanloop AI-flow voor de 20 tot 30 procent branche-specifieke runbooks (bijv. EPD-koppeling voor zorg, DMS-zoekopdrachten voor juridisch, machine-park-integratie voor industrie). Combineert snelheid van native met diepte van custom. In de praktijk de beste verhouding kosten en functionaliteit voor MKB van 30 tot 100 IT-medewerkers.</p>
+      <div class="overflow-x-auto mb-4">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b-2 border-slate-200">
+              <th class="text-left py-3 pr-4 font-semibold text-navy">Oplossing</th>
+              <th class="text-left py-3 px-4 font-semibold text-navy">Kosten-indicatie</th>
+              <th class="text-left py-3 px-4 font-semibold text-navy">Time-to-value</th>
+              <th class="text-left py-3 pl-4 font-semibold text-navy">Beste voor</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {[
+              ['Zendesk AI', '€25–€50 p/agent p/mnd', '2–4 weken', 'Bestaand Zendesk, 200–800 tickets/mnd'],
+              ['Freshservice Freddy', '€25–€75 p/agent p/mnd', '2–4 weken', 'Bestaand Freshservice, ITIL-flows'],
+              ['ServiceNow Now Assist', '€7.500–€25.000 p/jaar', '2–4 maanden', '100+ IT-medewerkers, enterprise-ITSM'],
+              ['Custom n8n + Claude EU', '€6.000–€14.000 + €397–€797/mnd', '3–5 weken', '800+ tickets, branche-specifiek, data-sovereignty'],
+              ['Hybride', 'Native licentie + custom flow', '4–6 weken', 'MKB 30–100 IT-medewerkers']].map(([o, k, t, b]) => (
+              <tr>
+                <td class="py-3 pr-4 font-medium text-slate-700">{o}</td>
+                <td class="py-3 px-4 text-slate-600">{k}</td>
+                <td class="py-3 px-4 text-slate-600">{t}</td>
+                <td class="py-3 pl-4 text-slate-600">{b}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-slate-600 leading-relaxed mb-4">Bij de keuze tussen native en custom weegt data-residentie zwaar: tickets bevatten persoonsgegevens en de <a href="https://www.autoriteitpersoonsgegevens.nl/themas/algoritmes-ai" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">Autoriteit Persoonsgegevens</a> publiceert hierover concrete richtlijnen. Voor de technische koppelingslaag van een custom build is de <a href="https://docs.n8n.io/" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">n8n-documentatie</a> de betrouwbare naslag, en voor de RAG- en model-laag de <a href="https://platform.openai.com/docs/overview" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">OpenAI-platformdocumentatie</a>.</p>
     </div>
   </section>
 
@@ -109,7 +163,7 @@ const faqItems = [
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">AVG en EU AI Act — wat moet u regelen</h2>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Data-residentie:</strong> tickets bevatten persoonsgegevens (naam melder, e-mail, IP-adres, soms gevoelige info zoals personeelsnummer of medische context bij arbo-tickets). Native AI van Zendesk, Freshservice en ServiceNow biedt EU-region-instellingen — bevestig in admin-paneel en documenteer. Custom Aanloop AI build draait op n8n self-hosted plus Anthropic Claude in EU-region of Azure OpenAI in West-Europe, met Postgres pgvector op een EU-VPS (Hetzner Frankfurt of Scaleway Amsterdam). 100 procent EU-data-flow met volledige audit-controle.</p>
-      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">EU AI Act classificatie:</strong> een AI-laag op een IT-servicedesk valt onder limited risk in de EU AI Act — gebruikers moeten weten dat ze met AI praten. Praktisch: vermelding in self-service-portaal welkomstbericht, in Teams-bot-disclaimer en in eerste reactie van AI-agent. AI-literacy training voor IT-team plus pilot-eindgebruikers (verplicht sinds februari 2025) — typisch 1-uurs e-learning met certificaat. Geen high-risk classificatie zolang AI niet wordt ingezet voor sollicitatie-screening van interne IT-vacatures, biometrische identificatie of geautomatiseerde HR-beslissingen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">EU AI Act classificatie:</strong> een AI-laag op een IT-servicedesk valt onder limited risk in de <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">EU AI Act</a> — gebruikers moeten weten dat ze met AI praten. Praktisch: vermelding in self-service-portaal welkomstbericht, in Teams-bot-disclaimer en in eerste reactie van AI-agent. AI-literacy training voor IT-team plus pilot-eindgebruikers (verplicht sinds februari 2025) — typisch 1-uurs e-learning met certificaat. Geen high-risk classificatie zolang AI niet wordt ingezet voor sollicitatie-screening van interne IT-vacatures, biometrische identificatie of geautomatiseerde HR-beslissingen. De <a href="https://www.rijksoverheid.nl/onderwerpen/digitale-overheid/kunstmatige-intelligentie-ai" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">Rijksoverheid</a> biedt aanvullende Nederlandstalige toelichting op verantwoorde AI-inzet.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">AVG-verplichtingen specifiek voor servicedesk:</strong> (1) Verwerkingsregister-aanvulling met "AI-laag op IT-servicedesk", doel, rechtsgrond (uitvoering arbeidsovereenkomst plus gerechtvaardigd belang), categorieen persoonsgegevens, bewaartermijn (typisch 2 jaar voor tickets, conform branche-norm). (2) DPIA verplicht bij geautomatiseerde acties op personeelsdata zoals account-aanmaak, wachtwoord-reset of license-toekenning — Aanloop AI levert NL-talige DPIA-template. (3) Recht op uitleg (artikel 22 AVG) — bij elke geautomatiseerde actie moet gebruiker kunnen opvragen waarom AI dat besluit nam, dus logging van prompts plus retrieved KB-context per actie. (4) Verwerkersovereenkomst met AI-leverancier — voor Aanloop AI builds standaard ingeregeld plus aanvullende AVG-clausules.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Praktische compliance-checklist AI-servicedesk:</strong> (1) bevestig EU-region in uw ticketing-platform of self-hosted infrastructuur, (2) update verwerkingsregister met AI-servicedesk-entry, (3) DPIA opstellen bij geautomatiseerde personeelsdata-acties, (4) AI-disclosure in self-service-portaal en bot-interfaces, (5) 1-uurs AI-literacy training voor IT-team plus pilot-eindgebruikers met certificaten, (6) logging-laag voor audit (welke prompt, welke retrieved chunks, welke actie, welke gebruiker, welk tijdstempel), (7) retention-policy en automatische verwijdering na bewaartermijn, (8) verwerkersovereenkomst met AI-leverancier. Aanloop AI levert NL-talig template-pakket voor punten 2 tot en met 8.</p>
     </div>
@@ -138,6 +192,34 @@ const faqItems = [
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Kosten Zendesk AI of Freshservice Freddy voor 8 IT-agents:</strong> 35 euro per agent per maand maal 8 = 280 euro per maand. Eenmalige onboarding en KB-indexering: 4.000 tot 8.000 euro afhankelijk van diepte. Maandnetto-baat: 7.824 min 280 = 7.544 euro winst per maand. Terugverdientijd op onboarding: 1 tot 2 maanden. ROI op licentie: 28x.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Kosten Aanloop AI custom build voor 8 IT-agents en branche-specifieke flows:</strong> eenmalig 8.000 tot 14.000 euro implementatie (afhankelijk van runbooks en integraties), maandelijks 597 tot 797 euro beheer. Maandnetto-baat: 7.824 min 697 = 7.127 euro per maand winst. Terugverdientijd: 2 tot 3 maanden. Voordeel boven native: vaste maandkosten ongeacht aantal agents (schaalt beter naar 25+ IT-agents), branche-specifieke flows mogelijk, full data-sovereignty.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Indirecte ROI:</strong> 24/7 self-service voor wachtwoord en standaard-IT (geen out-of-hours engineer-piket meer voor 60 procent van after-hours tickets), betere CSAT (typisch +12 tot +20 punten in maand 6), structureel groeiende KB door post-incident-suggesties van AI, betere change-management door AI-gegenereerde post-mortems, en betere retentie van IT-engineers (minder repetitief tier-1-werk). Lastig te kwantificeren maar zwaar verbeterend op het IT-team-moreel en talent-retentie — vooral relevant in een tight Nederlands IT-arbeidsmarkt.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">De realistische deflectie-ontwikkeling hangt sterk af van de kwaliteit van uw bestaande knowledge-base. Onderstaande tabel geeft typische tier-1-deflectie-trajecten over de eerste zes maanden.</p>
+      <div class="overflow-x-auto mb-4">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b-2 border-slate-200">
+              <th class="text-left py-3 pr-4 font-semibold text-navy">Uitgangssituatie</th>
+              <th class="text-left py-3 px-4 font-semibold text-navy">Deflectie maand 3</th>
+              <th class="text-left py-3 px-4 font-semibold text-brand-emerald">Deflectie maand 6</th>
+              <th class="text-left py-3 pl-4 font-semibold text-navy">Plafond</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {[
+              ['Goede KB + 5–10 runbooks', '30–50%', '50–65%', '~65%'],
+              ['Ondergemiddelde KB (verouderd)', '10–20%', '30–35%', '~45%'],
+              ['Branche met sterk afwijkende systemen', '20–30%', '35–45%', '~50%'],
+              ['Tier-2 / tier-3 tickets', '< 10%', '< 15%', '~15%']].map(([u, m3, m6, p]) => (
+              <tr>
+                <td class="py-3 pr-4 font-medium text-slate-700">{u}</td>
+                <td class="py-3 px-4 text-slate-600">{m3}</td>
+                <td class="py-3 px-4 text-brand-emerald font-medium">{m6}</td>
+                <td class="py-3 pl-4 text-slate-600">{p}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="text-slate-600 leading-relaxed mb-4">De belangrijkste hefboom is dus niet het AI-model maar uw knowledge-base. Een KB-audit en update-sprint vóór de implementatie is bijna altijd de investering met de hoogste ROI. Branche-cijfers over IT-support-kosten worden onder meer gepubliceerd door onderzoeksbureaus zoals HDI en MetricNet; toets uw eigen kosten per ticket aan de hand van werkelijke engineer-tarieven en doorlooptijd.</p>
     </div>
   </section>
 
