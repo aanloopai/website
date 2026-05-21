@@ -20,6 +20,8 @@ import sys
 from pathlib import Path
 from typing import Any
 
+import numpy as np
+
 from moviepy import (
     ColorClip,
     CompositeVideoClip,
@@ -82,6 +84,37 @@ def bg_clip(top: str, bottom: str, duration: float) -> ImageClip:
     return ImageClip(str(p)).with_duration(duration)
 
 
+def _text_png(txt: str, font_path: str, size: int, color: str, max_w: int) -> Image.Image:
+    """Render centered, word-wrapped text to an RGBA image with enough padding
+    that heavy-font ascenders/descenders are never clipped (moviepy's TextClip
+    caption/label modes clip them)."""
+    f = ImageFont.truetype(font_path, size)
+    probe = ImageDraw.Draw(Image.new("RGBA", (4, 4)))
+    lines: list[str] = []
+    for para in txt.split("\n"):
+        cur = ""
+        for word in para.split(" "):
+            trial = f"{cur} {word}".strip()
+            if probe.textlength(trial, font=f) <= max_w or not cur:
+                cur = trial
+            else:
+                lines.append(cur)
+                cur = word
+        lines.append(cur)
+    asc, desc = f.getmetrics()
+    line_h = asc + desc
+    pad = max(10, size // 4)
+    w = max((probe.textlength(ln, font=f) for ln in lines), default=1.0)
+    img = Image.new("RGBA", (int(w) + 2 * pad, line_h * len(lines) + 2 * pad), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    y = pad
+    for ln in lines:
+        lw = d.textlength(ln, font=f)
+        d.text(((img.width - lw) / 2, y), ln, font=f, fill=color)
+        y += line_h
+    return img
+
+
 def text(
     txt: str,
     font: str,
@@ -91,17 +124,12 @@ def text(
     pos: tuple,
     start: float = 0.0,
     max_width: int = W - 160,
-) -> TextClip:
+) -> ImageClip:
+    """Text layer rendered via PIL (moviepy's TextClip clips glyphs with the
+    brand's heavy fonts). Same signature/return contract as before."""
+    img = _text_png(txt, font, size, color, max_width)
     return (
-        TextClip(
-            text=txt,
-            font=font,
-            font_size=size,
-            color=color,
-            method="caption",
-            size=(max_width, None),
-            text_align="center",
-        )
+        ImageClip(np.array(img), transparent=True)
         .with_duration(duration)
         .with_position(pos)
         .with_start(start)
@@ -265,9 +293,9 @@ def render_ken_burns(spec: dict, out_path: Path) -> None:
 
     layers = [kb_clip, overlay_bg]
     layers.extend(brand_strip(duration))
-    layers.append(text(headline, FONT_BLACK, 100, PEARL, duration, ("center", 700), 0.5))
+    layers.append(text(headline, FONT_BLACK, 84, PEARL, duration, ("center", 600), 0.5, max_width=1000))
     if sub:
-        layers.append(text(sub, FONT_BOLD, 56, PEARL_DIM, duration - 1.0, ("center", 1050), 1.0))
+        layers.append(text(sub, FONT_BOLD, 48, PEARL_DIM, duration - 1.0, ("center", 1180), 1.0, max_width=1000))
     layers.append(text(cta, FONT_BOLD, 58, AMBER, duration - 2.5, ("center", 1680), 2.5))
     layers.append(wordmark(duration))
 
