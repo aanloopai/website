@@ -1,10 +1,14 @@
-// Portal product catalog (Faz 1). Static — admin-managed via code, not DB.
-// Derived from src/pages/tarieven.astro. `key` matches services.product_key
-// so the portal can tell which products a customer already has.
+// Portal product catalog (Faz 1, + V4 Sprint D pricing). Static — admin-managed
+// via code, not DB. Derived from src/pages/tarieven.astro. `key` matches
+// services.product_key. `prijsCent` + `betaling` drive the Mollie checkout.
+
+export type TierBetaling = 'maandelijks' | 'eenmalig' | 'aanvraag';
 
 export interface CatalogTier {
   naam: string;
-  prijs: string; // display string, e.g. "€249/mnd" or "Op aanvraag"
+  prijs: string; // display string
+  prijsCent: number | null; // numeric price in cents; null for 'aanvraag'
+  betaling: TierBetaling;
   kenmerken: string[];
 }
 
@@ -26,10 +30,10 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'Neemt inkomende telefoongesprekken 24/7 aan, plant afspraken in en legt leads vast. Nederlandse stem, klinkt natuurlijk.',
     meerInfoUrl: 'https://aanloopai.nl/diensten/marco/',
     tiers: [
-      { naam: 'Lite', prijs: '€249/mnd', kenmerken: ['Max 50 gesprekken/mnd', '1 standaard belscript', 'Agenda-koppeling', 'Live in 5 dagen'] },
-      { naam: 'Starter', prijs: '€597/mnd', kenmerken: ['Max 150 gesprekken/mnd', 'Eigen belscript', 'Transcripties', 'Live in 10 dagen'] },
-      { naam: 'Groei', prijs: '€1.197/mnd', kenmerken: ['Onbeperkt gesprekken', 'Emma WhatsApp inbegrepen', 'CRM-koppeling', 'Priority support <4u'] },
-      { naam: 'Partner', prijs: 'Op aanvraag', kenmerken: ['Onbeperkt Marco + Emma', 'Custom workflows', 'Dedicated accountmanager', 'SLA 99,9%'] },
+      { naam: 'Lite', prijs: '€249/mnd', prijsCent: 24900, betaling: 'maandelijks', kenmerken: ['Max 50 gesprekken/mnd', '1 standaard belscript', 'Agenda-koppeling', 'Live in 5 dagen'] },
+      { naam: 'Starter', prijs: '€597/mnd', prijsCent: 59700, betaling: 'maandelijks', kenmerken: ['Max 150 gesprekken/mnd', 'Eigen belscript', 'Transcripties', 'Live in 10 dagen'] },
+      { naam: 'Groei', prijs: '€1.197/mnd', prijsCent: 119700, betaling: 'maandelijks', kenmerken: ['Onbeperkt gesprekken', 'Emma WhatsApp inbegrepen', 'CRM-koppeling', 'Priority support <4u'] },
+      { naam: 'Partner', prijs: 'Op aanvraag', prijsCent: null, betaling: 'aanvraag', kenmerken: ['Onbeperkt Marco + Emma', 'Custom workflows', 'Dedicated accountmanager', 'SLA 99,9%'] },
     ],
   },
   {
@@ -40,8 +44,8 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'Beantwoordt WhatsApp- en chatvragen automatisch, 24/7. Getraind op uw FAQ en productcatalogus.',
     meerInfoUrl: 'https://aanloopai.nl/diensten/emma/',
     tiers: [
-      { naam: 'Lite', prijs: '€49/mnd', kenmerken: ['500 berichten/mnd', 'Standaard FAQ-training', 'WhatsApp Business API', 'NL/EN auto-detectie'] },
-      { naam: 'Standard', prijs: '€197/mnd', kenmerken: ['Onbeperkt berichten', 'Eigen FAQ + productcatalogus', 'Shopify/WooCommerce-koppeling', 'Meertalig NL/EN/FR/DE'] },
+      { naam: 'Lite', prijs: '€49/mnd', prijsCent: 4900, betaling: 'maandelijks', kenmerken: ['500 berichten/mnd', 'Standaard FAQ-training', 'WhatsApp Business API', 'NL/EN auto-detectie'] },
+      { naam: 'Standard', prijs: '€197/mnd', prijsCent: 19700, betaling: 'maandelijks', kenmerken: ['Onbeperkt berichten', 'Eigen FAQ + productcatalogus', 'Shopify/WooCommerce-koppeling', 'Meertalig NL/EN/FR/DE'] },
     ],
   },
   {
@@ -52,9 +56,9 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'Technische SEO, on-page optimalisatie en maandelijkse content om hoger te ranken in Google.',
     meerInfoUrl: 'https://aanloopai.nl/tarieven/',
     tiers: [
-      { naam: 'Audit', prijs: '€495 eenmalig', kenmerken: ['Core Web Vitals + schema-audit', 'SERP-concurrentieanalyse', 'Actieplan', '5 werkdagen'] },
-      { naam: 'Setup', prijs: '€1.950 eenmalig', kenmerken: ['Tech-SEO + 10 pagina’s', 'Schema-markup', 'GA4 + GSC-setup', '4 weken'] },
-      { naam: 'Maandelijks', prijs: '€795/mnd', kenmerken: ['3 nieuwe pagina’s/mnd', 'Ranking-rapporten', 'Schema-updates', '30-min strategiecall'] },
+      { naam: 'Audit', prijs: '€495 eenmalig', prijsCent: 49500, betaling: 'eenmalig', kenmerken: ['Core Web Vitals + schema-audit', 'SERP-concurrentieanalyse', 'Actieplan', '5 werkdagen'] },
+      { naam: 'Setup', prijs: '€1.950 eenmalig', prijsCent: 195000, betaling: 'eenmalig', kenmerken: ['Tech-SEO + 10 pagina’s', 'Schema-markup', 'GA4 + GSC-setup', '4 weken'] },
+      { naam: 'Maandelijks', prijs: '€795/mnd', prijsCent: 79500, betaling: 'maandelijks', kenmerken: ['3 nieuwe pagina’s/mnd', 'Ranking-rapporten', 'Schema-updates', '30-min strategiecall'] },
     ],
   },
   {
@@ -65,9 +69,9 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'Generative Engine Optimization: zichtbaar worden in ChatGPT, Claude, Perplexity en Google AI Overviews.',
     meerInfoUrl: 'https://aanloopai.nl/tarieven/',
     tiers: [
-      { naam: 'Quick Scan', prijs: 'Gratis', kenmerken: ['AI-citability check', '4 platforms getest', 'GEO-score 0-100', '20 minuten'] },
-      { naam: 'Setup', prijs: '€1.450 eenmalig', kenmerken: ['llms.txt + schema', 'AI-crawler configuratie', 'Speakable markup', '4-6 weken'] },
-      { naam: 'Maandelijks', prijs: '€595/mnd', kenmerken: ['Tracking 5 AI-platforms', 'Citatie-rapporten', 'Content-updates', '30-min strategiecall'] },
+      { naam: 'Quick Scan', prijs: 'Gratis', prijsCent: null, betaling: 'aanvraag', kenmerken: ['AI-citability check', '4 platforms getest', 'GEO-score 0-100', '20 minuten'] },
+      { naam: 'Setup', prijs: '€1.450 eenmalig', prijsCent: 145000, betaling: 'eenmalig', kenmerken: ['llms.txt + schema', 'AI-crawler configuratie', 'Speakable markup', '4-6 weken'] },
+      { naam: 'Maandelijks', prijs: '€595/mnd', prijsCent: 59500, betaling: 'maandelijks', kenmerken: ['Tracking 5 AI-platforms', 'Citatie-rapporten', 'Content-updates', '30-min strategiecall'] },
     ],
   },
   {
@@ -78,7 +82,7 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'SEO Maandelijks en GEO Maandelijks gecombineerd — bespaart €195/mnd. Geïntegreerde SERP- én AI-strategie.',
     meerInfoUrl: 'https://aanloopai.nl/tarieven/',
     tiers: [
-      { naam: 'Maandelijks', prijs: '€1.195/mnd', kenmerken: ['SEO Maandelijks volledig', 'GEO Maandelijks volledig', 'Bespaart €195/mnd', 'Eén strategiecall'] },
+      { naam: 'Maandelijks', prijs: '€1.195/mnd', prijsCent: 119500, betaling: 'maandelijks', kenmerken: ['SEO Maandelijks volledig', 'GEO Maandelijks volledig', 'Bespaart €195/mnd', 'Eén strategiecall'] },
     ],
   },
   {
@@ -89,7 +93,7 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'Een nieuwe AI-ready website inclusief Marco en Emma — alles in één pakket opgezet.',
     meerInfoUrl: 'https://aanloopai.nl/diensten/ai-website-bundel-mkb-nederland/',
     tiers: [
-      { naam: 'Bundel', prijs: '€4.950 setup + €397/mnd', kenmerken: ['AI-ready website', 'Marco AI-receptionist', 'Emma WhatsApp-assistent', 'Eén vast maandbedrag'] },
+      { naam: 'Bundel', prijs: '€4.950 setup + €397/mnd', prijsCent: null, betaling: 'aanvraag', kenmerken: ['AI-ready website', 'Marco AI-receptionist', 'Emma WhatsApp-assistent', 'Eén vast maandbedrag'] },
     ],
   },
   {
@@ -100,7 +104,7 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'Een snelle, AI-ready website (Astro, Next.js of WordPress) — geoptimaliseerd voor zoekmachines én AI.',
     meerInfoUrl: 'https://aanloopai.nl/diensten/website-laten-maken-mkb-nederland-2026/',
     tiers: [
-      { naam: 'Maatwerk', prijs: 'Op aanvraag', kenmerken: ['AI-ready opgebouwd', 'SEO + GEO-fundament', 'Snelle laadtijden', 'Offerte op maat'] },
+      { naam: 'Maatwerk', prijs: 'Op aanvraag', prijsCent: null, betaling: 'aanvraag', kenmerken: ['AI-ready opgebouwd', 'SEO + GEO-fundament', 'Snelle laadtijden', 'Offerte op maat'] },
     ],
   },
   {
@@ -111,7 +115,7 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'Een complete webshop (Shopify, WooCommerce of Lightspeed) met iDEAL en PostNL-koppeling.',
     meerInfoUrl: 'https://aanloopai.nl/diensten/webshop-laten-maken-shopify-woocommerce-nederland-2026/',
     tiers: [
-      { naam: 'Maatwerk', prijs: 'Op aanvraag', kenmerken: ['Shopify/WooCommerce/Lightspeed', 'iDEAL + PostNL', 'Productimport', 'Offerte op maat'] },
+      { naam: 'Maatwerk', prijs: 'Op aanvraag', prijsCent: null, betaling: 'aanvraag', kenmerken: ['Shopify/WooCommerce/Lightspeed', 'iDEAL + PostNL', 'Productimport', 'Offerte op maat'] },
     ],
   },
   {
@@ -122,11 +126,15 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'Maatwerk-automatisering van uw bedrijfsprocessen met n8n / Make — van documentverwerking tot lead-opvolging.',
     meerInfoUrl: 'https://aanloopai.nl/diensten/custom-ai-workflows/',
     tiers: [
-      { naam: 'Maatwerk', prijs: 'Op aanvraag', kenmerken: ['n8n / Make-integraties', 'Procesanalyse vooraf', 'Koppeling met uw tools', 'Offerte op maat'] },
+      { naam: 'Maatwerk', prijs: 'Op aanvraag', prijsCent: null, betaling: 'aanvraag', kenmerken: ['n8n / Make-integraties', 'Procesanalyse vooraf', 'Koppeling met uw tools', 'Offerte op maat'] },
     ],
   },
 ];
 
 export function getCatalogProduct(key: string): CatalogProduct | undefined {
   return PORTAL_CATALOG.find((p) => p.key === key);
+}
+
+export function getCatalogTier(key: string, tierNaam: string): CatalogTier | undefined {
+  return getCatalogProduct(key)?.tiers.find((t) => t.naam === tierNaam);
 }

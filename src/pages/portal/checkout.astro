@@ -1,0 +1,66 @@
+---
+// Customer portal — checkout return page. Mollie redirects here after payment.
+// The redirect carries no status, so we poll the order status (the webhook
+// flips it to 'ingediend' once payment is confirmed).
+import PortalLayout from '../../layouts/PortalLayout.astro';
+---
+
+<PortalLayout title="Betaling" active="ontdekken">
+  <div class="mx-auto max-w-md">
+    <div class="pcard">
+      <div class="pcard-b text-center" style="padding:40px 24px">
+        <div id="co-pending">
+          <div class="pskel mx-auto h-12 w-12 rounded-full"></div>
+          <h1 class="page-title mt-4">Betaling bevestigen…</h1>
+          <p class="page-sub mt-1">Een moment — we controleren uw betaling.</p>
+        </div>
+        <div id="co-ok" class="hidden">
+          <svg style="width:48px;height:48px;margin:0 auto;color:#1a7f53" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <h1 class="page-title mt-4">Betaling geslaagd</h1>
+          <p class="page-sub mx-auto mt-1" style="max-width:24rem">
+            Bedankt! Uw abonnement is actief en wij starten direct met de inrichting van uw dienst.
+          </p>
+          <a href="/portal/diensten" class="pbtn pbtn--primary mt-5">Naar mijn diensten</a>
+        </div>
+        <div id="co-wait" class="hidden">
+          <h1 class="page-title">Betaling in verwerking</h1>
+          <p class="page-sub mx-auto mt-1" style="max-width:24rem">
+            Uw betaling wordt nog verwerkt. Dit kan enkele minuten duren — u ontvangt een
+            bevestiging per e-mail. U kunt deze pagina sluiten.
+          </p>
+          <a href="/portal/diensten" class="pbtn pbtn--subtle mt-5">Naar mijn diensten</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var orderId = new URLSearchParams(location.search).get('order');
+      if (!orderId) { location.href = '/portal/diensten'; return; }
+      var tries = 0;
+
+      function check() {
+        fetch('/api/portal/order?id=' + encodeURIComponent(orderId), { credentials: 'same-origin' })
+          .then(function (r) { if (r.status === 401) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (d) {
+            var status = d.ok && d.order ? d.order.status : '';
+            if (status && status !== 'concept') {
+              document.getElementById('co-pending').classList.add('hidden');
+              document.getElementById('co-ok').classList.remove('hidden');
+              return;
+            }
+            tries++;
+            if (tries >= 5) {
+              document.getElementById('co-pending').classList.add('hidden');
+              document.getElementById('co-wait').classList.remove('hidden');
+              return;
+            }
+            setTimeout(check, 3000);
+          })
+          .catch(function () {});
+      }
+      check();
+    })();
+  </script>
+</PortalLayout>

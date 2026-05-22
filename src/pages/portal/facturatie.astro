@@ -17,7 +17,7 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
     <div id="f-tablewrap" class="hidden">
       <table class="ptable">
         <thead><tr>
-          <th>Periode</th><th>Bedrag</th><th>Status</th><th class="num">Factuur</th>
+          <th>Factuurnr.</th><th>Periode</th><th class="num">Bedrag</th><th>Status</th>
         </tr></thead>
         <tbody id="f-rows"></tbody>
       </table>
@@ -59,13 +59,10 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
           document.getElementById('f-tablewrap').classList.remove('hidden');
           document.getElementById('f-rows').innerHTML = list.map(function (i) {
             var badge = i.status === 'betaald' ? 'pbadge--green' : 'pbadge--amber';
-            var pdf = (i.pdf_url && /^https?:\/\//i.test(i.pdf_url))
-              ? '<a href="' + esc(i.pdf_url) + '" target="_blank" rel="noopener" class="p-link">PDF openen</a>'
-              : '<span style="color:var(--p-ink-4)">—</span>';
-            return '<tr><td class="primary">' + esc(i.periode) + '</td>' +
+            return '<tr><td class="primary">' + esc(i.factuurnummer || '—') + '</td>' +
+              '<td>' + esc(i.periode) + '</td>' +
               '<td class="num primary">' + euro(i.bedrag_cent) + '</td>' +
-              '<td><span class="pbadge ' + badge + '">' + esc(i.status) + '</span></td>' +
-              '<td class="num">' + pdf + '</td></tr>';
+              '<td><span class="pbadge ' + badge + '">' + esc(i.status) + '</span></td></tr>';
           }).join('');
         })
         .catch(function () {});

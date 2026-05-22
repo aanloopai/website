@@ -28,6 +28,7 @@ import {
   handlePortalApi,
 } from './lib/portal-routes.js';
 import { handleAdminApi } from './lib/admin-routes.js';
+import { handleMollieWebhook, reconcilePayments } from './lib/mollie.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -516,6 +517,11 @@ export default {
     if (url.pathname === '/api/team-invite/accept') {
       return handleInviteAccept(request, env);
     }
+    // Mollie payment webhook (unsigned form POST — handler re-fetches to verify)
+    if (url.pathname === '/api/webhooks/mollie') {
+      if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
+      return handleMollieWebhook(request, env);
+    }
     // Customer portal API + admin panel API
     if (url.pathname.startsWith('/api/portal/')) {
       if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
@@ -531,6 +537,11 @@ export default {
       return applySecurityHeaders(assetResponse, url.pathname);
     }
     return new Response('Not configured: ASSETS binding missing in wrangler.toml', { status: 500 });
+  },
+
+  // Cron — reconcile stale Mollie payments (configured in wrangler.toml [triggers]).
+  async scheduled(event, env, ctx) {
+    ctx.waitUntil(reconcilePayments(env));
   },
 };
 // Force redeploy after BREVO_API_KEY env var added (Sprint 38)

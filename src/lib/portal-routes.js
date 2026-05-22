@@ -6,6 +6,7 @@ import {
   sha256Hex, randomToken, randomId, createSession,
   sessionCookie, clearCookie, getSessionUser,
 } from './auth.js';
+import { handleCheckoutStart } from './mollie.js';
 
 const SITE_ORIGIN = 'https://aanloopai.nl';
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
@@ -214,6 +215,7 @@ export async function handlePortalApi(request, env) {
     }
     if (path === '/api/portal/order/submit' && method === 'POST') return await submitOrder(request, env, user);
     if (path === '/api/portal/service-config' && method === 'PATCH') return await updateServiceConfig(request, env, user);
+    if (path === '/api/portal/checkout/start' && method === 'POST') return await handleCheckoutStart(request, env, user);
     return errorResponse('Niet gevonden', 404);
   } catch (err) {
     console.error('[portal] API error:', err.message || err);
@@ -304,7 +306,7 @@ async function createServiceRequest(request, env, user) {
 
 async function portalInvoices(env, user) {
   const list = (await env.PORTAL_DB
-    .prepare('SELECT id, periode, bedrag_cent, status, pdf_url, created_at FROM invoices WHERE customer_id = ? ORDER BY created_at DESC')
+    .prepare('SELECT id, factuurnummer, periode, bedrag_cent, subtotaal_cent, btw_cent, status, pdf_url, created_at FROM invoices WHERE customer_id = ? ORDER BY created_at DESC')
     .bind(user.customer_id).all()).results || [];
   return jsonResponse({ ok: true, invoices: list });
 }

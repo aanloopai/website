@@ -11,6 +11,11 @@ const allSchemas: Record<string, unknown> = {};
 for (const p of PORTAL_CATALOG) allSchemas[p.key] = getIntakeSchema(p.key);
 const productNames: Record<string, string> = {};
 for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
+const tierMeta: Record<string, Record<string, string>> = {};
+for (const p of PORTAL_CATALOG) {
+  tierMeta[p.key] = {};
+  for (const t of p.tiers) tierMeta[p.key][t.naam] = t.betaling;
+}
 ---
 
 <PortalLayout title="Aanvraag" active="ontdekken">
@@ -56,7 +61,7 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
     </div>
   </div>
 
-  <script is:inline set:html={`window.__SCHEMAS=${JSON.stringify(allSchemas)};window.__PRODUCTNAMES=${JSON.stringify(productNames)};`}></script>
+  <script is:inline set:html={`window.__SCHEMAS=${JSON.stringify(allSchemas)};window.__PRODUCTNAMES=${JSON.stringify(productNames)};window.__TIERMETA=${JSON.stringify(tierMeta)};`}></script>
   <script is:inline>
     (function () {
       function esc(s) {
@@ -67,7 +72,7 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
       var orderId = new URLSearchParams(location.search).get('order');
       if (!orderId) { location.href = '/portal/ontdekken'; return; }
 
-      var schema = null, answers = {}, stepIdx = 0, productKey = '', tier = '';
+      var schema = null, answers = {}, stepIdx = 0, productKey = '', tier = '', betaling = 'aanvraag';
 
       fetch('/api/portal/order?id=' + encodeURIComponent(orderId), { credentials: 'same-origin' })
         .then(function (r) { if (r.status === 401) { location.href = '/portal/login'; throw 0; } return r.json(); })
@@ -76,6 +81,7 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
           var o = d.order;
           if (o.status !== 'concept') { showDone(); return; }
           productKey = o.product_key; tier = o.tier || '';
+          betaling = ((window.__TIERMETA || {})[productKey] || {})[tier] || 'aanvraag';
           answers = o.intake || {};
           schema = (window.__SCHEMAS || {})[productKey];
           if (!schema) { location.href = '/portal/ontdekken'; return; }
@@ -94,7 +100,9 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
         document.getElementById('iw-progress').style.width =
           Math.round((stepIdx / (totalSteps() - 1)) * 100) + '%';
         document.getElementById('iw-prev').style.visibility = stepIdx === 0 ? 'hidden' : 'visible';
-        document.getElementById('iw-next').textContent = isSummary ? 'Aanvraag indienen' : 'Volgende →';
+        document.getElementById('iw-next').textContent = isSummary
+          ? (betaling === 'aanvraag' ? 'Aanvraag indienen' : 'Doorgaan naar betaling →')
+          : 'Volgende →';
         document.getElementById('iw-msg').className = 'palert mt-3 hidden';
 
         if (isSummary) { renderSummary(); return; }
@@ -204,7 +212,7 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
 
       document.getElementById('iw-next').addEventListener('click', function () {
         var isSummary = stepIdx >= schema.steps.length;
-        if (isSummary) { submit(); return; }
+        if (isSummary) { betaling === 'aanvraag' ? submit() : startCheckout(); return; }
         var missing = collectStep();
         if (missing.length) {
           showMsg('Vul de verplichte velden in: ' + missing.map(function (f) { return f.label; }).join(', '), false);
@@ -240,6 +248,29 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
           .then(function (res) {
             if (res.ok) showDone();
             else { showMsg(res.j.error || 'Er ging iets mis.', false); btn.disabled = false; }
+          })
+          .catch(function () { showMsg('Netwerkfout.', false); btn.disabled = false; });
+      }
+
+      function startCheckout() {
+        var btn = document.getElementById('iw-next');
+        btn.disabled = true;
+        fetch('/api/portal/order', {
+          method: 'PATCH', credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: orderId, intake: answers }),
+        })
+          .then(function () {
+            return fetch('/api/portal/checkout/start', {
+              method: 'POST', credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ order_id: orderId }),
+            });
+          })
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (res) {
+            if (res.ok && res.j.checkoutUrl) { location.href = res.j.checkoutUrl; }
+            else { showMsg(res.j.error || 'Kon de betaling niet starten.', false); btn.disabled = false; }
           })
           .catch(function () { showMsg('Netwerkfout.', false); btn.disabled = false; });
       }
