@@ -10,7 +10,7 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
   <!-- KPI strip -->
   <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4" id="ov-kpis">
     <div class="kpi"><div class="kpi-label">Actieve diensten</div><div class="kpi-value" id="ov-svc"><span class="pskel inline-block h-7 w-10"></span></div></div>
-    <div class="kpi"><div class="kpi-label">Open aanvragen</div><div class="kpi-value" id="ov-req"><span class="pskel inline-block h-7 w-10"></span></div></div>
+    <div class="kpi"><div class="kpi-label">Lopende aanvragen</div><div class="kpi-value" id="ov-req"><span class="pskel inline-block h-7 w-10"></span></div></div>
     <div class="kpi"><div class="kpi-label">Open vragen</div><div class="kpi-value" id="ov-tkt"><span class="pskel inline-block h-7 w-10"></span></div></div>
     <div class="kpi"><div class="kpi-label">Openstaande factuur</div><div class="kpi-value" id="ov-inv"><span class="pskel inline-block h-7 w-20"></span></div></div>
   </div>
@@ -70,7 +70,7 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
           if (d.bedrijf) document.getElementById('ov-intro').textContent = 'Welkom terug — ' + d.bedrijf + '.';
           var services = d.services || [];
           document.getElementById('ov-svc').textContent = services.filter(function (s) { return s.status === 'actief'; }).length;
-          document.getElementById('ov-req').textContent = d.openRequests || 0;
+          document.getElementById('ov-req').textContent = d.openOrders || 0;
           document.getElementById('ov-tkt').textContent = d.openTickets || 0;
           document.getElementById('ov-inv').textContent = d.openInvoice ? euro(d.openInvoice.bedrag_cent) : 'Geen';
 

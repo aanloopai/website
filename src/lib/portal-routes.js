@@ -237,6 +237,7 @@ async function portalOverview(env, user) {
   const db = env.PORTAL_DB;
   const services = (await db.prepare('SELECT id, product_key, naam, tier, status FROM services WHERE customer_id = ? ORDER BY created_at').bind(cid).all()).results || [];
   const openReq = await db.prepare("SELECT COUNT(*) AS n FROM service_requests WHERE customer_id = ? AND status IN ('open','in_behandeling')").bind(cid).first();
+  const openOrders = await db.prepare("SELECT COUNT(*) AS n FROM service_orders WHERE customer_id = ? AND status IN ('concept','ingediend','in_uitvoering')").bind(cid).first();
   const openTickets = await db.prepare("SELECT COUNT(*) AS n FROM support_tickets WHERE customer_id = ? AND status IN ('open','in_behandeling')").bind(cid).first();
   const openInvoice = await db.prepare("SELECT periode, bedrag_cent, status FROM invoices WHERE customer_id = ? AND status = 'open' ORDER BY created_at DESC LIMIT 1").bind(cid).first();
   const customer = await db.prepare('SELECT bedrijf, kvk, adres FROM customers WHERE id = ?').bind(cid).first();
@@ -253,6 +254,7 @@ async function portalOverview(env, user) {
     bedrijf: customer?.bedrijf || '',
     services,
     openRequests: openReq?.n || 0,
+    openOrders: openOrders?.n || 0,
     openTickets: openTickets?.n || 0,
     openInvoice: openInvoice || null,
     onboarding,

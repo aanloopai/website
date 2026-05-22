@@ -80,9 +80,12 @@ async function adminOverview(env) {
   const db = env.PORTAL_DB;
   const klanten = await db.prepare('SELECT COUNT(*) AS n FROM customers').first();
   const actieve = await db.prepare("SELECT COUNT(*) AS n FROM services WHERE status = 'actief'").first();
-  const openReq = await db.prepare("SELECT COUNT(*) AS n FROM service_requests WHERE status IN ('open','in_behandeling')").first();
+  const openOrders = await db.prepare("SELECT COUNT(*) AS n FROM service_orders WHERE status IN ('ingediend','in_uitvoering')").first();
   const openTkt = await db.prepare("SELECT COUNT(*) AS n FROM support_tickets WHERE status IN ('open','in_behandeling')").first();
 
+  const recentOrd = (await db.prepare(
+    "SELECT o.product_key, o.submitted_at, o.created_at, c.bedrijf FROM service_orders o JOIN customers c ON c.id = o.customer_id WHERE o.status != 'concept' ORDER BY o.created_at DESC LIMIT 6",
+  ).all()).results || [];
   const recentReq = (await db.prepare(
     'SELECT r.type, r.created_at, c.bedrijf FROM service_requests r JOIN customers c ON c.id = r.customer_id ORDER BY r.created_at DESC LIMIT 6',
   ).all()).results || [];
@@ -93,18 +96,23 @@ async function adminOverview(env) {
 
   const activity = [];
   recentCust.forEach((c) => activity.push({ kind: 'klant', label: `${c.bedrijf} toegevoegd als klant`, when: toMs(c.created_at) }));
-  recentReq.forEach((r) => activity.push({ kind: 'aanvraag', label: `Aanvraag (${r.type}) — ${r.bedrijf}`, when: toMs(r.created_at) }));
+  recentOrd.forEach((o) => activity.push({ kind: 'aanvraag', label: `Nieuwe aanvraag (${o.product_key}) — ${o.bedrijf}`, when: o.submitted_at || toMs(o.created_at) }));
+  recentReq.forEach((r) => activity.push({ kind: 'wijziging', label: `Wijziging (${r.type}) — ${r.bedrijf}`, when: toMs(r.created_at) }));
   recentTkt.forEach((t) => activity.push({ kind: 'ticket', label: `Supportvraag "${t.onderwerp}" — ${t.bedrijf}`, when: toMs(t.created_at) }));
   activity.sort((a, b) => b.when - a.when);
 
   const attention = [];
+  const aOrd = (await db.prepare(
+    "SELECT o.product_key, c.bedrijf FROM service_orders o JOIN customers c ON c.id = o.customer_id WHERE o.status = 'ingediend' ORDER BY o.submitted_at LIMIT 8",
+  ).all()).results || [];
   const aReq = (await db.prepare(
     "SELECT r.type, c.bedrijf FROM service_requests r JOIN customers c ON c.id = r.customer_id WHERE r.status = 'open' ORDER BY r.created_at LIMIT 8",
   ).all()).results || [];
   const aTkt = (await db.prepare(
     "SELECT t.onderwerp, c.bedrijf FROM support_tickets t JOIN customers c ON c.id = t.customer_id WHERE t.status = 'open' ORDER BY t.created_at LIMIT 8",
   ).all()).results || [];
-  aReq.forEach((r) => attention.push({ kind: 'aanvraag', label: `${r.type} — ${r.bedrijf}`, href: '/admin/aanvragen' }));
+  aOrd.forEach((o) => attention.push({ kind: 'aanvraag', label: `Nieuwe aanvraag ${o.product_key} — ${o.bedrijf}`, href: '/admin/aanvragen' }));
+  aReq.forEach((r) => attention.push({ kind: 'wijziging', label: `${r.type} — ${r.bedrijf}`, href: '/admin/aanvragen' }));
   aTkt.forEach((t) => attention.push({ kind: 'ticket', label: `${t.onderwerp} — ${t.bedrijf}`, href: '/admin/support' }));
 
   return jsonResponse({
@@ -112,7 +120,7 @@ async function adminOverview(env) {
     kpi: {
       klanten: klanten?.n || 0,
       actieveDiensten: actieve?.n || 0,
-      openAanvragen: openReq?.n || 0,
+      openAanvragen: openOrders?.n || 0,
       openTickets: openTkt?.n || 0,
     },
     activity: activity.slice(0, 8),
@@ -271,7 +279,7 @@ async function answerTicket(request, env) {
     return errorResponse('Ongeldige aanvraag', 400);
   }
   const ticket = await env.PORTAL_DB.prepare(
-    `SELECT t.onderwerp, u.email, u.naam FROM support_tickets t JOIN users u ON u.id = t.user_id WHERE t.id = ?`,
+    `SELECT t.onderwerp, u.email, u.naam, u.notif_json FROM support_tickets t JOIN users u ON u.id = t.user_id WHERE t.id = ?`,
   ).bind(b.id).first();
   if (!ticket) return errorResponse('Ticket niet gevonden', 404);
 
@@ -279,7 +287,9 @@ async function answerTicket(request, env) {
     'UPDATE support_tickets SET admin_antwoord = ?, status = ?, updated_at = ? WHERE id = ?',
   ).bind((b.admin_antwoord || '').slice(0, 4000), b.status, Date.now(), b.id).run();
 
-  if (b.admin_antwoord && (b.status === 'beantwoord' || b.status === 'gesloten')) {
+  // Respect the customer's notification preference (default: on).
+  const wantsMail = safeParseJson(ticket.notif_json).ticket_antwoord !== false;
+  if (wantsMail && b.admin_antwoord && (b.status === 'beantwoord' || b.status === 'gesloten')) {
     try {
       await mailCustomer(env, ticket.email, ticket.naam, `Antwoord op uw vraag: ${ticket.onderwerp}`,
         `<p>Hallo ${escapeHtml((ticket.naam || '').split(' ')[0] || 'daar')},</p>
