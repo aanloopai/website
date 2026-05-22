@@ -107,6 +107,19 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
         });
       }
 
+      function webchatHtml(s) {
+        var p = s.provisioning;
+        if (!p || !p.agent_id) return '';
+        var snip = '<elevenlabs-convai agent-id="' + p.agent_id + '"></elevenlabs-convai>\n' +
+          '<script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async><' + '/script>';
+        return '<div class="mt-5 rounded-md border p-3" style="border-color:var(--p-border);background:var(--p-subtle)">' +
+          '<p class="section-title">Web-chat — uw assistent op uw website</p>' +
+          '<p class="mt-1 text-xs p-muted">Plak deze code in uw website om de AI-assistent als chatwidget te tonen — werkt direct, los van WhatsApp.</p>' +
+          '<textarea class="ptextarea wc-snip mt-2" readonly rows="3" style="font-family:monospace;font-size:12px">' + esc(snip) + '</textarea>' +
+          '<button type="button" class="wc-copy pbtn pbtn--subtle pbtn--sm mt-2">Code kopiëren</button>' +
+          '</div>';
+      }
+
       function showDetail(id) {
         var s = services.filter(function (x) { return x.id === id; })[0];
         if (!s) return;
@@ -131,6 +144,7 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
           '<p class="mt-0.5 text-xs uppercase tracking-wide p-muted">' + esc(s.tier || '—') + '</p>' +
           (s.started_at ? '<p class="mt-0.5 text-xs" style="color:var(--p-ink-4)">Actief sinds ' + esc(s.started_at) + '</p>' : '') +
           '<p class="section-title mt-4">Configuratie</p><div class="mt-1">' + cfgRows + '</div>' +
+          webchatHtml(s) +
           '<div class="mt-5 flex flex-wrap gap-2" data-write>' + actions + '</div>';
         Array.prototype.forEach.call(document.querySelectorAll('.d-act'), function (b) {
           b.addEventListener('click', function () { openModal(b.getAttribute('data-type'), b.getAttribute('data-svc')); });
@@ -139,6 +153,14 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
           var w = document.querySelector('#d-detail [data-write]');
           if (w) w.classList.add('hidden');
         }
+        var wc = document.querySelector('#d-detail .wc-copy');
+        if (wc) wc.addEventListener('click', function () {
+          var ta = document.querySelector('#d-detail .wc-snip');
+          if (!ta) return;
+          ta.select();
+          if (navigator.clipboard) navigator.clipboard.writeText(ta.value);
+          wc.textContent = 'Gekopieerd ✓';
+        });
       }
       function btn(type, svc, label) {
         return '<button class="d-act pbtn pbtn--subtle pbtn--sm" data-type="' + type + '" data-svc="' + esc(svc) + '">' + label + '</button>';

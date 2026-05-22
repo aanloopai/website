@@ -267,15 +267,15 @@ async function portalServices(env, user, url) {
   const id = url.searchParams.get('id');
   if (id) {
     const s = await env.PORTAL_DB
-      .prepare('SELECT id, product_key, naam, tier, status, config_json, started_at, created_at FROM services WHERE id = ? AND customer_id = ?')
+      .prepare('SELECT id, product_key, naam, tier, status, config_json, provisioning_json, started_at, created_at FROM services WHERE id = ? AND customer_id = ?')
       .bind(id, user.customer_id).first();
     if (!s) return errorResponse('Dienst niet gevonden', 404);
-    return jsonResponse({ ok: true, service: { ...s, config: safeParse(s.config_json) } });
+    return jsonResponse({ ok: true, service: { ...s, config: safeParse(s.config_json), provisioning: safeParse(s.provisioning_json) } });
   }
   const list = (await env.PORTAL_DB
-    .prepare('SELECT id, product_key, naam, tier, status, config_json, started_at FROM services WHERE customer_id = ? ORDER BY created_at')
+    .prepare('SELECT id, product_key, naam, tier, status, config_json, provisioning_json, started_at FROM services WHERE customer_id = ? ORDER BY created_at')
     .bind(user.customer_id).all()).results || [];
-  return jsonResponse({ ok: true, services: list.map((s) => ({ ...s, config: safeParse(s.config_json) })) });
+  return jsonResponse({ ok: true, services: list.map((s) => ({ ...s, config: safeParse(s.config_json), provisioning: safeParse(s.provisioning_json) })) });
 }
 
 async function portalRequests(env, user) {
