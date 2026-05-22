@@ -4,60 +4,64 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
 ---
 
 <PortalLayout title="Mijn diensten" active="diensten">
-  <h1 class="text-2xl font-bold text-slate-900">Mijn diensten</h1>
-  <p class="mt-1 text-sm text-slate-600">Bekijk uw diensten en vraag een wijziging aan.</p>
+  <h1 class="page-title">Mijn diensten</h1>
+  <p class="page-sub">Bekijk uw diensten en vraag een wijziging aan.</p>
 
-  <div id="d-loading" class="mt-6 text-sm text-slate-400">Bezig met laden...</div>
-
-  <div id="d-content" class="hidden mt-6 grid gap-6 lg:grid-cols-2">
-    <div>
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Diensten</h2>
-      <div id="d-list" class="mt-3 space-y-2"></div>
-      <p id="d-empty" class="mt-3 hidden rounded-lg bg-slate-100 px-4 py-3 text-sm text-slate-500">
-        U heeft nog geen diensten. Bekijk <a href="/portal/ontdekken" class="text-brand-indigo underline">Diensten ontdekken</a>.
-      </p>
-    </div>
-    <div>
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Detail</h2>
-      <div id="d-detail" class="mt-3 rounded-xl border border-slate-200 bg-white p-5 text-sm text-slate-400">
-        Kies een dienst om de details te zien.
+  <div class="mt-6 grid gap-6 lg:grid-cols-2">
+    <section class="pcard">
+      <div class="pcard-h">Diensten</div>
+      <div class="pcard-b">
+        <div id="d-list" class="space-y-2">
+          <div class="pskel h-14 w-full"></div>
+          <div class="pskel h-14 w-full"></div>
+        </div>
+        <div id="d-empty" class="empty hidden">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+          <p class="empty-title">Nog geen diensten</p>
+          <p class="empty-text">Bekijk Diensten ontdekken om te starten.</p>
+          <a href="/portal/ontdekken" class="pbtn pbtn--subtle pbtn--sm mt-3">Diensten ontdekken</a>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <section class="pcard">
+      <div class="pcard-h">Detail</div>
+      <div class="pcard-b" id="d-detail">
+        <p class="text-sm p-muted">Kies een dienst om de details te zien.</p>
+      </div>
+    </section>
   </div>
 
-  <section id="d-requests-wrap" class="hidden mt-10">
-    <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Mijn aanvragen</h2>
-    <div id="d-requests" class="mt-3 space-y-2"></div>
-    <p id="d-requests-empty" class="mt-3 hidden text-sm text-slate-400">Nog geen aanvragen.</p>
+  <section class="pcard mt-6" id="d-requests-wrap">
+    <div class="pcard-h">Mijn aanvragen</div>
+    <div class="pcard-b">
+      <div id="d-requests" class="space-y-2"><div class="pskel h-16 w-full"></div></div>
+      <div id="d-requests-empty" class="empty hidden">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <p class="empty-title">Nog geen aanvragen</p>
+        <p class="empty-text">Wijzigingsaanvragen verschijnen hier met hun status.</p>
+      </div>
+    </div>
   </section>
 
-  <div id="d-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 p-4">
-    <div class="w-full max-w-md rounded-xl bg-white p-6">
-      <h3 class="text-lg font-bold text-slate-900" id="d-modal-title">Aanvraag</h3>
-      <p class="mt-1 text-sm text-slate-600" id="d-modal-sub"></p>
-      <label class="mt-4 block text-sm font-medium text-slate-700">Toelichting (optioneel)</label>
-      <textarea id="d-modal-bericht" rows="3" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-indigo focus:outline-none"></textarea>
-      <p id="d-modal-msg" class="mt-3 hidden rounded-lg px-3 py-2 text-sm"></p>
+  <div id="d-modal" class="pmodal-backdrop">
+    <div class="pmodal">
+      <h3 class="page-title" style="font-size:17px" id="d-modal-title">Aanvraag</h3>
+      <p class="page-sub" id="d-modal-sub"></p>
+      <label class="plabel mt-4">Toelichting (optioneel)</label>
+      <textarea id="d-modal-bericht" class="ptextarea"></textarea>
+      <p id="d-modal-msg" class="palert mt-3 hidden"></p>
       <div class="mt-4 flex justify-end gap-2">
-        <button id="d-modal-cancel" class="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-600 hover:bg-slate-100">Annuleren</button>
-        <button id="d-modal-submit" class="rounded-lg bg-brand-indigo px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Aanvraag versturen</button>
+        <button id="d-modal-cancel" class="pbtn pbtn--subtle pbtn--sm">Annuleren</button>
+        <button id="d-modal-submit" class="pbtn pbtn--primary pbtn--sm">Aanvraag versturen</button>
       </div>
     </div>
   </div>
 
   <script is:inline>
     (function () {
-      var STATUS = {
-        actief: 'bg-emerald-100 text-emerald-800',
-        onboarding: 'bg-amber-100 text-amber-800',
-        gepauzeerd: 'bg-slate-200 text-slate-600',
-      };
-      var REQ_STATUS = {
-        open: 'bg-amber-100 text-amber-800',
-        in_behandeling: 'bg-blue-100 text-blue-800',
-        afgerond: 'bg-emerald-100 text-emerald-800',
-        afgewezen: 'bg-rose-100 text-rose-800',
-      };
+      var STATUS = { actief: 'pbadge--green', onboarding: 'pbadge--amber', gepauzeerd: 'pbadge--gray' };
+      var REQ_STATUS = { open: 'pbadge--amber', in_behandeling: 'pbadge--blue', afgerond: 'pbadge--green', afgewezen: 'pbadge--red' };
       var TYPE_LABEL = {
         upgrade: 'Upgrade', downgrade: 'Downgrade', pause: 'Pauzeren',
         resume: 'Hervatten', new_product: 'Nieuw product', cancel: 'Opzeggen',
@@ -67,31 +71,24 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
           return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
         });
       }
-      var services = [];
-      var modalCtx = null;
+      var services = [], modalCtx = null;
 
       function load() {
         fetch('/api/portal/services', { credentials: 'same-origin' })
           .then(function (r) { if (r.status === 401) { location.href = '/portal/login'; throw 0; } return r.json(); })
-          .then(function (d) {
-            services = d.services || [];
-            document.getElementById('d-loading').classList.add('hidden');
-            document.getElementById('d-content').classList.remove('hidden');
-            renderList();
-          })
+          .then(function (d) { services = d.services || []; renderList(); })
           .catch(function () {});
         loadRequests();
       }
 
       function renderList() {
         var box = document.getElementById('d-list');
-        if (!services.length) { document.getElementById('d-empty').classList.remove('hidden'); return; }
+        if (!services.length) { box.innerHTML = ''; document.getElementById('d-empty').classList.remove('hidden'); return; }
         box.innerHTML = services.map(function (s) {
-          var badge = STATUS[s.status] || 'bg-slate-200 text-slate-600';
-          return '<button data-id="' + esc(s.id) + '" class="d-pick flex w-full items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-3 text-left hover:border-brand-indigo">' +
-            '<span><span class="font-medium text-slate-900">' + esc(s.naam) + '</span>' +
-            (s.tier ? '<span class="ml-2 text-xs text-slate-400">' + esc(s.tier) + '</span>' : '') + '</span>' +
-            '<span class="rounded-full px-2 py-0.5 text-xs font-medium ' + badge + '">' + esc(s.status) + '</span></button>';
+          return '<button data-id="' + esc(s.id) + '" class="d-pick flex w-full items-center justify-between rounded-md border px-4 py-3 text-left" style="border-color:var(--p-border)">' +
+            '<span><span class="primary" style="color:var(--p-ink);font-weight:500">' + esc(s.naam) + '</span>' +
+            (s.tier ? '<span class="ml-2 text-xs p-muted">' + esc(s.tier) + '</span>' : '') + '</span>' +
+            '<span class="pbadge ' + (STATUS[s.status] || 'pbadge--gray') + '">' + esc(s.status) + '</span></button>';
         }).join('');
         Array.prototype.forEach.call(document.querySelectorAll('.d-pick'), function (b) {
           b.addEventListener('click', function () { showDetail(b.getAttribute('data-id')); });
@@ -101,37 +98,29 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
       function showDetail(id) {
         var s = services.filter(function (x) { return x.id === id; })[0];
         if (!s) return;
-        var badge = STATUS[s.status] || 'bg-slate-200 text-slate-600';
         var cfg = s.config && typeof s.config === 'object' ? s.config : null;
         var cfgRows = cfg
           ? Object.keys(cfg).map(function (k) {
-              return '<div class="flex justify-between gap-3 border-t border-slate-100 py-1.5"><span class="text-slate-500">' +
-                esc(k) + '</span><span class="text-slate-800">' + esc(cfg[k]) + '</span></div>';
+              return '<div class="flex justify-between gap-3 border-t py-1.5 text-sm" style="border-color:var(--p-border)">' +
+                '<span class="p-muted">' + esc(k) + '</span><span style="color:var(--p-ink)">' + esc(cfg[k]) + '</span></div>';
             }).join('')
-          : '<p class="text-slate-400">Geen configuratie vastgelegd.</p>';
-
+          : '<p class="text-sm p-muted">Geen configuratie vastgelegd.</p>';
         var actions = '';
         if (s.status !== 'gepauzeerd') {
-          actions += btn('upgrade', s.id, 'Upgraden');
-          actions += btn('downgrade', s.id, 'Downgraden');
-          actions += btn('pause', s.id, 'Pauzeren');
+          actions += btn('upgrade', s.id, 'Upgraden') + btn('downgrade', s.id, 'Downgraden') + btn('pause', s.id, 'Pauzeren');
         } else {
           actions += btn('resume', s.id, 'Hervatten');
         }
         actions += btn('cancel', s.id, 'Opzeggen');
-
         document.getElementById('d-detail').innerHTML =
-          '<div class="flex items-center justify-between"><h3 class="text-lg font-bold text-slate-900">' + esc(s.naam) + '</h3>' +
-          '<span class="rounded-full px-2 py-0.5 text-xs font-medium ' + badge + '">' + esc(s.status) + '</span></div>' +
-          '<p class="mt-1 text-xs uppercase tracking-wide text-slate-400">' + esc(s.tier || '—') + '</p>' +
-          (s.started_at ? '<p class="mt-1 text-xs text-slate-400">Actief sinds ' + esc(s.started_at) + '</p>' : '') +
-          '<h4 class="mt-4 text-xs font-semibold uppercase tracking-wide text-slate-500">Configuratie</h4>' +
-          '<div class="mt-1 text-sm">' + cfgRows + '</div>' +
+          '<div class="flex items-center justify-between gap-3"><h3 style="font-size:16px;font-weight:600;color:var(--p-ink)">' + esc(s.naam) + '</h3>' +
+          '<span class="pbadge ' + (STATUS[s.status] || 'pbadge--gray') + '">' + esc(s.status) + '</span></div>' +
+          '<p class="mt-0.5 text-xs uppercase tracking-wide p-muted">' + esc(s.tier || '—') + '</p>' +
+          (s.started_at ? '<p class="mt-0.5 text-xs" style="color:var(--p-ink-4)">Actief sinds ' + esc(s.started_at) + '</p>' : '') +
+          '<p class="section-title mt-4">Configuratie</p><div class="mt-1">' + cfgRows + '</div>' +
           '<div class="mt-5 flex flex-wrap gap-2" data-write>' + actions + '</div>';
         Array.prototype.forEach.call(document.querySelectorAll('.d-act'), function (b) {
-          b.addEventListener('click', function () {
-            openModal(b.getAttribute('data-type'), b.getAttribute('data-svc'));
-          });
+          b.addEventListener('click', function () { openModal(b.getAttribute('data-type'), b.getAttribute('data-svc')); });
         });
         if (window.__portalUser && window.__portalUser.role === 'kijker') {
           var w = document.querySelector('#d-detail [data-write]');
@@ -139,49 +128,36 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
         }
       }
       function btn(type, svc, label) {
-        return '<button class="d-act rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:border-brand-indigo hover:text-brand-indigo" ' +
-          'data-type="' + type + '" data-svc="' + esc(svc) + '">' + label + '</button>';
+        return '<button class="d-act pbtn pbtn--subtle pbtn--sm" data-type="' + type + '" data-svc="' + esc(svc) + '">' + label + '</button>';
       }
 
       function openModal(type, svc) {
         modalCtx = { type: type, service_id: svc };
         var s = services.filter(function (x) { return x.id === svc; })[0];
         document.getElementById('d-modal-title').textContent = TYPE_LABEL[type] + ' aanvragen';
-        document.getElementById('d-modal-sub').textContent =
-          (s ? s.naam : '') + ' — wij nemen binnen 1 werkdag contact met u op.';
+        document.getElementById('d-modal-sub').textContent = (s ? s.naam : '') + ' — wij nemen binnen 1 werkdag contact met u op.';
         document.getElementById('d-modal-bericht').value = '';
-        document.getElementById('d-modal-msg').className = 'mt-3 hidden';
-        document.getElementById('d-modal').classList.remove('hidden');
-        document.getElementById('d-modal').classList.add('flex');
+        document.getElementById('d-modal-msg').className = 'palert mt-3 hidden';
+        document.getElementById('d-modal').classList.add('open');
       }
-      function closeModal() {
-        document.getElementById('d-modal').classList.add('hidden');
-        document.getElementById('d-modal').classList.remove('flex');
-      }
+      function closeModal() { document.getElementById('d-modal').classList.remove('open'); }
       document.getElementById('d-modal-cancel').addEventListener('click', closeModal);
       document.getElementById('d-modal-submit').addEventListener('click', function () {
         if (!modalCtx) return;
-        var btnEl = this;
-        btnEl.disabled = true;
+        var btnEl = this; btnEl.disabled = true;
         fetch('/api/portal/service-request', {
           method: 'POST', credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: modalCtx.type,
-            service_id: modalCtx.service_id,
-            bericht: document.getElementById('d-modal-bericht').value.trim(),
-          }),
+          body: JSON.stringify({ type: modalCtx.type, service_id: modalCtx.service_id, bericht: document.getElementById('d-modal-bericht').value.trim() }),
         })
           .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
           .then(function (res) {
             var m = document.getElementById('d-modal-msg');
             if (res.ok) {
-              m.className = 'mt-3 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800';
-              m.textContent = res.j.message || 'Aanvraag verstuurd.';
+              m.className = 'palert palert--ok mt-3'; m.textContent = res.j.message || 'Aanvraag verstuurd.';
               setTimeout(function () { closeModal(); loadRequests(); }, 1200);
             } else {
-              m.className = 'mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800';
-              m.textContent = res.j.error || 'Er ging iets mis.';
+              m.className = 'palert palert--warn mt-3'; m.textContent = res.j.error || 'Er ging iets mis.';
             }
           })
           .catch(function () {})
@@ -193,18 +169,20 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
           .then(function (r) { return r.json(); })
           .then(function (d) {
             var list = d.requests || [];
-            document.getElementById('d-requests-wrap').classList.remove('hidden');
-            if (!list.length) { document.getElementById('d-requests-empty').classList.remove('hidden'); document.getElementById('d-requests').innerHTML = ''; return; }
+            if (!list.length) {
+              document.getElementById('d-requests').innerHTML = '';
+              document.getElementById('d-requests-empty').classList.remove('hidden');
+              return;
+            }
             document.getElementById('d-requests-empty').classList.add('hidden');
             document.getElementById('d-requests').innerHTML = list.map(function (r) {
-              var badge = REQ_STATUS[r.status] || 'bg-slate-200 text-slate-600';
               var dt = new Date(r.created_at).toLocaleDateString('nl-NL');
-              return '<div class="rounded-lg border border-slate-200 bg-white px-4 py-3">' +
-                '<div class="flex items-center justify-between"><span class="font-medium text-slate-900">' +
+              return '<div class="rounded-md border px-4 py-3" style="border-color:var(--p-border)">' +
+                '<div class="flex items-center justify-between gap-2"><span class="primary" style="color:var(--p-ink);font-weight:500">' +
                 esc(TYPE_LABEL[r.type] || r.type) + '</span>' +
-                '<span class="rounded-full px-2 py-0.5 text-xs font-medium ' + badge + '">' + esc(r.status) + '</span></div>' +
-                '<p class="mt-1 text-xs text-slate-400">' + dt + (r.bericht ? ' — ' + esc(r.bericht) : '') + '</p>' +
-                (r.admin_notitie ? '<p class="mt-1 text-xs text-slate-600">Reactie: ' + esc(r.admin_notitie) + '</p>' : '') +
+                '<span class="pbadge ' + (REQ_STATUS[r.status] || 'pbadge--gray') + '">' + esc(r.status) + '</span></div>' +
+                '<p class="mt-1 text-xs" style="color:var(--p-ink-4)">' + dt + (r.bericht ? ' — ' + esc(r.bericht) : '') + '</p>' +
+                (r.admin_notitie ? '<p class="mt-1 text-xs p-muted">Reactie: ' + esc(r.admin_notitie) + '</p>' : '') +
                 '</div>';
             }).join('');
           })

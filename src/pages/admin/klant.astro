@@ -5,83 +5,92 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
 ---
 
 <AdminLayout title="Klant" active="klanten">
-  <a href="/admin/" class="text-sm text-brand-indigo hover:underline">← Alle klanten</a>
-  <h1 id="k-titel" class="mt-2 text-2xl font-bold text-slate-900">Klant</h1>
+  <a href="/admin/klanten" class="p-link text-sm">← Alle klanten</a>
+  <h1 id="k-titel" class="page-title mt-2">Klant</h1>
 
-  <div id="k-loading" class="mt-6 text-sm text-slate-400">Bezig met laden...</div>
+  <div id="k-loading" class="mt-6"><div class="pskel h-48 w-full max-w-2xl"></div></div>
 
-  <div id="k-content" class="hidden mt-6 space-y-8">
-    <section class="rounded-xl border border-slate-200 bg-white p-5">
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Bedrijfsgegevens</h2>
-      <div class="mt-3 grid gap-3 sm:grid-cols-2">
-        <input id="k-bedrijf" placeholder="Bedrijfsnaam" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <input id="k-kvk" placeholder="KvK" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <input id="k-adres" placeholder="Adres" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <input id="k-postcode" placeholder="Postcode" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <input id="k-stad" placeholder="Stad" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <input id="k-telefoon" placeholder="Telefoon" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <input id="k-factuur" type="email" placeholder="Factuur-e-mail" class="rounded-lg border border-slate-300 px-3 py-2 text-sm sm:col-span-2" />
-      </div>
-      <div class="mt-3 flex items-center gap-3">
-        <button id="k-save" class="rounded-lg bg-brand-indigo px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Opslaan</button>
-        <span id="k-msg" class="text-sm"></span>
+  <div id="k-content" class="hidden mt-6 space-y-6">
+    <section class="pcard">
+      <div class="pcard-h">Bedrijfsgegevens</div>
+      <div class="pcard-b">
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div><label class="plabel">Bedrijfsnaam</label><input id="k-bedrijf" class="pinput" /></div>
+          <div><label class="plabel">KvK</label><input id="k-kvk" class="pinput" /></div>
+          <div><label class="plabel">Adres</label><input id="k-adres" class="pinput" /></div>
+          <div><label class="plabel">Postcode</label><input id="k-postcode" class="pinput" /></div>
+          <div><label class="plabel">Stad</label><input id="k-stad" class="pinput" /></div>
+          <div><label class="plabel">Telefoon</label><input id="k-telefoon" class="pinput" /></div>
+          <div class="sm:col-span-2"><label class="plabel">Factuur-e-mail</label><input id="k-factuur" type="email" class="pinput" /></div>
+        </div>
+        <div class="mt-4 flex items-center gap-3">
+          <button id="k-save" class="pbtn pbtn--primary">Opslaan</button>
+          <span id="k-msg" class="text-sm"></span>
+        </div>
       </div>
     </section>
 
-    <section class="rounded-xl border border-slate-200 bg-white p-5">
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Gebruikers</h2>
-      <div id="k-users" class="mt-3 space-y-2"></div>
-      <div class="mt-4 flex flex-col gap-2 sm:flex-row">
-        <input id="u-naam" placeholder="Naam" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <input id="u-email" type="email" placeholder="E-mail" class="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <select id="u-role" class="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-          <option value="eigenaar">Eigenaar</option>
-          <option value="bewerker">Bewerker</option>
-          <option value="kijker">Kijker</option>
-        </select>
-        <button id="u-add" class="rounded-lg bg-slate-800 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Toevoegen</button>
+    <section class="pcard">
+      <div class="pcard-h">Gebruikers</div>
+      <div class="pcard-b">
+        <div id="k-users" class="space-y-2"></div>
+        <div class="mt-4 flex flex-col gap-2 sm:flex-row">
+          <input id="u-naam" placeholder="Naam" class="pinput" />
+          <input id="u-email" type="email" placeholder="E-mail" class="pinput flex-1" />
+          <select id="u-role" class="pselect" style="width:auto">
+            <option value="eigenaar">Eigenaar</option>
+            <option value="bewerker">Bewerker</option>
+            <option value="kijker">Kijker</option>
+          </select>
+          <button id="u-add" class="pbtn pbtn--subtle">Toevoegen</button>
+        </div>
+        <span id="u-msg" class="mt-2 block text-sm"></span>
       </div>
-      <span id="u-msg" class="mt-2 block text-sm"></span>
     </section>
 
-    <section class="rounded-xl border border-slate-200 bg-white p-5">
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Diensten</h2>
-      <div id="k-services" class="mt-3 space-y-3"></div>
-      <div class="mt-4 grid gap-2 sm:grid-cols-5">
-        <select id="s-product" class="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-          {PORTAL_CATALOG.map((p) => <option value={p.key}>{p.naam}</option>)}
-        </select>
-        <input id="s-naam" placeholder="Weergavenaam" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <input id="s-tier" placeholder="Tier" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <select id="s-status" class="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-          <option value="onboarding">Onboarding</option>
-          <option value="actief">Actief</option>
-          <option value="gepauzeerd">Gepauzeerd</option>
-        </select>
-        <button id="s-add" class="rounded-lg bg-slate-800 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Dienst toevoegen</button>
+    <section class="pcard">
+      <div class="pcard-h">Diensten</div>
+      <div class="pcard-b">
+        <div id="k-services" class="space-y-3"></div>
+        <div class="mt-4 grid gap-2 sm:grid-cols-5">
+          <select id="s-product" class="pselect">
+            {PORTAL_CATALOG.map((p) => <option value={p.key}>{p.naam}</option>)}
+          </select>
+          <input id="s-naam" placeholder="Weergavenaam" class="pinput" />
+          <input id="s-tier" placeholder="Tier" class="pinput" />
+          <select id="s-status" class="pselect">
+            <option value="onboarding">Onboarding</option>
+            <option value="actief">Actief</option>
+            <option value="gepauzeerd">Gepauzeerd</option>
+          </select>
+          <button id="s-add" class="pbtn pbtn--subtle">Dienst toevoegen</button>
+        </div>
+        <span id="s-msg" class="mt-2 block text-sm"></span>
       </div>
-      <span id="s-msg" class="mt-2 block text-sm"></span>
     </section>
 
-    <section class="rounded-xl border border-slate-200 bg-white p-5">
-      <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Facturen</h2>
-      <div id="k-invoices" class="mt-3 space-y-2"></div>
-      <div class="mt-4 grid gap-2 sm:grid-cols-5">
-        <input id="i-periode" placeholder="Periode (bv. Mei 2026)" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <input id="i-bedrag" type="number" step="0.01" placeholder="Bedrag €" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <select id="i-status" class="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-          <option value="open">Open</option>
-          <option value="betaald">Betaald</option>
-        </select>
-        <input id="i-pdf" placeholder="PDF-URL (optioneel)" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <button id="i-add" class="rounded-lg bg-slate-800 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-700">Factuur toevoegen</button>
+    <section class="pcard">
+      <div class="pcard-h">Facturen</div>
+      <div class="pcard-b">
+        <div id="k-invoices" class="space-y-2"></div>
+        <div class="mt-4 grid gap-2 sm:grid-cols-5">
+          <input id="i-periode" placeholder="Periode (bv. Mei 2026)" class="pinput" />
+          <input id="i-bedrag" type="number" step="0.01" placeholder="Bedrag €" class="pinput" />
+          <select id="i-status" class="pselect">
+            <option value="open">Open</option>
+            <option value="betaald">Betaald</option>
+          </select>
+          <input id="i-pdf" placeholder="PDF-URL (optioneel)" class="pinput" />
+          <button id="i-add" class="pbtn pbtn--subtle">Factuur toevoegen</button>
+        </div>
+        <span id="i-msg" class="mt-2 block text-sm"></span>
       </div>
-      <span id="i-msg" class="mt-2 block text-sm"></span>
     </section>
   </div>
 
   <script is:inline>
     (function () {
+      var STATUS = { actief: 'pbadge--green', onboarding: 'pbadge--amber', gepauzeerd: 'pbadge--gray' };
       function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
           return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
@@ -90,11 +99,11 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
       function euro(cent) { return (Number(cent || 0) / 100).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' }); }
       function flash(el, text, ok) {
         el.textContent = text;
-        el.className = 'mt-2 block text-sm ' + (ok ? 'text-emerald-700' : 'text-rose-600');
+        el.style.color = ok ? '#0e6245' : '#b3093c';
         setTimeout(function () { el.textContent = ''; }, 4000);
       }
       var cid = new URLSearchParams(location.search).get('id');
-      if (!cid) { location.href = '/admin/'; return; }
+      if (!cid) { location.href = '/admin/klanten'; return; }
 
       function load() {
         fetch('/api/admin/customer?id=' + encodeURIComponent(cid), { credentials: 'same-origin' })
@@ -121,30 +130,29 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
       function renderUsers(list) {
         document.getElementById('k-users').innerHTML = list.length
           ? list.map(function (u) {
-              return '<div class="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-2 text-sm">' +
-                '<span><span class="font-medium text-slate-900">' + esc(u.naam) + '</span>' +
-                '<span class="ml-2 text-slate-400">' + esc(u.email) + '</span></span>' +
-                '<span class="rounded-full bg-slate-100 px-2 py-0.5 text-xs capitalize text-slate-600">' + esc(u.role) + '</span></div>';
+              return '<div class="flex items-center justify-between rounded-md border px-4 py-2.5 text-sm" style="border-color:var(--p-border)">' +
+                '<span><span class="primary" style="color:var(--p-ink);font-weight:500">' + esc(u.naam) + '</span>' +
+                '<span class="ml-2 p-muted">' + esc(u.email) + '</span></span>' +
+                '<span class="pbadge pbadge--gray">' + esc(u.role) + '</span></div>';
             }).join('')
-          : '<p class="text-sm text-slate-400">Nog geen gebruikers.</p>';
+          : '<p class="text-sm p-muted">Nog geen gebruikers.</p>';
       }
 
       function renderServices(list) {
         document.getElementById('k-services').innerHTML = list.length
           ? list.map(function (s) {
-              return '<div class="rounded-lg border border-slate-200 p-3" data-sid="' + esc(s.id) + '">' +
-                '<div class="flex items-center justify-between"><span class="font-medium text-slate-900">' + esc(s.naam) + '</span>' +
-                '<span class="text-xs text-slate-400">' + esc(s.product_key) + '</span></div>' +
+              return '<div class="rounded-md border p-3" style="border-color:var(--p-border)" data-sid="' + esc(s.id) + '">' +
+                '<div class="flex items-center justify-between"><span class="primary" style="color:var(--p-ink);font-weight:500">' + esc(s.naam) + '</span>' +
+                '<span class="pbadge ' + (STATUS[s.status] || 'pbadge--gray') + '">' + esc(s.status) + '</span></div>' +
                 '<div class="mt-2 flex flex-wrap items-center gap-2">' +
-                '<input class="s-tier w-28 rounded-lg border border-slate-300 px-2 py-1 text-sm" value="' + esc(s.tier || '') + '" placeholder="Tier" />' +
-                '<select class="s-stat rounded-lg border border-slate-300 px-2 py-1 text-sm">' +
+                '<input class="s-tier pinput pbtn--sm" style="width:8rem;height:30px" value="' + esc(s.tier || '') + '" placeholder="Tier" />' +
+                '<select class="s-stat pselect" style="width:auto;height:30px">' +
                 ['actief', 'onboarding', 'gepauzeerd'].map(function (st) {
                   return '<option value="' + st + '"' + (st === s.status ? ' selected' : '') + '>' + st + '</option>';
                 }).join('') + '</select>' +
-                '<button class="s-upd rounded-lg bg-brand-indigo px-3 py-1 text-sm font-medium text-white hover:bg-indigo-700">Opslaan</button>' +
-                '</div></div>';
+                '<button class="s-upd pbtn pbtn--primary pbtn--sm">Opslaan</button></div></div>';
             }).join('')
-          : '<p class="text-sm text-slate-400">Nog geen diensten.</p>';
+          : '<p class="text-sm p-muted">Nog geen diensten.</p>';
         document.querySelectorAll('#k-services .s-upd').forEach(function (b) {
           b.addEventListener('click', function () {
             var box = b.closest('[data-sid]');
@@ -160,12 +168,12 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
       function renderInvoices(list) {
         document.getElementById('k-invoices').innerHTML = list.length
           ? list.map(function (i) {
-              var badge = i.status === 'betaald' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800';
-              return '<div class="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-2 text-sm">' +
-                '<span class="text-slate-800">' + esc(i.periode) + ' — ' + euro(i.bedrag_cent) + '</span>' +
-                '<span class="rounded-full px-2 py-0.5 text-xs font-medium ' + badge + '">' + esc(i.status) + '</span></div>';
+              var badge = i.status === 'betaald' ? 'pbadge--green' : 'pbadge--amber';
+              return '<div class="flex items-center justify-between rounded-md border px-4 py-2.5 text-sm" style="border-color:var(--p-border)">' +
+                '<span style="color:var(--p-ink-2)">' + esc(i.periode) + ' — ' + euro(i.bedrag_cent) + '</span>' +
+                '<span class="pbadge ' + badge + '">' + esc(i.status) + '</span></div>';
             }).join('')
-          : '<p class="text-sm text-slate-400">Nog geen facturen.</p>';
+          : '<p class="text-sm p-muted">Nog geen facturen.</p>';
       }
 
       function post(url, method, body, msgEl) {

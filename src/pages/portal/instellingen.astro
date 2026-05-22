@@ -4,114 +4,110 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
 ---
 
 <PortalLayout title="Instellingen" active="instellingen">
-  <h1 class="text-2xl font-bold text-slate-900">Instellingen</h1>
+  <h1 class="page-title">Instellingen</h1>
 
-  <div class="mt-5 flex gap-1 overflow-x-auto border-b border-slate-200">
-    <button class="tab-btn whitespace-nowrap border-b-2 border-transparent px-4 py-2 text-sm font-medium text-slate-500" data-tab="bedrijf">Bedrijfsgegevens</button>
-    <button class="tab-btn whitespace-nowrap border-b-2 border-transparent px-4 py-2 text-sm font-medium text-slate-500" data-tab="profiel">Profiel</button>
-    <button class="tab-btn whitespace-nowrap border-b-2 border-transparent px-4 py-2 text-sm font-medium text-slate-500" data-tab="team">Team</button>
-    <button class="tab-btn whitespace-nowrap border-b-2 border-transparent px-4 py-2 text-sm font-medium text-slate-500" data-tab="notificaties">Notificaties</button>
+  <div class="mt-5 flex gap-1 overflow-x-auto border-b" style="border-color:var(--p-border)">
+    <button class="tab-btn" data-tab="bedrijf">Bedrijfsgegevens</button>
+    <button class="tab-btn" data-tab="profiel">Profiel</button>
+    <button class="tab-btn" data-tab="team">Team</button>
+    <button class="tab-btn" data-tab="notificaties">Notificaties</button>
   </div>
 
-  <div id="i-loading" class="mt-6 text-sm text-slate-400">Bezig met laden...</div>
+  <div id="i-loading" class="mt-6"><div class="pskel h-40 w-full max-w-xl"></div></div>
 
   <section data-panel="bedrijf" class="i-panel mt-6 hidden max-w-xl">
-    <p id="b-readonly" class="mb-3 hidden rounded-lg bg-slate-100 px-3 py-2 text-xs text-slate-500">
-      Alleen de eigenaar kan bedrijfsgegevens wijzigen.
-    </p>
-    <div class="space-y-3">
-      <div><label class="block text-sm font-medium text-slate-700">Bedrijfsnaam</label>
-        <input id="b-bedrijf" disabled class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm" /></div>
+    <p id="b-readonly" class="palert palert--info mb-3 hidden">Alleen de eigenaar kan bedrijfsgegevens wijzigen.</p>
+    <div class="pcard"><div class="pcard-b space-y-3">
+      <div><label class="plabel">Bedrijfsnaam</label><input id="b-bedrijf" disabled class="pinput" /></div>
       <div class="grid grid-cols-2 gap-3">
-        <div><label class="block text-sm font-medium text-slate-700">KvK</label>
-          <input id="b-kvk" class="i-field mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" /></div>
-        <div><label class="block text-sm font-medium text-slate-700">Telefoon</label>
-          <input id="b-telefoon" class="i-field mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" /></div>
+        <div><label class="plabel">KvK</label><input id="b-kvk" class="i-field pinput" /></div>
+        <div><label class="plabel">Telefoon</label><input id="b-telefoon" class="i-field pinput" /></div>
       </div>
-      <div><label class="block text-sm font-medium text-slate-700">Adres</label>
-        <input id="b-adres" class="i-field mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" /></div>
+      <div><label class="plabel">Adres</label><input id="b-adres" class="i-field pinput" /></div>
       <div class="grid grid-cols-2 gap-3">
-        <div><label class="block text-sm font-medium text-slate-700">Postcode</label>
-          <input id="b-postcode" class="i-field mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" /></div>
-        <div><label class="block text-sm font-medium text-slate-700">Stad</label>
-          <input id="b-stad" class="i-field mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" /></div>
+        <div><label class="plabel">Postcode</label><input id="b-postcode" class="i-field pinput" /></div>
+        <div><label class="plabel">Stad</label><input id="b-stad" class="i-field pinput" /></div>
       </div>
-      <div><label class="block text-sm font-medium text-slate-700">Factuur-e-mail</label>
-        <input id="b-factuur" type="email" class="i-field mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" /></div>
-      <button id="b-save" data-eigenaar class="rounded-lg bg-brand-indigo px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Opslaan</button>
-      <p id="b-msg" class="hidden rounded-lg px-3 py-2 text-sm"></p>
-    </div>
+      <div><label class="plabel">Factuur-e-mail</label><input id="b-factuur" type="email" class="i-field pinput" /></div>
+      <div class="flex items-center gap-3 pt-1">
+        <button id="b-save" data-eigenaar class="pbtn pbtn--primary">Opslaan</button>
+        <span id="b-msg" class="text-sm"></span>
+      </div>
+    </div></div>
   </section>
 
   <section data-panel="profiel" class="i-panel mt-6 hidden max-w-xl">
-    <div class="space-y-3">
-      <div><label class="block text-sm font-medium text-slate-700">Naam</label>
-        <input id="p-naam" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" /></div>
-      <div><label class="block text-sm font-medium text-slate-700">E-mailadres</label>
-        <input id="p-email" disabled class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm" /></div>
-      <div><label class="block text-sm font-medium text-slate-700">Rol</label>
-        <input id="p-role" disabled class="mt-1 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm capitalize" /></div>
-      <button id="p-save" class="rounded-lg bg-brand-indigo px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Opslaan</button>
-      <p id="p-msg" class="hidden rounded-lg px-3 py-2 text-sm"></p>
-    </div>
+    <div class="pcard"><div class="pcard-b space-y-3">
+      <div><label class="plabel">Naam</label><input id="p-naam" class="pinput" /></div>
+      <div><label class="plabel">E-mailadres</label><input id="p-email" disabled class="pinput" /></div>
+      <div><label class="plabel">Rol</label><input id="p-role" disabled class="pinput capitalize" /></div>
+      <div class="flex items-center gap-3 pt-1">
+        <button id="p-save" class="pbtn pbtn--primary">Opslaan</button>
+        <span id="p-msg" class="text-sm"></span>
+      </div>
+    </div></div>
   </section>
 
   <section data-panel="team" class="i-panel mt-6 hidden">
     <div id="t-list" class="space-y-2"></div>
-    <div data-eigenaar class="mt-6 max-w-xl rounded-xl border border-slate-200 bg-white p-5">
-      <h3 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Teamlid uitnodigen</h3>
-      <div class="mt-3 flex flex-col gap-3 sm:flex-row">
-        <input id="t-email" type="email" placeholder="E-mailadres" class="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <select id="t-role" class="rounded-lg border border-slate-300 px-3 py-2 text-sm">
-          <option value="bewerker">Bewerker</option>
-          <option value="kijker">Kijker</option>
-          <option value="eigenaar">Eigenaar</option>
-        </select>
-        <button id="t-invite" class="rounded-lg bg-brand-indigo px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Uitnodigen</button>
+    <div data-eigenaar class="pcard mt-6 max-w-xl">
+      <div class="pcard-h">Teamlid uitnodigen</div>
+      <div class="pcard-b">
+        <div class="flex flex-col gap-2 sm:flex-row">
+          <input id="t-email" type="email" placeholder="E-mailadres" class="pinput flex-1" />
+          <select id="t-role" class="pselect" style="width:auto">
+            <option value="bewerker">Bewerker</option>
+            <option value="kijker">Kijker</option>
+            <option value="eigenaar">Eigenaar</option>
+          </select>
+          <button id="t-invite" class="pbtn pbtn--primary">Uitnodigen</button>
+        </div>
+        <p id="t-msg" class="palert mt-3 hidden"></p>
+        <p class="mt-3 text-xs" style="color:var(--p-ink-4)">Eigenaar = alles · Bewerker = aanvragen + support · Kijker = alleen lezen.</p>
       </div>
-      <p id="t-msg" class="mt-3 hidden rounded-lg px-3 py-2 text-sm"></p>
-      <p class="mt-3 text-xs text-slate-400">Eigenaar = alles · Bewerker = aanvragen + support · Kijker = alleen lezen.</p>
     </div>
   </section>
 
   <section data-panel="notificaties" class="i-panel mt-6 hidden max-w-xl">
-    <div class="space-y-3">
-      <label class="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm">
-        <input type="checkbox" id="n-ticket" class="h-4 w-4" />
-        <span>E-mail bij een antwoord op mijn supportvraag</span>
+    <div class="pcard"><div class="pcard-b space-y-3">
+      <label class="flex items-center gap-3 rounded-md border px-4 py-3 text-sm" style="border-color:var(--p-border)">
+        <input type="checkbox" id="n-ticket" class="h-4 w-4" /><span style="color:var(--p-ink-2)">E-mail bij een antwoord op mijn supportvraag</span>
       </label>
-      <label class="flex items-center gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3 text-sm">
-        <input type="checkbox" id="n-maand" class="h-4 w-4" />
-        <span>Maandelijks overzicht van mijn diensten</span>
+      <label class="flex items-center gap-3 rounded-md border px-4 py-3 text-sm" style="border-color:var(--p-border)">
+        <input type="checkbox" id="n-maand" class="h-4 w-4" /><span style="color:var(--p-ink-2)">Maandelijks overzicht van mijn diensten</span>
       </label>
-      <button id="n-save" class="rounded-lg bg-brand-indigo px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Opslaan</button>
-      <p id="n-msg" class="hidden rounded-lg px-3 py-2 text-sm"></p>
-    </div>
+      <div class="flex items-center gap-3 pt-1">
+        <button id="n-save" class="pbtn pbtn--primary">Opslaan</button>
+        <span id="n-msg" class="text-sm"></span>
+      </div>
+    </div></div>
   </section>
+
+  <style>
+    .tab-btn { white-space: nowrap; border-bottom: 2px solid transparent; padding: 8px 14px; font-size: 14px; font-weight: 500; color: var(--p-ink-3); cursor: pointer; background: none; }
+    .tab-btn:hover { color: var(--p-ink); }
+    .tab-btn.on { border-bottom-color: var(--p-accent); color: var(--p-accent); }
+  </style>
 
   <script is:inline>
     (function () {
-      var ROLE = { eigenaar: 'bg-indigo-100 text-indigo-800', bewerker: 'bg-blue-100 text-blue-800', kijker: 'bg-slate-200 text-slate-600' };
+      var ROLE = { eigenaar: 'pbadge--blue', bewerker: 'pbadge--gray', kijker: 'pbadge--gray' };
       function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
           return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
         });
       }
       function msg(el, text, ok) {
-        el.className = 'rounded-lg px-3 py-2 text-sm ' + (ok ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800');
+        el.className = 'text-sm ' + (ok ? '' : '');
         el.textContent = text;
+        el.style.color = ok ? '#0e6245' : '#b3093c';
       }
       var myRole = '', myId = '';
 
       var tabs = document.querySelectorAll('.tab-btn');
       var panels = document.querySelectorAll('.i-panel');
       function activate(name) {
-        tabs.forEach(function (t) {
-          var on = t.getAttribute('data-tab') === name;
-          t.classList.toggle('border-brand-indigo', on);
-          t.classList.toggle('text-brand-indigo', on);
-          t.classList.toggle('text-slate-500', !on);
-        });
+        tabs.forEach(function (t) { t.classList.toggle('on', t.getAttribute('data-tab') === name); });
         panels.forEach(function (p) { p.classList.toggle('hidden', p.getAttribute('data-panel') !== name); });
       }
       tabs.forEach(function (t) { t.addEventListener('click', function () { activate(t.getAttribute('data-tab')); }); });
@@ -137,10 +133,7 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
           document.getElementById('n-maand').checked = !!n.maandoverzicht;
           if (myRole !== 'eigenaar') {
             document.getElementById('b-readonly').classList.remove('hidden');
-            document.querySelectorAll('.i-field').forEach(function (f) {
-              f.setAttribute('disabled', 'disabled');
-              f.classList.add('bg-slate-50');
-            });
+            document.querySelectorAll('.i-field').forEach(function (f) { f.setAttribute('disabled', 'disabled'); });
             document.querySelectorAll('[data-eigenaar]').forEach(function (el) { el.classList.add('hidden'); });
           }
         })
@@ -172,8 +165,8 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
           headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data),
         })
           .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
-          .then(function (res) { msg(msgEl, res.ok ? (res.j.message || 'Opgeslagen') : (res.j.error || 'Fout'), res.ok); msgEl.classList.remove('hidden'); })
-          .catch(function () { msg(msgEl, 'Netwerkfout', false); msgEl.classList.remove('hidden'); });
+          .then(function (res) { msg(msgEl, res.ok ? (res.j.message || 'Opgeslagen') : (res.j.error || 'Fout'), res.ok); })
+          .catch(function () { msg(msgEl, 'Netwerkfout', false); });
       }
 
       function loadTeam() {
@@ -183,28 +176,27 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
             myId = d.currentUserId || '';
             var leden = d.leden || [], invites = d.openUitnodigingen || [];
             var html = leden.map(function (u) {
-              var badge = ROLE[u.role] || 'bg-slate-200 text-slate-600';
               var ctrl = '';
               if (myRole === 'eigenaar' && u.id !== myId) {
-                ctrl = '<select data-uid="' + esc(u.id) + '" class="t-role rounded-lg border border-slate-300 px-2 py-1 text-xs">' +
+                ctrl = '<select data-uid="' + esc(u.id) + '" class="t-role pselect pbtn--sm" style="width:auto;height:30px">' +
                   ['eigenaar', 'bewerker', 'kijker'].map(function (r) {
                     return '<option value="' + r + '"' + (r === u.role ? ' selected' : '') + '>' + r + '</option>';
                   }).join('') + '</select>' +
-                  '<button data-uid="' + esc(u.id) + '" class="t-remove rounded-lg border border-rose-200 px-2 py-1 text-xs text-rose-600 hover:bg-rose-50">Verwijderen</button>';
+                  '<button data-uid="' + esc(u.id) + '" class="t-remove pbtn pbtn--danger pbtn--sm">Verwijderen</button>';
               } else {
-                ctrl = '<span class="rounded-full px-2 py-0.5 text-xs font-medium ' + badge + '">' + esc(u.role) + '</span>';
+                ctrl = '<span class="pbadge ' + (ROLE[u.role] || 'pbadge--gray') + '">' + esc(u.role) + '</span>';
               }
-              return '<div class="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white px-4 py-3">' +
-                '<div><span class="font-medium text-slate-900">' + esc(u.naam) + '</span>' +
-                '<span class="ml-2 text-xs text-slate-400">' + esc(u.email) + '</span></div>' +
-                '<div class="flex items-center gap-2">' + ctrl + '</div></div>';
+              return '<div class="pcard"><div class="flex items-center justify-between gap-3 px-4 py-3">' +
+                '<div><span class="primary" style="color:var(--p-ink);font-weight:500">' + esc(u.naam) + '</span>' +
+                '<span class="ml-2 text-xs p-muted">' + esc(u.email) + '</span></div>' +
+                '<div class="flex items-center gap-2">' + ctrl + '</div></div></div>';
             }).join('');
             html += invites.map(function (iv) {
-              return '<div class="flex items-center justify-between rounded-lg border border-dashed border-slate-300 bg-slate-50 px-4 py-3">' +
-                '<span class="text-sm text-slate-500">' + esc(iv.email) + ' — uitgenodigd (' + esc(iv.role) + ')</span>' +
-                '<span class="text-xs text-amber-600">In afwachting</span></div>';
+              return '<div class="rounded-md border border-dashed px-4 py-3" style="border-color:var(--p-border-strong);background:var(--p-subtle)">' +
+                '<span class="text-sm p-muted">' + esc(iv.email) + ' — uitgenodigd (' + esc(iv.role) + ')</span>' +
+                '<span class="ml-2 pbadge pbadge--amber">In afwachting</span></div>';
             }).join('');
-            document.getElementById('t-list').innerHTML = html || '<p class="text-sm text-slate-400">Geen teamleden.</p>';
+            document.getElementById('t-list').innerHTML = html || '<p class="text-sm p-muted">Geen teamleden.</p>';
 
             document.querySelectorAll('.t-role').forEach(function (sel) {
               sel.addEventListener('change', function () {
@@ -240,11 +232,11 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
         })
           .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
           .then(function (res) {
-            msg(tmsg, res.ok ? (res.j.message || 'Uitnodiging verstuurd') : (res.j.error || 'Fout'), res.ok);
-            tmsg.classList.remove('hidden');
+            tmsg.className = 'palert mt-3 ' + (res.ok ? 'palert--ok' : 'palert--warn');
+            tmsg.textContent = res.ok ? (res.j.message || 'Uitnodiging verstuurd') : (res.j.error || 'Fout');
             if (res.ok) { document.getElementById('t-email').value = ''; loadTeam(); }
           })
-          .catch(function () { msg(tmsg, 'Netwerkfout', false); tmsg.classList.remove('hidden'); });
+          .catch(function () { tmsg.className = 'palert palert--warn mt-3'; tmsg.textContent = 'Netwerkfout'; });
       });
       loadTeam();
     })();

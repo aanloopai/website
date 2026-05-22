@@ -1,8 +1,9 @@
 ---
-// Customer portal app shell (schema v2). Sidebar nav + topbar.
-// A global auth guard fetches /api/portal/me — redirects to login on 401 and
-// fills the topbar. Every portal page (except login) uses this layout.
+// Customer portal app shell (V3, Stripe-Dashboard style). Sidebar + topbar.
+// Global auth guard fetches /api/portal/me — redirects to login on 401,
+// fills the topbar, hides [data-write] for the kijker role.
 import '../styles/global.css';
+import '../styles/portal.css';
 
 export interface Props {
   title: string;
@@ -29,52 +30,37 @@ const nav = [
     <title>{title} · Aanloop AI Klantportaal</title>
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
   </head>
-  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
-    <div class="mx-auto flex max-w-6xl flex-col lg:flex-row">
-      <aside class="border-b border-slate-200 bg-white lg:w-60 lg:shrink-0 lg:border-b-0 lg:border-r">
-        <div class="flex items-center gap-2 border-b border-slate-100 px-5 py-4">
+  <body class="portal min-h-screen">
+    <div class="mx-auto flex min-h-screen max-w-[1180px] flex-col lg:flex-row">
+      <aside class="shrink-0 border-b lg:w-60 lg:border-b-0 lg:border-r" style="background:var(--p-surface);border-color:var(--p-border)">
+        <div class="flex items-center gap-2 px-5 py-4">
           <a href="/" aria-label="Aanloop AI home">
             <img src="/brand/logo-horizontal-light.svg" alt="Aanloop AI" class="h-6" />
           </a>
         </div>
-        <nav class="flex gap-1 overflow-x-auto px-3 py-3 lg:flex-col">
+        <nav class="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col">
           {nav.map((n) => (
-            <a
-              href={n.href}
-              class={`whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                active === n.key
-                  ? 'bg-brand-indigo text-white'
-                  : 'text-slate-600 hover:bg-slate-100'
-              }`}
-            >
-              {n.label}
-            </a>
+            <a href={n.href} class={`pnav ${active === n.key ? 'pnav--active' : ''}`}>{n.label}</a>
           ))}
         </nav>
       </aside>
 
-      <div class="min-w-0 flex-1">
-        <header class="flex items-center justify-between border-b border-slate-200 bg-white px-5 py-3">
-          <div class="truncate text-sm font-medium text-slate-500" id="pl-bedrijf">Klantportaal</div>
+      <div class="flex min-w-0 flex-1 flex-col">
+        <header class="flex items-center justify-between border-b px-5 py-3 lg:px-8" style="background:var(--p-surface);border-color:var(--p-border)">
+          <div class="truncate text-sm font-semibold" id="pl-bedrijf" style="color:var(--p-ink)">Klantportaal</div>
           <div class="flex items-center gap-3">
-            <span class="hidden text-sm text-slate-700 sm:inline" id="pl-user"></span>
-            <span class="hidden rounded-full bg-slate-100 px-2 py-0.5 text-xs capitalize text-slate-500" id="pl-role"></span>
-            <a
-              href="/api/auth/logout"
-              class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100"
-            >
-              Uitloggen
-            </a>
+            <span class="hidden text-sm sm:inline" id="pl-user" style="color:var(--p-ink-2)"></span>
+            <span class="pbadge pbadge--gray hidden capitalize" id="pl-role"></span>
+            <a href="/api/auth/logout" class="pbtn pbtn--subtle pbtn--sm">Uitloggen</a>
           </div>
         </header>
-        <main class="px-5 py-6 lg:px-8 lg:py-8">
+        <main class="flex-1 px-5 py-6 lg:px-8 lg:py-8">
           <slot />
         </main>
       </div>
     </div>
 
     <script is:inline>
-      // Global auth guard + topbar fill for every portal page.
       fetch('/api/portal/me', { credentials: 'same-origin' })
         .then(function (r) {
           if (r.status === 401) { location.href = '/portal/login'; throw new Error('unauth'); }
@@ -89,7 +75,6 @@ const nav = [
           var rl = document.getElementById('pl-role');
           if (rl && u.role) { rl.textContent = u.role; rl.classList.remove('hidden'); }
           window.__portalUser = u;
-          // kijker = read-only: hide every write control marked [data-write].
           if (u.role === 'kijker') {
             document.querySelectorAll('[data-write]').forEach(function (el) { el.classList.add('hidden'); });
           }

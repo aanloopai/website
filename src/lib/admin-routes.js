@@ -43,6 +43,7 @@ export async function handleAdminApi(request, env) {
     if (path === '/api/admin/me') {
       return jsonResponse({ ok: true, user: { id: user.id, email: user.email, naam: user.naam, role: user.role } });
     }
+    if (path === '/api/admin/overview') return await adminOverview(env);
     if (path === '/api/admin/customers') {
       return method === 'POST' ? await createCustomer(request, env) : await listCustomers(env);
     }
@@ -62,6 +63,57 @@ export async function handleAdminApi(request, env) {
     console.error('[admin] API error:', err.message || err);
     return errorResponse('Er ging iets mis', 500);
   }
+}
+
+// created_at is ISO date on customers, epoch ms on requests/tickets — normalize.
+function toMs(v) {
+  if (typeof v === 'number') return v;
+  const t = Date.parse(`${v}T00:00:00Z`);
+  return Number.isFinite(t) ? t : 0;
+}
+
+async function adminOverview(env) {
+  const db = env.PORTAL_DB;
+  const klanten = await db.prepare('SELECT COUNT(*) AS n FROM customers').first();
+  const actieve = await db.prepare("SELECT COUNT(*) AS n FROM services WHERE status = 'actief'").first();
+  const openReq = await db.prepare("SELECT COUNT(*) AS n FROM service_requests WHERE status IN ('open','in_behandeling')").first();
+  const openTkt = await db.prepare("SELECT COUNT(*) AS n FROM support_tickets WHERE status IN ('open','in_behandeling')").first();
+
+  const recentReq = (await db.prepare(
+    'SELECT r.type, r.created_at, c.bedrijf FROM service_requests r JOIN customers c ON c.id = r.customer_id ORDER BY r.created_at DESC LIMIT 6',
+  ).all()).results || [];
+  const recentTkt = (await db.prepare(
+    'SELECT t.onderwerp, t.created_at, c.bedrijf FROM support_tickets t JOIN customers c ON c.id = t.customer_id ORDER BY t.created_at DESC LIMIT 6',
+  ).all()).results || [];
+  const recentCust = (await db.prepare('SELECT bedrijf, created_at FROM customers ORDER BY created_at DESC LIMIT 6').all()).results || [];
+
+  const activity = [];
+  recentCust.forEach((c) => activity.push({ kind: 'klant', label: `${c.bedrijf} toegevoegd als klant`, when: toMs(c.created_at) }));
+  recentReq.forEach((r) => activity.push({ kind: 'aanvraag', label: `Aanvraag (${r.type}) — ${r.bedrijf}`, when: toMs(r.created_at) }));
+  recentTkt.forEach((t) => activity.push({ kind: 'ticket', label: `Supportvraag "${t.onderwerp}" — ${t.bedrijf}`, when: toMs(t.created_at) }));
+  activity.sort((a, b) => b.when - a.when);
+
+  const attention = [];
+  const aReq = (await db.prepare(
+    "SELECT r.type, c.bedrijf FROM service_requests r JOIN customers c ON c.id = r.customer_id WHERE r.status = 'open' ORDER BY r.created_at LIMIT 8",
+  ).all()).results || [];
+  const aTkt = (await db.prepare(
+    "SELECT t.onderwerp, c.bedrijf FROM support_tickets t JOIN customers c ON c.id = t.customer_id WHERE t.status = 'open' ORDER BY t.created_at LIMIT 8",
+  ).all()).results || [];
+  aReq.forEach((r) => attention.push({ kind: 'aanvraag', label: `${r.type} — ${r.bedrijf}`, href: '/admin/aanvragen' }));
+  aTkt.forEach((t) => attention.push({ kind: 'ticket', label: `${t.onderwerp} — ${t.bedrijf}`, href: '/admin/support' }));
+
+  return jsonResponse({
+    ok: true,
+    kpi: {
+      klanten: klanten?.n || 0,
+      actieveDiensten: actieve?.n || 0,
+      openAanvragen: openReq?.n || 0,
+      openTickets: openTkt?.n || 0,
+    },
+    activity: activity.slice(0, 8),
+    attention,
+  });
 }
 
 async function listCustomers(env) {

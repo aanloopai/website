@@ -1,0 +1,142 @@
+---
+// Admin panel — customer list with search + create customer.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Klanten" active="klanten">
+  <div class="flex items-center justify-between gap-4">
+    <div>
+      <h1 class="page-title">Klanten</h1>
+      <p class="page-sub">Beheer alle Aanloop AI klanten.</p>
+    </div>
+    <button id="a-new" class="pbtn pbtn--primary">+ Nieuwe klant</button>
+  </div>
+
+  <div class="mt-5">
+    <input id="a-search" type="search" placeholder="Zoek op bedrijfsnaam of stad..." class="pinput" style="max-width:22rem" />
+  </div>
+
+  <section class="pcard mt-4">
+    <div id="a-tablewrap" class="hidden">
+      <table class="ptable">
+        <thead><tr>
+          <th>Bedrijf</th><th>Stad</th><th class="num">Diensten</th><th class="num">Gebruikers</th><th class="num">Open aanvragen</th>
+        </tr></thead>
+        <tbody id="a-rows"></tbody>
+      </table>
+    </div>
+    <div class="pcard-b" id="a-skel">
+      <div class="pskel h-10 w-full"></div>
+      <div class="pskel mt-2 h-10 w-full"></div>
+      <div class="pskel mt-2 h-10 w-full"></div>
+    </div>
+    <div id="a-empty" class="empty hidden">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 100-8 4 4 0 000 8z"/></svg>
+      <p class="empty-title">Nog geen klanten</p>
+      <p class="empty-text">Maak de eerste klant aan met de knop rechtsboven.</p>
+    </div>
+    <div id="a-noresult" class="empty hidden">
+      <p class="empty-title">Geen resultaten</p>
+      <p class="empty-text">Geen klant gevonden voor deze zoekopdracht.</p>
+    </div>
+  </section>
+
+  <div id="a-modal" class="pmodal-backdrop">
+    <div class="pmodal">
+      <h3 class="page-title" style="font-size:17px">Nieuwe klant</h3>
+      <p class="page-sub">Er wordt een account + eigenaar-gebruiker aangemaakt.</p>
+      <div class="mt-4 space-y-3">
+        <input id="m-bedrijf" placeholder="Bedrijfsnaam *" class="pinput" />
+        <div class="grid grid-cols-2 gap-3">
+          <input id="m-kvk" placeholder="KvK" class="pinput" />
+          <input id="m-stad" placeholder="Stad" class="pinput" />
+        </div>
+        <input id="m-eig-naam" placeholder="Naam eigenaar" class="pinput" />
+        <input id="m-eig-email" type="email" placeholder="E-mail eigenaar *" class="pinput" />
+      </div>
+      <p id="m-msg" class="palert mt-3 hidden"></p>
+      <div class="mt-4 flex justify-end gap-2">
+        <button id="m-cancel" class="pbtn pbtn--subtle pbtn--sm">Annuleren</button>
+        <button id="m-save" class="pbtn pbtn--primary pbtn--sm">Aanmaken</button>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      var all = [];
+
+      function render(list) {
+        var tbody = document.getElementById('a-rows');
+        document.getElementById('a-noresult').classList.toggle('hidden', list.length > 0 || !all.length);
+        document.getElementById('a-tablewrap').classList.toggle('hidden', list.length === 0);
+        tbody.innerHTML = list.map(function (c) {
+          return '<tr class="cursor-pointer" data-href="/admin/klant?id=' + encodeURIComponent(c.id) + '">' +
+            '<td class="primary">' + esc(c.bedrijf) + '</td>' +
+            '<td>' + esc(c.stad || '—') + '</td>' +
+            '<td class="num">' + (c.dienst_count || 0) + '</td>' +
+            '<td class="num">' + (c.user_count || 0) + '</td>' +
+            '<td class="num">' + (c.open_requests > 0
+              ? '<span class="pbadge pbadge--amber">' + c.open_requests + '</span>'
+              : '<span style="color:var(--p-ink-4)">0</span>') + '</td></tr>';
+        }).join('');
+        tbody.querySelectorAll('tr').forEach(function (tr) {
+          tr.addEventListener('click', function () { location.href = tr.getAttribute('data-href'); });
+        });
+      }
+
+      function load() {
+        fetch('/api/admin/customers', { credentials: 'same-origin' })
+          .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (d) {
+            document.getElementById('a-skel').classList.add('hidden');
+            all = d.customers || [];
+            if (!all.length) { document.getElementById('a-empty').classList.remove('hidden'); return; }
+            render(all);
+          })
+          .catch(function () {});
+      }
+
+      document.getElementById('a-search').addEventListener('input', function () {
+        var q = this.value.trim().toLowerCase();
+        if (!q) { render(all); return; }
+        render(all.filter(function (c) {
+          return (c.bedrijf || '').toLowerCase().indexOf(q) > -1 || (c.stad || '').toLowerCase().indexOf(q) > -1;
+        }));
+      });
+
+      function closeModal() { document.getElementById('a-modal').classList.remove('open'); }
+      document.getElementById('a-new').addEventListener('click', function () { document.getElementById('a-modal').classList.add('open'); });
+      document.getElementById('m-cancel').addEventListener('click', closeModal);
+      document.getElementById('m-save').addEventListener('click', function () {
+        var btn = this; btn.disabled = true;
+        var msg = document.getElementById('m-msg');
+        fetch('/api/admin/customers', {
+          method: 'POST', credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            bedrijf: document.getElementById('m-bedrijf').value.trim(),
+            kvk: document.getElementById('m-kvk').value.trim(),
+            stad: document.getElementById('m-stad').value.trim(),
+            eigenaar_naam: document.getElementById('m-eig-naam').value.trim(),
+            eigenaar_email: document.getElementById('m-eig-email').value.trim(),
+          }),
+        })
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (res) {
+            if (res.ok) { location.href = '/admin/klant?id=' + encodeURIComponent(res.j.customer_id); }
+            else { msg.className = 'palert palert--warn mt-3'; msg.textContent = res.j.error || 'Er ging iets mis.'; }
+          })
+          .catch(function () {})
+          .finally(function () { btn.disabled = false; });
+      });
+
+      load();
+    })();
+  </script>
+</AdminLayout>

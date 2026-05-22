@@ -5,53 +5,44 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
 ---
 
 <PortalLayout title="Diensten ontdekken" active="ontdekken">
-  <h1 class="text-2xl font-bold text-slate-900">Diensten ontdekken</h1>
-  <p class="mt-1 text-sm text-slate-600">
-    Bekijk wat Aanloop AI nog meer voor u kan doen. Vraag vrijblijvend informatie aan.
-  </p>
+  <h1 class="page-title">Diensten ontdekken</h1>
+  <p class="page-sub">Bekijk wat Aanloop AI nog meer voor u kan doen. Vraag vrijblijvend informatie aan.</p>
 
   <div class="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
     {PORTAL_CATALOG.map((p) => (
-      <article
-        class="catalog-card flex flex-col rounded-xl border border-slate-200 bg-white p-5"
-        data-key={p.key}
-        data-naam={p.naam}
-      >
-        <span class="self-start rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">{p.categorie}</span>
-        <h2 class="mt-2 text-lg font-bold text-slate-900">{p.naam}</h2>
-        <p class="mt-1 text-sm text-slate-600">{p.omschrijving}</p>
-        <ul class="mt-3 space-y-1 text-sm">
-          {p.tiers.map((t) => (
-            <li class="flex justify-between gap-3 border-t border-slate-100 py-1">
-              <span class="text-slate-600">{t.naam}</span>
-              <span class="font-medium text-slate-900">{t.prijs}</span>
-            </li>
-          ))}
-        </ul>
-        <div class="mt-4 flex items-center gap-2 pt-1">
-          <button
-            class="catalog-req rounded-lg bg-brand-indigo px-3 py-1.5 text-sm font-semibold text-white hover:bg-indigo-700"
-            data-write
-          >
-            Aanvragen
-          </button>
-          <a href={p.meerInfoUrl} target="_blank" rel="noopener" class="text-sm text-brand-indigo hover:underline">Meer info</a>
-          <span class="catalog-owned hidden rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">U heeft dit al</span>
+      <article class="catalog-card pcard flex flex-col" data-key={p.key} data-naam={p.naam}>
+        <div class="pcard-b flex flex-1 flex-col">
+          <span class="pbadge pbadge--gray self-start">{p.categorie}</span>
+          <h2 class="mt-2 text-base font-semibold" style="color:var(--p-ink)">{p.naam}</h2>
+          <p class="mt-1 text-sm p-muted">{p.omschrijving}</p>
+          <ul class="mt-3 space-y-1 text-sm">
+            {p.tiers.map((t) => (
+              <li class="flex justify-between gap-3 border-t py-1" style="border-color:var(--p-border)">
+                <span class="p-muted">{t.naam}</span>
+                <span class="font-medium" style="color:var(--p-ink)">{t.prijs}</span>
+              </li>
+            ))}
+          </ul>
+          <div class="mt-auto flex items-center gap-2 pt-4">
+            <button class="catalog-req pbtn pbtn--primary pbtn--sm" data-write>Aanvragen</button>
+            <a href={p.meerInfoUrl} target="_blank" rel="noopener" class="p-link text-sm">Meer info</a>
+            <span class="catalog-owned pbadge pbadge--green hidden">U heeft dit al</span>
+          </div>
         </div>
       </article>
     ))}
   </div>
 
-  <div id="c-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 p-4">
-    <div class="w-full max-w-md rounded-xl bg-white p-6">
-      <h3 class="text-lg font-bold text-slate-900" id="c-modal-title">Informatie aanvragen</h3>
-      <p class="mt-1 text-sm text-slate-600">Wij nemen binnen 1 werkdag vrijblijvend contact met u op.</p>
-      <label class="mt-4 block text-sm font-medium text-slate-700">Toelichting (optioneel)</label>
-      <textarea id="c-modal-bericht" rows="3" class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-brand-indigo focus:outline-none"></textarea>
-      <p id="c-modal-msg" class="mt-3 hidden rounded-lg px-3 py-2 text-sm"></p>
+  <div id="c-modal" class="pmodal-backdrop">
+    <div class="pmodal">
+      <h3 class="page-title" style="font-size:17px" id="c-modal-title">Informatie aanvragen</h3>
+      <p class="page-sub">Wij nemen binnen 1 werkdag vrijblijvend contact met u op.</p>
+      <label class="plabel mt-4">Toelichting (optioneel)</label>
+      <textarea id="c-modal-bericht" class="ptextarea"></textarea>
+      <p id="c-modal-msg" class="palert mt-3 hidden"></p>
       <div class="mt-4 flex justify-end gap-2">
-        <button id="c-modal-cancel" class="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-600 hover:bg-slate-100">Annuleren</button>
-        <button id="c-modal-submit" class="rounded-lg bg-brand-indigo px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Aanvraag versturen</button>
+        <button id="c-modal-cancel" class="pbtn pbtn--subtle pbtn--sm">Annuleren</button>
+        <button id="c-modal-submit" class="pbtn pbtn--primary pbtn--sm">Aanvraag versturen</button>
       </div>
     </div>
   </div>
@@ -59,7 +50,6 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
   <script is:inline>
     (function () {
       var ctx = null;
-      // Mark products the customer already has.
       fetch('/api/portal/services', { credentials: 'same-origin' })
         .then(function (r) { if (r.status === 401) { location.href = '/portal/login'; throw 0; } return r.json(); })
         .then(function (d) {
@@ -75,45 +65,34 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
         })
         .catch(function () {});
 
-      function closeModal() {
-        document.getElementById('c-modal').classList.add('hidden');
-        document.getElementById('c-modal').classList.remove('flex');
-      }
+      function closeModal() { document.getElementById('c-modal').classList.remove('open'); }
       Array.prototype.forEach.call(document.querySelectorAll('.catalog-req'), function (b) {
         b.addEventListener('click', function () {
           var card = b.closest('.catalog-card');
           ctx = { product_key: card.getAttribute('data-key') };
           document.getElementById('c-modal-title').textContent = card.getAttribute('data-naam') + ' aanvragen';
           document.getElementById('c-modal-bericht').value = '';
-          document.getElementById('c-modal-msg').className = 'mt-3 hidden';
-          document.getElementById('c-modal').classList.remove('hidden');
-          document.getElementById('c-modal').classList.add('flex');
+          document.getElementById('c-modal-msg').className = 'palert mt-3 hidden';
+          document.getElementById('c-modal').classList.add('open');
         });
       });
       document.getElementById('c-modal-cancel').addEventListener('click', closeModal);
       document.getElementById('c-modal-submit').addEventListener('click', function () {
         if (!ctx) return;
-        var btnEl = this;
-        btnEl.disabled = true;
+        var btnEl = this; btnEl.disabled = true;
         fetch('/api/portal/service-request', {
           method: 'POST', credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            type: 'new_product',
-            product_key: ctx.product_key,
-            bericht: document.getElementById('c-modal-bericht').value.trim(),
-          }),
+          body: JSON.stringify({ type: 'new_product', product_key: ctx.product_key, bericht: document.getElementById('c-modal-bericht').value.trim() }),
         })
           .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
           .then(function (res) {
             var m = document.getElementById('c-modal-msg');
             if (res.ok) {
-              m.className = 'mt-3 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-800';
-              m.textContent = res.j.message || 'Aanvraag verstuurd.';
+              m.className = 'palert palert--ok mt-3'; m.textContent = res.j.message || 'Aanvraag verstuurd.';
               setTimeout(closeModal, 1400);
             } else {
-              m.className = 'mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800';
-              m.textContent = res.j.error || 'Er ging iets mis.';
+              m.className = 'palert palert--warn mt-3'; m.textContent = res.j.error || 'Er ging iets mis.';
             }
           })
           .catch(function () {})

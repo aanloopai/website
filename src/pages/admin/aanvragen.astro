@@ -4,11 +4,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 ---
 
 <AdminLayout title="Aanvragen" active="aanvragen">
-  <h1 class="text-2xl font-bold text-slate-900">Aanvragen</h1>
-  <p class="mt-1 text-sm text-slate-600">Wijzigings- en productaanvragen van klanten.</p>
+  <h1 class="page-title">Aanvragen</h1>
+  <p class="page-sub">Wijzigings- en productaanvragen van klanten.</p>
 
-  <div class="mt-4 flex gap-2">
-    <select id="q-filter" class="rounded-lg border border-slate-300 px-3 py-2 text-sm">
+  <div class="mt-5">
+    <select id="q-filter" class="pselect" style="width:auto">
       <option value="">Alle statussen</option>
       <option value="open">Open</option>
       <option value="in_behandeling">In behandeling</option>
@@ -17,9 +17,17 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </select>
   </div>
 
-  <div id="q-loading" class="mt-6 text-sm text-slate-400">Bezig met laden...</div>
-  <div id="q-list" class="mt-6 space-y-3"></div>
-  <p id="q-empty" class="mt-6 hidden text-sm text-slate-400">Geen aanvragen.</p>
+  <div id="q-list" class="mt-5 space-y-3">
+    <div class="pskel h-28 w-full"></div>
+    <div class="pskel h-28 w-full"></div>
+  </div>
+  <div id="q-empty" class="pcard mt-5 hidden">
+    <div class="empty">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <p class="empty-title">Geen aanvragen</p>
+      <p class="empty-text">Er zijn geen aanvragen voor dit filter.</p>
+    </div>
+  </div>
 
   <script is:inline>
     (function () {
@@ -27,12 +35,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         upgrade: 'Upgrade', downgrade: 'Downgrade', pause: 'Pauzeren',
         resume: 'Hervatten', new_product: 'Nieuw product', cancel: 'Opzeggen',
       };
-      var STATUS = {
-        open: 'bg-amber-100 text-amber-800',
-        in_behandeling: 'bg-blue-100 text-blue-800',
-        afgerond: 'bg-emerald-100 text-emerald-800',
-        afgewezen: 'bg-rose-100 text-rose-800',
-      };
+      var STATUS = { open: 'pbadge--amber', in_behandeling: 'pbadge--blue', afgerond: 'pbadge--green', afgewezen: 'pbadge--red' };
       function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
           return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
@@ -43,29 +46,27 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         fetch('/api/admin/requests' + (f ? '?status=' + f : ''), { credentials: 'same-origin' })
           .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
           .then(function (d) {
-            document.getElementById('q-loading').classList.add('hidden');
             var list = d.requests || [];
             var box = document.getElementById('q-list');
-            if (!list.length) { document.getElementById('q-empty').classList.remove('hidden'); box.innerHTML = ''; return; }
+            if (!list.length) { box.innerHTML = ''; document.getElementById('q-empty').classList.remove('hidden'); return; }
             document.getElementById('q-empty').classList.add('hidden');
             box.innerHTML = list.map(function (r) {
-              var badge = STATUS[r.status] || 'bg-slate-200 text-slate-600';
               var dt = new Date(r.created_at).toLocaleString('nl-NL');
-              return '<div class="rounded-xl border border-slate-200 bg-white p-4" data-id="' + esc(r.id) + '">' +
-                '<div class="flex items-center justify-between gap-2">' +
-                '<span class="font-semibold text-slate-900">' + esc(TYPE[r.type] || r.type) + ' — ' + esc(r.bedrijf) + '</span>' +
-                '<span class="rounded-full px-2 py-0.5 text-xs font-medium ' + badge + '">' + esc(r.status) + '</span></div>' +
-                '<p class="mt-1 text-xs text-slate-400">' + dt + ' · ' + esc(r.user_naam) + ' (' + esc(r.user_email) + ')' +
+              return '<div class="pcard" data-id="' + esc(r.id) + '"><div class="pcard-b">' +
+                '<div class="flex items-center justify-between gap-2"><span class="primary" style="color:var(--p-ink);font-weight:600">' +
+                esc(TYPE[r.type] || r.type) + ' — ' + esc(r.bedrijf) + '</span>' +
+                '<span class="pbadge ' + (STATUS[r.status] || 'pbadge--gray') + '">' + esc(r.status) + '</span></div>' +
+                '<p class="mt-1 text-xs" style="color:var(--p-ink-4)">' + dt + ' · ' + esc(r.user_naam) + ' (' + esc(r.user_email) + ')' +
                 (r.product_key ? ' · product: ' + esc(r.product_key) : '') + '</p>' +
-                (r.bericht ? '<p class="mt-2 text-sm text-slate-600">' + esc(r.bericht) + '</p>' : '') +
+                (r.bericht ? '<p class="mt-2 text-sm p-muted">' + esc(r.bericht) + '</p>' : '') +
                 '<div class="mt-3 flex flex-wrap items-center gap-2">' +
-                '<select class="q-stat rounded-lg border border-slate-300 px-2 py-1 text-sm">' +
+                '<select class="q-stat pselect" style="width:auto">' +
                 ['open', 'in_behandeling', 'afgerond', 'afgewezen'].map(function (s) {
                   return '<option value="' + s + '"' + (s === r.status ? ' selected' : '') + '>' + s + '</option>';
                 }).join('') + '</select>' +
-                '<input class="q-note flex-1 rounded-lg border border-slate-300 px-2 py-1 text-sm" placeholder="Interne notitie / reactie" value="' + esc(r.admin_notitie || '') + '" />' +
-                '<button class="q-save rounded-lg bg-brand-indigo px-3 py-1 text-sm font-medium text-white hover:bg-indigo-700">Opslaan</button>' +
-                '</div></div>';
+                '<input class="q-note pinput flex-1" style="min-width:12rem" placeholder="Interne notitie / reactie" value="' + esc(r.admin_notitie || '') + '" />' +
+                '<button class="q-save pbtn pbtn--primary">Opslaan</button>' +
+                '</div></div></div>';
             }).join('');
             document.querySelectorAll('#q-list .q-save').forEach(function (b) {
               b.addEventListener('click', function () {

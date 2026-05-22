@@ -1,0 +1,110 @@
+/* Aanloop AI portal + admin design system — Stripe-Dashboard style.
+   Imported by PortalLayout.astro and AdminLayout.astro only, so these rules
+   never touch the 200+ marketing pages. Tailwind utilities still handle
+   layout (flex/grid/spacing); these classes carry the visual identity. */
+
+:root {
+  --p-surface: #ffffff;
+  --p-canvas: #f6f8fa;
+  --p-subtle: #f7f9fc;
+  --p-border: #e3e8ee;
+  --p-border-strong: #d5dbe1;
+  --p-ink: #1a1f36;
+  --p-ink-2: #3c4257;
+  --p-ink-3: #697386;
+  --p-ink-4: #8792a2;
+  --p-accent: #4f46e5;
+  --p-accent-hover: #4338ca;
+  --p-accent-fill: #eef2ff;
+}
+
+body.portal {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: var(--p-canvas);
+  color: var(--p-ink-2);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Typography helpers ─────────────────────────────────────────── */
+.page-title { font-size: 20px; font-weight: 600; color: var(--p-ink); letter-spacing: -0.01em; }
+.page-sub { font-size: 14px; color: var(--p-ink-3); margin-top: 3px; }
+.section-title { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--p-ink-3); }
+.p-muted { color: var(--p-ink-3); }
+.p-link { color: var(--p-accent); font-weight: 500; }
+.p-link:hover { text-decoration: underline; }
+
+/* ── Card ───────────────────────────────────────────────────────── */
+.pcard { background: var(--p-surface); border: 1px solid var(--p-border); border-radius: 8px; }
+.pcard-h { padding: 14px 20px; border-bottom: 1px solid var(--p-border); font-size: 14px; font-weight: 600; color: var(--p-ink); display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pcard-b { padding: 20px; }
+
+/* ── KPI metric card ────────────────────────────────────────────── */
+.kpi { background: var(--p-surface); border: 1px solid var(--p-border); border-radius: 8px; padding: 16px 18px; }
+.kpi-label { font-size: 12px; font-weight: 500; color: var(--p-ink-3); }
+.kpi-value { font-size: 26px; font-weight: 600; color: var(--p-ink); font-variant-numeric: tabular-nums; margin-top: 6px; line-height: 1.1; }
+.kpi-hint { font-size: 12px; color: var(--p-ink-4); margin-top: 4px; }
+
+/* ── Table ──────────────────────────────────────────────────────── */
+.ptable { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ptable thead th { background: var(--p-subtle); color: var(--p-ink-3); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; text-align: left; padding: 9px 16px; border-bottom: 1px solid var(--p-border); }
+.ptable tbody td { padding: 11px 16px; border-bottom: 1px solid var(--p-border); color: var(--p-ink-2); }
+.ptable tbody tr:last-child td { border-bottom: 0; }
+.ptable tbody tr:hover { background: var(--p-subtle); }
+.ptable .num { text-align: right; font-variant-numeric: tabular-nums; }
+.ptable .primary { color: var(--p-ink); font-weight: 500; }
+
+/* ── Badge ──────────────────────────────────────────────────────── */
+.pbadge { display: inline-flex; align-items: center; gap: 5px; border-radius: 9999px; padding: 2px 9px; font-size: 12px; font-weight: 500; line-height: 1.5; }
+.pbadge::before { content: ""; width: 6px; height: 6px; border-radius: 9999px; background: currentColor; opacity: 0.65; }
+.pbadge--green { background: #d7f7e3; color: #0e6245; }
+.pbadge--red   { background: #fce8eb; color: #b3093c; }
+.pbadge--amber { background: #fcedb9; color: #983705; }
+.pbadge--blue  { background: #d6e0ff; color: #1f3aa6; }
+.pbadge--gray  { background: #e3e8ee; color: #4f566b; }
+
+/* ── Buttons ────────────────────────────────────────────────────── */
+.pbtn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 36px; padding: 0 14px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; white-space: nowrap; border: 1px solid transparent; transition: background-color 0.15s, border-color 0.15s; }
+.pbtn:disabled { opacity: 0.55; cursor: not-allowed; }
+.pbtn--primary { background: var(--p-accent); color: #fff; }
+.pbtn--primary:hover:not(:disabled) { background: var(--p-accent-hover); }
+.pbtn--subtle { background: var(--p-surface); color: var(--p-ink-2); border-color: var(--p-border); }
+.pbtn--subtle:hover:not(:disabled) { background: var(--p-subtle); border-color: var(--p-border-strong); }
+.pbtn--danger { background: #df1b41; color: #fff; }
+.pbtn--danger:hover:not(:disabled) { background: #b3093c; }
+.pbtn--ghost { background: transparent; color: var(--p-ink-3); }
+.pbtn--ghost:hover:not(:disabled) { background: var(--p-subtle); color: var(--p-ink); }
+.pbtn--sm { height: 30px; padding: 0 10px; font-size: 13px; }
+
+/* ── Form fields ────────────────────────────────────────────────── */
+.pinput, .pselect, .ptextarea { width: 100%; height: 36px; padding: 0 11px; border: 1px solid var(--p-border); border-radius: 6px; font-size: 14px; color: var(--p-ink); background: var(--p-surface); transition: border-color 0.15s, box-shadow 0.15s; }
+.ptextarea { height: auto; min-height: 76px; padding: 9px 11px; line-height: 1.5; resize: vertical; }
+.pinput:focus, .pselect:focus, .ptextarea:focus { outline: none; border-color: var(--p-accent); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18); }
+.pinput:disabled, .pselect:disabled { background: var(--p-subtle); color: var(--p-ink-3); cursor: not-allowed; }
+.plabel { display: block; font-size: 13px; font-weight: 500; color: var(--p-ink-2); margin-bottom: 6px; }
+
+/* ── Inline alert / message ─────────────────────────────────────── */
+.palert { border-radius: 6px; padding: 9px 12px; font-size: 13px; }
+.palert--ok { background: #d7f7e3; color: #0e6245; }
+.palert--warn { background: #fcedb9; color: #983705; }
+.palert--info { background: var(--p-accent-fill); color: var(--p-accent-hover); }
+
+/* ── Skeleton loading ───────────────────────────────────────────── */
+.pskel { background: var(--p-border); border-radius: 6px; animation: pskel 1.4s ease-in-out infinite; }
+@keyframes pskel { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+/* ── Empty state ────────────────────────────────────────────────── */
+.empty { text-align: center; padding: 40px 24px; }
+.empty svg { width: 40px; height: 40px; margin: 0 auto 12px; color: var(--p-ink-4); display: block; }
+.empty-title { font-size: 14px; font-weight: 600; color: var(--p-ink); }
+.empty-text { font-size: 13px; color: var(--p-ink-3); margin-top: 4px; }
+
+/* ── Sidebar nav item ───────────────────────────────────────────── */
+.pnav { display: flex; align-items: center; gap: 9px; height: 36px; padding: 0 11px; border-radius: 6px; font-size: 14px; font-weight: 500; color: var(--p-ink-2); transition: background-color 0.12s, color 0.12s; }
+.pnav:hover { background: var(--p-subtle); }
+.pnav--active { background: var(--p-accent-fill); color: var(--p-accent); }
+
+/* ── Misc ───────────────────────────────────────────────────────── */
+.pchip { display: inline-flex; align-items: center; border-radius: 9999px; border: 1px solid var(--p-border); background: var(--p-surface); padding: 3px 11px; font-size: 13px; color: var(--p-ink-2); }
+.pmodal-backdrop { position: fixed; inset: 0; z-index: 50; display: none; align-items: center; justify-content: center; background: rgba(26, 31, 54, 0.45); padding: 16px; }
+.pmodal-backdrop.open { display: flex; }
+.pmodal { width: 100%; max-width: 28rem; background: var(--p-surface); border-radius: 10px; box-shadow: 0 12px 32px rgba(26, 31, 54, 0.18); padding: 22px; }

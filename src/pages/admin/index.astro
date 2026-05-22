@@ -1,126 +1,92 @@
 ---
-// Admin panel — customer list + create customer.
+// Admin panel — dashboard. Data: /api/admin/overview.
 import AdminLayout from '../../layouts/AdminLayout.astro';
 ---
 
-<AdminLayout title="Klanten" active="klanten">
+<AdminLayout title="Dashboard" active="dashboard">
   <div class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold text-slate-900">Klanten</h1>
-    <button id="a-new" class="rounded-lg bg-brand-indigo px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
-      + Nieuwe klant
-    </button>
-  </div>
-
-  <div id="a-totals" class="mt-4 flex flex-wrap gap-3 text-sm"></div>
-
-  <div id="a-loading" class="mt-6 text-sm text-slate-400">Bezig met laden...</div>
-
-  <div id="a-table-wrap" class="hidden mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white">
-    <table class="w-full text-sm">
-      <thead class="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-400">
-        <tr>
-          <th class="px-4 py-3">Bedrijf</th>
-          <th class="px-4 py-3">Stad</th>
-          <th class="px-4 py-3">Diensten</th>
-          <th class="px-4 py-3">Gebruikers</th>
-          <th class="px-4 py-3">Open aanvragen</th>
-        </tr>
-      </thead>
-      <tbody id="a-rows" class="divide-y divide-slate-100"></tbody>
-    </table>
-  </div>
-  <p id="a-empty" class="mt-6 hidden text-sm text-slate-400">Nog geen klanten. Maak de eerste aan.</p>
-
-  <div id="a-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/50 p-4">
-    <div class="w-full max-w-md rounded-xl bg-white p-6">
-      <h3 class="text-lg font-bold text-slate-900">Nieuwe klant</h3>
-      <p class="mt-1 text-sm text-slate-600">Er wordt een account + eigenaar-gebruiker aangemaakt.</p>
-      <div class="mt-4 space-y-3">
-        <input id="m-bedrijf" placeholder="Bedrijfsnaam *" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <div class="grid grid-cols-2 gap-3">
-          <input id="m-kvk" placeholder="KvK" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-          <input id="m-stad" placeholder="Stad" class="rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        </div>
-        <input id="m-eig-naam" placeholder="Naam eigenaar" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        <input id="m-eig-email" type="email" placeholder="E-mail eigenaar *" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-      </div>
-      <p id="m-msg" class="mt-3 hidden rounded-lg px-3 py-2 text-sm"></p>
-      <div class="mt-4 flex justify-end gap-2">
-        <button id="m-cancel" class="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-600 hover:bg-slate-100">Annuleren</button>
-        <button id="m-save" class="rounded-lg bg-brand-indigo px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">Aanmaken</button>
-      </div>
+    <div>
+      <h1 class="page-title">Dashboard</h1>
+      <p class="page-sub">Overzicht van klanten, aanvragen en support.</p>
     </div>
+    <a href="/admin/klanten" class="pbtn pbtn--primary">Klanten beheren</a>
+  </div>
+
+  <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="kpi"><div class="kpi-label">Klanten</div><div class="kpi-value" id="k-klanten"><span class="pskel inline-block h-7 w-10"></span></div></div>
+    <div class="kpi"><div class="kpi-label">Actieve diensten</div><div class="kpi-value" id="k-diensten"><span class="pskel inline-block h-7 w-10"></span></div></div>
+    <div class="kpi"><div class="kpi-label">Open aanvragen</div><div class="kpi-value" id="k-aanvragen"><span class="pskel inline-block h-7 w-10"></span></div></div>
+    <div class="kpi"><div class="kpi-label">Open tickets</div><div class="kpi-value" id="k-tickets"><span class="pskel inline-block h-7 w-10"></span></div></div>
+  </div>
+
+  <div class="mt-6 grid gap-6 lg:grid-cols-2">
+    <section class="pcard">
+      <div class="pcard-h">Vereist aandacht</div>
+      <div class="pcard-b">
+        <div id="d-attention" class="space-y-2"><div class="pskel h-10 w-full"></div></div>
+        <div id="d-attention-empty" class="empty hidden">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <p class="empty-title">Alles afgehandeld</p>
+          <p class="empty-text">Geen open aanvragen of tickets.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="pcard">
+      <div class="pcard-h">Recente activiteit</div>
+      <div class="pcard-b">
+        <div id="d-activity" class="space-y-3"><div class="pskel h-10 w-full"></div></div>
+        <div id="d-activity-empty" class="empty hidden">
+          <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <p class="empty-title">Nog geen activiteit</p>
+          <p class="empty-text">Activiteit verschijnt hier zodra er klanten zijn.</p>
+        </div>
+      </div>
+    </section>
   </div>
 
   <script is:inline>
     (function () {
+      var KIND = { klant: 'pbadge--blue', aanvraag: 'pbadge--amber', ticket: 'pbadge--gray' };
       function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
           return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
         });
       }
-      function load() {
-        fetch('/api/admin/customers', { credentials: 'same-origin' })
-          .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
-          .then(function (d) {
-            document.getElementById('a-loading').classList.add('hidden');
-            var t = d.totals || {};
-            document.getElementById('a-totals').innerHTML =
-              '<span class="rounded-lg bg-amber-100 px-3 py-1.5 font-medium text-amber-800">' + (t.openRequests || 0) + ' open aanvragen</span>' +
-              '<span class="rounded-lg bg-blue-100 px-3 py-1.5 font-medium text-blue-800">' + (t.openTickets || 0) + ' open tickets</span>';
-            var list = d.customers || [];
-            if (!list.length) { document.getElementById('a-empty').classList.remove('hidden'); return; }
-            document.getElementById('a-table-wrap').classList.remove('hidden');
-            document.getElementById('a-rows').innerHTML = list.map(function (c) {
-              return '<tr class="cursor-pointer hover:bg-slate-50" data-href="/admin/klant?id=' + encodeURIComponent(c.id) + '">' +
-                '<td class="px-4 py-3 font-medium text-slate-900">' + esc(c.bedrijf) + '</td>' +
-                '<td class="px-4 py-3 text-slate-600">' + esc(c.stad || '—') + '</td>' +
-                '<td class="px-4 py-3 text-slate-600">' + (c.dienst_count || 0) + '</td>' +
-                '<td class="px-4 py-3 text-slate-600">' + (c.user_count || 0) + '</td>' +
-                '<td class="px-4 py-3">' + (c.open_requests > 0
-                  ? '<span class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">' + c.open_requests + '</span>'
-                  : '<span class="text-slate-300">0</span>') + '</td>' +
-                '</tr>';
+      fetch('/api/admin/overview', { credentials: 'same-origin' })
+        .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
+        .then(function (d) {
+          var k = d.kpi || {};
+          document.getElementById('k-klanten').textContent = k.klanten || 0;
+          document.getElementById('k-diensten').textContent = k.actieveDiensten || 0;
+          document.getElementById('k-aanvragen').textContent = k.openAanvragen || 0;
+          document.getElementById('k-tickets').textContent = k.openTickets || 0;
+
+          var att = d.attention || [];
+          var ab = document.getElementById('d-attention');
+          if (!att.length) { ab.innerHTML = ''; document.getElementById('d-attention-empty').classList.remove('hidden'); }
+          else {
+            ab.innerHTML = att.map(function (a) {
+              return '<a href="' + esc(a.href) + '" class="flex items-center justify-between rounded-md border px-3 py-2.5 text-sm" style="border-color:var(--p-border)">' +
+                '<span style="color:var(--p-ink-2)">' + esc(a.label) + '</span>' +
+                '<span class="pbadge ' + (KIND[a.kind] || 'pbadge--gray') + '">' + esc(a.kind) + '</span></a>';
             }).join('');
-            document.querySelectorAll('#a-rows tr').forEach(function (tr) {
-              tr.addEventListener('click', function () { location.href = tr.getAttribute('data-href'); });
-            });
-          })
-          .catch(function () {});
-      }
+          }
 
-      function openModal() { document.getElementById('a-modal').classList.remove('hidden'); document.getElementById('a-modal').classList.add('flex'); }
-      function closeModal() { document.getElementById('a-modal').classList.add('hidden'); document.getElementById('a-modal').classList.remove('flex'); }
-      document.getElementById('a-new').addEventListener('click', openModal);
-      document.getElementById('m-cancel').addEventListener('click', closeModal);
-      document.getElementById('m-save').addEventListener('click', function () {
-        var btn = this; btn.disabled = true;
-        var msg = document.getElementById('m-msg');
-        fetch('/api/admin/customers', {
-          method: 'POST', credentials: 'same-origin',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            bedrijf: document.getElementById('m-bedrijf').value.trim(),
-            kvk: document.getElementById('m-kvk').value.trim(),
-            stad: document.getElementById('m-stad').value.trim(),
-            eigenaar_naam: document.getElementById('m-eig-naam').value.trim(),
-            eigenaar_email: document.getElementById('m-eig-email').value.trim(),
-          }),
+          var act = d.activity || [];
+          var cb = document.getElementById('d-activity');
+          if (!act.length) { cb.innerHTML = ''; document.getElementById('d-activity-empty').classList.remove('hidden'); }
+          else {
+            cb.innerHTML = act.map(function (a) {
+              var dt = a.when ? new Date(a.when).toLocaleDateString('nl-NL') : '';
+              return '<div class="flex items-start gap-3 text-sm">' +
+                '<span class="pbadge ' + (KIND[a.kind] || 'pbadge--gray') + '">' + esc(a.kind) + '</span>' +
+                '<span class="flex-1" style="color:var(--p-ink-2)">' + esc(a.label) + '</span>' +
+                '<span class="text-xs" style="color:var(--p-ink-4)">' + dt + '</span></div>';
+            }).join('');
+          }
         })
-          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
-          .then(function (res) {
-            if (res.ok) {
-              location.href = '/admin/klant?id=' + encodeURIComponent(res.j.customer_id);
-            } else {
-              msg.className = 'mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800';
-              msg.textContent = res.j.error || 'Er ging iets mis.';
-            }
-          })
-          .catch(function () {})
-          .finally(function () { btn.disabled = false; });
-      });
-
-      load();
+        .catch(function () {});
     })();
   </script>
 </AdminLayout>

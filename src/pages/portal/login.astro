@@ -1,7 +1,8 @@
 ---
-// Customer portal login (schema v2) — passwordless. Self-contained page:
-// it must NOT use the portal app shell (that shell runs the auth guard).
+// Customer portal login (V3, Stripe style) — passwordless. Self-contained:
+// must NOT use the portal app shell (that shell runs the auth guard).
 import '../../styles/global.css';
+import '../../styles/portal.css';
 ---
 
 <!DOCTYPE html>
@@ -13,49 +14,36 @@ import '../../styles/global.css';
     <title>Inloggen · Aanloop AI Klantportaal</title>
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
   </head>
-  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
-    <header class="border-b border-slate-200 bg-white">
-      <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
+  <body class="portal flex min-h-screen flex-col">
+    <header class="border-b px-5 py-4" style="background:var(--p-surface);border-color:var(--p-border)">
+      <div class="mx-auto flex max-w-5xl items-center justify-between">
         <a href="/" aria-label="Aanloop AI home">
           <img src="/brand/logo-horizontal-light.svg" alt="Aanloop AI" class="h-7" />
         </a>
-        <span class="text-xs font-medium uppercase tracking-wider text-slate-400">Klantportaal</span>
+        <span class="section-title">Klantportaal</span>
       </div>
     </header>
 
-    <main class="mx-auto max-w-md px-4 py-16">
-      <h1 class="text-2xl font-bold text-slate-900">Inloggen op het klantportaal</h1>
-      <p class="mt-2 text-sm text-slate-600">
-        Vul uw e-mailadres in. U ontvangt een veilige inloglink — geen wachtwoord nodig.
-      </p>
+    <main class="flex flex-1 items-center justify-center px-4 py-12">
+      <div class="pcard w-full max-w-sm">
+        <div class="pcard-b">
+          <h1 class="page-title">Inloggen</h1>
+          <p class="page-sub">Vul uw e-mailadres in — u ontvangt een veilige inloglink. Geen wachtwoord nodig.</p>
 
-      <form id="login-form" class="mt-6 space-y-4" novalidate>
-        <div>
-          <label for="email" class="block text-sm font-medium text-slate-700">E-mailadres</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            required
-            autocomplete="email"
-            class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-brand-indigo focus:outline-none focus:ring-1 focus:ring-brand-indigo"
-          />
+          <form id="login-form" class="mt-5" novalidate>
+            <label for="email" class="plabel">E-mailadres</label>
+            <input type="email" id="email" name="email" required autocomplete="email" class="pinput" />
+            <button type="submit" id="submit-btn" class="pbtn pbtn--primary mt-3 w-full">Stuur inloglink</button>
+          </form>
+
+          <p id="message" class="palert mt-4 hidden"></p>
+
+          <p class="mt-6 text-xs" style="color:var(--p-ink-4)">
+            Nog geen klant? <a href="/contact/" class="p-link">Neem contact op</a> —
+            het portaal is voor actieve Aanloop AI klanten.
+          </p>
         </div>
-        <button
-          type="submit"
-          id="submit-btn"
-          class="w-full rounded-lg bg-brand-indigo px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
-        >
-          Stuur inloglink
-        </button>
-      </form>
-
-      <p id="message" class="mt-4 hidden rounded-lg px-3 py-2.5 text-sm"></p>
-
-      <p class="mt-8 text-xs text-slate-400">
-        Nog geen klant? <a href="/contact/" class="underline">Neem contact op</a> —
-        het portaal is voor actieve Aanloop AI klanten.
-      </p>
+      </div>
     </main>
 
     <script is:inline>
@@ -66,9 +54,7 @@ import '../../styles/global.css';
 
         function showMsg(text, ok) {
           msg.textContent = text;
-          msg.className =
-            'mt-4 rounded-lg px-3 py-2.5 text-sm ' +
-            (ok ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800');
+          msg.className = 'palert mt-4 ' + (ok ? 'palert--ok' : 'palert--warn');
         }
 
         var err = new URLSearchParams(location.search).get('error');
