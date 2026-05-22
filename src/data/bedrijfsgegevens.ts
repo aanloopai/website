@@ -4,11 +4,10 @@
 
 export const BEDRIJF = {
   naam: 'Aanloop AI B.V.',
-  kvk: '88606902',
-  // TODO — VERVANG deze placeholders door de echte waarden:
-  btwId: 'NL______B__', // echt BTW-identificatienummer invullen
-  adres: 'STRAAT + HUISNUMMER', // echte vestigingsadres invullen
-  postcode: '3011',
+  kvk: '56312075',
+  btwId: 'NL004672676B48',
+  adres: 'Blokfluit 31',
+  postcode: '3068 KZ',
   stad: 'Rotterdam',
   land: 'Nederland',
   email: 'hello@aanloopai.nl',
