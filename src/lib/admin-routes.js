@@ -18,7 +18,7 @@ async function mailCustomer(env, to, naam, subject, innerHtml) {
   if (!env.BREVO_API_KEY) return;
   const html = `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#0f172a">${innerHtml}
     <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0">
-    <p style="font-size:12px;color:#64748b">Aanloop AI — aanloopai.nl — KvK 88606902</p></body></html>`;
+    <p style="font-size:12px;color:#64748b">Aanloop AI — aanloopai.nl — KvK 56312075</p></body></html>`;
   const res = await fetch(BREVO_API, {
     method: 'POST',
     headers: { 'api-key': env.BREVO_API_KEY, 'content-type': 'application/json', accept: 'application/json' },

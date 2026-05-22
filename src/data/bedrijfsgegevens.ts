@@ -1,5 +1,5 @@
 // Aanloop AI bedrijfsgegevens — voor op facturen (V4, wettelijk verplicht).
-// KvK is bekend (site/schema, 88606902). VUL btwId + adres aan met de echte
+// KvK is bekend (site/schema, 56312075). VUL btwId + adres aan met de echte
 // waarden — één plek, hier wijzigen volstaat.
 
 export const BEDRIJF = {
