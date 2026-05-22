@@ -40,6 +40,8 @@ export async function handleCheckoutStart(request, env, user) {
   if (!tier || tier.betaling === 'aanvraag' || !tier.prijsCent) {
     return errorResponse('Voor dit pakket is geen online betaling beschikbaar.', 400);
   }
+  // Catalogusprijzen zijn EXCL. btw — de klant betaalt incl. 21%.
+  const inclCent = Math.round(tier.prijsCent * (1 + BTW_RATE));
 
   const customer = await env.PORTAL_DB
     .prepare('SELECT id, bedrijf, factuur_email, mollie_customer_id FROM customers WHERE id = ?')
@@ -63,7 +65,7 @@ export async function handleCheckoutStart(request, env, user) {
   const subId = randomId('sub');
   await env.PORTAL_DB.prepare(
     'INSERT INTO subscriptions (id, customer_id, order_id, product_key, tier, bedrag_cent, betaling, status, mollie_customer_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-  ).bind(subId, user.customer_id, order.id, order.product_key, order.tier, tier.prijsCent,
+  ).bind(subId, user.customer_id, order.id, order.product_key, order.tier, inclCent,
     tier.betaling, 'pending_payment', mollieCustomerId, Date.now()).run();
 
   // Mollie needs an explicit website profile when the key is not bound to a
@@ -88,7 +90,7 @@ export async function handleCheckoutStart(request, env, user) {
   }
 
   const paymentBody = {
-    amount: { currency: 'EUR', value: euros(tier.prijsCent) },
+    amount: { currency: 'EUR', value: euros(inclCent) },
     description: `Aanloop AI — ${order.product_key} ${order.tier} (${order.id})`,
     sequenceType: recurring ? 'first' : 'oneoff',
     customerId: mollieCustomerId,
@@ -101,7 +103,7 @@ export async function handleCheckoutStart(request, env, user) {
 
   await env.PORTAL_DB.prepare(
     'INSERT INTO payments (id, customer_id, subscription_id, order_id, bedrag_cent, status, sequence_type, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-  ).bind(payment.id, user.customer_id, subId, order.id, tier.prijsCent,
+  ).bind(payment.id, user.customer_id, subId, order.id, inclCent,
     payment.status || 'open', recurring ? 'first' : 'oneoff', Date.now()).run();
 
   const checkoutUrl = payment._links && payment._links.checkout && payment._links.checkout.href;
