@@ -14,13 +14,10 @@ binding = "ASSETS"
 binding = "GOOGLE_TOKENS"
 id = "ffb342acce5544a8bb4ca8d93c0e9686"
 
-# Customer portal database (C3). UNCOMMENT after creating the D1 database:
-#   wrangler d1 create aanloop-portal
-# then paste the printed database_id below. Until this is configured the
-# portal routes return HTTP 503 and the rest of the site is unaffected.
-# Also set the session secret:  wrangler secret put PORTAL_SESSION_SECRET
-# See developing/portal/README.md for the full setup.
-# [[d1_databases]]
-# binding = "PORTAL_DB"
-# database_name = "aanloop-portal"
-# database_id = "PASTE_DATABASE_ID_HERE"
+# Customer portal database (C3). Created with: wrangler d1 create aanloop-portal
+# Still required: wrangler secret put PORTAL_SESSION_SECRET
+#   + apply migrations/0001_portal_schema.sql (see developing/portal/README.md).
+[[d1_databases]]
+binding = "PORTAL_DB"
+database_name = "aanloop-portal"
+database_id = "e7e0d9e9-3400-476b-bd27-ede26f6d41e1"
