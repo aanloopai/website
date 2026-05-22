@@ -29,17 +29,37 @@ async function mollieFetch(apiKey, method, path, body) {
   try { return JSON.parse(text); } catch { return {}; }
 }
 
-// Resolve the website profile (needed when the key is not bound to one default).
+// Resolve the website profile. A profile-restricted (live) key is bound to one
+// profile — /profiles/me works, /profiles list is 403. An org-level key needs
+// the list. Returns null when neither resolves (then we omit profileId — a
+// restricted key still resolves it server-side).
 async function getProfileId(apiKey) {
   try {
-    const list = await mollieFetch(apiKey, 'GET', '/profiles?limit=10');
+    const me = await mollieFetch(apiKey, 'GET', '/profiles/me');
+    if (me && me.id) return me.id;
+  } catch { /* org-level key — fall through to the list */ }
+  try {
+    const list = await mollieFetch(apiKey, 'GET', '/profiles?limit=20');
     const profiles = (list._embedded && list._embedded.profiles) || [];
-    const usable = profiles.find((p) => p.status === 'verified') || profiles[0];
-    if (usable) return usable.id;
-  } catch {
-    try { const me = await mollieFetch(apiKey, 'GET', '/profiles/me'); return me.id; } catch { /* none */ }
-  }
+    for (const p of profiles) {
+      try {
+        const m = await mollieFetch(apiKey, 'GET', `/methods?profileId=${p.id}`);
+        const ids = ((m._embedded && m._embedded.methods) || []).map((x) => x.id);
+        if (ids.includes('ideal')) return p.id;
+      } catch { /* try next */ }
+    }
+    if (profiles.length) return (profiles.find((p) => p.status === 'verified') || profiles[0]).id;
+  } catch { /* none */ }
   return null;
+}
+
+// Diagnostic — activated methods on the key's profile.
+async function profilesDebug(apiKey) {
+  try {
+    const m = await mollieFetch(apiKey, 'GET', '/methods');
+    const ids = ((m._embedded && m._embedded.methods) || []).map((x) => x.id);
+    return `methodes: ${ids.join(',') || 'GEEN'}`;
+  } catch (e) { return `debug-fout: ${e.message}`; }
 }
 
 async function sendMail(env, to, naam, subject, innerHtml) {
@@ -103,9 +123,6 @@ export async function handleCheckoutStart(request, env, user) {
       tier.betaling, 'pending_payment', mollieCustomerId, Date.now()).run();
 
     const profileId = await getProfileId(env.MOLLIE_API_KEY);
-    if (!profileId) {
-      return errorResponse('Geen Mollie website-profiel gevonden. Maak een profiel aan in het Mollie-dashboard.', 502);
-    }
 
     const paymentBody = {
       amount: { currency: 'EUR', value: euros(inclCent) },
@@ -115,8 +132,8 @@ export async function handleCheckoutStart(request, env, user) {
       redirectUrl: `${SITE}/portal/checkout?order=${order.id}`,
       webhookUrl: `${SITE}/api/webhooks/mollie`,
       metadata: { order_id: order.id, subscription_id: subId, customer_id: user.customer_id },
-      profileId,
     };
+    if (profileId) paymentBody.profileId = profileId;
     const payment = await mollieFetch(env.MOLLIE_API_KEY, 'POST', '/payments', paymentBody);
 
     await env.PORTAL_DB.prepare(
@@ -129,7 +146,8 @@ export async function handleCheckoutStart(request, env, user) {
     return jsonResponse({ ok: true, checkoutUrl });
   } catch (err) {
     console.error('[mollie] checkout start failed:', err.message || err);
-    return errorResponse(`Betaling kon niet worden gestart: ${String(err.message || err).slice(0, 300)}`, 502);
+    const dbg = await profilesDebug(env.MOLLIE_API_KEY).catch(() => '');
+    return errorResponse(`Betaling mislukt: ${String(err.message || err).slice(0, 200)} — profielen: ${dbg}`, 502);
   }
 }
 
