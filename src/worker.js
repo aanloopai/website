@@ -125,6 +125,15 @@ const CORS_HEADERS = {
   'access-control-allow-headers': 'content-type',
 };
 
+// Cookie-authenticated endpoints — origin locked to aanloopai.nl + credentialed.
+const PORTAL_CORS_HEADERS = {
+  'access-control-allow-origin': 'https://aanloopai.nl',
+  'access-control-allow-methods': 'GET, POST, PATCH, DELETE, OPTIONS',
+  'access-control-allow-headers': 'content-type',
+  'access-control-allow-credentials': 'true',
+  vary: 'Origin',
+};
+
 // Security headers — applied to all asset responses.
 // Mirrors public/_headers, which Cloudflare Workers-with-Assets does not honor for HTML routes.
 // Source-of-truth lives here in the Worker; _headers is kept for Pages-style fallback only.
@@ -464,16 +473,8 @@ export default {
 
     // Diagnostic endpoint — lists which env vars ARE visible to the worker (no values, just presence)
     if (url.pathname === '/api/health') {
-      const envKeys = Object.keys(env || {}).filter(k => k !== 'ASSETS').sort();
-      return jsonResponse({
-        status: 'ok',
-        worker: 'aanloop-website',
-        deployed_at: new Date().toISOString(),
-        env_keys_present: envKeys,
-        brevo_key_present: !!env.BREVO_API_KEY,
-        brevo_key_length: env.BREVO_API_KEY ? env.BREVO_API_KEY.length : 0,
-        assets_binding_present: !!env.ASSETS,
-      });
+      // Public unauthenticated endpoint — must not leak environment details.
+      return jsonResponse({ status: 'ok', deployed_at: new Date().toISOString() });
     }
 
     if (url.pathname === '/api/submit') {
@@ -517,18 +518,18 @@ export default {
     if (url.pathname === '/api/team-invite/accept') {
       return handleInviteAccept(request, env);
     }
-    // Mollie payment webhook (unsigned form POST — handler re-fetches to verify)
+    // Mollie payment webhook — server-to-server. No CORS, no OPTIONS — must not
+    // be browser-accessible. Handler validates the URL secret token.
     if (url.pathname === '/api/webhooks/mollie') {
-      if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
       return handleMollieWebhook(request, env);
     }
-    // Customer portal API + admin panel API
+    // Customer portal API + admin panel API — origin locked to aanloopai.nl.
     if (url.pathname.startsWith('/api/portal/')) {
-      if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
+      if (request.method === 'OPTIONS') return new Response(null, { headers: PORTAL_CORS_HEADERS });
       return handlePortalApi(request, env);
     }
     if (url.pathname.startsWith('/api/admin/')) {
-      if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
+      if (request.method === 'OPTIONS') return new Response(null, { headers: PORTAL_CORS_HEADERS });
       return handleAdminApi(request, env);
     }
 

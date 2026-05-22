@@ -1,0 +1,59 @@
+---
+// Magic-link verify — POST-redirect flow.
+// Mail link points here (instead of /api/auth/verify) so the token never lands
+// in server access logs, browser history, or HTTP Referer headers. Also stops
+// e-mail security scanners from silently consuming the one-time token by
+// pre-fetching, because GET-pre-fetching this page does not POST the token.
+import PortalLayout from '../../layouts/PortalLayout.astro';
+---
+
+<PortalLayout title="Inloggen…" active="overzicht">
+  <div class="mx-auto max-w-md">
+    <div class="pcard">
+      <div class="pcard-b text-center" style="padding:40px 24px">
+        <div id="v-pending">
+          <div class="pskel mx-auto h-12 w-12 rounded-full"></div>
+          <h1 class="page-title mt-4">Inloggen…</h1>
+          <p class="page-sub mt-1">Een moment, we controleren uw inloglink.</p>
+        </div>
+        <div id="v-err" class="hidden">
+          <h1 class="page-title" style="color:#b3093c">Inloglink ongeldig</h1>
+          <p class="page-sub mx-auto mt-1" style="max-width:24rem">
+            De link is verlopen of al gebruikt. Vraag een nieuwe inloglink aan.
+          </p>
+          <a href="/portal/login" class="pbtn pbtn--primary mt-5">Nieuwe link aanvragen</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var token = new URLSearchParams(location.search).get('token');
+      if (!token) { location.href = '/portal/login?error=link'; return; }
+
+      var body = new URLSearchParams();
+      body.set('token', token);
+      // x-www-form-urlencoded is a CORS "simple request" — no preflight needed.
+      fetch('/api/auth/verify', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'content-type': 'application/x-www-form-urlencoded' },
+        body: body.toString(),
+      })
+        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (res) {
+          if (res.ok && res.j.redirect) {
+            location.replace(res.j.redirect);
+          } else {
+            document.getElementById('v-pending').classList.add('hidden');
+            document.getElementById('v-err').classList.remove('hidden');
+          }
+        })
+        .catch(function () {
+          document.getElementById('v-pending').classList.add('hidden');
+          document.getElementById('v-err').classList.remove('hidden');
+        });
+    })();
+  </script>
+</PortalLayout>

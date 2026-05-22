@@ -3,12 +3,23 @@
 // Maandelijkse diensten: een cron maakt elke maand een nieuwe iDEAL-betaling
 // en mailt de klant de betaallink. Webhook is unsigned: altijd re-fetchen.
 import { jsonResponse, errorResponse } from './google-auth.js';
-import { randomId } from './auth.js';
+import { randomId, sha256Hex } from './auth.js';
 import { getCatalogTier } from '../data/portal-catalog.ts';
 
 const SITE = 'https://aanloopai.nl';
 const MOLLIE = 'https://api.mollie.com/v2';
 const BTW_RATE = 0.21;
+const TR_ID = /^tr_[a-zA-Z0-9]{6,40}$/;
+
+// Stable per-deployment secret derived from PORTAL_SESSION_SECRET — appended to
+// the Mollie webhookUrl as ?k=<token>; the webhook handler rejects mismatches.
+async function webhookToken(secret) {
+  return (await sha256Hex(`${secret}|mollie-webhook`)).slice(0, 32);
+}
+async function buildWebhookUrl(env) {
+  const t = await webhookToken(env.PORTAL_SESSION_SECRET || '');
+  return `${SITE}/api/webhooks/mollie?k=${t}`;
+}
 
 function euros(cents) { return (Number(cents) / 100).toFixed(2); }
 function todayStr() { return new Date().toISOString().slice(0, 10); }
@@ -124,13 +135,14 @@ export async function handleCheckoutStart(request, env, user) {
 
     const profileId = await getProfileId(env.MOLLIE_API_KEY);
 
+    const webhookUrl = await buildWebhookUrl(env);
     const paymentBody = {
       amount: { currency: 'EUR', value: euros(inclCent) },
       description: `Aanloop AI — ${order.product_key} ${order.tier} (${order.id})`,
       sequenceType: 'oneoff',
       customerId: mollieCustomerId,
       redirectUrl: `${SITE}/portal/checkout?order=${order.id}`,
-      webhookUrl: `${SITE}/api/webhooks/mollie`,
+      webhookUrl,
       metadata: { order_id: order.id, subscription_id: subId, customer_id: user.customer_id },
     };
     if (profileId) paymentBody.profileId = profileId;
@@ -146,42 +158,65 @@ export async function handleCheckoutStart(request, env, user) {
     return jsonResponse({ ok: true, checkoutUrl });
   } catch (err) {
     console.error('[mollie] checkout start failed:', err.message || err);
-    const dbg = await profilesDebug(env.MOLLIE_API_KEY).catch(() => '');
-    return errorResponse(`Betaling mislukt: ${String(err.message || err).slice(0, 200)} — profielen: ${dbg}`, 502);
+    // Log details server-side; never leak Mollie internals or profile data to the client.
+    return errorResponse('De betaling kon niet worden gestart. Probeer het opnieuw of neem contact op met support.', 502);
   }
 }
 
-// ── webhook: POST /api/webhooks/mollie  (body: id=tr_...) ───────────────────
+// ── webhook: POST /api/webhooks/mollie?k=<token>  (body: id=tr_...) ─────────
 export async function handleMollieWebhook(request, env) {
   if (!env.MOLLIE_API_KEY || !env.PORTAL_DB) return new Response('ok', { status: 200 });
+
+  // 1. URL-secret check — drops spurious / DoS calls before any Mollie API hit.
+  const url = new URL(request.url);
+  const expected = await webhookToken(env.PORTAL_SESSION_SECRET || '');
+  if (url.searchParams.get('k') !== expected) return new Response('ok', { status: 200 });
+
+  // 2. Parse + strict id-shape check.
   let id = '';
   try {
     const form = await request.formData();
     id = (form.get('id') || '').toString();
   } catch { return new Response('bad', { status: 400 }); }
-  if (!id.startsWith('tr_')) return new Response('ok', { status: 200 });
+  if (!TR_ID.test(id)) return new Response('ok', { status: 200 });
 
   try {
     const payment = await mollieFetch(env.MOLLIE_API_KEY, 'GET', `/payments/${id}`);
-    const row = await env.PORTAL_DB.prepare('SELECT id, status, subscription_id, order_id FROM payments WHERE id = ?').bind(id).first();
-    const subId = row?.subscription_id || (payment.metadata && payment.metadata.subscription_id) || null;
-    const orderId = row?.order_id || (payment.metadata && payment.metadata.order_id) || null;
+    let row = await env.PORTAL_DB.prepare('SELECT id, status, subscription_id, order_id FROM payments WHERE id = ?').bind(id).first();
 
+    // 3. Unknown payment id: ONLY accept when it's clearly one of ours that lost
+    //    its DB row mid-billing (metadata.subscription_id matches a real
+    //    subscription owned by the same Mollie customer). Anything else = no-op.
     if (!row) {
+      const mSubId = payment.metadata && payment.metadata.subscription_id;
+      const sub = mSubId
+        ? await env.PORTAL_DB.prepare('SELECT id, customer_id, mollie_customer_id FROM subscriptions WHERE id = ?').bind(mSubId).first()
+        : null;
+      if (!sub || !payment.customerId || sub.mollie_customer_id !== payment.customerId) {
+        return new Response('ok', { status: 200 });
+      }
       await env.PORTAL_DB.prepare(
         'INSERT OR IGNORE INTO payments (id, customer_id, subscription_id, order_id, bedrag_cent, status, sequence_type, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      ).bind(id, payment.customerId || '', subId, orderId,
-        Math.round(Number(payment.amount?.value || 0) * 100), payment.status, 'oneoff', Date.now()).run();
-    } else if (row.status === payment.status) {
-      return new Response('ok', { status: 200 }); // idempotent: no transition
-    } else {
-      await env.PORTAL_DB.prepare('UPDATE payments SET status = ?, paid_at = ? WHERE id = ?')
-        .bind(payment.status, payment.status === 'paid' ? new Date().toISOString() : null, id).run();
+      ).bind(id, sub.customer_id, mSubId, payment.metadata?.order_id || null,
+        Math.round(Number(payment.amount?.value || 0) * 100), 'open', 'maand', Date.now()).run();
+      row = { id, status: 'open', subscription_id: mSubId, order_id: payment.metadata?.order_id || null };
     }
 
-    if (payment.status === 'paid') await onPaid(env, payment, subId, orderId);
-    else if (payment.status === 'failed' || payment.status === 'canceled' || payment.status === 'expired') {
-      await onFailed(env, subId);
+    const subId = row.subscription_id || (payment.metadata && payment.metadata.subscription_id) || null;
+    const orderId = row.order_id || (payment.metadata && payment.metadata.order_id) || null;
+
+    // 4. Compare-and-swap transitions — only the worker that flips state runs the
+    //    business logic, even under concurrent webhook retries.
+    if (payment.status === 'paid') {
+      const r = await env.PORTAL_DB.prepare(
+        "UPDATE payments SET status = 'paid', paid_at = ? WHERE id = ? AND status != 'paid'",
+      ).bind(new Date().toISOString(), id).run();
+      if (r.meta?.changes === 1) await onPaid(env, payment, subId, orderId);
+    } else if (payment.status === 'failed' || payment.status === 'canceled' || payment.status === 'expired') {
+      const r = await env.PORTAL_DB.prepare(
+        'UPDATE payments SET status = ? WHERE id = ? AND status != ?',
+      ).bind(payment.status, id, payment.status).run();
+      if (r.meta?.changes === 1) await onFailed(env, subId);
     }
     return new Response('ok', { status: 200 });
   } catch (err) {
@@ -230,8 +265,11 @@ async function createInvoice(env, payment, sub) {
   const btw = bedragCent - subtotaal;
 
   const year = new Date().getFullYear();
-  const cnt = await db.prepare('SELECT COUNT(*) AS n FROM invoices WHERE factuurnummer LIKE ?').bind(`${year}-%`).first();
-  const factuurnummer = `${year}-${String((cnt?.n || 0) + 1).padStart(4, '0')}`;
+  const cName = `factuur-${year}`;
+  // Atomic single-statement counter — no COUNT()+1 race.
+  await db.prepare('INSERT OR IGNORE INTO counters (name, n) VALUES (?, 0)').bind(cName).run();
+  const seq = await db.prepare('UPDATE counters SET n = n + 1 WHERE name = ? RETURNING n').bind(cName).first();
+  const factuurnummer = `${year}-${String(seq?.n || 1).padStart(4, '0')}`;
   const periode = new Date().toLocaleDateString('nl-NL', { month: 'long', year: 'numeric' });
 
   await db.prepare(
@@ -278,6 +316,7 @@ export async function billMonthlySubscriptions(env) {
   if (!due.length) return;
 
   const profileId = await getProfileId(env.MOLLIE_API_KEY);
+  const webhookUrl = await buildWebhookUrl(env);
   for (const sub of due) {
     try {
       const paymentBody = {
@@ -285,20 +324,23 @@ export async function billMonthlySubscriptions(env) {
         description: `Aanloop AI — ${sub.product_key} ${sub.tier || ''} maandbetaling`,
         sequenceType: 'oneoff',
         redirectUrl: `${SITE}/portal/facturatie`,
-        webhookUrl: `${SITE}/api/webhooks/mollie`,
+        webhookUrl,
         metadata: { subscription_id: sub.id, customer_id: sub.customer_id },
       };
       if (sub.mollie_customer_id) paymentBody.customerId = sub.mollie_customer_id;
       if (profileId) paymentBody.profileId = profileId;
       const payment = await mollieFetch(env.MOLLIE_API_KEY, 'POST', '/payments', paymentBody);
 
-      await env.PORTAL_DB.prepare(
-        'INSERT INTO payments (id, customer_id, subscription_id, order_id, bedrag_cent, status, sequence_type, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-      ).bind(payment.id, sub.customer_id, sub.id, null, sub.bedrag_cent,
-        payment.status || 'open', 'maand', Date.now()).run();
-      // Optimistically advance — next link goes out a month later.
-      await env.PORTAL_DB.prepare('UPDATE subscriptions SET next_payment_date = ? WHERE id = ?')
-        .bind(addMonth(sub.next_payment_date || today), sub.id).run();
+      // Atomic: payment INSERT + next_payment_date UPDATE either both commit or
+      // both fail. Prevents the "advanced date but no payment row" data hole.
+      await env.PORTAL_DB.batch([
+        env.PORTAL_DB.prepare(
+          'INSERT INTO payments (id, customer_id, subscription_id, order_id, bedrag_cent, status, sequence_type, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        ).bind(payment.id, sub.customer_id, sub.id, null, sub.bedrag_cent,
+          payment.status || 'open', 'maand', Date.now()),
+        env.PORTAL_DB.prepare('UPDATE subscriptions SET next_payment_date = ? WHERE id = ?')
+          .bind(addMonth(sub.next_payment_date || today), sub.id),
+      ]);
 
       const link = payment._links && payment._links.checkout && payment._links.checkout.href;
       if (link) {
@@ -330,10 +372,17 @@ export async function reconcilePayments(env) {
   for (const p of stale) {
     try {
       const payment = await mollieFetch(env.MOLLIE_API_KEY, 'GET', `/payments/${p.id}`);
-      if (payment.status !== 'open' && payment.status !== 'pending') {
-        await env.PORTAL_DB.prepare('UPDATE payments SET status = ? WHERE id = ?').bind(payment.status, p.id).run();
-        if (payment.status === 'paid') await onPaid(env, payment, p.subscription_id, p.order_id);
-        else await onFailed(env, p.subscription_id);
+      // CAS — only the loser of the race actually fires the business logic.
+      if (payment.status === 'paid') {
+        const r = await env.PORTAL_DB.prepare(
+          "UPDATE payments SET status = 'paid', paid_at = ? WHERE id = ? AND status != 'paid'",
+        ).bind(new Date().toISOString(), p.id).run();
+        if (r.meta?.changes === 1) await onPaid(env, payment, p.subscription_id, p.order_id);
+      } else if (payment.status === 'failed' || payment.status === 'canceled' || payment.status === 'expired') {
+        const r = await env.PORTAL_DB.prepare(
+          'UPDATE payments SET status = ? WHERE id = ? AND status != ?',
+        ).bind(payment.status, p.id, payment.status).run();
+        if (r.meta?.changes === 1) await onFailed(env, p.subscription_id);
       }
     } catch (err) {
       console.error('[mollie] reconcile error:', err.message || err);

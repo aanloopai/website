@@ -45,19 +45,33 @@ function buildKbText(faq, extra) {
   return out.trim() || 'Geen aanvullende kennis opgegeven.';
 }
 
+// Sanitise customer-supplied intake text before it is interpolated into the
+// agent system prompt. Strips control chars / linebreaks (would let a user
+// inject extra "Instructions:" lines) and caps the length. Returns '' for
+// non-string input.
+function s(v, max = 200) {
+  if (v == null) return '';
+  return String(v).replace(/[\x00-\x1f\x7f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, max);
+}
+function sArr(v, max = 8, itemMax = 80) {
+  return (Array.isArray(v) ? v : []).slice(0, max).map((x) => s(x, itemMax)).filter(Boolean);
+}
+
 // Build the agent prompt + first message from intake answers, per product.
 function buildConfig(productKey, intake) {
   const i = intake || {};
   if (productKey === 'emma') {
     const b = i.bedrijf || {}, k = i.kennis || {}, af = i.afhandeling || {};
-    const naam = b.bedrijfsnaam || 'het bedrijf';
+    const naam = s(b.bedrijfsnaam, 100) || 'het bedrijf';
+    const branche = s(b.branche, 80);
+    const talen = sArr(k.talen, 6, 30);
     return {
       systemPrompt:
-        `Je bent Emma, de AI-chatassistent van ${naam}${b.branche ? ` (${b.branche})` : ''}. ` +
+        `Je bent Emma, de AI-chatassistent van ${naam}${branche ? ` (${branche})` : ''}. ` +
         `Je beantwoordt vragen van klanten via chat en WhatsApp. ` +
-        `Talen: ${(Array.isArray(k.talen) ? k.talen : ['Nederlands']).join(', ')}. ` +
-        `Overdracht naar mens: ${af.handover || 'handel zelf af'}.` +
-        (af.handover_contact ? ` Doorschakelen naar: ${af.handover_contact}.` : '') +
+        `Talen: ${(talen.length ? talen : ['Nederlands']).join(', ')}. ` +
+        `Overdracht naar mens: ${s(af.handover, 120) || 'handel zelf af'}.` +
+        (af.handover_contact ? ` Doorschakelen naar: ${s(af.handover_contact, 80)}.` : '') +
         ` Wees vriendelijk en beknopt. Gebruik de kennisbank voor antwoorden.`,
       firstMessage: `Hallo! Ik ben Emma van ${naam}. Hoe kan ik u helpen?`,
       kbText: buildKbText(k.faq, k.productcatalogus),
@@ -65,15 +79,17 @@ function buildConfig(productKey, intake) {
   }
   // default: marco (voice receptionist)
   const b = i.bedrijf || {}, br = i.bereikbaarheid || {}, af = i.afhandeling || {}, k = i.kennis || {};
-  const naam = b.bedrijfsnaam || 'het bedrijf';
+  const naam = s(b.bedrijfsnaam, 100) || 'het bedrijf';
+  const branche = s(b.branche, 80);
+  const taken = sArr(af.taken, 8, 60);
   return {
     systemPrompt:
-      `Je bent Marco, de AI-telefoonreceptionist van ${naam}${b.branche ? ` (${b.branche})` : ''}. ` +
-      `Openingstijden: ${br.openingstijden || 'onbekend'}. Buiten openingstijden: ${br.buiten_tijden || '-'}. ` +
-      `Je taken: ${(Array.isArray(af.taken) ? af.taken : []).join(', ') || 'vragen beantwoorden'}. ` +
-      (af.doorverbind_nummers ? `Doorverbindnummers: ${af.doorverbind_nummers}. ` : '') +
-      (af.escalatie ? `Bij urgente situaties: ${af.escalatie}. ` : '') +
-      `Toon: ${k.toon || 'zakelijk en warm'}. Spreek altijd Nederlands, wees beknopt en behulpzaam. ` +
+      `Je bent Marco, de AI-telefoonreceptionist van ${naam}${branche ? ` (${branche})` : ''}. ` +
+      `Openingstijden: ${s(br.openingstijden, 100) || 'onbekend'}. Buiten openingstijden: ${s(br.buiten_tijden, 120) || '-'}. ` +
+      `Je taken: ${taken.join(', ') || 'vragen beantwoorden'}. ` +
+      (af.doorverbind_nummers ? `Doorverbindnummers: ${s(af.doorverbind_nummers, 200)}. ` : '') +
+      (af.escalatie ? `Bij urgente situaties: ${s(af.escalatie, 200)}. ` : '') +
+      `Toon: ${s(k.toon, 60) || 'zakelijk en warm'}. Spreek altijd Nederlands, wees beknopt en behulpzaam. ` +
       `Gebruik de kennisbank voor antwoorden.`,
     firstMessage: `Goedendag, u spreekt met Marco van ${naam}. Waarmee kan ik u helpen?`,
     kbText: buildKbText(k.faq, k.diensten),

@@ -32,10 +32,19 @@ async function mailCustomer(env, to, naam, subject, innerHtml) {
 }
 
 // ── dispatcher (/api/admin/*) ───────────────────────────────────────────────
+const ADMIN_SITE_ORIGIN = 'https://aanloopai.nl';
+const ADMIN_MUTATING = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
+
 export async function handleAdminApi(request, env) {
   const url = new URL(request.url);
   const path = url.pathname;
   const method = request.method;
+
+  // CSRF / origin guard for mutating admin requests.
+  if (ADMIN_MUTATING.has(method)) {
+    const origin = request.headers.get('Origin');
+    if (origin && origin !== ADMIN_SITE_ORIGIN) return errorResponse('Verboden (origin)', 403);
+  }
 
   const user = await getSessionUser(request, env);
   if (!user || user.role !== 'staff') return errorResponse('Geen toegang', 403);
@@ -343,26 +352,26 @@ async function updateOrder(request, env) {
 
   // When an order goes 'actief', materialise it as a service (once) and
   // auto-provision an ElevenLabs agent from the intake (best-effort).
+  // The UNIQUE index on services.order_id (migration 0008) makes the INSERT
+  // atomic — only the first concurrent activation actually inserts.
   if (b.status === 'actief') {
-    const exists = await env.PORTAL_DB.prepare('SELECT id FROM services WHERE order_id = ?').bind(b.id).first();
-    if (!exists) {
-      const svcId = randomId('svc');
-      await env.PORTAL_DB.prepare(
-        'INSERT INTO services (id, customer_id, product_key, naam, tier, status, config_json, started_at, created_at, order_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      ).bind(svcId, o.customer_id, o.product_key, o.product_key, o.tier || null,
-        'onboarding', o.intake_json || null, today(), today(), o.id).run();
+    const svcId = randomId('svc');
+    const ins = await env.PORTAL_DB.prepare(
+      'INSERT OR IGNORE INTO services (id, customer_id, product_key, naam, tier, status, config_json, started_at, created_at, order_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    ).bind(svcId, o.customer_id, o.product_key, o.product_key, o.tier || null,
+      'onboarding', o.intake_json || null, today(), today(), o.id).run();
 
-      if (env.ELEVENLABS_API_KEY && canProvision(o.product_key)) {
-        let prov;
-        try {
-          prov = await provisionAgent(env.ELEVENLABS_API_KEY, o.product_key, o.product_key, safeParseJson(o.intake_json));
-        } catch (err) {
-          console.error('[admin] ElevenLabs provisioning failed:', err.message || err);
-          prov = { status: 'fout', error: String(err.message || err).slice(0, 400), provisioned_at: new Date().toISOString() };
-        }
-        await env.PORTAL_DB.prepare('UPDATE services SET provisioning_json = ? WHERE id = ?')
-          .bind(JSON.stringify(prov), svcId).run();
+    // Only the worker that actually inserted the service should fire provisioning.
+    if (ins.meta?.changes === 1 && env.ELEVENLABS_API_KEY && canProvision(o.product_key)) {
+      let prov;
+      try {
+        prov = await provisionAgent(env.ELEVENLABS_API_KEY, o.product_key, o.product_key, safeParseJson(o.intake_json));
+      } catch (err) {
+        console.error('[admin] ElevenLabs provisioning failed:', err.message || err);
+        prov = { status: 'fout', error: String(err.message || err).slice(0, 400), provisioned_at: new Date().toISOString() };
       }
+      await env.PORTAL_DB.prepare('UPDATE services SET provisioning_json = ? WHERE id = ?')
+        .bind(JSON.stringify(prov), svcId).run();
     }
   }
   return jsonResponse({ ok: true, message: 'Aanvraag bijgewerkt' });

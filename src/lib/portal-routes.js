@@ -7,8 +7,20 @@ import {
   sessionCookie, clearCookie, getSessionUser,
 } from './auth.js';
 import { handleCheckoutStart } from './mollie.js';
+import { getCatalogProduct } from '../data/portal-catalog.ts';
 
 const SITE_ORIGIN = 'https://aanloopai.nl';
+const MUTATING_METHODS = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
+
+// CSRF guard — defence in depth on top of SameSite=Strict. A mutating request
+// must either have no Origin (same-origin / certain GET-equivalents) or have
+// the right Origin.
+function checkOrigin(request) {
+  if (!MUTATING_METHODS.has(request.method)) return null;
+  const origin = request.headers.get('Origin');
+  if (origin && origin !== SITE_ORIGIN) return errorResponse('Verboden (origin)', 403);
+  return null;
+}
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
 const AANLOOP_EMAIL = 'hello@aanloopai.nl';
 
@@ -102,7 +114,7 @@ export async function handleAuthRequest(request, env) {
       await sendMail(env, email, user.naam, 'Uw inloglink voor het Aanloop AI klantportaal',
         `<p>Hallo ${escapeHtml((user.naam || '').split(' ')[0] || 'daar')},</p>
          <p>Klik op de knop hieronder om in te loggen op het Aanloop AI portaal:</p>
-         ${mailButton(`${SITE_ORIGIN}/api/auth/verify?token=${token}`, 'Inloggen op het portaal')}
+         ${mailButton(`${SITE_ORIGIN}/portal/verify?token=${token}`, 'Inloggen op het portaal')}
          <p style="font-size:13px;color:#64748b">Deze link is 15 minuten geldig en kan één keer gebruikt worden. Niet aangevraagd? Negeer deze mail.</p>`);
     } catch (err) {
       console.error('[portal] magic-link email failed:', err.message || err);
@@ -114,12 +126,28 @@ export async function handleAuthRequest(request, env) {
   });
 }
 
+// Accepts both GET (legacy direct-link, kept for backward compatibility) and
+// POST (new flow: e-mail link → /portal/verify page → form-POST). POST keeps
+// the raw token out of server access logs, browser history, and Referer
+// headers — and stops e-mail security scanners from silently burning the
+// single-use token by pre-fetching.
 export async function handleAuthVerify(request, env) {
   const url = new URL(request.url);
-  const fail = () => Response.redirect(`${url.origin}/portal/login?error=link`, 302);
+  const isPost = request.method === 'POST';
+  const failRedirect = () => Response.redirect(`${url.origin}/portal/login?error=link`, 302);
+  const failJson = () => errorResponse('Ongeldige of verlopen link', 400);
+  const fail = () => (isPost ? failJson() : failRedirect());
   if (!env.PORTAL_DB || !env.PORTAL_SESSION_SECRET) return fail();
 
-  const token = url.searchParams.get('token') || '';
+  let token = '';
+  if (isPost) {
+    try {
+      const form = await request.formData();
+      token = (form.get('token') || '').toString();
+    } catch { return fail(); }
+  } else {
+    token = url.searchParams.get('token') || '';
+  }
   if (!token) return fail();
 
   const tokenHash = await sha256Hex(token);
@@ -134,6 +162,12 @@ export async function handleAuthVerify(request, env) {
   const user = await env.PORTAL_DB.prepare('SELECT role FROM users WHERE id = ?').bind(row.user_id).first();
   const dest = user?.role === 'staff' ? '/admin/' : '/portal/';
   const session = await createSession(row.user_id, env.PORTAL_SESSION_SECRET);
+  if (isPost) {
+    return new Response(JSON.stringify({ ok: true, redirect: dest }), {
+      status: 200,
+      headers: { 'content-type': 'application/json', 'Set-Cookie': sessionCookie(session) },
+    });
+  }
   return new Response(null, {
     status: 302,
     headers: { Location: `${url.origin}${dest}`, 'Set-Cookie': sessionCookie(session) },
@@ -162,6 +196,9 @@ export async function handleInviteAccept(request, env) {
     .prepare('SELECT id, customer_id, email, role, expires_at, accepted FROM team_invites WHERE token_hash = ?')
     .bind(tokenHash).first();
   if (!invite || invite.accepted || Date.now() > invite.expires_at) return fail('invite');
+  // Re-validate role enum on accept — a corrupted/malicious team_invites row
+  // must never be able to inject 'staff' or other unexpected roles.
+  if (!['eigenaar', 'bewerker', 'kijker'].includes(invite.role)) return fail('invite');
 
   const email = invite.email.toLowerCase();
   const existing = await env.PORTAL_DB.prepare('SELECT id FROM users WHERE email = ?').bind(email).first();
@@ -187,8 +224,13 @@ export async function handlePortalApi(request, env) {
   const path = url.pathname;
   const method = request.method;
 
+  // CSRF / origin guard for mutating requests (POST/PATCH/DELETE).
+  const csrf = checkOrigin(request);
+  if (csrf) return csrf;
+
   const user = await getSessionUser(request, env);
-  if (!user || !user.customer_id) return errorResponse('Niet ingelogd', 401);
+  // Staff accounts must use /api/admin; reject them here to avoid dual-role privilege confusion.
+  if (!user || !user.customer_id || user.role === 'staff') return errorResponse('Niet ingelogd', 401);
 
   try {
     if (path === '/api/portal/me') return await portalMe(env, user);
@@ -325,8 +367,8 @@ async function portalInvoice(env, user, url) {
   ).bind(user.customer_id).first();
   let product = null;
   if (inv.subscription_id) {
-    product = await env.PORTAL_DB.prepare('SELECT product_key, tier, betaling FROM subscriptions WHERE id = ?')
-      .bind(inv.subscription_id).first();
+    product = await env.PORTAL_DB.prepare('SELECT product_key, tier, betaling FROM subscriptions WHERE id = ? AND customer_id = ?')
+      .bind(inv.subscription_id, user.customer_id).first();
   }
   return jsonResponse({ ok: true, invoice: inv, customer, product });
 }
@@ -385,8 +427,10 @@ async function updateSettings(request, env, user) {
     if (!naam) return errorResponse('Naam is verplicht', 400);
     await env.PORTAL_DB.prepare('UPDATE users SET naam = ? WHERE id = ?').bind(naam, user.id).run();
   } else if (body.section === 'notificaties') {
+    const notifStr = JSON.stringify(body.notif || {});
+    if (notifStr.length > 4096) return errorResponse('Notificatie-instellingen te groot', 400);
     await env.PORTAL_DB.prepare('UPDATE users SET notif_json = ? WHERE id = ?')
-      .bind(JSON.stringify(body.notif || {}), user.id).run();
+      .bind(notifStr, user.id).run();
   } else {
     return errorResponse('Onbekende sectie', 400);
   }
@@ -446,7 +490,8 @@ async function changeRole(request, env, user) {
     .bind(targetId, user.customer_id).first();
   if (!target) return errorResponse('Teamlid niet gevonden', 404);
 
-  await env.PORTAL_DB.prepare('UPDATE users SET role = ? WHERE id = ?').bind(role, targetId).run();
+  await env.PORTAL_DB.prepare('UPDATE users SET role = ? WHERE id = ? AND customer_id = ?')
+    .bind(role, targetId, user.customer_id).run();
   return jsonResponse({ ok: true, message: 'Rol bijgewerkt' });
 }
 
@@ -456,6 +501,9 @@ async function createOrder(request, env, user) {
   const body = await request.json().catch(() => null);
   const productKey = (body?.product_key || '').toString().trim();
   if (!productKey) return errorResponse('Product ontbreekt', 400);
+  // Pin product_key to the static catalog — prevents arbitrary values leaking
+  // into provisioning + downstream Mollie descriptions.
+  if (!getCatalogProduct(productKey)) return errorResponse('Onbekend product', 400);
   const id = randomId('ord');
   await env.PORTAL_DB
     .prepare('INSERT INTO service_orders (id, customer_id, user_id, product_key, tier, intake_json, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
@@ -547,7 +595,12 @@ async function removeMember(request, env, user) {
     return errorResponse('Er moet minstens één eigenaar zijn', 400);
   }
 
-  await env.PORTAL_DB.prepare('DELETE FROM magic_links WHERE user_id = ?').bind(targetId).run();
-  await env.PORTAL_DB.prepare('DELETE FROM users WHERE id = ?').bind(targetId).run();
+  // Defence-in-depth — scope the writes to this customer too, not just the
+  // pre-check SELECT, so a future bug or race cannot delete cross-tenant.
+  await env.PORTAL_DB.prepare(
+    'DELETE FROM magic_links WHERE user_id = ? AND user_id IN (SELECT id FROM users WHERE customer_id = ?)',
+  ).bind(targetId, user.customer_id).run();
+  await env.PORTAL_DB.prepare('DELETE FROM users WHERE id = ? AND customer_id = ?')
+    .bind(targetId, user.customer_id).run();
   return jsonResponse({ ok: true, message: 'Teamlid verwijderd' });
 }

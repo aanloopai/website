@@ -56,7 +56,9 @@ export async function createSession(userId, secret) {
 // Verify + decode a session token. Returns { uid } or null.
 export async function verifySession(token, secret) {
   if (!token || typeof token !== 'string' || !token.includes('.')) return null;
-  const [body, sigHex] = token.split('.');
+  const parts = token.split('.');
+  if (parts.length !== 2) return null;
+  const [body, sigHex] = parts;
   if (!body || !sigHex || !/^[0-9a-f]+$/.test(sigHex) || sigHex.length % 2 !== 0) return null;
   const key = await hmacKey(secret);
   const sigBytes = Uint8Array.from(sigHex.match(/.{2}/g).map((h) => parseInt(h, 16)));
@@ -71,11 +73,11 @@ export async function verifySession(token, secret) {
 
 export function sessionCookie(token) {
   const maxAge = Math.floor(SESSION_TTL_MS / 1000);
-  return `${SESSION_COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`;
+  return `${SESSION_COOKIE}=${token}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${maxAge}`;
 }
 
 export function clearCookie() {
-  return `${SESSION_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`;
+  return `${SESSION_COOKIE}=; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=0`;
 }
 
 export function readCookie(request, name) {
