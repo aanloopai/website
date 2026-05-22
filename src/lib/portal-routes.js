@@ -216,6 +216,7 @@ export async function handlePortalApi(request, env) {
     if (path === '/api/portal/order/submit' && method === 'POST') return await submitOrder(request, env, user);
     if (path === '/api/portal/service-config' && method === 'PATCH') return await updateServiceConfig(request, env, user);
     if (path === '/api/portal/checkout/start' && method === 'POST') return await handleCheckoutStart(request, env, user);
+    if (path === '/api/portal/invoice') return await portalInvoice(env, user, url);
     return errorResponse('Niet gevonden', 404);
   } catch (err) {
     console.error('[portal] API error:', err.message || err);
@@ -309,6 +310,25 @@ async function portalInvoices(env, user) {
     .prepare('SELECT id, factuurnummer, periode, bedrag_cent, subtotaal_cent, btw_cent, status, pdf_url, created_at FROM invoices WHERE customer_id = ? ORDER BY created_at DESC')
     .bind(user.customer_id).all()).results || [];
   return jsonResponse({ ok: true, invoices: list });
+}
+
+// Single invoice + customer + product — for the legal factuur view.
+async function portalInvoice(env, user, url) {
+  const id = url.searchParams.get('id');
+  if (!id) return errorResponse('Factuur-id ontbreekt', 400);
+  const inv = await env.PORTAL_DB.prepare(
+    'SELECT id, factuurnummer, periode, bedrag_cent, subtotaal_cent, btw_cent, status, subscription_id, created_at FROM invoices WHERE id = ? AND customer_id = ?',
+  ).bind(id, user.customer_id).first();
+  if (!inv) return errorResponse('Factuur niet gevonden', 404);
+  const customer = await env.PORTAL_DB.prepare(
+    'SELECT bedrijf, kvk, adres, postcode, stad, btw_id FROM customers WHERE id = ?',
+  ).bind(user.customer_id).first();
+  let product = null;
+  if (inv.subscription_id) {
+    product = await env.PORTAL_DB.prepare('SELECT product_key, tier, betaling FROM subscriptions WHERE id = ?')
+      .bind(inv.subscription_id).first();
+  }
+  return jsonResponse({ ok: true, invoice: inv, customer, product });
 }
 
 async function portalTickets(env, user) {

@@ -143,6 +143,9 @@ export async function handleMollieWebhook(request, env) {
     }
 
     if (payment.status === 'paid') await onPaid(env, payment, subId, orderId);
+    else if (payment.status === 'failed' || payment.status === 'canceled' || payment.status === 'expired') {
+      await onFailed(env, payment, subId);
+    }
     return new Response('ok', { status: 200 });
   } catch (err) {
     console.error('[mollie] webhook error:', err.message || err);
@@ -203,6 +206,49 @@ async function createInvoice(env, payment, sub) {
     'INSERT INTO invoices (id, customer_id, periode, bedrag_cent, status, factuurnummer, subtotaal_cent, btw_cent, payment_id, subscription_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
   ).bind(randomId('inv'), customerId, periode, bedragCent, 'betaald', factuurnummer,
     subtotaal, btw, payment.id, sub?.id || null, new Date().toISOString().slice(0, 10)).run();
+}
+
+// ── dunning — a recurring charge failed ─────────────────────────────────────
+async function sendDunningMail(env, to, naam, innerHtml) {
+  if (!env.BREVO_API_KEY) return;
+  await fetch('https://api.brevo.com/v3/smtp/email', {
+    method: 'POST',
+    headers: { 'api-key': env.BREVO_API_KEY, 'content-type': 'application/json', accept: 'application/json' },
+    body: JSON.stringify({
+      sender: { name: 'Aanloop AI', email: 'hello@aanloopai.nl' },
+      to: [{ email: to, name: naam || to }],
+      subject: 'Betaling mislukt — actie nodig',
+      htmlContent: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#0f172a">${innerHtml}<hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0"><p style="font-size:12px;color:#64748b">Aanloop AI — aanloopai.nl — KvK 88606902</p></body></html>`,
+    }),
+  });
+}
+
+async function onFailed(env, payment, subId) {
+  // Only recurring (monthly) charges trigger dunning; a failed first/oneoff
+  // payment just means the customer abandoned checkout.
+  if (payment.sequenceType !== 'recurring' || !subId) return;
+  const sub = await env.PORTAL_DB.prepare('SELECT * FROM subscriptions WHERE id = ?').bind(subId).first();
+  if (!sub || sub.status === 'past_due' || sub.status === 'canceled') return;
+
+  await env.PORTAL_DB.prepare("UPDATE subscriptions SET status = 'past_due' WHERE id = ?").bind(subId).run();
+  // Notify Aanloop.
+  try {
+    await sendDunningMail(env, 'hello@aanloopai.nl', 'Aanloop AI',
+      `<p>[Portaal] Maandelijkse incasso mislukt voor abonnement <strong>${sub.id}</strong> (klant ${sub.customer_id}). Status: past_due.</p>`);
+  } catch (e) { console.error('[mollie] dunning admin mail:', e.message || e); }
+  // Notify the customer (the owner).
+  try {
+    const owner = await env.PORTAL_DB
+      .prepare("SELECT email, naam FROM users WHERE customer_id = ? AND role = 'eigenaar' ORDER BY created_at LIMIT 1")
+      .bind(sub.customer_id).first();
+    if (owner) {
+      await sendDunningMail(env, owner.email, owner.naam,
+        `<p>Hallo ${(owner.naam || '').split(' ')[0] || 'daar'},</p>
+         <p>De maandelijkse incasso voor uw Aanloop AI-abonnement is helaas mislukt. Mogelijk is uw rekening of mandaat niet meer geldig.</p>
+         <p>Werk uw betaalgegevens bij of neem contact met ons op zodat uw dienst actief blijft:</p>
+         <p style="margin:24px 0"><a href="https://aanloopai.nl/portal/facturatie" style="display:inline-block;background:#4f46e5;color:#fff;padding:13px 22px;border-radius:10px;text-decoration:none;font-weight:600">Naar facturatie</a></p>`);
+    }
+  } catch (e) { console.error('[mollie] dunning customer mail:', e.message || e); }
 }
 
 // ── reconciliation cron — re-check stale open payments ──────────────────────

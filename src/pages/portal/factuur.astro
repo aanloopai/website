@@ -1,0 +1,284 @@
+---
+// Customer portal — Factuur (printbare, wettelijk-complete factuur).
+// Data: /api/portal/invoice?id=<id>. Eén factuur per pagina.
+import PortalLayout from '../../layouts/PortalLayout.astro';
+import { BEDRIJF, BTW_TARIEF } from '../../data/bedrijfsgegevens';
+---
+
+<PortalLayout title="Factuur" active="facturatie">
+  <!-- Toolbar — niet meegeprint -->
+  <div class="no-print mb-6 flex items-center justify-between gap-3">
+    <a href="/portal/facturatie" class="pbtn pbtn--subtle pbtn--sm">&larr; Terug naar facturen</a>
+    <button id="btn-print" type="button" class="pbtn pbtn--primary pbtn--sm">Printen / opslaan als PDF</button>
+  </div>
+
+  <!-- Laadstatus -->
+  <div id="fc-skel" class="pcard">
+    <div class="pcard-b">
+      <div class="pskel h-8 w-48"></div>
+      <div class="pskel mt-3 h-24 w-full"></div>
+      <div class="pskel mt-2 h-24 w-full"></div>
+    </div>
+  </div>
+
+  <!-- Foutstatus -->
+  <div id="fc-error" class="pcard hidden">
+    <div class="pcard-b">
+      <p class="section-title">Factuur niet gevonden</p>
+      <p class="p-muted mt-1">Deze factuur kon niet worden geladen. Ga terug naar
+        <a href="/portal/facturatie" class="p-link">uw facturen</a>.</p>
+    </div>
+  </div>
+
+  <!-- Factuur (A4) -->
+  <article id="fc-doc" class="invoice pcard hidden">
+    <div class="invoice-inner">
+
+      <!-- Kop -->
+      <header class="inv-head">
+        <div>
+          <h1 class="inv-title">FACTUUR</h1>
+          <div class="inv-meta">
+            <div><span class="inv-meta-k">Factuurnummer</span><span class="inv-meta-v" id="fc-nr">—</span></div>
+            <div><span class="inv-meta-k">Factuurdatum</span><span class="inv-meta-v" id="fc-datum">—</span></div>
+          </div>
+        </div>
+        <div class="inv-status-wrap">
+          <span id="fc-badge" class="pbadge pbadge--amber">open</span>
+        </div>
+      </header>
+
+      <!-- Partijen -->
+      <section class="inv-parties">
+        <div class="inv-party">
+          <div class="inv-party-label">Afzender</div>
+          <div class="inv-party-name">{BEDRIJF.naam}</div>
+          <div class="inv-party-lines">
+            <div>{BEDRIJF.adres}</div>
+            <div>{BEDRIJF.postcode} {BEDRIJF.stad}</div>
+            <div>{BEDRIJF.land}</div>
+            <div class="mt-1">KvK-nummer: {BEDRIJF.kvk}</div>
+            <div>BTW-id: {BEDRIJF.btwId}</div>
+            <div>{BEDRIJF.email}</div>
+          </div>
+        </div>
+        <div class="inv-party">
+          <div class="inv-party-label">Factuur aan</div>
+          <div class="inv-party-name" id="fc-klant-naam">—</div>
+          <div class="inv-party-lines">
+            <div id="fc-klant-adres">—</div>
+            <div id="fc-klant-plaats">—</div>
+            <div class="mt-1">KvK-nummer: <span id="fc-klant-kvk">—</span></div>
+            <div>BTW-id: <span id="fc-klant-btw">—</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Regels -->
+      <section class="inv-lines">
+        <table class="ptable inv-table">
+          <thead>
+            <tr>
+              <th>Omschrijving</th>
+              <th class="num">Excl. BTW</th>
+              <th class="num">BTW 21%</th>
+              <th class="num">Incl. BTW</th>
+            </tr>
+          </thead>
+          <tbody id="fc-lines"></tbody>
+        </table>
+      </section>
+
+      <!-- Totalen -->
+      <section class="inv-totals-wrap">
+        <table class="inv-totals">
+          <tbody>
+            <tr><td>Subtotaal</td><td class="num" id="fc-sub">—</td></tr>
+            <tr><td>BTW 21%</td><td class="num" id="fc-btw">—</td></tr>
+            <tr class="inv-total-row"><td>Totaal</td><td class="num" id="fc-tot">—</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Voettekst -->
+      <footer class="inv-foot">
+        <p id="fc-betaalnote"></p>
+        <p>Bewaar deze factuur voor uw administratie. De wettelijke bewaartermijn voor
+          facturen is 7 jaar.</p>
+        <p>Vragen over deze factuur? Mail <a href="mailto:hello@aanloopai.nl">hello@aanloopai.nl</a>.</p>
+        <p class="inv-foot-org">{BEDRIJF.naam} &middot; {BEDRIJF.website} &middot; KvK {BEDRIJF.kvk} &middot; BTW {BEDRIJF.btwId}</p>
+      </footer>
+
+    </div>
+  </article>
+
+  <style>
+    .invoice { background: #fff; }
+    .invoice-inner { padding: clamp(1.25rem, 4vw, 2.75rem); max-width: 880px; margin: 0 auto; }
+
+    .inv-head {
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 1.5rem;
+      padding-bottom: 1.25rem; border-bottom: 2px solid var(--p-ink, #1a1a1a);
+    }
+    .inv-title { font-size: 1.75rem; font-weight: 700; letter-spacing: 0.04em; color: var(--p-ink, #1a1a1a); margin: 0; }
+    .inv-meta { margin-top: 0.75rem; display: grid; gap: 0.2rem; }
+    .inv-meta > div { display: flex; gap: 0.5rem; font-size: 0.82rem; }
+    .inv-meta-k { color: var(--p-ink-3, #6b7280); min-width: 8.5rem; }
+    .inv-meta-v { color: var(--p-ink, #1a1a1a); font-weight: 600; }
+    .inv-status-wrap { flex-shrink: 0; }
+
+    .inv-parties {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    @media (max-width: 540px) { .inv-parties { grid-template-columns: 1fr; } }
+    .inv-party {
+      border: 1px solid var(--p-border, #e5e7eb); border-radius: 8px;
+      padding: 0.9rem 1rem; background: var(--p-surface, #fafafa);
+    }
+    .inv-party-label {
+      font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--p-ink-3, #6b7280); font-weight: 600;
+    }
+    .inv-party-name { margin-top: 0.35rem; font-weight: 700; color: var(--p-ink, #1a1a1a); }
+    .inv-party-lines { margin-top: 0.2rem; font-size: 0.82rem; color: var(--p-ink-2, #4b5563); line-height: 1.55; }
+
+    .inv-lines { margin-top: 1.75rem; }
+    .inv-table th { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em; }
+    .inv-table .num { text-align: right; white-space: nowrap; }
+    .inv-table td { vertical-align: top; }
+    .inv-line-desc { color: var(--p-ink, #1a1a1a); }
+    .inv-line-sub { display: block; font-size: 0.76rem; color: var(--p-ink-3, #6b7280); margin-top: 0.15rem; }
+
+    .inv-totals-wrap { display: flex; justify-content: flex-end; margin-top: 1rem; }
+    .inv-totals { width: 100%; max-width: 320px; border-collapse: collapse; }
+    .inv-totals td { padding: 0.4rem 0.25rem; font-size: 0.86rem; color: var(--p-ink-2, #4b5563); }
+    .inv-totals .num { text-align: right; white-space: nowrap; }
+    .inv-total-row td {
+      border-top: 2px solid var(--p-ink, #1a1a1a); padding-top: 0.6rem;
+      font-weight: 700; font-size: 1rem; color: var(--p-ink, #1a1a1a);
+    }
+
+    .inv-foot {
+      margin-top: 2rem; padding-top: 1.1rem; border-top: 1px solid var(--p-border, #e5e7eb);
+      font-size: 0.76rem; color: var(--p-ink-3, #6b7280); line-height: 1.6;
+    }
+    .inv-foot p { margin: 0 0 0.35rem; }
+    .inv-foot a { color: var(--p-accent, #2563eb); text-decoration: none; }
+    .inv-foot-org { margin-top: 0.6rem; color: var(--p-ink-3, #6b7280); }
+
+    @media print {
+      :global(body) { background: #fff !important; }
+      .no-print,
+      :global(.portal-nav),
+      :global(.portal-sidebar),
+      :global(nav),
+      :global(header.site-header),
+      :global(footer.site-footer) { display: none !important; }
+      .invoice {
+        border: none !important; box-shadow: none !important;
+        margin: 0 !important; background: #fff !important;
+      }
+      .invoice-inner { padding: 0; max-width: none; }
+      .inv-party { background: #fff !important; }
+      .pbadge { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      @page { margin: 18mm; }
+    }
+  </style>
+
+  <script is:inline>
+    (function () {
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      function euro(cent) {
+        return (Number(cent || 0) / 100).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' });
+      }
+      function val(s) {
+        return s == null || s === '' ? '—' : String(s);
+      }
+      function show(id) { document.getElementById(id).classList.remove('hidden'); }
+      function hide(id) { document.getElementById(id).classList.add('hidden'); }
+
+      var btn = document.getElementById('btn-print');
+      if (btn) btn.addEventListener('click', function () { window.print(); });
+
+      var id = new URLSearchParams(location.search).get('id');
+      if (!id) { location.href = '/portal/facturatie'; return; }
+
+      function fail() {
+        hide('fc-skel');
+        show('fc-error');
+      }
+
+      fetch('/api/portal/invoice?id=' + encodeURIComponent(id), { credentials: 'same-origin' })
+        .then(function (r) {
+          if (r.status === 401) { location.href = '/portal/login'; throw 0; }
+          if (!r.ok) throw 0;
+          return r.json();
+        })
+        .then(function (d) {
+          if (!d || !d.ok || !d.invoice) { fail(); return; }
+          var inv = d.invoice;
+          var cust = d.customer || {};
+          var prod = d.product || null;
+
+          // Kop
+          document.getElementById('fc-nr').textContent = val(inv.factuurnummer);
+          document.getElementById('fc-datum').textContent = val(inv.created_at);
+
+          // Status badge
+          var badge = document.getElementById('fc-badge');
+          var betaald = inv.status === 'betaald';
+          badge.textContent = betaald ? 'betaald' : 'open';
+          badge.className = 'pbadge ' + (betaald ? 'pbadge--green' : 'pbadge--amber');
+
+          // Klant
+          document.getElementById('fc-klant-naam').textContent = val(cust.bedrijf);
+          document.getElementById('fc-klant-adres').textContent = val(cust.adres);
+          var plaats = [cust.postcode, cust.stad].filter(Boolean).join(' ');
+          document.getElementById('fc-klant-plaats').textContent = plaats || '—';
+          document.getElementById('fc-klant-kvk').textContent = val(cust.kvk);
+          document.getElementById('fc-klant-btw').textContent = val(cust.btw_id);
+
+          // Regel-omschrijving
+          var periode = inv.periode || '';
+          var omschrijving;
+          if (prod) {
+            var naam = [prod.product_key, prod.tier].filter(Boolean).join(' ');
+            omschrijving = naam + ' (' + periode + ')';
+          } else {
+            omschrijving = 'Aanloop AI dienst — ' + periode;
+          }
+          var subRegel = prod && prod.betaling
+            ? '<span class="inv-line-sub">Betaling: ' + esc(prod.betaling) + '</span>'
+            : '';
+
+          document.getElementById('fc-lines').innerHTML =
+            '<tr>' +
+              '<td><span class="inv-line-desc">' + esc(omschrijving) + '</span>' + subRegel + '<\/td>' +
+              '<td class="num">' + esc(euro(inv.subtotaal_cent)) + '<\/td>' +
+              '<td class="num">' + esc(euro(inv.btw_cent)) + '<\/td>' +
+              '<td class="num">' + esc(euro(inv.bedrag_cent)) + '<\/td>' +
+            '<\/tr>';
+
+          // Totalen
+          document.getElementById('fc-sub').textContent = euro(inv.subtotaal_cent);
+          document.getElementById('fc-btw').textContent = euro(inv.btw_cent);
+          document.getElementById('fc-tot').textContent = euro(inv.bedrag_cent);
+
+          // Betaalnotitie
+          var note = betaald
+            ? 'Deze factuur is voldaan. Betaling werd geïncasseerd via SEPA-incasso of iDEAL.'
+            : 'Het verschuldigde bedrag wordt geïncasseerd via SEPA-incasso, of kan worden voldaan via iDEAL.';
+          document.getElementById('fc-betaalnote').textContent = note;
+
+          hide('fc-skel');
+          show('fc-doc');
+        })
+        .catch(function () { fail(); });
+    })();
+  </script>
+</PortalLayout>

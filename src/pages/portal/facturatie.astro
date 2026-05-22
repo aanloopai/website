@@ -14,13 +14,19 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
 
   <section class="pcard mt-6">
     <div class="pcard-h">Facturen</div>
+    <div id="f-filterbar" class="hidden" style="display:flex;gap:.5rem;padding:.75rem 1rem;border-bottom:1px solid var(--p-border)">
+      <button type="button" class="pbtn pbtn--sm pbtn--primary" data-filter="alle">Alle</button>
+      <button type="button" class="pbtn pbtn--sm pbtn--subtle" data-filter="open">Openstaand</button>
+      <button type="button" class="pbtn pbtn--sm pbtn--subtle" data-filter="betaald">Betaald</button>
+    </div>
     <div id="f-tablewrap" class="hidden">
       <table class="ptable">
         <thead><tr>
-          <th>Factuurnr.</th><th>Periode</th><th class="num">Bedrag</th><th>Status</th>
+          <th>Factuurnr.</th><th>Periode</th><th class="num">Bedrag</th><th>Status</th><th>Factuur</th>
         </tr></thead>
         <tbody id="f-rows"></tbody>
       </table>
+      <p id="f-filterempty" class="p-muted hidden" style="padding:.85rem 1rem;font-size:.85rem">Geen facturen in deze categorie.</p>
     </div>
     <div class="pcard-b" id="f-skel">
       <div class="pskel h-10 w-full"></div>
@@ -57,13 +63,54 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
           document.getElementById('f-open').textContent = euro(openCent);
           if (!list.length) { document.getElementById('f-empty').classList.remove('hidden'); return; }
           document.getElementById('f-tablewrap').classList.remove('hidden');
-          document.getElementById('f-rows').innerHTML = list.map(function (i) {
+          document.getElementById('f-filterbar').classList.remove('hidden');
+
+          function rowHtml(i) {
             var badge = i.status === 'betaald' ? 'pbadge--green' : 'pbadge--amber';
-            return '<tr><td class="primary">' + esc(i.factuurnummer || '—') + '</td>' +
+            var href = '/portal/factuur?id=' + encodeURIComponent(i.id);
+            return '<tr style="cursor:pointer" data-href="' + esc(href) + '">' +
+              '<td class="primary">' + esc(i.factuurnummer || '—') + '</td>' +
               '<td>' + esc(i.periode) + '</td>' +
               '<td class="num primary">' + euro(i.bedrag_cent) + '</td>' +
-              '<td><span class="pbadge ' + badge + '">' + esc(i.status) + '</span></td></tr>';
-          }).join('');
+              '<td><span class="pbadge ' + badge + '">' + esc(i.status) + '</span></td>' +
+              '<td><a class="p-link" href="' + esc(href) + '">Bekijken</a></td></tr>';
+          }
+
+          function render(filter) {
+            var rows = filter === 'alle'
+              ? list
+              : list.filter(function (i) { return i.status === filter; });
+            var rowsEl = document.getElementById('f-rows');
+            var emptyEl = document.getElementById('f-filterempty');
+            if (!rows.length) {
+              rowsEl.innerHTML = '';
+              emptyEl.classList.remove('hidden');
+            } else {
+              rowsEl.innerHTML = rows.map(rowHtml).join('');
+              emptyEl.classList.add('hidden');
+            }
+          }
+
+          var btns = document.querySelectorAll('#f-filterbar [data-filter]');
+          btns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              btns.forEach(function (b) {
+                b.classList.remove('pbtn--primary');
+                b.classList.add('pbtn--subtle');
+              });
+              btn.classList.remove('pbtn--subtle');
+              btn.classList.add('pbtn--primary');
+              render(btn.getAttribute('data-filter'));
+            });
+          });
+
+          document.getElementById('f-rows').addEventListener('click', function (ev) {
+            if (ev.target.closest('a')) return;
+            var tr = ev.target.closest('tr[data-href]');
+            if (tr) location.href = tr.getAttribute('data-href');
+          });
+
+          render('alle');
         })
         .catch(function () {});
     })();
