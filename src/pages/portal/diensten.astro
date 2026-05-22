@@ -117,7 +117,8 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
                 '<span class="p-muted">' + esc(k) + '</span><span style="color:var(--p-ink)">' + esc(cfg[k]) + '</span></div>';
             }).join('')
           : '<p class="text-sm p-muted">Geen configuratie vastgelegd.</p>';
-        var actions = '';
+        var actions = '<a href="/portal/dienst-config?service=' + esc(s.id) +
+          '" class="pbtn pbtn--subtle pbtn--sm">Instellingen bewerken</a>';
         if (s.status !== 'gepauzeerd') {
           actions += btn('upgrade', s.id, 'Upgraden') + btn('downgrade', s.id, 'Downgraden') + btn('pause', s.id, 'Pauzeren');
         } else {

@@ -1,0 +1,161 @@
+---
+// Customer portal — service configuration self-edit. The customer changes
+// the settings of their own service, using the same intake schema.
+import PortalLayout from '../../layouts/PortalLayout.astro';
+import { PORTAL_CATALOG } from '../../data/portal-catalog';
+import { getIntakeSchema } from '../../data/intake-schemas';
+
+const allSchemas: Record<string, unknown> = {};
+for (const p of PORTAL_CATALOG) allSchemas[p.key] = getIntakeSchema(p.key);
+const productNames: Record<string, string> = {};
+for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
+---
+
+<PortalLayout title="Instellingen wijzigen" active="diensten">
+  <div class="mx-auto max-w-2xl">
+    <a href="/portal/diensten" class="p-link text-sm">← Terug naar diensten</a>
+    <div id="dc-loading" class="mt-3"><div class="pskel h-64 w-full"></div></div>
+
+    <div id="dc-form" class="hidden">
+      <h1 class="page-title mt-2" id="dc-title">Instellingen</h1>
+      <p class="page-sub">Pas de configuratie van uw dienst aan. Wijzigingen worden direct doorgevoerd.</p>
+      <div id="dc-sections" class="mt-5 space-y-5"></div>
+      <p id="dc-msg" class="palert mt-4 hidden"></p>
+      <div class="mt-5 flex gap-2">
+        <button id="dc-save" class="pbtn pbtn--primary">Opslaan</button>
+        <a href="/portal/diensten" class="pbtn pbtn--subtle">Annuleren</a>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline set:html={`window.__SCHEMAS=${JSON.stringify(allSchemas)};window.__PRODUCTNAMES=${JSON.stringify(productNames)};`}></script>
+  <script is:inline>
+    (function () {
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      var serviceId = new URLSearchParams(location.search).get('service');
+      if (!serviceId) { location.href = '/portal/diensten'; return; }
+      var schema = null, config = {};
+
+      fetch('/api/portal/services?id=' + encodeURIComponent(serviceId), { credentials: 'same-origin' })
+        .then(function (r) { if (r.status === 401) { location.href = '/portal/login'; throw 0; } return r.json(); })
+        .then(function (d) {
+          if (!d.ok) { location.href = '/portal/diensten'; return; }
+          var s = d.service;
+          schema = (window.__SCHEMAS || {})[s.product_key];
+          config = (s.config && typeof s.config === 'object') ? s.config : {};
+          if (!schema) {
+            document.getElementById('dc-loading').innerHTML =
+              '<p class="text-sm p-muted">Voor deze dienst is geen instellingenformulier beschikbaar. Stel uw vraag via Support.</p>';
+            return;
+          }
+          document.getElementById('dc-loading').classList.add('hidden');
+          document.getElementById('dc-form').classList.remove('hidden');
+          document.getElementById('dc-title').textContent =
+            'Instellingen — ' + ((window.__PRODUCTNAMES || {})[s.product_key] || s.naam);
+          render();
+        })
+        .catch(function () {});
+
+      function render() {
+        document.getElementById('dc-sections').innerHTML = schema.steps.map(function (step) {
+          var vals = config[step.key] || {};
+          var fields = step.fields.map(function (f) {
+            return '<div class="mt-3">' + fieldHtml(step.key, f, vals[f.name]) + '</div>';
+          }).join('');
+          return '<section class="pcard"><div class="pcard-h">' + esc(step.title) + '</div><div class="pcard-b">' + fields + '</div></section>';
+        }).join('');
+        wireFaq();
+      }
+
+      function fieldHtml(stepKey, f, val) {
+        var label = '<label class="plabel">' + esc(f.label) + (f.required ? ' *' : '') + '</label>';
+        var hint = f.hint ? '<p class="mt-1 text-xs p-muted">' + esc(f.hint) + '</p>' : '';
+        var id = 'f_' + stepKey + '_' + f.name;
+        var body;
+        if (f.type === 'textarea') {
+          body = '<textarea class="ptextarea" id="' + id + '" placeholder="' + esc(f.placeholder || '') + '">' + esc(val || '') + '</textarea>';
+        } else if (f.type === 'select') {
+          body = '<select class="pselect" id="' + id + '"><option value="">— Kies —</option>' +
+            (f.options || []).map(function (o) {
+              return '<option value="' + esc(o) + '"' + (val === o ? ' selected' : '') + '>' + esc(o) + '</option>';
+            }).join('') + '</select>';
+        } else if (f.type === 'multiselect') {
+          var arr = Array.isArray(val) ? val : [];
+          body = '<div class="space-y-1.5" data-ms="' + id + '">' + (f.options || []).map(function (o) {
+            return '<label class="flex items-center gap-2 text-sm"><input type="checkbox" value="' + esc(o) + '"' +
+              (arr.indexOf(o) > -1 ? ' checked' : '') + ' /> ' + esc(o) + '</label>';
+          }).join('') + '</div>';
+        } else if (f.type === 'faqlist') {
+          var pairs = Array.isArray(val) ? val : [];
+          body = '<div class="faqlist space-y-2" data-faq="' + id + '">' +
+            (pairs.length ? pairs.map(faqRow).join('') : faqRow({ vraag: '', antwoord: '' })) +
+            '</div><button type="button" class="faq-add pbtn pbtn--subtle pbtn--sm mt-2" data-faq="' + id + '">+ Vraag toevoegen</button>';
+        } else {
+          var t = (f.type === 'tel' || f.type === 'email' || f.type === 'url') ? f.type : 'text';
+          body = '<input type="' + t + '" class="pinput" id="' + id + '" value="' + esc(val || '') + '" placeholder="' + esc(f.placeholder || '') + '" />';
+        }
+        return label + body + hint;
+      }
+      function faqRow(p) {
+        return '<div class="faq-row rounded-md border p-2" style="border-color:var(--p-border)">' +
+          '<input class="pinput faq-v" placeholder="Vraag" value="' + esc(p.vraag || '') + '" />' +
+          '<textarea class="ptextarea faq-a mt-1" placeholder="Antwoord">' + esc(p.antwoord || '') + '</textarea></div>';
+      }
+      function wireFaq() {
+        document.querySelectorAll('.faq-add').forEach(function (b) {
+          b.addEventListener('click', function () {
+            var list = document.querySelector('.faqlist[data-faq="' + b.getAttribute('data-faq') + '"]');
+            var tmp = document.createElement('div');
+            tmp.innerHTML = faqRow({ vraag: '', antwoord: '' });
+            list.appendChild(tmp.firstChild);
+          });
+        });
+      }
+
+      function collect() {
+        var out = {};
+        schema.steps.forEach(function (step) {
+          var vals = {};
+          step.fields.forEach(function (f) {
+            var id = 'f_' + step.key + '_' + f.name;
+            if (f.type === 'multiselect') {
+              vals[f.name] = Array.prototype.slice.call(
+                document.querySelectorAll('[data-ms="' + id + '"] input:checked')).map(function (c) { return c.value; });
+            } else if (f.type === 'faqlist') {
+              var rows = document.querySelectorAll('.faqlist[data-faq="' + id + '"] .faq-row');
+              vals[f.name] = Array.prototype.slice.call(rows).map(function (row) {
+                return { vraag: row.querySelector('.faq-v').value.trim(), antwoord: row.querySelector('.faq-a').value.trim() };
+              }).filter(function (p) { return p.vraag || p.antwoord; });
+            } else {
+              var el = document.getElementById(id);
+              vals[f.name] = el ? el.value.trim() : '';
+            }
+          });
+          out[step.key] = vals;
+        });
+        return out;
+      }
+
+      document.getElementById('dc-save').addEventListener('click', function () {
+        var btn = this; btn.disabled = true;
+        var msg = document.getElementById('dc-msg');
+        fetch('/api/portal/service-config', {
+          method: 'PATCH', credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ service_id: serviceId, config: collect() }),
+        })
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (res) {
+            msg.className = 'palert mt-4 ' + (res.ok ? 'palert--ok' : 'palert--warn');
+            msg.textContent = res.ok ? (res.j.message || 'Opgeslagen') : (res.j.error || 'Fout');
+          })
+          .catch(function () { msg.className = 'palert palert--warn mt-4'; msg.textContent = 'Netwerkfout.'; })
+          .finally(function () { btn.disabled = false; });
+      });
+    })();
+  </script>
+</PortalLayout>

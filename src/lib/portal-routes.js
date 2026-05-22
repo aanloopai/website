@@ -213,6 +213,7 @@ export async function handlePortalApi(request, env) {
       return method === 'PATCH' ? await saveOrder(request, env, user) : await getOrder(env, user, url);
     }
     if (path === '/api/portal/order/submit' && method === 'POST') return await submitOrder(request, env, user);
+    if (path === '/api/portal/service-config' && method === 'PATCH') return await updateServiceConfig(request, env, user);
     return errorResponse('Niet gevonden', 404);
   } catch (err) {
     console.error('[portal] API error:', err.message || err);
@@ -487,6 +488,20 @@ async function submitOrder(request, env, user) {
   await notifyAanloop(env, 'Nieuwe aanvraag — intake compleet',
     `Klant-id: ${user.customer_id}\nProduct: ${o.product_key} (${o.tier || '-'})\nDoor: ${user.naam} (${user.email})\nAanvraag: ${o.id}\nBekijk de volledige intake in het admin-panel.`);
   return jsonResponse({ ok: true, message: 'Uw aanvraag is ingediend. We nemen het in behandeling.' });
+}
+
+// Customer edits the configuration of their own service.
+async function updateServiceConfig(request, env, user) {
+  if (!canWrite(user.role)) return errorResponse('Geen rechten', 403);
+  const body = await request.json().catch(() => null);
+  if (!body?.service_id) return errorResponse('Dienst-id ontbreekt', 400);
+  const s = await env.PORTAL_DB
+    .prepare('SELECT id FROM services WHERE id = ? AND customer_id = ?')
+    .bind(body.service_id, user.customer_id).first();
+  if (!s) return errorResponse('Dienst niet gevonden', 404);
+  await env.PORTAL_DB.prepare('UPDATE services SET config_json = ? WHERE id = ?')
+    .bind(JSON.stringify(body.config || {}), body.service_id).run();
+  return jsonResponse({ ok: true, message: 'Instellingen opgeslagen' });
 }
 
 async function removeMember(request, env, user) {
