@@ -2,6 +2,7 @@
 // Staff-only: manage customers, services, requests, tickets, invoices.
 import { jsonResponse, errorResponse } from './google-auth.js';
 import { randomId, getSessionUser } from './auth.js';
+import { provisionAgent, canProvision } from './elevenlabs.js';
 
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
 const AANLOOP_EMAIL = 'hello@aanloopai.nl';
@@ -191,7 +192,7 @@ async function customerDetail(env, url) {
   const customer = await db.prepare('SELECT * FROM customers WHERE id = ?').bind(id).first();
   if (!customer) return errorResponse('Klant niet gevonden', 404);
   const users = (await db.prepare('SELECT id, email, naam, role, last_login, created_at FROM users WHERE customer_id = ? ORDER BY created_at').bind(id).all()).results || [];
-  const services = (await db.prepare('SELECT id, product_key, naam, tier, status, config_json, started_at, created_at FROM services WHERE customer_id = ? ORDER BY created_at').bind(id).all()).results || [];
+  const services = (await db.prepare('SELECT id, product_key, naam, tier, status, config_json, provisioning_json, started_at, created_at FROM services WHERE customer_id = ? ORDER BY created_at').bind(id).all()).results || [];
   const invoices = (await db.prepare('SELECT id, periode, bedrag_cent, status, pdf_url, created_at FROM invoices WHERE customer_id = ? ORDER BY created_at DESC').bind(id).all()).results || [];
   return jsonResponse({ ok: true, customer, users, services, invoices });
 }
@@ -340,14 +341,28 @@ async function updateOrder(request, env) {
 
   await env.PORTAL_DB.prepare('UPDATE service_orders SET status = ? WHERE id = ?').bind(b.status, b.id).run();
 
-  // When an order goes 'actief', materialise it as a service (once).
+  // When an order goes 'actief', materialise it as a service (once) and
+  // auto-provision an ElevenLabs agent from the intake (best-effort).
   if (b.status === 'actief') {
     const exists = await env.PORTAL_DB.prepare('SELECT id FROM services WHERE order_id = ?').bind(b.id).first();
     if (!exists) {
+      const svcId = randomId('svc');
       await env.PORTAL_DB.prepare(
         'INSERT INTO services (id, customer_id, product_key, naam, tier, status, config_json, started_at, created_at, order_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      ).bind(randomId('svc'), o.customer_id, o.product_key, o.product_key, o.tier || null,
+      ).bind(svcId, o.customer_id, o.product_key, o.product_key, o.tier || null,
         'onboarding', o.intake_json || null, today(), today(), o.id).run();
+
+      if (env.ELEVENLABS_API_KEY && canProvision(o.product_key)) {
+        let prov;
+        try {
+          prov = await provisionAgent(env.ELEVENLABS_API_KEY, o.product_key, o.product_key, safeParseJson(o.intake_json));
+        } catch (err) {
+          console.error('[admin] ElevenLabs provisioning failed:', err.message || err);
+          prov = { status: 'fout', error: String(err.message || err).slice(0, 400), provisioned_at: new Date().toISOString() };
+        }
+        await env.PORTAL_DB.prepare('UPDATE services SET provisioning_json = ? WHERE id = ?')
+          .bind(JSON.stringify(prov), svcId).run();
+      }
     }
   }
   return jsonResponse({ ok: true, message: 'Aanvraag bijgewerkt' });

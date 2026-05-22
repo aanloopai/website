@@ -138,6 +138,17 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
           : '<p class="text-sm p-muted">Nog geen gebruikers.</p>';
       }
 
+      function provHtml(s) {
+        var p;
+        try { p = s.provisioning_json ? JSON.parse(s.provisioning_json) : null; } catch (e) { p = null; }
+        if (!p) return '';
+        if (p.status === 'fout') {
+          return '<p class="mt-2 text-xs" style="color:#b3093c">Provisioning mislukt: ' + esc(p.error || '') + '</p>';
+        }
+        return '<p class="mt-2 text-xs" style="color:#0e6245">ElevenLabs agent: ' + esc(p.agent_id || '—') +
+          (p.kb_id ? ' · kennisbank: ' + esc(p.kb_id) : '') + '</p>';
+      }
+
       function renderServices(list) {
         document.getElementById('k-services').innerHTML = list.length
           ? list.map(function (s) {
@@ -150,7 +161,7 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
                 ['actief', 'onboarding', 'gepauzeerd'].map(function (st) {
                   return '<option value="' + st + '"' + (st === s.status ? ' selected' : '') + '>' + st + '</option>';
                 }).join('') + '</select>' +
-                '<button class="s-upd pbtn pbtn--primary pbtn--sm">Opslaan</button></div></div>';
+                '<button class="s-upd pbtn pbtn--primary pbtn--sm">Opslaan</button></div>' + provHtml(s) + '</div>';
             }).join('')
           : '<p class="text-sm p-muted">Nog geen diensten.</p>';
         document.querySelectorAll('#k-services .s-upd').forEach(function (b) {
