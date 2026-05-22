@@ -3,6 +3,10 @@
 //
 // Required env var (Cloudflare Workers → Settings → Variables):
 //   BREVO_API_KEY = xkeysib-...
+// Optional env var (enables lead-capture into a Brevo marketing list):
+//   BREVO_LIST_ID = <numeric Brevo list id>
+//   Custom Brevo contact attributes must exist: BEDRIJF, SECTOR, TELEFOON,
+//   FUNCTIE, SOURCE, OPT_IN_DATE (date), MARKETING_CONSENT (boolean).
 // Required binding (wrangler.toml [assets] block):
 //   binding = "ASSETS"
 //
@@ -294,6 +298,38 @@ async function sendBrevoEmail(apiKey, payload, label) {
   try { return JSON.parse(text); } catch { return { raw: text }; }
 }
 
+// --- Lead-capture into Brevo CRM -------------------------------------------
+// Form fields that signal privacy-policy agreement (lead may be stored &
+// followed up about their own request) vs. explicit marketing opt-in
+// (contact may be added to the ongoing newsletter list).
+const PRIVACY_CONSENT_FIELDS = ['privacy', 'akkoord', 'akkoord_privacy', 'consent', 'toestemming'];
+const MARKETING_CONSENT_FIELDS = ['akkoord_marketing', 'marketing_consent', 'nieuwsbrief'];
+
+function isTruthy(v) {
+  if (v == null) return false;
+  const s = String(v).toLowerCase().trim();
+  return s !== '' && s !== 'false' && s !== '0' && s !== 'off' && s !== 'no' && s !== 'nee';
+}
+
+// Idempotent upsert — updateEnabled lets the same email be re-submitted
+// without a 400. Brevo returns 201 (create) or 204 (update, empty body).
+async function brevoUpsertContact(apiKey, contact) {
+  const res = await fetch('https://api.brevo.com/v3/contacts', {
+    method: 'POST',
+    headers: {
+      'api-key': apiKey,
+      'content-type': 'application/json',
+      'accept': 'application/json',
+    },
+    body: JSON.stringify({ ...contact, updateEnabled: true }),
+  });
+  const text = await res.text();
+  if (!res.ok) {
+    throw new Error(`Brevo contact HTTP ${res.status}: ${text.substring(0, 400)}`);
+  }
+  try { return JSON.parse(text); } catch { return { raw: text }; }
+}
+
 async function handleSubmit(request, env) {
   if (!env.BREVO_API_KEY) {
     return jsonResponse({
@@ -353,6 +389,44 @@ async function handleSubmit(request, env) {
       subject: template.subject,
       htmlContent: autoresponseHtml,
     }, 'autoresponse');
+
+    // Lead-capture → Brevo CRM. Best-effort: a failure here is logged but
+    // never blocks the user response (the emails already succeeded).
+    try {
+      const hasPrivacyConsent =
+        formType === 'newsletter' ||
+        PRIVACY_CONSENT_FIELDS.some((k) => isTruthy(fields[k]));
+      const hasMarketingConsent =
+        formType === 'newsletter' ||
+        MARKETING_CONSENT_FIELDS.some((k) => isTruthy(fields[k]));
+
+      if (hasPrivacyConsent) {
+        const attributes = {
+          FIRSTNAME: firstName === 'daar' ? '' : firstName,
+          LASTNAME: (fields.achternaam || '').toString().trim(),
+          BEDRIJF: (fields.bedrijf || fields.bedrijfsnaam || fields.company || '').toString().trim(),
+          SECTOR: (fields.sector || fields.scan_sector || '').toString().trim(),
+          TELEFOON: (fields.telefoon || fields.phone || '').toString().trim(),
+          FUNCTIE: (fields.functie || '').toString().trim(),
+          SOURCE: formType,
+          OPT_IN_DATE: new Date().toISOString().slice(0, 10),
+          MARKETING_CONSENT: hasMarketingConsent,
+        };
+        // Drop empty values so a re-submit never overwrites existing data with blanks.
+        for (const k of Object.keys(attributes)) {
+          if (attributes[k] === '') delete attributes[k];
+        }
+        const contact = { email: userEmail, attributes };
+        const listId = parseInt(env.BREVO_LIST_ID, 10);
+        // Only add to the marketing list when explicit marketing consent is given.
+        if (hasMarketingConsent && Number.isFinite(listId)) {
+          contact.listIds = [listId];
+        }
+        await brevoUpsertContact(env.BREVO_API_KEY, contact);
+      }
+    } catch (contactErr) {
+      console.error('[/api/submit] Brevo contact upsert failed (non-fatal):', contactErr.message || contactErr);
+    }
 
     return jsonResponse({ success: true, message: 'Verzonden' });
   } catch (err) {
