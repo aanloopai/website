@@ -1,50 +1,129 @@
 ---
-// Admin panel — service request queue.
+// Admin panel — intake-aanvragen (service_orders) + wijzigingsverzoeken.
 import AdminLayout from '../../layouts/AdminLayout.astro';
+import { PORTAL_CATALOG } from '../../data/portal-catalog';
+import { getIntakeSchema } from '../../data/intake-schemas';
+
+const allSchemas: Record<string, unknown> = {};
+for (const p of PORTAL_CATALOG) allSchemas[p.key] = getIntakeSchema(p.key);
+const productNames: Record<string, string> = {};
+for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
 ---
 
 <AdminLayout title="Aanvragen" active="aanvragen">
   <h1 class="page-title">Aanvragen</h1>
-  <p class="page-sub">Wijzigings- en productaanvragen van klanten.</p>
+  <p class="page-sub">Nieuwe intake-aanvragen en wijzigingsverzoeken van klanten.</p>
 
-  <div class="mt-5">
-    <select id="q-filter" class="pselect" style="width:auto">
-      <option value="">Alle statussen</option>
-      <option value="open">Open</option>
-      <option value="in_behandeling">In behandeling</option>
-      <option value="afgerond">Afgerond</option>
-      <option value="afgewezen">Afgewezen</option>
-    </select>
-  </div>
+  <!-- Intake-aanvragen -->
+  <p class="section-title mt-6">Nieuwe aanvragen (intake)</p>
+  <div id="o-list" class="mt-3 space-y-3"><div class="pskel h-24 w-full"></div></div>
+  <div id="o-empty" class="pcard mt-3 hidden"><div class="empty">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <p class="empty-title">Geen aanvragen</p>
+    <p class="empty-text">Nieuwe intake-aanvragen verschijnen hier.</p>
+  </div></div>
 
-  <div id="q-list" class="mt-5 space-y-3">
-    <div class="pskel h-28 w-full"></div>
-    <div class="pskel h-28 w-full"></div>
-  </div>
-  <div id="q-empty" class="pcard mt-5 hidden">
-    <div class="empty">
-      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      <p class="empty-title">Geen aanvragen</p>
-      <p class="empty-text">Er zijn geen aanvragen voor dit filter.</p>
-    </div>
-  </div>
+  <!-- Wijzigingsverzoeken -->
+  <p class="section-title mt-10">Wijzigingsverzoeken</p>
+  <div id="q-list" class="mt-3 space-y-3"><div class="pskel h-20 w-full"></div></div>
+  <div id="q-empty" class="pcard mt-3 hidden"><div class="empty">
+    <p class="empty-title">Geen wijzigingsverzoeken</p>
+  </div></div>
 
+  <script is:inline set:html={`window.__SCHEMAS=${JSON.stringify(allSchemas)};window.__PRODUCTNAMES=${JSON.stringify(productNames)};`}></script>
   <script is:inline>
     (function () {
-      var TYPE = {
-        upgrade: 'Upgrade', downgrade: 'Downgrade', pause: 'Pauzeren',
-        resume: 'Hervatten', new_product: 'Nieuw product', cancel: 'Opzeggen',
-      };
-      var STATUS = { open: 'pbadge--amber', in_behandeling: 'pbadge--blue', afgerond: 'pbadge--green', afgewezen: 'pbadge--red' };
       function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
           return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
         });
       }
-      function load() {
-        var f = document.getElementById('q-filter').value;
-        fetch('/api/admin/requests' + (f ? '?status=' + f : ''), { credentials: 'same-origin' })
+      var O_STATUS = {
+        concept: 'pbadge--gray', ingediend: 'pbadge--amber',
+        in_uitvoering: 'pbadge--blue', actief: 'pbadge--green', geannuleerd: 'pbadge--red',
+      };
+      var R_STATUS = { open: 'pbadge--amber', in_behandeling: 'pbadge--blue', afgerond: 'pbadge--green', afgewezen: 'pbadge--red' };
+      var pname = window.__PRODUCTNAMES || {};
+
+      // ── intake-aanvragen ──
+      function loadOrders() {
+        fetch('/api/admin/orders', { credentials: 'same-origin' })
           .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (d) {
+            var list = (d.orders || []).filter(function (o) { return o.status !== 'concept'; });
+            var box = document.getElementById('o-list');
+            if (!list.length) { box.innerHTML = ''; document.getElementById('o-empty').classList.remove('hidden'); return; }
+            document.getElementById('o-empty').classList.add('hidden');
+            box.innerHTML = list.map(function (o) {
+              var dt = new Date(o.submitted_at || o.created_at).toLocaleString('nl-NL');
+              return '<div class="pcard" data-id="' + esc(o.id) + '"><div class="pcard-b">' +
+                '<div class="flex items-center justify-between gap-2">' +
+                '<span class="primary" style="color:var(--p-ink);font-weight:600">' +
+                esc(pname[o.product_key] || o.product_key) + (o.tier ? ' — ' + esc(o.tier) : '') + ' · ' + esc(o.bedrijf) + '</span>' +
+                '<span class="pbadge ' + (O_STATUS[o.status] || 'pbadge--gray') + '">' + esc(o.status) + '</span></div>' +
+                '<p class="mt-1 text-xs" style="color:var(--p-ink-4)">' + dt + ' · ' + esc(o.user_naam) + ' (' + esc(o.user_email) + ')</p>' +
+                '<div class="mt-2 flex flex-wrap items-center gap-2">' +
+                '<button class="o-view pbtn pbtn--subtle pbtn--sm">Intake bekijken</button>' +
+                '<select class="o-stat pselect" style="width:auto">' +
+                ['ingediend', 'in_uitvoering', 'actief', 'geannuleerd'].map(function (s) {
+                  return '<option value="' + s + '"' + (s === o.status ? ' selected' : '') + '>' + s + '</option>';
+                }).join('') + '</select>' +
+                '<button class="o-save pbtn pbtn--primary pbtn--sm">Opslaan</button>' +
+                '<span class="o-hint text-xs" style="color:var(--p-ink-4)">Status → actief maakt automatisch een dienst aan.</span>' +
+                '</div><div class="o-intake mt-3 hidden"></div></div></div>';
+            }).join('');
+            wireOrders();
+          })
+          .catch(function () {});
+      }
+      function wireOrders() {
+        document.querySelectorAll('#o-list [data-id]').forEach(function (card) {
+          var id = card.getAttribute('data-id');
+          card.querySelector('.o-save').addEventListener('click', function () {
+            var b = this; b.disabled = true;
+            fetch('/api/admin/order', {
+              method: 'PATCH', credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: id, status: card.querySelector('.o-stat').value }),
+            }).then(function () { loadOrders(); }).catch(function () { b.disabled = false; });
+          });
+          card.querySelector('.o-view').addEventListener('click', function () {
+            var box = card.querySelector('.o-intake');
+            if (!box.classList.contains('hidden')) { box.classList.add('hidden'); return; }
+            box.innerHTML = '<div class="pskel h-20 w-full"></div>';
+            box.classList.remove('hidden');
+            fetch('/api/admin/order?id=' + encodeURIComponent(id), { credentials: 'same-origin' })
+              .then(function (r) { return r.json(); })
+              .then(function (d) { box.innerHTML = renderIntake(d.order); })
+              .catch(function () { box.innerHTML = '<p class="text-sm p-muted">Kon intake niet laden.</p>'; });
+          });
+        });
+      }
+      function renderIntake(order) {
+        var schema = (window.__SCHEMAS || {})[order.product_key];
+        var intake = order.intake || {};
+        if (!schema) return '<pre class="text-xs">' + esc(JSON.stringify(intake, null, 2)) + '</pre>';
+        return '<div class="rounded-md border p-3" style="border-color:var(--p-border);background:var(--p-subtle)">' +
+          schema.steps.map(function (step) {
+            var vals = intake[step.key] || {};
+            var rows = step.fields.map(function (f) {
+              var v = vals[f.name], disp;
+              if (Array.isArray(v) && v.length && v[0] && v[0].vraag !== undefined) {
+                disp = v.map(function (p) { return esc(p.vraag) + ' → ' + esc(p.antwoord); }).join('<br>') || '—';
+              } else if (Array.isArray(v)) { disp = v.length ? v.map(esc).join(', ') : '—'; }
+              else { disp = v ? esc(v) : '—'; }
+              return '<div class="flex justify-between gap-3 border-t py-1 text-sm" style="border-color:var(--p-border)">' +
+                '<span class="p-muted">' + esc(f.label) + '</span><span style="color:var(--p-ink);text-align:right">' + disp + '</span></div>';
+            }).join('');
+            return '<p class="section-title mt-2">' + esc(step.title) + '</p>' + rows;
+          }).join('') + '</div>';
+      }
+
+      // ── wijzigingsverzoeken ──
+      var TYPE = { upgrade: 'Upgrade', downgrade: 'Downgrade', pause: 'Pauzeren', resume: 'Hervatten', new_product: 'Nieuw product', cancel: 'Opzeggen' };
+      function loadRequests() {
+        fetch('/api/admin/requests', { credentials: 'same-origin' })
+          .then(function (r) { return r.json(); })
           .then(function (d) {
             var list = d.requests || [];
             var box = document.getElementById('q-list');
@@ -55,39 +134,34 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               return '<div class="pcard" data-id="' + esc(r.id) + '"><div class="pcard-b">' +
                 '<div class="flex items-center justify-between gap-2"><span class="primary" style="color:var(--p-ink);font-weight:600">' +
                 esc(TYPE[r.type] || r.type) + ' — ' + esc(r.bedrijf) + '</span>' +
-                '<span class="pbadge ' + (STATUS[r.status] || 'pbadge--gray') + '">' + esc(r.status) + '</span></div>' +
-                '<p class="mt-1 text-xs" style="color:var(--p-ink-4)">' + dt + ' · ' + esc(r.user_naam) + ' (' + esc(r.user_email) + ')' +
-                (r.product_key ? ' · product: ' + esc(r.product_key) : '') + '</p>' +
+                '<span class="pbadge ' + (R_STATUS[r.status] || 'pbadge--gray') + '">' + esc(r.status) + '</span></div>' +
+                '<p class="mt-1 text-xs" style="color:var(--p-ink-4)">' + dt + ' · ' + esc(r.user_naam) + '</p>' +
                 (r.bericht ? '<p class="mt-2 text-sm p-muted">' + esc(r.bericht) + '</p>' : '') +
                 '<div class="mt-3 flex flex-wrap items-center gap-2">' +
                 '<select class="q-stat pselect" style="width:auto">' +
                 ['open', 'in_behandeling', 'afgerond', 'afgewezen'].map(function (s) {
                   return '<option value="' + s + '"' + (s === r.status ? ' selected' : '') + '>' + s + '</option>';
                 }).join('') + '</select>' +
-                '<input class="q-note pinput flex-1" style="min-width:12rem" placeholder="Interne notitie / reactie" value="' + esc(r.admin_notitie || '') + '" />' +
-                '<button class="q-save pbtn pbtn--primary">Opslaan</button>' +
+                '<input class="q-note pinput flex-1" style="min-width:12rem" placeholder="Interne notitie" value="' + esc(r.admin_notitie || '') + '" />' +
+                '<button class="q-save pbtn pbtn--primary pbtn--sm">Opslaan</button>' +
                 '</div></div></div>';
             }).join('');
             document.querySelectorAll('#q-list .q-save').forEach(function (b) {
               b.addEventListener('click', function () {
-                var box2 = b.closest('[data-id]');
-                b.disabled = true;
+                var card = b.closest('[data-id]'); b.disabled = true;
                 fetch('/api/admin/request', {
                   method: 'PATCH', credentials: 'same-origin',
                   headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({
-                    id: box2.getAttribute('data-id'),
-                    status: box2.querySelector('.q-stat').value,
-                    admin_notitie: box2.querySelector('.q-note').value.trim(),
-                  }),
-                }).then(function () { load(); }).catch(function () { b.disabled = false; });
+                  body: JSON.stringify({ id: card.getAttribute('data-id'), status: card.querySelector('.q-stat').value, admin_notitie: card.querySelector('.q-note').value.trim() }),
+                }).then(function () { loadRequests(); }).catch(function () { b.disabled = false; });
               });
             });
           })
           .catch(function () {});
       }
-      document.getElementById('q-filter').addEventListener('change', load);
-      load();
+
+      loadOrders();
+      loadRequests();
     })();
   </script>
 </AdminLayout>

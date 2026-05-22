@@ -1,0 +1,259 @@
+---
+// Customer portal — intake wizard. Renders a product-specific multi-step
+// questionnaire (intake-schemas.ts), autosaves a draft, submits the order.
+import PortalLayout from '../../layouts/PortalLayout.astro';
+import { PORTAL_CATALOG } from '../../data/portal-catalog';
+import { getIntakeSchema } from '../../data/intake-schemas';
+
+// Resolve a schema for every catalog product so the client can look one up
+// by the order's product_key at runtime.
+const allSchemas: Record<string, unknown> = {};
+for (const p of PORTAL_CATALOG) allSchemas[p.key] = getIntakeSchema(p.key);
+const productNames: Record<string, string> = {};
+for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
+---
+
+<PortalLayout title="Aanvraag" active="ontdekken">
+  <div class="mx-auto max-w-2xl">
+    <div id="iw-loading"><div class="pskel h-64 w-full"></div></div>
+
+    <div id="iw-wizard" class="hidden">
+      <p class="section-title" id="iw-product"></p>
+      <h1 class="page-title mt-1" id="iw-steptitle">Aanvraag</h1>
+      <p class="page-sub" id="iw-stepintro"></p>
+
+      <div class="mt-4 h-1.5 overflow-hidden rounded-full" style="background:var(--p-border)">
+        <div id="iw-progress" class="h-full" style="width:0%;background:var(--p-accent);transition:width .3s"></div>
+      </div>
+
+      <div class="pcard mt-5">
+        <div class="pcard-b">
+          <div id="iw-fields" class="space-y-4"></div>
+        </div>
+      </div>
+
+      <p id="iw-msg" class="palert mt-3 hidden"></p>
+
+      <div class="mt-5 flex items-center justify-between">
+        <button id="iw-prev" class="pbtn pbtn--subtle">← Vorige</button>
+        <span class="text-xs p-muted" id="iw-savehint"></span>
+        <button id="iw-next" class="pbtn pbtn--primary">Volgende →</button>
+      </div>
+    </div>
+
+    <div id="iw-done" class="hidden">
+      <div class="pcard">
+        <div class="pcard-b text-center" style="padding:40px 24px">
+          <svg style="width:48px;height:48px;margin:0 auto 12px;color:#1a7f53" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <h1 class="page-title">Aanvraag ingediend</h1>
+          <p class="page-sub mx-auto mt-1" style="max-width:28rem">
+            We hebben al uw gegevens ontvangen. Aanloop AI neemt de inrichting in
+            behandeling en neemt binnen 1 werkdag contact met u op.
+          </p>
+          <a href="/portal/diensten" class="pbtn pbtn--primary mt-5">Naar mijn diensten</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline set:html={`window.__SCHEMAS=${JSON.stringify(allSchemas)};window.__PRODUCTNAMES=${JSON.stringify(productNames)};`}></script>
+  <script is:inline>
+    (function () {
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      var orderId = new URLSearchParams(location.search).get('order');
+      if (!orderId) { location.href = '/portal/ontdekken'; return; }
+
+      var schema = null, answers = {}, stepIdx = 0, productKey = '', tier = '';
+
+      fetch('/api/portal/order?id=' + encodeURIComponent(orderId), { credentials: 'same-origin' })
+        .then(function (r) { if (r.status === 401) { location.href = '/portal/login'; throw 0; } return r.json(); })
+        .then(function (d) {
+          if (!d.ok) { location.href = '/portal/ontdekken'; return; }
+          var o = d.order;
+          if (o.status !== 'concept') { showDone(); return; }
+          productKey = o.product_key; tier = o.tier || '';
+          answers = o.intake || {};
+          schema = (window.__SCHEMAS || {})[productKey];
+          if (!schema) { location.href = '/portal/ontdekken'; return; }
+          document.getElementById('iw-loading').classList.add('hidden');
+          document.getElementById('iw-wizard').classList.remove('hidden');
+          document.getElementById('iw-product').textContent =
+            ((window.__PRODUCTNAMES || {})[productKey] || productKey) + (tier ? ' · ' + tier : '');
+          renderStep();
+        })
+        .catch(function () {});
+
+      function totalSteps() { return schema.steps.length + 1; }
+
+      function renderStep() {
+        var isSummary = stepIdx >= schema.steps.length;
+        document.getElementById('iw-progress').style.width =
+          Math.round((stepIdx / (totalSteps() - 1)) * 100) + '%';
+        document.getElementById('iw-prev').style.visibility = stepIdx === 0 ? 'hidden' : 'visible';
+        document.getElementById('iw-next').textContent = isSummary ? 'Aanvraag indienen' : 'Volgende →';
+        document.getElementById('iw-msg').className = 'palert mt-3 hidden';
+
+        if (isSummary) { renderSummary(); return; }
+        var step = schema.steps[stepIdx];
+        document.getElementById('iw-steptitle').textContent = step.title;
+        document.getElementById('iw-stepintro').textContent = step.intro || '';
+        var vals = answers[step.key] || {};
+        document.getElementById('iw-fields').innerHTML = step.fields.map(function (f) {
+          return '<div>' + fieldHtml(f, vals[f.name]) + '</div>';
+        }).join('');
+        wireFaqLists();
+      }
+
+      function fieldHtml(f, val) {
+        var label = '<label class="plabel">' + esc(f.label) + (f.required ? ' *' : '') + '</label>';
+        var hint = f.hint ? '<p class="mt-1 text-xs p-muted">' + esc(f.hint) + '</p>' : '';
+        var body = '';
+        var id = 'fld_' + f.name;
+        if (f.type === 'textarea') {
+          body = '<textarea class="ptextarea" id="' + id + '" data-f="' + f.name + '" placeholder="' + esc(f.placeholder || '') + '">' + esc(val || '') + '</textarea>';
+        } else if (f.type === 'select') {
+          body = '<select class="pselect" id="' + id + '" data-f="' + f.name + '"><option value="">— Kies —</option>' +
+            (f.options || []).map(function (o) {
+              return '<option value="' + esc(o) + '"' + (val === o ? ' selected' : '') + '>' + esc(o) + '</option>';
+            }).join('') + '</select>';
+        } else if (f.type === 'multiselect') {
+          var arr = Array.isArray(val) ? val : [];
+          body = '<div class="space-y-1.5">' + (f.options || []).map(function (o) {
+            return '<label class="flex items-center gap-2 text-sm"><input type="checkbox" class="ms" data-f="' + f.name + '" value="' + esc(o) + '"' +
+              (arr.indexOf(o) > -1 ? ' checked' : '') + ' /> ' + esc(o) + '</label>';
+          }).join('') + '</div>';
+        } else if (f.type === 'faqlist') {
+          var pairs = Array.isArray(val) ? val : [];
+          body = '<div class="faqlist space-y-2" data-f="' + f.name + '">' +
+            (pairs.length ? pairs.map(faqRow).join('') : faqRow({ vraag: '', antwoord: '' })) +
+            '</div><button type="button" class="faq-add pbtn pbtn--subtle pbtn--sm mt-2" data-f="' + f.name + '">+ Vraag toevoegen</button>';
+        } else {
+          var t = (f.type === 'tel' || f.type === 'email' || f.type === 'url') ? f.type : 'text';
+          body = '<input type="' + t + '" class="pinput" id="' + id + '" data-f="' + f.name + '" value="' + esc(val || '') + '" placeholder="' + esc(f.placeholder || '') + '" />';
+        }
+        return label + body + hint;
+      }
+      function faqRow(p) {
+        return '<div class="faq-row rounded-md border p-2" style="border-color:var(--p-border)">' +
+          '<input class="pinput faq-v" placeholder="Vraag" value="' + esc(p.vraag || '') + '" />' +
+          '<textarea class="ptextarea faq-a mt-1" placeholder="Antwoord">' + esc(p.antwoord || '') + '</textarea></div>';
+      }
+      function wireFaqLists() {
+        Array.prototype.forEach.call(document.querySelectorAll('.faq-add'), function (b) {
+          b.addEventListener('click', function () {
+            var list = document.querySelector('.faqlist[data-f="' + b.getAttribute('data-f') + '"]');
+            var tmp = document.createElement('div');
+            tmp.innerHTML = faqRow({ vraag: '', antwoord: '' });
+            list.appendChild(tmp.firstChild);
+          });
+        });
+      }
+
+      function collectStep() {
+        var step = schema.steps[stepIdx];
+        var vals = {};
+        step.fields.forEach(function (f) {
+          if (f.type === 'multiselect') {
+            vals[f.name] = Array.prototype.slice.call(
+              document.querySelectorAll('.ms[data-f="' + f.name + '"]:checked')).map(function (c) { return c.value; });
+          } else if (f.type === 'faqlist') {
+            var rows = document.querySelectorAll('.faqlist[data-f="' + f.name + '"] .faq-row');
+            vals[f.name] = Array.prototype.slice.call(rows).map(function (row) {
+              return { vraag: row.querySelector('.faq-v').value.trim(), antwoord: row.querySelector('.faq-a').value.trim() };
+            }).filter(function (p) { return p.vraag || p.antwoord; });
+          } else {
+            var el = document.getElementById('fld_' + f.name);
+            vals[f.name] = el ? el.value.trim() : '';
+          }
+        });
+        answers[step.key] = vals;
+        return step.fields.filter(function (f) {
+          if (!f.required) return false;
+          var v = vals[f.name];
+          return !v || (Array.isArray(v) && !v.length);
+        });
+      }
+
+      function renderSummary() {
+        document.getElementById('iw-steptitle').textContent = 'Samenvatting';
+        document.getElementById('iw-stepintro').textContent = 'Controleer uw gegevens en dien de aanvraag in.';
+        var html = schema.steps.map(function (step) {
+          var vals = answers[step.key] || {};
+          var rows = step.fields.map(function (f) {
+            var v = vals[f.name];
+            var disp;
+            if (Array.isArray(v) && v.length && v[0] && v[0].vraag !== undefined) {
+              disp = v.map(function (p) { return esc(p.vraag); }).join('; ') || '—';
+            } else if (Array.isArray(v)) { disp = v.length ? v.map(esc).join(', ') : '—'; }
+            else { disp = v ? esc(v) : '—'; }
+            return '<div class="flex justify-between gap-3 border-t py-1.5 text-sm" style="border-color:var(--p-border)">' +
+              '<span class="p-muted">' + esc(f.label) + '</span><span style="color:var(--p-ink);text-align:right">' + disp + '</span></div>';
+          }).join('');
+          return '<div class="mb-4"><p class="section-title">' + esc(step.title) + '</p><div class="mt-1">' + rows + '</div></div>';
+        }).join('');
+        document.getElementById('iw-fields').innerHTML = html;
+      }
+
+      document.getElementById('iw-prev').addEventListener('click', function () {
+        if (stepIdx > 0) { if (stepIdx < schema.steps.length) collectStep(); stepIdx--; renderStep(); }
+      });
+
+      document.getElementById('iw-next').addEventListener('click', function () {
+        var isSummary = stepIdx >= schema.steps.length;
+        if (isSummary) { submit(); return; }
+        var missing = collectStep();
+        if (missing.length) {
+          showMsg('Vul de verplichte velden in: ' + missing.map(function (f) { return f.label; }).join(', '), false);
+          return;
+        }
+        save();
+        stepIdx++;
+        renderStep();
+      });
+
+      function save() {
+        document.getElementById('iw-savehint').textContent = 'Concept opslaan...';
+        fetch('/api/portal/order', {
+          method: 'PATCH', credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: orderId, intake: answers }),
+        }).then(function () {
+          document.getElementById('iw-savehint').textContent = 'Concept opgeslagen ✓';
+        }).catch(function () {
+          document.getElementById('iw-savehint').textContent = '';
+        });
+      }
+
+      function submit() {
+        var btn = document.getElementById('iw-next');
+        btn.disabled = true;
+        fetch('/api/portal/order/submit', {
+          method: 'POST', credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: orderId, intake: answers }),
+        })
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (res) {
+            if (res.ok) showDone();
+            else { showMsg(res.j.error || 'Er ging iets mis.', false); btn.disabled = false; }
+          })
+          .catch(function () { showMsg('Netwerkfout.', false); btn.disabled = false; });
+      }
+
+      function showMsg(t, ok) {
+        var m = document.getElementById('iw-msg');
+        m.className = 'palert mt-3 ' + (ok ? 'palert--ok' : 'palert--warn');
+        m.textContent = t;
+      }
+      function showDone() {
+        document.getElementById('iw-loading').classList.add('hidden');
+        document.getElementById('iw-wizard').classList.add('hidden');
+        document.getElementById('iw-done').classList.remove('hidden');
+      }
+    })();
+  </script>
+</PortalLayout>

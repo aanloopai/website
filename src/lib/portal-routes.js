@@ -206,6 +206,13 @@ export async function handlePortalApi(request, env) {
     if (path === '/api/portal/team/invite' && method === 'POST') return await inviteTeam(request, env, user);
     if (path === '/api/portal/team/role' && method === 'PATCH') return await changeRole(request, env, user);
     if (path === '/api/portal/team/remove' && method === 'POST') return await removeMember(request, env, user);
+    if (path === '/api/portal/orders') {
+      return method === 'POST' ? await createOrder(request, env, user) : await listOrders(env, user);
+    }
+    if (path === '/api/portal/order') {
+      return method === 'PATCH' ? await saveOrder(request, env, user) : await getOrder(env, user, url);
+    }
+    if (path === '/api/portal/order/submit' && method === 'POST') return await submitOrder(request, env, user);
     return errorResponse('Niet gevonden', 404);
   } catch (err) {
     console.error('[portal] API error:', err.message || err);
@@ -416,6 +423,70 @@ async function changeRole(request, env, user) {
 
   await env.PORTAL_DB.prepare('UPDATE users SET role = ? WHERE id = ?').bind(role, targetId).run();
   return jsonResponse({ ok: true, message: 'Rol bijgewerkt' });
+}
+
+// ── service orders / intake ─────────────────────────────────────────────────
+async function createOrder(request, env, user) {
+  if (!canWrite(user.role)) return errorResponse('U heeft geen rechten om een aanvraag te starten', 403);
+  const body = await request.json().catch(() => null);
+  const productKey = (body?.product_key || '').toString().trim();
+  if (!productKey) return errorResponse('Product ontbreekt', 400);
+  const id = randomId('ord');
+  await env.PORTAL_DB
+    .prepare('INSERT INTO service_orders (id, customer_id, user_id, product_key, tier, intake_json, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+    .bind(id, user.customer_id, user.id, productKey, (body.tier || null), '{}', 'concept', Date.now()).run();
+  return jsonResponse({ ok: true, id });
+}
+
+async function listOrders(env, user) {
+  const list = (await env.PORTAL_DB
+    .prepare('SELECT id, product_key, tier, status, created_at, submitted_at FROM service_orders WHERE customer_id = ? ORDER BY created_at DESC')
+    .bind(user.customer_id).all()).results || [];
+  return jsonResponse({ ok: true, orders: list });
+}
+
+async function getOrder(env, user, url) {
+  const id = url.searchParams.get('id');
+  if (!id) return errorResponse('Aanvraag-id ontbreekt', 400);
+  const o = await env.PORTAL_DB
+    .prepare('SELECT id, product_key, tier, intake_json, status, created_at, submitted_at FROM service_orders WHERE id = ? AND customer_id = ?')
+    .bind(id, user.customer_id).first();
+  if (!o) return errorResponse('Aanvraag niet gevonden', 404);
+  return jsonResponse({ ok: true, order: { ...o, intake: safeParse(o.intake_json) || {} } });
+}
+
+async function saveOrder(request, env, user) {
+  if (!canWrite(user.role)) return errorResponse('Geen rechten', 403);
+  const body = await request.json().catch(() => null);
+  if (!body?.id) return errorResponse('Aanvraag-id ontbreekt', 400);
+  const o = await env.PORTAL_DB
+    .prepare('SELECT id, status FROM service_orders WHERE id = ? AND customer_id = ?')
+    .bind(body.id, user.customer_id).first();
+  if (!o) return errorResponse('Aanvraag niet gevonden', 404);
+  if (o.status !== 'concept') return errorResponse('Deze aanvraag is al ingediend', 409);
+  await env.PORTAL_DB.prepare('UPDATE service_orders SET intake_json = ? WHERE id = ?')
+    .bind(JSON.stringify(body.intake || {}), body.id).run();
+  return jsonResponse({ ok: true });
+}
+
+async function submitOrder(request, env, user) {
+  if (!canWrite(user.role)) return errorResponse('Geen rechten', 403);
+  const body = await request.json().catch(() => null);
+  if (!body?.id) return errorResponse('Aanvraag-id ontbreekt', 400);
+  const o = await env.PORTAL_DB
+    .prepare('SELECT id, product_key, tier, status FROM service_orders WHERE id = ? AND customer_id = ?')
+    .bind(body.id, user.customer_id).first();
+  if (!o) return errorResponse('Aanvraag niet gevonden', 404);
+  if (o.status !== 'concept') return errorResponse('Deze aanvraag is al ingediend', 409);
+  if (body.intake) {
+    await env.PORTAL_DB.prepare('UPDATE service_orders SET intake_json = ? WHERE id = ?')
+      .bind(JSON.stringify(body.intake), body.id).run();
+  }
+  await env.PORTAL_DB.prepare('UPDATE service_orders SET status = ?, submitted_at = ? WHERE id = ?')
+    .bind('ingediend', Date.now(), body.id).run();
+  await notifyAanloop(env, 'Nieuwe aanvraag — intake compleet',
+    `Klant-id: ${user.customer_id}\nProduct: ${o.product_key} (${o.tier || '-'})\nDoor: ${user.naam} (${user.email})\nAanvraag: ${o.id}\nBekijk de volledige intake in het admin-panel.`);
+  return jsonResponse({ ok: true, message: 'Uw aanvraag is ingediend. We nemen het in behandeling.' });
 }
 
 async function removeMember(request, env, user) {

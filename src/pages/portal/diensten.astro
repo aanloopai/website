@@ -32,8 +32,20 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
     </section>
   </div>
 
+  <section class="pcard mt-6" id="d-orders-wrap">
+    <div class="pcard-h">Lopende aanvragen</div>
+    <div class="pcard-b">
+      <div id="d-orders" class="space-y-2"><div class="pskel h-14 w-full"></div></div>
+      <div id="d-orders-empty" class="empty hidden">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+        <p class="empty-title">Geen lopende aanvragen</p>
+        <p class="empty-text">Start een nieuwe via <a href="/portal/ontdekken" class="p-link">Diensten ontdekken</a>.</p>
+      </div>
+    </div>
+  </section>
+
   <section class="pcard mt-6" id="d-requests-wrap">
-    <div class="pcard-h">Mijn aanvragen</div>
+    <div class="pcard-h">Mijn wijzigingsverzoeken</div>
     <div class="pcard-b">
       <div id="d-requests" class="space-y-2"><div class="pskel h-16 w-full"></div></div>
       <div id="d-requests-empty" class="empty hidden">
@@ -189,7 +201,39 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
           .catch(function () {});
       }
 
+      var ORDER_STATUS = {
+        concept: 'pbadge--gray', ingediend: 'pbadge--amber',
+        in_uitvoering: 'pbadge--blue', actief: 'pbadge--green', geannuleerd: 'pbadge--red',
+      };
+      var ORDER_LABEL = {
+        concept: 'Concept', ingediend: 'Ingediend', in_uitvoering: 'In uitvoering',
+        actief: 'Actief', geannuleerd: 'Geannuleerd',
+      };
+      function loadOrders() {
+        fetch('/api/portal/orders', { credentials: 'same-origin' })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            var list = d.orders || [];
+            var box = document.getElementById('d-orders');
+            if (!list.length) { box.innerHTML = ''; document.getElementById('d-orders-empty').classList.remove('hidden'); return; }
+            document.getElementById('d-orders-empty').classList.add('hidden');
+            box.innerHTML = list.map(function (o) {
+              var badge = ORDER_STATUS[o.status] || 'pbadge--gray';
+              var actie = o.status === 'concept'
+                ? '<a href="/portal/intake?order=' + esc(o.id) + '" class="pbtn pbtn--subtle pbtn--sm">Verder invullen</a>'
+                : '';
+              return '<div class="flex items-center justify-between gap-3 rounded-md border px-4 py-3" style="border-color:var(--p-border)">' +
+                '<div><span class="primary" style="color:var(--p-ink);font-weight:500">' + esc(o.product_key) + '</span>' +
+                (o.tier ? '<span class="ml-2 text-xs p-muted">' + esc(o.tier) + '</span>' : '') + '</div>' +
+                '<div class="flex items-center gap-2"><span class="pbadge ' + badge + '">' + esc(ORDER_LABEL[o.status] || o.status) + '</span>' + actie + '</div>' +
+                '</div>';
+            }).join('');
+          })
+          .catch(function () {});
+      }
+
       load();
+      loadOrders();
     })();
   </script>
 </PortalLayout>

@@ -1,16 +1,21 @@
 ---
-// Customer portal — Diensten ontdekken (product catalog / upsell).
+// Customer portal — Diensten ontdekken (catalog). Start an intake order.
 import PortalLayout from '../../layouts/PortalLayout.astro';
 import { PORTAL_CATALOG } from '../../data/portal-catalog';
 ---
 
 <PortalLayout title="Diensten ontdekken" active="ontdekken">
   <h1 class="page-title">Diensten ontdekken</h1>
-  <p class="page-sub">Bekijk wat Aanloop AI nog meer voor u kan doen. Vraag vrijblijvend informatie aan.</p>
+  <p class="page-sub">Kies een dienst en start uw aanvraag — u vult zelf alle gegevens in.</p>
 
   <div class="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
     {PORTAL_CATALOG.map((p) => (
-      <article class="catalog-card pcard flex flex-col" data-key={p.key} data-naam={p.naam}>
+      <article
+        class="catalog-card pcard flex flex-col"
+        data-key={p.key}
+        data-naam={p.naam}
+        data-tiers={JSON.stringify(p.tiers.map((t) => `${t.naam} — ${t.prijs}`))}
+      >
         <div class="pcard-b flex flex-1 flex-col">
           <span class="pbadge pbadge--gray self-start">{p.categorie}</span>
           <h2 class="mt-2 text-base font-semibold" style="color:var(--p-ink)">{p.naam}</h2>
@@ -24,7 +29,7 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
             ))}
           </ul>
           <div class="mt-auto flex items-center gap-2 pt-4">
-            <button class="catalog-req pbtn pbtn--primary pbtn--sm" data-write>Aanvragen</button>
+            <button class="catalog-start pbtn pbtn--primary pbtn--sm" data-write>Aanvraag starten</button>
             <a href={p.meerInfoUrl} target="_blank" rel="noopener" class="p-link text-sm">Meer info</a>
             <span class="catalog-owned pbadge pbadge--green hidden">U heeft dit al</span>
           </div>
@@ -35,14 +40,14 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
 
   <div id="c-modal" class="pmodal-backdrop">
     <div class="pmodal">
-      <h3 class="page-title" style="font-size:17px" id="c-modal-title">Informatie aanvragen</h3>
-      <p class="page-sub">Wij nemen binnen 1 werkdag vrijblijvend contact met u op.</p>
-      <label class="plabel mt-4">Toelichting (optioneel)</label>
-      <textarea id="c-modal-bericht" class="ptextarea"></textarea>
+      <h3 class="page-title" style="font-size:17px" id="c-modal-title">Aanvraag starten</h3>
+      <p class="page-sub">Kies het gewenste pakket. Daarna vult u stap voor stap uw gegevens in.</p>
+      <label class="plabel mt-4">Pakket</label>
+      <select id="c-tier" class="pselect"></select>
       <p id="c-modal-msg" class="palert mt-3 hidden"></p>
       <div class="mt-4 flex justify-end gap-2">
         <button id="c-modal-cancel" class="pbtn pbtn--subtle pbtn--sm">Annuleren</button>
-        <button id="c-modal-submit" class="pbtn pbtn--primary pbtn--sm">Aanvraag versturen</button>
+        <button id="c-modal-go" class="pbtn pbtn--primary pbtn--sm">Doorgaan naar intake →</button>
       </div>
     </div>
   </div>
@@ -58,45 +63,45 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
           Array.prototype.forEach.call(document.querySelectorAll('.catalog-card'), function (card) {
             if (owned[card.getAttribute('data-key')]) {
               card.querySelector('.catalog-owned').classList.remove('hidden');
-              var b = card.querySelector('.catalog-req');
-              if (b) b.classList.add('hidden');
             }
           });
         })
         .catch(function () {});
 
       function closeModal() { document.getElementById('c-modal').classList.remove('open'); }
-      Array.prototype.forEach.call(document.querySelectorAll('.catalog-req'), function (b) {
+      Array.prototype.forEach.call(document.querySelectorAll('.catalog-start'), function (b) {
         b.addEventListener('click', function () {
           var card = b.closest('.catalog-card');
+          var tiers = [];
+          try { tiers = JSON.parse(card.getAttribute('data-tiers')); } catch (e) {}
           ctx = { product_key: card.getAttribute('data-key') };
-          document.getElementById('c-modal-title').textContent = card.getAttribute('data-naam') + ' aanvragen';
-          document.getElementById('c-modal-bericht').value = '';
+          document.getElementById('c-modal-title').textContent = card.getAttribute('data-naam');
+          document.getElementById('c-tier').innerHTML = tiers.map(function (t) {
+            return '<option value="' + t.split(' — ')[0] + '">' + t + '</option>';
+          }).join('');
           document.getElementById('c-modal-msg').className = 'palert mt-3 hidden';
           document.getElementById('c-modal').classList.add('open');
         });
       });
       document.getElementById('c-modal-cancel').addEventListener('click', closeModal);
-      document.getElementById('c-modal-submit').addEventListener('click', function () {
+      document.getElementById('c-modal-go').addEventListener('click', function () {
         if (!ctx) return;
-        var btnEl = this; btnEl.disabled = true;
-        fetch('/api/portal/service-request', {
+        var btn = this; btn.disabled = true;
+        fetch('/api/portal/orders', {
           method: 'POST', credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'new_product', product_key: ctx.product_key, bericht: document.getElementById('c-modal-bericht').value.trim() }),
+          body: JSON.stringify({ product_key: ctx.product_key, tier: document.getElementById('c-tier').value }),
         })
           .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
           .then(function (res) {
-            var m = document.getElementById('c-modal-msg');
-            if (res.ok) {
-              m.className = 'palert palert--ok mt-3'; m.textContent = res.j.message || 'Aanvraag verstuurd.';
-              setTimeout(closeModal, 1400);
-            } else {
+            if (res.ok) { location.href = '/portal/intake?order=' + encodeURIComponent(res.j.id); }
+            else {
+              var m = document.getElementById('c-modal-msg');
               m.className = 'palert palert--warn mt-3'; m.textContent = res.j.error || 'Er ging iets mis.';
+              btn.disabled = false;
             }
           })
-          .catch(function () {})
-          .finally(function () { btnEl.disabled = false; });
+          .catch(function () { btn.disabled = false; });
       });
     })();
   </script>

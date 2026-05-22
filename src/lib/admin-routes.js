@@ -58,6 +58,10 @@ export async function handleAdminApi(request, env) {
     if (path === '/api/admin/tickets') return await listTickets(env, url);
     if (path === '/api/admin/ticket' && method === 'PATCH') return await answerTicket(request, env);
     if (path === '/api/admin/invoice' && method === 'POST') return await createInvoice(request, env);
+    if (path === '/api/admin/orders') return await listOrders(env, url);
+    if (path === '/api/admin/order') {
+      return method === 'PATCH' ? await updateOrder(request, env) : await orderDetail(env, url);
+    }
     return errorResponse('Niet gevonden', 404);
   } catch (err) {
     console.error('[admin] API error:', err.message || err);
@@ -287,6 +291,56 @@ async function answerTicket(request, env) {
     }
   }
   return jsonResponse({ ok: true, message: 'Ticket bijgewerkt' });
+}
+
+// ── service orders / intake ─────────────────────────────────────────────────
+function safeParseJson(s) {
+  if (!s) return {};
+  try { return JSON.parse(s); } catch { return {}; }
+}
+
+async function listOrders(env, url) {
+  const status = url.searchParams.get('status');
+  const base = `SELECT o.id, o.customer_id, o.product_key, o.tier, o.status, o.created_at,
+      o.submitted_at, c.bedrijf, u.naam AS user_naam, u.email AS user_email
+    FROM service_orders o
+    JOIN customers c ON c.id = o.customer_id
+    JOIN users u ON u.id = o.user_id`;
+  const q = status
+    ? env.PORTAL_DB.prepare(`${base} WHERE o.status = ? ORDER BY o.created_at DESC`).bind(status)
+    : env.PORTAL_DB.prepare(`${base} ORDER BY o.created_at DESC`);
+  return jsonResponse({ ok: true, orders: (await q.all()).results || [] });
+}
+
+async function orderDetail(env, url) {
+  const id = url.searchParams.get('id');
+  if (!id) return errorResponse('Aanvraag-id ontbreekt', 400);
+  const o = await env.PORTAL_DB.prepare('SELECT * FROM service_orders WHERE id = ?').bind(id).first();
+  if (!o) return errorResponse('Aanvraag niet gevonden', 404);
+  const c = await env.PORTAL_DB.prepare('SELECT id, bedrijf FROM customers WHERE id = ?').bind(o.customer_id).first();
+  return jsonResponse({ ok: true, order: { ...o, intake: safeParseJson(o.intake_json) }, customer: c });
+}
+
+async function updateOrder(request, env) {
+  const b = await request.json().catch(() => null);
+  const valid = ['concept', 'ingediend', 'in_uitvoering', 'actief', 'geannuleerd'];
+  if (!b?.id || !valid.includes(b.status)) return errorResponse('Ongeldige aanvraag', 400);
+  const o = await env.PORTAL_DB.prepare('SELECT * FROM service_orders WHERE id = ?').bind(b.id).first();
+  if (!o) return errorResponse('Aanvraag niet gevonden', 404);
+
+  await env.PORTAL_DB.prepare('UPDATE service_orders SET status = ? WHERE id = ?').bind(b.status, b.id).run();
+
+  // When an order goes 'actief', materialise it as a service (once).
+  if (b.status === 'actief') {
+    const exists = await env.PORTAL_DB.prepare('SELECT id FROM services WHERE order_id = ?').bind(b.id).first();
+    if (!exists) {
+      await env.PORTAL_DB.prepare(
+        'INSERT INTO services (id, customer_id, product_key, naam, tier, status, config_json, started_at, created_at, order_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      ).bind(randomId('svc'), o.customer_id, o.product_key, o.product_key, o.tier || null,
+        'onboarding', o.intake_json || null, today(), today(), o.id).run();
+    }
+  }
+  return jsonResponse({ ok: true, message: 'Aanvraag bijgewerkt' });
 }
 
 async function createInvoice(request, env) {
