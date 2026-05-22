@@ -69,10 +69,23 @@ export async function handleCheckoutStart(request, env, user) {
   // Mollie needs an explicit website profile when the key is not bound to a
   // single default one (common on fresh accounts / multi-profile orgs).
   let profileId;
+  let profileDebug = '';
   try {
-    const prof = await mollieFetch(env.MOLLIE_API_KEY, 'GET', '/profiles/me');
-    profileId = prof.id;
-  } catch { /* leave undefined — Mollie may still resolve it */ }
+    const list = await mollieFetch(env.MOLLIE_API_KEY, 'GET', '/profiles?limit=10');
+    const profiles = (list._embedded && list._embedded.profiles) || [];
+    profileDebug = `${profiles.length} profiel(en)`;
+    const usable = profiles.find((p) => p.status === 'verified') || profiles[0];
+    if (usable) profileId = usable.id;
+  } catch (e) {
+    try {
+      const me = await mollieFetch(env.MOLLIE_API_KEY, 'GET', '/profiles/me');
+      profileId = me.id;
+      profileDebug = 'profiles/me ok';
+    } catch (e2) { profileDebug = `profielen niet op te halen: ${e2.message}`; }
+  }
+  if (!profileId) {
+    return errorResponse(`Geen Mollie website-profiel gevonden (${profileDebug}). Maak een profiel aan in het Mollie-dashboard.`, 502);
+  }
 
   const paymentBody = {
     amount: { currency: 'EUR', value: euros(tier.prijsCent) },
