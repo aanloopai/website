@@ -1,99 +1,92 @@
-# Customer Portal — Setup & Operations
+# Customer Portal — Setup & Operations (v2)
 
-Passwordless customer portal for aanloopai.nl. Klanten loggen in met een
-magic link (geen wachtwoord) en zien hun diensten + documenten.
+Professioneel klantportaal + admin-panel voor aanloopai.nl. Passwordless
+(magic-link) login, multi-user met rollen, en een volledig in-portal
+admin-panel voor het Aanloop-team.
 
-Status na sprint C: **code compleet**, wacht op infra-configuratie hieronder.
-Tot de D1-database is geconfigureerd geven de portal-routes HTTP 503 terug —
-de rest van de site werkt gewoon door.
+Status: **v2 live**. D1 `aanloop-portal` is geconfigureerd; schema 0003 + seed
+0004 zijn toegepast; de worker is gedeployed.
 
 ## Architectuur
 
 | Onderdeel | Bestand |
 |---|---|
-| D1-schema | `migrations/0001_portal_schema.sql` |
-| Voorbeeld-seed | `migrations/0002_seed_example.sql` |
-| Auth-helpers (HMAC-sessie, hashing) | `src/lib/auth.js` |
-| Portal-routes (auth + dashboard-API) | `src/lib/portal-routes.js` |
+| D1-schema v2 | `migrations/0003_portal_v2.sql` |
+| Seed (staff + testklant) | `migrations/0004_portal_v2_seed.sql` |
+| Auth (HMAC-sessie, magic-link, rollen) | `src/lib/auth.js` |
+| Klant-API | `src/lib/portal-routes.js` |
+| Admin-API | `src/lib/admin-routes.js` |
+| Productcatalogus (statisch) | `src/data/portal-catalog.ts` |
 | Route-dispatch | `src/worker.js` |
-| Layout | `src/layouts/PortalLayout.astro` |
-| Inlogpagina | `src/pages/portal/login.astro` → `/portal/login` |
-| Dashboard | `src/pages/portal/index.astro` → `/portal/` |
+| Layouts | `src/layouts/PortalLayout.astro`, `AdminLayout.astro` |
+| Klantpagina's | `src/pages/portal/{login,index,diensten,ontdekken,facturatie,support,instellingen}.astro` |
+| Adminpagina's | `src/pages/admin/{index,klant,aanvragen,support}.astro` |
 
-**Auth-flow:** e-mail invoeren → worker zoekt klant in D1 → magic-link token
-(15 min geldig, één keer bruikbaar, gehasht opgeslagen) → Brevo mailt de link →
-klik → worker verifieert → HMAC-ondertekende sessie-cookie (7 dagen,
-HttpOnly/Secure/SameSite=Lax) → dashboard.
+## Datamodel (D1)
 
-## Eenmalige setup (user-actions)
+`customers` (bedrijf/account) · `users` (inloggers, rol eigenaar/bewerker/
+kijker/staff) · `magic_links` · `team_invites` · `services` · `service_requests`
+· `support_tickets` · `invoices` · `documents`.
 
-### 1. D1-database aanmaken
-```
-cd <aanloop repo>
-wrangler d1 create aanloop-portal
-```
-Kopieer de geprinte `database_id`.
+## Rollen
 
-### 2. wrangler.toml activeren
-Haal in `wrangler.toml` het commentaar weg bij het `[[d1_databases]]`-blok
-en plak de `database_id`.
+| Rol | Rechten |
+|---|---|
+| `eigenaar` | Alles + teambeheer + bedrijfsgegevens |
+| `bewerker` | Aanvragen + support aanmaken, alles bekijken |
+| `kijker` | Alleen lezen |
+| `staff` | Aanloop-medewerker — toegang tot `/admin` |
 
-### 3. Sessie-secret instellen
-```
-wrangler secret put PORTAL_SESSION_SECRET
-```
-Plak een lange random string (bijv. `openssl rand -hex 32`). Dit ondertekent
-de sessie-cookies — niet wijzigen zonder alle klanten uit te loggen.
+## Klantportaal-secties
 
-### 4. Schema toepassen
-```
-wrangler d1 execute aanloop-portal --remote --file=migrations/0001_portal_schema.sql
-```
-Optioneel testdata:
-```
-wrangler d1 execute aanloop-portal --remote --file=migrations/0002_seed_example.sql
-```
+`/portal/` Overzicht · `/portal/diensten` (status + upgrade/pauze-aanvraag) ·
+`/portal/ontdekken` (catalogus) · `/portal/facturatie` · `/portal/support` ·
+`/portal/instellingen` (bedrijf/profiel/team/notificaties).
 
-### 5. Deployen
-```
-wrangler versions upload
-```
-Daarna de nieuwe versie promoten in het Cloudflare-dashboard.
+Wijzigingen aan diensten lopen via **aanvragen** (request-flow) — Aanloop
+verwerkt ze in het admin-panel; geen directe self-service billing.
 
-`BREVO_API_KEY` is al geconfigureerd (gebruikt voor de magic-link mail).
+## Admin-panel (`/admin`)
+
+Klantenlijst + nieuwe klant aanmaken · klantdetail (bedrijfsgegevens,
+gebruikers, diensten activeren/pauzeren/tier, facturen) · aanvraag-wachtrij
+· support-wachtrij (antwoord wordt gemaild).
+
+## Setup (al gedaan — referentie)
+
+1. `wrangler d1 create aanloop-portal` → `database_id` in `wrangler.toml`.
+2. `wrangler secret put PORTAL_SESSION_SECRET`.
+3. `wrangler d1 execute aanloop-portal --remote --file=migrations/0003_portal_v2.sql`
+4. `wrangler d1 execute aanloop-portal --remote --file=migrations/0004_portal_v2_seed.sql`
+5. `npm run build && wrangler deploy`.
 
 ## Een klant toevoegen
 
-Geen publieke registratie — klanten worden handmatig toegevoegd:
-```
-wrangler d1 execute aanloop-portal --remote --command="INSERT INTO customers (id, email, naam, bedrijf, plan, created_at) VALUES ('cust_0002', 'klant@bedrijf.nl', 'Voornaam Achternaam', 'Bedrijf BV', 'emma-lite', '2026-05-22');"
-```
-Diensten en documenten koppelen via de `services` / `documents` tabellen met
-dezelfde `customer_id` (zie `0002_seed_example.sql` als voorbeeld).
+Via het admin-panel: `/admin` → **+ Nieuwe klant** (bedrijf + e-mail eigenaar).
+Er wordt een account + eigenaar-gebruiker aangemaakt en een welkomstmail
+verstuurd. Daarna in het klantdetail diensten en facturen toevoegen.
 
-## Verificatie (end-to-end test)
+(Niet langer via `wrangler d1 execute` — dat is vervangen door het admin-panel.)
 
-1. Ga naar `/portal/login`, vul het e-mailadres van een bestaande klant in.
-2. Controleer dat de magic-link mail aankomt (Brevo).
-3. Klik de link → je wordt ingelogd en op `/portal/` gezet.
-4. Dashboard toont naam, diensten en documenten.
-5. "Uitloggen" wist de cookie en stuurt terug naar `/portal/login`.
-6. Een verlopen of al-gebruikte link → redirect naar `/portal/login?error=link`.
-7. Onbekend e-mailadres → zelfde "link verstuurd"-melding (geen enumeration).
+## Inloggen
 
-`wrangler tail` toont serverlogs (o.a. mislukte magic-link mails).
+- Klanten: `aanloopai.nl/portal/login` → e-mail → magic-link in mailbox.
+- Aanloop-staff: dezelfde loginpagina; staff-accounts worden na verificatie
+  automatisch naar `/admin` geleid.
+- Het staff-account `doganagahm@gmail.com` is geseed in 0004.
 
 ## Beveiliging
 
-- Wachtwoorden: geen (passwordless).
-- Magic-link tokens: gehasht opgeslagen (SHA-256), 15 min TTL, single-use.
+- Geen wachtwoorden (passwordless).
+- Magic-link / invite-tokens: SHA-256-gehasht opgeslagen, 15 min / 7 dagen TTL,
+  single-use.
 - Sessie: HMAC-SHA256 ondertekend, HttpOnly + Secure + SameSite=Lax, 7 dagen.
-- Rate limiting: 5/IP en 3/e-mail per 10 min (KV-backed).
-- Geen account-enumeration: identieke respons voor bekende/onbekende e-mail.
+- Rate limiting op login (KV-backed). Geen account-enumeration.
+- Rolcontrole op elke schrijfactie; `/admin` is staff-only.
 
-## Toekomstige uitbreidingen (buiten sprint C)
+## V2-uitbreidingen (later)
 
-- Documenten via Cloudflare R2 i.p.v. losse links.
-- Admin-route voor klantbeheer (nu via `wrangler d1 execute`).
-- Live tool-statistieken (gespreksvolume, uptime) in het dashboard.
-- Periodieke opschoning van verlopen `magic_links`-rijen.
+- "Gesprekken & berichten" — live call/message-logs zodra de telemetrie van
+  de AI-platforms (Vapi/Retell/WhatsApp) gekoppeld is.
+- Stripe self-service billing, native ticket-threads, analytics, SSO,
+  documenten via R2.

@@ -1,18 +1,20 @@
-// Passwordless magic-link auth helpers for the customer portal (C2).
-// Sessions are stateless: an HMAC-SHA256-signed token in an HttpOnly cookie.
-// No password is ever stored. Magic-link tokens are stored hashed in D1.
+// Passwordless magic-link auth helpers for the customer portal (schema v2).
+// Sessions are stateless: an HMAC-SHA256-signed token in an HttpOnly cookie,
+// keyed to a user id. No password is ever stored. Magic-link / invite tokens
+// are stored hashed in D1.
 
 const encoder = new TextEncoder();
 
 export const SESSION_COOKIE = 'aanloop_portal_session';
-const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;   // 7 days
-export const MAGIC_LINK_TTL_MS = 15 * 60 * 1000;  // 15 minutes
+const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;     // 7 days
+export const MAGIC_LINK_TTL_MS = 15 * 60 * 1000;    // 15 minutes
+export const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 function bytesToHex(buf) {
   return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
-// SHA-256 hex — magic-link tokens are stored hashed, never raw.
+// SHA-256 hex — magic-link / invite tokens are stored hashed, never raw.
 export async function sha256Hex(input) {
   const digest = await crypto.subtle.digest('SHA-256', encoder.encode(input));
   return bytesToHex(digest);
@@ -21,6 +23,11 @@ export async function sha256Hex(input) {
 // Cryptographically-random URL-safe token (32 bytes → 64 hex chars).
 export function randomToken() {
   return bytesToHex(crypto.getRandomValues(new Uint8Array(32)));
+}
+
+// Short random id with a typed prefix, e.g. randomId('usr') → 'usr_a1b2c3d4e5f6'.
+export function randomId(prefix) {
+  return `${prefix}_${bytesToHex(crypto.getRandomValues(new Uint8Array(6)))}`;
 }
 
 async function hmacKey(secret) {
@@ -37,16 +44,16 @@ function b64urlDecode(str) {
   return atob(str.replace(/-/g, '+').replace(/_/g, '/'));
 }
 
-// Signed session token: base64url(payload).hex(hmac).
-export async function createSession(customerId, secret) {
-  const payload = JSON.stringify({ cid: customerId, exp: Date.now() + SESSION_TTL_MS });
+// Signed session token: base64url(payload).hex(hmac). Payload carries the user id.
+export async function createSession(userId, secret) {
+  const payload = JSON.stringify({ uid: userId, exp: Date.now() + SESSION_TTL_MS });
   const body = b64urlEncode(payload);
   const key = await hmacKey(secret);
   const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(body));
   return `${body}.${bytesToHex(sig)}`;
 }
 
-// Verify + decode a session token. Returns { cid } or null.
+// Verify + decode a session token. Returns { uid } or null.
 export async function verifySession(token, secret) {
   if (!token || typeof token !== 'string' || !token.includes('.')) return null;
   const [body, sigHex] = token.split('.');
@@ -58,8 +65,8 @@ export async function verifySession(token, secret) {
   if (!valid) return null;
   let payload;
   try { payload = JSON.parse(b64urlDecode(body)); } catch { return null; }
-  if (!payload?.cid || !payload?.exp || Date.now() > payload.exp) return null;
-  return { cid: payload.cid };
+  if (!payload?.uid || !payload?.exp || Date.now() > payload.exp) return null;
+  return { uid: payload.uid };
 }
 
 export function sessionCookie(token) {
@@ -79,4 +86,16 @@ export function readCookie(request, name) {
     if (part.slice(0, idx).trim() === name) return part.slice(idx + 1).trim();
   }
   return null;
+}
+
+// Resolve the logged-in user from the session cookie. Returns the user row
+// { id, customer_id, email, naam, role } or null. Used by portal + admin routes.
+export async function getSessionUser(request, env) {
+  if (!env.PORTAL_SESSION_SECRET || !env.PORTAL_DB) return null;
+  const token = readCookie(request, SESSION_COOKIE);
+  const session = await verifySession(token, env.PORTAL_SESSION_SECRET);
+  if (!session) return null;
+  return env.PORTAL_DB
+    .prepare('SELECT id, customer_id, email, naam, role FROM users WHERE id = ?')
+    .bind(session.uid).first();
 }

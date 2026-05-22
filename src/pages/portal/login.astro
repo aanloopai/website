@@ -1,95 +1,108 @@
 ---
-// Customer portal login (C3) — passwordless. Posts an email to
-// /api/auth/request; the worker mails a magic link.
-import PortalLayout from '../../layouts/PortalLayout.astro';
+// Customer portal login (schema v2) — passwordless. Self-contained page:
+// it must NOT use the portal app shell (that shell runs the auth guard).
+import '../../styles/global.css';
 ---
 
-<PortalLayout title="Inloggen">
-  <div class="mx-auto max-w-md">
-    <h1 class="text-2xl font-bold text-slate-900">Inloggen op het klantportaal</h1>
-    <p class="mt-2 text-sm text-slate-600">
-      Vul uw e-mailadres in. U ontvangt een veilige inloglink — geen wachtwoord nodig.
-    </p>
-
-    <form id="login-form" class="mt-6 space-y-4" novalidate>
-      <div>
-        <label for="email" class="block text-sm font-medium text-slate-700">E-mailadres</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          required
-          autocomplete="email"
-          class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-brand-indigo focus:outline-none focus:ring-1 focus:ring-brand-indigo"
-        />
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Inloggen · Aanloop AI Klantportaal</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  </head>
+  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+    <header class="border-b border-slate-200 bg-white">
+      <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
+        <a href="/" aria-label="Aanloop AI home">
+          <img src="/brand/logo-horizontal-light.svg" alt="Aanloop AI" class="h-7" />
+        </a>
+        <span class="text-xs font-medium uppercase tracking-wider text-slate-400">Klantportaal</span>
       </div>
-      <button
-        type="submit"
-        id="submit-btn"
-        class="w-full rounded-lg bg-brand-indigo px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
-      >
-        Stuur inloglink
-      </button>
-    </form>
+    </header>
 
-    <p id="message" class="mt-4 hidden rounded-lg px-3 py-2.5 text-sm"></p>
+    <main class="mx-auto max-w-md px-4 py-16">
+      <h1 class="text-2xl font-bold text-slate-900">Inloggen op het klantportaal</h1>
+      <p class="mt-2 text-sm text-slate-600">
+        Vul uw e-mailadres in. U ontvangt een veilige inloglink — geen wachtwoord nodig.
+      </p>
 
-    <p class="mt-6 text-xs text-slate-400">
-      Nog geen klant? <a href="/contact/" class="underline">Neem contact op</a> —
-      het portaal is voor actieve Aanloop AI klanten.
-    </p>
-  </div>
+      <form id="login-form" class="mt-6 space-y-4" novalidate>
+        <div>
+          <label for="email" class="block text-sm font-medium text-slate-700">E-mailadres</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            autocomplete="email"
+            class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-brand-indigo focus:outline-none focus:ring-1 focus:ring-brand-indigo"
+          />
+        </div>
+        <button
+          type="submit"
+          id="submit-btn"
+          class="w-full rounded-lg bg-brand-indigo px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
+        >
+          Stuur inloglink
+        </button>
+      </form>
 
-  <script is:inline>
-    (function () {
-      var form = document.getElementById('login-form');
-      var btn = document.getElementById('submit-btn');
-      var msg = document.getElementById('message');
+      <p id="message" class="mt-4 hidden rounded-lg px-3 py-2.5 text-sm"></p>
 
-      function showMsg(text, ok) {
-        msg.textContent = text;
-        msg.className =
-          'mt-4 rounded-lg px-3 py-2.5 text-sm ' +
-          (ok ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800');
-      }
+      <p class="mt-8 text-xs text-slate-400">
+        Nog geen klant? <a href="/contact/" class="underline">Neem contact op</a> —
+        het portaal is voor actieve Aanloop AI klanten.
+      </p>
+    </main>
 
-      // Surface a failed/expired magic-link redirect (?error=link).
-      if (new URLSearchParams(location.search).get('error') === 'link') {
-        showMsg('Deze inloglink is ongeldig of verlopen. Vraag hieronder een nieuwe aan.', false);
-      }
+    <script is:inline>
+      (function () {
+        var form = document.getElementById('login-form');
+        var btn = document.getElementById('submit-btn');
+        var msg = document.getElementById('message');
 
-      form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        var email = document.getElementById('email').value.trim();
-        if (!email) return;
-        btn.disabled = true;
-        btn.textContent = 'Versturen...';
-        fetch('/api/auth/request', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email }),
-        })
-          .then(function (r) {
-            return r.json().then(function (d) {
-              return { status: r.status, body: d };
+        function showMsg(text, ok) {
+          msg.textContent = text;
+          msg.className =
+            'mt-4 rounded-lg px-3 py-2.5 text-sm ' +
+            (ok ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800');
+        }
+
+        var err = new URLSearchParams(location.search).get('error');
+        if (err === 'link') showMsg('Deze inloglink is ongeldig of verlopen. Vraag hieronder een nieuwe aan.', false);
+        else if (err === 'invite') showMsg('Deze uitnodiging is ongeldig of verlopen. Vraag de eigenaar om een nieuwe.', false);
+        else if (err === 'bestaat') showMsg('Dit e-mailadres heeft al een account. Log hieronder gewoon in.', false);
+
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var email = document.getElementById('email').value.trim();
+          if (!email) return;
+          btn.disabled = true;
+          btn.textContent = 'Versturen...';
+          fetch('/api/auth/request', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email }),
+          })
+            .then(function (r) { return r.json().then(function (d) { return { status: r.status, body: d }; }); })
+            .then(function (res) {
+              if (res.status === 200) {
+                showMsg(res.body.message || 'Controleer uw mailbox voor de inloglink.', true);
+                form.reset();
+              } else {
+                showMsg(res.body.error || 'Er ging iets mis. Probeer het opnieuw.', false);
+              }
+            })
+            .catch(function () { showMsg('Netwerkfout. Probeer het opnieuw.', false); })
+            .finally(function () {
+              btn.disabled = false;
+              btn.textContent = 'Stuur inloglink';
             });
-          })
-          .then(function (res) {
-            if (res.status === 200) {
-              showMsg(res.body.message || 'Controleer uw mailbox voor de inloglink.', true);
-              form.reset();
-            } else {
-              showMsg(res.body.error || 'Er ging iets mis. Probeer het opnieuw.', false);
-            }
-          })
-          .catch(function () {
-            showMsg('Netwerkfout. Probeer het opnieuw.', false);
-          })
-          .finally(function () {
-            btn.disabled = false;
-            btn.textContent = 'Stuur inloglink';
-          });
-      });
-    })();
-  </script>
-</PortalLayout>
+        });
+      })();
+    </script>
+  </body>
+</html>

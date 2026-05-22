@@ -1,0 +1,79 @@
+---
+// Admin panel app shell (schema v2). Staff-only — guarded by /api/admin/me.
+import '../styles/global.css';
+
+export interface Props {
+  title: string;
+  active?: string;
+}
+const { title, active = '' } = Astro.props;
+
+const nav = [
+  { key: 'klanten', label: 'Klanten', href: '/admin/' },
+  { key: 'aanvragen', label: 'Aanvragen', href: '/admin/aanvragen' },
+  { key: 'support', label: 'Support', href: '/admin/support' },
+];
+---
+
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>{title} · Aanloop AI Admin</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  </head>
+  <body class="min-h-screen bg-slate-100 text-slate-900 antialiased">
+    <div class="mx-auto flex max-w-6xl flex-col lg:flex-row">
+      <aside class="border-b border-slate-300 bg-slate-900 text-slate-100 lg:w-56 lg:shrink-0 lg:border-b-0">
+        <div class="border-b border-slate-700 px-5 py-4 text-sm font-bold tracking-wide">
+          Aanloop AI · Admin
+        </div>
+        <nav class="flex gap-1 overflow-x-auto px-3 py-3 lg:flex-col">
+          {nav.map((n) => (
+            <a
+              href={n.href}
+              class={`whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                active === n.key
+                  ? 'bg-brand-indigo text-white'
+                  : 'text-slate-300 hover:bg-slate-800'
+              }`}
+            >
+              {n.label}
+            </a>
+          ))}
+        </nav>
+      </aside>
+
+      <div class="min-w-0 flex-1">
+        <header class="flex items-center justify-between border-b border-slate-200 bg-white px-5 py-3">
+          <div class="text-sm font-medium text-slate-500">Beheer</div>
+          <div class="flex items-center gap-3">
+            <span class="hidden text-sm text-slate-700 sm:inline" id="al-user"></span>
+            <a href="/api/auth/logout" class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100">Uitloggen</a>
+          </div>
+        </header>
+        <main class="px-5 py-6 lg:px-8 lg:py-8">
+          <slot />
+        </main>
+      </div>
+    </div>
+
+    <script is:inline>
+      // Staff-only guard. /api/admin/me returns 403 for non-staff.
+      fetch('/api/admin/me', { credentials: 'same-origin' })
+        .then(function (r) {
+          if (r.status !== 200) { location.href = '/portal/login'; throw new Error('no-access'); }
+          return r.json();
+        })
+        .then(function (d) {
+          var un = document.getElementById('al-user');
+          if (un) un.textContent = (d.user && d.user.naam) || '';
+          window.__adminUser = d.user || {};
+          document.dispatchEvent(new CustomEvent('admin:ready', { detail: d }));
+        })
+        .catch(function () {});
+    </script>
+  </body>
+</html>

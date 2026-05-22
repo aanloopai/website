@@ -1,0 +1,252 @@
+// Admin panel routes (schema v2) — wired into src/worker.js as /api/admin/*.
+// Staff-only: manage customers, services, requests, tickets, invoices.
+import { jsonResponse, errorResponse } from './google-auth.js';
+import { randomId, getSessionUser } from './auth.js';
+
+const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
+const AANLOOP_EMAIL = 'hello@aanloopai.nl';
+
+function escapeHtml(s) {
+  return String(s ?? '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function today() { return new Date().toISOString().slice(0, 10); }
+
+async function mailCustomer(env, to, naam, subject, innerHtml) {
+  if (!env.BREVO_API_KEY) return;
+  const html = `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#0f172a">${innerHtml}
+    <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0">
+    <p style="font-size:12px;color:#64748b">Aanloop AI — aanloopai.nl — KvK 88606902</p></body></html>`;
+  const res = await fetch(BREVO_API, {
+    method: 'POST',
+    headers: { 'api-key': env.BREVO_API_KEY, 'content-type': 'application/json', accept: 'application/json' },
+    body: JSON.stringify({
+      sender: { name: 'Aanloop AI', email: AANLOOP_EMAIL },
+      to: [{ email: to, name: naam || to }],
+      subject, htmlContent: html,
+    }),
+  });
+  if (!res.ok) throw new Error(`Brevo HTTP ${res.status}`);
+}
+
+// ── dispatcher (/api/admin/*) ───────────────────────────────────────────────
+export async function handleAdminApi(request, env) {
+  const url = new URL(request.url);
+  const path = url.pathname;
+  const method = request.method;
+
+  const user = await getSessionUser(request, env);
+  if (!user || user.role !== 'staff') return errorResponse('Geen toegang', 403);
+
+  try {
+    if (path === '/api/admin/me') {
+      return jsonResponse({ ok: true, user: { id: user.id, email: user.email, naam: user.naam, role: user.role } });
+    }
+    if (path === '/api/admin/customers') {
+      return method === 'POST' ? await createCustomer(request, env) : await listCustomers(env);
+    }
+    if (path === '/api/admin/customer') {
+      return method === 'PATCH' ? await updateCustomer(request, env) : await customerDetail(env, url);
+    }
+    if (path === '/api/admin/user' && method === 'POST') return await createUser(request, env);
+    if (path === '/api/admin/service' && method === 'POST') return await createService(request, env);
+    if (path === '/api/admin/service' && method === 'PATCH') return await updateService(request, env);
+    if (path === '/api/admin/requests') return await listRequests(env, url);
+    if (path === '/api/admin/request' && method === 'PATCH') return await fulfillRequest(request, env);
+    if (path === '/api/admin/tickets') return await listTickets(env, url);
+    if (path === '/api/admin/ticket' && method === 'PATCH') return await answerTicket(request, env);
+    if (path === '/api/admin/invoice' && method === 'POST') return await createInvoice(request, env);
+    return errorResponse('Niet gevonden', 404);
+  } catch (err) {
+    console.error('[admin] API error:', err.message || err);
+    return errorResponse('Er ging iets mis', 500);
+  }
+}
+
+async function listCustomers(env) {
+  const list = (await env.PORTAL_DB.prepare(
+    `SELECT c.id, c.bedrijf, c.stad, c.created_at,
+       (SELECT COUNT(*) FROM services s WHERE s.customer_id = c.id) AS dienst_count,
+       (SELECT COUNT(*) FROM users u WHERE u.customer_id = c.id) AS user_count,
+       (SELECT COUNT(*) FROM service_requests r WHERE r.customer_id = c.id AND r.status IN ('open','in_behandeling')) AS open_requests
+     FROM customers c ORDER BY c.created_at DESC`,
+  ).all()).results || [];
+  const openReq = await env.PORTAL_DB.prepare("SELECT COUNT(*) AS n FROM service_requests WHERE status IN ('open','in_behandeling')").first();
+  const openTkt = await env.PORTAL_DB.prepare("SELECT COUNT(*) AS n FROM support_tickets WHERE status IN ('open','in_behandeling')").first();
+  return jsonResponse({ ok: true, customers: list, totals: { openRequests: openReq?.n || 0, openTickets: openTkt?.n || 0 } });
+}
+
+async function createCustomer(request, env) {
+  const b = await request.json().catch(() => null);
+  const bedrijf = (b?.bedrijf || '').toString().trim();
+  const eigenaarEmail = (b?.eigenaar_email || '').toString().trim().toLowerCase();
+  const eigenaarNaam = (b?.eigenaar_naam || '').toString().trim();
+  if (!bedrijf) return errorResponse('Bedrijfsnaam is verplicht', 400);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(eigenaarEmail)) return errorResponse('Geldig e-mailadres voor de eigenaar is verplicht', 400);
+
+  const exists = await env.PORTAL_DB.prepare('SELECT id FROM users WHERE email = ?').bind(eigenaarEmail).first();
+  if (exists) return errorResponse('Dit e-mailadres heeft al een account', 409);
+
+  const customerId = randomId('cust');
+  await env.PORTAL_DB.prepare(
+    'INSERT INTO customers (id, bedrijf, kvk, adres, postcode, stad, telefoon, factuur_email, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+  ).bind(customerId, bedrijf, b.kvk || null, b.adres || null, b.postcode || null, b.stad || null,
+    b.telefoon || null, b.factuur_email || eigenaarEmail, today()).run();
+  await env.PORTAL_DB.prepare(
+    'INSERT INTO users (id, customer_id, email, naam, role, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+  ).bind(randomId('usr'), customerId, eigenaarEmail, eigenaarNaam || eigenaarEmail.split('@')[0], 'eigenaar', today()).run();
+
+  try {
+    await mailCustomer(env, eigenaarEmail, eigenaarNaam, 'Welkom bij het Aanloop AI klantportaal',
+      `<p>Hallo ${escapeHtml(eigenaarNaam.split(' ')[0] || 'daar')},</p>
+       <p>Er is een klantportaal voor <strong>${escapeHtml(bedrijf)}</strong> voor u aangemaakt. U kunt inloggen — geen wachtwoord nodig:</p>
+       <p style="margin:24px 0"><a href="https://aanloopai.nl/portal/login" style="display:inline-block;background:#4f46e5;color:#fff;padding:13px 22px;border-radius:10px;text-decoration:none;font-weight:600">Naar het klantportaal</a></p>
+       <p>Vul uw e-mailadres in en u ontvangt direct een veilige inloglink.</p>`);
+  } catch (err) {
+    console.error('[admin] welcome email failed:', err.message || err);
+  }
+  return jsonResponse({ ok: true, customer_id: customerId, message: 'Klant aangemaakt' });
+}
+
+async function updateCustomer(request, env) {
+  const b = await request.json().catch(() => null);
+  if (!b?.id) return errorResponse('Klant-id ontbreekt', 400);
+  await env.PORTAL_DB.prepare(
+    'UPDATE customers SET bedrijf = ?, kvk = ?, adres = ?, postcode = ?, stad = ?, telefoon = ?, factuur_email = ? WHERE id = ?',
+  ).bind((b.bedrijf || '').slice(0, 200), (b.kvk || '').slice(0, 20), (b.adres || '').slice(0, 200),
+    (b.postcode || '').slice(0, 12), (b.stad || '').slice(0, 100), (b.telefoon || '').slice(0, 40),
+    (b.factuur_email || '').slice(0, 160), b.id).run();
+  return jsonResponse({ ok: true, message: 'Klantgegevens bijgewerkt' });
+}
+
+async function customerDetail(env, url) {
+  const id = url.searchParams.get('id');
+  if (!id) return errorResponse('Klant-id ontbreekt', 400);
+  const db = env.PORTAL_DB;
+  const customer = await db.prepare('SELECT * FROM customers WHERE id = ?').bind(id).first();
+  if (!customer) return errorResponse('Klant niet gevonden', 404);
+  const users = (await db.prepare('SELECT id, email, naam, role, last_login, created_at FROM users WHERE customer_id = ? ORDER BY created_at').bind(id).all()).results || [];
+  const services = (await db.prepare('SELECT id, product_key, naam, tier, status, config_json, started_at, created_at FROM services WHERE customer_id = ? ORDER BY created_at').bind(id).all()).results || [];
+  const invoices = (await db.prepare('SELECT id, periode, bedrag_cent, status, pdf_url, created_at FROM invoices WHERE customer_id = ? ORDER BY created_at DESC').bind(id).all()).results || [];
+  return jsonResponse({ ok: true, customer, users, services, invoices });
+}
+
+async function createUser(request, env) {
+  const b = await request.json().catch(() => null);
+  const email = (b?.email || '').toString().trim().toLowerCase();
+  if (!b?.customer_id || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return errorResponse('Klant-id en geldig e-mailadres zijn verplicht', 400);
+  if (!['eigenaar', 'bewerker', 'kijker'].includes(b.role)) return errorResponse('Ongeldige rol', 400);
+  const exists = await env.PORTAL_DB.prepare('SELECT id FROM users WHERE email = ?').bind(email).first();
+  if (exists) return errorResponse('Dit e-mailadres heeft al een account', 409);
+  await env.PORTAL_DB.prepare(
+    'INSERT INTO users (id, customer_id, email, naam, role, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+  ).bind(randomId('usr'), b.customer_id, email, (b.naam || email.split('@')[0]).slice(0, 120), b.role, today()).run();
+  return jsonResponse({ ok: true, message: 'Gebruiker toegevoegd' });
+}
+
+async function createService(request, env) {
+  const b = await request.json().catch(() => null);
+  if (!b?.customer_id || !b?.product_key || !b?.naam) return errorResponse('Klant, product en naam zijn verplicht', 400);
+  const status = ['actief', 'onboarding', 'gepauzeerd'].includes(b.status) ? b.status : 'onboarding';
+  await env.PORTAL_DB.prepare(
+    'INSERT INTO services (id, customer_id, product_key, naam, tier, status, config_json, started_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+  ).bind(randomId('svc'), b.customer_id, b.product_key, b.naam.slice(0, 120), b.tier || null, status,
+    b.config ? JSON.stringify(b.config) : null, b.started_at || null, today()).run();
+  return jsonResponse({ ok: true, message: 'Dienst toegevoegd' });
+}
+
+async function updateService(request, env) {
+  const b = await request.json().catch(() => null);
+  if (!b?.id) return errorResponse('Dienst-id ontbreekt', 400);
+  const current = await env.PORTAL_DB.prepare('SELECT status, tier, naam, config_json, started_at FROM services WHERE id = ?').bind(b.id).first();
+  if (!current) return errorResponse('Dienst niet gevonden', 404);
+  const status = ['actief', 'onboarding', 'gepauzeerd'].includes(b.status) ? b.status : current.status;
+  // Stamp started_at the first time a service becomes actief.
+  const startedAt = (status === 'actief' && !current.started_at) ? today() : current.started_at;
+  await env.PORTAL_DB.prepare(
+    'UPDATE services SET naam = ?, tier = ?, status = ?, config_json = ?, started_at = ? WHERE id = ?',
+  ).bind((b.naam ?? current.naam).slice(0, 120), b.tier ?? current.tier, status,
+    b.config !== undefined ? JSON.stringify(b.config) : current.config_json, startedAt, b.id).run();
+  return jsonResponse({ ok: true, message: 'Dienst bijgewerkt' });
+}
+
+async function listRequests(env, url) {
+  const status = url.searchParams.get('status');
+  const base = `SELECT r.id, r.customer_id, r.user_id, r.type, r.service_id, r.product_key, r.bericht,
+      r.status, r.admin_notitie, r.created_at, r.handled_at, c.bedrijf, u.naam AS user_naam, u.email AS user_email
+    FROM service_requests r
+    JOIN customers c ON c.id = r.customer_id
+    JOIN users u ON u.id = r.user_id`;
+  const q = status
+    ? env.PORTAL_DB.prepare(`${base} WHERE r.status = ? ORDER BY r.created_at DESC`).bind(status)
+    : env.PORTAL_DB.prepare(`${base} ORDER BY r.created_at DESC`);
+  return jsonResponse({ ok: true, requests: (await q.all()).results || [] });
+}
+
+async function fulfillRequest(request, env) {
+  const b = await request.json().catch(() => null);
+  if (!b?.id || !['open', 'in_behandeling', 'afgerond', 'afgewezen'].includes(b.status)) {
+    return errorResponse('Ongeldige aanvraag', 400);
+  }
+  const handledAt = (b.status === 'afgerond' || b.status === 'afgewezen') ? Date.now() : null;
+  await env.PORTAL_DB.prepare(
+    'UPDATE service_requests SET status = ?, admin_notitie = ?, handled_at = ? WHERE id = ?',
+  ).bind(b.status, (b.admin_notitie || '').slice(0, 2000), handledAt, b.id).run();
+  return jsonResponse({ ok: true, message: 'Aanvraag bijgewerkt' });
+}
+
+async function listTickets(env, url) {
+  const status = url.searchParams.get('status');
+  const base = `SELECT t.id, t.customer_id, t.onderwerp, t.bericht, t.status, t.admin_antwoord,
+      t.created_at, t.updated_at, c.bedrijf, u.naam AS user_naam, u.email AS user_email
+    FROM support_tickets t
+    JOIN customers c ON c.id = t.customer_id
+    JOIN users u ON u.id = t.user_id`;
+  const q = status
+    ? env.PORTAL_DB.prepare(`${base} WHERE t.status = ? ORDER BY t.created_at DESC`).bind(status)
+    : env.PORTAL_DB.prepare(`${base} ORDER BY t.created_at DESC`);
+  return jsonResponse({ ok: true, tickets: (await q.all()).results || [] });
+}
+
+async function answerTicket(request, env) {
+  const b = await request.json().catch(() => null);
+  if (!b?.id || !['open', 'in_behandeling', 'beantwoord', 'gesloten'].includes(b.status)) {
+    return errorResponse('Ongeldige aanvraag', 400);
+  }
+  const ticket = await env.PORTAL_DB.prepare(
+    `SELECT t.onderwerp, u.email, u.naam FROM support_tickets t JOIN users u ON u.id = t.user_id WHERE t.id = ?`,
+  ).bind(b.id).first();
+  if (!ticket) return errorResponse('Ticket niet gevonden', 404);
+
+  await env.PORTAL_DB.prepare(
+    'UPDATE support_tickets SET admin_antwoord = ?, status = ?, updated_at = ? WHERE id = ?',
+  ).bind((b.admin_antwoord || '').slice(0, 4000), b.status, Date.now(), b.id).run();
+
+  if (b.admin_antwoord && (b.status === 'beantwoord' || b.status === 'gesloten')) {
+    try {
+      await mailCustomer(env, ticket.email, ticket.naam, `Antwoord op uw vraag: ${ticket.onderwerp}`,
+        `<p>Hallo ${escapeHtml((ticket.naam || '').split(' ')[0] || 'daar')},</p>
+         <p>We hebben gereageerd op uw vraag <strong>"${escapeHtml(ticket.onderwerp)}"</strong>:</p>
+         <p style="padding:12px 16px;background:#f8fafc;border-left:3px solid #4f46e5;border-radius:6px">${escapeHtml(b.admin_antwoord).replace(/\n/g, '<br>')}</p>
+         <p>U kunt het volledige ticket bekijken in het <a href="https://aanloopai.nl/portal/support">klantportaal</a>.</p>`);
+    } catch (err) {
+      console.error('[admin] ticket answer email failed:', err.message || err);
+    }
+  }
+  return jsonResponse({ ok: true, message: 'Ticket bijgewerkt' });
+}
+
+async function createInvoice(request, env) {
+  const b = await request.json().catch(() => null);
+  const bedrag = parseInt(b?.bedrag_cent, 10);
+  if (!b?.customer_id || !b?.periode || !Number.isFinite(bedrag)) {
+    return errorResponse('Klant, periode en bedrag zijn verplicht', 400);
+  }
+  const status = b.status === 'betaald' ? 'betaald' : 'open';
+  await env.PORTAL_DB.prepare(
+    'INSERT INTO invoices (id, customer_id, periode, bedrag_cent, status, pdf_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+  ).bind(randomId('inv'), b.customer_id, b.periode.toString().slice(0, 40), bedrag, status,
+    (b.pdf_url || '').toString().slice(0, 500) || null, today()).run();
+  return jsonResponse({ ok: true, message: 'Factuur toegevoegd' });
+}

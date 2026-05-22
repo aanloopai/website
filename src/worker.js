@@ -24,10 +24,10 @@ import {
   handleAuthRequest,
   handleAuthVerify,
   handleAuthLogout,
-  handlePortalMe,
-  handlePortalServices,
-  handlePortalDocuments,
+  handleInviteAccept,
+  handlePortalApi,
 } from './lib/portal-routes.js';
+import { handleAdminApi } from './lib/admin-routes.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -502,11 +502,9 @@ export default {
       return handleGoogleCallback(request, env);
     }
 
-    // Customer portal — passwordless magic-link auth + dashboard data
+    // Customer portal — passwordless magic-link auth
     if (url.pathname === '/api/auth/request') {
-      if (request.method === 'OPTIONS') {
-        return new Response(null, { headers: CORS_HEADERS });
-      }
+      if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
       return handleAuthRequest(request, env);
     }
     if (url.pathname === '/api/auth/verify') {
@@ -515,14 +513,17 @@ export default {
     if (url.pathname === '/api/auth/logout') {
       return handleAuthLogout(request, env);
     }
-    if (url.pathname === '/api/portal/me') {
-      return handlePortalMe(request, env);
+    if (url.pathname === '/api/team-invite/accept') {
+      return handleInviteAccept(request, env);
     }
-    if (url.pathname === '/api/portal/services') {
-      return handlePortalServices(request, env);
+    // Customer portal API + admin panel API
+    if (url.pathname.startsWith('/api/portal/')) {
+      if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
+      return handlePortalApi(request, env);
     }
-    if (url.pathname === '/api/portal/documents') {
-      return handlePortalDocuments(request, env);
+    if (url.pathname.startsWith('/api/admin/')) {
+      if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
+      return handleAdminApi(request, env);
     }
 
     if (env.ASSETS) {

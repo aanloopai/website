@@ -1,0 +1,88 @@
+---
+// Admin panel — support ticket queue.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Support" active="support">
+  <h1 class="text-2xl font-bold text-slate-900">Support</h1>
+  <p class="mt-1 text-sm text-slate-600">Supportvragen van klanten. Een antwoord wordt per e-mail verstuurd.</p>
+
+  <div class="mt-4 flex gap-2">
+    <select id="t-filter" class="rounded-lg border border-slate-300 px-3 py-2 text-sm">
+      <option value="">Alle statussen</option>
+      <option value="open">Open</option>
+      <option value="in_behandeling">In behandeling</option>
+      <option value="beantwoord">Beantwoord</option>
+      <option value="gesloten">Gesloten</option>
+    </select>
+  </div>
+
+  <div id="t-loading" class="mt-6 text-sm text-slate-400">Bezig met laden...</div>
+  <div id="t-list" class="mt-6 space-y-3"></div>
+  <p id="t-empty" class="mt-6 hidden text-sm text-slate-400">Geen tickets.</p>
+
+  <script is:inline>
+    (function () {
+      var STATUS = {
+        open: 'bg-amber-100 text-amber-800',
+        in_behandeling: 'bg-blue-100 text-blue-800',
+        beantwoord: 'bg-emerald-100 text-emerald-800',
+        gesloten: 'bg-slate-200 text-slate-600',
+      };
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      function load() {
+        var f = document.getElementById('t-filter').value;
+        fetch('/api/admin/tickets' + (f ? '?status=' + f : ''), { credentials: 'same-origin' })
+          .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (d) {
+            document.getElementById('t-loading').classList.add('hidden');
+            var list = d.tickets || [];
+            var box = document.getElementById('t-list');
+            if (!list.length) { document.getElementById('t-empty').classList.remove('hidden'); box.innerHTML = ''; return; }
+            document.getElementById('t-empty').classList.add('hidden');
+            box.innerHTML = list.map(function (t) {
+              var badge = STATUS[t.status] || 'bg-slate-200 text-slate-600';
+              var dt = new Date(t.created_at).toLocaleString('nl-NL');
+              return '<div class="rounded-xl border border-slate-200 bg-white p-4" data-id="' + esc(t.id) + '">' +
+                '<div class="flex items-center justify-between gap-2">' +
+                '<span class="font-semibold text-slate-900">' + esc(t.onderwerp) + ' — ' + esc(t.bedrijf) + '</span>' +
+                '<span class="rounded-full px-2 py-0.5 text-xs font-medium ' + badge + '">' + esc(t.status) + '</span></div>' +
+                '<p class="mt-1 text-xs text-slate-400">' + dt + ' · ' + esc(t.user_naam) + ' (' + esc(t.user_email) + ')</p>' +
+                '<p class="mt-2 text-sm text-slate-600">' + esc(t.bericht) + '</p>' +
+                '<textarea class="t-ans mt-3 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm" rows="3" placeholder="Antwoord aan de klant">' + esc(t.admin_antwoord || '') + '</textarea>' +
+                '<div class="mt-2 flex flex-wrap items-center gap-2">' +
+                '<select class="t-stat rounded-lg border border-slate-300 px-2 py-1 text-sm">' +
+                ['open', 'in_behandeling', 'beantwoord', 'gesloten'].map(function (s) {
+                  return '<option value="' + s + '"' + (s === t.status ? ' selected' : '') + '>' + s + '</option>';
+                }).join('') + '</select>' +
+                '<button class="t-save rounded-lg bg-brand-indigo px-3 py-1 text-sm font-medium text-white hover:bg-indigo-700">Opslaan + mailen</button>' +
+                '<span class="t-hint text-xs text-slate-400">Bij status beantwoord/gesloten + antwoord gaat er een mail naar de klant.</span>' +
+                '</div></div>';
+            }).join('');
+            document.querySelectorAll('#t-list .t-save').forEach(function (b) {
+              b.addEventListener('click', function () {
+                var box2 = b.closest('[data-id]');
+                b.disabled = true;
+                fetch('/api/admin/ticket', {
+                  method: 'PATCH', credentials: 'same-origin',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    id: box2.getAttribute('data-id'),
+                    status: box2.querySelector('.t-stat').value,
+                    admin_antwoord: box2.querySelector('.t-ans').value.trim(),
+                  }),
+                }).then(function () { load(); }).catch(function () { b.disabled = false; });
+              });
+            });
+          })
+          .catch(function () {});
+      }
+      document.getElementById('t-filter').addEventListener('change', load);
+      load();
+    })();
+  </script>
+</AdminLayout>

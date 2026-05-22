@@ -1,12 +1,23 @@
 ---
-// Minimal layout for the customer portal (C3). No marketing chrome,
-// always noindex — the portal is for authenticated customers only.
+// Customer portal app shell (schema v2). Sidebar nav + topbar.
+// A global auth guard fetches /api/portal/me — redirects to login on 401 and
+// fills the topbar. Every portal page (except login) uses this layout.
 import '../styles/global.css';
 
 export interface Props {
   title: string;
+  active?: string;
 }
-const { title } = Astro.props;
+const { title, active = '' } = Astro.props;
+
+const nav = [
+  { key: 'overzicht', label: 'Overzicht', href: '/portal/' },
+  { key: 'diensten', label: 'Mijn diensten', href: '/portal/diensten' },
+  { key: 'ontdekken', label: 'Diensten ontdekken', href: '/portal/ontdekken' },
+  { key: 'facturatie', label: 'Facturatie', href: '/portal/facturatie' },
+  { key: 'support', label: 'Support', href: '/portal/support' },
+  { key: 'instellingen', label: 'Instellingen', href: '/portal/instellingen' },
+];
 ---
 
 <!DOCTYPE html>
@@ -19,22 +30,72 @@ const { title } = Astro.props;
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
   </head>
   <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
-    <header class="border-b border-slate-200 bg-white">
-      <div class="mx-auto flex max-w-4xl items-center justify-between px-4 py-4">
-        <a href="/" class="flex items-center gap-2" aria-label="Aanloop AI home">
-          <img src="/brand/logo-horizontal-light.svg" alt="Aanloop AI" class="h-7" />
-        </a>
-        <span class="text-xs font-medium uppercase tracking-wider text-slate-400">Klantportaal</span>
+    <div class="mx-auto flex max-w-6xl flex-col lg:flex-row">
+      <aside class="border-b border-slate-200 bg-white lg:w-60 lg:shrink-0 lg:border-b-0 lg:border-r">
+        <div class="flex items-center gap-2 border-b border-slate-100 px-5 py-4">
+          <a href="/" aria-label="Aanloop AI home">
+            <img src="/brand/logo-horizontal-light.svg" alt="Aanloop AI" class="h-6" />
+          </a>
+        </div>
+        <nav class="flex gap-1 overflow-x-auto px-3 py-3 lg:flex-col">
+          {nav.map((n) => (
+            <a
+              href={n.href}
+              class={`whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                active === n.key
+                  ? 'bg-brand-indigo text-white'
+                  : 'text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              {n.label}
+            </a>
+          ))}
+        </nav>
+      </aside>
+
+      <div class="min-w-0 flex-1">
+        <header class="flex items-center justify-between border-b border-slate-200 bg-white px-5 py-3">
+          <div class="truncate text-sm font-medium text-slate-500" id="pl-bedrijf">Klantportaal</div>
+          <div class="flex items-center gap-3">
+            <span class="hidden text-sm text-slate-700 sm:inline" id="pl-user"></span>
+            <span class="hidden rounded-full bg-slate-100 px-2 py-0.5 text-xs capitalize text-slate-500" id="pl-role"></span>
+            <a
+              href="/api/auth/logout"
+              class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100"
+            >
+              Uitloggen
+            </a>
+          </div>
+        </header>
+        <main class="px-5 py-6 lg:px-8 lg:py-8">
+          <slot />
+        </main>
       </div>
-    </header>
+    </div>
 
-    <main class="mx-auto max-w-4xl px-4 py-10">
-      <slot />
-    </main>
-
-    <footer class="mx-auto max-w-4xl px-4 py-8 text-xs text-slate-400">
-      Aanloop AI — <a href="https://aanloopai.nl" class="underline">aanloopai.nl</a> — KvK 88606902 ·
-      <a href="/privacy/" class="underline">Privacy</a>
-    </footer>
+    <script is:inline>
+      // Global auth guard + topbar fill for every portal page.
+      fetch('/api/portal/me', { credentials: 'same-origin' })
+        .then(function (r) {
+          if (r.status === 401) { location.href = '/portal/login'; throw new Error('unauth'); }
+          return r.json();
+        })
+        .then(function (d) {
+          var u = d.user || {}, c = d.customer || {};
+          var b = document.getElementById('pl-bedrijf');
+          if (b) b.textContent = c.bedrijf || 'Klantportaal';
+          var un = document.getElementById('pl-user');
+          if (un) un.textContent = u.naam || '';
+          var rl = document.getElementById('pl-role');
+          if (rl && u.role) { rl.textContent = u.role; rl.classList.remove('hidden'); }
+          window.__portalUser = u;
+          // kijker = read-only: hide every write control marked [data-write].
+          if (u.role === 'kijker') {
+            document.querySelectorAll('[data-write]').forEach(function (el) { el.classList.add('hidden'); });
+          }
+          document.dispatchEvent(new CustomEvent('portal:ready', { detail: d }));
+        })
+        .catch(function () {});
+    </script>
   </body>
 </html>

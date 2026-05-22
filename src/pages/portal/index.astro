@@ -1,148 +1,110 @@
 ---
-// Customer portal dashboard (C3). Static shell — data is fetched client-side
-// from /api/portal/*. Unauthenticated visitors are redirected to /portal/login.
+// Customer portal — Overzicht (dashboard). Data: /api/portal/overview.
 import PortalLayout from '../../layouts/PortalLayout.astro';
 ---
 
-<PortalLayout title="Dashboard">
-  <div id="loading" class="text-sm text-slate-500">Bezig met laden...</div>
+<PortalLayout title="Overzicht" active="overzicht">
+  <h1 class="text-2xl font-bold text-slate-900">Overzicht</h1>
+  <p class="mt-1 text-sm text-slate-600" id="ov-intro">Welkom terug.</p>
 
-  <div id="dashboard" class="hidden">
-    <div class="flex items-start justify-between gap-4">
-      <div>
-        <h1 class="text-2xl font-bold text-slate-900">
-          Welkom, <span id="customer-name"></span>
-        </h1>
-        <p class="mt-1 text-sm text-slate-600" id="customer-company"></p>
+  <div id="ov-loading" class="mt-6 text-sm text-slate-400">Bezig met laden...</div>
+
+  <div id="ov-content" class="hidden">
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <p class="text-xs uppercase tracking-wide text-slate-400">Actieve diensten</p>
+        <p class="mt-1 text-2xl font-bold text-slate-900" id="ov-svc">0</p>
       </div>
-      <a
-        href="/api/auth/logout"
-        class="shrink-0 rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100"
-      >
-        Uitloggen
-      </a>
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <p class="text-xs uppercase tracking-wide text-slate-400">Open aanvragen</p>
+        <p class="mt-1 text-2xl font-bold text-slate-900" id="ov-req">0</p>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <p class="text-xs uppercase tracking-wide text-slate-400">Open vragen</p>
+        <p class="mt-1 text-2xl font-bold text-slate-900" id="ov-tkt">0</p>
+      </div>
+      <div class="rounded-xl border border-slate-200 bg-white p-4">
+        <p class="text-xs uppercase tracking-wide text-slate-400">Openstaande factuur</p>
+        <p class="mt-1 text-2xl font-bold text-slate-900" id="ov-inv">—</p>
+      </div>
     </div>
 
-    <section class="mt-8">
-      <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500">Uw diensten</h2>
-      <div id="services" class="mt-3 grid gap-3 sm:grid-cols-2"></div>
-      <p id="services-empty" class="mt-3 hidden text-sm text-slate-400">
-        Nog geen diensten geregistreerd.
-      </p>
-    </section>
+    <div class="mt-8 grid gap-6 lg:grid-cols-3">
+      <section class="rounded-xl border border-slate-200 bg-white p-5">
+        <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Aan de slag</h2>
+        <div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-100">
+          <div id="ov-progress" class="h-full bg-brand-indigo" style="width:0%"></div>
+        </div>
+        <ul id="ov-onboarding" class="mt-4 space-y-2 text-sm"></ul>
+      </section>
 
-    <section class="mt-8">
-      <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500">Documenten</h2>
-      <ul id="documents" class="mt-3 divide-y divide-slate-100 rounded-lg border border-slate-200 bg-white"></ul>
-      <p id="documents-empty" class="mt-3 hidden text-sm text-slate-400">
-        Nog geen documenten beschikbaar.
-      </p>
-    </section>
-
-    <section class="mt-10 rounded-lg bg-slate-100 px-4 py-4 text-sm text-slate-600">
-      Vragen over uw diensten? Mail
-      <a href="mailto:hello@aanloopai.nl" class="font-medium text-brand-indigo underline">hello@aanloopai.nl</a>.
-    </section>
+      <section class="rounded-xl border border-slate-200 bg-white p-5 lg:col-span-2">
+        <div class="flex items-center justify-between">
+          <h2 class="text-sm font-semibold uppercase tracking-wide text-slate-500">Uw diensten</h2>
+          <a href="/portal/diensten" class="text-sm font-medium text-brand-indigo hover:underline">Alle diensten →</a>
+        </div>
+        <div id="ov-services" class="mt-3 space-y-2"></div>
+        <p id="ov-services-empty" class="mt-3 hidden text-sm text-slate-400">
+          Nog geen diensten. Bekijk <a href="/portal/ontdekken" class="text-brand-indigo underline">Diensten ontdekken</a>.
+        </p>
+      </section>
+    </div>
   </div>
 
   <script is:inline>
     (function () {
-      var STATUS_STYLES = {
+      var STATUS = {
         actief: 'bg-emerald-100 text-emerald-800',
         onboarding: 'bg-amber-100 text-amber-800',
         gepauzeerd: 'bg-slate-200 text-slate-600',
       };
-
       function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
           return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
         });
       }
-      function goLogin() {
-        location.href = '/portal/login';
+      function euro(cent) {
+        return (Number(cent || 0) / 100).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' });
       }
 
-      fetch('/api/portal/me', { credentials: 'same-origin' })
-        .then(function (r) {
-          if (r.status === 401) {
-            goLogin();
-            throw new Error('unauthenticated');
-          }
-          return r.json();
-        })
+      fetch('/api/portal/overview', { credentials: 'same-origin' })
+        .then(function (r) { if (r.status === 401) { location.href = '/portal/login'; throw 0; } return r.json(); })
         .then(function (d) {
-          var c = d.customer || {};
-          document.getElementById('customer-name').textContent =
-            (c.naam || '').split(' ')[0] || 'klant';
-          document.getElementById('customer-company').textContent = c.bedrijf || '';
-          document.getElementById('loading').classList.add('hidden');
-          document.getElementById('dashboard').classList.remove('hidden');
-          loadServices();
-          loadDocuments();
+          document.getElementById('ov-loading').classList.add('hidden');
+          document.getElementById('ov-content').classList.remove('hidden');
+          if (d.bedrijf) document.getElementById('ov-intro').textContent = 'Welkom terug — ' + d.bedrijf + '.';
+
+          var services = d.services || [];
+          document.getElementById('ov-svc').textContent = services.filter(function (s) { return s.status === 'actief'; }).length;
+          document.getElementById('ov-req').textContent = d.openRequests || 0;
+          document.getElementById('ov-tkt').textContent = d.openTickets || 0;
+          document.getElementById('ov-inv').textContent = d.openInvoice ? euro(d.openInvoice.bedrag_cent) : 'Geen';
+
+          var ob = d.onboarding || [];
+          var done = ob.filter(function (s) { return s.done; }).length;
+          document.getElementById('ov-progress').style.width = (ob.length ? Math.round((done / ob.length) * 100) : 0) + '%';
+          document.getElementById('ov-onboarding').innerHTML = ob.map(function (s) {
+            return '<li class="flex items-center gap-2">' +
+              (s.done
+                ? '<span class="text-emerald-600">✓</span><span class="text-slate-500 line-through">' + esc(s.label) + '</span>'
+                : '<span class="text-slate-300">○</span><span class="text-slate-700">' + esc(s.label) + '</span>') +
+              '</li>';
+          }).join('');
+
+          var box = document.getElementById('ov-services');
+          if (!services.length) {
+            document.getElementById('ov-services-empty').classList.remove('hidden');
+          } else {
+            box.innerHTML = services.map(function (s) {
+              var badge = STATUS[s.status] || 'bg-slate-200 text-slate-600';
+              return '<a href="/portal/diensten" class="flex items-center justify-between rounded-lg border border-slate-200 px-4 py-3 hover:bg-slate-50">' +
+                '<span class="font-medium text-slate-900">' + esc(s.naam) + '</span>' +
+                '<span class="rounded-full px-2 py-0.5 text-xs font-medium ' + badge + '">' + esc(s.status) + '</span>' +
+                '</a>';
+            }).join('');
+          }
         })
-        .catch(function () {
-          /* redirect already triggered for 401; other errors are swallowed */
-        });
-
-      function loadServices() {
-        fetch('/api/portal/services', { credentials: 'same-origin' })
-          .then(function (r) { return r.json(); })
-          .then(function (d) {
-            var list = d.services || [];
-            var box = document.getElementById('services');
-            if (!list.length) {
-              document.getElementById('services-empty').classList.remove('hidden');
-              return;
-            }
-            box.innerHTML = list
-              .map(function (s) {
-                var badge = STATUS_STYLES[s.status] || 'bg-slate-200 text-slate-600';
-                return (
-                  '<div class="rounded-lg border border-slate-200 bg-white p-4">' +
-                  '<div class="flex items-center justify-between gap-2">' +
-                  '<span class="font-semibold text-slate-900">' + esc(s.naam) + '</span>' +
-                  '<span class="shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ' +
-                  badge + '">' + esc(s.status) + '</span>' +
-                  '</div>' +
-                  '<p class="mt-1 text-xs uppercase tracking-wide text-slate-400">' +
-                  esc(s.type) + '</p>' +
-                  '</div>'
-                );
-              })
-              .join('');
-          })
-          .catch(function () {});
-      }
-
-      function loadDocuments() {
-        fetch('/api/portal/documents', { credentials: 'same-origin' })
-          .then(function (r) { return r.json(); })
-          .then(function (d) {
-            var list = d.documents || [];
-            var box = document.getElementById('documents');
-            if (!list.length) {
-              document.getElementById('documents-empty').classList.remove('hidden');
-              return;
-            }
-            box.innerHTML = list
-              .map(function (doc) {
-                var url = String(doc.url || '');
-                var isHttp = /^https?:\/\//i.test(url);
-                var right = isHttp
-                  ? '<a href="' + esc(url) + '" target="_blank" rel="noopener" ' +
-                    'class="text-sm font-medium text-brand-indigo underline">Openen</a>'
-                  : '<span class="text-xs text-slate-400">Niet beschikbaar</span>';
-                return (
-                  '<li class="flex items-center justify-between gap-3 px-4 py-3">' +
-                  '<span class="text-sm text-slate-700">' + esc(doc.titel) + '</span>' +
-                  right +
-                  '</li>'
-                );
-              })
-              .join('');
-          })
-          .catch(function () {});
-      }
+        .catch(function () {});
     })();
   </script>
 </PortalLayout>
