@@ -1,0 +1,148 @@
+---
+// Customer portal dashboard (C3). Static shell — data is fetched client-side
+// from /api/portal/*. Unauthenticated visitors are redirected to /portal/login.
+import PortalLayout from '../../layouts/PortalLayout.astro';
+---
+
+<PortalLayout title="Dashboard">
+  <div id="loading" class="text-sm text-slate-500">Bezig met laden...</div>
+
+  <div id="dashboard" class="hidden">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <h1 class="text-2xl font-bold text-slate-900">
+          Welkom, <span id="customer-name"></span>
+        </h1>
+        <p class="mt-1 text-sm text-slate-600" id="customer-company"></p>
+      </div>
+      <a
+        href="/api/auth/logout"
+        class="shrink-0 rounded-lg border border-slate-300 px-3 py-1.5 text-sm text-slate-600 hover:bg-slate-100"
+      >
+        Uitloggen
+      </a>
+    </div>
+
+    <section class="mt-8">
+      <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500">Uw diensten</h2>
+      <div id="services" class="mt-3 grid gap-3 sm:grid-cols-2"></div>
+      <p id="services-empty" class="mt-3 hidden text-sm text-slate-400">
+        Nog geen diensten geregistreerd.
+      </p>
+    </section>
+
+    <section class="mt-8">
+      <h2 class="text-sm font-semibold uppercase tracking-wider text-slate-500">Documenten</h2>
+      <ul id="documents" class="mt-3 divide-y divide-slate-100 rounded-lg border border-slate-200 bg-white"></ul>
+      <p id="documents-empty" class="mt-3 hidden text-sm text-slate-400">
+        Nog geen documenten beschikbaar.
+      </p>
+    </section>
+
+    <section class="mt-10 rounded-lg bg-slate-100 px-4 py-4 text-sm text-slate-600">
+      Vragen over uw diensten? Mail
+      <a href="mailto:hello@aanloopai.nl" class="font-medium text-brand-indigo underline">hello@aanloopai.nl</a>.
+    </section>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var STATUS_STYLES = {
+        actief: 'bg-emerald-100 text-emerald-800',
+        onboarding: 'bg-amber-100 text-amber-800',
+        gepauzeerd: 'bg-slate-200 text-slate-600',
+      };
+
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      function goLogin() {
+        location.href = '/portal/login';
+      }
+
+      fetch('/api/portal/me', { credentials: 'same-origin' })
+        .then(function (r) {
+          if (r.status === 401) {
+            goLogin();
+            throw new Error('unauthenticated');
+          }
+          return r.json();
+        })
+        .then(function (d) {
+          var c = d.customer || {};
+          document.getElementById('customer-name').textContent =
+            (c.naam || '').split(' ')[0] || 'klant';
+          document.getElementById('customer-company').textContent = c.bedrijf || '';
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('dashboard').classList.remove('hidden');
+          loadServices();
+          loadDocuments();
+        })
+        .catch(function () {
+          /* redirect already triggered for 401; other errors are swallowed */
+        });
+
+      function loadServices() {
+        fetch('/api/portal/services', { credentials: 'same-origin' })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            var list = d.services || [];
+            var box = document.getElementById('services');
+            if (!list.length) {
+              document.getElementById('services-empty').classList.remove('hidden');
+              return;
+            }
+            box.innerHTML = list
+              .map(function (s) {
+                var badge = STATUS_STYLES[s.status] || 'bg-slate-200 text-slate-600';
+                return (
+                  '<div class="rounded-lg border border-slate-200 bg-white p-4">' +
+                  '<div class="flex items-center justify-between gap-2">' +
+                  '<span class="font-semibold text-slate-900">' + esc(s.naam) + '</span>' +
+                  '<span class="shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ' +
+                  badge + '">' + esc(s.status) + '</span>' +
+                  '</div>' +
+                  '<p class="mt-1 text-xs uppercase tracking-wide text-slate-400">' +
+                  esc(s.type) + '</p>' +
+                  '</div>'
+                );
+              })
+              .join('');
+          })
+          .catch(function () {});
+      }
+
+      function loadDocuments() {
+        fetch('/api/portal/documents', { credentials: 'same-origin' })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            var list = d.documents || [];
+            var box = document.getElementById('documents');
+            if (!list.length) {
+              document.getElementById('documents-empty').classList.remove('hidden');
+              return;
+            }
+            box.innerHTML = list
+              .map(function (doc) {
+                var url = String(doc.url || '');
+                var isHttp = /^https?:\/\//i.test(url);
+                var right = isHttp
+                  ? '<a href="' + esc(url) + '" target="_blank" rel="noopener" ' +
+                    'class="text-sm font-medium text-brand-indigo underline">Openen</a>'
+                  : '<span class="text-xs text-slate-400">Niet beschikbaar</span>';
+                return (
+                  '<li class="flex items-center justify-between gap-3 px-4 py-3">' +
+                  '<span class="text-sm text-slate-700">' + esc(doc.titel) + '</span>' +
+                  right +
+                  '</li>'
+                );
+              })
+              .join('');
+          })
+          .catch(function () {});
+      }
+    })();
+  </script>
+</PortalLayout>

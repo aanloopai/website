@@ -20,6 +20,14 @@ import {
   handleGoogleInitiate,
   handleGoogleCallback,
 } from './lib/calendar-routes.js';
+import {
+  handleAuthRequest,
+  handleAuthVerify,
+  handleAuthLogout,
+  handlePortalMe,
+  handlePortalServices,
+  handlePortalDocuments,
+} from './lib/portal-routes.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -492,6 +500,29 @@ export default {
     }
     if (url.pathname === '/api/google/callback') {
       return handleGoogleCallback(request, env);
+    }
+
+    // Customer portal — passwordless magic-link auth + dashboard data
+    if (url.pathname === '/api/auth/request') {
+      if (request.method === 'OPTIONS') {
+        return new Response(null, { headers: CORS_HEADERS });
+      }
+      return handleAuthRequest(request, env);
+    }
+    if (url.pathname === '/api/auth/verify') {
+      return handleAuthVerify(request, env);
+    }
+    if (url.pathname === '/api/auth/logout') {
+      return handleAuthLogout(request, env);
+    }
+    if (url.pathname === '/api/portal/me') {
+      return handlePortalMe(request, env);
+    }
+    if (url.pathname === '/api/portal/services') {
+      return handlePortalServices(request, env);
+    }
+    if (url.pathname === '/api/portal/documents') {
+      return handlePortalDocuments(request, env);
     }
 
     if (env.ASSETS) {

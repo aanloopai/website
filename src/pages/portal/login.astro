@@ -1,0 +1,95 @@
+---
+// Customer portal login (C3) — passwordless. Posts an email to
+// /api/auth/request; the worker mails a magic link.
+import PortalLayout from '../../layouts/PortalLayout.astro';
+---
+
+<PortalLayout title="Inloggen">
+  <div class="mx-auto max-w-md">
+    <h1 class="text-2xl font-bold text-slate-900">Inloggen op het klantportaal</h1>
+    <p class="mt-2 text-sm text-slate-600">
+      Vul uw e-mailadres in. U ontvangt een veilige inloglink — geen wachtwoord nodig.
+    </p>
+
+    <form id="login-form" class="mt-6 space-y-4" novalidate>
+      <div>
+        <label for="email" class="block text-sm font-medium text-slate-700">E-mailadres</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          autocomplete="email"
+          class="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2.5 text-sm focus:border-brand-indigo focus:outline-none focus:ring-1 focus:ring-brand-indigo"
+        />
+      </div>
+      <button
+        type="submit"
+        id="submit-btn"
+        class="w-full rounded-lg bg-brand-indigo px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60"
+      >
+        Stuur inloglink
+      </button>
+    </form>
+
+    <p id="message" class="mt-4 hidden rounded-lg px-3 py-2.5 text-sm"></p>
+
+    <p class="mt-6 text-xs text-slate-400">
+      Nog geen klant? <a href="/contact/" class="underline">Neem contact op</a> —
+      het portaal is voor actieve Aanloop AI klanten.
+    </p>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var form = document.getElementById('login-form');
+      var btn = document.getElementById('submit-btn');
+      var msg = document.getElementById('message');
+
+      function showMsg(text, ok) {
+        msg.textContent = text;
+        msg.className =
+          'mt-4 rounded-lg px-3 py-2.5 text-sm ' +
+          (ok ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800');
+      }
+
+      // Surface a failed/expired magic-link redirect (?error=link).
+      if (new URLSearchParams(location.search).get('error') === 'link') {
+        showMsg('Deze inloglink is ongeldig of verlopen. Vraag hieronder een nieuwe aan.', false);
+      }
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var email = document.getElementById('email').value.trim();
+        if (!email) return;
+        btn.disabled = true;
+        btn.textContent = 'Versturen...';
+        fetch('/api/auth/request', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: email }),
+        })
+          .then(function (r) {
+            return r.json().then(function (d) {
+              return { status: r.status, body: d };
+            });
+          })
+          .then(function (res) {
+            if (res.status === 200) {
+              showMsg(res.body.message || 'Controleer uw mailbox voor de inloglink.', true);
+              form.reset();
+            } else {
+              showMsg(res.body.error || 'Er ging iets mis. Probeer het opnieuw.', false);
+            }
+          })
+          .catch(function () {
+            showMsg('Netwerkfout. Probeer het opnieuw.', false);
+          })
+          .finally(function () {
+            btn.disabled = false;
+            btn.textContent = 'Stuur inloglink';
+          });
+      });
+    })();
+  </script>
+</PortalLayout>
