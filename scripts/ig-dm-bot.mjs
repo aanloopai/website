@@ -38,7 +38,7 @@ const TEMPLATES_PATH = path.resolve(
 const REPLIED_DB = path.resolve(
   process.env.REPLIED_DB || path.join(REPO_ROOT, "data", "ig-dm-replied.json"),
 );
-const KEYWORDS = (process.env.COMMENT_KEYWORDS || "BILGI,INFO,AUDIT,DEMO")
+const KEYWORDS = (process.env.COMMENT_KEYWORDS || "BILGI,INFO,AUDIT,DEMO,HORECA,ZORG,PROMPT,AVG,EMMA,FOUNDER,CIJFERS,AIDUUR,MARCO")
   .split(",")
   .map((k) => k.trim().toUpperCase())
   .filter(Boolean);
@@ -93,7 +93,13 @@ function alreadyRepliedRecent(senderId, windowMs) {
   return Date.now() - ts < windowMs;
 }
 
-function pickTemplate(kind) {
+function pickTemplate(kind, keyword) {
+  // Wave 5+: prefer keyword-specific dm_assets[KEYWORD] when comment matched a
+  // known keyword. Falls back to generic kind ('welcome'/'comment'/'mention').
+  if (keyword && templates.dm_assets && Array.isArray(templates.dm_assets[keyword]) && templates.dm_assets[keyword].length > 0) {
+    const arr = templates.dm_assets[keyword];
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
   const arr = templates[kind];
   return arr[Math.floor(Math.random() * arr.length)];
 }
@@ -180,7 +186,7 @@ async function handleComment(value) {
   const hit = KEYWORDS.find((k) => text.includes(k));
   if (!hit) return;
   if (alreadyRepliedRecent(`c:${commentId}`, 24 * 3600 * 1000)) return;
-  const dmText = pickTemplate("comment");
+  const dmText = pickTemplate("comment", hit);
   await sleep(REPLY_DELAY_MS);
   try {
     await sendDM(fromId, dmText);

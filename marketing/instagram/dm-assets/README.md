@@ -15,7 +15,7 @@ or hosted landing page. The bot quotes the link in the DM reply.
 | `EMMA` | Emma 14-dagen implementatie-roadmap | `dm-assets/emma-roadmap.pdf` → `aanloopai.nl/dl/emma-roadmap` |
 | `FOUNDER` | Wekelijkse founder-notities subscriptie + huidige editie | DM-only (geen PDF) |
 | `CIJFERS` | MKB-AI cijfer-rapport 2026 (5 CBS/KvK/Salesforce stats + bronnen) | `dm-assets/mkb-ai-cijfers-2026.pdf` → `aanloopai.nl/dl/mkb-ai-cijfers` |
-| `AI-DUUR` | Waarom MKB AI uitstelt — 1-pager analyse | `dm-assets/waarom-ai-uitstel.pdf` → `aanloopai.nl/dl/waarom-uitstel` |
+| `AIDUUR` | Waarom MKB AI uitstelt — 1-pager analyse | `dm-assets/waarom-ai-uitstel.pdf` → `aanloopai.nl/dl/waarom-uitstel` |
 | `MARCO` | Marco demo + Calendly intake-link | Direct link, geen PDF |
 | `AUDIT` | Gratis 15-min AI-audit Calendly | Direct link |
 | `DEMO` | Marco/Emma demo-video + Calendly | Direct link |
@@ -35,7 +35,7 @@ or hosted landing page. The bot quotes the link in the DM reply.
 Update `scripts/ig-dm-bot.mjs` env:
 
 ```
-COMMENT_KEYWORDS=HORECA,ZORG,PROMPT,AVG,EMMA,FOUNDER,CIJFERS,AI-DUUR,MARCO,AUDIT,DEMO,BILGI,INFO
+COMMENT_KEYWORDS=HORECA,ZORG,PROMPT,AVG,EMMA,FOUNDER,CIJFERS,AIDUUR,MARCO,AUDIT,DEMO,BILGI,INFO
 ```
 
 Templates extended in `marketing/instagram/dm-templates.json` — keyword-specific
