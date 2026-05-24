@@ -154,6 +154,46 @@ async function publishStory(igUserId, imageUrl) {
   return storyId;
 }
 
+async function publishCarousel(igUserId, slideUrls, caption) {
+  if (!Array.isArray(slideUrls) || slideUrls.length < 2 || slideUrls.length > 10) {
+    throw new Error(`Carousel requires 2-10 slides, got ${slideUrls?.length}`);
+  }
+  console.log(`\nCreating ${slideUrls.length} CAROUSEL child containers...`);
+  const childIds = [];
+  for (let i = 0; i < slideUrls.length; i++) {
+    const url = slideUrls[i];
+    const resp = await graphPost(`/${igUserId}/media`, {
+      image_url: url,
+      is_carousel_item: "true",
+    });
+    if (!resp.id) throw new Error(`No child id for slide ${i + 1}: ${JSON.stringify(resp).slice(0, 400)}`);
+    console.log(`  child ${i + 1}/${slideUrls.length}: ${resp.id}`);
+    childIds.push(resp.id);
+  }
+
+  console.log(`\nCreating parent CAROUSEL container...`);
+  const parentResp = await graphPost(`/${igUserId}/media`, {
+    media_type: "CAROUSEL",
+    caption,
+    children: childIds.join(","),
+  });
+  const parentId = parentResp.id;
+  if (!parentId) throw new Error(`No parent id: ${JSON.stringify(parentResp).slice(0, 400)}`);
+  console.log(`Parent CAROUSEL container: ${parentId}`);
+
+  console.log(`Polling carousel parent status...`);
+  await pollContainerReady(parentId, { maxWaitSec: MAX_WAIT_SEC });
+
+  console.log(`Publishing CAROUSEL container...`);
+  const pubResp = await graphPost(`/${igUserId}/media_publish`, {
+    creation_id: parentId,
+  });
+  const mediaId = pubResp.id;
+  if (!mediaId) throw new Error(`No carousel media id: ${JSON.stringify(pubResp).slice(0, 400)}`);
+  console.log(`Carousel published: ${mediaId}`);
+  return mediaId;
+}
+
 async function main() {
   if (!DRY && !VALIDATE_ONLY) {
     if (!TOKEN) {
@@ -197,36 +237,62 @@ async function main() {
     return;
   }
 
-  const imageUrl = `${sched.image_base_url.replace(/\/+$/, "")}/${due.image}`;
-  console.log(`\nSlot: ${due.id} (slot_iso=${due.slot_iso})`);
-  console.log(`Image URL: ${imageUrl}`);
+  const baseUrl = sched.image_base_url.replace(/\/+$/, "");
+  const format = due.format || "single";
+
+  let mediaId;
+  let imageUrlForStory; // story re-uses feed image when no story_image override
+
+  console.log(`\nSlot: ${due.id} (format=${format}, slot_iso=${due.slot_iso})`);
   console.log(`Caption first line: ${due.caption.split("\n")[0].slice(0, 80)}`);
   console.log(`Caption length: ${due.caption.length} chars`);
 
-  if (DRY) {
-    console.log("DRY_RUN=1 - skipping Graph API calls.");
-    return;
+  if (format === "carousel") {
+    const slides = Array.isArray(due.slides) ? due.slides : [];
+    if (slides.length < 2) {
+      throw new Error(`Carousel slot ${due.id} needs slides[] of length 2-10, got ${slides.length}`);
+    }
+    const slideUrls = slides.map((s) => `${baseUrl}/${s}`);
+    console.log(`Carousel slides: ${slideUrls.length}`);
+    for (const u of slideUrls) console.log(`  - ${u}`);
+
+    if (DRY) {
+      console.log("DRY_RUN=1 - skipping Graph API calls.");
+      return;
+    }
+
+    mediaId = await publishCarousel(igUserId, slideUrls, due.caption);
+    imageUrlForStory = slideUrls[0]; // story uses first slide by default
+  } else {
+    const imageUrl = `${baseUrl}/${due.image}`;
+    console.log(`Image URL: ${imageUrl}`);
+    imageUrlForStory = imageUrl;
+
+    if (DRY) {
+      console.log("DRY_RUN=1 - skipping Graph API calls.");
+      return;
+    }
+
+    console.log(`\nCreating feed container (image_url + caption)...`);
+    const createResp = await graphPost(`/${igUserId}/media`, {
+      image_url: imageUrl,
+      caption: due.caption,
+    });
+    const containerId = createResp.id;
+    if (!containerId) throw new Error(`No container id: ${JSON.stringify(createResp).slice(0, 400)}`);
+    console.log(`Container: ${containerId}`);
+
+    console.log(`\nPolling container status...`);
+    await pollContainerReady(containerId, { maxWaitSec: MAX_WAIT_SEC });
+
+    console.log(`\nPublishing feed container...`);
+    const pubResp = await graphPost(`/${igUserId}/media_publish`, {
+      creation_id: containerId,
+    });
+    mediaId = pubResp.id;
+    if (!mediaId) throw new Error(`No media id: ${JSON.stringify(pubResp).slice(0, 400)}`);
+    console.log(`Published: ${mediaId}`);
   }
-
-  console.log(`\nCreating feed container (image_url + caption)...`);
-  const createResp = await graphPost(`/${igUserId}/media`, {
-    image_url: imageUrl,
-    caption: due.caption,
-  });
-  const containerId = createResp.id;
-  if (!containerId) throw new Error(`No container id: ${JSON.stringify(createResp).slice(0, 400)}`);
-  console.log(`Container: ${containerId}`);
-
-  console.log(`\nPolling container status...`);
-  await pollContainerReady(containerId, { maxWaitSec: MAX_WAIT_SEC });
-
-  console.log(`\nPublishing feed container...`);
-  const pubResp = await graphPost(`/${igUserId}/media_publish`, {
-    creation_id: containerId,
-  });
-  const mediaId = pubResp.id;
-  if (!mediaId) throw new Error(`No media id: ${JSON.stringify(pubResp).slice(0, 400)}`);
-  console.log(`Published: ${mediaId}`);
 
   let permalink = null;
   let timestamp = null;
@@ -249,8 +315,10 @@ async function main() {
   } else if (!storyEnabled) {
     console.log(`\nStory step skipped for ${due.id} (story_enabled=false).`);
   } else {
+    const storyUrl = due.story_image ? `${baseUrl}/${due.story_image}` : imageUrlForStory;
+    if (due.story_image) console.log(`\nStory uses 9:16 override: ${storyUrl}`);
     try {
-      const storyId = await publishStory(igUserId, imageUrl);
+      const storyId = await publishStory(igUserId, storyUrl);
       due.story_media_id = storyId;
       due.story_posted_at = new Date().toISOString();
       delete due.story_error;

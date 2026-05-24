@@ -437,6 +437,113 @@ def render_chat_reveal(spec: dict, out_path: Path) -> None:
     out.write_videofile(str(out_path), fps=FPS, codec="libx264", audio=False, preset="medium", threads=4, logger=None)
 
 
+# Color helpers used by templates added in wave-5 (kept here so additions
+# don't touch the original palette block above):
+EMERALD_BRIGHT_HEX = "#22C55E"
+EMERALD_DEEP_HEX = "#064E3B"
+ROSE_DEEP_HEX = "#9F1239"
+INDIGO_DEEP_HEX = "#1E1B4B"
+
+
+# --- vox-pop: role-call hook with audience-question pattern -----------------
+def render_vox_pop(spec: dict, out_path: Path) -> None:
+    """Audience hook: '[Role], do you have [problem]?' → product reveal.
+
+    spec: {role, problem, mechanism, cta}
+    """
+    role = spec["role"]
+    problem = spec["problem"]
+    mechanism = spec["mechanism"]
+    cta = spec.get("cta", "DM 'AUDIT'\n→ aanloopai.nl/ig")
+    duration = 14.0
+
+    layers = [bg_clip(NAVY, INDIGO_DEEP_HEX, duration)]
+    layers.extend(brand_strip(duration))
+
+    layers.append(text(role.upper(), FONT_BOLD, 64, AMBER, 2.5, ("center", 380), 0.0))
+    layers.append(text(problem, FONT_BLACK, 96, PEARL, 4.0, ("center", 540), 0.5, max_width=900))
+    layers.append(text("DAT FIXEN WIJ", FONT_BOLD, 56, EMERALD_BRIGHT_HEX, 3.0, ("center", 1000), 5.0))
+    layers.append(text(mechanism, FONT_BOLD, 72, PEARL, duration - 6.5, ("center", 1140), 6.5, max_width=900))
+    layers.append(text(cta, FONT_BOLD, 60, AMBER, 3.0, ("center", 1640), duration - 3.0))
+    layers.append(wordmark(duration))
+
+    out = CompositeVideoClip(layers, size=(W, H))
+    out.write_videofile(str(out_path), fps=FPS, codec="libx264", audio=False, preset="medium", threads=4, logger=None)
+
+
+# --- split-screen-product: top half person/voice, bottom half product UI -----
+def render_split_screen_product(spec: dict, out_path: Path) -> None:
+    """Top half: text-only voice (Mustafa POV or brand voice). Bottom half:
+    product screenshot or generated UI mockup. Anchors founder credibility
+    against tangible product proof.
+
+    spec: {top_headline, top_sub, bottom_image (relative path), bottom_caption, cta}
+    """
+    top_headline = spec["top_headline"]
+    top_sub = spec.get("top_sub", "")
+    bottom_image_rel = spec.get("bottom_image")
+    bottom_caption = spec.get("bottom_caption", "")
+    cta = spec.get("cta", "→ aanloopai.nl/ig")
+    duration = 12.0
+
+    half_h = H // 2
+    top_bg = ColorClip(size=(W, half_h), color=hex_to_rgb(NAVY)).with_duration(duration).with_position((0, 0))
+
+    if bottom_image_rel and (REPO / bottom_image_rel).exists():
+        prod = ImageClip(str(REPO / bottom_image_rel)).resized(width=W).with_duration(duration)
+        if prod.h > half_h:
+            prod = prod.cropped(y_center=prod.h // 2, height=half_h)
+        prod = prod.with_position((0, half_h))
+        layers = [top_bg, prod]
+    else:
+        bottom_bg = ColorClip(size=(W, half_h), color=hex_to_rgb(EMERALD_DEEP_HEX)).with_duration(duration).with_position((0, half_h))
+        layers = [top_bg, bottom_bg]
+
+    layers.extend(brand_strip(duration))
+    layers.append(text(top_headline, FONT_BLACK, 88, PEARL, duration, ("center", 220), 0.0, max_width=900))
+    if top_sub:
+        layers.append(text(top_sub, FONT_BOLD, 46, AMBER, duration - 0.5, ("center", 540), 0.5, max_width=900))
+    if bottom_caption:
+        layers.append(text(bottom_caption, FONT_BOLD, 54, PEARL, duration - 1.0, ("center", H - 280), 1.0, max_width=900))
+    layers.append(text(cta, FONT_BOLD, 50, AMBER, 3.0, ("center", H - 140), duration - 3.0))
+
+    out = CompositeVideoClip(layers, size=(W, H))
+    out.write_videofile(str(out_path), fps=FPS, codec="libx264", audio=False, preset="medium", threads=4, logger=None)
+
+
+# --- meme-pov: 3-beat reaction "POV: X..." pattern --------------------------
+def render_meme_pov(spec: dict, out_path: Path) -> None:
+    """Three-beat reaction: setup (frustration) → twist → payoff (relief).
+
+    spec: {setup, twist, payoff, cta}
+    """
+    setup = spec["setup"]
+    twist = spec["twist"]
+    payoff = spec["payoff"]
+    cta = spec.get("cta", "Tag iemand →")
+    duration = 12.0
+    beat1_end = 4.5
+    beat2_end = 9.0
+
+    beat1 = ColorClip(size=(W, H), color=hex_to_rgb(ROSE_DEEP_HEX)).with_duration(beat1_end).with_start(0)
+    beat2 = ColorClip(size=(W, H), color=hex_to_rgb(INDIGO_DEEP_HEX)).with_duration(beat2_end - beat1_end).with_start(beat1_end)
+    beat3 = ColorClip(size=(W, H), color=hex_to_rgb(EMERALD_DEEP_HEX)).with_duration(duration - beat2_end).with_start(beat2_end)
+
+    layers = [beat1, beat2, beat3]
+    layers.extend(brand_strip(duration))
+
+    layers.append(text("POV:", FONT_BOLD, 60, PEARL_DIM, beat1_end, ("center", 380), 0.0))
+    layers.append(text(setup, FONT_BLACK, 100, PEARL, beat1_end, ("center", 540), 0.3, max_width=920))
+
+    layers.append(text(twist, FONT_BLACK, 100, PEARL, beat2_end - beat1_end, ("center", 700), beat1_end + 0.3, max_width=920))
+
+    layers.append(text(payoff, FONT_BLACK, 96, PEARL, duration - beat2_end, ("center", 700), beat2_end + 0.3, max_width=920))
+    layers.append(text(cta, FONT_BOLD, 60, AMBER, 2.5, ("center", 1640), duration - 2.5))
+
+    out = CompositeVideoClip(layers, size=(W, H))
+    out.write_videofile(str(out_path), fps=FPS, codec="libx264", audio=False, preset="medium", threads=4, logger=None)
+
+
 RENDERERS = {
     "hook-card": render_hook_card,
     "talking-stat": render_talking_stat,
@@ -444,6 +551,9 @@ RENDERERS = {
     "before-after": render_before_after,
     "ken-burns": render_ken_burns,
     "chat-reveal": render_chat_reveal,
+    "vox-pop": render_vox_pop,
+    "split-screen-product": render_split_screen_product,
+    "meme-pov": render_meme_pov,
 }
 
 
