@@ -1,45 +1,41 @@
 name: IG DM Certbot Fix (one-shot)
-
 on:
   workflow_dispatch:
-
 permissions:
   contents: read
-
 jobs:
   certbot-fix:
     name: Fix nginx + obtain TLS cert
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
       - name: Setup SSH key
         env:
           HETZNER_SSH_PRIVATE_KEY: ${{ secrets.HETZNER_SSH_PRIVATE_KEY }}
           HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
         run: |
           mkdir -p ~/.ssh
-          printf '%s\n' "$HETZNER_SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
-          chmod 0600 ~/.ssh/id_ed25519
-          ssh-keyscan -H "$HETZNER_HOST" >> ~/.ssh/known_hosts 2>/dev/null
-
-      - name: Copy scripts to server
+          echo "${HETZNER_SSH_PRIVATE_KEY}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "${HETZNER_HOST}" >> ~/.ssh/known_hosts
+      - name: Run certbot-fix on host
         env:
-          HETZNER_SSH_USER: ${{ secrets.HETZNER_SSH_USER }}
           HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
         run: |
-          rsync -avz -e "ssh -i ~/.ssh/id_ed25519" deploy/ig-dm/certbot-fix.sh deploy/ig-dm/nginx.conf "${HETZNER_SSH_USER}@${HETZNER_HOST}:/opt/aanloop-ig-dm/deploy/ig-dm/"
-
-      - name: Run certbot-fix.sh on server
-        env:
-          HETZNER_SSH_USER: ${{ secrets.HETZNER_SSH_USER }}
-          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
-        run: |
-          ssh -i ~/.ssh/id_ed25519 "${HETZNER_SSH_USER}@${HETZNER_HOST}" "bash /opt/aanloop-ig-dm/deploy/ig-dm/certbot-fix.sh"
-
-      - name: Verify HTTPS health
+          scp -i ~/.ssh/id_ed25519 deploy/ig-dm/certbot-fix.sh root@${HETZNER_HOST}:/tmp/certbot-fix.sh
+          scp -i ~/.ssh/id_ed25519 deploy/ig-dm/nginx.conf root@${HETZNER_HOST}:/tmp/ig-dm-nginx.conf
+          ssh -i ~/.ssh/id_ed25519 root@${HETZNER_HOST} bash /tmp/certbot-fix.sh
+      - name: Health check
         run: |
           sleep 5
-          curl -fsSL --max-time 10 https://ig-dm.aanloopai.nl/health && echo "Health OK" || echo "Health check failed"
+          for i in 1 2 3 4 5; do
+            if curl -sf https://ig-dm.aanloopai.nl/health; then
+              echo "Health check passed"
+              exit 0
+            fi
+            echo "Attempt $i failed, retrying..."
+            sleep 5
+          done
+          echo "Health check failed"
+          exit 1
