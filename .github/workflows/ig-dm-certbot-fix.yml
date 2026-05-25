@@ -3,49 +3,43 @@ name: IG DM Certbot Fix (one-shot)
 on:
   workflow_dispatch:
 
-  permissions:
-    contents: read
+permissions:
+  contents: read
 
-    jobs:
-      certbot-fix:
-          name: Fix nginx + obtain TLS cert
-              runs-on: ubuntu-latest
-                  timeout-minutes: 10
+jobs:
+  certbot-fix:
+    name: Fix nginx + obtain TLS cert
+    runs-on: ubuntu-latest
 
-                      steps:
-                            - name: Checkout repository
-                                    uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-                                          - name: Setup SSH key
-                                                  env:
-                                                            HETZNER_SSH_PRIVATE_KEY: ${{ secrets.HETZNER_SSH_PRIVATE_KEY }}
-                                                                      HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
-                                                                              run: |
-                                                                                        mkdir -p ~/.ssh
-                                                                                                  printf '%s\n' "$HETZNER_SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
-                                                                                                            chmod 0600 ~/.ssh/id_ed25519
-                                                                                                                      ssh-keyscan -H "$HETZNER_HOST" >> ~/.ssh/known_hosts 2>/dev/null
-                                                                                                                      
-                                                                                                                            - name: Copy certbot-fix.sh to server
-                                                                                                                                    env:
-                                                                                                                                              HETZNER_SSH_USER: ${{ secrets.HETZNER_SSH_USER }}
-                                                                                                                                                        HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
-                                                                                                                                                                run: |
-                                                                                                                                                                          rsync -avz -e "ssh -i ~/.ssh/id_ed25519" \
-                                                                                                                                                                                      deploy/ig-dm/certbot-fix.sh \
-                                                                                                                                                                                                  deploy/ig-dm/nginx.conf \
-                                                                                                                                                                                                              "${HETZNER_SSH_USER}@${HETZNER_HOST}:/opt/aanloop-ig-dm/deploy/ig-dm/"
-                                                                                                                                                                                                              
-                                                                                                                                                                                                                    - name: Run certbot-fix.sh on server
-                                                                                                                                                                                                                            env:
-                                                                                                                                                                                                                                      HETZNER_SSH_USER: ${{ secrets.HETZNER_SSH_USER }}
-                                                                                                                                                                                                                                                HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
-                                                                                                                                                                                                                                                        run: |
-                                                                                                                                                                                                                                                                  ssh -i ~/.ssh/id_ed25519 "${HETZNER_SSH_USER}@${HETZNER_HOST}" \
-                                                                                                                                                                                                                                                                              "bash /opt/aanloop-ig-dm/deploy/ig-dm/certbot-fix.sh"
-                                                                                                                                                                                                                                                                              
-                                                                                                                                                                                                                                                                                    - name: Verify HTTPS health
-                                                                                                                                                                                                                                                                                            run: |
-                                                                                                                                                                                                                                                                                                      sleep 5
-                                                                                                                                                                                                                                                                                                                curl -fsSL --max-time 10 https://ig-dm.aanloopai.nl/health && echo "Health OK" || echo "Health check failed"
-                                                                                                                                                                                                                                                                                                                
+      - name: Setup SSH key
+        env:
+          HETZNER_SSH_PRIVATE_KEY: ${{ secrets.HETZNER_SSH_PRIVATE_KEY }}
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "$HETZNER_SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
+          chmod 0600 ~/.ssh/id_ed25519
+          ssh-keyscan -H "$HETZNER_HOST" >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Copy scripts to server
+        env:
+          HETZNER_SSH_USER: ${{ secrets.HETZNER_SSH_USER }}
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+        run: |
+          rsync -avz -e "ssh -i ~/.ssh/id_ed25519" deploy/ig-dm/certbot-fix.sh deploy/ig-dm/nginx.conf "${HETZNER_SSH_USER}@${HETZNER_HOST}:/opt/aanloop-ig-dm/deploy/ig-dm/"
+
+      - name: Run certbot-fix.sh on server
+        env:
+          HETZNER_SSH_USER: ${{ secrets.HETZNER_SSH_USER }}
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+        run: |
+          ssh -i ~/.ssh/id_ed25519 "${HETZNER_SSH_USER}@${HETZNER_HOST}" "bash /opt/aanloop-ig-dm/deploy/ig-dm/certbot-fix.sh"
+
+      - name: Verify HTTPS health
+        run: |
+          sleep 5
+          curl -fsSL --max-time 10 https://ig-dm.aanloopai.nl/health && echo "Health OK" || echo "Health check failed"
