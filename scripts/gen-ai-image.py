@@ -559,6 +559,138 @@ NL_MKB_SCENES: list[dict] = [
             + BRAND_SUFFIX
         ),
     },
+
+    # ── Wave-6 Week-3/4 expansion: more sector + BTS variety ────────────────
+    {
+        "id": "w6-p11-horeca-bartender-detail",
+        "label": "Bartender pouring drink, customer waiting",
+        "category": "wave6",
+        "prompt": (
+            "Close-up of a Dutch bartender's hands pouring a craft beer from a tap "
+            "into a glass at a modern Amsterdam bar. Customer sitting at the bar in "
+            "soft background blur. Warm amber pendant lighting, wooden bar surface, "
+            "rows of bottles behind. Cinematic, intimate hospitality moment. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p12-zorg-fysio-treatment",
+        "label": "Physiotherapist treating patient, phone on counter",
+        "category": "wave6",
+        "prompt": (
+            "Interior of a modern Dutch physiotherapy practice. A female "
+            "physiotherapist (35) is working on a patient's back, full focus on the "
+            "treatment. On the side-counter: a smartphone with a small notification "
+            "icon visible. Clean, professional medical environment with bright "
+            "natural light. Composition emphasizes the hands-on care moment. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p13-webshop-warehouse-picking",
+        "label": "Warehouse worker picking orders with WhatsApp",
+        "category": "wave6",
+        "prompt": (
+            "Interior of a small Dutch e-commerce warehouse. A worker in their 20s "
+            "in a casual t-shirt and jeans walks an aisle with a tablet in hand, "
+            "scanning product codes. A smartphone clipped to their belt with a "
+            "WhatsApp notification visible. Organized shelves with neatly stacked "
+            "product boxes. Bright daylight from skylights. Authentic e-commerce "
+            "operations scene. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p14-accountant-client-meeting",
+        "label": "Accountant + client meeting at desk with laptop",
+        "category": "wave6",
+        "prompt": (
+            "Two Dutch professionals seated across a modern accountancy office desk: "
+            "an accountant in business-casual and a small-business owner client. "
+            "Between them: an open laptop showing a generic dashboard. Both pointing "
+            "at the screen, mid-conversation. Soft afternoon light through large "
+            "windows. Warm, advisory tone. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p15-bouw-foreman-site",
+        "label": "Construction foreman onsite with walkie-talkie + phone",
+        "category": "wave6",
+        "prompt": (
+            "Construction foreman in his 40s, wearing a high-visibility vest and "
+            "hard hat, standing on a partially-built Dutch residential construction "
+            "site. He holds a walkie-talkie in one hand and a smartphone in the "
+            "other (looking briefly at the phone screen). Workers in soft background, "
+            "scaffolding, golden-hour daylight. Documentary photography style. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p16-vastgoed-keys-handover",
+        "label": "Real estate agent handing keys to happy client",
+        "category": "wave6",
+        "prompt": (
+            "A Dutch female real estate agent in business attire handing a set of "
+            "keys to a happy couple (mixed gender, 30s) standing in the doorway of "
+            "their new Amsterdam canal-side apartment. Bright daylight, warm "
+            "candid moment of completion. The agent has a phone tucked under her "
+            "arm. Authentic emotional milestone. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p17-logistiek-driver-cabin",
+        "label": "Truck driver in cabin with tablet showing route",
+        "category": "wave6",
+        "prompt": (
+            "Inside the cabin of a modern Dutch delivery truck. A driver (male, 40s) "
+            "is seated behind the steering wheel, looking at a tablet mounted on the "
+            "dashboard showing a generic route-planning interface (abstract, no "
+            "readable text). Calm morning light coming through the windshield. "
+            "Cleanly maintained cabin, organized professional driver workspace. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p18-retail-customer-purchase",
+        "label": "Small shop owner ringing up smiling customer",
+        "category": "wave6",
+        "prompt": (
+            "Interior of a cozy Dutch independent boutique. The shop owner (female, "
+            "40s) standing behind a wooden counter with a modern POS tablet, ringing "
+            "up a customer's purchase. The customer (30s, smiling) stands at the "
+            "counter with a small shopping bag. Warm welcoming atmosphere, plants, "
+            "wooden shelves with curated products. Soft natural light. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-b05-customer-onboarding-intake",
+        "label": "Customer onboarding intake meeting",
+        "category": "wave6",
+        "prompt": (
+            "A small Dutch business owner (50s) sits across from two Aanloop team "
+            "members in a modern Rotterdam meeting room. A whiteboard in background "
+            "with hand-drawn workflow diagrams. Laptop open on the table, sticky-"
+            "notes, two coffee cups. Engaged, collaborative discussion. Bright, "
+            "professional, trust-building atmosphere. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-b08-friday-retro-team",
+        "label": "Friday team retrospective discussion",
+        "category": "wave6",
+        "prompt": (
+            "A diverse small team of 4 Dutch tech professionals seated around a "
+            "wooden meeting table on a Friday afternoon. One team member writing on "
+            "a flipchart with green/red column headers. Others engaged in discussion. "
+            "Late afternoon sun streaming through window. Casual yet focused weekly-"
+            "review energy. "
+            + BRAND_SUFFIX
+        ),
+    },
 ]
 
 # ---------------------------------------------------------------------------
