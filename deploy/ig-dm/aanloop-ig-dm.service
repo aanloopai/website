@@ -9,7 +9,7 @@ User=aanloop
 Group=aanloop
 WorkingDirectory=/opt/aanloop-ig-dm
 EnvironmentFile=/etc/aanloop-ig-dm.env
-ExecStart=/usr/bin/node /opt/aanloop-ig-dm/scripts/ig-dm-bot.mjs
+ExecStart=/usr/bin/node --max-old-space-size=512 /opt/aanloop-ig-dm/scripts/ig-dm-bot.mjs
 Restart=on-failure
 RestartSec=5
 StandardOutput=journal
@@ -27,7 +27,6 @@ ProtectControlGroups=true
 RestrictNamespaces=true
 LockPersonality=true
 RestrictRealtime=true
-MemoryDenyWriteExecute=true
 
 [Install]
 WantedBy=multi-user.target
