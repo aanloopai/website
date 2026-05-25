@@ -339,6 +339,145 @@ NL_MKB_SCENES: list[dict] = [
             + BRAND_SUFFIX
         ),
     },
+
+    # ── WAVE-6 (2026-06-23+) — new-style narrative scenes ───────────────────
+    {
+        "id": "w6-p01-horeca-busy-20u",
+        "label": "Horeca busy 20:00, phones lighting up",
+        "category": "wave6",
+        "prompt": (
+            "Interior of a busy Dutch restaurant at 20:00 on a Friday evening. "
+            "Foreground: a smartphone on the host stand with the screen glowing showing "
+            "an incoming call notification. Background: blurred bokeh of full tables, "
+            "candles, staff moving fast, warm amber lighting. Tension between human "
+            "service moment and the unanswered phone. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p02-tandarts-spreekkamer",
+        "label": "Dentist with patient, assistant on call in background",
+        "category": "wave6",
+        "prompt": (
+            "Clean modern Dutch dental surgery room. Foreground: a friendly female "
+            "dentist in white coat, calmly working on a patient. Background (soft blur): "
+            "the dental assistant stepping outside the room holding a phone to her ear, "
+            "looking relieved. Clinical but warm lighting, professional healthcare "
+            "atmosphere. Composition emphasizes the dentist focusing on the patient. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p03-webshop-midnight",
+        "label": "Webshop owner sleeping, laptop glowing with orders",
+        "category": "wave6",
+        "prompt": (
+            "Dimly lit Dutch home office at night. A laptop open on the desk, its "
+            "screen glowing softly in the dark, displaying an order-management "
+            "dashboard with multiple new order notifications stacked up. In the soft "
+            "background blur: a sleeping figure in bed, only a duvet outline visible. "
+            "Tranquil, abstract. Cinematic low-key lighting. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p04-accountant-deadline",
+        "label": "Accountant at desk during tax deadline night",
+        "category": "wave6",
+        "prompt": (
+            "A focused Dutch accountant in their late 40s sitting at a desk in a "
+            "modern accountancy office at late night (23:50 visible faintly on a wall "
+            "clock or PC clock). Two large monitors glowing with spreadsheets and "
+            "client-deadline lists. Stacks of folders on the desk. A coffee cup, a "
+            "headset nearby. Calm, composed despite the pressure. Cool blue monitor "
+            "glow contrasting with warm desk lamp. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p05-bouw-avond-truck",
+        "label": "Construction foreman in truck at dusk",
+        "category": "wave6",
+        "prompt": (
+            "A weathered Dutch construction foreman in his 50s, wearing a high-vis "
+            "jacket, sitting in the driver seat of his white commercial van at dusk "
+            "after a long workday. The construction site is fading in the background "
+            "through the windshield. His phone is on the dashboard mount, screen "
+            "showing a chat or call notification. Honest, hardworking, end-of-day "
+            "exhaustion mixed with calm. Warm golden hour light. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p06-zorg-huisarts-druk",
+        "label": "Busy GP practice, doctor with patient + phone on desk",
+        "category": "wave6",
+        "prompt": (
+            "Interior of a busy modern Dutch GP practice (huisartspraktijk) at 16:45. "
+            "A doctor in a white coat sits across from a patient in the consultation "
+            "room — both human, focused on each other. On the doctor's desk: a "
+            "professional desk phone with the line indicator showing 'on hold' or "
+            "multiple calls waiting. Clean medical environment, soft daylight. "
+            "Composition emphasizes the human-to-human connection. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p07-logistiek-scanner",
+        "label": "Warehouse logistics driver with handheld scanner",
+        "category": "wave6",
+        "prompt": (
+            "Interior of a small Dutch logistics warehouse during shift change. A "
+            "delivery driver in a uniform with company branding (generic, no logo) "
+            "holds a handheld barcode scanner with a small display screen. Stacks of "
+            "labeled packages on shelves and pallets behind. Industrial overhead "
+            "lighting, organized chaos. Hands and scanner in sharp focus, background "
+            "soft. Documentary photography style. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p08-vastgoed-open-house",
+        "label": "Real estate open-house with visitors",
+        "category": "wave6",
+        "prompt": (
+            "Interior of a Dutch canal-side apartment during a real-estate open-house "
+            "viewing. A professional female estate agent in business attire shows the "
+            "living room to a couple of prospective buyers. Bright natural light "
+            "through tall windows, modern Scandinavian-style interior. The agent has "
+            "her smartphone in her free hand, glancing at it briefly. Authentic, "
+            "high-energy real-estate moment. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p09-retail-checkout",
+        "label": "Small retail owner at busy checkout",
+        "category": "wave6",
+        "prompt": (
+            "Interior of a small Dutch boutique retail shop. The owner — a Dutch woman "
+            "in her 30s — stands behind a wooden counter ringing up a customer's "
+            "purchase on a modern POS tablet. Other customers visible browsing in the "
+            "softly blurred background. A smartphone sits on the counter beside the "
+            "POS, screen showing a WhatsApp chat notification. Bright, welcoming "
+            "small-business atmosphere. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-p10-team-growth-celebrate",
+        "label": "Small startup team celebrating growth",
+        "category": "wave6",
+        "prompt": (
+            "Two young Dutch tech professionals — one male, one female, mid-20s — "
+            "in a small modern Rotterdam office sharing a quiet moment of "
+            "celebration: a fist-bump or high-five, smiling. Behind them: a large "
+            "monitor displaying a growth chart trending upward (abstract, no "
+            "readable text). Plants, exposed brick wall, daylight from large windows. "
+            "Authentic startup energy, NOT staged stock-photo. "
+            + BRAND_SUFFIX
+        ),
+    },
 ]
 
 # ---------------------------------------------------------------------------
