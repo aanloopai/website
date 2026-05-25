@@ -8,23 +8,44 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Setup SSH key
+        env:
+          HETZNER_SSH_PRIVATE_KEY: ${{ secrets.HETZNER_SSH_PRIVATE_KEY }}
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
         run: |
           mkdir -p ~/.ssh
-          echo "${{ secrets.HETZNER_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          echo "${HETZNER_SSH_PRIVATE_KEY}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H 178.104.100.94 >> ~/.ssh/known_hosts
-      - name: Copy nginx.conf and reload
+          ssh-keyscan -H "${HETZNER_HOST}" >> ~/.ssh/known_hosts
+      - name: Copy nginx.conf and restart nginx
+        env:
+          HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
         run: |
-          scp -i ~/.ssh/id_ed25519 deploy/ig-dm/nginx.conf root@178.104.100.94:/etc/nginx/sites-available/ig-dm.aanloopai.nl
-          ssh -i ~/.ssh/id_ed25519 root@178.104.100.94 bash -s << 'ENDSSH'
+          scp -i ~/.ssh/id_ed25519 deploy/ig-dm/nginx.conf root@${HETZNER_HOST}:/etc/nginx/sites-available/ig-dm.aanloopai.nl
+          ssh -i ~/.ssh/id_ed25519 root@${HETZNER_HOST} bash -s << 'ENDSSH'
           ln -sf /etc/nginx/sites-available/ig-dm.aanloopai.nl /etc/nginx/sites-enabled/ig-dm.aanloopai.nl
           echo "=== nginx -t ==="
           nginx -t
-          echo "=== reload nginx ==="
-          systemctl reload nginx
+          echo "=== systemctl restart nginx ==="
+          systemctl restart nginx
+          echo "=== nginx status ==="
+          systemctl status nginx --no-pager | head -20
           echo "=== port 443 ==="
           ss -tlnp | grep 443 || echo "still not on 443"
-          echo "=== curl health ==="
-          curl -sk https://ig-dm.aanloopai.nl/health || echo "https not responding"
-          curl -s http://localhost:3030/health || echo "localhost:3030 not responding"
+          echo "=== curl localhost:3030 ==="
+          curl -s http://localhost:3030/health || echo "bot not responding"
+          echo "=== service status ==="
+          systemctl status aanloop-ig-dm --no-pager | head -10
           ENDSSH
+      - name: Health check
+        run: |
+          sleep 5
+          for i in 1 2 3 4 5; do
+            if curl -sf https://ig-dm.aanloopai.nl/health; then
+              echo "Health check PASSED!"
+              exit 0
+            fi
+            echo "Attempt $i failed, retrying..."
+            sleep 5
+          done
+          echo "Health check failed"
+          exit 1
