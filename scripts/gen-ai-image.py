@@ -478,6 +478,87 @@ NL_MKB_SCENES: list[dict] = [
             + BRAND_SUFFIX
         ),
     },
+
+    # ── Wave-6 BTS / Day-in-life scenes ─────────────────────────────────────
+    {
+        "id": "w6-b01-founder-desk-morning",
+        "label": "Founder at standing desk, morning coffee + laptop",
+        "category": "wave6",
+        "prompt": (
+            "A 30-something Dutch tech-founder (back-view or side-profile, face not "
+            "clearly visible) at a standing desk in a modern Rotterdam office. Early "
+            "morning natural light streaming through tall windows. Foreground: a hot "
+            "coffee mug steaming, laptop open with a generic dashboard, a notebook "
+            "with handwritten notes. Plants, exposed brick wall behind. Quiet, "
+            "focused start-of-day atmosphere. NOT staged stock-photo. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-b02-team-headset-call",
+        "label": "Team member on customer call with headset",
+        "category": "wave6",
+        "prompt": (
+            "A 30-something Dutch customer-success agent wearing a professional "
+            "headset, in focused conversation, side-profile composition. Two monitors "
+            "visible — one showing a generic CRM with client information (no readable "
+            "text). Modern open-plan office in soft natural daylight. Other team "
+            "members blurred in the background. Authentic work-moment, not posed. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-b03-code-review-pair",
+        "label": "Developer + product manager at laptop reviewing code",
+        "category": "wave6",
+        "prompt": (
+            "Two Dutch tech professionals (one male, one female, late 20s) pair-"
+            "working at a laptop in a modern office. Both focused on the screen, "
+            "one pointing at code (lines of programming visible but text not "
+            "readable). Whiteboard with diagrams behind them, sticky notes on the "
+            "wall. Collaborative, problem-solving energy. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-b04-team-standup-whiteboard",
+        "label": "Small team standup around a whiteboard",
+        "category": "wave6",
+        "prompt": (
+            "A small group of 5 Dutch tech professionals standing in a semi-circle "
+            "around a whiteboard in a modern office. The whiteboard has handwritten "
+            "diagrams and sticky-notes (abstract, no readable text). One team member "
+            "pointing at the board, others engaged. Diverse team — mixed gender + "
+            "ages 25-50. Bright morning light, collaborative energy. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-b06-office-morning-vibe",
+        "label": "Empty Rotterdam office before team arrives",
+        "category": "wave6",
+        "prompt": (
+            "Interior of a modern Rotterdam tech-office, early morning before staff "
+            "arrives. Sunlight streaming through large windows hitting empty desks, "
+            "plants, monitors with screensavers. A coffee machine in the corner, "
+            "clean and ready for the day. Calm, hopeful, beginning-of-day atmosphere. "
+            "No people. "
+            + BRAND_SUFFIX
+        ),
+    },
+    {
+        "id": "w6-b07-kennisbank-prep-docs",
+        "label": "Knowledge-base preparation with documents on table",
+        "category": "wave6",
+        "prompt": (
+            "Top-down or angled view of a wooden meeting-table covered with printed "
+            "documents, FAQ sheets, sticky-notes color-coded, a laptop open showing a "
+            "knowledge-base interface (generic, abstract). Two coffee mugs, one half-"
+            "full. Pens, highlighter caps off. Mid-process documentation work scene. "
+            "Soft daylight from one side. "
+            + BRAND_SUFFIX
+        ),
+    },
 ]
 
 # ---------------------------------------------------------------------------
