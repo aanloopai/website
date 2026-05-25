@@ -44,7 +44,7 @@ const KEYWORDS = (process.env.COMMENT_KEYWORDS || "BILGI,INFO,AUDIT,DEMO,HORECA,
   .filter(Boolean);
 const REPLY_DELAY_MS = parseInt(process.env.REPLY_DELAY_MS || "7000", 10);
 const DRY = process.env.DRY_RUN === "1";
-const GRAPH = "https://graph.facebook.com/v19.0";
+const GRAPH = "https://graph.instagram.com/v19.0";
 
 let templates = { welcome: [], comment: [], mention: [] };
 let replied = { senders: {} };
