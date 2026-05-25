@@ -1,0 +1,30 @@
+name: IG DM Nginx Fix
+on:
+  workflow_dispatch:
+jobs:
+  nginx-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.HETZNER_SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H 178.104.100.94 >> ~/.ssh/known_hosts
+      - name: Copy nginx.conf and reload
+        run: |
+          scp -i ~/.ssh/id_ed25519 deploy/ig-dm/nginx.conf root@178.104.100.94:/etc/nginx/sites-available/ig-dm.aanloopai.nl
+          ssh -i ~/.ssh/id_ed25519 root@178.104.100.94 bash -s << 'ENDSSH'
+          ln -sf /etc/nginx/sites-available/ig-dm.aanloopai.nl /etc/nginx/sites-enabled/ig-dm.aanloopai.nl
+          echo "=== nginx -t ==="
+          nginx -t
+          echo "=== reload nginx ==="
+          systemctl reload nginx
+          echo "=== port 443 ==="
+          ss -tlnp | grep 443 || echo "still not on 443"
+          echo "=== curl health ==="
+          curl -sk https://ig-dm.aanloopai.nl/health || echo "https not responding"
+          curl -s http://localhost:3030/health || echo "localhost:3030 not responding"
+          ENDSSH
