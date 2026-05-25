@@ -56,7 +56,17 @@ function validatePost(post, idx) {
     }
   }
 
-  if (!post.image) {
+  const isCarousel = post.format === "carousel";
+  if (isCarousel) {
+    if (!Array.isArray(post.slides) || post.slides.length < 2 || post.slides.length > 10) {
+      err(id, `carousel requires slides[] of length 2-10, got ${post.slides?.length || 0}`);
+    } else {
+      for (const slide of post.slides) {
+        const slidePath = path.join(IMAGE_DIR, slide);
+        if (!fs.existsSync(slidePath)) err(id, `slide file missing: public/social-feed/${slide}`);
+      }
+    }
+  } else if (!post.image) {
     err(id, "missing image");
   } else {
     const imagePath = path.join(IMAGE_DIR, post.image);
