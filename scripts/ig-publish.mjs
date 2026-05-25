@@ -47,12 +47,17 @@ function mask(s) {
 async function resolveSchedulePath() {
   if (process.env.SCHEDULE_PATH) return path.resolve(process.env.SCHEDULE_PATH);
   const entries = await fs.readdir(SCHEDULE_DIR);
+  // wave-N-schedule.json + wave-N-weekM-schedule.json both supported
   const waves = entries
-    .filter((f) => /^wave-\d+-schedule\.json$/.test(f))
+    .filter((f) => /^wave-\d+(-week\d+)?-schedule\.json$/.test(f))
     .sort((a, b) => {
       const na = parseInt(a.match(/wave-(\d+)/)[1], 10);
       const nb = parseInt(b.match(/wave-(\d+)/)[1], 10);
-      return na - nb;
+      if (na !== nb) return na - nb;
+      // same wave: sort by week (no -week = week 1)
+      const wa = parseInt((a.match(/-week(\d+)/) || [null, "1"])[1], 10);
+      const wb = parseInt((b.match(/-week(\d+)/) || [null, "1"])[1], 10);
+      return wa - wb;
     });
   if (!waves.length) throw new Error(`No wave-N-schedule.json in ${SCHEDULE_DIR}`);
   // Pick lowest-N wave with any pending slot, so earlier waves finish before later ones.

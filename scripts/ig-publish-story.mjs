@@ -38,8 +38,15 @@ async function resolveStoriesSchedulePath() {
   if (process.env.STORIES_SCHEDULE_PATH) return path.resolve(process.env.STORIES_SCHEDULE_PATH);
   const entries = await fs.readdir(SCHEDULE_DIR);
   const waves = entries
-    .filter((f) => /^wave-\d+-stories-schedule\.json$/.test(f))
-    .sort((a, b) => parseInt(a.match(/wave-(\d+)/)[1], 10) - parseInt(b.match(/wave-(\d+)/)[1], 10));
+    .filter((f) => /^wave-\d+(-week\d+)?-stories-schedule\.json$/.test(f))
+    .sort((a, b) => {
+      const na = parseInt(a.match(/wave-(\d+)/)[1], 10);
+      const nb = parseInt(b.match(/wave-(\d+)/)[1], 10);
+      if (na !== nb) return na - nb;
+      const wa = parseInt((a.match(/-week(\d+)/) || [null, "1"])[1], 10);
+      const wb = parseInt((b.match(/-week(\d+)/) || [null, "1"])[1], 10);
+      return wa - wb;
+    });
   if (!waves.length) throw new Error(`No wave-N-stories-schedule.json in ${SCHEDULE_DIR}`);
   for (const f of waves) {
     const sched = JSON.parse(await fs.readFile(path.join(SCHEDULE_DIR, f), "utf8"));
