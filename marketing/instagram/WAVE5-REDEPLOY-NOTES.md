@@ -5,6 +5,8 @@ Mustafa / operator.
 
 ## Wat is er veranderd?
 
+### Hafta-1/2 (eerste release)
+
 1. **Nieuwe DM-bot keywords** (`HORECA`, `ZORG`, `PROMPT`, `AVG`, `EMMA`, `FOUNDER`,
    `CIJFERS`, `AIDUUR`, `MARCO`). Elk keyword route naar specifieke DM-template
    met PDF-link.
@@ -19,6 +21,31 @@ Mustafa / operator.
    - `mkb-ai-cijfers-2026.pdf`
 4. **Schedules Week 1 + Week 2** (carousels/reels/stories) klaar voor cron.
 
+### Hafta-3/4 (deze update)
+
+5. **10 nieuwe DM-bot keywords** (`WHATSAPP`, `ACCOUNTANCY`, `PRAKTIJK`, `NOJAAR`,
+   `BOUW`, `HANDOVER`, `LOGISTIEK`, `KENNISBANK`, `RETRO`, `FAALMODES`). Totaal
+   nu 23 keywords (9 Hafta-1/2 + 10 Hafta-3/4 + 4 generic BILGI/INFO/AUDIT/DEMO).
+6. **12 nieuwe PDF lead-magnets** in `public/dl/` (10 keyword + 2 broken-fix
+   `emma-roadmap.pdf` + `waarom-uitstel.pdf` die al vermeld waren in Hafta-1/2
+   templates maar nog niet bestonden):
+   - `emma-roadmap.pdf` (broken-fix)
+   - `waarom-uitstel.pdf` (broken-fix)
+   - `whatsapp-implementatie.pdf`
+   - `accountancy-ai-checklist.pdf`
+   - `praktijk-ai-flow.pdf`
+   - `nojaar-handover.pdf`
+   - `bouw-faq.pdf`
+   - `handover-flow.pdf`
+   - `logistiek-faq.pdf`
+   - `kennisbank-quick-start.pdf`
+   - `retro-2026-rapport.pdf`
+   - `faalmodes-checklist.pdf`
+7. **Bot-default keyword-list uitgebreid** (`scripts/ig-dm-bot.mjs` line 41):
+   default-string van 13 → 23 keywords. Env-override (`COMMENT_KEYWORDS=...`)
+   blijft werken. Hetzner systemd-svc zonder env-set: nieuwe keywords automatisch
+   actief na restart.
+
 ## Wat moet jij doen?
 
 ### A. Cloudflare Pages deploy bevestigen
@@ -28,13 +55,28 @@ gebruikt `wrangler versions upload` (preview-only). Check op dashboard
 (Cloudflare Pages → aanloopai-website project → Deployments) dat de laatste
 preview live is gepromoteerd zodat `aanloopai.nl/dl/horeca-faq.pdf` werkt.
 
-Test in browser:
+Test in browser (17 PDFs totaal):
 ```
+# Hafta-1/2
 https://aanloopai.nl/dl/horeca-faq.pdf
 https://aanloopai.nl/dl/zorg-compliance-checklist.pdf
 https://aanloopai.nl/dl/prompt-framework.pdf
 https://aanloopai.nl/dl/avg-ai-checklist.pdf
 https://aanloopai.nl/dl/mkb-ai-cijfers-2026.pdf
+
+# Hafta-3/4 (deze update + broken-fix)
+https://aanloopai.nl/dl/emma-roadmap.pdf
+https://aanloopai.nl/dl/waarom-uitstel.pdf
+https://aanloopai.nl/dl/whatsapp-implementatie.pdf
+https://aanloopai.nl/dl/accountancy-ai-checklist.pdf
+https://aanloopai.nl/dl/praktijk-ai-flow.pdf
+https://aanloopai.nl/dl/nojaar-handover.pdf
+https://aanloopai.nl/dl/bouw-faq.pdf
+https://aanloopai.nl/dl/handover-flow.pdf
+https://aanloopai.nl/dl/logistiek-faq.pdf
+https://aanloopai.nl/dl/kennisbank-quick-start.pdf
+https://aanloopai.nl/dl/retro-2026-rapport.pdf
+https://aanloopai.nl/dl/faalmodes-checklist.pdf
 ```
 
 Allemaal moeten een 200 + PDF-render geven.
@@ -69,7 +111,11 @@ Verwachting binnen 7 seconden:
 - DM-bericht uit `dm_assets.HORECA` (2 varianten roteren)
 - Bevat link: `aanloopai.nl/dl/horeca-faq.pdf?utm_source=ig-dm&utm_campaign=horeca`
 
-Herhaal voor: `ZORG`, `PROMPT`, `AVG`, `EMMA`, `FOUNDER`, `CIJFERS`, `AIDUUR`, `MARCO`.
+Herhaal voor: `ZORG`, `PROMPT`, `AVG`, `EMMA`, `FOUNDER`, `CIJFERS`, `AIDUUR`, `MARCO`,
+`WHATSAPP`, `ACCOUNTANCY`, `PRAKTIJK`, `NOJAAR`, `BOUW`, `HANDOVER`, `LOGISTIEK`,
+`KENNISBANK`, `RETRO`, `FAALMODES`.
+
+Per keyword: download-link moet 200 + PDF render geven (zie test-URLs in sectie A).
 
 Als test faalt:
 ```bash
