@@ -14,26 +14,18 @@ jobs:
       - name: Diagnose server
         run: |
           ssh -i ~/.ssh/id_ed25519 root@178.104.100.94 bash -s << 'ENDSSH'
-          echo "=== nginx status ==="
-          systemctl status nginx --no-pager || true
-          echo "=== nginx -t ==="
-          nginx -t 2>&1 || true
-          echo "=== port 443 listening ==="
-          ss -tlnp | grep 443 || echo "NOT listening on 443"
-          echo "=== port 80 listening ==="
-          ss -tlnp | grep ':80 ' || echo "NOT listening on 80"
-          echo "=== UFW status ==="
-          ufw status || true
-          echo "=== iptables 443 ==="
-          iptables -L INPUT -n | grep 443 || echo "no iptables rule for 443"
           echo "=== service status ==="
           systemctl status aanloop-ig-dm --no-pager || true
-          echo "=== curl localhost ==="
-          curl -s http://localhost:3030/health || echo "localhost:3030 not responding"
-          echo "=== nginx sites-enabled ==="
-          ls -la /etc/nginx/sites-enabled/ || true
-          echo "=== nginx conf ==="
-          cat /etc/nginx/sites-enabled/ig-dm.aanloopai.nl || true
-          echo "=== certbot cert ==="
-          ls -la /etc/letsencrypt/live/ig-dm.aanloopai.nl/ || echo "no cert"
+          echo "=== service journal (last 30 lines) ==="
+          journalctl -u aanloop-ig-dm -n 30 --no-pager || true
+          echo "=== bot file exists ==="
+          ls -la /opt/aanloop-ig-dm/scripts/ || echo "no scripts dir"
+          echo "=== node_modules ==="
+          ls /opt/aanloop-ig-dm/node_modules 2>/dev/null | head -5 || echo "no node_modules"
+          echo "=== env file ==="
+          ls -la /etc/aanloop-ig-dm.env || echo "no env file"
+          echo "=== port 443 ==="
+          ss -tlnp | grep 443 || echo "not on 443"
+          echo "=== curl https health ==="
+          curl -sk https://ig-dm.aanloopai.nl/health || echo "https not responding"
           ENDSSH
