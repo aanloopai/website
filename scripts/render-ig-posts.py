@@ -562,6 +562,115 @@ def post_15_whatsapp_67() -> None:
     img.save(OUT_DIR / "post-15-whatsapp-67.png", "PNG", optimize=True)
 
 
+def post_geo_01() -> None:
+    """GEO Wave — De verschuiving: klant zoekt nu bij AI."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AI-VINDBAARHEID  ·  GEO", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 130)
+    lines = ["Je klant", "Googelt", "niet meer."]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 8
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 36
+    y = draw_line(d, y, 200, ROSE, 6)
+    y += 46
+    draw_centered(d, "Hij vraagt het nu aan AI.", y, font(FONT_LIGHT, 44), PEARL)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "geo-01-verschuiving.png", "PNG", optimize=True)
+
+
+def post_geo_02() -> None:
+    """GEO Wave — De inzet: bij AI bestaat geen pagina 2."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AI-ZOEKEN  ·  DE INZET", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_top = font(FONT_BLACK, 86)
+    f_bot = font(FONT_BLACK, 96)
+    y = 360
+    for ln in ["Bij Google had", "je pagina 2."]:
+        y = draw_centered(d, ln, y, f_top, PEARL_DIM)
+        y += 8
+    y += 44
+    y = draw_line(d, y, 200, ROSE, 6)
+    y += 50
+    for ln in ["Bij AI bestaat", "geen pagina 2."]:
+        y = draw_centered(d, ln, y, f_bot, PEARL)
+        y += 8
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "geo-02-geen-pagina-2.png", "PNG", optimize=True)
+
+
+def post_geo_03() -> None:
+    """GEO Wave — Het mechanisme: hoe AI kiest wie hij noemt."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AI-VINDBAARHEID  ·  3 FACTOREN", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_title = font(FONT_BLACK, 88)
+    y = 360
+    for ln in ["Hoe kiest AI", "wie hij noemt?"]:
+        y = draw_centered(d, ln, y, f_title, PEARL)
+        y += 8
+    y += 30
+    y = draw_line(d, y, 160, INDIGO, 6)
+    y += 70
+
+    f_item = font(FONT_LIGHT, 42)
+    for it in [
+        "Consistente info overal",
+        "Vertrouwen: reviews & bronnen",
+        "Structuur die AI kan lezen",
+    ]:
+        y = _draw_subtitle_with_dot(d, it, y, f_item)
+        y += 56
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "geo-03-hoe-kiest-ai.png", "PNG", optimize=True)
+
+
+def post_geo_05() -> None:
+    """GEO Wave — De oplossing: word gevonden door AI."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AANLOOP AI  ·  AI-VINDBAARHEID", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 124)
+    lines = ["Word gevonden", "door AI."]
+    _, h_line = text_size(d, lines[0], f_big)
+    block_h = len(lines) * h_line + 8
+    y = (SIZE - block_h) // 2 - 60
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += 8
+    y += 40
+    y = draw_line(d, y, 200, EMERALD, 6)
+    y += 50
+    f_sub = font(FONT_LIGHT, 42)
+    for ln in ["ChatGPT, Gemini en Claude", "noemen jouw bedrijf."]:
+        y = draw_centered(d, ln, y, f_sub, PEARL)
+        y += 14
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "geo-05-word-gevonden.png", "PNG", optimize=True)
+
+
 def main() -> None:
     post_01()
     post_02()
@@ -578,6 +687,10 @@ def main() -> None:
     post_13_seven_days()
     post_14_starter_groei()
     post_15_whatsapp_67()
+    post_geo_01()
+    post_geo_02()
+    post_geo_03()
+    post_geo_05()
     for p in sorted(OUT_DIR.glob("post-*.png")):
         print(f"{p.name}\t{p.stat().st_size} bytes")
 
