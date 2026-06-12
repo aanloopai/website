@@ -5,7 +5,7 @@ const toolSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
   name: 'AI ROI Calculator — Bereken uw besparing met AI automatisering',
-  description: 'Gratis online calculator om de ROI van AI automatisering voor uw MKB-bedrijf te berekenen. Bereken hoeveel tijd en geld u bespaart op basis van 80+ live MKB-implementaties bij Aanloop AI.',
+  description: 'Gratis online calculator om de ROI van AI automatisering voor uw MKB-bedrijf te berekenen. Bereken hoeveel tijd en geld u bespaart op basis van sector-benchmarks en MKB-praktijkcijfers.',
   url: 'https://aanloopai.nl/ai-roi-calculator/',
   applicationCategory: 'BusinessApplication',
   applicationSubCategory: 'ROI Calculator',
@@ -42,7 +42,7 @@ const presetProfiles = [
 
 
 const faqItems = [
-  { question: 'Hoe nauwkeurig is de AI ROI calculator?', answer: 'De calculator gebruikt gemiddelden gebaseerd op onze implementaties bij 80+ MKB-bedrijven in Nederland. De werkelijke besparing is afhankelijk van uw specifieke situatie. Onze gratis AI scan geeft een nauwkeurig, op maat gemaakt beeld.' },
+  { question: 'Hoe nauwkeurig is de AI ROI calculator?', answer: 'De calculator gebruikt gemiddelden gebaseerd op sector-benchmarks en gangbare MKB-cijfers in Nederland. De werkelijke besparing is afhankelijk van uw specifieke situatie. Onze gratis AI scan geeft een nauwkeurig, op maat gemaakt beeld.' },
   { question: 'Hoe snel verdient mijn investering zich terug?', answer: 'Op basis van onze klantdata is de gemiddelde terugverdientijd 2-4 maanden bij het Starter pakket. Bedrijven met meer dan 50 inkomende calls per dag realiseren dit vaak al in de eerste maand.' },
   { question: 'Wat is inbegrepen in de berekende besparing?', answer: 'De calculator rekent met directe kostenbesparingen (minder personeel voor routinetaken), omzetgroei door minder gemiste leads, en tijdsbesparing. Indirecte voordelen zoals hogere klanttevredenheid zijn niet meegenomen.' },
 ];
@@ -65,7 +65,7 @@ const faqItems = [
           Hoeveel bespaart<br />AI voor uw bedrijf?
         </h1>
         <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">
-          Vul uw huidige situatie in en bereken in 60 seconden uw geschatte jaarlijkse besparing met AI automatisering. Gebaseerd op 80+ MKB-implementaties.
+          Vul uw huidige situatie in en bereken in 60 seconden uw geschatte jaarlijkse besparing met AI automatisering. Gebaseerd op sector-benchmarks.
         </p>
       </div>
     </div>
@@ -291,7 +291,7 @@ const faqItems = [
             </a>
           </div>
 
-          <p class="text-xs text-slate-400 text-center">Berekeningen zijn schattingen op basis van gemiddelden bij 80+ MKB-implementaties.<br>Werkelijke resultaten kunnen afwijken.</p>
+          <p class="text-xs text-slate-400 text-center">Berekeningen zijn schattingen op basis van sector-benchmarks en gemiddelden.<br>Werkelijke resultaten kunnen afwijken.</p>
         </div>
       </div>
 
@@ -314,7 +314,7 @@ const faqItems = [
       <!-- Sector benchmarks -->
       <div class="mt-16 max-w-5xl mx-auto">
         <h2 class="text-2xl font-bold text-navy mb-2">Sector-benchmarks 2026</h2>
-        <p class="text-sm text-slate-600 mb-6">Gemiddelde ROI-multiplier en typische terugverdientijd op basis van 80+ live klanten van Aanloop AI per sector.</p>
+        <p class="text-sm text-slate-600 mb-6">Gemiddelde ROI-multiplier en typische terugverdientijd op basis van sector-benchmarks per sector.</p>
         <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
           <table class="w-full text-sm">
             <thead class="bg-slate-50">
@@ -343,7 +343,7 @@ const faqItems = [
       <div class="mt-16 max-w-3xl mx-auto">
         <h2 class="text-2xl font-bold text-navy mb-4">Methodologie — waar komen deze cijfers vandaan?</h2>
         <div class="space-y-4 text-sm text-slate-700 leading-relaxed">
-          <p>Onze ROI-calculator gebruikt vier gemeten parameters uit Aanloop AI live-data van 80+ klanten:</p>
+          <p>Onze ROI-calculator gebruikt vier gemeten parameters uit sector-benchmarks en MKB-praktijkcijfers:</p>
           <ul class="space-y-2 list-disc pl-5">
             <li><strong class="text-navy">AI recovery rate (68 procent):</strong> percentage gemiste oproepen dat door Marco wordt opgevangen tijdens en buiten kantooruren. Gemeten over 12 maanden.</li>
             <li><strong class="text-navy">Lead conversion rate (15 procent):</strong> percentage van opgevangen oproepen dat tot een afspraak of offerte leidt. Sector-onafhankelijk gemiddelde.</li>
@@ -357,8 +357,8 @@ const faqItems = [
       <!-- Trust signals -->
       <div class="mt-16 max-w-3xl mx-auto grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
         <div class="card p-5">
-          <p class="text-3xl font-bold text-navy">80+</p>
-          <p class="text-xs text-slate-600 mt-1">Live MKB-klanten</p>
+          <p class="text-3xl font-bold text-navy">11</p>
+          <p class="text-xs text-slate-600 mt-1">Sectoren</p>
         </div>
         <div class="card p-5">
           <p class="text-3xl font-bold text-navy">7 dgn</p>
@@ -642,7 +642,7 @@ const faqItems = [
       doc.setTextColor(100, 116, 139);
       doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
-      const disclaimer = 'Berekeningen zijn schattingen op basis van gemiddelden bij 80+ live MKB-implementaties bij Aanloop AI. Werkelijke resultaten kunnen afwijken. Een gratis AI-scan levert een nauwkeurige op-maat berekening.';
+      const disclaimer = 'Berekeningen zijn schattingen op basis van sector-benchmarks en gemiddelden. Werkelijke resultaten kunnen afwijken. Een gratis AI-scan levert een nauwkeurige op-maat berekening.';
       const wrapped = doc.splitTextToSize(disclaimer, 180);
       doc.text(wrapped, 15, y + 25);
 
