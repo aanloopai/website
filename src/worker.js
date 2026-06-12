@@ -499,6 +499,9 @@ async function handleGeoScan(request, env) {
   try { body = await request.json(); } catch { return jsonResponse({ success: false, message: 'Invalid JSON' }, 400); }
   const u = isPublicHttpUrl(String((body && body.url) || '').trim());
   if (!u) return jsonResponse({ success: false, message: 'Voer een geldige publieke website-URL in (https://...).' }, 400);
+  if (/(^|\.)aanloopai\.nl$/i.test(u.hostname)) {
+    return jsonResponse({ success: false, message: 'Voer de website van jouw eigen bedrijf in — niet aanloopai.nl. We checken jouw AI-vindbaarheid.' }, 400);
+  }
   const origin = `${u.protocol}//${u.host}`;
   const [home, llms, robots] = await Promise.all([
     geoFetchText(origin + '/'),

@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const faqItems = [
+  { question: 'Waar staat mijn data?', answer: 'Alle klantdata wordt verwerkt en opgeslagen binnen de EU (datacentra in Frankfurt en Amsterdam). Er gaat geen persoonsgegevens naar Amerikaanse clouds of buiten de EU, tenzij u daar expliciet opdracht toe geeft.' },
+  { question: 'Is Aanloop AI AVG-compliant?', answer: 'Ja. Aanloop AI B.V. (KvK 56312075) verwerkt persoonsgegevens conform de AVG. Bij elke samenwerking sluiten we een verwerkersovereenkomst (DPA) conform artikel 28 AVG. Op aanvraag leveren we ook een DPIA-template en een sub-verwerkersregister.' },
+  { question: 'Zijn jullie ISO 27001 of NEN 7510 gecertificeerd?', answer: 'Aanloop AI zelf draagt geen eigen ISO 27001- of NEN 7510-certificaat. Wel werken we met sub-verwerkers die dat wel zijn (zoals Hetzner met ISO 27001) en richten we voor de zorgsector een NEN 7510-compatibele opzet in. We zijn transparant over welke maatregelen wel en niet gecertificeerd zijn.' },
+  { question: 'Gebruiken jullie mijn data om AI te trainen?', answer: 'Nee. We trainen onze of externe AI-modellen niet op uw klantdata. Uw gegevens worden uitsluitend gebruikt om uw eigen AI-oplossing te laten functioneren.' },
+  { question: 'Zit ik vast aan een lock-in?', answer: 'Nee. We werken zoveel mogelijk met open technologie (zoals n8n self-hosted). Bij beeindiging krijgt u een export van uw workflows en data. Abonnementen zijn maandelijks opzegbaar.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org', '@type': 'WebPage',
+  name: 'Zekerheden — AVG, EU-data & beveiliging',
+  description: 'Hoe Aanloop AI omgaat met uw data: AVG-compliant, EU-data, verwerkersovereenkomst, sub-verwerker-certificering en geen vendor lock-in.',
+  url: 'https://aanloopai.nl/zekerheden/',
+  isPartOf: { '@type': 'WebSite', '@id': 'https://aanloopai.nl/#website' },
+  publisher: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization' },
+};
+---
+<BaseLayout
+  title="Zekerheden — AVG, EU-data & beveiliging"
+  description="Hoe Aanloop AI omgaat met uw data: AVG-compliant, EU-data (Frankfurt/Amsterdam), verwerkersovereenkomst, sub-verwerker-certificering en geen vendor lock-in."
+  schema={schema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Vertrouwen &amp; zekerheden</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08]">Uw data, veilig en in de EU</h1>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed">AI werkt alleen als u erop kunt vertrouwen. Hieronder leest u eerlijk en concreet hoe wij omgaan met uw data, privacy en compliance — wat wel en wat niet gecertificeerd is.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="grid sm:grid-cols-2 gap-5 mb-12">
+        {[
+          { t: 'EU-data', d: 'Verwerking en opslag in Frankfurt en Amsterdam. Geen export buiten de EU.' },
+          { t: 'AVG-compliant', d: 'Verwerkersovereenkomst (DPA) conform art. 28 AVG bij elke samenwerking.' },
+          { t: 'Geen training op uw data', d: 'Uw klantdata wordt nooit gebruikt om AI-modellen te trainen.' },
+          { t: 'Geen lock-in', d: 'Open technologie, data-export bij beeindiging, maandelijks opzegbaar.' },
+        ].map((c) => (
+          <div class="rounded-2xl border border-slate-200 p-6 bg-white shadow-sm">
+            <h3 class="font-bold text-navy">{c.t}</h3>
+            <p class="mt-2 text-sm text-slate-600 leading-relaxed">{c.d}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="max-w-3xl space-y-10 text-slate-700 leading-relaxed">
+        <div>
+          <h2 class="text-2xl font-bold text-navy mb-3">Datalocatie: alles binnen de EU</h2>
+          <p>Alle persoonsgegevens en bedrijfsdata worden verwerkt en opgeslagen binnen de Europese Unie — onze infrastructuur draait in datacentra in Frankfurt en Amsterdam. Er gaat geen data naar Amerikaanse clouddiensten of buiten de EU, tenzij u daar uitdrukkelijk opdracht toe geeft. Zo houdt u volledige data-soevereiniteit.</p>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-navy mb-3">AVG &amp; verwerkersovereenkomst</h2>
+          <p>Aanloop AI B.V. (KvK 56312075) verwerkt persoonsgegevens conform de Algemene Verordening Gegevensbescherming. Bij elke samenwerking sluiten we een <strong>verwerkersovereenkomst (DPA)</strong> conform artikel 28 AVG. Op aanvraag leveren we een DPIA-template, een sub-verwerkersregister en heldere afspraken over bewaartermijnen (standaard 90 dagen, configureerbaar) en het recht op verwijdering.</p>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-navy mb-3">Certificering: eerlijk over wat wel en niet</h2>
+          <p>Wij zijn transparant: <strong>Aanloop AI draagt zelf geen eigen ISO 27001- of NEN 7510-certificaat.</strong> Wel werken we uitsluitend met sub-verwerkers die de relevante certificeringen wel hebben — bijvoorbeeld Hetzner (ISO 27001) voor hosting. Voor de zorgsector richten we een <strong>NEN 7510-compatibele opzet</strong> in met audit-logging en escalatie-protocollen. We claimen nooit een certificaat dat we niet hebben.</p>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-navy mb-3">Geen training op uw data</h2>
+          <p>Uw klantdata wordt uitsluitend gebruikt om uw eigen AI-oplossing te laten functioneren. We trainen geen AI-modellen op uw gegevens en delen niets met derden voor commerciele doeleinden. Waar mogelijk gebruiken we self-hosted modellen om data-stromen volledig binnen uw controle te houden.</p>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-navy mb-3">Beveiliging</h2>
+          <p>Data wordt versleuteld opgeslagen (encryptie at-rest) en verzonden (encryptie in-transit). Toegang is beperkt op basis van rollen, en gevoelige acties worden gelogd. Voor zorg- en juridische klanten kunnen we aanvullende maatregelen treffen, zoals het uitschakelen van gespreksopnames of kortere bewaartermijnen.</p>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-navy mb-3">Geen vendor lock-in</h2>
+          <p>We bouwen zoveel mogelijk op open technologie zoals n8n self-hosted. Bij beeindiging van de samenwerking ontvangt u een export van uw workflows en data — u blijft eigenaar. Onze abonnementen zijn maandelijks opzegbaar, zonder exit-kosten.</p>
+        </div>
+      </div>
+
+      <div class="rounded-2xl bg-navy text-white p-8 text-center mt-12 max-w-3xl mx-auto">
+        <h2 class="text-xl font-bold">Vragen over privacy of compliance?</h2>
+        <p class="mt-2 text-slate-300 text-sm">Plan een gratis gesprek — we lopen uw data-flows door en geven concreet advies over AVG-veilige AI.</p>
+        <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="/demo-inplannen/" class="btn-primary text-base px-6 py-3">Plan een gesprek</a>
+          <a href="/contact/" class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/30 text-white font-semibold hover:bg-white/10 transition-colors text-base px-6 py-3">Stel een vraag</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
