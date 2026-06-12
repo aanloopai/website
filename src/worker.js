@@ -137,7 +137,7 @@ const PORTAL_CORS_HEADERS = {
 // Security headers — applied to all asset responses.
 // Mirrors public/_headers, which Cloudflare Workers-with-Assets does not honor for HTML routes.
 // Source-of-truth lives here in the Worker; _headers is kept for Pages-style fallback only.
-const CSP_POLICY = "default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' blob: https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com https://elevenlabs.io https://*.elevenlabs.io https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api.web3forms.com https://*.elevenlabs.io wss://*.elevenlabs.io https://www.clarity.ms; media-src 'self' blob: data: https://*.elevenlabs.io; worker-src 'self' blob: https://unpkg.com https://*.elevenlabs.io; child-src 'self' blob: https://*.elevenlabs.io; frame-ancestors 'none'; frame-src 'none';";
+const CSP_POLICY = "default-src 'self' blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com https://cdn.jsdelivr.net https://elevenlabs.io https://*.elevenlabs.io https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api.web3forms.com https://*.elevenlabs.io wss://*.elevenlabs.io https://*.livekit.cloud wss://*.livekit.cloud https://www.clarity.ms; media-src 'self' blob: data: https://*.elevenlabs.io; worker-src 'self' blob: https://unpkg.com https://*.elevenlabs.io; child-src 'self' blob: https://*.elevenlabs.io; frame-ancestors 'none'; frame-src https://*.elevenlabs.io;";
 
 const SECURITY_HEADERS = {
   'strict-transport-security': 'max-age=63072000; includeSubDomains; preload',
@@ -245,7 +245,7 @@ function buildRoiAutoresponseHtml(template, userName, fields) {
       <a href="https://aanloopai.nl/gratis-ai-scan/" style="display:inline-block;background:#4f46e5;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px">Gratis AI Scan aanvragen →</a>
     </p>
 
-    <p style="font-size:12px;color:#64748b;margin:16px 0">Berekeningen zijn schattingen op basis van gemiddelden bij 80+ live MKB-implementaties. Werkelijke resultaten kunnen afwijken — een gratis AI-scan levert een nauwkeurige op-maat berekening.</p>
+    <p style="font-size:12px;color:#64748b;margin:16px 0">Berekeningen zijn schattingen op basis van sector-benchmarks en gemiddelden. Werkelijke resultaten kunnen afwijken — een gratis AI-scan levert een nauwkeurige op-maat berekening.</p>
 
     <p style="margin:24px 0 0">Met vriendelijke groet,<br>Het team van Aanloop AI</p>
     ${FOOTER_HTML}
@@ -292,7 +292,7 @@ function buildScanAutoresponseHtml(template, userName, fields) {
       <a href="https://aanloopai.nl/contact/" style="display:inline-block;background:#4f46e5;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px">Plan een 30-min strategiegesprek →</a>
     </p>
 
-    <p style="font-size:12px;color:#64748b;margin:16px 0">De score is gebaseerd op gewogen criteria die we bij 80+ live MKB-implementaties effectief vonden. Voor een nauwkeurige op-maat analyse adviseren we onze 30-min videocall AI-scan.</p>
+    <p style="font-size:12px;color:#64748b;margin:16px 0">De score is gebaseerd op gewogen criteria die in de MKB-praktijk effectief bleken. Voor een nauwkeurige op-maat analyse adviseren we onze 30-min videocall AI-scan.</p>
 
     <p style="margin:24px 0 0">Met vriendelijke groet,<br>Het team van Aanloop AI</p>
     ${FOOTER_HTML}

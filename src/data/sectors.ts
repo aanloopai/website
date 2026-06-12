@@ -42,14 +42,14 @@ export const sectors: Sector[] = [
     ],
     solutions: [
       { title: 'Reserveringen via telefoon (Marco)', description: 'AI-receptionist neemt op, controleert beschikbaarheid, boekt direct in uw bestaande systeem (TheFork, Resengo, Zenchef, etc.).' },
-      { title: 'WhatsApp-bevestigingen (Emma)', description: 'Automatische bevestiging + reminder 4u voor de reservering. No-shows met 60% verlaagd in onze pilots.' },
+      { title: 'WhatsApp-bevestigingen (Emma)', description: 'Automatische bevestiging + reminder 4u voor de reservering. No-shows verlaagd door tijdige bevestiging en reminder.' },
       { title: 'Multi-channel inbox', description: 'Reserveringen van telefoon, WhatsApp, Instagram-DM en e-mail komen samen in één dashboard.' },
       { title: 'Voorraadprognose', description: 'Custom AI die uw historische data analyseert en wekelijkse inkoop-suggesties geeft per ingrediënt.' },
     ],
     caseExample: {
-      company: 'Restaurant De Pier',
+      company: 'Voorbeeldscenario',
       location: 'Scheveningen',
-      quote: 'Voor Marco namen we 30% van de avondreserveringen niet aan omdat we te druk waren. Nu pakt hij ze op terwijl we serveren. Onze omzet steeg 18% in twee maanden.',
+      quote: 'In een druk restaurant worden avondreserveringen vaak gemist tijdens piekuren. Een AI-receptionist neemt ze aan terwijl het team serveert.',
       metrics: [
         { label: 'Omzetstijging', value: '+18%' },
         { label: 'No-shows verlaagd', value: '−60%' },
@@ -82,9 +82,9 @@ export const sectors: Sector[] = [
       { title: 'Route-suggesties via AI', description: 'Custom workflow die historische data + verkeer + werkdrukte combineert voor dagelijkse routesuggesties.' },
     ],
     caseExample: {
-      company: 'Trans-Holland Logistiek',
+      company: 'Voorbeeldscenario',
       location: 'Vlaardingen',
-      quote: 'We kregen dagelijks 80+ telefoontjes met "waar is mijn zending?" Emma pakt ze nu allemaal af. Onze planner heeft eindelijk weer tijd om te plannen.',
+      quote: 'Logistieke bedrijven krijgen veel "waar is mijn zending?"-vragen. Een WhatsApp-AI handelt die direct af, zodat de planner tijd houdt om te plannen.',
       metrics: [
         { label: 'Telefonische status-vragen', value: '−85%' },
         { label: 'Klanttevredenheid', value: '+22%' },
@@ -117,9 +117,9 @@ export const sectors: Sector[] = [
       { title: 'Telefoon screening', description: 'Marco vangt cold-callers van verkopende makelaars af, registreert details voor terugbel-batch.' },
     ],
     caseExample: {
-      company: 'Vastgoed Centraal',
+      company: 'Voorbeeldscenario',
       location: 'Utrecht',
-      quote: 'Vroeger waren we de eerste 5 minuten na een Funda-lead het langzaamst. Nu zijn we de snelste — Marco belt ze terwijl wij in een gesprek zitten. Conversie omhoog van 4% naar 11%.',
+      quote: 'Snelheid bepaalt de conversie op vastgoed-leads. Een AI-receptionist belt nieuwe leads direct terug, ook tijdens andere gesprekken.',
       metrics: [
         { label: 'Lead-naar-bezichtiging', value: '+175%' },
         { label: 'Reactietijd Funda-leads', value: '< 60 sec' },
@@ -152,9 +152,9 @@ export const sectors: Sector[] = [
       { title: 'Multi-platform inbox', description: 'Vragen van Bol, Marktplaats, eigen shop, Instagram en e-mail komen in één AI-beheerde inbox.' },
     ],
     caseExample: {
-      company: 'Brandstof Sneakers',
+      company: 'Voorbeeldscenario',
       location: 'Rotterdam',
-      quote: 'Onze klantenservice-medewerker behandelde 60 tickets per dag. Emma pakt er nu 50 zelf, hij doet alleen de complexe nog. We hadden 2 extra mensen nodig — nu hebben we ze niet aangenomen.',
+      quote: 'Klantenservice-teams verwerken veel repetitieve tickets. Een WhatsApp-AI vangt de standaardvragen op, zodat mensen zich op de complexe richten.',
       metrics: [
         { label: 'Tickets opgelost door AI', value: '83%' },
         { label: 'Reactietijd gemiddeld', value: '< 30 sec' },
@@ -187,9 +187,9 @@ export const sectors: Sector[] = [
       { title: 'Marco voor inbound calls', description: 'Marco filtert sales-calls weg en plant alleen serieuze cliënt-calls in uw agenda.' },
     ],
     caseExample: {
-      company: 'Van Doorn Accountants',
+      company: 'Voorbeeldscenario',
       location: 'Den Haag',
-      quote: 'Onze partners deden vroeger 4 intakes per week — niet declarabel. Nu doet de AI ze, en de partners zien alleen de samenvatting. We hebben 12 declarabele uren per week erbij.',
+      quote: 'Niet-declarabele intakes kosten zakelijke dienstverleners tijd. Een AI doet de intake en levert een samenvatting, zodat partners declarabel blijven.',
       metrics: [
         { label: 'Niet-declarabele uren bespaard', value: '12u/week' },
         { label: 'Tijd per offerte', value: '90 → 15 min' },
@@ -222,9 +222,9 @@ export const sectors: Sector[] = [
       { title: 'Beveiligde EU-verwerking', description: 'Alle data binnen EU (Frankfurt of Amsterdam), NEN 7510-conform, verwerkersovereenkomst standaard.' },
     ],
     caseExample: {
-      company: 'Huisartspraktijk Maaszicht',
+      company: 'Voorbeeldscenario',
       location: 'Rotterdam',
-      quote: 'Ochtend tussen 8 en 10 was een hel — telefoon stopt niet. Marco neemt nu 70% van de niet-spoed-vragen af. Onze assistent kan eindelijk de patiënten in de wachtkamer aandacht geven.',
+      quote: 'In de ochtendpiek staat de telefoon roodgloeiend. Een AI-receptionist neemt niet-spoedvragen af, zodat de assistent de wachtkamer kan bedienen.',
       metrics: [
         { label: 'Telefoondruk in piek', value: '−70%' },
         { label: 'No-shows door reminders', value: '−45%' },
