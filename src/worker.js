@@ -467,6 +467,69 @@ function jsonResponse(body, status = 200) {
   });
 }
 
+// --- GEO Quick Scan: lightweight AI-vindbaarheid check of a public URL ---
+// SSRF-guarded: only public http(s) hosts, no loopback/private ranges.
+function isPublicHttpUrl(raw) {
+  let u;
+  try { u = new URL(raw); } catch { return null; }
+  if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+  const h = u.hostname.toLowerCase();
+  if (h === 'localhost' || h.endsWith('.local') || h.endsWith('.internal') || !h.includes('.')) return null;
+  if (/^(127\.|10\.|192\.168\.|169\.254\.|0\.)/.test(h)) return null;
+  if (/^172\.(1[6-9]|2\d|3[01])\./.test(h)) return null;
+  if (h === '::1' || h.startsWith('fc') || h.startsWith('fd') || h.startsWith('fe80')) return null;
+  return u;
+}
+
+async function geoFetchText(target, ms = 8000, maxBytes = 600000) {
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), ms);
+  try {
+    const res = await fetch(target, { signal: ctrl.signal, redirect: 'follow', headers: { 'user-agent': 'AanloopAI-GEO-Scan/1.0 (+https://aanloopai.nl/ai-vindbaarheid/)' } });
+    const buf = await res.arrayBuffer();
+    return { ok: res.ok, status: res.status, text: new TextDecoder().decode(buf.slice(0, maxBytes)) };
+  } catch {
+    return { ok: false, status: 0, text: '' };
+  } finally { clearTimeout(t); }
+}
+
+async function handleGeoScan(request, env) {
+  if (request.method !== 'POST') return jsonResponse({ success: false, message: 'Use POST' }, 405);
+  let body;
+  try { body = await request.json(); } catch { return jsonResponse({ success: false, message: 'Invalid JSON' }, 400); }
+  const u = isPublicHttpUrl(String((body && body.url) || '').trim());
+  if (!u) return jsonResponse({ success: false, message: 'Voer een geldige publieke website-URL in (https://...).' }, 400);
+  const origin = `${u.protocol}//${u.host}`;
+  const [home, llms, robots] = await Promise.all([
+    geoFetchText(origin + '/'),
+    geoFetchText(origin + '/llms.txt'),
+    geoFetchText(origin + '/robots.txt'),
+  ]);
+  const html = home.text;
+  const hasJsonLd = /application\/ld\+json/i.test(html);
+  const hasSameAs = /"sameAs"/i.test(html);
+  const hasEntity = /"@type"\s*:\s*"(Person|Organization|LocalBusiness)"/i.test(html);
+  const hasTitle = /<title[^>]*>[^<]{3,}<\/title>/i.test(html);
+  const hasMetaDesc = /<meta[^>]+name=["']description["'][^>]+content=["'][^"']{20,}/i.test(html);
+  const hasViewport = /<meta[^>]+name=["']viewport["']/i.test(html);
+  const hasLlms = llms.ok && llms.text.trim().length > 50;
+  const blocksAi = /(gptbot|claudebot|perplexitybot|google-extended|oai-searchbot)[\s\S]{0,200}?disallow:\s*\//i.test(robots.text);
+  const aiAccess = robots.ok ? !blocksAi : true;
+  const checks = [
+    { label: 'llms.txt aanwezig', ok: hasLlms, w: 20, detail: hasLlms ? 'Gevonden — AI-assistenten kunnen je content begrijpen.' : 'Ontbreekt — voeg een llms.txt toe zodat AI je site snapt.' },
+    { label: 'Schema.org (JSON-LD)', ok: hasJsonLd, w: 22, detail: hasJsonLd ? 'Gestructureerde data aanwezig.' : 'Geen JSON-LD gevonden — AI mist context over je bedrijf.' },
+    { label: 'Organization / sameAs entiteit', ok: hasSameAs || hasEntity, w: 15, detail: (hasSameAs || hasEntity) ? 'Entiteit-markup aanwezig.' : 'Geen Organization/sameAs — AI herkent je niet als entiteit.' },
+    { label: 'AI-bot toegang (robots.txt)', ok: aiAccess, w: 20, detail: aiAccess ? 'AI-crawlers mogen je site lezen.' : 'robots.txt blokkeert AI-crawlers — onzichtbaar voor AI.' },
+    { label: 'Title + meta description', ok: hasTitle && hasMetaDesc, w: 13, detail: (hasTitle && hasMetaDesc) ? 'Aanwezig.' : 'Title of meta-description ontbreekt of te kort.' },
+    { label: 'Mobiel geoptimaliseerd', ok: hasViewport, w: 10, detail: hasViewport ? 'Viewport ingesteld.' : 'Geen viewport-meta gevonden.' },
+  ];
+  let score = 0;
+  for (const c of checks) if (c.ok) score += c.w;
+  if (!home.ok) score = Math.min(score, 10);
+  const grade = score >= 80 ? 'Sterk' : score >= 55 ? 'Redelijk' : score >= 30 ? 'Zwak' : 'Kritiek';
+  return jsonResponse({ success: true, url: origin, reachable: home.ok, score, grade, checks: checks.map(({ label, ok, detail }) => ({ label, ok, detail })) });
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -475,6 +538,11 @@ export default {
     if (url.pathname === '/api/health') {
       // Public unauthenticated endpoint — must not leak environment details.
       return jsonResponse({ status: 'ok', deployed_at: new Date().toISOString() });
+    }
+
+    if (url.pathname === '/api/geo-scan') {
+      if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
+      return handleGeoScan(request, env);
     }
 
     if (url.pathname === '/api/submit') {

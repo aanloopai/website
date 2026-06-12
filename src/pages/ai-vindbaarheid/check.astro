@@ -1,0 +1,174 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const sectoren = ['Horeca', 'Vastgoed & makelaars', 'Accountancy', 'Juridisch', 'Bouw & installatie', 'Logistiek', 'Zorg', 'E-commerce', 'ZZP / freelance', 'Anders'];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'GEO Quick Scan — AI-vindbaarheid check',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+  description: 'Gratis check: hoe vindbaar is jouw website voor AI-assistenten zoals ChatGPT, Gemini en Claude? Direct een GEO-score met concrete verbeterpunten.',
+  url: 'https://aanloopai.nl/ai-vindbaarheid/check/',
+  provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+};
+---
+
+<BaseLayout
+  title="Gratis GEO Quick Scan — Hoe vindbaar ben je in ChatGPT?"
+  description="Check gratis hoe vindbaar jouw website is voor AI-assistenten (ChatGPT, Gemini, Claude). Direct een GEO-score van 0–100 met concrete verbeterpunten."
+  schema={[schema]}
+  noindex={false}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-14 lg:py-20">
+      <div class="max-w-2xl mx-auto text-center">
+        <div class="flex items-center justify-center gap-3 mb-5">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Gratis GEO Quick Scan</span>
+        </div>
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08]">
+          Hoe vindbaar is jouw site voor AI?
+        </h1>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed">
+          Steeds meer klanten vragen het aan ChatGPT, Gemini of Claude. Check in 20 seconden hoe goed AI jouw website kan lezen en aanbevelen — met een score en concrete verbeterpunten.
+        </p>
+      </div>
+
+      <div class="max-w-xl mx-auto mt-10">
+        <form id="geo-form" class="bg-white rounded-2xl border border-slate-200 shadow-lg p-6 sm:p-8 space-y-4">
+          <div>
+            <label for="geo-url" class="block text-sm font-semibold text-navy mb-1">Jouw website *</label>
+            <input id="geo-url" name="url" type="url" required placeholder="https://uwbedrijf.nl" class="w-full rounded-lg border border-slate-300 px-4 py-3 text-base focus:border-brand-indigo focus:outline-none" />
+          </div>
+          <div class="grid sm:grid-cols-2 gap-4">
+            <div>
+              <label for="geo-bedrijf" class="block text-sm font-semibold text-navy mb-1">Bedrijfsnaam</label>
+              <input id="geo-bedrijf" name="bedrijf" type="text" placeholder="Uw bedrijf" class="w-full rounded-lg border border-slate-300 px-4 py-3 text-base focus:border-brand-indigo focus:outline-none" />
+            </div>
+            <div>
+              <label for="geo-sector" class="block text-sm font-semibold text-navy mb-1">Sector</label>
+              <select id="geo-sector" name="sector" class="w-full rounded-lg border border-slate-300 px-4 py-3 text-base focus:border-brand-indigo focus:outline-none bg-white">
+                <option value="">Kies…</option>
+                {sectoren.map((s) => <option value={s}>{s}</option>)}
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="geo-email" class="block text-sm font-semibold text-navy mb-1">E-mail (voor je volledige rapport) *</label>
+            <input id="geo-email" name="email" type="email" required placeholder="naam@uwbedrijf.nl" class="w-full rounded-lg border border-slate-300 px-4 py-3 text-base focus:border-brand-indigo focus:outline-none" />
+          </div>
+          <label class="flex items-start gap-2 text-xs text-slate-500">
+            <input type="checkbox" name="privacy" required class="mt-0.5" />
+            <span>Ik ga akkoord met de <a href="/privacy/" class="text-brand-indigo underline">privacyverklaring</a> en wil mijn GEO-rapport ontvangen.</span>
+          </label>
+          <input type="text" name="botcheck" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true" />
+          <button type="submit" id="geo-btn" class="btn-primary w-full justify-center text-base px-6 py-3.5">
+            <span id="geo-btn-label">Start gratis GEO-scan</span>
+          </button>
+          <p id="geo-error" class="hidden text-sm text-brand-rose"></p>
+        </form>
+        <p class="text-center text-xs text-slate-400 mt-4">AVG-compliant · EU-data · we scannen alleen je publieke website</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results -->
+  <section id="geo-results" class="section hidden">
+    <div class="container-page">
+      <div class="max-w-2xl mx-auto">
+        <div class="text-center mb-8">
+          <p class="eyebrow">Jouw GEO-score</p>
+          <div class="mt-3 flex items-center justify-center gap-4">
+            <span id="geo-score" class="text-6xl font-bold text-navy">–</span>
+            <div class="text-left">
+              <span id="geo-grade" class="inline-block px-3 py-1 rounded-full text-sm font-bold bg-brand-indigo/10 text-brand-indigo">–</span>
+              <p class="text-sm text-slate-500 mt-1">van 100 · <span id="geo-url-label"></span></p>
+            </div>
+          </div>
+        </div>
+        <div id="geo-checks" class="space-y-3"></div>
+        <div class="mt-8 rounded-2xl bg-navy text-white p-6 sm:p-8 text-center">
+          <h2 class="text-xl font-bold">Wil je hoger scoren in ChatGPT, Gemini & Claude?</h2>
+          <p class="mt-2 text-slate-300 text-sm">We sturen je het volledige rapport en richten je AI-vindbaarheid volledig in. Vanaf €595/maand · gratis Setup-advies.</p>
+          <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
+            <a href="/aanvragen/?dienst=geo-setup" class="btn-primary text-base px-6 py-3">GEO Setup aanvragen</a>
+            <a href="/demo-inplannen/" class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/30 text-white font-semibold hover:bg-white/10 transition-colors text-base px-6 py-3">Plan een strategiegesprek</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline>
+  (function () {
+    var form = document.getElementById('geo-form');
+    if (!form) return;
+    var btn = document.getElementById('geo-btn');
+    var label = document.getElementById('geo-btn-label');
+    var errEl = document.getElementById('geo-error');
+
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      if (form.botcheck && form.botcheck.value) return;
+      errEl.classList.add('hidden');
+      var url = form.url.value.trim();
+      btn.disabled = true;
+      label.textContent = 'Scannen…';
+
+      try {
+        var res = await fetch('/api/geo-scan', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ url: url }),
+        });
+        var data = await res.json();
+        if (!res.ok || !data.success) {
+          throw new Error(data.message || 'Scan mislukt. Probeer een andere URL.');
+        }
+
+        document.getElementById('geo-score').textContent = String(data.score);
+        document.getElementById('geo-grade').textContent = data.grade;
+        document.getElementById('geo-url-label').textContent = data.url;
+        var box = document.getElementById('geo-checks');
+        box.innerHTML = '';
+        data.checks.forEach(function (c) {
+          var row = document.createElement('div');
+          row.className = 'flex items-start gap-3 rounded-xl border border-slate-200 p-4 bg-white';
+          var icon = c.ok
+            ? '<span class="text-brand-emerald text-lg leading-none mt-0.5">✓</span>'
+            : '<span class="text-brand-rose text-lg leading-none mt-0.5">✗</span>';
+          row.innerHTML = icon + '<div><p class="font-semibold text-navy text-sm">' + c.label + '</p><p class="text-xs text-slate-500 mt-0.5">' + c.detail + '</p></div>';
+          box.appendChild(row);
+        });
+        document.getElementById('geo-results').classList.remove('hidden');
+        document.getElementById('geo-results').scrollIntoView({ behavior: 'smooth' });
+
+        try {
+          var fd = new FormData();
+          fd.append('form_type', 'ai_vindbaarheid_scan');
+          fd.append('email', form.email.value.trim());
+          fd.append('bedrijf', form.bedrijf.value.trim());
+          fd.append('sector', form.sector.value);
+          fd.append('website', url);
+          fd.append('privacy', 'ja');
+          fd.append('subject', 'GEO-scan aanvraag — ' + (form.bedrijf.value.trim() || url));
+          fd.append('bericht', 'GEO Quick Scan uitgevoerd voor ' + url + ' — score ' + data.score + '/100 (' + data.grade + '). Stuur volledig rapport.');
+          fetch('/api/submit', { method: 'POST', body: fd });
+        } catch (_) {}
+
+        if (window._track) window._track('generate_lead', { form_name: 'geo_scan', currency: 'EUR', value: 150 });
+        label.textContent = 'Scan opnieuw';
+      } catch (err) {
+        errEl.textContent = (err && err.message) || 'Er ging iets mis. Probeer het opnieuw.';
+        errEl.classList.remove('hidden');
+        label.textContent = 'Start gratis GEO-scan';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  })();
+</script>
