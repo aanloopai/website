@@ -19,6 +19,9 @@ const SITEMAP_EXCLUDE = new Set([
   '/demo-inplannen/',
 ]);
 
+// Whole sections that must never appear in the public sitemap (backoffice + logged-in app)
+const SITEMAP_EXCLUDE_PREFIXES = ['/admin/', '/portal/'];
+
 function walk(dir, files = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
@@ -84,7 +87,7 @@ for (const file of files) {
     skipped.noindex.push(url);
     continue;
   }
-  if (SITEMAP_EXCLUDE.has(url)) {
+  if (SITEMAP_EXCLUDE.has(url) || SITEMAP_EXCLUDE_PREFIXES.some((p) => url.startsWith(p))) {
     skipped.excluded.push(url);
     continue;
   }

@@ -1,0 +1,246 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const factoren = [
+  {
+    nr: '01',
+    titel: 'Consistentie',
+    body: 'Staan uw naam, vakgebied en gegevens overal identiek — website, KvK, socials, directories? Tegenstrijdige informatie laat een AI u weg. Wij maken uw entiteit overal kloppend en eenduidig.',
+  },
+  {
+    nr: '02',
+    titel: 'Vertrouwen',
+    body: 'AI leunt op signalen die het vertrouwt: reviews, vermeldingen op andere sites en een website die een AI-crawler daadwerkelijk kan lezen. Wij bouwen die autoriteit en openen uw site voor de juiste AI-bots.',
+  },
+  {
+    nr: '03',
+    titel: 'Structuur',
+    body: 'AI citeert content die letterlijk antwoord geeft op de vragen die klanten stellen — onderbouwd met schema, llms.txt en heldere opbouw. Wij richten uw site zo in dat AI u oppikt én doorvertelt.',
+  },
+];
+
+const pakketten = [
+  {
+    id: 'geo-quickscan',
+    naam: 'GEO Quick Scan',
+    prijs: 'Gratis',
+    unit: '20 min',
+    desc: 'Ontdek hoe vindbaar u nu bent in ChatGPT, Claude, Perplexity en Gemini. Inclusief composite GEO-score (0–100) en uw top-3 quick-wins.',
+    cta: 'Gratis GEO Scan',
+    href: '/aanvragen/?dienst=geo-quickscan',
+    featured: true,
+  },
+  {
+    id: 'geo-setup',
+    naam: 'GEO Setup',
+    prijs: '€1.450',
+    unit: 'eenmalig',
+    desc: 'Volledige GEO-implementatie: schema, llms.txt, AI-bot-toegang, Author/Person-markup en sameAs. Citaties in AI-platforms binnen 4–6 weken.',
+    cta: 'GEO Setup aanvragen',
+    href: '/aanvragen/?dienst=geo-setup',
+    featured: false,
+  },
+  {
+    id: 'geo-maand',
+    naam: 'GEO Maandelijks',
+    prijs: '€595',
+    unit: '/maand',
+    desc: 'Maandelijkse AI-platform-tracking + content-updates voor citation-frequentie, met rapportage per platform. Maandelijks opzegbaar.',
+    cta: 'GEO Maandelijks starten',
+    href: '/aanvragen/?dienst=geo-maand',
+    featured: false,
+  },
+];
+
+const faqItems = [
+  {
+    question: 'Wat is AI-vindbaarheid (GEO)?',
+    answer: 'GEO staat voor Generative Engine Optimization: zorgen dat uw bedrijf genoemd en aanbevolen wordt wanneer mensen een vraag stellen aan AI-assistenten zoals ChatGPT, Gemini en Claude. Waar SEO draait om ranken in Google, draait GEO om genoemd worden in het AI-antwoord zelf.',
+  },
+  {
+    question: 'Waarom is dit nu belangrijk voor mijn bedrijf?',
+    answer: 'Steeds meer klanten stellen hun vraag direct aan een AI in plaats van te googelen. De AI geeft één kort antwoord met 3 tot 5 namen — geen pagina 2. Staat u daar niet tussen, dan bestaat u niet voor die klant op dat moment. Wie er nu als eerste bij is, pakt het hele podium.',
+  },
+  {
+    question: 'Wat is het verschil met SEO?',
+    answer: 'SEO maakt u vindbaar in de blauwe links van Google. GEO maakt u vindbaar in het antwoord dat een AI zelf formuleert. Ze versterken elkaar: dezelfde autoriteit, schema en content helpen bij beide. Daarom bieden we ook een gecombineerde SEO + GEO-bundel.',
+  },
+  {
+    question: 'Hoe meten jullie of ik gevonden word in AI?',
+    answer: 'Met de gratis GEO Quick Scan testen we uw citability op ChatGPT, Claude, Perplexity en Gemini, checken we de AI-bot-toegang (robots.txt + headers), uw schema (sameAs/Author) en uw llms.txt. U krijgt een composite GEO-score van 0 tot 100 plus de drie belangrijkste verbeterpunten.',
+  },
+  {
+    question: 'Hoe lang duurt het voordat ik resultaat zie?',
+    answer: 'Na een GEO Setup zien klanten doorgaans binnen 4 tot 6 weken hun eerste citaties in AI-platforms verschijnen. Met het maandelijkse traject bouwt de citation-frequentie daarna verder op.',
+  },
+  {
+    question: 'Wat kost het?',
+    answer: 'De GEO Quick Scan is gratis. De eenmalige GEO Setup is €1.450. Het maandelijkse GEO-traject is €595 per maand. Wilt u ook in Google sterker staan, dan combineert de SEO + GEO-bundel beide voor €1.195 per maand. Alles AVG-compliant en met EU-data.',
+  },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'AI-vindbaarheid (GEO) — Generative Engine Optimization',
+  alternateName: ['GEO Nederland', 'AI-vindbaarheid', 'ChatGPT vindbaarheid', 'AI-citation optimalisatie'],
+  description: 'Word gevonden en aanbevolen in ChatGPT, Gemini en Claude. Aanloop AI maakt het Nederlandse MKB vindbaar in AI-zoekantwoorden via schema, llms.txt, AI-bot-toegang en autoriteit.',
+  serviceType: 'Generative Engine Optimization',
+  provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  areaServed: { '@type': 'Country', name: 'Nederland' },
+  audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
+  url: 'https://aanloopai.nl/ai-vindbaarheid/',
+  offers: {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'EUR',
+    lowPrice: '0',
+    highPrice: '1450',
+    offerCount: '3',
+    availability: 'https://schema.org/InStock',
+    seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  },
+};
+---
+
+<BaseLayout
+  title="AI-vindbaarheid (GEO) — Word gevonden in ChatGPT, Gemini & Claude"
+  description="Uw klant zoekt niet meer op Google maar vraagt het aan AI. Aanloop AI maakt uw MKB-bedrijf vindbaar in ChatGPT, Gemini en Claude. Start met een gratis GEO Quick Scan."
+  schema={[schema]}
+  faqSchema={faqItems}
+>
+  <!-- Hero -->
+  <section class="border-b border-slate-200 relative overflow-hidden hero-gradient">
+    <div class="container-page py-16 lg:py-28">
+      <div class="grid lg:grid-cols-2 gap-16 items-center">
+        <div>
+          <div class="flex items-center gap-3 mb-6">
+            <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+            <span class="eyebrow">AI-vindbaarheid · GEO</span>
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+            Uw klant Googelt niet meer. Hij vraagt het aan AI.
+          </h1>
+          <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-lg">
+            Steeds vaker stellen mensen hun vraag direct aan ChatGPT, Gemini of Claude. De AI geeft één antwoord met 3 tot 5 namen — geen pagina 2. Wij zorgen dat uw bedrijf in dat antwoord staat, niet uw concurrent.
+          </p>
+          <div class="mt-8 flex flex-col sm:flex-row gap-3">
+            <a href="/aanvragen/?dienst=geo-quickscan" class="btn-primary text-base px-6 py-3.5">
+              Gratis GEO Quick Scan
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+            </a>
+            <a href="/demo-inplannen/" class="btn-outline text-base px-6 py-3.5">Plan een strategiegesprek</a>
+          </div>
+          <p class="mt-5 text-sm text-slate-500">AVG-compliant · EU-data · in het Nederlands · KvK 56312075</p>
+        </div>
+        <div class="relative">
+          <div class="absolute -inset-6 -z-10 bg-gradient-to-br from-brand-indigo/15 via-transparent to-brand-rose/10 blur-3xl"></div>
+          <div class="rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/20 ring-1 ring-slate-200/50 bg-white">
+            <img
+              src="/social-feed/geo-ai-aanbeveling-warmtepomp.png"
+              alt="Voorbeeld van een AI-zoekantwoord dat een bedrijf aanbeveelt in ChatGPT, Gemini of Claude"
+              class="w-full h-auto"
+              loading="eager"
+              decoding="async"
+              width="1080"
+              height="1350"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- De inzet -->
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy">Bij Google had u pagina 2. Bij AI bestaat die niet.</h2>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed">
+          Vraagt iemand aan ChatGPT wie de beste in uw branche is, dan krijgt diegene 3 tot 5 namen. Niet honderd. Drie tot vijf. Dit heet <strong class="text-navy">AI-vindbaarheid</strong> (of GEO: Generative Engine Optimization) — en het is precies waar bijna het hele Nederlandse MKB nu nog onzichtbaar is.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Hoe kiest AI -->
+  <section class="section bg-slate-50 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-2xl mb-12">
+        <span class="eyebrow">Het mechanisme</span>
+        <h2 class="mt-4 text-3xl lg:text-4xl font-bold tracking-tightest text-navy">Hoe kiest een AI wie hij noemt?</h2>
+        <p class="mt-4 text-lg text-slate-600">Een AI verzint zijn antwoord niet — hij vat samen wat hij online vertrouwt. Drie dingen bepalen of u genoemd wordt.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        {factoren.map((f) => (
+          <div class="bg-white rounded-2xl border border-slate-200 p-7 shadow-sm">
+            <div class="text-brand-indigo font-bold text-sm mb-3">{f.nr}</div>
+            <h3 class="text-xl font-bold text-navy">{f.titel}</h3>
+            <p class="mt-3 text-slate-600 leading-relaxed">{f.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Pakketten -->
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-2xl mb-12">
+        <span class="eyebrow">Aan de slag</span>
+        <h2 class="mt-4 text-3xl lg:text-4xl font-bold tracking-tightest text-navy">Word gevonden door AI</h2>
+        <p class="mt-4 text-lg text-slate-600">Start gratis met een scan, of laat ons uw AI-vindbaarheid volledig inrichten.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-6">
+        {pakketten.map((p) => (
+          <div class={`rounded-2xl border p-7 flex flex-col ${p.featured ? 'border-brand-emerald ring-1 ring-brand-emerald/30 shadow-lg' : 'border-slate-200 shadow-sm'}`}>
+            {p.featured && <span class="inline-flex self-start items-center px-3 py-1 rounded-full text-xs font-medium bg-brand-emerald/10 text-brand-emerald mb-4">Start hier — gratis</span>}
+            <h3 class="text-xl font-bold text-navy">{p.naam}</h3>
+            <div class="mt-3 flex items-baseline gap-1">
+              <span class="text-3xl font-bold text-navy">{p.prijs}</span>
+              <span class="text-sm text-slate-500">{p.unit}</span>
+            </div>
+            <p class="mt-4 text-slate-600 leading-relaxed flex-1">{p.desc}</p>
+            <a href={p.href} class={`mt-6 ${p.featured ? 'btn-primary' : 'btn-outline'} text-base px-5 py-3 justify-center`}>{p.cta}</a>
+          </div>
+        ))}
+      </div>
+      <p class="mt-8 text-center text-slate-600">
+        Ook sterker in Google? De <a href="/tarieven/" class="text-brand-indigo font-semibold underline">SEO + GEO-bundel</a> combineert beide vanaf €1.195/maand.
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section bg-slate-50 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy text-center mb-12">Veelgestelde vragen over AI-vindbaarheid</h2>
+        <div class="space-y-4">
+          {faqItems.map((item) => (
+            <details class="group bg-white rounded-2xl border border-slate-200 p-6">
+              <summary class="flex items-center justify-between cursor-pointer font-semibold text-navy list-none">
+                {item.question}
+                <span class="text-brand-indigo group-open:rotate-45 transition-transform text-2xl leading-none">+</span>
+              </summary>
+              <p class="mt-4 text-slate-600 leading-relaxed">{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="section">
+    <div class="container-page">
+      <div class="rounded-3xl bg-navy text-white p-10 lg:p-14 text-center relative overflow-hidden">
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest">Word jij al genoemd door AI — of nog niet?</h2>
+        <p class="mt-4 text-lg text-slate-300 max-w-2xl mx-auto">Doe de gratis GEO Quick Scan en ontdek in 20 minuten hoe vindbaar uw bedrijf is in ChatGPT, Gemini en Claude.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="/aanvragen/?dienst=geo-quickscan" class="btn-primary text-base px-6 py-3.5">Gratis GEO Quick Scan</a>
+          <a href="/demo-inplannen/" class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/30 text-white font-semibold hover:bg-white/10 transition-colors text-base px-6 py-3.5">Plan een strategiegesprek</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

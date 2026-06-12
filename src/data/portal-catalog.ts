@@ -124,7 +124,7 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
     categorie: 'Automatisering',
     omschrijving:
       'Maatwerk-automatisering van uw bedrijfsprocessen met n8n / Make — van documentverwerking tot lead-opvolging.',
-    meerInfoUrl: 'https://aanloopai.nl/diensten/custom-ai-workflows/',
+    meerInfoUrl: 'https://aanloopai.nl/diensten/custom/',
     tiers: [
       { naam: 'Maatwerk', prijs: 'Op aanvraag', prijsCent: null, betaling: 'aanvraag', kenmerken: ['n8n / Make-integraties', 'Procesanalyse vooraf', 'Koppeling met uw tools', 'Offerte op maat'] },
     ],
