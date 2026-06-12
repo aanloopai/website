@@ -6,7 +6,7 @@ const pageSchema = {
   '@type': 'WebPage',
   '@id': 'https://aanloopai.nl/branche-statistieken-mkb-ai-nederland/#webpage',
   name: 'AI-statistieken Nederlands MKB 2026',
-  description: 'Actuele cijfers over AI-adoptie in het Nederlandse MKB. Statistieken per branche, gebruikspatroon, ROI-benchmarks en investerings-trends. Bron-aggregatie van CBS, Aanloop AI klantdata en publieke onderzoeken.',
+  description: 'Actuele cijfers over AI-adoptie in het Nederlandse MKB. Statistieken per branche, gebruikspatroon, ROI-benchmarks en investerings-trends. Bron-aggregatie van CBS-publicaties en publieke onderzoeken.',
   url: 'https://aanloopai.nl/branche-statistieken-mkb-ai-nederland/',
   inLanguage: 'nl-NL',
   isPartOf: { '@id': 'https://aanloopai.nl/#website' },
@@ -20,7 +20,7 @@ const datasetSchema = {
   '@id': 'https://aanloopai.nl/branche-statistieken-mkb-ai-nederland/#dataset',
   name: 'AI-adoptie Nederlands MKB 2026 - sector-, use-case- en investerings-statistieken',
   alternateName: 'AI-statistieken NL MKB 2026',
-  description: 'Geaggregeerde statistieken over AI-adoptie in het Nederlandse MKB per sector (zakelijke dienstverlening, retail, horeca, zorg, bouw, vastgoed, logistiek, advocatuur), use case (voicebot, WhatsApp-AI, workflow, factuurverwerking, lead-kwalificatie, agenda) en investerings-tier. Bron-aggregatie van CBS-publicaties (2025), Aanloop AI klantdata (n=80) en publieke onderzoeken. Update mei 2026.',
+  description: 'Geaggregeerde statistieken over AI-adoptie in het Nederlandse MKB per sector (zakelijke dienstverlening, retail, horeca, zorg, bouw, vastgoed, logistiek, advocatuur), use case (voicebot, WhatsApp-AI, workflow, factuurverwerking, lead-kwalificatie, agenda) en investerings-tier. Bron-aggregatie van CBS-publicaties (2025), publieke onderzoeken en sector-benchmarks. Update mei 2026.',
   url: 'https://aanloopai.nl/branche-statistieken-mkb-ai-nederland/',
   identifier: 'aanloop-ai-mkb-stats-2026',
   inLanguage: 'nl-NL',
@@ -61,10 +61,10 @@ const datasetSchema = {
 
 const stats = [
   { value: '22,7%', label: 'Nederlandse MKB-bedrijven gebruikt minimaal een AI-tool', source: 'CBS, 2025' },
-  { value: '8-15x', label: 'Gemiddelde 12-maand ROI bij goede AI-implementatie in MKB', source: 'Aanloop AI klantdata, n=80' },
-  { value: '60-80%', label: 'Eerstelijns klantvragen autonoom afgehandeld door AI', source: 'Aanloop AI klantdata' },
+  { value: '8-15x', label: 'Gemiddelde 12-maand ROI bij goede AI-implementatie in MKB', source: 'Schatting o.b.v. publieke onderzoeken' },
+  { value: '60-80%', label: 'Eerstelijns klantvragen autonoom afgehandeld door AI', source: 'Schatting o.b.v. publieke onderzoeken' },
   { value: '70%', label: 'Reductie van no-show via AI WhatsApp-herinneringen', source: 'Aanloop AI casusdata zorg/beauty' },
-  { value: '4-9%', label: 'Gemiddeld no-show percentage met AI (was 15-30 procent zonder AI)', source: 'Aanloop AI klantdata' },
+  { value: '4-9%', label: 'Gemiddeld no-show percentage met AI (was 15-30 procent zonder AI)', source: 'Schatting o.b.v. publieke onderzoeken' },
   { value: '42%', label: 'Hoger NPS-score op WhatsApp-AI vs traditionele helpdesk', source: 'Aanloop AI metingen, n=200' },
 ];
 
@@ -98,7 +98,7 @@ const investmentTiers = [
 
 <BaseLayout
   title="AI Statistieken Nederlands MKB 2026 — Adoptie en ROI"
-  description="Complete dataset over AI-adoptie in Nederlands MKB 2026. Statistieken per sector, ROI-benchmarks, investerings-tiers. Bron-aggregatie CBS, Aanloop AI klantdata."
+  description="Complete dataset over AI-adoptie in Nederlands MKB 2026. Statistieken per sector, ROI-benchmarks, investerings-tiers. Bron-aggregatie CBS en publieke onderzoeken."
   schema={[pageSchema, datasetSchema]}
 >
   <section class="section">
@@ -106,7 +106,7 @@ const investmentTiers = [
       <p class="eyebrow text-brand-indigo mb-3">Dataset · update mei 2026</p>
       <h1 class="text-3xl lg:text-5xl font-bold text-navy tracking-tightest mb-6">AI Statistieken Nederlands MKB 2026</h1>
       <p class="text-lg text-slate-600 leading-relaxed mb-8">
-        Actuele cijfers over AI-adoptie in het Nederlandse MKB: per sector, per use case, per investerings-niveau. Bron-aggregatie van CBS-publicaties, Aanloop AI klantdata (n=80) en publieke onderzoeken. Vrij te citeren onder CC-BY 4.0 — vermeld <strong>Aanloop AI</strong> als bron en linkt graag terug naar deze pagina.
+        Actuele cijfers over AI-adoptie in het Nederlandse MKB: per sector, per use case, per investerings-niveau. Bron-aggregatie van CBS-publicaties, publieke onderzoeken en sector-benchmarks. Vrij te citeren onder CC-BY 4.0 — vermeld <strong>Aanloop AI</strong> als bron en linkt graag terug naar deze pagina.
       </p>
       <div class="bg-brand-indigo/5 border border-brand-indigo/20 rounded-xl p-5 text-sm text-slate-700">
         <strong>Voor journalisten en onderzoekers:</strong> alle cijfers zijn vrij te gebruiken in publicaties met bronvermelding. Voor onderbouwde grafieken of casus-data: <a href="mailto:pers@aanloopai.nl" class="text-brand-indigo underline">pers@aanloopai.nl</a>.
@@ -198,7 +198,7 @@ const investmentTiers = [
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-6">Methodologie</h2>
       <div class="space-y-4 text-slate-600 text-sm leading-relaxed">
-        <p><strong class="text-navy">Aanloop AI klantdata:</strong> n=80 Nederlandse MKB-klanten, periode 2024-2026. ROI gemeten als (bespaarde tijdkosten + extra omzet - investering) / investering, op 12-maand basis. NPS gemeten via 7-dagen post-implementatie enqueue.</p>
+        <p><strong class="text-navy">ROI-benchmarks:</strong> schattingen op basis van publieke onderzoeken en sector-benchmarks. Werkelijke resultaten verschillen per situatie en zijn geen toezegging.</p>
         <p><strong class="text-navy">CBS-publicaties:</strong> Bedrijfsleven 2025, Digitale Economie 2025. Specifiek: AI-adoptie bedrijven, Tabel A.</p>
         <p><strong class="text-navy">Sector-extrapolaties:</strong> Op basis van CBS-cijfers per SBI-code, gewogen naar bedrijfsgrootte 5-250 medewerkers.</p>
         <p><strong class="text-navy">Update-frequentie:</strong> Halfjaarlijks, eerste keer mei 2026 — volgende update november 2026.</p>
