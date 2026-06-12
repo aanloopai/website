@@ -1,0 +1,77 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const faqItems = [
+  { question: 'Hoe kom ik in ChatGPT als bedrijf?', answer: 'Je komt in ChatGPT door je website leesbaar en betrouwbaar te maken voor AI-crawlers. Concreet: geef GPTBot toegang via je robots.txt, voeg gestructureerde data (Schema.org) en een llms.txt toe, zorg voor consistente bedrijfsgegevens (naam, adres, KvK) op al je kanalen en bouw vermeldingen op betrouwbare externe sites op. Hoe meer signalen een AI vertrouwt, hoe groter de kans dat hij jou noemt.' },
+  { question: 'Moet ik betalen om in ChatGPT te verschijnen?', answer: 'Nee. Genoemd worden in een ChatGPT-antwoord is geen advertentie en kun je niet kopen. Het werkt op basis van wat de AI online over je vindt en vertrouwt. Dit heet AI-vindbaarheid of GEO (Generative Engine Optimization) — je verdient je plek met autoriteit, structuur en consistentie, niet met een advertentiebudget.' },
+  { question: 'Hoe weet ChatGPT dat mijn bedrijf bestaat?', answer: 'ChatGPT en vergelijkbare AI-assistenten leren over je bedrijf via je website (als hun crawlers toegang hebben), via vermeldingen op andere sites, reviews, directories en gestructureerde data zoals Schema.org en een Wikidata-item. Als je informatie nergens te vinden of tegenstrijdig is, herkent de AI je niet als entiteit en noemt hij je niet.' },
+  { question: 'Wat is GPTBot en moet ik die toelaten?', answer: 'GPTBot is de crawler van OpenAI (ChatGPT) die websites leest om antwoorden te kunnen onderbouwen. Wil je vindbaar zijn in ChatGPT, dan moet je GPTBot toegang geven in je robots.txt. Blokkeer je GPTBot, dan kan ChatGPT je content niet lezen en word je onzichtbaar voor die gebruikers. Hetzelfde geldt voor ClaudeBot (Claude) en Google-Extended (Gemini).' },
+  { question: 'Hoe controleer ik of ik vindbaar ben in ChatGPT?', answer: 'Je kunt het meten met een GEO-scan die controleert of AI-crawlers toegang hebben, of je een llms.txt en Schema.org-markup hebt, en of je entiteit-gegevens kloppen. Aanloop AI biedt een gratis GEO Quick Scan waarmee je direct een score krijgt met concrete verbeterpunten.' },
+  { question: 'Hoe lang duurt het voordat ik in ChatGPT verschijn?', answer: 'Nadat je je AI-vindbaarheid hebt verbeterd, duurt het doorgaans enkele weken voordat AI-modellen je bijgewerkte signalen oppikken. De snelheid hangt af van hoe vaak de crawlers je site bezoeken en hoe sterk je autoriteit is. Het is een doorlopend proces, geen eenmalige knop.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org', '@type': 'Article',
+  headline: 'Hoe kom ik in ChatGPT als bedrijf? Praktische gids (2026)',
+  description: 'Stap voor stap in ChatGPT, Gemini en Claude verschijnen als bedrijf: robots.txt, llms.txt, Schema.org en autoriteit. Praktische GEO-gids voor het Nederlandse MKB.',
+  author: { '@type': 'Person', '@id': 'https://aanloopai.nl/team/magahdogan/#person', name: 'Mustafa Agah Dogan', jobTitle: 'Oprichter & CEO Aanloop AI', url: 'https://aanloopai.nl/over/', worksFor: { '@id': 'https://aanloopai.nl/#organization' } },
+  publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
+  datePublished: '2026-06-12', dateModified: '2026-06-12', inLanguage: 'nl-NL',
+  mainEntityOfPage: 'https://aanloopai.nl/kennisbank/hoe-kom-ik-in-chatgpt-als-bedrijf-mkb-nederland/',
+  articleSection: 'AI Begrippen & Gidsen',
+};
+---
+<BaseLayout
+  title="Hoe kom ik in ChatGPT als bedrijf? Gids voor 2026"
+  description="Stap voor stap zichtbaar worden in ChatGPT, Gemini en Claude: robots.txt, llms.txt, Schema.org en autoriteit. Praktische gids voor het Nederlandse MKB."
+  schema={schema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Kennisbank · AI Begrippen & Gidsen</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">Hoe kom ik in ChatGPT als bedrijf?</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Steeds meer klanten vragen ChatGPT, Gemini of Claude om een aanbeveling. Deze praktische gids laat stap voor stap zien hoe je als MKB-bedrijf zichtbaar wordt in die AI-antwoorden — zonder advertentiebudget.</p>
+        <div class="mt-6 flex flex-wrap items-center gap-4 text-sm text-slate-500"><span>📅 12 juni 2026</span><span>·</span><span>⏱ 7 min leestijd</span><span>·</span><span>✍️ Aanloop AI Redactie</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-2">Direct Antwoord</p>
+        <p class="text-sm text-slate-700">Je komt in ChatGPT door je website <strong>leesbaar en betrouwbaar</strong> te maken voor AI-crawlers: geef GPTBot toegang via robots.txt, voeg Schema.org en een llms.txt toe, houd je bedrijfsgegevens overal consistent en bouw vermeldingen op betrouwbare externe sites op. Genoemd worden is geen advertentie — je verdient je plek met autoriteit en structuur.</p>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Waarom zichtbaarheid in ChatGPT nu telt</h2>
+      <p class="text-slate-700 leading-relaxed mb-8">Wanneer iemand aan ChatGPT vraagt "wie is een goede [jouw vak] in [jouw stad]?", krijgt diegene geen lijst met tien links maar een antwoord met een paar namen. Sta je daar niet bij, dan kom je simpelweg niet in beeld. Dit is fundamenteel anders dan Google, waar je nog op pagina twee gevonden kunt worden. In AI bestaat pagina twee niet.</p>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Stap 1 — Geef AI-crawlers toegang</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">AI-assistenten lezen je site via crawlers: GPTBot (ChatGPT), ClaudeBot (Claude), Google-Extended (Gemini) en PerplexityBot (Perplexity). Controleer je <code>robots.txt</code> en zorg dat deze bots niet geblokkeerd zijn. Veel bedrijven blokkeren ze per ongeluk en maken zich zo onzichtbaar voor AI.</p>
+      <p class="text-slate-700 leading-relaxed mb-8">Wil je AI-crawlers toelaten maar wel controle houden? Dan kun je per bot bepalen welke delen van je site toegankelijk zijn. Het uitgangspunt voor maximale AI-vindbaarheid is: laat de bots je publieke content lezen.</p>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Stap 2 — Maak je content begrijpelijk met structuur</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Een AI begrijpt je beter wanneer je content gestructureerd is. Twee bouwstenen zijn cruciaal: <strong>Schema.org-markup</strong> (gestructureerde data die vertelt wie je bent, wat je doet en waar je zit) en een <strong>llms.txt</strong> — een tekstbestand dat AI-systemen in een oogopslag laat zien wat je aanbiedt en wat je belangrijkste pagina's zijn.</p>
+      <p class="text-slate-700 leading-relaxed mb-8">Daarnaast helpt het om je content op te bouwen als antwoorden op echte vragen. Een AI citeert het liefst content die letterlijk antwoord geeft op wat klanten vragen.</p>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Stap 3 — Bouw consistentie en autoriteit</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Een AI vertrouwt een bedrijf dat overal hetzelfde verhaal vertelt. Zorg dat je naam, adres, KvK-nummer en vakgebied identiek zijn op je website, in het KvK-register, op je socials en in directories. Tegenstrijdige informatie laat een AI je weg.</p>
+      <p class="text-slate-700 leading-relaxed mb-8">Autoriteit bouw je op met vermeldingen op betrouwbare externe sites, reviews, een LinkedIn-bedrijfspagina en — voor extra entiteit-herkenning — een Wikidata-item. Hoe meer onafhankelijke bronnen je noemen, hoe eerder een AI je als gevestigde naam beschouwt.</p>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Stap 4 — Meet en verbeter</h2>
+      <p class="text-slate-700 leading-relaxed mb-6">AI-vindbaarheid is meetbaar. Met een GEO-scan controleer je in seconden of je crawlers toegang hebben, of je een llms.txt en Schema.org hebt en of je entiteit-markup klopt. <a href="/ai-vindbaarheid/check/" class="text-brand-indigo underline font-medium">Doe de gratis GEO Quick Scan</a> en zie precies waar je staat en wat je kunt verbeteren.</p>
+      <p class="text-slate-700 leading-relaxed mb-8">Wil je dit volledig laten inrichten? <a href="/ai-vindbaarheid/" class="text-brand-indigo underline font-medium">Aanloop AI</a> maakt het Nederlandse MKB vindbaar in ChatGPT, Gemini en Claude — van scan tot volledige GEO-implementatie. Lees meer over <a href="/kennisbank/wat-is-geo-ai-vindbaarheid-mkb-nederland/" class="text-brand-indigo underline">wat GEO precies is</a>.</p>
+
+      <div class="rounded-2xl bg-navy text-white p-8 text-center mt-12">
+        <h2 class="text-xl font-bold">Word jij al genoemd door ChatGPT?</h2>
+        <p class="mt-2 text-slate-300 text-sm">Doe de gratis GEO Quick Scan en ontdek in 20 seconden hoe vindbaar je bent in AI.</p>
+        <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="/ai-vindbaarheid/check/" class="btn-primary text-base px-6 py-3">Gratis GEO Quick Scan</a>
+          <a href="/ai-vindbaarheid/" class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/30 text-white font-semibold hover:bg-white/10 transition-colors text-base px-6 py-3">Meer over AI-vindbaarheid</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
