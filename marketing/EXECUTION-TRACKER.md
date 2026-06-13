@@ -17,6 +17,7 @@ Eerste **echte** lead (geen test) in Brevo + als `generate_lead` in GA4. Alles h
 
 | # | Actie | Asset (waar staat de content) | Wie | Kosten | Status |
 |---|---|---|---|---|---|
+| ⭐P1 | Referentieklanten werven via pilot-aanbod (10-15 contacten) → case + review + referentie | `REFERENTIE-ENGINE.md` | jij | €0 | ☐ |
 | 1 | LinkedIn: 1 post/werkdag posten + founder repost | `linkedin/POSTS-MAAND-1..5.md` (100 posts) | jij | €0 | ☐ |
 | 2 | GBP aanmaken (service-area) + beschrijving + 3 posts | `OFF-SITE-AUTHORITY-EXECUTION-PACK.md` §3 | jij | €0 | ☐ |
 | 3 | Directories submitten (Sortlist→Bing→Trustpilot→DesignRush→FutureTools) | `directories/SUBMIT-VELDEN.md` | jij | €0 | ☐ |
@@ -31,6 +32,7 @@ Eerste **echte** lead (geen test) in Brevo + als `generate_lead` in GA4. Alles h
 ## Weekritme (concreet)
 
 **Deze week**
+- ⭐ Doorlopend (hoogste hefboom): 10-15 [sector]-contacten benaderen met het pilot-aanbod uit `REFERENTIE-ENGINE.md`. Eén echte referentie > alle andere acties samen.
 - Ma: GA4 key-event zetten · LinkedIn post #1 + #2.
 - Di: Directories — Sortlist + Bing Places + Trustpilot. Post #3.
 - Wo: GBP aanmaken (verificatie aanvragen). Post #4.
