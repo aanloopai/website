@@ -6,21 +6,41 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="container-page py-20 text-center">
       <p class="text-8xl font-black text-slate-100 select-none mb-0">404</p>
       <div class="accent-band mx-auto mb-6"><span></span><span></span><span></span><span></span></div>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy mb-4">Oops — pagina niet gevonden.</h1>
-      <p class="text-lg text-slate-600 mb-8 max-w-lg mx-auto">De pagina die u zoekt bestaat niet of is verplaatst. Gebruik de navigatie om verder te gaan.</p>
-      <div class="flex flex-col sm:flex-row gap-3 justify-center mb-12">
-        <a href="/" class="btn-primary text-base px-6 py-3">Naar de homepage</a>
-        <a href="/contact/" class="btn-outline text-base px-6 py-3">Neem contact op</a>
+      <h1 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy mb-4">Oops — deze pagina bestaat niet.</h1>
+      <p class="text-lg text-slate-600 mb-8 max-w-lg mx-auto">De link klopt niet meer of de pagina is verplaatst. Geen probleem — hieronder vindt u snel de juiste weg.</p>
+
+      <div class="flex flex-col sm:flex-row gap-3 justify-center mb-4">
+        <a href="/ai-vindbaarheid/check/" class="btn-primary text-base px-6 py-3.5">Gratis GEO Quick Scan</a>
+        <a href="/demo-inplannen/" class="btn-outline text-base px-6 py-3.5">Plan een kennismaking</a>
       </div>
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-xl mx-auto">
-        {[
-          { label: 'Diensten', href: '/diensten/' },
-          { label: 'Sectoren', href: '/sectoren/' },
-          { label: 'Tarieven', href: '/tarieven/' },
-          { label: 'Cases', href: '/cases/' },
-        ].map(l => (
-          <a href={l.href} class="text-sm text-brand-indigo hover:underline">{l.label}</a>
-        ))}
+      <p class="text-sm text-slate-500 mb-12">of <a href="/" class="text-brand-indigo hover:underline">terug naar de homepage</a> · <a href="/contact/" class="text-brand-indigo hover:underline">neem contact op</a></p>
+
+      <div class="max-w-2xl mx-auto text-left">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-4 text-center">Populaire bestemmingen</p>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {[
+            { label: 'Onze diensten', href: '/diensten/' },
+            { label: 'AI-vindbaarheid (GEO)', href: '/ai-vindbaarheid/' },
+            { label: 'Tarieven', href: '/tarieven/' },
+            { label: 'AI per sector', href: '/sectoren/' },
+            { label: 'Kennisbank', href: '/kennisbank/' },
+            { label: 'Gratis AI-scan', href: '/gratis-ai-scan/' },
+            { label: 'Cases', href: '/cases/' },
+            { label: 'AI ROI-calculator', href: '/ai-roi-calculator/' },
+            { label: 'Over Aanloop AI', href: '/over/' },
+          ].map(l => (
+            <a href={l.href} class="block rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-navy hover:border-brand-indigo hover:text-brand-indigo transition-colors">{l.label}</a>
+          ))}
+        </div>
+      </div>
+
+      <div class="max-w-2xl mx-auto mt-10 text-left">
+        <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-3 text-center">Veelgelezen gidsen</p>
+        <ul class="space-y-2 text-center">
+          <li><a href="/kennisbank/wat-is-een-ai-agent/" class="text-sm text-brand-indigo hover:underline">Wat is een AI agent? — complete gids voor het MKB</a></li>
+          <li><a href="/kennisbank/ai-agency-kiezen-mkb-nederland-2026/" class="text-sm text-brand-indigo hover:underline">AI agency kiezen in Nederland 2026 — 12 criteria</a></li>
+          <li><a href="/kennisbank/ai-agent-kosten-mkb/" class="text-sm text-brand-indigo hover:underline">Hoeveel kost een AI agent in Nederland?</a></li>
+        </ul>
       </div>
     </div>
   </section>
