@@ -420,6 +420,8 @@ const allSchemas = [
         // Only load Clarity if user accepted analytics cookies
         var clarityProjectId = 'XXXXXXXX';
         function loadClarity() {
+          // Not configured yet — skip to avoid a broken https://clarity.ms/tag/XXXXXXXX request.
+          if (!clarityProjectId || clarityProjectId === 'XXXXXXXX') return;
           try {
             if (localStorage.getItem('aanloop_cookie_consent') !== 'all') return;
           } catch (e) { return; }

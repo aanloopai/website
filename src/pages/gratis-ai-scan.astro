@@ -921,6 +921,7 @@ const faqItems = [
         if (res.ok && data.success) {
           showEmailMsg('✓ Rapport onderweg — controleer uw inbox.', 'success');
           trackEvent('scan_email_sent', {});
+          trackEvent('generate_lead', { form_name: 'gratis_ai_scan', currency: 'EUR', value: 100 });
           form.reset();
         } else {
           showEmailMsg(data.message || 'Versturen mislukt — probeer opnieuw of mail hello@aanloopai.nl.', 'error');

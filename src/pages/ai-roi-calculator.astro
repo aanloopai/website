@@ -739,6 +739,7 @@ const faqItems = [
 
         if (res.ok && data.success) {
           (window as any)._track?.('roi_email_submitted', { currency: 'EUR', value: 50 });
+          (window as any)._track?.('generate_lead', { form_name: 'roi_calculator', currency: 'EUR', value: 50 });
           showMsg('✓ Rapport onderweg — controleer uw inbox.', 'success');
           form.reset();
         } else {

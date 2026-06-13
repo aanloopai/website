@@ -391,6 +391,7 @@ const featuredPillars = [
       const res = await fetch('/api/submit', { method: 'POST', body: data });
       const json = await res.json();
       if (json.success) {
+        (window as any)._track?.('generate_lead', { form_name: 'footer_newsletter' });
         nlForm.style.display = 'none';
         nlSuccess?.classList.remove('hidden');
       } else {

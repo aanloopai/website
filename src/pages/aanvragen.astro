@@ -429,6 +429,7 @@ const steps = [
         };
         const _itemKey = _dienstParam || _planParam;
         const _value = _dienstParam ? (_dienstValues[_dienstParam] ?? 0) : (_planValues[_planParam] ?? 597);
+        (window as any)._track?.('generate_lead', { form_name: 'aanvraag', item: _itemKey, currency: 'EUR', value: _value });
         (window as any)._track?.('purchase', {
           transaction_id: 'aanvraag_' + Date.now(),
           currency: 'EUR',

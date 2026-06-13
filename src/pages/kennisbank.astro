@@ -987,6 +987,7 @@ const collectionSchema = {
       clearTimeout(tid);
       const json = await res.json().catch(() => ({ success: false }));
       if (res.ok && json.success) {
+        (window as any)._track?.('generate_lead', { form_name: 'kennisbank_newsletter' });
         btn.textContent = '✓ Ingeschreven!';
       } else {
         throw new Error(json.message || `HTTP ${res.status}`);
