@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const tools = [
+  {
+    naam: 'AI-oplossing matcher',
+    emoji: '🧭',
+    intro: 'Niet zeker welke AI je bedrijf nodig heeft? 4 vragen, 30 seconden — direct een persoonlijk advies.',
+    href: '/ai-oplossing-matcher/',
+    cta: 'Start de matcher',
+  },
+  {
+    naam: 'Gratis AI-scan',
+    emoji: '🔍',
+    intro: 'Ontdek in een korte vragenlijst waar AI in jouw processen het meeste tijd en geld bespaart.',
+    href: '/gratis-ai-scan/',
+    cta: 'Doe de AI-scan',
+  },
+  {
+    naam: 'AI ROI-calculator',
+    emoji: '📊',
+    intro: 'Bereken je verwachte besparing, extra omzet en terugverdientijd van een AI-agent.',
+    href: '/ai-roi-calculator/',
+    cta: 'Bereken je ROI',
+  },
+  {
+    naam: 'No-show calculator',
+    emoji: '📅',
+    intro: 'Reken uit wat gemiste afspraken (no-shows) je per jaar kosten — en wat AI-herinneringen besparen.',
+    href: '/no-show-calculator/',
+    cta: 'Bereken no-show kosten',
+  },
+  {
+    naam: 'GEO Quick Scan',
+    emoji: '🤖',
+    intro: 'Hoe vindbaar is jouw bedrijf in ChatGPT, Gemini en Claude? Scan je AI-vindbaarheid in 20 seconden.',
+    href: '/ai-vindbaarheid/check/',
+    cta: 'Scan je AI-vindbaarheid',
+  },
+];
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Gratis AI-tools voor het MKB — Aanloop AI',
+  itemListElement: tools.map((t, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: t.naam,
+    url: `https://aanloopai.nl${t.href}`,
+  })),
+};
+---
+<BaseLayout
+  title="Gratis AI-tools voor het MKB"
+  description="5 gratis tools van Aanloop AI: ontdek welke AI bij je past, bereken je ROI en no-show-kosten, en scan je AI-vindbaarheid in ChatGPT, Gemini en Claude."
+  schema={[itemListSchema]}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-14 lg:py-18">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Gratis tools</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08]">Gratis AI-tools voor het MKB</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed">Vijf gratis tools om te ontdekken waar AI jouw bedrijf concreet verder helpt — zonder account, zonder verplichtingen.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <div class="grid sm:grid-cols-2 gap-5">
+        {tools.map((t) => (
+          <a href={t.href} class="group flex flex-col rounded-2xl border border-slate-200 bg-white p-6 hover:border-brand-indigo hover:shadow-md transition-all">
+            <div class="text-3xl mb-3">{t.emoji}</div>
+            <h2 class="text-lg font-bold text-navy group-hover:text-brand-indigo transition-colors">{t.naam}</h2>
+            <p class="mt-2 text-sm text-slate-600 leading-relaxed flex-1">{t.intro}</p>
+            <span class="mt-4 text-sm font-semibold text-brand-indigo">{t.cta} →</span>
+          </a>
+        ))}
+      </div>
+
+      <div class="mt-12 rounded-2xl bg-navy text-white p-8 text-center">
+        <h2 class="text-xl font-bold">Liever meteen sparren?</h2>
+        <p class="mt-2 text-slate-300 text-sm">Plan een gratis kennismaking van 30 minuten — we denken vrijblijvend mee over de slimste AI-aanpak voor jouw situatie.</p>
+        <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="/demo-inplannen/" class="btn-primary text-base px-6 py-3">Plan een kennismaking</a>
+          <a href="/diensten/" class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/30 text-white font-semibold hover:bg-white/10 transition-colors text-base px-6 py-3">Bekijk onze diensten</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
