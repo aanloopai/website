@@ -1,0 +1,248 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Recommender questions — client-side scoring routes to one of 4 existing solutions.
+const vragen = [
+  {
+    id: 'uitdaging',
+    vraag: 'Wat kost je nu het meeste tijd of omzet?',
+    opties: [
+      { label: 'Gemiste telefoontjes', score: 'marco' },
+      { label: 'Klanten wachten te lang op antwoord (chat/web)', score: 'emma' },
+      { label: 'Te veel administratie & handwerk', score: 'custom' },
+      { label: 'Te weinig nieuwe leads', score: 'custom' },
+      { label: 'Eigenlijk alles een beetje', score: 'bundel' },
+    ],
+  },
+  {
+    id: 'kanaal',
+    vraag: 'Waar komt het meeste klantcontact binnen?',
+    opties: [
+      { label: 'Telefoon', score: 'marco' },
+      { label: 'Website / chat', score: 'emma' },
+      { label: 'E-mail', score: 'custom' },
+      { label: 'WhatsApp & meerdere kanalen', score: 'bundel' },
+    ],
+  },
+  {
+    id: 'volume',
+    vraag: 'Hoeveel klantcontacten per dag (telefoon + bericht)?',
+    opties: [
+      { label: 'Minder dan 10', score: 'emma' },
+      { label: '10 – 50', score: 'marco' },
+      { label: 'Meer dan 50', score: 'bundel' },
+    ],
+  },
+  {
+    id: 'website',
+    vraag: 'Heb je al een professionele website?',
+    opties: [
+      { label: 'Ja, die is prima', score: 'marco' },
+      { label: 'Ja, maar verouderd', score: 'bundel' },
+      { label: 'Nee, nog niet', score: 'bundel' },
+    ],
+  },
+];
+
+const oplossingen = {
+  marco: {
+    naam: 'Marco — AI-telefoonassistent',
+    tagline: 'Neemt elke oproep aan, 24/7, en plant afspraken in je agenda.',
+    waarom: 'Je verliest vooral omzet aan gemiste telefoontjes. Marco beantwoordt elk gesprek met een natuurlijke stem, beantwoordt vragen en plant afspraken — ook buiten kantooruren.',
+    href: '/diensten/marco/',
+  },
+  emma: {
+    naam: 'Emma — AI-chatassistent',
+    tagline: 'Beantwoordt websitevragen direct en vangt leads terwijl jij werkt.',
+    waarom: 'Je klanten zoeken online en willen meteen antwoord. Emma chat 24/7 op je site, beantwoordt vragen en verzamelt contactgegevens van serieuze leads.',
+    href: '/diensten/emma/',
+  },
+  bundel: {
+    naam: 'AI-Website Bundel — Marco + Emma',
+    tagline: 'Telefoon én chat gedekt, op een snelle nieuwe website.',
+    waarom: 'Je klantcontact loopt via meerdere kanalen. De bundel combineert een nieuwe website met zowel Marco (telefoon) als Emma (chat), zodat geen enkele klant blijft wachten.',
+    href: '/diensten/ai-website-bundel-mkb-nederland/',
+  },
+  custom: {
+    naam: 'Custom AI-automatisering',
+    tagline: 'Maatwerk-agents voor administratie, e-mail en lead-opvolging.',
+    waarom: 'Je grootste winst zit in het automatiseren van handwerk en opvolging. We bouwen een AI-oplossing op maat rond jouw processen, tools en doelen.',
+    href: '/diensten/custom/',
+  },
+};
+---
+<BaseLayout
+  title="Welke AI-oplossing past bij jouw bedrijf?"
+  description="Doe de gratis matcher (4 vragen, 30 seconden) en ontdek welke AI-oplossing — Marco, Emma, de bundel of maatwerk — het beste past bij jouw MKB."
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-14 lg:py-18">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Gratis AI-matcher</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08]">Welke AI-oplossing past bij jouw bedrijf?</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed">4 korte vragen, 30 seconden. Je krijgt direct een persoonlijk advies — geen account nodig.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-2xl mx-auto">
+      <!-- Progress -->
+      <div class="mb-8">
+        <div class="flex justify-between text-sm text-slate-500 mb-2"><span id="m-stap-label">Vraag 1 van {vragen.length}</span><span id="m-progress-pct">0%</span></div>
+        <div class="h-2 rounded-full bg-slate-100 overflow-hidden"><div id="m-progress-bar" class="h-full bg-brand-indigo transition-all duration-300" style="width:0%"></div></div>
+      </div>
+
+      <!-- Steps -->
+      {vragen.map((v, i) => (
+        <div class="m-step" data-step={i} data-qid={v.id} style={i === 0 ? '' : 'display:none'}>
+          <h2 class="text-2xl font-bold text-navy mb-6">{v.vraag}</h2>
+          <div class="space-y-3">
+            {v.opties.map((o) => (
+              <button type="button" class="m-optie w-full text-left rounded-xl border border-slate-200 bg-white px-5 py-4 font-medium text-navy hover:border-brand-indigo hover:bg-brand-indigo/5 transition-colors" data-score={o.score}>{o.label}</button>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      <!-- Result -->
+      <div id="m-result" style="display:none">
+        <div class="rounded-2xl border border-brand-indigo/30 bg-brand-indigo/5 p-8">
+          <p class="text-sm font-semibold uppercase tracking-wide text-brand-indigo mb-2">Onze aanbeveling</p>
+          <h2 id="m-res-naam" class="text-2xl font-bold text-navy"></h2>
+          <p id="m-res-tagline" class="mt-2 text-lg text-slate-700 font-medium"></p>
+          <p id="m-res-waarom" class="mt-4 text-slate-600 leading-relaxed"></p>
+          <a id="m-res-link" href="#" class="btn-primary text-base px-6 py-3.5 mt-6 inline-flex">Bekijk deze oplossing</a>
+        </div>
+
+        <!-- Lead capture -->
+        <div class="mt-8 rounded-2xl border border-slate-200 bg-white p-6">
+          <h3 class="font-bold text-navy">Ontvang dit advies + een vrijblijvend voorstel per e-mail</h3>
+          <p class="mt-1 text-sm text-slate-500">We sturen je advies en nemen binnen 1 werkdag contact op. Geen verplichtingen.</p>
+          <form id="m-form" class="mt-4 grid sm:grid-cols-2 gap-3">
+            <input type="text" name="botcheck" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;opacity:0;height:0;width:0" aria-hidden="true" />
+            <label class="sr-only" for="m-naam">Voornaam</label>
+            <input id="m-naam" type="text" name="voornaam" required placeholder="Voornaam" class="px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-indigo focus:outline-none" />
+            <label class="sr-only" for="m-email">E-mailadres</label>
+            <input id="m-email" type="email" name="email" required placeholder="E-mailadres" class="px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-indigo focus:outline-none" />
+            <label class="sr-only" for="m-bedrijf">Bedrijfsnaam</label>
+            <input id="m-bedrijf" type="text" name="bedrijf" placeholder="Bedrijfsnaam (optioneel)" class="sm:col-span-2 px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-indigo focus:outline-none" />
+            <label class="sm:col-span-2 flex items-start gap-2 text-xs text-slate-500"><input type="checkbox" name="privacy" required class="mt-0.5" /> Ik ga akkoord met de <a href="/privacy/" class="text-brand-indigo underline">privacyverklaring</a>.</label>
+            <button type="submit" class="sm:col-span-2 btn-primary text-base px-6 py-3">Stuur mijn advies</button>
+          </form>
+          <p id="m-form-msg" class="mt-3 text-sm hidden"></p>
+        </div>
+
+        <div class="mt-6 text-center">
+          <button type="button" id="m-restart" class="text-sm text-slate-500 hover:text-brand-indigo">↻ Opnieuw beginnen</button>
+          <span class="text-slate-300 mx-2">·</span>
+          <a href="/demo-inplannen/" class="text-sm text-brand-indigo hover:underline">Liever direct een gesprek plannen?</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script define:vars={{ oplossingen, totaal: vragen.length }}>
+    (function () {
+      const answers = {};
+      const tally = {};
+      let current = 0;
+
+      const steps = Array.from(document.querySelectorAll('.m-step'));
+      const result = document.getElementById('m-result');
+      const bar = document.getElementById('m-progress-bar');
+      const pct = document.getElementById('m-progress-pct');
+      const stapLabel = document.getElementById('m-stap-label');
+
+      function track(name, params) {
+        try { if (window._track) window._track(name, params || {}); } catch (e) {}
+      }
+
+      function setProgress() {
+        const p = Math.round((current / totaal) * 100);
+        if (bar) bar.style.width = p + '%';
+        if (pct) pct.textContent = p + '%';
+        if (stapLabel) stapLabel.textContent = 'Vraag ' + Math.min(current + 1, totaal) + ' van ' + totaal;
+      }
+
+      function showStep(i) {
+        steps.forEach((s, idx) => { s.style.display = idx === i ? '' : 'none'; });
+        setProgress();
+      }
+
+      function finish() {
+        let best = 'bundel', bestN = -1;
+        for (const k in tally) { if (tally[k] > bestN) { bestN = tally[k]; best = k; } }
+        const sol = oplossingen[best];
+        document.getElementById('m-res-naam').textContent = sol.naam;
+        document.getElementById('m-res-tagline').textContent = sol.tagline;
+        document.getElementById('m-res-waarom').textContent = sol.waarom;
+        const link = document.getElementById('m-res-link');
+        link.href = sol.href;
+        document.getElementById('m-form').dataset.aanbeveling = sol.naam;
+        steps.forEach((s) => { s.style.display = 'none'; });
+        if (bar) bar.style.width = '100%';
+        if (pct) pct.textContent = '100%';
+        if (stapLabel) stapLabel.textContent = 'Klaar';
+        result.style.display = '';
+        track('matcher_completed', { aanbeveling: best });
+        result.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      document.querySelectorAll('.m-optie').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const step = btn.closest('.m-step');
+          const qid = step.getAttribute('data-qid');
+          const score = btn.getAttribute('data-score');
+          answers[qid] = btn.textContent.trim();
+          tally[score] = (tally[score] || 0) + 1;
+          if (current === 0) track('matcher_started', {});
+          current++;
+          if (current >= totaal) finish();
+          else showStep(current);
+        });
+      });
+
+      document.getElementById('m-restart').addEventListener('click', () => {
+        for (const k in answers) delete answers[k];
+        for (const k in tally) delete tally[k];
+        current = 0;
+        result.style.display = 'none';
+        showStep(0);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      const form = document.getElementById('m-form');
+      const msg = document.getElementById('m-form-msg');
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = form.querySelector('button[type="submit"]');
+        const data = new FormData(form);
+        data.append('form_type', 'ai_matcher');
+        data.append('aanbeveling', form.dataset.aanbeveling || '');
+        for (const k in answers) data.append('antwoord_' + k, answers[k]);
+        data.append('source', 'AI-oplossing matcher');
+        btn.disabled = true; btn.textContent = 'Versturen…';
+        try {
+          const res = await fetch('/api/submit', { method: 'POST', body: data });
+          const json = await res.json().catch(() => ({ success: false }));
+          if (res.ok && json.success) {
+            track('generate_lead', { form_name: 'ai_matcher', currency: 'EUR', value: 150 });
+            form.style.display = 'none';
+            msg.textContent = '✓ Bedankt! Je advies is onderweg — we nemen binnen 1 werkdag contact op.';
+            msg.className = 'mt-3 text-sm text-brand-emerald';
+          } else {
+            throw new Error(json.message || 'fout');
+          }
+        } catch (err) {
+          btn.disabled = false; btn.textContent = 'Stuur mijn advies';
+          msg.textContent = 'Versturen mislukt — probeer opnieuw of mail hello@aanloopai.nl.';
+          msg.className = 'mt-3 text-sm text-red-600';
+        }
+        msg.classList.remove('hidden');
+      });
+
+      setProgress();
+    })();
+  </script>
+</BaseLayout>
