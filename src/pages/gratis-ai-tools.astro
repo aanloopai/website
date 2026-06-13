@@ -46,8 +46,14 @@ const itemListSchema = {
   itemListElement: tools.map((t, i) => ({
     '@type': 'ListItem',
     position: i + 1,
-    name: t.naam,
-    url: `https://aanloopai.nl${t.href}`,
+    item: {
+      '@type': 'WebApplication',
+      name: t.naam,
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web',
+      url: `https://aanloopai.nl${t.href}`,
+      offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+    },
   })),
 };
 ---
