@@ -75,6 +75,8 @@ for (const file of htmlFiles) {
         normalised += '/';
       }
       if (/\.(png|jpe?g|gif|svg|webp|avif|ico|css|js|woff2?|ttf|eot|pdf|xml|json|webmanifest|txt)$/i.test(normalised)) continue;
+      // /api/* is served by the Cloudflare Worker at runtime, not a static page.
+      if (/^\/api\//.test(u.pathname)) continue;
       if (!knownUrls.has(normalised)) {
         if (!brokenLinks.has(normalised)) brokenLinks.set(normalised, new Set());
         brokenLinks.get(normalised).add(src);

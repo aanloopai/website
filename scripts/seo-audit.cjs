@@ -37,7 +37,12 @@ function extract(content) {
   // [\s\S] allows multi-line BaseLayout calls.
   const layoutTitleAttr = content.match(/<BaseLayout\b[\s\S]*?\btitle=\{?(["'`])((?:(?!\1).)*?)\1\}?/);
   const layoutDescAttr = content.match(/<BaseLayout\b[\s\S]*?\bdescription=\{?(["'`])((?:(?!\1).)*?)\1\}?/);
-  const noindex = /<BaseLayout\b[\s\S]*?\bnoindex(?:=\{?true\}?)?(?:\s|>)/.test(content);
+  // noindex when: BaseLayout noindex prop, an inherently-noindex layout
+  // (AdminLayout/PortalLayout hardcode robots noindex), or a raw robots meta.
+  const noindex =
+    /<BaseLayout\b[\s\S]*?\bnoindex(?:=\{?true\}?)?(?:\s|>)/.test(content) ||
+    /\b(?:AdminLayout|PortalLayout)\b/.test(content) ||
+    /<meta\s+name=["']robots["']\s+content=["'][^"']*noindex/i.test(content);
   const title = titleMatch ? titleMatch[2] : (layoutTitleAttr ? layoutTitleAttr[2] : null);
   const desc = descMatch ? descMatch[2] : (layoutDescAttr ? layoutDescAttr[2] : null);
   return { title, desc, noindex };
@@ -52,7 +57,16 @@ function fullTitle(t) {
 
 // Skip dynamic-route files ([slug].astro) — they have no single canonical URL
 // and are not individually sitemap-listed.
-const files = walk(PAGES_DIR).filter((f) => !/\[[^\]]+\]/.test(path.relative(PAGES_DIR, f)));
+const allFiles = walk(PAGES_DIR);
+const isDynamic = (f) => /\[[^\]]+\]/.test(path.relative(PAGES_DIR, f));
+const files = allFiles.filter((f) => !isDynamic(f));
+// Static URL prefix each dynamic route ([slug].astro) can legitimately emit,
+// so its generated children aren't flagged as "sitemap URL without disk-page".
+const dynamicPrefixes = allFiles.filter(isDynamic).map((f) => {
+  const rel = path.relative(PAGES_DIR, f).replace(/\\/g, '/').replace(/\.astro$/, '');
+  const staticPart = rel.slice(0, rel.indexOf('['));
+  return 'https://aanloopai.nl/' + staticPart;
+});
 const sitemap = fs.readFileSync(SITEMAP, 'utf8');
 const sitemapUrls = new Set(
   Array.from(sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)).map((m) => m[1].trim())
@@ -84,7 +98,9 @@ const descNone = rows.filter((r) => !r.noindex && r.descLen === 0);
 const indexableNotInSitemap = rows.filter((r) => !r.noindex && !r.inSitemap);
 const noindexInSitemap = rows.filter((r) => r.noindex && r.inSitemap);
 const onDiskUrls = new Set(rows.map((r) => r.url));
-const sitemapOnlyUrls = Array.from(sitemapUrls).filter((u) => !onDiskUrls.has(u));
+const sitemapOnlyUrls = Array.from(sitemapUrls).filter(
+  (u) => !onDiskUrls.has(u) && !dynamicPrefixes.some((p) => u.startsWith(p))
+);
 
 console.log('=== AANLOOPAI SEO AUDIT ===');
 console.log(`Total .astro pages: ${rows.length}`);
