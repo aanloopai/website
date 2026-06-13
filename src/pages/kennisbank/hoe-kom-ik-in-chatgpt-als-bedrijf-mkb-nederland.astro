@@ -20,11 +20,23 @@ const schema = {
   mainEntityOfPage: 'https://aanloopai.nl/kennisbank/hoe-kom-ik-in-chatgpt-als-bedrijf-mkb-nederland/',
   articleSection: 'AI Begrippen & Gidsen',
 };
+
+const howTo = {
+  '@context': 'https://schema.org', '@type': 'HowTo',
+  name: 'Hoe kom ik in ChatGPT als bedrijf?',
+  description: 'In vier stappen zichtbaar worden in ChatGPT, Gemini en Claude als MKB-bedrijf.',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Geef AI-crawlers toegang', text: 'Zorg dat GPTBot, ClaudeBot, Google-Extended en PerplexityBot niet geblokkeerd zijn in je robots.txt, zodat AI-assistenten je content kunnen lezen.' },
+    { '@type': 'HowToStep', position: 2, name: 'Maak je content begrijpelijk met structuur', text: 'Voeg Schema.org-markup en een llms.txt toe en bouw content op als heldere antwoorden op de vragen die klanten stellen.' },
+    { '@type': 'HowToStep', position: 3, name: 'Bouw consistentie en autoriteit', text: 'Houd je naam, adres, KvK-nummer en vakgebied overal identiek en bouw vermeldingen op betrouwbare externe sites, reviews, LinkedIn en Wikidata.' },
+    { '@type': 'HowToStep', position: 4, name: 'Meet en verbeter', text: 'Gebruik een GEO-scan om te controleren of crawlers toegang hebben, je llms.txt en Schema.org aanwezig zijn en je entiteit-markup klopt, en verbeter op basis daarvan.' },
+  ],
+};
 ---
 <BaseLayout
   title="Hoe kom ik in ChatGPT als bedrijf? Gids voor 2026"
   description="Stap voor stap zichtbaar worden in ChatGPT, Gemini en Claude: robots.txt, llms.txt, Schema.org en autoriteit. Praktische gids voor het Nederlandse MKB."
-  schema={schema}
+  schema={[schema, howTo]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">
