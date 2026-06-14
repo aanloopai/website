@@ -55,6 +55,74 @@
 
 > Overgeslagen: Tandartspraktijk A.J. Garritsen (geen telefoonnummer in vermelding → niet belbaar).
 
+---
+
+# Batch 1b — extra Rotterdam-sectoren (2026-06-14)
+
+> Rotterdam = grootste stad + founder lokaal = warmste markt → meer prospects. 8 extra sectoren.
+> Overgeslagen (geen telefoon): Notaris Rotterdam (notarissen-online), Huidtherapie Dermafemme, New Face Hair Palace, Falak (2e vermelding).
+
+### Rijscholen — Prioriteit A (instructeur in de auto = mist gegarandeerd oproepen)
+| Bedrijf | Telefoon | Rating (rev) |
+|---|---|---|
+| OMW Rijschool | +31 6 29292522 | 5,0 (87) |
+| rijmeesters.nl | +31 6 37339088 | 4,9 (76) |
+| Rotjeknor (Rijbewijsje) | +31 6 34379425 | 5,0 (66) |
+| Autorijschool FORZA | +31 6 28753501 | 4,9 (58) |
+| rijschoolrotterdam.nl | +31 6 41450215 | 5,0 (46) |
+| Rijschool Franklin | +31 6 21363615 | 5,0 (30) |
+| Rij je Blij | +31 6 38057034 | — (nieuw) |
+| Autorijschool Eminent | +31 10 456 3354 | 4,8 (26) |
+| Autorijschool Rij Lekker | +31 10 455 3404 | 4,6 (59) |
+
+### Kappers / schoonheid / nagels — Prioriteit A (solo, afspraak + receptie)
+| Bedrijf | Sector | Telefoon | Rating (rev) |
+|---|---|---|---|
+| HappyNesse BeautyCare | Schoonheid | +31 6 53113517 | 4,8 (36) |
+| Beleza Beautycentrum | Schoonheid | +31 6 55707154 | 4,6 (88) |
+| Rotterdam Lash and Brow | Wimper | +31 6 38075774 | 5,0 (57) |
+| Danielle's schoonheids-/pedicuresalon | Schoonheid | +31 6 39232441 | 5,0 (19) |
+| Nailbar 010 | Nagels | +31 6 18712340 | 4,8 (25) |
+| skin-prof | Huidverzorging | +31 6 31926001 | 5,0 (70) |
+| SemSalon | Kapper | +31 6 25114856 | 5,0 (22) |
+| Hair By Jerusalem | Kapper | +31 6 44440478 | 5,0 (41) |
+| Kapsalon Hairfy | Kapper | +31 6 48106699 | 4,8 (121) |
+| Kapsalon Feijenoord | Kapper | +31 6 12790886 | 4,7 (60) |
+| KapsalonWahid | Kapper | +31 10 795 1895 | 4,8 (96) |
+
+### Advocaten — Prioriteit A (gemiste oproep = gemiste cliënt)
+| Bedrijf | Telefoon | Rating (rev) |
+|---|---|---|
+| Het Lage Land Advocatenkantoor | +31 10 220 5722 | 4,6 (5) |
+| Sett Advocaten | +31 10 313 2206 | 5,0 (55) |
+| Advocatenkantoor Van Hecke | +31 10 313 5256 | 5,0 (58) |
+| SØRENSEN Advocaten | +31 10 249 2444 | 4,9 (65) |
+| Hammersmith Advocatenkantoor | +31 10 226 3928 | 4,6 (45) |
+
+### Notarissen — Prioriteit A- (opvallend LAGE ratings → sterke bereikbaarheids-haak)
+| Bedrijf | Telefoon | Rating (rev) |
+|---|---|---|
+| Fokkema Linssen Notarissen | +31 10 476 2688 | **3,2 (29)** |
+| VAD Notarissen | +31 10 242 5400 | **3,3 (7)** |
+| Beurs Notaris | +31 10 313 6977 | **3,4 (16)** |
+| De Randamie & Verstoep Notarissen | +31 10 433 0355 | **3,5 (26)** |
+| 010Notaris | +31 10 767 1700 | **3,7 (93)** |
+| Nouwen Notarissen | +31 10 285 8686 | **3,8 (11)** |
+| Kooijman Autar Notarissen | +31 10 285 8888 | **3,8 (72)** |
+
+### Dierenartsen / autobedrijven — Prioriteit A- (spoed + zwakke rating)
+| Bedrijf | Sector | Telefoon | Rating (rev) | Haak |
+|---|---|---|---|---|
+| Dierenziekenhuis Rotterdam | Dierenarts | +31 10 492 5151 | **3,8 (179)** | Spoedoproepen + lage rating |
+| AniCura Ommoord-Hillegersberg | Dierenarts | +31 10 420 6666 | **4,0 (209)** | Spoed + bereikbaarheid |
+| Autobedrijf "Mondial" | Autobedrijf | +31 6 55320991 | **3,5 (42)** | Lage rating → bereikbaarheid |
+| Autocenter Mollevanger | Autobedrijf | +31 10 482 3858 | **4,0 (42)** | Lage rating → service |
+| Aura Car Center | Autobedrijf | +31 10 291 9404 | 4,8 (45) | Kleine garage |
+| Falak Autobedrijf | Autobedrijf | +31 10 314 0683 | 4,6 (48) | Kleine garage |
+| Derma Sensation | Huidtherapie | +31 10 307 4815 | **4,3 (125)** | Afspraak-gedreven, service-haak |
+
+> Grote spelers (B, ná bewijs): Noor Skin Clinic (336) · Apollo Huid-/Laserkliniek (217) · e-Legal incasso (696) · Moree Gelderblom (331) · SAR Advocaten (217) · Autoservice DIJK (621) · Autobedrijf Rotterdam (343) · grote dierenklinieken (Zuid 595, van der Star 354, Basic Vets 330, Kralingen 295).
+
 ## Aanpak
 1. Start met **Prioriteit A** (10-15 bellen/DM'en deze week) — pilot-aanbod uit `REFERENTIE-ENGINE.md` §1.
 2. Solo/mobiel (loodgieters, solo-praktijken): haak = "mist u oproepen als u onderweg/in behandeling bent?".
