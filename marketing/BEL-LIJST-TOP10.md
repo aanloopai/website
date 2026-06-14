@@ -17,10 +17,27 @@
 | 9 | Tandzorg Arnhem | Arnhem | Tandarts | +31 26 361 5100 | **2,8 rating** → bereikbaarheids-klachten | ☐ | |
 | 10 | Loodgietersbedrijf Passon | Den Bosch | Loodgieter | +31 73 782 0291 | **3,0 rating** → onbereikbaar | ☐ | |
 
-## Openingszin — solo loodgieter/fysio/rijschool (#1-8)
+## Belsessie 2 — #11-20 (na de eerste 10)
+
+| # | Bedrijf | Stad | Sector | Telefoon | Waarom | Gebeld? | Reactie |
+|---|---|---|---|---|---|---|---|
+| 11 | Optimus Service | Breda | Loodgieter | +31 6 44015879 | Solo mobiel, zeer druk (205 rev) | ☐ | |
+| 12 | De Loodgieter Almere | Almere | Loodgieter | +31 6 48712594 | Solo mobiel, druk (185 rev) | ☐ | |
+| 13 | Loodgieter Breda Expert | Breda | Loodgieter | +31 6 13633187 | Solo mobiel (101 rev) | ☐ | |
+| 14 | Ontstoppingsdienst Arnhem | Arnhem | Loodgieter | +31 6 21882232 | Solo mobiel, spoed (102 rev) | ☐ | |
+| 15 | OMW Rijschool | Rotterdam | Rijschool | +31 6 29292522 | Instructeur in de auto = mist oproepen (lokaal!) | ☐ | |
+| 16 | Rijschool Souldrive | Tilburg | Rijschool | +31 6 11808513 | Instructeur in de auto (336 rev) | ☐ | |
+| 17 | FysiotherapieRyanHaafkens | Almere | Fysio | +31 6 26060404 | Solo mobiel, in behandeling (100 rev) | ☐ | |
+| 18 | TAPA Zwolle | Zwolle | Fysio | +31 6 47150394 | Solo mobiel (170 rev) | ☐ | |
+| 19 | Loodgieters Apeldoorn | Apeldoorn | Loodgieter | +31 55 206 0498 | **3,1 rating** → onbereikbaar | ☐ | |
+| 20 | Moltmaker Installatiebedrijf | Groningen | Loodgieter | +31 6 15263473 | **3,0 rating** → bereikbaarheids-pijn | ☐ | |
+
+---
+
+## Openingszin — solo loodgieter/fysio/rijschool (#1-8, #11-18)
 > "Hoi, u spreekt met Mustafa van Aanloop AI. Korte, eerlijke vraag: mist u weleens telefoontjes als u onderweg bent of in behandeling/les zit? We zoeken een paar [loodgieters/praktijken/rijscholen] die 30 dagen gratis onze AI-telefoonassistent willen testen — die neemt op als u niet kunt, ook 's avonds. In ruil hoor ik graag wat u ervan vindt. Heeft u deze week 15 minuten?"
 
-## Openingszin — lage-rating (#9-10)
+## Openingszin — lage-rating (#9-10, #19-20)
 > "Hoi, Mustafa van Aanloop AI. Ik zag dat bereikbaarheid bij u weleens een puntje is in reviews. We hebben een AI-telefoonassistent die élke oproep aanneemt, 24/7 — nooit meer een onbereikbaar-klacht. We bieden 'm 30 dagen gratis aan bij een paar bedrijven. Mag ik in 15 minuten laten zien hoe het werkt?"
 
 ## Bij "ja"
