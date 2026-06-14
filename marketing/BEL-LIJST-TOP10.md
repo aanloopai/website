@@ -4,33 +4,33 @@
 > Doel: 3 echte referentieklanten (koopcriterium #1, zie `RESEARCH-DEMAND-2026.md`). Vol script: `REFERENTIE-ENGINE.md`.
 > AVG: publieke B2B-gegevens, koude B2B-benadering toegestaan; honoreer elke "niet meer bellen".
 
-| # | Bedrijf | Stad | Sector | Telefoon | Waarom | Gebeld? | Reactie |
-|---|---|---|---|---|---|---|---|
-| 1 | Loodgieter Rotterdam Oost | Rotterdam | Loodgieter | +31 6 83849938 | Solo mobiel, geen site, druk (83 rev) — mist oproepen onderweg | ☐ | |
-| 2 | Loodgieterram | Arnhem | Loodgieter | +31 6 34389878 | Solo mobiel, zeer druk (413 rev) | ☐ | |
-| 3 | Momza Loodgieter | Almere | Loodgieter | +31 6 84975396 | Solo mobiel, zeer druk (297 rev) | ☐ | |
-| 4 | Loodgietersbedrijf AM | Almere | Loodgieter | +31 6 18333954 | Solo mobiel, druk (247 rev) | ☐ | |
-| 5 | RP Loodgieters | Den Bosch | Loodgieter | +31 6 31790391 | Solo mobiel, druk (203 rev) | ☐ | |
-| 6 | 024drive Rijschool | Nijmegen | Rijschool | +31 6 20002127 | Instructeur in de auto = mist gegarandeerd oproepen | ☐ | |
-| 7 | Fix Fysiotherapie | Almere | Fysio | +31 6 23455870 | Solo mobiel, in behandeling = mist oproepen (130 rev) | ☐ | |
-| 8 | Fysio013 | Tilburg | Fysio | +31 6 26465786 | Solo mobiel (110 rev) | ☐ | |
-| 9 | Tandzorg Arnhem | Arnhem | Tandarts | +31 26 361 5100 | **2,8 rating** → bereikbaarheids-klachten | ☐ | |
-| 10 | Loodgietersbedrijf Passon | Den Bosch | Loodgieter | +31 73 782 0291 | **3,0 rating** → onbereikbaar | ☐ | |
+| # | Bedrijf | Stad | Sector | Telefoon | E-mail | Waarom | Gebeld? | Reactie |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Loodgieter Rotterdam Oost | Rotterdam | Loodgieter | +31 6 83849938 | _geen site_ | Solo mobiel, geen site, druk (83 rev) — mist oproepen onderweg | ☐ | |
+| 2 | Loodgieterram | Arnhem | Loodgieter | +31 6 34389878 | _niet gevonden_ | Solo mobiel, zeer druk (413 rev) | ☐ | |
+| 3 | Momza Loodgieter | Almere | Loodgieter | +31 6 84975396 | _niet gevonden_ | Solo mobiel, zeer druk (297 rev) | ☐ | |
+| 4 | Loodgietersbedrijf AM | Almere | Loodgieter | +31 6 18333954 | info@loodgietersbedrijfam.nl | Solo mobiel, druk (247 rev) | ☐ | |
+| 5 | RP Loodgieters | Den Bosch | Loodgieter | +31 6 31790391 | info@rploodgieters.nl | Solo mobiel, druk (203 rev) | ☐ | |
+| 6 | 024drive Rijschool | Nijmegen | Rijschool | +31 6 20002127 | info@024drive.nl | Instructeur in de auto = mist gegarandeerd oproepen | ☐ | |
+| 7 | Fix Fysiotherapie | Almere | Fysio | +31 6 23455870 | _niet gevonden_ | Solo mobiel, in behandeling = mist oproepen (130 rev) | ☐ | |
+| 8 | Fysio013 | Tilburg | Fysio | +31 6 26465786 | info@fysio013.nl | Solo mobiel (110 rev) | ☐ | |
+| 9 | Tandzorg Arnhem | Arnhem | Tandarts | +31 26 361 5100 | info@tandzorgarnhem.nl | **2,8 rating** → bereikbaarheids-klachten | ☐ | |
+| 10 | Loodgietersbedrijf Passon | Den Bosch | Loodgieter | +31 73 782 0291 | _niet gevonden_ | **3,0 rating** → onbereikbaar | ☐ | |
 
 ## Belsessie 2 — #11-20 (na de eerste 10)
 
-| # | Bedrijf | Stad | Sector | Telefoon | Waarom | Gebeld? | Reactie |
-|---|---|---|---|---|---|---|---|
-| 11 | Optimus Service | Breda | Loodgieter | +31 6 44015879 | Solo mobiel, zeer druk (205 rev) | ☐ | |
-| 12 | De Loodgieter Almere | Almere | Loodgieter | +31 6 48712594 | Solo mobiel, druk (185 rev) | ☐ | |
-| 13 | Loodgieter Breda Expert | Breda | Loodgieter | +31 6 13633187 | Solo mobiel (101 rev) | ☐ | |
-| 14 | Ontstoppingsdienst Arnhem | Arnhem | Loodgieter | +31 6 21882232 | Solo mobiel, spoed (102 rev) | ☐ | |
-| 15 | OMW Rijschool | Rotterdam | Rijschool | +31 6 29292522 | Instructeur in de auto = mist oproepen (lokaal!) | ☐ | |
-| 16 | Rijschool Souldrive | Tilburg | Rijschool | +31 6 11808513 | Instructeur in de auto (336 rev) | ☐ | |
-| 17 | FysiotherapieRyanHaafkens | Almere | Fysio | +31 6 26060404 | Solo mobiel, in behandeling (100 rev) | ☐ | |
-| 18 | TAPA Zwolle | Zwolle | Fysio | +31 6 47150394 | Solo mobiel (170 rev) | ☐ | |
-| 19 | Loodgieters Apeldoorn | Apeldoorn | Loodgieter | +31 55 206 0498 | **3,1 rating** → onbereikbaar | ☐ | |
-| 20 | Moltmaker Installatiebedrijf | Groningen | Loodgieter | +31 6 15263473 | **3,0 rating** → bereikbaarheids-pijn | ☐ | |
+| # | Bedrijf | Stad | Sector | Telefoon | E-mail | Waarom | Gebeld? | Reactie |
+|---|---|---|---|---|---|---|---|---|
+| 11 | Optimus Service | Breda | Loodgieter | +31 6 44015879 | _niet gevonden_ | Solo mobiel, zeer druk (205 rev) | ☐ | |
+| 12 | De Loodgieter Almere | Almere | Loodgieter | +31 6 48712594 | _niet gevonden_ | Solo mobiel, druk (185 rev) | ☐ | |
+| 13 | Loodgieter Breda Expert | Breda | Loodgieter | +31 6 13633187 | info@loodgieterbredaexpert.nl | Solo mobiel (101 rev) | ☐ | |
+| 14 | Ontstoppingsdienst Arnhem | Arnhem | Loodgieter | +31 6 21882232 | info@ontstoppingsdienstarnhem.nl | Solo mobiel, spoed (102 rev) | ☐ | |
+| 15 | OMW Rijschool | Rotterdam | Rijschool | +31 6 29292522 | info@rijschoolomw.nl | Instructeur in de auto = mist oproepen (lokaal!) | ☐ | |
+| 16 | Rijschool Souldrive | Tilburg | Rijschool | +31 6 11808513 | info@souldrive.nl | Instructeur in de auto (336 rev) | ☐ | |
+| 17 | FysiotherapieRyanHaafkens | Almere | Fysio | +31 6 26060404 | _niet gevonden_ | Solo mobiel, in behandeling (100 rev) | ☐ | |
+| 18 | TAPA Zwolle | Zwolle | Fysio | +31 6 47150394 | info@tapa.nl | Solo mobiel (170 rev) | ☐ | |
+| 19 | Loodgieters Apeldoorn | Apeldoorn | Loodgieter | +31 55 206 0498 | _niet gevonden_ | **3,1 rating** → onbereikbaar | ☐ | |
+| 20 | Moltmaker Installatiebedrijf | Groningen | Loodgieter | +31 6 15263473 | info@klaasmoltmaker.nl | **3,0 rating** → bereikbaarheids-pijn | ☐ | |
 
 ---
 
