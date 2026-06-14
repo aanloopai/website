@@ -34,6 +34,37 @@
 
 ---
 
+## Contactpersonen (handmatig webonderzoek — over-ons + KvK + LinkedIn)
+
+> Gebruik de naam in de opening: *"Spreek ik met [naam]?"* — directer dan "met de eigenaar". Bron geverifieerd; bij onzeker eerst checken.
+
+| # | Bedrijf | Contactpersoon | Functie | LinkedIn | Zekerheid |
+|---|---|---|---|---|---|
+| 1 | Loodgieter Rotterdam Oost | _niet gevonden_ | — | — | — |
+| 2 | Loodgieterram | _niet gevonden_ (eenmanszaak "Ram") | — | — | — |
+| 3 | Momza Loodgieter | **Mohamed Mzaita** | Eigenaar | [link](https://www.linkedin.com/in/mohamed-mzaita-139285175/) | ✅ bevestigd |
+| 4 | Loodgietersbedrijf AM | _niet gevonden_ | — | — | — |
+| 5 | RP Loodgieters | **Rick Paanakker** | Eigenaar | [link](https://nl.linkedin.com/in/rick-paanakker-2b7296171) | ✅ bevestigd |
+| 6 | 024drive Rijschool | **Sami** (alleen voornaam) | Eigenaar/instructeur | — | ⚠️ voornaam |
+| 7 | Fix Fysiotherapie | **Almer Bosma** | Eigenaar/fysiotherapeut | [link](https://www.linkedin.com/in/almer-bosma-25416541/) | ✅ bevestigd |
+| 8 | Fysio013 | Bas de Kort | Fysiotherapeut (eigenaar?) | [link](https://www.linkedin.com/in/bas-de-kort-09233151/) | ⚠️ onzeker |
+| 9 | Tandzorg Arnhem | **Nona Dasmah** | Tandarts | [link](https://nl.linkedin.com/in/nona-dasmah-07375467) | ⚠️ tandarts, eigenaar onbevestigd |
+| 10 | Loodgietersbedrijf Passon | **Patrick Passon** | Eigenaar | — | ✅ bevestigd (KvK 71365818) |
+| 11 | Optimus Service | **René Kooijmans** | Eigenaar/oprichter | [link](https://www.linkedin.com/in/rené-kooijmans-888184357/) | ✅ bevestigd |
+| 12 | De Loodgieter Almere | _niet gevonden_ | — | — | — |
+| 13 | Loodgieter Breda Expert | _niet gevonden_ | — | — | — |
+| 14 | Ontstoppingsdienst Arnhem | _niet gevonden_ (deel v. ROS Riolering) | — | — | — |
+| 15 | OMW Rijschool | _niet gevonden_ (instructeur "Aliyar" onbevestigd) | — | [bedrijf](https://www.linkedin.com/in/rijschoolomw/) | — |
+| 16 | Rijschool Souldrive | **Mo** (alleen voornaam) | Oprichter/rijcoach | — | ⚠️ voornaam |
+| 17 | Fysiotherapie Ryan Haafkens | **Ryan Haafkens** | Eigenaar/praktijkhouder | [link](https://nl.linkedin.com/in/ryan-h-71933754) | ✅ bevestigd |
+| 18 | TAPA Zwolle | **Ruben Homminga** | Eigenaar/fysiotherapeut | [link](https://www.linkedin.com/in/ruben-homminga-40904a9/) | ✅ bevestigd |
+| 19 | Loodgieters Apeldoorn | _niet gevonden_ | — | — | — |
+| 20 | Moltmaker Installatiebedrijf | **Klaas Moltmaker** | Eigenaar | [link](https://www.linkedin.com/in/klaas-moltmaker-19a5503a/) | ✅ bevestigd |
+
+> **9 bevestigd + 2 voornaam-only.** Niet gevonden = eenmanszaak zonder naam op web/KvK-paywall. Voor die: vraag telefonisch *"met wie spreek ik?"*. AVG: zakelijke benadering, persoonsnaam uit publieke bron, honoreer opt-out.
+
+---
+
 ## Openingszin — solo loodgieter/fysio/rijschool (#1-8, #11-18)
 > "Hoi, u spreekt met Mustafa van Aanloop AI. Korte, eerlijke vraag: mist u weleens telefoontjes als u onderweg bent of in behandeling/les zit? We zoeken een paar [loodgieters/praktijken/rijscholen] die 30 dagen gratis onze AI-telefoonassistent willen testen — die neemt op als u niet kunt, ook 's avonds. In ruil hoor ik graag wat u ervan vindt. Heeft u deze week 15 minuten?"
 
