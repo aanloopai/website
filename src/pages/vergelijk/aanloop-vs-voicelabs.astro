@@ -12,7 +12,7 @@ const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
   headline: 'Aanloop AI vs Voicelabs: welke past bij uw MKB?',
-  description: 'Eerlijke vergelijking tussen Aanloop AI (managed AI-bureau NL, vanaf 597 euro per maand) en Voicelabs Robin (zelf-instelbaar voice+WhatsApp platform) voor Nederlandse MKB-bedrijven. Prijs, datalocatie, website-bundel, sector-compliance en integraties vergeleken op publieke gegevens per mei 2026.',
+  description: 'Eerlijke vergelijking tussen Aanloop AI (managed AI-bureau NL, vanaf 497 euro per maand) en Voicelabs Robin (zelf-instelbaar voice+WhatsApp platform) voor Nederlandse MKB-bedrijven. Prijs, datalocatie, website-bundel, sector-compliance en integraties vergeleken op publieke gegevens per mei 2026.',
   author: {
     '@type': 'Person',
     name: 'Mustafa Agah Dogan',
@@ -40,7 +40,7 @@ const faqSchema = {
       name: 'Wat is het belangrijkste verschil tussen Aanloop AI en Voicelabs?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Voicelabs Robin is een zelf-instelbaar SaaS-platform: u krijgt een omgeving waarmee u zelf flows, scripts en knowledge base bouwt, vanaf 299 euro per maand voor 1.000 belminuten inclusief WhatsApp en chat. Aanloop AI is een volledig managed bureau (Done-For-You): wij bouwen, trainen en onderhouden de AI-receptionist voor u — inclusief website als gewenst — vanaf 597 euro per maand. Het fundamentele verschil: u werkt bij Voicelabs als engineer op uw eigen bot; bij Aanloop AI werkt u als opdrachtgever met een dedicated implementatie-team.',
+        text: 'Voicelabs Robin is een zelf-instelbaar SaaS-platform: u krijgt een omgeving waarmee u zelf flows, scripts en knowledge base bouwt, vanaf 299 euro per maand voor 1.000 belminuten inclusief WhatsApp en chat. Aanloop AI is een volledig managed bureau (Done-For-You): wij bouwen, trainen en onderhouden de AI-receptionist voor u — inclusief website als gewenst — vanaf 497 euro per maand. Het fundamentele verschil: u werkt bij Voicelabs als engineer op uw eigen bot; bij Aanloop AI werkt u als opdrachtgever met een dedicated implementatie-team.',
       },
     },
     {
@@ -64,7 +64,7 @@ const faqSchema = {
       name: 'Hoe transparant zijn de tarieven van beide aanbieders?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Aanloop AI publiceert vaste maandprijzen op de tarievenpagina: Marco Starter 597 euro per maand (150 gesprekken, setup 495 euro), Marco Groei 1.197 euro per maand (onbeperkt plus Emma WhatsApp plus CRM, setup 795 euro). Voicelabs Robin Zelf Starten staat op 299 euro per maand inclusief 1.000 belminuten; voor extra minuten of hogere volumes verwijst de website naar een offerte. Controleer de actuele Voicelabs-tarievenpagina voor uw specifieke situatie.',
+        text: 'Aanloop AI publiceert vaste maandprijzen op de tarievenpagina: Marco Starter 497 euro per maand (150 gesprekken, setup 495 euro), Marco Groei 997 euro per maand (onbeperkt plus Emma WhatsApp plus CRM, setup 795 euro). Voicelabs Robin Zelf Starten staat op 299 euro per maand inclusief 1.000 belminuten; voor extra minuten of hogere volumes verwijst de website naar een offerte. Controleer de actuele Voicelabs-tarievenpagina voor uw specifieke situatie.',
       },
     },
     {
@@ -107,8 +107,8 @@ const faqSchema = {
 // Voicelabs data: voicelabs.nl homepage + pricing-pagina (per mei 2026).
 const comparison = [
   { feature: 'Type service',                    aanloop: 'Managed bureau (Done-For-You)',                        voicelabs: 'Zelf-instelbaar SaaS-platform (Zelf Starten)' },
-  { feature: 'Instapprijs',                     aanloop: '€597/mnd Starter (Marco, 150 gesprekken)',             voicelabs: '€299/mnd Robin Zelf Starten (1.000 belmin + WhatsApp + chat)' },
-  { feature: 'All-in bundel',                   aanloop: '€1.197/mnd Groei (Marco + Emma + CRM, onbeperkt)',     voicelabs: 'Hogere volumes op offerte (website per mei 2026)' },
+  { feature: 'Instapprijs',                     aanloop: '€497/mnd Starter (Marco, 150 gesprekken)',             voicelabs: '€299/mnd Robin Zelf Starten (1.000 belmin + WhatsApp + chat)' },
+  { feature: 'All-in bundel',                   aanloop: '€997/mnd Groei (Marco + Emma + CRM, onbeperkt)',     voicelabs: 'Hogere volumes op offerte (website per mei 2026)' },
   { feature: 'Prijstransparantie',              aanloop: 'Publieke tarieven op website (alle tiers)',            voicelabs: '€299 zelf starten; hogere tiers op offerte' },
   { feature: 'Website + AI-bundel',             aanloop: 'AI-Website Bundel (WordPress + Marco in 1 pakket)',    voicelabs: 'Niet beschikbaar — puur voice/WhatsApp platform' },
   { feature: 'Setup-kosten',                    aanloop: 'Eenmalig €495 Starter / €795 Groei (incl. training)', voicelabs: 'Niet expliciet vermeld op homepage per mei 2026' },
@@ -151,7 +151,7 @@ const whenVoicelabs = [
 
 <BaseLayout
   title="Aanloop AI vs Voicelabs — Eerlijke Vergelijking MKB"
-  description="Aanloop AI (managed AI-bureau, vanaf €597/mnd) vs Voicelabs Robin (zelf-instelbaar voice-platform, €299/mnd) voor het MKB: prijs, datalocatie en AVG vergeleken."
+  description="Aanloop AI (managed AI-bureau, vanaf €497/mnd) vs Voicelabs Robin (zelf-instelbaar voice-platform, €299/mnd) voor het MKB: prijs, datalocatie en AVG vergeleken."
   schema={articleSchema}
   faqSchema={faqSchema.mainEntity.map(q => ({ question: q.name, answer: q.acceptedAnswer.text }))}
 >
@@ -167,7 +167,7 @@ const whenVoicelabs = [
           <span class="block text-2xl sm:text-3xl lg:text-4xl font-semibold text-slate-500 mt-2">Welke past bij uw MKB?</span>
         </h1>
         <p class="mt-6 text-lg text-slate-600 leading-relaxed text-pretty max-w-3xl reveal reveal-delay-2">
-          Beide aanbieders zijn Nederlands en richten zich op AI-telefonie voor het MKB, maar het zijn fundamenteel andere producten. Voicelabs Robin is een <strong>zelf-instelbaar platform</strong> vanaf &euro;299/mnd &mdash; u bouwt en beheert zelf. Aanloop AI is een <strong>volledig managed bureau</strong> vanaf &euro;597/mnd &mdash; wij bouwen, trainen en optimaliseren, inclusief website als gewenst. Hieronder een eerlijke vergelijking op publieke gegevens.
+          Beide aanbieders zijn Nederlands en richten zich op AI-telefonie voor het MKB, maar het zijn fundamenteel andere producten. Voicelabs Robin is een <strong>zelf-instelbaar platform</strong> vanaf &euro;299/mnd &mdash; u bouwt en beheert zelf. Aanloop AI is een <strong>volledig managed bureau</strong> vanaf &euro;497/mnd &mdash; wij bouwen, trainen en optimaliseren, inclusief website als gewenst. Hieronder een eerlijke vergelijking op publieke gegevens.
         </p>
 
         <div class="mt-8 p-4 bg-amber-50/50 border border-amber-200 rounded-xl text-sm text-slate-700 reveal reveal-delay-3">

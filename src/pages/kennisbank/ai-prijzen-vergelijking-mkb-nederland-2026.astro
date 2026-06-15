@@ -8,13 +8,13 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 // verborgen kosten en eerlijke concurrentenvergelijking op publieke data.
 //
 // Canonieke tarieven (source-of-truth: /tarieven/):
-// - Starter €597/mnd, setup €495, incl. Marco 150 gesprekken/mnd
-// - Groei €1.197/mnd, setup €795, incl. Marco onbeperkt + Emma
+// - Starter €497/mnd, setup €495, incl. Marco 150 gesprekken/mnd
+// - Groei €997/mnd, setup €795, incl. Marco onbeperkt + Emma
 // - Emma standalone: vanaf €197/mnd
 // - AI-Website Bundel: €4.950 setup + €397/mnd
 // - Partner: op maat (geen vastgestelde prijs)
 //
-// Verboden prijzen: 297, 497, 697, 797, 897 (introductie-tarieven — nooit gebruiken)
+// Canonieke kernprijs: 497 (Marco), 997 (Groei). Verboden: 297, 697, 797, 897 (introductie-tarieven — nooit gebruiken)
 //
 // Concurrentenvergelijking: alleen publiek geverifieerde gegevens,
 // niet-verifieerbare tarieven worden vermeld als "op aanvraag".
@@ -68,7 +68,7 @@ const offerGraph = {
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       offers: {
         '@type': 'Offer',
-        price: '597',
+        price: '497',
         priceCurrency: 'EUR',
         availability: 'https://schema.org/InStock',
         url: 'https://aanloopai.nl/aanvragen/?plan=starter',
@@ -84,7 +84,7 @@ const offerGraph = {
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       offers: {
         '@type': 'Offer',
-        price: '1197',
+        price: '997',
         priceCurrency: 'EUR',
         availability: 'https://schema.org/InStock',
         url: 'https://aanloopai.nl/aanvragen/?plan=groei',
@@ -114,7 +114,7 @@ const offerGraph = {
 const faqItems = [
   {
     question: 'Wat zijn de actuele Aanloop AI tarieven in 2026?',
-    answer: 'Aanloop AI hanteert drie vaste pakketten. Starter: 597 euro per maand, eenmalige setup 495 euro. Inbegrepen: Marco AI telefoniste, 150 gesprekken per maand, 1 callscript op maat, agenda-integratie en dashboard. Groei: 1.197 euro per maand, eenmalige setup 795 euro. Inbegrepen: Marco onbeperkt plus Emma WhatsApp-agent, 3 callscripts, CRM-koppeling (HubSpot/Pipedrive), gespreksopnames en prioriteit support (reactie onder 4 uur). Emma standalone: vanaf 197 euro per maand voor alleen WhatsApp-automatisering. AI-Website Bundel: 4.950 euro setup plus 397 euro per maand (website plus Marco plus Emma als gecombineerd pakket). Partner op maat: op offerte. Alle prijzen zijn exclusief 21% btw.',
+    answer: 'Aanloop AI hanteert drie vaste pakketten. Starter: 497 euro per maand, eenmalige setup 495 euro. Inbegrepen: Marco AI telefoniste, 150 gesprekken per maand, 1 callscript op maat, agenda-integratie en dashboard. Groei: 997 euro per maand, eenmalige setup 795 euro. Inbegrepen: Marco onbeperkt plus Emma WhatsApp-agent, 3 callscripts, CRM-koppeling (HubSpot/Pipedrive), gespreksopnames en prioriteit support (reactie onder 4 uur). Emma standalone: vanaf 197 euro per maand voor alleen WhatsApp-automatisering. AI-Website Bundel: 4.950 euro setup plus 397 euro per maand (website plus Marco plus Emma als gecombineerd pakket). Partner op maat: op offerte. Alle prijzen zijn exclusief 21% btw.',
   },
   {
     question: 'Welke verborgen kosten heeft AI voor MKB?',
@@ -122,7 +122,7 @@ const faqItems = [
   },
   {
     question: 'Wanneer is een AI telefoniste goedkoper dan een mens?',
-    answer: 'Een fulltime telefoniste in Nederland kost werkgevers all-in 36.000-48.000 euro per jaar (CAO plus vakantiegeld plus werkgeverslasten plus ziekteverzuim plus werving). Marco Starter kost 7.164 euro per jaar (12 x 597 euro plus 495 euro setup). Break-even ligt bij circa 22-30 telefoongesprekken per dag die anders door de telefoniste zouden worden afgehandeld. Bij MKB-bedrijven met meer dan 30 inkomende gesprekken per dag — tandartsen, fysiotherapiepraktijken, webshops, horecabedrijven, accountantskantoren — is Marco structureel goedkoper dan fulltime personeel. Onder 15 gesprekken per dag kan een parttime receptionist of call-forwarding naar een medewerker kosteneffectiever zijn.',
+    answer: 'Een fulltime telefoniste in Nederland kost werkgevers all-in 36.000-48.000 euro per jaar (CAO plus vakantiegeld plus werkgeverslasten plus ziekteverzuim plus werving). Marco Starter kost 5.964 euro per jaar (12 x 497 euro plus 495 euro setup). Break-even ligt bij circa 22-30 telefoongesprekken per dag die anders door de telefoniste zouden worden afgehandeld. Bij MKB-bedrijven met meer dan 30 inkomende gesprekken per dag — tandartsen, fysiotherapiepraktijken, webshops, horecabedrijven, accountantskantoren — is Marco structureel goedkoper dan fulltime personeel. Onder 15 gesprekken per dag kan een parttime receptionist of call-forwarding naar een medewerker kosteneffectiever zijn.',
   },
   {
     question: 'Wanneer is AI duurder dan een mens?',
@@ -202,8 +202,8 @@ const pricingModels = [
 ];
 
 const aanloopTiers = [
-  { tier: 'Starter', prijs: '597 euro/mnd', setup: '495 euro eenmalig', inhoud: 'Marco AI telefoniste, 150 gesprekken/mnd, 1 callscript, agenda-integratie, e-mail lead-melding, dashboard', liveTijd: '10 werkdagen', best: false },
-  { tier: 'Groei', prijs: '1.197 euro/mnd', setup: '795 euro eenmalig', inhoud: 'Marco onbeperkt + Emma WhatsApp-agent, 3 callscripts, CRM HubSpot/Pipedrive, Telegram lead-melding, gespreksopnames, prioriteit support', liveTijd: '7 werkdagen', best: true },
+  { tier: 'Starter', prijs: '497 euro/mnd', setup: '495 euro eenmalig', inhoud: 'Marco AI telefoniste, 150 gesprekken/mnd, 1 callscript, agenda-integratie, e-mail lead-melding, dashboard', liveTijd: '10 werkdagen', best: false },
+  { tier: 'Groei', prijs: '997 euro/mnd', setup: '795 euro eenmalig', inhoud: 'Marco onbeperkt + Emma WhatsApp-agent, 3 callscripts, CRM HubSpot/Pipedrive, Telegram lead-melding, gespreksopnames, prioriteit support', liveTijd: '7 werkdagen', best: true },
   { tier: 'Emma standalone', prijs: 'Vanaf 197 euro/mnd', setup: 'Inbegrepen', inhoud: 'WhatsApp Business AI-agent, automatische beantwoording, agenda-boekingen, lead-kwalificatie, FAQ-afhandeling', liveTijd: '7 werkdagen', best: false },
   { tier: 'AI-Website Bundel', prijs: '397 euro/mnd', setup: '4.950 euro eenmalig', inhoud: 'AI-ready website + Marco + Emma als gecombineerd pakket, 1 leverancier, 1 contract, 1 aanspreekpunt', liveTijd: '21 werkdagen', best: false },
   { tier: 'Partner op maat', prijs: 'Op offerte', setup: 'Op offerte', inhoud: 'Marco + Emma onbeperkt + custom n8n workflows, multi-team routing, dedicated account manager, SLA 99,9% uptime, maatwerk CRM/ERP', liveTijd: '14 werkdagen', best: false },
@@ -249,8 +249,8 @@ const hiddenCosts = [
 ];
 
 const concurrentenTabel = [
-  { naam: 'Aanloop AI Starter', type: 'Managed NL', prijs: '597 euro/mnd', setup: '495 euro', datalocatie: 'EU (Frankfurt/AMS)', opzeggen: 'Maandelijks', hl: true },
-  { naam: 'Aanloop AI Groei', type: 'Managed NL', prijs: '1.197 euro/mnd', setup: '795 euro', datalocatie: 'EU (Frankfurt/AMS)', opzeggen: 'Maandelijks', hl: true },
+  { naam: 'Aanloop AI Starter', type: 'Managed NL', prijs: '497 euro/mnd', setup: '495 euro', datalocatie: 'EU (Frankfurt/AMS)', opzeggen: 'Maandelijks', hl: true },
+  { naam: 'Aanloop AI Groei', type: 'Managed NL', prijs: '997 euro/mnd', setup: '795 euro', datalocatie: 'EU (Frankfurt/AMS)', opzeggen: 'Maandelijks', hl: true },
   { naam: 'Voicelabs Robin', type: 'Platform NL', prijs: 'Op aanvraag', setup: 'Op aanvraag', datalocatie: 'NL / EU', opzeggen: 'Op aanvraag', hl: false },
   { naam: 'Watermelon', type: 'Chat-platform NL', prijs: 'Op aanvraag', setup: 'Op aanvraag', datalocatie: 'NL', opzeggen: 'Op aanvraag', hl: false },
   { naam: 'MIKE365', type: 'AI receptionist NL', prijs: 'Op aanvraag', setup: 'Op aanvraag', datalocatie: 'NL / EU', opzeggen: 'Op aanvraag', hl: false },
@@ -261,37 +261,37 @@ const concurrentenTabel = [
 const tcoTabel = [
   { post: 'Fulltime telefoniste (NL CAO all-in)', jr1: '36.000-48.000 euro', maand: '3.000-4.000 euro', toelichting: 'Bruto salaris + werkgeverslasten (ca. 30%) + vakantiegeld (8%) + gemiddeld ziekteverzuim (5-7%)' },
   { post: 'Werving en onboarding telefoniste', jr1: '2.000-6.000 euro eenmalig', maand: '—', toelichting: 'Recruiter/advertentiekosten + inwerktijd (2-4 weken) + productiviteitsverlies invalkracht' },
-  { post: 'Marco Starter — jaar 1 totaal', jr1: '7.659 euro', maand: '597 euro + 495 setup', toelichting: '12 x 597 euro = 7.164 euro + 495 euro setup eenmalig', highlight: true },
-  { post: 'Marco Starter — jaar 2+ totaal', jr1: '7.164 euro/jr', maand: '597 euro', toelichting: 'Geen jaarlijkse indexering; geen wervingskosten herhaling' },
-  { post: 'Marco Groei — jaar 1 totaal', jr1: '15.159 euro', maand: '1.197 euro + 795 setup', toelichting: '12 x 1.197 euro = 14.364 euro + 795 euro setup; incl. Marco onbeperkt + Emma WhatsApp', highlight: true },
-  { post: 'Marco Groei — jaar 2+ totaal', jr1: '14.364 euro/jr', maand: '1.197 euro', toelichting: 'Incl. Marco onbeperkt + Emma onbeperkt WhatsApp; geen extra kosten' },
+  { post: 'Marco Starter — jaar 1 totaal', jr1: '6.459 euro', maand: '497 euro + 495 setup', toelichting: '12 x 497 euro = 5.964 euro + 495 euro setup eenmalig', highlight: true },
+  { post: 'Marco Starter — jaar 2+ totaal', jr1: '5.964 euro/jr', maand: '497 euro', toelichting: 'Geen jaarlijkse indexering; geen wervingskosten herhaling' },
+  { post: 'Marco Groei — jaar 1 totaal', jr1: '12.759 euro', maand: '997 euro + 795 setup', toelichting: '12 x 997 euro = 11.964 euro + 795 euro setup; incl. Marco onbeperkt + Emma WhatsApp', highlight: true },
+  { post: 'Marco Groei — jaar 2+ totaal', jr1: '11.964 euro/jr', maand: '997 euro', toelichting: 'Incl. Marco onbeperkt + Emma onbeperkt WhatsApp; geen extra kosten' },
 ];
 
 const breakEvenData = [
-  { scenario: '40+ calls/dag, volledig bezet (800+/mnd)', mens: '3.000-4.000 euro/mnd (fulltime)', ai: '597-1.197 euro/mnd', verdict: 'AI significant goedkoper' },
-  { scenario: '15 calls/dag, 20 werkdagen (300 calls/mnd)', mens: '1.800-2.400 euro/mnd pro rata parttime', ai: '597 euro/mnd', verdict: 'AI goedkoper' },
-  { scenario: '5 calls/dag, 20 werkdagen (100 calls/mnd)', mens: '800-1.200 euro/mnd parttime', ai: '597 euro/mnd', verdict: 'Vergelijkbaar; AI wint op beschikbaarheid 24/7' },
-  { scenario: '2 calls/dag, 20 werkdagen (40 calls/mnd)', mens: '300-500 euro/mnd deeltijd', ai: '597 euro/mnd', verdict: 'Mens goedkoper bij alleen telefoniste-taak' },
+  { scenario: '40+ calls/dag, volledig bezet (800+/mnd)', mens: '3.000-4.000 euro/mnd (fulltime)', ai: '497-997 euro/mnd', verdict: 'AI significant goedkoper' },
+  { scenario: '15 calls/dag, 20 werkdagen (300 calls/mnd)', mens: '1.800-2.400 euro/mnd pro rata parttime', ai: '497 euro/mnd', verdict: 'AI goedkoper' },
+  { scenario: '5 calls/dag, 20 werkdagen (100 calls/mnd)', mens: '800-1.200 euro/mnd parttime', ai: '497 euro/mnd', verdict: 'Vergelijkbaar; AI wint op beschikbaarheid 24/7' },
+  { scenario: '2 calls/dag, 20 werkdagen (40 calls/mnd)', mens: '300-500 euro/mnd deeltijd', ai: '497 euro/mnd', verdict: 'Mens goedkoper bij alleen telefoniste-taak' },
 ];
 
 const sectorRoi = [
   {
     sector: 'Tandartspraktijk (4 behandelkamers)',
-    investering: '597 euro/mnd Starter',
+    investering: '497 euro/mnd Starter',
     omzetWinst: '+3.200-5.600 euro/mnd',
     toelichting: '4-8 extra afspraken/mnd door 24/7 bereikbaarheid. No-show reductie 15 naar 5 procent. Lead-conversie weekend en avond van 0 naar 40 procent. Gemiddeld consult 120-350 euro.',
     terugverdienTijd: '5-7 dagen',
   },
   {
     sector: 'Accountantskantoor (3 FTE)',
-    investering: '597 euro/mnd Starter',
+    investering: '497 euro/mnd Starter',
     omzetWinst: '+1.800-3.600 euro/mnd',
     toelichting: 'Intake-tijd per nieuw dossier van 45 naar 12 minuten. Lead-conversie 25 naar 45 procent. 20-30 nieuwe klanten per jaar. Gemiddeld uurtarief 150-200 euro.',
     terugverdienTijd: '10-14 dagen',
   },
   {
     sector: 'Advocatenkantoor (2 advocaten)',
-    investering: '1.197 euro/mnd Groei',
+    investering: '997 euro/mnd Groei',
     omzetWinst: '+2.400-4.800 euro/mnd',
     toelichting: 'Lead-intake 24/7 (zaken worden s avonds aangemeld). Intake-kwalificatie bespaart 3-5u/wk advocatentijd. 2-4 extra zaken/mnd x 800-1.500 euro gemiddeld honorarium eerste fase.',
     terugverdienTijd: '7-10 dagen',
@@ -305,7 +305,7 @@ const sectorRoi = [
   },
   {
     sector: 'Restaurant (75 zitplaatsen)',
-    investering: '597 euro/mnd Starter',
+    investering: '497 euro/mnd Starter',
     omzetWinst: '+1.800-3.200 euro/mnd',
     toelichting: '24/7 reserveringen aannemen (18:00-22:00 nu onbemand). No-show SMS-herinnering 30 naar 10 procent. Extra 15-25 covers/week in avond en weekend. Gemiddeld 40-65 euro per cover.',
     terugverdienTijd: '9-12 dagen',
@@ -510,7 +510,7 @@ const sectorRoi = [
           </tbody>
         </table>
       </div>
-      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Conclusie: Marco Starter kost in jaar 1 circa 7.659 euro all-in tegenover 38.000-54.000 euro all-in voor een fulltime telefoniste. Dat is een besparing van 30.000-46.000 euro per jaar — plus 24/7 beschikbaarheid en nul ziekteverzuim. De payback op de setup (495 euro) is bereikt na de eerste extra afspraak of lead die u anders had gemist.</p>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Conclusie: Marco Starter kost in jaar 1 circa 6.459 euro all-in tegenover 38.000-54.000 euro all-in voor een fulltime telefoniste. Dat is een besparing van 30.000-46.000 euro per jaar — plus 24/7 beschikbaarheid en nul ziekteverzuim. De payback op de setup (495 euro) is bereikt na de eerste extra afspraak of lead die u anders had gemist.</p>
     </div>
   </section>
 
@@ -662,7 +662,7 @@ const sectorRoi = [
       <div class="grid sm:grid-cols-2 gap-4 text-sm">
         <a href="/tarieven/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
           <p class="font-semibold text-navy">Tarieven — source of truth</p>
-          <p class="text-slate-600 mt-1 text-xs">Canonieke Aanloop AI tariefpagina: Starter 597 euro/mnd, Groei 1.197 euro/mnd, Emma 197+/mnd, Partner op maat.</p>
+          <p class="text-slate-600 mt-1 text-xs">Canonieke Aanloop AI tariefpagina: Starter 497 euro/mnd, Groei 997 euro/mnd, Emma 197+/mnd, Partner op maat.</p>
         </a>
         <a href="/diensten/marco/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
           <p class="font-semibold text-navy">Marco — AI telefoniste</p>

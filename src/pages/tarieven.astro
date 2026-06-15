@@ -2,55 +2,29 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import dashboardMockup from '../assets/images/dashboard-mockup.png';
+import { CORE, GROEI } from '../data/pricing';
 
 // ── Pricing logic ──────────────────────────────────────────────
-// Market research (NL AI bureau markt, mei 2026):
-// - Basis AI receptionist tools: €50–€300/mnd (zelf instellen, geen begeleiding)
-// - Managed AI bureau (beheerd, getraind): €500–€1.200/mnd
-// - Aanloop AI positionering: premium managed service, NL-native voice AI
-// - USP: 7-dagenlive, ElevenLabs NL stem, beheerd = premium gerechtvaardigd
-// Prijsstrategie: 4 pakketten, helder, geen addon-verwarring
-// Lite:    instap zonder setup-fee → verdedigt €149-299 segment vs Voicelabs/AI-Receptionisten
-// Starter: laagdrempelig managed instap → groei-pad
-// Groei:   meest gekozene → combo Marco+Emma = volledige automatisering
-// Partner: voor serieuze MKB's, maatwerk + dedicated
+// Prijzen komen uit src/data/pricing.ts (single source of truth).
+// Kernpakket = Marco AI-receptionist, één vast tarief €497/mnd —
+// gebenchmarkt op het NL AI-bureau-gemiddelde (jun 2026 ≈ €450-460/mnd:
+// Voicelabs €199-249, TalkMate ~€500, Utomatic €349/mnd, managed bureau €500-1.200).
+// Geen Lite/Starter-splitsing meer: één heldere kernprijs, geen tegenstrijdige anchors.
+// Groei: enige upsell — Marco + Emma, volledige automatisering. Partner: maatwerk.
 
 const plans = [
   {
-    id: 'lite',
-    name: 'Lite',
-    tagline: 'Instap — laagdrempelig testen, geen setup',
-    price: { monthly: 249, annual: 219 },
-    badge: 'Geen setup',
+    id: 'core',
+    name: 'Marco',
+    tagline: 'AI-receptionist — één vast tarief, alles inbegrepen',
+    price: { monthly: CORE.monthly, annual: CORE.annual },
+    badge: 'Eén vast tarief',
     highlight: false,
-    includes: 'Marco — AI Telefoniste (Lite)',
-    features: [
-      { text: 'Marco — AI telefoniste (24/7)', included: true },
-      { text: 'Tot 50 gesprekken/maand', included: true },
-      { text: '1 standaard callscript', included: true },
-      { text: 'Lead-melding via e-mail', included: true },
-      { text: 'Agenda-integratie (Google / Outlook)', included: true },
-      { text: 'Basis dashboard', included: true },
-      { text: 'Live binnen 5 werkdagen', included: true },
-      { text: 'Eenmalige setup', included: false },
-      { text: 'CRM-integratie', included: false },
-      { text: 'WhatsApp AI (Emma)', included: false },
-    ],
-    cta: 'Start met Lite',
-    ctaHref: '/aanvragen/?plan=lite',
-  },
-  {
-    id: 'starter',
-    name: 'Starter',
-    tagline: 'Eerste stap naar AI automatisering',
-    price: { monthly: 597, annual: 497 },
-    badge: null,
-    highlight: false,
-    includes: 'Marco — AI Telefoniste',
+    includes: 'Marco — AI-receptionist',
     features: [
       { text: 'Marco — AI telefoniste (24/7)', included: true },
       { text: 'Tot 150 gesprekken/maand', included: true },
-      { text: '1 callscript op maat', included: true },
+      { text: 'Callscript op maat', included: true },
       { text: 'Lead-melding via e-mail', included: true },
       { text: 'Agenda-integratie (Google / Outlook)', included: true },
       { text: 'Dashboard + gespreks­transcripts', included: true },
@@ -59,14 +33,14 @@ const plans = [
       { text: 'CRM-integratie', included: false },
       { text: 'Workflow automation', included: false },
     ],
-    cta: 'Start met Starter',
+    cta: 'Start met Marco',
     ctaHref: '/aanvragen/?plan=starter',
   },
   {
     id: 'groei',
     name: 'Groei',
     tagline: 'Telefoon + WhatsApp volledig geautomatiseerd',
-    price: { monthly: 1197, annual: 997 },
+    price: { monthly: GROEI.monthly, annual: GROEI.annual },
     badge: 'Meest gekozen',
     highlight: true,
     includes: 'Marco + Emma',
@@ -192,38 +166,37 @@ const seoGeoPlans = [
 ];
 
 const eenmaligSetup = [
-  { plan: 'Lite', prijs: '€0', desc: 'Geen eenmalige setup — self-onboarding via standaard script en call-flow' },
-  { plan: 'Starter', prijs: '€495', desc: 'Eenmalig — inclusief intake, training, configuratie en go-live begeleiding' },
+  { plan: 'Marco', prijs: '€495', desc: 'Eenmalig — inclusief intake, training, configuratie en go-live begeleiding' },
   { plan: 'Groei', prijs: '€795', desc: 'Eenmalig — inclusief Marco + Emma setup, CRM-koppeling en testfase' },
   { plan: 'Partner', prijs: 'Op offerte', desc: 'Afhankelijk van scope, integraties en workflows' },
 ];
 
 const faqs = [
   { q: 'Zijn de prijzen exclusief btw?', a: 'Ja, alle prijzen zijn exclusief 21% btw. Dit is standaard voor B2B-diensten in Nederland.' },
-  { q: 'Wat zijn de eenmalige setup-kosten?', a: 'Starter: €495 eenmalig. Groei: €795 eenmalig. Dit dekt de intake, training op uw bedrijf, technische configuratie en go-live begeleiding. Partner is op offerte.' },
+  { q: 'Wat zijn de eenmalige setup-kosten?', a: 'Marco: €495 eenmalig. Groei: €795 eenmalig. Dit dekt de intake, training op uw bedrijf, technische configuratie en go-live begeleiding. Partner is op offerte.' },
   { q: 'Wat is inbegrepen in het maandabonnement?', a: 'Hosting, onderhoud, platform-updates, monitoring en support. U betaalt nooit extra per gesprek of bericht. Alle gesprekskosten zijn inbegrepen in uw pakket.' },
   { q: 'Hoe werkt jaarlijkse betaling?', a: 'Bij jaarlijkse betaling bespaart u circa 16% (±2 maanden gratis). U betaalt het volledige jaarbedrag vooruit en ontvangt één factuur per jaar.' },
   { q: 'Kan ik maandelijks opzeggen?', a: 'Maandabonnementen zijn maandelijks opzegbaar met één maand opzegtermijn. Geen boetes, geen gedoe.' },
-  { q: 'Hoe snel ben ik live?', a: 'Starter: gemiddeld 10 werkdagen. Groei: 7 werkdagen. Partner: 14 werkdagen afhankelijk van de scope. Na ondertekening ontvangt u direct een onboarding-plan.' },
-  { q: 'Kan ik upgraden van Starter naar Groei?', a: 'Ja, u kunt op elk moment upgraden. U betaalt alleen het verschil in abonnement. De setupkosten voor de extra diensten (Emma) worden apart verrekend.' },
+  { q: 'Hoe snel ben ik live?', a: 'Marco: gemiddeld 10 werkdagen. Groei: 7 werkdagen. Partner: 14 werkdagen afhankelijk van de scope. Na ondertekening ontvangt u direct een onboarding-plan.' },
+  { q: 'Kan ik upgraden van Marco naar Groei?', a: 'Ja, u kunt op elk moment upgraden. U betaalt alleen het verschil in abonnement. De setupkosten voor de extra diensten (Emma) worden apart verrekend.' },
   { q: 'Is er een gratis proefperiode?', a: 'We bieden geen automatische proefperiode, maar wel een gratis AI scan van 30 minuten en een live demo. U ziet het systeem in actie voordat u beslist.' },
 ];
 
 const vergelijkRows = [
-  ['Gesprekken per maand', '50', '150', 'Onbeperkt', 'Onbeperkt'],
-  ['AI Telefoniste (Marco)', '✓', '✓', '✓', '✓'],
-  ['WhatsApp AI (Emma)', '—', '—', '✓', '✓'],
-  ['Callscripts', 'Standaard', '1 op maat', '3 op maat', 'Onbeperkt'],
-  ['Agenda-integratie', '✓', '✓', '✓', '✓'],
-  ['CRM-integratie', '—', '—', '✓', '✓'],
-  ['Workflow automation', '—', '—', 'Basis', 'Custom'],
-  ['Lead-melding Telegram', '—', '—', '✓', '✓'],
-  ['Gespreksopnames', '—', '—', '✓', '✓'],
-  ['Dedicated account manager', '—', '—', '—', '✓'],
-  ['SLA 99.9% uptime', '—', '—', '—', '✓'],
-  ['Support reactietijd', '< 48 uur', '< 24 uur', '< 4 uur', '< 1 uur'],
-  ['Eenmalige setup', '€0', '€495', '€795', 'Op offerte'],
-  ['Live binnen', '5 dgn', '10 dgn', '7 dgn', '14 dgn'],
+  ['Gesprekken per maand', '150', 'Onbeperkt', 'Onbeperkt'],
+  ['AI Telefoniste (Marco)', '✓', '✓', '✓'],
+  ['WhatsApp AI (Emma)', '—', '✓', '✓'],
+  ['Callscripts', 'Op maat', '3 op maat', 'Onbeperkt'],
+  ['Agenda-integratie', '✓', '✓', '✓'],
+  ['CRM-integratie', '—', '✓', '✓'],
+  ['Workflow automation', '—', 'Basis', 'Custom'],
+  ['Lead-melding Telegram', '—', '✓', '✓'],
+  ['Gespreksopnames', '—', '✓', '✓'],
+  ['Dedicated account manager', '—', '—', '✓'],
+  ['SLA 99.9% uptime', '—', '—', '✓'],
+  ['Support reactietijd', '< 24 uur', '< 4 uur', '< 1 uur'],
+  ['Eenmalige setup', '€495', '€795', 'Op offerte'],
+  ['Live binnen', '10 dgn', '7 dgn', '14 dgn'],
 ];
 
 // Product + Offer schema per tier — AI Overview citation trigger (P1 audit fix)
@@ -232,43 +205,18 @@ const productOfferGraph = {
   '@graph': [
     {
       '@type': 'Product',
-      '@id': 'https://aanloopai.nl/tarieven/#lite',
-      name: 'Aanloop AI — Lite',
-      description: 'AI telefoniste Marco Lite voor Nederlandse MKB. 50 gesprekken per maand, standaard callscript, agenda-integratie. Geen eenmalige setup-kosten. Live binnen 5 werkdagen.',
-      brand: { '@type': 'Brand', name: 'Aanloop AI' },
-      category: 'AI Voice Agent / AI Receptionist',
-      offers: {
-        '@type': 'Offer',
-        price: '249',
-        priceCurrency: 'EUR',
-        priceSpecification: {
-          '@type': 'UnitPriceSpecification',
-          price: '249',
-          priceCurrency: 'EUR',
-          unitText: 'maand',
-          referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
-        },
-        availability: 'https://schema.org/InStock',
-        url: 'https://aanloopai.nl/aanvragen/?plan=lite',
-        seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
-        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
-        priceValidUntil: '2026-12-31',
-      },
-    },
-    {
-      '@type': 'Product',
       '@id': 'https://aanloopai.nl/tarieven/#starter',
-      name: 'Aanloop AI — Starter',
-      description: 'AI telefoniste Marco voor Nederlandse MKB. 150 gesprekken per maand, 1 callscript op maat, agenda-integratie en dashboard. Live binnen 10 werkdagen.',
+      name: 'Aanloop AI — Marco',
+      description: 'AI-receptionist Marco voor Nederlandse MKB. Eén vast tarief: 150 gesprekken per maand, callscript op maat, agenda-integratie en dashboard. Live binnen 10 werkdagen.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       category: 'AI Voice Agent / AI Receptionist',
       offers: {
         '@type': 'Offer',
-        price: '597',
+        price: '497',
         priceCurrency: 'EUR',
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
-          price: '597',
+          price: '497',
           priceCurrency: 'EUR',
           unitText: 'maand',
           referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
@@ -289,11 +237,11 @@ const productOfferGraph = {
       category: 'AI Voice + WhatsApp Agent Bundle',
       offers: {
         '@type': 'Offer',
-        price: '1197',
+        price: '997',
         priceCurrency: 'EUR',
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
-          price: '1197',
+          price: '997',
           priceCurrency: 'EUR',
           unitText: 'maand',
           referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
@@ -465,7 +413,7 @@ const valueCompareRows = [
 
 <BaseLayout
   title="AI-Agent Prijs Nederland 2026 — Tarieven Aanloop AI"
-  description="Transparante AI-tarieven voor het MKB 2026: Lite vanaf €249/mnd zonder setup, Starter €597/mnd, Groei €1.197/mnd. Geen verborgen kosten."
+  description="Transparante AI-tarieven voor het MKB 2026: Marco AI-receptionist €497/mnd (één vast tarief), Groei €997/mnd. Geen verborgen kosten, maandelijks opzegbaar."
   schema={productOfferGraph}
   faqSchema={faqs.map(f => ({ question: f.q, answer: f.a }))}
 >
@@ -761,7 +709,7 @@ const valueCompareRows = [
       <div class="mb-10 text-center reveal">
         <p class="eyebrow mb-3">Waarom Aanloop AI?</p>
         <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tightest text-navy text-balance">
-          €597 managed service vs €99–€299 zelf-service tools.
+          €497 managed service vs €99–€299 zelf-service tools.
         </h2>
         <p class="mt-4 text-slate-600 leading-relaxed max-w-2xl mx-auto">
           Er zijn AI-receptionist tools vanaf €99/mnd. Op papier voordeliger. In de praktijk betaalt u tijd, integratiewerk en compliance-risico. Hier is wat onze prijs precies dekt.
@@ -774,7 +722,7 @@ const valueCompareRows = [
             <tr class="border-b border-slate-200 bg-slate-50">
               <th class="text-left py-4 px-5 text-slate-500 font-medium">Wat krijgt u?</th>
               <th class="text-center py-4 px-4 font-bold text-slate-500 w-[26%]">Zelf-service tools<br/><span class="text-xs font-normal">€99–€299/mnd</span></th>
-              <th class="text-center py-4 px-4 font-bold text-navy bg-brand-emerald/5 w-[26%]">Aanloop AI<br/><span class="text-xs font-normal text-brand-emerald">vanaf €597/mnd managed</span></th>
+              <th class="text-center py-4 px-4 font-bold text-navy bg-brand-emerald/5 w-[26%]">Aanloop AI<br/><span class="text-xs font-normal text-brand-emerald">€497/mnd managed</span></th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
@@ -820,7 +768,7 @@ const valueCompareRows = [
             Eén dashboard. Alle gesprekken, leads en KPI's.
           </h2>
           <p class="mt-4 text-slate-600 leading-relaxed reveal reveal-delay-2">
-            Vanaf het Starter-pakket krijgt u toegang tot het Aanloop AI-dashboard. Realtime conversation analytics, lead-tracking en wekelijkse rapportage — geen verborgen modules, geen extra licenties.
+            Vanaf het Marco-pakket krijgt u toegang tot het Aanloop AI-dashboard. Realtime conversation analytics, lead-tracking en wekelijkse rapportage — geen verborgen modules, geen extra licenties.
           </p>
           <ul class="mt-6 space-y-2.5 reveal reveal-delay-3">
             {[
@@ -890,13 +838,12 @@ const valueCompareRows = [
 
           <div>
             <label class="text-xs font-semibold text-slate-600 uppercase tracking-wide block mb-2">Aanloop pakket</label>
-            <div class="grid grid-cols-3 gap-1.5" role="radiogroup" aria-label="Aanloop pakket selectie">
+            <div class="grid grid-cols-2 gap-1.5" role="radiogroup" aria-label="Aanloop pakket selectie">
               {[
-                { id: 'lite', label: 'Lite', sub: '€249/m' },
-                { id: 'starter', label: 'Starter', sub: '€597/m' },
-                { id: 'groei', label: 'Groei', sub: '€1.197/m' },
+                { id: 'starter', label: 'Marco', sub: '€497/m' },
+                { id: 'groei', label: 'Groei', sub: '€997/m' },
               ].map(t => (
-                <button type="button" class="tco-tier-btn rounded-lg border border-slate-300 bg-white px-2 py-2 text-center hover:border-navy focus:outline-none focus:ring-2 focus:ring-brand-indigo aria-checked:border-navy aria-checked:bg-navy aria-checked:text-white" role="radio" aria-checked={t.id === 'groei' ? 'true' : 'false'} data-tier={t.id} data-monthly={t.id === 'lite' ? 249 : t.id === 'starter' ? 597 : 1197} data-setup={t.id === 'lite' ? 0 : t.id === 'starter' ? 495 : 795}>
+                <button type="button" class="tco-tier-btn rounded-lg border border-slate-300 bg-white px-2 py-2 text-center hover:border-navy focus:outline-none focus:ring-2 focus:ring-brand-indigo aria-checked:border-navy aria-checked:bg-navy aria-checked:text-white" role="radio" aria-checked={t.id === 'groei' ? 'true' : 'false'} data-tier={t.id} data-monthly={t.id === 'starter' ? 497 : 997} data-setup={t.id === 'starter' ? 495 : 795}>
                   <span class="block text-xs font-bold">{t.label}</span>
                   <span class="block text-[10px] opacity-70">{t.sub}</span>
                 </button>
@@ -930,8 +877,8 @@ const valueCompareRows = [
           <div class="grid grid-cols-2 gap-4 mb-6">
             <div>
               <p class="text-xs text-slate-500 uppercase tracking-wide mb-1">TCO Aanloop AI (5j)</p>
-              <p id="tco-aanloop" class="text-2xl font-bold text-navy tabular-nums">€72.615</p>
-              <p id="tco-aanloop-detail" class="text-[11px] text-slate-500 mt-0.5">Setup €795 + €1.197 × 60</p>
+              <p id="tco-aanloop" class="text-2xl font-bold text-navy tabular-nums">€60.615</p>
+              <p id="tco-aanloop-detail" class="text-[11px] text-slate-500 mt-0.5">Setup €795 + €997 × 60</p>
             </div>
             <div>
               <p class="text-xs text-slate-500 uppercase tracking-wide mb-1">TCO Receptionist (5j)</p>
@@ -942,8 +889,8 @@ const valueCompareRows = [
 
           <div class="bg-brand-emerald/10 border border-brand-emerald/30 rounded-xl p-4 mb-4">
             <p class="text-xs text-brand-emerald uppercase tracking-widest font-bold mb-1">Uw besparing 5 jaar</p>
-            <p id="tco-saving" class="text-3xl font-bold text-brand-emerald tabular-nums">€46.185</p>
-            <p id="tco-saving-pct" class="text-xs text-slate-600 mt-1">ROI: 63,6% over 5 jaar</p>
+            <p id="tco-saving" class="text-3xl font-bold text-brand-emerald tabular-nums">€58.185</p>
+            <p id="tco-saving-pct" class="text-xs text-slate-600 mt-1">ROI: 96,0% over 5 jaar</p>
           </div>
 
           <div class="grid grid-cols-2 gap-3 text-sm">
@@ -953,7 +900,7 @@ const valueCompareRows = [
             </div>
             <div class="bg-white border border-slate-200 rounded-lg p-3">
               <p class="text-[10px] text-slate-500 uppercase tracking-wide">Aanloop / maand</p>
-              <p id="tco-monthly" class="text-lg font-bold text-navy">€1.197</p>
+              <p id="tco-monthly" class="text-lg font-bold text-navy">€997</p>
             </div>
           </div>
 
@@ -984,7 +931,7 @@ const valueCompareRows = [
         const payback = document.getElementById('tco-payback');
         const monthly = document.getElementById('tco-monthly');
 
-        let activeMonthly = 1197;
+        let activeMonthly = 997;
         let activeSetup = 795;
 
         function recalc() {
@@ -1014,7 +961,7 @@ const valueCompareRows = [
             saving.textContent = fmt(savingAbs);
             saving.classList.add('text-rose-600');
             saving.classList.remove('text-brand-emerald');
-            savingPct.textContent = 'Aanloop kost meer dan een mens — gebruik Lite-tier of overweeg Marco-Starter';
+            savingPct.textContent = 'Aanloop kost meer dan een mens bij dit scenario — overweeg het Marco-pakket';
           }
 
           if (isFinite(paybackMonths) && paybackMonths > 0) {
@@ -1056,18 +1003,16 @@ const valueCompareRows = [
           <thead>
             <tr class="border-b border-slate-200">
               <th class="text-left py-4 pr-6 text-slate-500 font-medium w-2/5">Functie</th>
-              <th class="text-center py-4 px-3 font-bold text-navy">Lite<br/><span class="text-xs font-normal text-slate-400">€249/mnd</span></th>
-              <th class="text-center py-4 px-3 font-bold text-navy">Starter<br/><span class="text-xs font-normal text-slate-400">€597/mnd</span></th>
-              <th class="text-center py-4 px-3 font-bold text-navy bg-navy/5 rounded-t-xl">Groei<br/><span class="text-xs font-normal text-slate-400">€1.197/mnd</span></th>
+              <th class="text-center py-4 px-3 font-bold text-navy">Marco<br/><span class="text-xs font-normal text-slate-400">€497/mnd</span></th>
+              <th class="text-center py-4 px-3 font-bold text-navy bg-navy/5 rounded-t-xl">Groei<br/><span class="text-xs font-normal text-slate-400">€997/mnd</span></th>
               <th class="text-center py-4 px-3 font-bold text-navy">Partner<br/><span class="text-xs font-normal text-slate-400">Op maat</span></th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
-            {vergelijkRows.map(([feature, lite, starter, groei, partner]) => (
+            {vergelijkRows.map(([feature, marco, groei, partner]) => (
               <tr>
                 <td class="py-3 pr-6 text-slate-700">{feature}</td>
-                <td class="py-3 px-3 text-center text-slate-500">{lite}</td>
-                <td class="py-3 px-3 text-center text-slate-500">{starter}</td>
+                <td class="py-3 px-3 text-center text-slate-500">{marco}</td>
                 <td class="py-3 px-3 text-center text-navy font-medium bg-navy/5">{groei}</td>
                 <td class="py-3 px-3 text-center text-slate-500">{partner}</td>
               </tr>

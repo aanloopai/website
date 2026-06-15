@@ -1,6 +1,9 @@
 // Portal product catalog (Faz 1, + V4 Sprint D pricing). Static — admin-managed
-// via code, not DB. Derived from src/pages/tarieven.astro. `key` matches
-// services.product_key. `prijsCent` + `betaling` drive the Mollie checkout.
+// via code, not DB. Prices derive from src/data/pricing.ts (single source).
+// `key` matches services.product_key. `prijsCent` + `betaling` drive Mollie checkout.
+// NB: tier `naam` is stored in D1 (service_orders.tier) — never rename/remove, only reprice.
+
+import { CORE, GROEI, CORE_MND, GROEI_MND } from './pricing';
 
 export type TierBetaling = 'maandelijks' | 'eenmalig' | 'aanvraag';
 
@@ -31,8 +34,8 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
     meerInfoUrl: 'https://aanloopai.nl/diensten/marco/',
     tiers: [
       { naam: 'Lite', prijs: '€249/mnd', prijsCent: 24900, betaling: 'maandelijks', kenmerken: ['Max 50 gesprekken/mnd', '1 standaard belscript', 'Agenda-koppeling', 'Live in 5 dagen'] },
-      { naam: 'Starter', prijs: '€597/mnd', prijsCent: 59700, betaling: 'maandelijks', kenmerken: ['Max 150 gesprekken/mnd', 'Eigen belscript', 'Transcripties', 'Live in 10 dagen'] },
-      { naam: 'Groei', prijs: '€1.197/mnd', prijsCent: 119700, betaling: 'maandelijks', kenmerken: ['Onbeperkt gesprekken', 'Emma WhatsApp inbegrepen', 'CRM-koppeling', 'Priority support <4u'] },
+      { naam: 'Starter', prijs: CORE_MND, prijsCent: CORE.monthlyCent, betaling: 'maandelijks', kenmerken: ['Max 150 gesprekken/mnd', 'Eigen belscript', 'Transcripties', 'Live in 10 dagen'] },
+      { naam: 'Groei', prijs: GROEI_MND, prijsCent: GROEI.monthlyCent, betaling: 'maandelijks', kenmerken: ['Onbeperkt gesprekken', 'Emma WhatsApp inbegrepen', 'CRM-koppeling', 'Priority support <4u'] },
       { naam: 'Partner', prijs: 'Op aanvraag', prijsCent: null, betaling: 'aanvraag', kenmerken: ['Onbeperkt Marco + Emma', 'Custom workflows', 'Dedicated accountmanager', 'SLA 99,9%'] },
     ],
   },

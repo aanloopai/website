@@ -50,7 +50,7 @@ export const VARIANTS = {
     },
     roi: {
       headline: 'Bespaar €40k+/jaar op personeelskosten',
-      sub: 'MKB-bedrijven die Marco inzetten betalen €597/mnd en elimineren een fulltime receptionist. Terugverdientijd: 6 weken.',
+      sub: 'MKB-bedrijven die Marco inzetten betalen €497/mnd en elimineren een fulltime receptionist. Terugverdientijd: 6 weken.',
     },
   },
   [EXPERIMENTS.HOMEPAGE_CTA_TEXT]: {
@@ -73,7 +73,7 @@ export const VARIANTS = {
       sub: 'Terwijl u slaapt, werkt, of op de werf staat — Marco pakt elke beller op en zet leads om in afspraken.',
     },
     roi: {
-      headline: 'Marco vervangt een €42k/jaar receptionist voor €597/mnd',
+      headline: 'Marco vervangt een €42k/jaar receptionist voor €497/mnd',
       sub: 'Geen ziekte, geen vakantie, geen loonkosten. 24/7 NL-telefoon, CRM-integratie en agenda-planning inbegrepen.',
     },
   },

@@ -18,15 +18,15 @@ const planDetails: Record<string, PlanEntry> = {
   },
   starter: {
     name: 'Starter',
-    price: 597,
-    annualPrice: 497,
+    price: 497,
+    annualPrice: 416,
     product: 'Marco — AI sekreter',
     features: ['Tot 150 gesprekken/maand', '1 callscript op maat', 'Agenda + e-mail lead-notificatie', 'Dashboard + transcripts'],
   },
   groei: {
     name: 'Groei',
-    price: 1197,
-    annualPrice: 997,
+    price: 997,
+    annualPrice: 836,
     product: 'Marco — AI sekreter',
     features: ['Onbeperkte gesprekken', 'Tot 3 callscripts', 'Marco + Emma WhatsApp + CRM-integratie', 'Prioriteit support < 4 uur'],
   },
@@ -360,7 +360,7 @@ const steps = [
   const oKnob = document.getElementById('order-knob') as HTMLElement;
   const monthlyLabel = document.getElementById('billing-monthly-label') as HTMLElement;
   const annualLabel = document.getElementById('billing-annual-label') as HTMLElement;
-  const summaryPriceMonthly = parseInt((document.getElementById('order-price') as HTMLElement)?.textContent?.replace('€','') || '597');
+  const summaryPriceMonthly = parseInt((document.getElementById('order-price') as HTMLElement)?.textContent?.replace('€','') || '497');
   const summaryPriceAnnual = Math.round(summaryPriceMonthly * 0.833);
   let annualActive = false;
 
@@ -419,7 +419,7 @@ const steps = [
         const _planParam = _qs.get('plan') || 'groei';
         const _dienstParam = _qs.get('dienst') || '';
         const _planValues: Record<string, number> = {
-          lite: 249, starter: 597, groei: 1197, partner: 0,
+          lite: 249, starter: 497, groei: 997, partner: 0,
           'emma-lite': 49, 'emma-standard': 197,
         };
         const _dienstValues: Record<string, number> = {
@@ -428,7 +428,7 @@ const steps = [
           'seo-geo-bundel': 1195,
         };
         const _itemKey = _dienstParam || _planParam;
-        const _value = _dienstParam ? (_dienstValues[_dienstParam] ?? 0) : (_planValues[_planParam] ?? 597);
+        const _value = _dienstParam ? (_dienstValues[_dienstParam] ?? 0) : (_planValues[_planParam] ?? 497);
         (window as any)._track?.('generate_lead', { form_name: 'aanvraag', item: _itemKey, currency: 'EUR', value: _value });
         (window as any)._track?.('purchase', {
           transaction_id: 'aanvraag_' + Date.now(),

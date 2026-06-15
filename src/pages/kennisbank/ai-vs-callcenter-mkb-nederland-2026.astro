@@ -9,7 +9,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 // - Klantenservice Nederland benchmarkrapport (KSF — Klantenservice Federatie, ksf.nl)
 // - Telecommerce Magazine NL tariefoverzicht 2025/2026
 // - Statista NL call-center-markt 2025
-// - Vastgestelde Aanloop AI-tarieven (Marco Starter 597/mnd, Marco Groei 1.197/mnd)
+// - Vastgestelde Aanloop AI-tarieven (Marco Starter 497/mnd, Marco Groei 997/mnd)
 // Callcenter-tarieven: typische NL MKB inbound tarieven €0,50-1,50/minuut (variabel model).
 // Setup-kosten: €500-2.000 eenmalig — branchegemiddelde kleinere NL aanbieders.
 // Geen specifieke provider-tarieven geciteerd (B2B-maatwerk, niet publiek).
@@ -107,8 +107,8 @@ const tcoScenarios = [
     desc: 'Gemiddelde gespreksduur 4 minuten, 22 werkdagen/mnd, kantoortijden 9-17.',
     callcenterMnd: '~€1.760/mnd (variabel €1/min)',
     callcenterJr: '~€21.120/jr + setup',
-    aiStarter: '€597/mnd × 12 = €7.164/jr',
-    aiGroei: '€1.197/mnd × 12 = €14.364/jr',
+    aiStarter: '€497/mnd × 12 = €5.964/jr',
+    aiGroei: '€997/mnd × 12 = €11.964/jr',
     besparing: '~€14.000/jr vs Starter; ~€7.000/jr vs Groei',
     winnerLabel: 'Marco Starter',
     showStarter: true,
@@ -119,7 +119,7 @@ const tcoScenarios = [
     callcenterMnd: '~€4.400/mnd (variabel €1/min)',
     callcenterJr: '~€52.800/jr + setup',
     aiStarter: '',
-    aiGroei: '€1.197/mnd × 12 = €14.364/jr (onbeperkt)',
+    aiGroei: '€997/mnd × 12 = €11.964/jr (onbeperkt)',
     besparing: '~€38.000/jr vs Groei',
     winnerLabel: 'Marco Groei',
     showStarter: false,
@@ -130,7 +130,7 @@ const tcoScenarios = [
     callcenterMnd: '~€8.800/mnd (variabel) + 24/7-toeslag',
     callcenterJr: '~€105.600/jr + 24/7-premie + setup',
     aiStarter: '',
-    aiGroei: '€1.197/mnd × 12 = €14.364/jr (onbeperkt, 24/7 native)',
+    aiGroei: '€997/mnd × 12 = €11.964/jr (onbeperkt, 24/7 native)',
     besparing: '~€91.000/jr vs Groei',
     winnerLabel: 'Marco Groei',
     showStarter: false,
@@ -155,7 +155,7 @@ const sectorRoi = [
     sector: 'Tandartspraktijk',
     callsPerDag: '15-25',
     callcenterJr: '€16.000-26.000',
-    marcoJr: '€7.164 (Starter)',
+    marcoJr: '€5.964 (Starter)',
     besparing: '€9.000-19.000/jr',
     extraWaarde: 'Afspraak-automatisering 24/7, no-show-recall',
   },
@@ -163,7 +163,7 @@ const sectorRoi = [
     sector: 'Makelaarskantoor',
     callsPerDag: '20-40',
     callcenterJr: '€21.000-42.000',
-    marcoJr: '€14.364 (Groei)',
+    marcoJr: '€11.964 (Groei)',
     besparing: '€7.000-28.000/jr',
     extraWaarde: 'Lead-kwalificatie buiten kantoortijd, bezichtigingsplanning',
   },
@@ -171,7 +171,7 @@ const sectorRoi = [
     sector: 'Restaurant / horecabedrijf',
     callsPerDag: '30-60',
     callcenterJr: '€32.000-63.000',
-    marcoJr: '€14.364 (Groei)',
+    marcoJr: '€11.964 (Groei)',
     besparing: '€18.000-49.000/jr',
     extraWaarde: 'Reserveringen 24/7, allergenen-FAQ, no-show-minimalisatie',
   },
@@ -179,7 +179,7 @@ const sectorRoi = [
     sector: 'Advocatenkantoor',
     callsPerDag: '10-20',
     callcenterJr: '€11.000-21.000',
-    marcoJr: '€7.164 (Starter)',
+    marcoJr: '€5.964 (Starter)',
     besparing: '€4.000-14.000/jr',
     extraWaarde: 'Confidentialiteit bewaard, intake-pre-screening, dossier-categorisatie',
   },
@@ -187,7 +187,7 @@ const sectorRoi = [
     sector: 'Webshop (e-commerce)',
     callsPerDag: '40-100+',
     callcenterJr: '€42.000-105.000+',
-    marcoJr: '€14.364 (Groei)',
+    marcoJr: '€11.964 (Groei)',
     besparing: '€28.000-90.000+/jr',
     extraWaarde: 'Bestelstatus 24/7, retourproces-FAQ, seizoenpiek zonder extra kosten',
   },
@@ -279,7 +279,7 @@ const migratiePad = [
           </div>
         ))}
       </div>
-      <p class="mt-6 text-sm text-slate-500 reveal reveal-delay-2">Tariefbronnen: Klantenservice Federatie (ksf.nl) benchmarkrapport, Telecommerce Magazine NL 2025–2026. Aanloop AI-tarieven: vastgestelde abonnementsprijzen Marco Starter (€597/mnd) en Marco Groei (€1.197/mnd). Break-even treedt al op bij circa 12–15 calls/dag bij €1/min gemiddeld gesprek van 4 minuten. Uw situatie kan afwijken op basis van werkelijk gespreksvolume en callcenter-contractvorm.</p>
+      <p class="mt-6 text-sm text-slate-500 reveal reveal-delay-2">Tariefbronnen: Klantenservice Federatie (ksf.nl) benchmarkrapport, Telecommerce Magazine NL 2025–2026. Aanloop AI-tarieven: vastgestelde abonnementsprijzen Marco Starter (€497/mnd) en Marco Groei (€997/mnd). Break-even treedt al op bij circa 12–15 calls/dag bij €1/min gemiddeld gesprek van 4 minuten. Uw situatie kan afwijken op basis van werkelijk gespreksvolume en callcenter-contractvorm.</p>
     </div>
   </section>
 
@@ -351,7 +351,7 @@ const migratiePad = [
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Hybrid model: AI eerstelijns + callcenter tweelijns</h2>
       <p class="text-slate-600 leading-relaxed mb-4">Voor de meeste MKB-bedrijven is het hybrid-model de optimale route: AI handelt 70–80% van alle inkomende gesprekken zelfstandig af (afspraken, FAQ, statusupdates, doorverbindingen, routine-handelingen), terwijl het callcenter beschikbaar blijft als tweedelijnslijn voor complexe of emotionele situaties.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">In dit model daalt het callcenter-volume drastisch: van 100% van alle calls naar 20–30%. Daarmee daalt ook de factuur. Een MKB-bedrijf met 50 calls per dag betaalt in het pure callcenter-model circa €4.400 per maand. In het hybrid-model: Marco Groei (€1.197/mnd) plus een sterk gereduceerd callcenter-pakket voor escalaties (typisch 10–15 calls/dag × €1/min × 5 min = €1.100–1.650/mnd). Totale maandkosten: circa €2.300–2.850 — een besparing van 35–48% bij gelijkblijvende of verbeterde servicekwaliteit.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">In dit model daalt het callcenter-volume drastisch: van 100% van alle calls naar 20–30%. Daarmee daalt ook de factuur. Een MKB-bedrijf met 50 calls per dag betaalt in het pure callcenter-model circa €4.400 per maand. In het hybrid-model: Marco Groei (€997/mnd) plus een sterk gereduceerd callcenter-pakket voor escalaties (typisch 10–15 calls/dag × €1/min × 5 min = €1.100–1.650/mnd). Totale maandkosten: circa €2.300–2.850 — een besparing van 35–48% bij gelijkblijvende of verbeterde servicekwaliteit.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Het hybrid-model biedt ook een zachte overgang: u hoeft uw callcenter-contract niet abrupt op te zeggen, kunt AI opschalen terwijl u de kwaliteit bewaakt, en behoudt de optie om het callcenter aan te zetten bij uitzonderlijke pieken of campagnes.</p>
       <div class="mt-6 rounded-2xl border border-brand-emerald/30 bg-brand-emerald/5 p-6 reveal reveal-delay-1">
         <p class="text-sm font-bold text-navy mb-3">Hybrid model — indicatieve TCO (50 calls/dag)</p>
@@ -368,7 +368,7 @@ const migratiePad = [
           </div>
           <div class="text-center">
             <p class="text-slate-500 text-xs mb-1">Pure AI (Marco Groei)</p>
-            <p class="text-2xl font-bold text-navy">€14.364</p>
+            <p class="text-2xl font-bold text-navy">€11.964</p>
             <p class="text-slate-500 text-xs">per jaar</p>
           </div>
         </div>
