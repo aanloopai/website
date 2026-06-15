@@ -9,15 +9,8 @@ const product = url.searchParams.get('product') || 'marco';
 type PlanEntry = { name: string; price: number; annualPrice: number; product: string; features: string[]; oneShot?: boolean };
 
 const planDetails: Record<string, PlanEntry> = {
-  lite: {
-    name: 'Lite',
-    price: 249,
-    annualPrice: 219,
-    product: 'Marco — AI Telefoniste (Lite)',
-    features: ['Tot 50 gesprekken/maand', '1 standaard callscript', 'Agenda + e-mail lead-notificatie', 'Geen eenmalige setup-kosten', 'Live binnen 5 werkdagen'],
-  },
   starter: {
-    name: 'Starter',
+    name: 'Marco',
     price: 497,
     annualPrice: 416,
     product: 'Marco — AI sekreter',
@@ -419,7 +412,7 @@ const steps = [
         const _planParam = _qs.get('plan') || 'groei';
         const _dienstParam = _qs.get('dienst') || '';
         const _planValues: Record<string, number> = {
-          lite: 249, starter: 497, groei: 997, partner: 0,
+          starter: 497, groei: 997, partner: 0,
           'emma-lite': 49, 'emma-standard': 197,
         };
         const _dienstValues: Record<string, number> = {
