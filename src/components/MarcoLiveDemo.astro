@@ -37,11 +37,17 @@
         if (window._track) window._track('marco_live_demo_click', {});
         var w = document.querySelector('elevenlabs-convai');
         if (w) {
-          try { w.click(); } catch (e) {}
-          try {
-            var b = w.shadowRoot && w.shadowRoot.querySelector('button, [role="button"]');
-            if (b) b.click();
-          } catch (e) {}
+          var opened = false;
+          // Gedocumenteerde ElevenLabs convai-API.
+          try { if (typeof w.startConversation === 'function') { w.startConversation(); opened = true; } } catch (e) {}
+          // Fallbacks (oudere widget-versies).
+          if (!opened) { try { w.click(); } catch (e) {} }
+          if (!opened) {
+            try {
+              var b = w.shadowRoot && w.shadowRoot.querySelector('button, [role="button"]');
+              if (b) b.click();
+            } catch (e) {}
+          }
           // Markeer de widget zodat de bezoeker hem altijd vindt.
           try {
             w.animate(
