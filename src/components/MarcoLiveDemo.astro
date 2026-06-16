@@ -35,19 +35,28 @@
       if (!btn) return;
       btn.addEventListener('click', function () {
         if (window._track) window._track('marco_live_demo_click', {});
+        function openMarco() {
+          var w = document.querySelector('elevenlabs-convai');
+          if (!w) return false;
+          // Nieuwere widget-versies: gedocumenteerde methode.
+          try { if (typeof w.startConversation === 'function') { w.startConversation(); return true; } } catch (e) {}
+          // Widget v0.14.x (geverifieerd): klik de "Start a call"-knop in de shadow-DOM.
+          try {
+            var sr = w.shadowRoot;
+            if (sr) {
+              var b = sr.querySelector('button[aria-label="Start a call"]')
+                   || sr.querySelector('button[aria-label*="call" i], button[aria-label*="gesprek" i]')
+                   || sr.querySelector('button');
+              if (b) { b.click(); return true; }
+            }
+          } catch (e) {}
+          try { w.click(); } catch (e) {}
+          return false;
+        }
         var w = document.querySelector('elevenlabs-convai');
+        // Widget kan nog async laden — probeer direct en kort daarna nogmaals.
+        if (!openMarco()) setTimeout(openMarco, 700);
         if (w) {
-          var opened = false;
-          // Gedocumenteerde ElevenLabs convai-API.
-          try { if (typeof w.startConversation === 'function') { w.startConversation(); opened = true; } } catch (e) {}
-          // Fallbacks (oudere widget-versies).
-          if (!opened) { try { w.click(); } catch (e) {} }
-          if (!opened) {
-            try {
-              var b = w.shadowRoot && w.shadowRoot.querySelector('button, [role="button"]');
-              if (b) b.click();
-            } catch (e) {}
-          }
           // Markeer de widget zodat de bezoeker hem altijd vindt.
           try {
             w.animate(
