@@ -1,0 +1,132 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const faq = [
+  { question: 'Hoeveel omzet loopt een MKB-bedrijf mis door gemiste telefoontjes?', answer: 'Gemiddeld wordt 20–30% van de inkomende calls buiten kantoortijd of tijdens piekdrukte gemist. Bij 20 calls/dag, 25% gemist, 40% conversie en €250 klantwaarde loopt dat op tot duizenden euro\'s gemiste omzet per maand. Reken het exact uit met de calculator hierboven.' },
+  { question: 'Hoe voorkomt een AI-receptionist gemiste omzet?', answer: 'Marco (AI-receptionist) neemt 24/7 elke inkomende call aan — ook buiten kantoortijd en tijdens piekuren — kwalificeert de beller, plant afspraken en zet leads door naar uw CRM. Geen voicemail, geen gemiste klant.' },
+  { question: 'Wat kost dat?', answer: 'Marco kost €497 per maand all-in (maandelijks opzegbaar, geen kosten per gesprek). Bij de meeste bedrijven is dat al terugverdiend met één tot twee extra klanten per maand.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebApplication',
+  name: 'Gemiste-omzet calculator',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  description: 'Bereken hoeveel omzet uw bedrijf misloopt door gemiste telefoontjes — en wat een AI-receptionist oplevert.',
+  url: 'https://aanloopai.nl/gemiste-omzet-calculator/',
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+  publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+};
+---
+
+<BaseLayout
+  title="Gemiste-omzet calculator — hoeveel klanten mist u?"
+  description="Gratis calculator: bereken in 30 seconden hoeveel omzet u misloopt door gemiste telefoontjes, en wat een 24/7 AI-receptionist oplevert. Geen e-mail nodig."
+  schema={schema}
+  faqSchema={faq}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-14 lg:py-20">
+      <div class="max-w-3xl">
+        <p class="eyebrow text-brand-indigo mb-3">Gratis tool · geen e-mail nodig</p>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.06]">Hoeveel klanten mist u door gemiste telefoontjes?</h1>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed max-w-2xl">Elke gemiste call buiten kantoortijd of tijdens piekdrukte kan een verloren klant zijn. Schuif uw situatie in en zie het direct.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="grid lg:grid-cols-5 gap-6">
+        <!-- Inputs -->
+        <div class="lg:col-span-2 bg-slate-50 border border-slate-200 rounded-2xl p-6 space-y-6">
+          <h2 class="text-base font-bold text-navy">Uw situatie</h2>
+          <div>
+            <div class="flex justify-between items-baseline mb-1.5"><label for="g-calls" class="text-xs font-semibold uppercase tracking-wide text-slate-600">Inkomende calls per dag</label><span id="g-calls-val" class="text-sm font-bold text-navy">20</span></div>
+            <input id="g-calls" type="range" min="2" max="100" step="1" value="20" class="w-full accent-brand-indigo" />
+          </div>
+          <div>
+            <div class="flex justify-between items-baseline mb-1.5"><label for="g-missed" class="text-xs font-semibold uppercase tracking-wide text-slate-600">% gemiste calls</label><span id="g-missed-val" class="text-sm font-bold text-navy">25%</span></div>
+            <input id="g-missed" type="range" min="5" max="60" step="1" value="25" class="w-full accent-brand-indigo" />
+            <p class="text-[11px] text-slate-500 mt-1">Buiten kantoortijd, tijdens piek of in gesprek.</p>
+          </div>
+          <div>
+            <label for="g-value" class="text-xs font-semibold uppercase tracking-wide text-slate-600 block mb-1.5">Gemiddelde klantwaarde (€)</label>
+            <div class="flex items-center gap-2"><span class="text-slate-500">€</span><input id="g-value" type="number" min="10" max="50000" step="10" value="250" class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" /></div>
+          </div>
+          <div>
+            <div class="flex justify-between items-baseline mb-1.5"><label for="g-conv" class="text-xs font-semibold uppercase tracking-wide text-slate-600">% beantwoorde calls dat klant wordt</label><span id="g-conv-val" class="text-sm font-bold text-navy">40%</span></div>
+            <input id="g-conv" type="range" min="5" max="90" step="1" value="40" class="w-full accent-brand-indigo" />
+          </div>
+        </div>
+
+        <!-- Output -->
+        <div class="lg:col-span-3 bg-gradient-to-br from-brand-rose/5 via-white to-brand-indigo/5 border border-slate-200 rounded-2xl p-6" aria-live="polite">
+          <p class="text-xs text-slate-500 uppercase tracking-wide mb-1">U loopt naar schatting mis</p>
+          <p id="g-year" class="text-4xl lg:text-5xl font-bold text-brand-rose tabular-nums">€0</p>
+          <p class="text-sm text-slate-500 mt-1">aan omzet per jaar</p>
+
+          <div class="grid grid-cols-2 gap-4 mt-6">
+            <div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-[10px] text-slate-500 uppercase tracking-wide">Gemiste klanten/maand</p><p id="g-clients" class="text-2xl font-bold text-navy tabular-nums">0</p></div>
+            <div class="bg-white border border-slate-200 rounded-xl p-4"><p class="text-[10px] text-slate-500 uppercase tracking-wide">Gemiste omzet/maand</p><p id="g-month" class="text-2xl font-bold text-navy tabular-nums">€0</p></div>
+          </div>
+
+          <div class="mt-6 bg-brand-emerald/10 border border-brand-emerald/30 rounded-xl p-4">
+            <p class="text-sm text-slate-700"><strong class="text-navy">Marco (AI-receptionist) kost €497/mnd</strong> en vangt deze calls 24/7 op. <span id="g-payback"></span></p>
+          </div>
+
+          <div class="mt-5 flex flex-wrap gap-3">
+            <a href="/demo-aanvragen/" class="btn-primary text-sm">Gratis demo — laat Marco horen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+            <a href="/gratis-ai-scan/" class="btn-outline text-sm">Gratis AI-scan</a>
+          </div>
+        </div>
+      </div>
+      <p class="text-center text-xs text-slate-400 mt-6">Indicatief, o.b.v. 22 werkdagen/maand. Resultaten verschillen per situatie.</p>
+    </div>
+  </section>
+
+  <section class="section-tight bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl font-bold tracking-tightest text-navy mb-6">Veelgestelde vragen</h2>
+      <div class="space-y-3">
+        {faq.map((item) => (
+          <details class="card group bg-white">
+            <summary class="flex items-center justify-between cursor-pointer list-none"><span class="text-base font-bold text-navy pr-6">{item.question}</span><svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.answer}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      var WERKDAGEN = 22, MARCO = 497;
+      var calls = document.getElementById('g-calls'), missed = document.getElementById('g-missed'),
+          value = document.getElementById('g-value'), conv = document.getElementById('g-conv');
+      var fmt = function (n) { return '€' + Math.round(n).toLocaleString('nl-NL'); };
+      var tracked = false;
+      function calc() {
+        var c = +calls.value, m = +missed.value / 100, v = +value.value || 0, k = +conv.value / 100;
+        document.getElementById('g-calls-val').textContent = c;
+        document.getElementById('g-missed-val').textContent = missed.value + '%';
+        document.getElementById('g-conv-val').textContent = conv.value + '%';
+        var gemisteCallsMnd = c * m * WERKDAGEN;
+        var gemisteKlanten = gemisteCallsMnd * k;
+        var omzetMnd = gemisteKlanten * v;
+        var omzetJaar = omzetMnd * 12;
+        document.getElementById('g-year').textContent = fmt(omzetJaar);
+        document.getElementById('g-clients').textContent = Math.round(gemisteKlanten);
+        document.getElementById('g-month').textContent = fmt(omzetMnd);
+        var pay = document.getElementById('g-payback');
+        pay.textContent = omzetMnd > MARCO
+          ? 'Dat verdient u ' + (omzetMnd / MARCO).toFixed(1).replace('.', ',') + 'x terug — al met één maand opgevangen omzet.'
+          : 'Al met één extra klant per maand terugverdiend.';
+        if (!tracked && window._track) { tracked = true; window._track('tool_used', { tool: 'gemiste_omzet_calculator' }); }
+      }
+      [calls, missed, value, conv].forEach(function (el) { el.addEventListener('input', calc); });
+      calc();
+    })();
+  </script>
+</BaseLayout>
