@@ -1,0 +1,53 @@
+---
+// Exit-intent + timed modal — duwt bouncende bezoekers naar de gratis AI-scan.
+// Eén keer per bezoeker (localStorage). Overgeslagen op conversie/checkout/portal-pagina's.
+---
+<div
+  id="exit-modal"
+  class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/50 backdrop-blur-sm p-4"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="exit-modal-title"
+>
+  <div class="relative w-full max-w-md rounded-2xl bg-white p-7 shadow-2xl">
+    <button id="exit-modal-close" type="button" aria-label="Sluiten" class="absolute right-4 top-4 text-slate-400 hover:text-navy transition-colors">
+      <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+    <p class="eyebrow text-brand-indigo mb-2">Wacht even</p>
+    <h2 id="exit-modal-title" class="text-2xl font-bold text-navy tracking-tightest mb-3">Vertrek niet zonder uw gratis AI-scan</h2>
+    <p class="text-slate-600 leading-relaxed mb-6">In 2 minuten ziet u welke AI uw bedrijf tijd én omzet oplevert — gratis, geen verplichting, geen creditcard.</p>
+    <div class="flex flex-col gap-2.5">
+      <a href="/gratis-ai-scan/" id="exit-modal-cta" class="btn-primary w-full justify-center">
+        Start gratis AI-scan
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+      </a>
+      <button id="exit-modal-dismiss" type="button" class="text-sm text-slate-400 hover:text-slate-600 transition-colors">Nee, bedankt</button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var KEY = 'aanloop_exit_shown';
+    var SKIP = /\/(aanvragen|demo-inplannen|demo-aanvragen|demo-bevestigd|demo-herplannen|bedankt|demo-bedankt|portal|admin|contact|gratis-ai-scan)/;
+    if (SKIP.test(location.pathname)) return;
+    try { if (localStorage.getItem(KEY)) return; } catch (e) {}
+    var modal = document.getElementById('exit-modal');
+    if (!modal) return;
+    var shown = false;
+    function show() {
+      if (shown) return; shown = true;
+      try { localStorage.setItem(KEY, '1'); } catch (e) {}
+      modal.classList.remove('hidden'); modal.classList.add('flex');
+      if (window._track) window._track('exit_intent_shown', {});
+    }
+    function hide() { modal.classList.add('hidden'); modal.classList.remove('flex'); }
+    document.addEventListener('mouseout', function (e) { if (!e.relatedTarget && e.clientY <= 0) show(); });
+    setTimeout(show, 30000);
+    document.getElementById('exit-modal-close').addEventListener('click', hide);
+    document.getElementById('exit-modal-dismiss').addEventListener('click', hide);
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hide(); });
+    modal.addEventListener('click', function (e) { if (e.target === modal) hide(); });
+    document.getElementById('exit-modal-cta').addEventListener('click', function () { if (window._track) window._track('exit_intent_cta_click', {}); });
+  })();
+</script>

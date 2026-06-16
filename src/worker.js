@@ -427,6 +427,10 @@ async function handleSubmit(request, env) {
           TELEFOON: (fields.telefoon || fields.phone || '').toString().trim(),
           FUNCTIE: (fields.functie || '').toString().trim(),
           SOURCE: formType,
+          NURTURE: formType === 'ai_readiness_scan' ? 'ai_scan'
+            : formType === 'roi_calculator' ? 'roi'
+            : (formType === 'demo' || formType === 'aanvraag') ? formType
+            : 'lead',
           OPT_IN_DATE: new Date().toISOString().slice(0, 10),
           MARKETING_CONSENT: hasMarketingConsent,
         };
@@ -435,11 +439,15 @@ async function handleSubmit(request, env) {
           if (attributes[k] === '') delete attributes[k];
         }
         const contact = { email: userEmail, attributes };
+        // Lists: marketing-list (newsletter) + nurture-list (drip-automation trigger).
+        // Beide alleen bij expliciete marketing-consent (AVG). Nurture-drip workflow
+        // wordt in het Brevo-dashboard gekoppeld aan BREVO_NURTURE_LIST_ID.
         const listId = parseInt(env.BREVO_LIST_ID, 10);
-        // Only add to the marketing list when explicit marketing consent is given.
-        if (hasMarketingConsent && Number.isFinite(listId)) {
-          contact.listIds = [listId];
-        }
+        const nurtureListId = parseInt(env.BREVO_NURTURE_LIST_ID, 10);
+        const lists = [];
+        if (hasMarketingConsent && Number.isFinite(listId)) lists.push(listId);
+        if (hasMarketingConsent && Number.isFinite(nurtureListId) && formType !== 'newsletter') lists.push(nurtureListId);
+        if (lists.length) contact.listIds = lists;
         await brevoUpsertContact(env.BREVO_API_KEY, contact);
       }
     } catch (contactErr) {

@@ -224,6 +224,8 @@ const description = 'Boek direct een 30-min strategiegesprek met Mustafa Agah Do
           clearTimeout(tid);
           const result = await r.json().catch(() => ({}));
           if (!r.ok || !result.ok) throw new Error(result.error || `HTTP ${r.status}`);
+          window._track && window._track('book_demo', { form_name: 'demo_inplannen', currency: 'EUR', value: 200 });
+          window._track && window._track('generate_lead', { form_name: 'demo_inplannen', currency: 'EUR', value: 200 });
           stepForm.classList.add('hidden');
           stepSlot.classList.add('hidden');
           document.getElementById('step-day').classList.add('hidden');
