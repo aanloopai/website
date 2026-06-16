@@ -1,0 +1,196 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const give = [
+  { icon: '50%', label: '3 maanden 50% korting', desc: 'Marco €249/mnd of Groei €499/mnd de eerste 3 maanden (i.p.v. €497 / €997).' },
+  { icon: '€0', label: 'Gratis setup', desc: 'Geen eenmalige setup-kosten — t.w.v. €495 (Marco) tot €795 (Groei).' },
+  { icon: '⚡', label: 'Voorrang onboarding', desc: 'Live binnen 7 werkdagen, directe lijn met de oprichter tijdens de pilot.' },
+  { icon: '🛡️', label: 'Maandelijks opzegbaar', desc: 'Geen jaarcontract, geen risico. Bevalt het niet, dan stopt u.' },
+];
+
+const ask = [
+  'Een korte case study na 60 dagen (uw resultaten — anoniem mag ook).',
+  'Een eerlijke review op Google of LinkedIn.',
+  'Toestemming om uw logo te tonen als founding-klant.',
+];
+
+const faq = [
+  { q: 'Waarom een founding-aanbod?', a: 'Aanloop AI is in 2026 opgericht. We bouwen liever bewijs met echte resultaten dan met loze beloftes. De eerste 10 klanten krijgen een scherpe deal; in ruil delen ze hun ervaring. Eerlijk en transparant — precies hoe we werken.' },
+  { q: 'Wat kost het na de pilot?', a: 'Na 3 maanden gaat u over op het normale tarief: Marco €497/mnd of Groei €997/mnd. Geen verrassingen, maandelijks opzegbaar. De gratis setup en de korting hoeft u nooit terug te betalen.' },
+  { q: 'Voor welke bedrijven is dit?', a: 'Nederlands MKB met inkomend telefoon- of WhatsApp-verkeer: zorgpraktijken, installateurs, makelaars, horeca, e-commerce, zakelijke dienstverlening. Twijfelt u? Doe eerst de gratis AI-scan.' },
+  { q: 'Hoeveel plekken zijn er?', a: 'We nemen bewust de eerste 10 founding-klanten aan, zodat we elke implementatie persoonlijk begeleiden. Daarna geldt het reguliere tarief.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Founding-klanten — Aanloop AI',
+  description: 'Word een van de eerste 10 founding-klanten van Aanloop AI: 3 maanden 50% korting + gratis setup, in ruil voor een case study en review.',
+  url: 'https://aanloopai.nl/founding/',
+  inLanguage: 'nl-NL',
+  about: { '@id': 'https://aanloopai.nl/#organization' },
+};
+---
+
+<BaseLayout
+  title="Founding-klanten — 3 maanden 50% korting + gratis setup"
+  description="Word een van de eerste 10 founding-klanten van Aanloop AI: 3 maanden 50% korting + gratis setup, in ruil voor een case study en review. Maandelijks opzegbaar."
+  schema={schema}
+>
+  <!-- Hero -->
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6 reveal">
+          <span class="pill bg-brand-indigo/10 text-brand-indigo text-[11px]">Beperkt — eerste 10 klanten</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          Word een van onze 10 founding-klanten
+        </h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty max-w-2xl reveal reveal-delay-2">
+          3 maanden <strong class="text-navy">50% korting</strong> + <strong class="text-navy">gratis setup</strong> op Marco of Groei. In ruil deelt u na 60 dagen uw resultaten. Eerlijk, transparant, maandelijks opzegbaar.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3 reveal reveal-delay-3">
+          <a href="#aanmelden" class="btn-primary">Meld u aan als founding-klant
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/gratis-ai-scan/" class="btn-outline">Eerst de gratis AI-scan</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Wat u krijgt -->
+  <section class="section">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Wat u krijgt</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Founding-voordeel</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-6">
+        {give.map(g => (
+          <div class="border border-slate-200 rounded-2xl p-6 bg-white reveal">
+            <div class="text-2xl font-bold text-brand-indigo mb-2">{g.icon}</div>
+            <p class="text-lg font-bold text-navy mb-1">{g.label}</p>
+            <p class="text-sm text-slate-600 leading-relaxed">{g.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Wat wij vragen -->
+  <section class="section-tight bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <p class="eyebrow mb-2">Wat wij vragen</p>
+      <h2 class="text-2xl font-bold tracking-tightest text-navy mb-5">Eén eerlijke wederdienst</h2>
+      <ul class="space-y-3">
+        {ask.map(a => (
+          <li class="flex items-start gap-3 text-slate-700">
+            <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span>{a}</span>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-5 text-sm text-slate-500">Geen verplichting tot een bepaald resultaat in de review — wij vragen alleen om eerlijkheid.</p>
+    </div>
+  </section>
+
+  <!-- Aanmeldformulier -->
+  <section class="section" id="aanmelden">
+    <div class="container-page max-w-xl mx-auto">
+      <div class="mb-8 text-center reveal">
+        <p class="eyebrow mb-2">Aanmelden</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Claim uw founding-plek</h2>
+        <p class="mt-3 text-slate-600">We nemen binnen 1 werkdag contact op om te kijken of het past.</p>
+      </div>
+      <form id="founding-form" class="space-y-4 bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 reveal reveal-delay-1">
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label for="f-naam" class="block text-sm font-medium text-navy mb-1">Naam *</label>
+            <input id="f-naam" name="naam" required class="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+          </div>
+          <div>
+            <label for="f-bedrijf" class="block text-sm font-medium text-navy mb-1">Bedrijf *</label>
+            <input id="f-bedrijf" name="bedrijf" required class="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+          </div>
+          <div>
+            <label for="f-email" class="block text-sm font-medium text-navy mb-1">E-mail *</label>
+            <input id="f-email" name="email" type="email" required class="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+          </div>
+          <div>
+            <label for="f-telefoon" class="block text-sm font-medium text-navy mb-1">Telefoon</label>
+            <input id="f-telefoon" name="telefoon" class="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+          </div>
+        </div>
+        <div>
+          <label for="f-sector" class="block text-sm font-medium text-navy mb-1">Sector</label>
+          <input id="f-sector" name="sector" placeholder="bv. tandarts, installateur, makelaar" class="w-full border border-slate-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+        </div>
+        <label class="flex items-start gap-2.5 text-sm text-slate-600">
+          <input type="checkbox" name="privacy" required class="mt-0.5" />
+          <span>Ik ga akkoord met de <a href="/privacy/" class="text-brand-indigo underline">privacyverklaring</a> en dat Aanloop AI contact opneemt.</span>
+        </label>
+        <button id="founding-btn" type="submit" class="btn-primary w-full justify-center">
+          <span id="founding-label">Claim mijn founding-plek</span>
+        </button>
+        <p id="founding-error" class="hidden text-sm text-red-600"></p>
+      </form>
+      <p class="mt-4 text-center text-xs text-slate-400">Of mail direct naar <a href="mailto:hello@aanloopai.nl" class="underline">hello@aanloopai.nl</a></p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section-tight bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl font-bold tracking-tightest text-navy mb-6">Veelgestelde vragen</h2>
+      <div class="space-y-3">
+        {faq.map(item => (
+          <details class="card group bg-white">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.q}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      var form = document.getElementById('founding-form');
+      if (!form) return;
+      form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        var btn = document.getElementById('founding-btn');
+        var label = document.getElementById('founding-label');
+        var errEl = document.getElementById('founding-error');
+        var data = new FormData(form);
+        data.append('form_type', 'founding');
+        data.append('subject', 'Nieuwe founding-aanmelding via aanloopai.nl');
+        btn.disabled = true; label.textContent = 'Versturen…'; errEl.classList.add('hidden');
+        var ctrl = new AbortController();
+        var tid = setTimeout(function () { ctrl.abort(); }, 30000);
+        try {
+          var res = await fetch('/api/submit', { method: 'POST', body: data, signal: ctrl.signal });
+          clearTimeout(tid);
+          var json = await res.json().catch(function () { return { success: false }; });
+          if (res.ok && json.success) {
+            if (window._track) window._track('generate_lead', { form_name: 'founding', currency: 'EUR', value: 300 });
+            window.location.href = '/bedankt/?type=founding';
+          } else {
+            throw new Error(json.message || 'fout');
+          }
+        } catch (err) {
+          clearTimeout(tid);
+          errEl.textContent = '✗ Versturen mislukt — probeer opnieuw of mail hello@aanloopai.nl.';
+          errEl.classList.remove('hidden');
+        } finally {
+          btn.disabled = false; label.textContent = 'Claim mijn founding-plek';
+        }
+      });
+    })();
+  </script>
+</BaseLayout>
