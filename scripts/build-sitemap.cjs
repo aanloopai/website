@@ -103,7 +103,14 @@ for (const s of geoSlugs) {
   urls.push(`/ai-vindbaarheid/voor-${s}/`);
 }
 
-urls.sort();
+// /sectoren/[sector] dynamic route — slugs uit sectors.ts (nieuwe sectoren auto-included).
+const sectorsSrc = fs.readFileSync(path.join(ROOT, 'src', 'data', 'sectors.ts'), 'utf8');
+const sectorSlugs = Array.from(sectorsSrc.matchAll(/slug:\s*'([^']+)'/g)).map((m) => m[1]);
+for (const s of sectorSlugs) {
+  urls.push(`/sectoren/${s}/`);
+}
+
+const uniqueSorted = Array.from(new Set(urls)).sort();
 
 // Preserve existing lastmod values where the URL was already present
 const existingXml = fs.existsSync(SITEMAP) ? fs.readFileSync(SITEMAP, 'utf8') : '';
@@ -118,7 +125,7 @@ const xmlLines = [
   '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
 ];
 
-for (const u of urls) {
+for (const u of uniqueSorted) {
   const loc = SITE + u;
   const lastmod = lastmodMap.get(u) || today;
   xmlLines.push(
@@ -131,7 +138,7 @@ xmlLines.push('');
 
 fs.writeFileSync(SITEMAP, xmlLines.join('\n'));
 
-console.log(`Wrote ${urls.length} URLs to public/sitemap.xml`);
+console.log(`Wrote ${uniqueSorted.length} URLs to public/sitemap.xml`);
 console.log(`Skipped noindex (${skipped.noindex.length}): ${skipped.noindex.join(', ')}`);
 console.log(`Skipped dynamic (${skipped.dynamic.length}): ${skipped.dynamic.join(', ')}`);
 console.log(`Skipped excluded (${skipped.excluded.length}): ${skipped.excluded.join(', ')}`);
