@@ -1,0 +1,56 @@
+---
+// ReelGallery — toont AI-persona reels in 9:16-kaarten.
+// Placeholder-modus: zolang er geen videoSrc is, wordt alleen de poster
+// getoond met een "Binnenkort"-badge. Zodra een reel gerenderd is, vul je
+// videoSrc en de kaart wordt een afspeelbare <video controls>.
+interface Reel {
+  title: string;
+  poster: string;
+  persona: string;
+  videoSrc?: string;
+}
+interface Props {
+  reels: Reel[];
+}
+const { reels } = Astro.props;
+---
+<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-5">
+  {reels.map((reel) => (
+    <figure class="group relative aspect-[9/16] overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 shadow-sm">
+      {reel.videoSrc ? (
+        <video
+          class="absolute inset-0 h-full w-full object-cover"
+          controls
+          preload="none"
+          poster={reel.poster}
+        >
+          <source src={reel.videoSrc} type="video/mp4" />
+        </video>
+      ) : (
+        <>
+          <img
+            src={reel.poster}
+            alt={`${reel.persona} — ${reel.title}`}
+            class="absolute inset-0 h-full w-full object-cover opacity-90 transition-transform duration-500 group-hover:scale-105"
+            loading="lazy"
+            width="270"
+            height="480"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-midnight/85 via-midnight/10 to-transparent"></div>
+          <!-- Play-overlay -->
+          <div class="absolute inset-0 flex items-center justify-center">
+            <span class="flex h-14 w-14 items-center justify-center rounded-full bg-pearl/90 text-navy shadow-lg backdrop-blur transition-transform duration-300 group-hover:scale-110">
+              <svg class="ml-0.5 h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+            </span>
+          </div>
+          <!-- Binnenkort-badge -->
+          <span class="absolute right-3 top-3 rounded-full bg-brand-indigo px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-white">Binnenkort</span>
+        </>
+      )}
+      <figcaption class="absolute inset-x-0 bottom-0 p-4 text-pearl">
+        <span class="text-[11px] font-semibold uppercase tracking-widest text-brand-emerald">{reel.persona}</span>
+        <p class="mt-0.5 text-sm font-semibold leading-snug">{reel.title}</p>
+      </figcaption>
+    </figure>
+  ))}
+</div>

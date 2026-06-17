@@ -1,0 +1,149 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReelGallery from '../../components/ReelGallery.astro';
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'AI Influencer & Persona Marketing',
+  serviceType: 'AI Influencer & Persona Marketing',
+  description: 'AanloopAI bouwt herkenbare AI-personas die jouw merk vertegenwoordigen in reels, social video en advertenties. Op maat, in het Nederlands. KVK: 56312075.',
+  provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization' },
+  areaServed: { '@type': 'Country', name: 'Nederland' },
+  audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
+};
+
+// AanloopAI's eigen AI-personas (bron: AanloopAI Instagram CLAUDE.md §9 voice agents).
+const personas = [
+  { name: 'Marco', rol: 'AI-telefoonassistent', stem: 'Warme NL-stem, neemt 24/7 op', tagline: 'Ik ben Marco. AanloopAI maakte mij.', kleur: 'from-brand-indigo to-navy' },
+  { name: 'Emma', rol: 'AI-secretaresse & WhatsApp', stem: 'Vriendelijk, plant en bevestigt', tagline: 'Ik ben Emma. AanloopAI maakte mij.', kleur: 'from-brand-emerald to-navy' },
+  { name: 'Bella', rol: 'AI-presentator', stem: 'Energiek, vertelt jouw verhaal', tagline: 'Ik ben Bella. AanloopAI maakte mij.', kleur: 'from-rose-500 to-navy' },
+  { name: 'Lars', rol: 'AI-uitlegger', stem: 'Rustig, maakt AI begrijpelijk', tagline: 'Ik ben Lars. AanloopAI maakte mij.', kleur: 'from-amber-500 to-navy' },
+];
+
+// Reels in placeholder-modus: posters bestaan, video's worden gerenderd.
+// Zodra een reel klaar is → voeg `videoSrc: '/social-feed/reels/<bestand>.mp4'` toe.
+const reels = [
+  { title: 'Marco neemt op om 17:01', persona: 'Marco', poster: '/social-feed/ai-images/receptie-lege-balie-avond.png' },
+  { title: 'Emma plant 23 afspraken', persona: 'Emma', poster: '/social-feed/ai-images/divers-vrouwelijke-ondernemer.png' },
+  { title: 'Horeca: geen gemiste reservering', persona: 'Bella', poster: '/social-feed/ai-images/cafe-avond-drukte.png' },
+  { title: 'Wat is een AI-agent?', persona: 'Lars', poster: '/social-feed/ai-images/divers-oudere-eigenaar-ai.png' },
+  { title: 'Webshop: chat die verkoopt', persona: 'Emma', poster: '/social-feed/ai-images/webshop-klant-chat-desktop.png' },
+  { title: 'Vakman vangt elke offerte', persona: 'Marco', poster: '/social-feed/ai-images/vakman-offerte-aanvraag.png' },
+  { title: 'Achter de schermen bij AanloopAI', persona: 'Bella', poster: '/social-feed/ai-images/w6-b01-founder-desk-morning.png' },
+  { title: 'Het team viert groei', persona: 'Lars', poster: '/social-feed/ai-images/w6-p10-team-growth-celebrate.png' },
+];
+---
+<BaseLayout
+  title="AI Influencer & Persona Marketing"
+  description="AanloopAI bouwt herkenbare AI-personas die jouw merk vertegenwoordigen in reels, social video en advertenties. Op maat, in het Nederlands. KVK 56312075."
+  schema={schema}
+>
+  <!-- Hero -->
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6 reveal"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">AI Personas · Content</span></div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">AI-personas die jouw merk vertegenwoordigen</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl reveal reveal-delay-2">Een herkenbaar gezicht en een eigen stem voor je merk — zonder filmploeg of acteurs. Wij bouwen AI-personas die jouw verhaal vertellen in reels, social video en advertenties. Consistent, schaalbaar en 100% Nederlands.</p>
+        <div class="mt-8 flex gap-3 flex-wrap reveal reveal-delay-3">
+          <a href="/demo-aanvragen/" class="btn-primary text-base px-6 py-3.5">Gratis demo aanvragen <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/tarieven/" class="btn-outline text-base px-6 py-3.5">Bekijk tarieven</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Personas -->
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl reveal">
+        <p class="eyebrow text-brand-indigo mb-2">Onze AI-personas</p>
+        <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-4">Maak kennis met de gezichten van AanloopAI</h2>
+        <p class="text-slate-600 leading-relaxed">Marco neemt de telefoon op, Emma regelt je agenda. Met dezelfde technologie bouwen we presentatoren en vertellers voor je social-content. Elke persona heeft een eigen stem, look en karakter — afgestemd op jouw merk.</p>
+      </div>
+      <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {personas.map((p) => (
+          <div class={`rounded-2xl p-6 text-pearl bg-gradient-to-br ${p.kleur} reveal`}>
+            <p class="text-2xl font-bold">{p.name}</p>
+            <p class="mt-1 text-sm font-medium text-pearl/90">{p.rol}</p>
+            <p class="mt-3 text-xs text-pearl/70 leading-relaxed">{p.stem}</p>
+            <p class="mt-4 border-t border-white/15 pt-3 text-sm italic text-pearl/90">"{p.tagline}"</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Reel-galerij -->
+  <section class="section bg-slate-50 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl reveal">
+        <p class="eyebrow text-brand-indigo mb-2">Showcase</p>
+        <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-4">Reels met onze AI-personas</h2>
+        <p class="text-slate-600 leading-relaxed">Korte, scroll-stopping video's — elke persona vertelt een herkenbaar MKB-verhaal. De eerste reeks staat hieronder; nieuwe reels verschijnen wekelijks.</p>
+      </div>
+      <div class="mt-10 reveal reveal-delay-1">
+        <ReelGallery reels={reels} />
+      </div>
+      <p class="mt-6 text-xs text-slate-400">Beeldgeneratie: AI. Video's worden doorlopend toegevoegd.</p>
+    </div>
+  </section>
+
+  <!-- Dienst-pitch -->
+  <section class="section">
+    <div class="container-page">
+      <div class="grid lg:grid-cols-2 gap-12">
+        <div class="reveal">
+          <h2 class="text-2xl font-bold text-navy mb-6">Wij bouwen AI-personas voor jouw merk</h2>
+          <ul class="space-y-4">
+            {['Eigen AI-persona: stem, gezicht en karakter op maat','Reels & social video in jouw tone of voice','Advertentie-varianten zonder nieuwe opnames','Nederlandse voice-over via onze AI-stemmen','Consistente merkuitstraling over alle kanalen','Schaalbaar: tientallen video\'s zonder filmploeg','Maandelijkse content-kalender en rapportage'].map((f) => (
+              <li class="flex items-start gap-3 text-sm text-slate-700"><svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>{f}</li>
+            ))}
+          </ul>
+        </div>
+        <div class="reveal reveal-delay-2">
+          <div class="card">
+            <h3 class="text-lg font-bold text-navy mb-2">Op maat geprijsd</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">AI-persona's bouwen we per merk — van een enkele presentator tot een complete content-pijplijn. Tijdens de gratis demo bepalen we de scope en geven we een concrete prijs. Combineert naadloos met Marco, Emma en de AI Social Media Agent.</p>
+            <a href="/demo-aanvragen/" class="btn-primary mt-6 w-full justify-center">Gratis demo aanvragen</a>
+            <a href="/tarieven/" class="mt-3 block text-center text-sm text-brand-indigo font-medium hover:underline">Bekijk alle tarieven →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Direct verder -->
+  <section class="section-tight border-t border-slate-200 bg-slate-50/50">
+    <div class="container-page max-w-4xl">
+      <p class="eyebrow mb-5">Direct verder</p>
+      <div class="grid md:grid-cols-3 gap-4">
+        <a href="/diensten/ai-social-media-agent/" class="card hover:border-brand-indigo transition-all">
+          <h3 class="font-bold text-navy text-sm mb-2">AI Social Media Agent</h3>
+          <p class="text-xs text-slate-600 mb-3">Posts schrijven, publiceren en reacties beheren — automatisch.</p>
+          <span class="text-xs text-brand-indigo font-medium">Bekijk dienst →</span>
+        </a>
+        <a href="/diensten/marco/" class="card hover:border-brand-indigo transition-all">
+          <h3 class="font-bold text-navy text-sm mb-2">Marco — AI-receptionist</h3>
+          <p class="text-xs text-slate-600 mb-3">24/7 telefoon aannemen en afspraken inplannen.</p>
+          <span class="text-xs text-brand-indigo font-medium">Ontmoet Marco →</span>
+        </a>
+        <a href="/diensten/emma/" class="card hover:border-brand-indigo transition-all">
+          <h3 class="font-bold text-navy text-sm mb-2">Emma — WhatsApp-AI</h3>
+          <p class="text-xs text-slate-600 mb-3">Klantvragen op WhatsApp in seconden beantwoorden.</p>
+          <span class="text-xs text-brand-indigo font-medium">Ontmoet Emma →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Slot-CTA -->
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-3xl font-bold text-pearl reveal">Klaar voor je eigen AI-persona?</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Plan een gratis demo. We laten zien hoe een AI-persona jouw merk een gezicht en stem geeft.</p>
+      <a href="/demo-aanvragen/" class="mt-6 btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5 reveal reveal-delay-2">Gratis demo aanvragen</a>
+    </div>
+  </section>
+</BaseLayout>
