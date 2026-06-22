@@ -116,7 +116,7 @@ const FOOTER_HTML = `
   <strong>Aanloop AI</strong> — AI-oplossingen voor het Nederlandse MKB<br>
   <a href="mailto:hello@aanloopai.nl" style="color:#4f46e5">hello@aanloopai.nl</a> ·
   <a href="https://aanloopai.nl" style="color:#4f46e5">aanloopai.nl</a> ·
-  KvK 56312075
+  KvK 88606902
 </p>`;
 
 const CORS_HEADERS = {

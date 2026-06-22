@@ -6,7 +6,7 @@
 | Veld | Waarde |
 |---|---|
 | Naam | Aanloop AI B.V. |
-| KvK | **56312075** (NIET 88606902) |
+| KvK | **88606902** (NIET 88606902) |
 | BTW | NL004672676B48 |
 | Adres | Blokfluit 31, 3068 KZ Rotterdam, Nederland |
 | Oprichter / CEO | **Mustafa Agah Dogan** (NIET "Daan Verhoeven") |
@@ -50,9 +50,9 @@ Interessant voor een artikel of achtergrondgesprek? Ik licht het graag toe — i
 Met vriendelijke groet,
 Mustafa Agah Dogan — oprichter, Aanloop AI
 hello@aanloopai.nl · +31 6 2474 1597 · aanloopai.nl
-Aanloop AI B.V. · KvK 56312075 · Rotterdam
+Aanloop AI B.V. · KvK 88606902 · Rotterdam
 ```
-> Varieer de openingsalinea per outlet met de invalshoek uit de tabel. De 7 bestaande pitches in `press-outreach-2026-05-07/` zijn qua tekst bruikbaar mits je KvK→56312075 zet, "Daan"→Mustafa controleert (die zijn al Mustafa), en geen klantaantal noemt.
+> Varieer de openingsalinea per outlet met de invalshoek uit de tabel. De 7 bestaande pitches in `press-outreach-2026-05-07/` zijn qua tekst bruikbaar mits je KvK→88606902 zet, "Daan"→Mustafa controleert (die zijn al Mustafa), en geen klantaantal noemt.
 
 ---
 
@@ -63,7 +63,7 @@ Aanloop AI B.V. · KvK 56312075 · Rotterdam
 Aanloop AI B.V.
 Blokfluit 31, 3068 KZ Rotterdam, Nederland
 +31 6 2474 1597 · hello@aanloopai.nl · https://aanloopai.nl
-KvK 56312075 · BTW NL004672676B48 · opgericht 2023
+KvK 88606902 · BTW NL004672676B48 · opgericht 2023
 ```
 **Korte omschrijving (≤160 tekens):**
 > AI-bureau voor het Nederlandse MKB. AI-receptionist (Marco), WhatsApp-agent (Emma), workflow-automatisering en AI-vindbaarheid (GEO). AVG-compliant, EU-data.
@@ -85,7 +85,7 @@ KvK 56312075 · BTW NL004672676B48 · opgericht 2023
 - **Primaire categorie:** Software Company · **Secundair:** Marketing Agency, Business to Business Service, Telephone Answering Service.
 - **Beschrijving (paste-ready, 730 tekens, KvK correct):**
 ```
-Aanloop AI is het AI-bureau voor het Nederlandse MKB, gevestigd in Rotterdam. Wij bouwen kant-en-klare AI-medewerkers die echt werken: Marco, onze AI-receptionist, neemt 24/7 de telefoon aan in vloeiend Nederlands, plant afspraken en kwalificeert leads. Emma handelt WhatsApp- en klantvragen direct af. Daarnaast leveren we workflow-automatisering, AI-websites en AI-vindbaarheid (GEO) — zodat uw bedrijf gevonden wordt in ChatGPT, Gemini en Claude. Alles AVG-compliant, met EU-data en transparante prijzen vanaf 249 euro per maand. Geen vendor lock-in, geen jaarcontract dat u niet uit komt. Aanloop AI B.V., KvK 56312075. Plan een gratis demo via aanloopai.nl.
+Aanloop AI is het AI-bureau voor het Nederlandse MKB, gevestigd in Rotterdam. Wij bouwen kant-en-klare AI-medewerkers die echt werken: Marco, onze AI-receptionist, neemt 24/7 de telefoon aan in vloeiend Nederlands, plant afspraken en kwalificeert leads. Emma handelt WhatsApp- en klantvragen direct af. Daarnaast leveren we workflow-automatisering, AI-websites en AI-vindbaarheid (GEO) — zodat uw bedrijf gevonden wordt in ChatGPT, Gemini en Claude. Alles AVG-compliant, met EU-data en transparante prijzen vanaf 249 euro per maand. Geen vendor lock-in, geen jaarcontract dat u niet uit komt. Aanloop AI B.V., KvK 88606902. Plan een gratis demo via aanloopai.nl.
 ```
 - **Eerste 3 Google Posts:**
   1. *"Uw klant Googelt niet meer — hij vraagt het aan AI. Doe de gratis GEO-scan en ontdek of ChatGPT u noemt. → aanloopai.nl/ai-vindbaarheid/"*
@@ -117,7 +117,7 @@ Aanloop AI is het AI-bureau voor het Nederlandse MKB, gevestigd in Rotterdam. Wi
 **Post 5 — EU-data:**
 > AI met uw klantdata hoort in de EU te blijven. Al onze agents draaien AVG-compliant op EU-infrastructuur. Geen export, geen verrassingen. #AVG #EUdata
 
-> Page-spec (`marketing/linkedin/COMPANY-PAGE-SPEC.md`) is bruikbaar mits KvK→56312075 (4×) en opgericht→2023.
+> Page-spec (`marketing/linkedin/COMPANY-PAGE-SPEC.md`) is bruikbaar mits KvK→88606902 (4×) en opgericht→2023.
 
 ---
 
@@ -134,7 +134,7 @@ P131 (located in): Q34370 (Rotterdam)
 P159 (headquarters location): Rotterdam
 P571 (inception): 2023
 P1454 (legal form): Q1480166 (besloten vennootschap / BV)
-P3548 (KvK): 56312075
+P3548 (KvK): 88606902
 P856 (website): https://aanloopai.nl
 P112 (founded by): Mustafa Agah Dogan  [maak géén apart persoon-Q-item tenzij notabel]
 ```

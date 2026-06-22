@@ -43,7 +43,7 @@ function canWrite(role) { return role === 'eigenaar' || role === 'bewerker'; }
 function mailLayout(inner) {
   return `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#0f172a">${inner}
     <hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0">
-    <p style="font-size:12px;color:#64748b">Aanloop AI — aanloopai.nl — KvK 56312075</p>
+    <p style="font-size:12px;color:#64748b">Aanloop AI — aanloopai.nl — KvK 88606902</p>
   </body></html>`;
 }
 function mailButton(href, label) {

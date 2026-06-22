@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import pageImage from '../assets/images/pages/receptionist.jpg';
-import MarcoLiveDemo from '../components/MarcoLiveDemo.astro';
+import EmmaLiveDemo from '../components/EmmaLiveDemo.astro';
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -52,11 +52,11 @@ const comparison = [
 const faqItems = [
   { question: 'Wat is een AI receptionist precies?', answer: 'Een AI receptionist is een spraak-AI die telefoongesprekken aanneemt en autonoom afhandelt: intake voeren, afspraken plannen, klantvragen beantwoorden of escaleren naar een mens. Werkt 24/7 zonder personeelskosten en is geintegreerd met agenda- en CRM-systemen.' },
   { question: 'Klinkt een AI receptionist net als een echte mens?', answer: 'Moderne AI-stemmen (zoals ElevenLabs) zijn bijzonder naturel. In blindtests merkt 60-80 procent van de bellers niet dat ze met AI spreken, zolang het gesprek binnen het getrainde domein blijft. Bij complexe of emotionele gesprekken verbindt de agent door naar een mens.' },
-  { question: 'Hoeveel kost een AI receptionist in Nederland?', answer: 'Aanloop AI hanteert sinds mei 2026 drie vaste pakketten. Marco €497 per maand bevat Marco AI-telefoniste tot 150 gesprekken per maand. Groei €997 per maand (meest gekozen) bevat Marco met onbeperkte gesprekken plus Emma WhatsApp AI. Partner is op maat geprijsd. Eenmalige setup €495 Marco, €795 Groei. Bij jaarbetaling circa 16% korting. Maandelijks opzegbaar.' },
+  { question: 'Hoeveel kost een AI receptionist in Nederland?', answer: 'Aanloop AI hanteert sinds mei 2026 drie vaste pakketten. Emma €497 per maand bevat Emma AI-telefoniste tot 150 gesprekken per maand. Groei €997 per maand (meest gekozen) bevat Emma met onbeperkte gesprekken plus Emma WhatsApp AI. Partner is op maat geprijsd. Eenmalige setup €495 Emma, €795 Groei. Bij jaarbetaling circa 16% korting. Maandelijks opzegbaar.' },
   { question: 'Wat zijn de nadelen van een AI receptionist?', answer: 'AI presteert minder goed bij: zeer complexe of onverwachte vragen, sterk dialect of slechte audiokwaliteit, emotioneel geladen crisis-gesprekken. Daarom bouwt Aanloop AI altijd een escalatiepad naar menselijke medewerkers in.' },
-  { question: 'Hoe lang duurt implementatie van een AI receptionist?', answer: 'Standaard 7 werkdagen voor Marco/Emma-pakketten. Onboarding-vragenlijst, training op uw kennisbank en bedrijfstoon, integratie met agenda en CRM, testronde met echte scenarios. Custom enterprise 3-6 weken.' },
+  { question: 'Hoe lang duurt implementatie van een AI receptionist?', answer: 'Standaard 7 werkdagen voor Emma-pakketten. Onboarding-vragenlijst, training op uw kennisbank en bedrijfstoon, integratie met agenda en CRM, testronde met echte scenarios. Custom enterprise 3-6 weken.' },
   { question: 'Is een AI receptionist AVG-compliant?', answer: 'Ja, mits correct geconfigureerd. Aanloop AI verwerkt uitsluitend binnen EU (Frankfurt of Amsterdam), met expliciete sub-verwerkers-DPA voor LLM- en voice-providers (Anthropic, OpenAI, ElevenLabs). Bewaartermijn instelbaar 30-180 dagen. Zie ook de actuele richtlijnen van de Autoriteit Persoonsgegevens (autoriteitpersoonsgegevens.nl/themas/algoritmes-ai) en de toezichtkaders van de Rijksinspectie Digitale Infrastructuur (rdi.nl).' },
-  { question: 'Werkt een AI receptionist met mijn bestaande telefoonnummer?', answer: 'Ja. Via SIP-trunk koppelen we Marco aan uw bestaande nummer (KPN, Voys, Twilio, Vonage, BelBlock). U houdt uw nummer, klanten merken niets aan de buitenkant — alleen dat de telefoon nu altijd wordt opgenomen.' },
+  { question: 'Werkt een AI receptionist met mijn bestaande telefoonnummer?', answer: 'Ja. Via SIP-trunk koppelen we Emma aan uw bestaande nummer (KPN, Voys, Twilio, Vonage, BelBlock). U houdt uw nummer, klanten merken niets aan de buitenkant — alleen dat de telefoon nu altijd wordt opgenomen.' },
   { question: 'Vervangt een AI receptionist mijn receptioniste volledig?', answer: 'Voor 80-90 procent van standaard-receptiewerk: ja. Voor crisis-management, sales-gesprekken die persoonlijke onderhandeling vragen, en zeer complexe casuistiek: nee. Beste praktijk is hybride: AI vangt eerstelijns op, mens neemt de complexe gevallen.' },
 ];
 ---
@@ -82,7 +82,7 @@ const faqItems = [
           Een AI receptionist neemt uw telefoon aan in vloeiend Nederlands, plant afspraken, kwalificeert leads en routeert naar uw CRM — 24/7, zonder pauzes. In deze pillar-gids: wat het is, hoe het werkt, wat het kost, en welke sectoren er het meeste profijt van hebben.
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <a href="/diensten/marco/" class="btn-primary">Bekijk Marco — vanaf €497 per maand</a>
+          <a href="/diensten/emma/" class="btn-primary">Bekijk Emma — vanaf €497 per maand</a>
           <a href="/gratis-ai-scan/" class="btn-secondary">Gratis 30-min AI scan</a>
         </div>
       </div>
@@ -93,7 +93,7 @@ const faqItems = [
     </div>
   </section>
 
-  <MarcoLiveDemo />
+  <EmmaLiveDemo />
 
   <section class="section">
     <div class="container-page max-w-3xl">
@@ -183,7 +183,7 @@ const faqItems = [
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder lezen</h2>
       <ul class="space-y-3 text-slate-700">
-        <li><a href="/diensten/marco/" class="text-brand-indigo hover:underline">Marco — onze AI receptionist (productpagina)</a></li>
+        <li><a href="/diensten/emma/" class="text-brand-indigo hover:underline">Emma — onze AI receptionist (productpagina)</a></li>
         <li><a href="/kennisbank/ai-telefoonassistent-bedrijven/" class="text-brand-indigo hover:underline">AI telefoonassistent voor bedrijven — diepgaande gids</a></li>
         <li><a href="/kennisbank/ai-telefoniste-vs-mens/" class="text-brand-indigo hover:underline">AI telefoniste vs mens — kostenvergelijking</a></li>
         <li><a href="/kennisbank/voice-ai-klantenservice/" class="text-brand-indigo hover:underline">Voice AI voor klantenservice — werkt het echt?</a></li>
@@ -202,7 +202,7 @@ const faqItems = [
       <p class="mt-4 text-slate-300">Gratis 30-minuten AI-scan. We laten zien wat een AI receptionist concreet voor uw bedrijf oplevert — met cijfers, geen marketingverhalen.</p>
       <div class="mt-6 flex flex-col sm:flex-row gap-3">
         <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis AI Scan</a>
-        <a href="/diensten/marco/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk Marco</a>
+        <a href="/diensten/emma/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk Emma</a>
       </div>
     </div>
   </section>

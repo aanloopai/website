@@ -2,7 +2,7 @@
 
 > Per outlet: een eigen onderwerp + openingsalinea op de invalshoek. Daarna volgt steeds dezelfde body + ondertekening (onderaan).
 > ⚠️ Verstuur per outlet apart vanaf Gmail (NIET bulk via Brevo — gedeelde-account-risico). Verifieer de huidige redacteur vóór verzending.
-> Fact-correct: Aanloop AI B.V. · KvK 56312075 · Mustafa Agah Dogan · Rotterdam · v.a. €249/mnd · AVG · EU-data. Geen klantaantallen.
+> Fact-correct: Aanloop AI B.V. · KvK 88606902 · Mustafa Agah Dogan · Rotterdam · v.a. €249/mnd · AVG · EU-data. Geen klantaantallen.
 
 ---
 
@@ -65,7 +65,7 @@
 > Met vriendelijke groet,
 > Mustafa Agah Dogan — oprichter, Aanloop AI
 > hello@aanloopai.nl · +31 6 2474 1597 · aanloopai.nl
-> Aanloop AI B.V. · KvK 56312075 · Rotterdam
+> Aanloop AI B.V. · KvK 88606902 · Rotterdam
 
 ## Tip
 - Stuur 2-3 outlets tegelijk (niet alle 7 ineens) zodat je per reactie kunt bijsturen.

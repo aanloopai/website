@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 // GEO content-depth expansion (2026-05-21): kennisbank-artikel uitgediept van ~1.4k naar 3.8k+ woorden
 // voor AI-citeerbaarheid. Diepgaande vergelijking voicebot vs chatbot voor MKB.
-// Canonieke tarieven: Marco 497 euro/mnd, Groei (Marco + Emma) 997 euro/mnd,
+// Canonieke tarieven: Emma 497 euro/mnd, Groei (Emma) 997 euro/mnd,
 // Emma standalone vanaf 49 euro/mnd. Generieke boilerplate-secties vervangen door echte inhoud.
 
 const articleSchema = {
@@ -45,19 +45,19 @@ const articleSchema = {
 const faqItems = [
   { question: 'Mijn klanten bellen vrijwel nooit — heb ik een voicebot nodig?', answer: 'Niet noodzakelijk. Als minder dan ongeveer 20% van uw leads via de telefoon binnenkomt, volstaat een chatbot (Emma) als hoofdkanaal. U bespaart dan de kosten van een voicebot-abonnement. Houd wel rekening met spoedsituaties: ook in een chatbot-georiënteerd bedrijf willen sommige klanten in een urgente situatie bellen.' },
   { question: 'Mijn klanten zijn allemaal 60-plus — moet ik dan de WhatsApp-chatbot overslaan?', answer: 'Nee. Een groot deel van de Nederlandse 60-plussers gebruikt WhatsApp dagelijks; het is een van de meest gebruikte communicatie-apps in alle leeftijdsgroepen. Wel blijft een voicebot voor deze doelgroep vaak het hoofdkanaal, met de chatbot als ondersteuning — onder meer voor jongere familieleden die namens een oudere klant contact opnemen.' },
-  { question: 'Werken een voicebot en een chatbot met dezelfde kennisbank?', answer: 'Ja. In het combinatie-pakket bouwen we één kennisbank die beide AI-agents gebruiken. U werkt informatie centraal bij — openingstijden, diensten, veelgestelde vragen — en zowel de voicebot Marco als de chatbot Emma weet het direct. Dat scheelt dubbele beheerlast en voorkomt dat de twee kanalen tegenstrijdige antwoorden geven.' },
-  { question: 'Kan ik beginnen met een van beide en de ander later toevoegen?', answer: 'Absoluut. Veel MKB-bedrijven starten met de chatbot Emma (lagere instap, vanaf 49 euro per maand) en breiden na enkele maanden uit met de voicebot Marco. Andersom kan ook. Bij uitbreiding betaalt u alleen het prijsverschil naar het Groei-pakket plus een eenmalige onboarding voor het nieuwe kanaal — de bestaande kennisbank wordt hergebruikt.' },
+  { question: 'Werken een voicebot en een chatbot met dezelfde kennisbank?', answer: 'Ja. In het combinatie-pakket bouwen we één kennisbank die beide AI-agents gebruiken. U werkt informatie centraal bij — openingstijden, diensten, veelgestelde vragen — en zowel de voicebot Emma als de chatbot Emma weet het direct. Dat scheelt dubbele beheerlast en voorkomt dat de twee kanalen tegenstrijdige antwoorden geven.' },
+  { question: 'Kan ik beginnen met een van beide en de ander later toevoegen?', answer: 'Absoluut. Veel MKB-bedrijven starten met de chatbot Emma (lagere instap, vanaf 49 euro per maand) en breiden na enkele maanden uit met de voicebot Emma. Andersom kan ook. Bij uitbreiding betaalt u alleen het prijsverschil naar het Groei-pakket plus een eenmalige onboarding voor het nieuwe kanaal — de bestaande kennisbank wordt hergebruikt.' },
   { question: 'Wat is het verschil met een traditionele IVR (drukknop-systeem)?', answer: 'Een klassieke IVR werkt met starre menu\'s ("druk 1 voor verkoop, druk 2 voor support"). Een voicebot begrijpt natuurlijke taal: de beller vertelt gewoon waarvoor hij belt, de AI herkent de intentie, redeneert met de kennisbank en escaleert intelligent bij twijfel. Klanten ervaren een voicebot doorgaans als aanzienlijk prettiger dan een IVR-menu, omdat zij niet door lagen menu\'s hoeven te navigeren.' },
-  { question: 'Wanneer kies ik een voicebot en wanneer een chatbot voor mijn MKB?', answer: 'Kies een voicebot (telefoon-AI zoals Marco) bij een hoog telefoonvolume, een klantgroep van 50-plus, urgentiegedreven sectoren (zorg, installatie, juridisch) en wanneer 24/7 telefonische bereikbaarheid kritisch is. Kies een chatbot (web- of WhatsApp-AI zoals Emma) bij een jongere doelgroep, asynchrone communicatie, langere leadcycli en vaak terugkerende productvragen. De ideale MKB-stack heeft beide: Marco voor inkomende telefonie en Emma voor WhatsApp en webchat, met dezelfde context-laag en één agenda.' },
+  { question: 'Wanneer kies ik een voicebot en wanneer een chatbot voor mijn MKB?', answer: 'Kies een voicebot (telefoon-AI zoals Emma) bij een hoog telefoonvolume, een klantgroep van 50-plus, urgentiegedreven sectoren (zorg, installatie, juridisch) en wanneer 24/7 telefonische bereikbaarheid kritisch is. Kies een chatbot (web- of WhatsApp-AI zoals Emma) bij een jongere doelgroep, asynchrone communicatie, langere leadcycli en vaak terugkerende productvragen. De ideale MKB-stack heeft beide: Emma voor inkomende telefonie en Emma voor WhatsApp en webchat, met dezelfde context-laag en één agenda.' },
   { question: 'Welke conversie-ratio mag ik verwachten bij een voicebot versus een chatbot?', answer: 'Indicatief, op basis van Aanloop-deployments: een voicebot zet circa 35 tot 55% van de inkomende telefoongesprekken om naar een afspraak of gekwalificeerde lead, een WhatsApp-chatbot circa 18 tot 30% van de WhatsApp-conversaties. De voicebot wint bij urgente intentie ("ik heb nu een lekkage"), de chatbot wint bij vergelijkings-intentie ("ik bekijk drie offertes"). De combinatie levert doorgaans 25 tot 40% meer conversie dan elk kanaal apart, omdat de klant zelf het kanaal kiest dat past.' },
-  { question: 'Kunnen een voicebot en chatbot dezelfde kennis delen zonder dubbele setup?', answer: 'Ja, dit is een kernvoordeel van Aanloop AI. Marco en Emma gebruiken dezelfde kennisbank (uw FAQ\'s, productinformatie, openingstijden). Werkt u die één keer bij, dan weet zowel de telefoon- als de chat-AI het direct. Veel concurrenten leveren twee aparte engines met dubbele beheerlast; bij Aanloop is dit als één gedeelde context-laag gebouwd.' },
+  { question: 'Kunnen een voicebot en chatbot dezelfde kennis delen zonder dubbele setup?', answer: 'Ja, dit is een kernvoordeel van Aanloop AI. Emma gebruiken dezelfde kennisbank (uw FAQ\'s, productinformatie, openingstijden). Werkt u die één keer bij, dan weet zowel de telefoon- als de chat-AI het direct. Veel concurrenten leveren twee aparte engines met dubbele beheerlast; bij Aanloop is dit als één gedeelde context-laag gebouwd.' },
   { question: 'Wat is het verschil tussen een chatbot en een AI-agent?', answer: 'Een klassieke chatbot volgt een vast script of een beslisboom en kan alleen vooraf bedachte paden afhandelen. Een AI-agent — zoals de chatbot Emma — begrijpt natuurlijke taal, redeneert met een kennisbank, kan acties uitvoeren (afspraak plannen, betaallink sturen, status opzoeken) en escaleert zelfstandig bij twijfel. In dit artikel gebruiken we "chatbot" in de moderne, op AI-agents gebaseerde betekenis, niet in de zin van een ouderwetse scriptbot.' },
-  { question: 'Welke kosten heeft een voicebot versus een chatbot bij Aanloop AI?', answer: 'De chatbot Emma is als WhatsApp-agent beschikbaar vanaf 49 euro per maand. De voicebot Marco zit in de Marco (497 euro per maand, 150 gesprekken) of in het Groei-pakket (997 euro per maand, Marco onbeperkt plus Emma). Het Groei-pakket is dus de meest complete optie: voicebot én chatbot in één abonnement. Alle bedragen zijn exclusief 21% btw; setup is eenmalig 495 tot 795 euro.' },
+  { question: 'Welke kosten heeft een voicebot versus een chatbot bij Aanloop AI?', answer: 'De chatbot Emma is als WhatsApp-agent beschikbaar vanaf 49 euro per maand. De voicebot Emma zit in de Emma (497 euro per maand, 150 gesprekken) of in het Groei-pakket (997 euro per maand, Emma onbeperkt plus Emma). Het Groei-pakket is dus de meest complete optie: voicebot én chatbot in één abonnement. Alle bedragen zijn exclusief 21% btw; setup is eenmalig 495 tot 795 euro.' },
   { question: 'Werkt een voicebot ook buiten kantooruren en in het weekend?', answer: 'Ja. Zowel de voicebot als de chatbot werkt 24 uur per dag, 7 dagen per week. Dit is een van de grootste voordelen ten opzichte van menselijk personeel: oproepen en berichten in de avond, het weekend en op feestdagen worden gewoon afgehandeld. Voor veel MKB-bedrijven valt juist buiten kantoortijd een aanzienlijk deel van de gemiste leads — die de AI nu opvangt.' },
   { question: 'Hoe gaan een voicebot en chatbot om met de AVG en WhatsApp-data?', answer: 'Aanloop AI verwerkt persoonsgegevens uitsluitend op EU-servers (Frankfurt of Amsterdam, ISO 27001-gecertificeerd). U ontvangt een verwerkersovereenkomst conform AVG artikel 28 en een DPIA-template. Voor de WhatsApp-chatbot geldt dat berichten via de officiële WhatsApp Business API lopen; u blijft verwerkingsverantwoordelijke en bent verantwoordelijk voor het informeren van klanten. De Autoriteit Persoonsgegevens houdt toezicht op de naleving van de AVG in Nederland.' },
   { question: 'Moet ik klanten melden dat zij met een AI communiceren?', answer: 'Ja. De EU AI Act verplicht dat mensen worden geïnformeerd wanneer zij interacteren met een AI-systeem, tenzij dat overduidelijk is uit de context. Dit geldt zowel voor een voicebot als voor een chatbot. Aanloop AI configureert standaard een transparante melding — een korte openingsmededeling bij de voicebot en een duidelijke afzender-aanduiding bij de chatbot.' },
   { question: 'Welk kanaal heeft de hoogste klanttevredenheid?', answer: 'In de praktijk komt WhatsApp-chat doorgaans als hoogst gewaardeerd kanaal naar voren, gevolgd door de voicebot; webchat scoort iets lager. WhatsApp wordt als vertrouwd en laagdrempelig ervaren. Webchat scoort lager omdat sommige bezoekers het als onpersoonlijk ervaren. De voicebot zit daar tussenin: bellers waarderen de directe respons en het ontbreken van wachtrijen.' },
-  { question: 'Is een voicebot of chatbot geschikt voor een webshop?', answer: 'Voor een webshop is een chatbot meestal het sterkste kanaal: e-commerce-klanten typen liever dan dat zij bellen, en visuele communicatie (productfoto\'s, orderlinks, retourlabels) werkt goed in chat. De WhatsApp-agent Emma handelt orderstatus, retouren en productvragen grotendeels zelfstandig af. Heeft uw webshop ook een servicenummer met substantieel belvolume, dan voegt de voicebot Marco telefonische dekking toe.' }];
+  { question: 'Is een voicebot of chatbot geschikt voor een webshop?', answer: 'Voor een webshop is een chatbot meestal het sterkste kanaal: e-commerce-klanten typen liever dan dat zij bellen, en visuele communicatie (productfoto\'s, orderlinks, retourlabels) werkt goed in chat. De WhatsApp-agent Emma handelt orderstatus, retouren en productvragen grotendeels zelfstandig af. Heeft uw webshop ook een servicenummer met substantieel belvolume, dan voegt de voicebot Emma telefonische dekking toe.' }];
 
 const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', name: 'AI Voicebot vs Chatbot MKB NL 2026', speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] }, url: 'https://aanloopai.nl/kennisbank/ai-voicebot-vs-chatbot-mkb-vergelijking/', inLanguage: 'nl-NL' };
 
@@ -68,7 +68,7 @@ const kanaalVergelijking = [
   { kenmerk: 'Sterkste doelgroep', voicebot: 'Klanten 50-plus, urgentie-intentie', chatbot: 'Klanten 25-50, vergelijkings-intentie' },
   { kenmerk: 'Visuele communicatie', voicebot: 'Niet mogelijk', chatbot: 'Sterk — foto, document, betaallink' },
   { kenmerk: 'Lead-naar-afspraak conversie', voicebot: '35-55%', chatbot: '18-30% (WhatsApp), 15-30% (web)' },
-  { kenmerk: 'Aanbod bij Aanloop AI', voicebot: 'Marco / Groei', chatbot: 'Emma — vanaf 49 euro/mnd' },
+  { kenmerk: 'Aanbod bij Aanloop AI', voicebot: 'Emma / Groei', chatbot: 'Emma — vanaf 49 euro/mnd' },
 ];
 
 const sectorKeuze = [
@@ -83,8 +83,8 @@ const sectorKeuze = [
 
 const kostenScenario = [
   { scenario: 'Alleen chatbot (Emma standalone)', prijs: 'Vanaf 49 euro/mnd', past: 'Telefonie minder dan 20% van leads; jonge doelgroep' },
-  { scenario: 'Alleen voicebot (Marco)', prijs: '497 euro/mnd', past: 'Telefonie dominant; weinig WhatsApp; tot 150 gesprekken/mnd' },
-  { scenario: 'Beide (Groei: Marco + Emma)', prijs: '997 euro/mnd', past: 'Gemengde kanalen; onbeperkte telefonie; volledige dekking' },
+  { scenario: 'Alleen voicebot (Emma)', prijs: '497 euro/mnd', past: 'Telefonie dominant; weinig WhatsApp; tot 150 gesprekken/mnd' },
+  { scenario: 'Beide (Groei: Emma)', prijs: '997 euro/mnd', past: 'Gemengde kanalen; onbeperkte telefonie; volledige dekking' },
   { scenario: 'Beide + website (AI-Website Bundel)', prijs: '397 euro/mnd + 4.950 setup', past: 'Nieuwe of verouderde website; één leverancier voor alles' },
 ];
 ---
@@ -106,7 +106,7 @@ const kostenScenario = [
           Voicebot vs Chatbot voor MKB — welke kiest u en wanneer
         </h1>
         <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
-          Voicebots (telefoon-AI zoals Marco) en chatbots (WhatsApp- en website-AI zoals Emma) lossen beide klantcontact op, maar werken fundamenteel anders en passen bij verschillende sectoren en doelgroepen. Een veelgemaakte fout van Nederlandse MKB-ondernemers is all-in gaan op één van beide — de juiste keuze hangt af van uw klantgedrag, sector, omzetmodel en aanwezig personeel. In dit artikel: een diepgaande vergelijking met use cases, conversie-data, een kanaaltabel, een keuze-matrix per sector, een kostenoverzicht en de AVG- en EU AI Act-context.
+          Voicebots (telefoon-AI zoals Emma) en chatbots (WhatsApp- en website-AI zoals Emma) lossen beide klantcontact op, maar werken fundamenteel anders en passen bij verschillende sectoren en doelgroepen. Een veelgemaakte fout van Nederlandse MKB-ondernemers is all-in gaan op één van beide — de juiste keuze hangt af van uw klantgedrag, sector, omzetmodel en aanwezig personeel. In dit artikel: een diepgaande vergelijking met use cases, conversie-data, een kanaaltabel, een keuze-matrix per sector, een kostenoverzicht en de AVG- en EU AI Act-context.
         </p>
       </div>
     </div>
@@ -117,7 +117,7 @@ const kostenScenario = [
     <div class="container-page max-w-3xl">
       <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6">
         <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-2">Direct antwoord</p>
-        <p class="text-sm text-slate-700 leading-relaxed">Een <strong>voicebot</strong> is de slimste keuze bij een hoog telefoonvolume, een oudere klantgroep en urgentiegedreven sectoren. Een <strong>chatbot</strong> wint bij een jongere doelgroep, asynchrone communicatie en visuele productvragen. De meeste MKB-bedrijven kiezen uiteindelijk <strong>beide</strong>: telefoon en WhatsApp dekken samen ongeveer 95% van het inkomende klantcontact. Bij Aanloop AI is de voicebot Marco en de chatbot Emma; in het Groei-pakket (997 euro per maand, exclusief btw) zitten beide, met één gedeelde kennisbank. Emma standalone start vanaf 49 euro per maand.</p>
+        <p class="text-sm text-slate-700 leading-relaxed">Een <strong>voicebot</strong> is de slimste keuze bij een hoog telefoonvolume, een oudere klantgroep en urgentiegedreven sectoren. Een <strong>chatbot</strong> wint bij een jongere doelgroep, asynchrone communicatie en visuele productvragen. De meeste MKB-bedrijven kiezen uiteindelijk <strong>beide</strong>: telefoon en WhatsApp dekken samen ongeveer 95% van het inkomende klantcontact. Bij Aanloop AI is de voicebot Emma en de chatbot Emma; in het Groei-pakket (997 euro per maand, exclusief btw) zitten beide, met één gedeelde kennisbank. Emma standalone start vanaf 49 euro per maand.</p>
       </div>
     </div>
   </section>
@@ -125,7 +125,7 @@ const kostenScenario = [
   <section class="section">
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat een voicebot doet en waar deze het sterkst is</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Een voicebot is een AI-receptionist die telefoongesprekken aanneemt en autonoom afhandelt. Klanten bellen uw nummer, een natuurlijke Nederlandstalige stem antwoordt, voert een intake-gesprek (naam, vraag, urgentie), plant een afspraak in de agenda of escaleert naar een mens. De voicebot van Aanloop AI heet Marco; in de bredere markt zijn ook platforms als Synthflow, Vapi en Bland AI bekend.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Een voicebot is een AI-receptionist die telefoongesprekken aanneemt en autonoom afhandelt. Klanten bellen uw nummer, een natuurlijke Nederlandstalige stem antwoordt, voert een intake-gesprek (naam, vraag, urgentie), plant een afspraak in de agenda of escaleert naar een mens. De voicebot van Aanloop AI heet Emma; in de bredere markt zijn ook platforms als Synthflow, Vapi en Bland AI bekend.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Een voicebot is sterk in spoedoproepen die per definitie telefonisch binnenkomen (CV-storing, lekkage, het afmelden van een afspraak door een patiënt), bij klanten boven de 50 à 60 die WhatsApp nauwelijks gebruiken, en in situaties waarin emotie of urgentie hoog is. Een voicebot biedt een menselijk gevoel doordat klanten een echte stem horen en direct antwoord krijgen — zonder wachtrij.</p>
       <p class="text-slate-600 leading-relaxed mb-4">De beste sectoren voor voicebot-prioriteit: huisartsenpraktijken (overwegend oudere bevolking), installateurs (spoed via telefoon), advocaten (eerste contact vaak emotioneel), garagebedrijven (nieuwe klanten bellen liever) en verzekeringsmakelaars (schadeclaims komen telefonisch binnen).</p>
     </div>
@@ -153,7 +153,7 @@ const kostenScenario = [
           <thead>
             <tr class="border-b border-slate-200 bg-slate-50">
               <th class="text-left py-3 px-4 text-slate-500 font-medium">Kenmerk</th>
-              <th class="text-left py-3 px-4 text-slate-500 font-medium">Voicebot (Marco)</th>
+              <th class="text-left py-3 px-4 text-slate-500 font-medium">Voicebot (Emma)</th>
               <th class="text-left py-3 px-4 text-slate-500 font-medium">Chatbot (Emma)</th>
             </tr>
           </thead>
@@ -308,8 +308,8 @@ const kostenScenario = [
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Waarom Aanloop AI als partner</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI is een Nederlandse B.V. (KVK 56312075) gevestigd in Rotterdam, gespecialiseerd in AI-automatisering voor het Nederlandse MKB. We zijn geen generieke chatbot-leverancier — we configureren, trainen en onderhouden uw AI op basis van uw branchespecifieke processen, terminologie en klantverwachtingen.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Onze grootste differentiator op het gebied van voicebot versus chatbot: de telefoon-agent Marco en de chat-agent Emma delen één gedeelde kennisbank. Veel concurrenten leveren twee aparte engines met dubbele beheerlast en het risico op tegenstrijdige antwoorden. Bij Aanloop werkt u de kennisbank één keer bij en weten beide kanalen het direct.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI is een Nederlandse B.V. (KVK 88606902) gevestigd in Rotterdam, gespecialiseerd in AI-automatisering voor het Nederlandse MKB. We zijn geen generieke chatbot-leverancier — we configureren, trainen en onderhouden uw AI op basis van uw branchespecifieke processen, terminologie en klantverwachtingen.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Onze grootste differentiator op het gebied van voicebot versus chatbot: de telefoon-agent Emma en de chat-agent Emma delen één gedeelde kennisbank. Veel concurrenten leveren twee aparte engines met dubbele beheerlast en het risico op tegenstrijdige antwoorden. Bij Aanloop werkt u de kennisbank één keer bij en weten beide kanalen het direct.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Praktische voordelen: data uitsluitend binnen de EU verwerkt (Frankfurt of Amsterdam, ISO 27001-gecertificeerd), maandelijks opzegbaar zonder exitkosten, transparante canonieke tarieven en een gratis demo van 30 minuten. Tijdens die demo analyseren we uw huidige kanalen en adviseren we concreet: voicebot, chatbot of beide.</p>
     </div>
   </section>
@@ -348,7 +348,7 @@ const kostenScenario = [
         <a href="/kennisbank/ai-prijzen-vergelijking-mkb-nederland-2026/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-brand-indigo/5 hover:bg-brand-indigo/10 border border-brand-indigo/20 rounded-lg text-sm font-medium text-brand-indigo transition-all">AI prijzen vergelijking MKB 2026 →</a>
         <a href="/kennisbank/ai-receptionist-vs-ai-telefoniste-vergelijking/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">AI receptionist vs telefoniste →</a>
         <a href="/kennisbank/ai-telefoniste-vs-mens/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">AI telefoniste vs mens →</a>
-        <a href="/diensten/marco/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Marco — AI receptionist (voicebot) →</a>
+        <a href="/diensten/emma/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Emma — AI receptionist (voicebot) →</a>
         <a href="/diensten/emma/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">Emma — WhatsApp-assistent (chatbot) →</a>
         <a href="/tarieven/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-lg text-sm font-medium text-navy transition-all">AI prijzen voor MKB →</a>
       </div>
@@ -359,17 +359,17 @@ const kostenScenario = [
     <div class="container-page max-w-4xl">
       <p class="eyebrow text-brand-indigo mb-2">Website + AI = 1 partner</p>
       <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-4">Voicebot of chatbot? Combineer beide met website in één bundel</h2>
-      <p class="text-slate-600 mb-8 leading-relaxed">Voicebot (Marco) en chatbot (Emma) zijn complementair: telefoon en WhatsApp dekken samen ongeveer 95% van het inkomende klantcontact. In de AI-Website Bundel komt daar een AI-ready website bij — met één contract en één aanspreekpunt.</p>
+      <p class="text-slate-600 mb-8 leading-relaxed">Voicebot (Emma) en chatbot (Emma) zijn complementair: telefoon en WhatsApp dekken samen ongeveer 95% van het inkomende klantcontact. In de AI-Website Bundel komt daar een AI-ready website bij — met één contract en één aanspreekpunt.</p>
       <div class="grid md:grid-cols-3 gap-4">
         <a href="/diensten/ai-website-bundel-mkb-nederland/" class="card hover:border-brand-indigo transition-all">
           <h3 class="font-bold text-navy text-sm mb-2">AI-Website Bundel</h3>
-          <p class="text-xs text-slate-600 mb-3">Website + Marco (voicebot) + Emma (chatbot) in 1 pakket. €4.950 setup + €397/mnd.</p>
+          <p class="text-xs text-slate-600 mb-3">Website + Emma (voicebot) + Emma (chatbot) in 1 pakket. €4.950 setup + €397/mnd.</p>
           <span class="text-xs text-brand-indigo font-medium">Bekijk bundel →</span>
         </a>
-        <a href="/diensten/marco/" class="card hover:border-brand-indigo transition-all">
-          <h3 class="font-bold text-navy text-sm mb-2">Marco — onze voicebot</h3>
+        <a href="/diensten/emma/" class="card hover:border-brand-indigo transition-all">
+          <h3 class="font-bold text-navy text-sm mb-2">Emma — onze voicebot</h3>
           <p class="text-xs text-slate-600 mb-3">24/7 telefonische bereikbaarheid: afspraken, intake, doorverbinden, no-show-reductie en NL-taal.</p>
-          <span class="text-xs text-brand-indigo font-medium">Ontmoet Marco →</span>
+          <span class="text-xs text-brand-indigo font-medium">Ontmoet Emma →</span>
         </a>
         <a href="/diensten/emma/" class="card hover:border-brand-indigo transition-all">
           <h3 class="font-bold text-navy text-sm mb-2">Emma — onze chatbot</h3>

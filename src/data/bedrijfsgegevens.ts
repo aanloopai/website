@@ -1,10 +1,10 @@
 // Aanloop AI bedrijfsgegevens — voor op facturen (V4, wettelijk verplicht).
-// KvK is bekend (site/schema, 56312075). VUL btwId + adres aan met de echte
+// KvK is bekend (site/schema, 88606902). VUL btwId + adres aan met de echte
 // waarden — één plek, hier wijzigen volstaat.
 
 export const BEDRIJF = {
   naam: 'Aanloop AI B.V.',
-  kvk: '56312075',
+  kvk: '88606902',
   btwId: 'NL004672676B48',
   adres: 'Blokfluit 31',
   postcode: '3068 KZ',

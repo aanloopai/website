@@ -52,7 +52,7 @@ const faqItems = [
   { question: 'Is het niet goedkoper om gewoon zelf een AI-engineer in dienst te nemen?', answer: 'Op het eerste gezicht lijkt €70.000-€100.000 bruto/jr aan loonkosten vergelijkbaar met €497-€997/mnd agency-fee. Maar: bruto loon × 1,35 (werkgeverslasten WGA/WHK/ZVW/pensioen/vakantiegeld) = €95.000-€135.000 totaal werkgeverskosten/jr. Plus: €15.000-€30.000 recruitment-kosten (recruiter-fee 25% jaarsalaris bij headhunter), €5.000-€10.000 tooling per jaar (Cursor/GitHub Copilot/Claude/cloud-budget), €5.000-€15.000 onboarding/training. Totaal jaar-1: €125.000-€190.000 voor één engineer. Dat is €10.400-€15.800/mnd vs €997/mnd agency. Agency wint bij 8-13x lager TCO.' },
   { question: 'Maar dan heb ik wel mijn eigen IP en geen vendor lock-in toch?', answer: 'Bij Aanloop AI hebben uw klant-data, prompts, kennisbank en configuratie 100 procent uw eigendom — geen vendor lock-in op data. Code en infrastructuur zijn gestandaardiseerd open-source componenten (Twilio voice, WhatsApp Business API, OpenAI/Anthropic LLM via API, eigen orchestratie-laag). U kunt op elk moment overstappen naar in-house implementatie of andere agency met behoud van data en context. Het IP-argument geldt vooral voor proprietary deep-tech bouw — voor implementatie van AI receptionist of WhatsApp-agent op MKB-schaal is dit géén relevante moat.' },
   { question: 'Wat als ik een unieke use-case heb die geen agency aankan?', answer: 'Eerlijk antwoord: dat is wanneer in-house wel zin heeft. Indicatoren: (a) uw concurrentievoordeel zit in de AI-implementatie zelf, niet in de business-resultaten ervan, (b) u heeft 250+ engineer-jaar aan AI-werk te doen (bijv. fintech met realtime fraud-detection ML), (c) compliance-eisen die externe verwerker-relatie verbieden (bepaalde overheids- of defensie-context). Voor 95 procent van Nederlandse MKB met AI receptionist + WhatsApp + workflow-automatisering valt geen van deze. Agency-route met API-toegang plus implementatie-partner is dan strikt superieur op TCO en time-to-value.' },
-  { question: 'Hoe lang duurt het voordat ik live ben met agency vs in-house?', answer: 'Agency Aanloop AI: 7-14 werkdagen voor één-pakket (Marco AI receptionist) tot 28-42 dagen voor multi-pakket plus complexe EPD/CRM-koppeling. In-house engineer: minimaal 4-6 maanden recruitment-tijd (NL AI-engineer markt is 2026 zeer krap, 60-90 dagen tot ondertekenen contract plus 30-60 dagen opzegtermijn vorige werkgever). Daarna 60-120 dagen onboarding plus eerste MVP. Totaal time-to-live: 8-14 maanden. Verschil: agency leeft 6-12 maanden eerder. Voor een praktijk met €5.000/mnd no-show kosten = €30.000-€60.000 verloren tijdens wachten op in-house team.' },
+  { question: 'Hoe lang duurt het voordat ik live ben met agency vs in-house?', answer: 'Agency Aanloop AI: 7-14 werkdagen voor één-pakket (Emma AI receptionist) tot 28-42 dagen voor multi-pakket plus complexe EPD/CRM-koppeling. In-house engineer: minimaal 4-6 maanden recruitment-tijd (NL AI-engineer markt is 2026 zeer krap, 60-90 dagen tot ondertekenen contract plus 30-60 dagen opzegtermijn vorige werkgever). Daarna 60-120 dagen onboarding plus eerste MVP. Totaal time-to-live: 8-14 maanden. Verschil: agency leeft 6-12 maanden eerder. Voor een praktijk met €5.000/mnd no-show kosten = €30.000-€60.000 verloren tijdens wachten op in-house team.' },
   { question: 'Wat als mijn engineer vertrekt na 2 jaar?', answer: 'Statistisch hoog risico: gemiddelde tenure van AI-engineer in NL 2026 is 1.8-2.3 jaar (LinkedIn data). Bij vertrek: alle context, prompts, configuraties en operationele kennis vertrekt mee. Onboarding nieuwe engineer kost 4-6 maanden tot productieve kennis-overdracht plus €15.000-€30.000 nieuwe recruitment. Agency continuiteit-risico is anders: agency heeft typisch 3-8 engineers per klant-stack-domein, kennis is in documentatie + processen geborgd. Continuiteit-eis: kies agency met expliciete service-continuiteits-clausule en data-export-recht in contract.' },
   { question: 'Wanneer raden jullie wel in-house engineer aan?', answer: 'Wij zijn eerlijk hierover: in-house engineer is de juiste keuze als (a) AI is uw kern-product en differentiator, niet uw efficiency-tool, (b) u heeft >250 engineer-uren AI-werk per maand structureel, (c) compliance- of geheimhoudings-eisen sluiten externe verwerker uit, (d) u bouwt iets unieks dat nog niemand heeft (R&D, niet implementatie). Voor 95 procent van MKB die "alleen maar" AI receptionist, WhatsApp-agent, workflow-automatisering of CRM-integratie wil: agency is structureel goedkoper, sneller en lager-risico. Hybride model (agency voor implementatie + 1 in-house product owner zonder coding) werkt soms ook goed bij snelle scale-ups.' },
   { question: 'Kan ik overstappen van agency naar in-house later als ik schaal?', answer: 'Ja, en bij Aanloop AI faciliteren wij dit actief. Wij leveren bij elk project: (1) volledige data-export + documentatie van prompts en kennisbank, (2) infrastructuur-as-code repository (Terraform/scripts) zodat u de hele stack kunt overnemen, (3) overdrachts-traject van 4-8 weken waarin uw nieuwe in-house engineer ingewerkt wordt, (4) optionele afbouw naar consultancy-uurtarief. Het is in ons belang dat u met opgebouwde context kunt overgaan in plaats van vendor-lock-in voelen — dat geeft eerlijker langetermijn-relatie.' },
@@ -66,7 +66,7 @@ const tcoBreakdown = [
   { post: 'Tooling (Cursor/Copilot/Claude/cloud-budget)',            inhouse: '€5.000-€10.000/jr',            agency: 'inbegrepen' },
   { post: 'Onboarding + training eerste 6 mnd',                      inhouse: '€10.000-€20.000 eenmalig',     agency: 'n.v.t.' },
   { post: 'Hardware + werkplek + secundair',                         inhouse: '€3.000-€6.000/jr',             agency: 'n.v.t.' },
-  { post: 'Aanloop AI agency-fee (Marco + Emma multi-pakket)',       inhouse: 'n.v.t.',                       agency: '€497-€997/mnd' },
+  { post: 'Aanloop AI agency-fee (Emma multi-pakket)',       inhouse: 'n.v.t.',                       agency: '€497-€997/mnd' },
   { post: 'Onboarding-fee Aanloop (eenmalig, soms gratis bij jaar-contract)', inhouse: 'n.v.t.',                agency: '€0-€2.500 eenmalig' },
   { post: 'TCO jaar-1 (excl. recruiter en build)',                   inhouse: '€112.500-€171.000',            agency: '€5.964-€14.464' },
   { post: 'TCO jaar-2 (steady-state)',                               inhouse: '€102.500-€151.000',            agency: '€5.964-€11.964' },
@@ -79,7 +79,7 @@ const timeToValueBreakdown = [
   { phase: 'Onboarding + eerste werkende setup',                 inhouse: '30-60 dagen',                  agency: '7-14 werkdagen voor één pakket' },
   { phase: 'Eerste werkende AI receptionist live',               inhouse: '120-180 dagen',                agency: '7-14 werkdagen' },
   { phase: 'EPD/CRM-koppeling productie-rijp',                   inhouse: '60-90 dagen na MVP',           agency: '14-21 dagen extra' },
-  { phase: 'Multi-pakket Marco + Emma volledig operationeel',    inhouse: '8-14 maanden totaal',          agency: '28-42 dagen totaal' },
+  { phase: 'Multi-pakket Emma volledig operationeel',    inhouse: '8-14 maanden totaal',          agency: '28-42 dagen totaal' },
   { phase: 'Gemiste omzet tijdens wachten (no-show kosten ~€5k/mnd)', inhouse: '€40.000-€70.000 verloren', agency: '€2.000-€7.000 verloren' },
 ];
 
@@ -140,7 +140,7 @@ const whenAgencyWins = [
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">De verborgen kosten van een eigen AI-engineer</h2>
       <p class="text-slate-600 leading-relaxed mb-4">Het meest gemaakte rekenfout in MKB-context: kijken naar bruto jaarsalaris en dat als totaalkosten beschouwen. Een mid-senior AI-engineer in Nederland kost in 2026 €70.000-€100.000 bruto/jr (bron: Hays/Robert Half/Michael Page benchmarks). Daar bovenop komen werkgeverslasten van ongeveer 35 procent — WGA, WHK, ZVW, pensioenpremie, vakantiegeld, vakantieuren-reservering — wat het brengt naar €95.000-€135.000 totaalkosten loon per jaar. Dat is nog steeds niet alles.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Recruitment in de Nederlandse AI-engineer markt 2026 is structureel krap. Een headhunter-fee bedraagt 22-30 procent van het bruto jaarsalaris bij succesvolle plaatsing, dus €17.500-€30.000 eenmalig. Tooling (Cursor IDE, GitHub Copilot, Claude API-budget, OpenAI API-budget, AWS/Azure infrastructuur, monitoring-tools) komt op €5.000-€10.000 per jaar. Onboarding plus eerste 6 maanden training en context-opbouw kost €10.000-€20.000 in productiviteits-verlies. Hardware, werkplek en secundaire arbeidsvoorwaarden voegen €3.000-€6.000 per jaar toe.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Totaal jaar-1: €112.500-€171.000 per AI-engineer. Effectief per maand: €9.400-€14.250. Vergelijking: Aanloop AI agency-route met Marco plus Emma multi-pakket inclusief alle kennisbank-onderhoud, prompt-iteratie, EPD-koppeling en 24/7 monitoring kost €497-€997 per maand. Verschil: agency is 8-14 keer goedkoper TCO. Voor 95 procent van MKB use-cases (AI receptionist, WhatsApp-agent, workflow-automatisering) levert in-house geen merkbare waarde-toevoeging boven agency.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Totaal jaar-1: €112.500-€171.000 per AI-engineer. Effectief per maand: €9.400-€14.250. Vergelijking: Aanloop AI agency-route met Emma plus Emma multi-pakket inclusief alle kennisbank-onderhoud, prompt-iteratie, EPD-koppeling en 24/7 monitoring kost €497-€997 per maand. Verschil: agency is 8-14 keer goedkoper TCO. Voor 95 procent van MKB use-cases (AI receptionist, WhatsApp-agent, workflow-automatisering) levert in-house geen merkbare waarde-toevoeging boven agency.</p>
     </div>
   </section>
 
@@ -149,7 +149,7 @@ const whenAgencyWins = [
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">TCO-vergelijking jaar-1 en jaar-2</p>
         <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Volledige Total Cost of Ownership.</h2>
-        <p class="mt-3 text-slate-600 max-w-3xl">Cijfers in 2026 euro, gebaseerd op publieke salaris-benchmarks (Hays/Robert Half/Michael Page) plus standaard CBS-formule voor werkgeverslasten (~1.35x bruto). Agency-fee gebaseerd op Aanloop AI Marco + Emma multi-pakket. Uw werkelijke kosten variëren per regio, ervaring-niveau engineer en complexiteit use-case.</p>
+        <p class="mt-3 text-slate-600 max-w-3xl">Cijfers in 2026 euro, gebaseerd op publieke salaris-benchmarks (Hays/Robert Half/Michael Page) plus standaard CBS-formule voor werkgeverslasten (~1.35x bruto). Agency-fee gebaseerd op Aanloop AI Emma multi-pakket. Uw werkelijke kosten variëren per regio, ervaring-niveau engineer en complexiteit use-case.</p>
       </div>
       <div class="overflow-x-auto reveal reveal-delay-1">
         <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
@@ -324,7 +324,7 @@ const whenAgencyWins = [
         </a>
         <a href="/tarieven/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
           <p class="font-semibold text-navy">→ Aanloop AI tarieven</p>
-          <p class="text-slate-600 mt-1 text-xs">Transparante tarief-overzicht: Marco, Emma, multi-pakket.</p>
+          <p class="text-slate-600 mt-1 text-xs">Transparante tarief-overzicht: Emma, multi-pakket.</p>
         </a>
         <a href="/ai-roi-calculator/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
           <p class="font-semibold text-navy">→ ROI-calculator</p>
@@ -338,11 +338,11 @@ const whenAgencyWins = [
     <div class="container-page max-w-4xl">
       <p class="eyebrow text-brand-indigo mb-2">Website + AI = 1 partner</p>
       <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-4">Liever één partner voor uw website én AI? Bekijk de Bundel</h2>
-      <p class="text-slate-600 mb-8 leading-relaxed">De agency-vs-engineer afweging draait vaak om versnippering. Aanloop AI biedt website-bouw én Marco (telefoon) én Emma (WhatsApp) in één pakket, met één contract en één aanspreekpunt — zonder dat u 3 leveranciers hoeft te coördineren of in-house engineers hoeft te werven.</p>
+      <p class="text-slate-600 mb-8 leading-relaxed">De agency-vs-engineer afweging draait vaak om versnippering. Aanloop AI biedt website-bouw én Emma (telefoon) én Emma (WhatsApp) in één pakket, met één contract en één aanspreekpunt — zonder dat u 3 leveranciers hoeft te coördineren of in-house engineers hoeft te werven.</p>
       <div class="grid md:grid-cols-3 gap-4">
         <a href="/diensten/ai-website-bundel-mkb-nederland/" class="card hover:border-brand-indigo transition-all">
           <h3 class="font-bold text-navy text-sm mb-2">AI-Website Bundel</h3>
-          <p class="text-xs text-slate-600 mb-3">Website + Marco + Emma in 1 pakket. €4.950 setup + €397/mnd. Bespaart op jaarbasis t.o.v. losse leveranciers.</p>
+          <p class="text-xs text-slate-600 mb-3">Website + Emma in 1 pakket. €4.950 setup + €397/mnd. Bespaart op jaarbasis t.o.v. losse leveranciers.</p>
           <span class="text-xs text-brand-indigo font-medium">Bekijk bundel →</span>
         </a>
         <a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="card hover:border-brand-indigo transition-all">

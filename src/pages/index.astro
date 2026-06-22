@@ -2,13 +2,13 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
-import MarcoLiveDemo from '../components/MarcoLiveDemo.astro';
+import EmmaLiveDemo from '../components/EmmaLiveDemo.astro';
 import ServiceCard from '../components/ServiceCard.astro';
 import SectorCard from '../components/SectorCard.astro';
 import dashboardMockup from '../assets/images/dashboard-mockup.png';
 
 const services = [
-  { href: '/diensten/marco/', title: 'Marco — AI Sekreter', description: 'Neemt uw telefoon 24/7 aan, plant afspraken, levert leads direct in uw inbox. Vloeiend Nederlands.', badge: 'Meest gekozen', accent: 'indigo' as const, features: ['Onbeperkte gesprekken', 'Lead-routering via Telegram of e-mail', 'Live binnen 7 dagen'] },
+  { href: '/diensten/emma/', title: 'Emma — AI Sekreter', description: 'Neemt uw telefoon 24/7 aan, plant afspraken, levert leads direct in uw inbox. Vloeiend Nederlands.', badge: 'Meest gekozen', accent: 'indigo' as const, features: ['Onbeperkte gesprekken', 'Lead-routering via Telegram of e-mail', 'Live binnen 7 dagen'] },
   { href: '/diensten/emma/', title: 'Emma — WhatsApp Agent', description: 'Beantwoordt klantvragen op WhatsApp in seconden. Getraind op uw kennisbank, met menselijke handover.', accent: 'rose' as const, features: ['Eigen kennisbank (Dify)', 'Naadloze handover naar mens', 'Werkt 24/7 zonder pauze'] },
   { href: '/diensten/ai-chatbot-website/', title: 'AI Chatbot voor Website', description: 'Leads kwalificeren, vragen beantwoorden en bezoekers begeleiden naar een aankoop. 24/7 actief.', accent: 'amber' as const, features: ['Lead qualification', 'Kennisbank integratie', 'v.a. €800/maand'] },
   { href: '/diensten/ai-email-assistent/', title: 'AI E-mail Assistent', description: 'Sorteert, prioriteert en beantwoordt automatisch inkomende e-mails. Bespaar 5+ uur per week.', accent: 'emerald' as const, features: ['Gmail & Outlook', 'Auto-antwoorden', 'v.a. €600/maand'] },
@@ -33,7 +33,7 @@ const sectors = [
 ];
 
 const testimonials = [
-  { quote: '"Marco neemt nu 70% van onze inkomende calls af, plant zelf afspraken en levert leads in ons CRM. Binnen drie weken hadden we hem live."', name: 'Installatiebedrijf · Rotterdam', role: 'Voorbeeldscenario — vergelijkbaar resultaat bij klanten' },
+  { quote: '"Emma neemt nu 70% van onze inkomende calls af, plant zelf afspraken en levert leads in ons CRM. Binnen drie weken hadden we hem live."', name: 'Installatiebedrijf · Rotterdam', role: 'Voorbeeldscenario — vergelijkbaar resultaat bij klanten' },
   { quote: '"Emma beantwoordt 80% van de WhatsApp-vragen automatisch. Onze klanttevredenheid is omhoog gegaan en ons team heeft eindelijk tijd voor écht werk."', name: 'Logistiek bedrijf · Utrecht', role: 'Voorbeeldscenario — vergelijkbaar resultaat bij klanten' },
   { quote: '"De AI-telefoonassistent heeft onze receptie volledig ontlast. Nooit meer gemiste leads buiten kantooruren. Uitstekende service van het Aanloop-team."', name: 'Makelaarskantoor · Amsterdam', role: 'Voorbeeldscenario — vergelijkbaar resultaat bij klanten' },
 ];
@@ -64,9 +64,9 @@ const homeSchema = [
       '@type': 'OfferCatalog',
       name: 'AI Diensten Aanloop AI',
       itemListElement: [
-        { '@type': 'Offer', name: 'Starter — Marco AI Receptionist', itemOffered: { '@type': 'Service', name: 'Marco — AI Receptionist & AI Telefoniste', url: 'https://aanloopai.nl/diensten/marco/' , provider: { '@id': 'https://aanloopai.nl/#organization' }}, price: '497', priceCurrency: 'EUR', priceSpecification: { '@type': 'UnitPriceSpecification', price: '497', priceCurrency: 'EUR', billingDuration: 'P1M', unitText: 'MONTH' }, url: 'https://aanloopai.nl/tarieven/#starter', availability: 'https://schema.org/InStock' },
-        { '@type': 'Offer', name: 'Groei — Marco + Emma bundel', itemOffered: { '@type': 'Service', name: 'Marco + Emma — AI Telefoon + WhatsApp', url: 'https://aanloopai.nl/diensten/marco/' , provider: { '@id': 'https://aanloopai.nl/#organization' }}, price: '997', priceCurrency: 'EUR', priceSpecification: { '@type': 'UnitPriceSpecification', price: '997', priceCurrency: 'EUR', billingDuration: 'P1M', unitText: 'MONTH' }, url: 'https://aanloopai.nl/tarieven/#groei', availability: 'https://schema.org/InStock' },
-        { '@type': 'Offer', name: 'Partner — Custom AI Workflows op maat', itemOffered: { '@type': 'Service', name: 'Marco + Emma + Custom n8n Workflows', url: 'https://aanloopai.nl/diensten/custom/' , provider: { '@id': 'https://aanloopai.nl/#organization' }}, priceCurrency: 'EUR', priceSpecification: { '@type': 'PriceSpecification', priceCurrency: 'EUR', description: 'Op maat — offerte binnen 24 uur' }, url: 'https://aanloopai.nl/tarieven/#partner', availability: 'https://schema.org/InStock' },
+        { '@type': 'Offer', name: 'Starter — Emma AI Receptionist', itemOffered: { '@type': 'Service', name: 'Emma — AI Receptionist & AI Telefoniste', url: 'https://aanloopai.nl/diensten/emma/' , provider: { '@id': 'https://aanloopai.nl/#organization' }}, price: '497', priceCurrency: 'EUR', priceSpecification: { '@type': 'UnitPriceSpecification', price: '497', priceCurrency: 'EUR', billingDuration: 'P1M', unitText: 'MONTH' }, url: 'https://aanloopai.nl/tarieven/#starter', availability: 'https://schema.org/InStock' },
+        { '@type': 'Offer', name: 'Groei — Emma bundel', itemOffered: { '@type': 'Service', name: 'Emma — AI Telefoon + WhatsApp', url: 'https://aanloopai.nl/diensten/emma/' , provider: { '@id': 'https://aanloopai.nl/#organization' }}, price: '997', priceCurrency: 'EUR', priceSpecification: { '@type': 'UnitPriceSpecification', price: '997', priceCurrency: 'EUR', billingDuration: 'P1M', unitText: 'MONTH' }, url: 'https://aanloopai.nl/tarieven/#groei', availability: 'https://schema.org/InStock' },
+        { '@type': 'Offer', name: 'Partner — Custom AI Workflows op maat', itemOffered: { '@type': 'Service', name: 'Emma + Custom n8n Workflows', url: 'https://aanloopai.nl/diensten/custom/' , provider: { '@id': 'https://aanloopai.nl/#organization' }}, priceCurrency: 'EUR', priceSpecification: { '@type': 'PriceSpecification', priceCurrency: 'EUR', description: 'Op maat — offerte binnen 24 uur' }, url: 'https://aanloopai.nl/tarieven/#partner', availability: 'https://schema.org/InStock' },
         { '@type': 'Offer', itemOffered: { '@type': 'Service', name: 'AI Strategie & Implementatie Advies', url: 'https://aanloopai.nl/gratis-ai-scan/' , provider: { '@id': 'https://aanloopai.nl/#organization' }}, price: '0', priceCurrency: 'EUR' },
       ],
     },
@@ -76,12 +76,12 @@ const homeSchema = [
 
 <BaseLayout
   title="AI Bureau voor het MKB — Receptionist, WhatsApp & AI"
-  description="AI-bureau voor het Nederlandse MKB: AI-receptionist Marco, WhatsApp-agent Emma en custom AI-workflows. Live in 14 dagen, vanaf €497/mnd. Gratis AI-scan."
+  description="AI-bureau voor het Nederlandse MKB: AI-receptionist Emma, WhatsApp-agent Emma en custom AI-workflows. Live in 14 dagen, vanaf €497/mnd. Gratis AI-scan."
   schema={homeSchema}
 >
   <Hero />
 
-  <MarcoLiveDemo />
+  <EmmaLiveDemo />
 
   <!-- USP pivot: Website + AI = 1 partner -->
   <section class="section bg-slate-50 border-y border-slate-200">
@@ -91,7 +91,7 @@ const homeSchema = [
         Eén partner voor uw website <span class="text-brand-indigo">én</span> uw AI.
       </h2>
       <p class="mt-5 text-lg text-slate-600 leading-relaxed text-pretty max-w-3xl reveal reveal-delay-2">
-        De meeste MKB-bedrijven kopen hun website bij een lokaal bureau en sluiten apart een AI-leverancier aan. Resultaat: dubbele kosten, twee aanspreekpunten en integratie-gedoe. Bij Aanloop AI bouwen wij uw website AI-ready vanaf dag één — met Marco (telefoon-AI), Emma (WhatsApp-AI) en uw site in één traject. Eén partner. Eén factuur. Structureel voordeliger op jaarbasis.
+        De meeste MKB-bedrijven kopen hun website bij een lokaal bureau en sluiten apart een AI-leverancier aan. Resultaat: dubbele kosten, twee aanspreekpunten en integratie-gedoe. Bij Aanloop AI bouwen wij uw website AI-ready vanaf dag één — met Emma (telefoon-AI), Emma (WhatsApp-AI) en uw site in één traject. Eén partner. Eén factuur. Structureel voordeliger op jaarbasis.
       </p>
 
       <div class="grid md:grid-cols-3 gap-4 mt-10">
@@ -105,7 +105,7 @@ const homeSchema = [
           <span class="absolute -top-3 left-4 px-3 py-1 bg-brand-indigo text-white text-xs font-bold rounded-full">Meest gekozen</span>
           <p class="eyebrow text-xs mb-2">2. Bundel</p>
           <h3 class="font-bold text-navy text-base mb-2">AI-Website Bundel</h3>
-          <p class="text-sm text-slate-600 mb-3 leading-relaxed">Website + Marco (telefoon-AI) + Emma (WhatsApp-AI) in 1 pakket. €4.950 setup + €397/mnd. Bespaart op jaarbasis t.o.v. losse leveranciers.</p>
+          <p class="text-sm text-slate-600 mb-3 leading-relaxed">Website + Emma (telefoon-AI) + Emma (WhatsApp-AI) in 1 pakket. €4.950 setup + €397/mnd. Bespaart op jaarbasis t.o.v. losse leveranciers.</p>
           <span class="text-sm text-brand-indigo font-medium">Bekijk bundel →</span>
         </a>
         <a href="/kennisbank/website-bouwer-vs-ai-ready-partner-mkb-nederland-2026/" class="card hover:border-brand-indigo transition-all reveal reveal-delay-2">

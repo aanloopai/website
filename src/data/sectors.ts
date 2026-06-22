@@ -41,7 +41,7 @@ export const sectors: Sector[] = [
       'Voorraad voorspellen voor weekenden en feestdagen is gokwerk',
     ],
     solutions: [
-      { title: 'Reserveringen via telefoon (Marco)', description: 'AI-receptionist neemt op, controleert beschikbaarheid, boekt direct in uw bestaande systeem (TheFork, Resengo, Zenchef, etc.).' },
+      { title: 'Reserveringen via telefoon (Emma)', description: 'AI-receptionist neemt op, controleert beschikbaarheid, boekt direct in uw bestaande systeem (TheFork, Resengo, Zenchef, etc.).' },
       { title: 'WhatsApp-bevestigingen (Emma)', description: 'Automatische bevestiging + reminder 4u voor de reservering. No-shows verlaagd door tijdige bevestiging en reminder.' },
       { title: 'Multi-channel inbox', description: 'Reserveringen van telefoon, WhatsApp, Instagram-DM en e-mail komen samen in één dashboard.' },
       { title: 'Voorraadprognose', description: 'Custom AI die uw historische data analyseert en wekelijkse inkoop-suggesties geeft per ingrediënt.' },
@@ -56,7 +56,7 @@ export const sectors: Sector[] = [
         { label: 'Tijdsbesparing/week', value: '11 uur' },
       ],
     },
-    recommendedServices: ['marco', 'emma'],
+    recommendedServices: ['emma'],
   },
   {
     slug: 'logistiek',
@@ -77,7 +77,7 @@ export const sectors: Sector[] = [
     ],
     solutions: [
       { title: 'Status-WhatsApp-bot (Emma)', description: 'Klanten typen hun trackingnummer in WhatsApp, krijgen direct status, ETA en chauffeur-info — zonder iemand te storen.' },
-      { title: 'AI-receptionist voor logistieke vragen', description: 'Marco neemt vragen aan, raadpleegt uw systeem, geeft antwoord. Verbindt door als er echt een mens nodig is.' },
+      { title: 'AI-receptionist voor logistieke vragen', description: 'Emma neemt vragen aan, raadpleegt uw systeem, geeft antwoord. Verbindt door als er echt een mens nodig is.' },
       { title: 'Voice-to-text voor chauffeurs', description: 'Chauffeurs spreken hun update in via een knop in de app — AI maakt er een gestructureerde notitie van die direct in TMS belandt.' },
       { title: 'Route-suggesties via AI', description: 'Custom workflow die historische data + verkeer + werkdrukte combineert voor dagelijkse routesuggesties.' },
     ],
@@ -101,7 +101,7 @@ export const sectors: Sector[] = [
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>',
     hero: {
       headline: 'AI die uw leads kwalificeert terwijl u op bezichtiging bent.',
-      subheadline: 'Bezichtigingsverzoeken via Funda, Pararius en uw eigen site komen 24/7 binnen. Marco of Emma neemt ze direct op, kwalificeert, plant — en u ziet alleen de serieuze kandidaten.',
+      subheadline: 'Bezichtigingsverzoeken via Funda, Pararius en uw eigen site komen 24/7 binnen. Emma neemt ze direct op, kwalificeert, plant — en u ziet alleen de serieuze kandidaten.',
     },
     challenges: [
       'Funda-leads contacteren binnen 5 min anders zijn ze weg',
@@ -111,10 +111,10 @@ export const sectors: Sector[] = [
       'Marktrapporten voor verkopers maken kost een halve werkdag',
     ],
     solutions: [
-      { title: 'Lead-kwalificatie (Marco)', description: 'AI belt nieuwe leads binnen 60 seconden, kwalificeert op budget, gewenste regio en urgentie. U krijgt alleen "warme" leads in uw inbox.' },
+      { title: 'Lead-kwalificatie (Emma)', description: 'AI belt nieuwe leads binnen 60 seconden, kwalificeert op budget, gewenste regio en urgentie. U krijgt alleen "warme" leads in uw inbox.' },
       { title: '24/7 bezichtigings-bot (Emma)', description: 'Geïnteresseerden chatten via WhatsApp, AI controleert agenda en plant direct — zelfs om 22:00 op zondag.' },
       { title: 'Auto-marktrapport', description: 'Custom workflow die marktdata, vergelijkbare panden en buurt-info combineert tot een marktrapport op uw briefpapier.' },
-      { title: 'Telefoon screening', description: 'Marco vangt cold-callers van verkopende makelaars af, registreert details voor terugbel-batch.' },
+      { title: 'Telefoon screening', description: 'Emma vangt cold-callers van verkopende makelaars af, registreert details voor terugbel-batch.' },
     ],
     caseExample: {
       company: 'Voorbeeldscenario',
@@ -126,7 +126,7 @@ export const sectors: Sector[] = [
         { label: 'Tijd per marktrapport', value: '4u → 8 min' },
       ],
     },
-    recommendedServices: ['marco', 'emma', 'custom'],
+    recommendedServices: ['emma', 'custom'],
   },
   {
     slug: 'detailhandel',
@@ -184,7 +184,7 @@ export const sectors: Sector[] = [
       { title: 'AI-intakegesprekken', description: 'Custom workflow waarin AI de eerste intake doet via chat of telefoon. Klant beantwoordt vragen, u krijgt een gestructureerde samenvatting.' },
       { title: 'Offerte-generator', description: 'AI vult uw standaard offerte-template op basis van het intake-gesprek. U reviewt en stuurt — bespaart 45 min per offerte.' },
       { title: 'Contract-clausule-checker', description: 'AI scant contracten op afwijkingen van uw standaard-clausules en uitbetalingsvoorwaarden. U ziet alleen de afwijkingen.' },
-      { title: 'Marco voor inbound calls', description: 'Marco filtert sales-calls weg en plant alleen serieuze cliënt-calls in uw agenda.' },
+      { title: 'Emma voor inbound calls', description: 'Emma filtert sales-calls weg en plant alleen serieuze cliënt-calls in uw agenda.' },
     ],
     caseExample: {
       company: 'Voorbeeldscenario',
@@ -196,7 +196,7 @@ export const sectors: Sector[] = [
         { label: 'Sales-call filter', value: '95% accuraat' },
       ],
     },
-    recommendedServices: ['marco', 'custom', 'audit'],
+    recommendedServices: ['emma', 'custom', 'audit'],
   },
   {
     slug: 'zorg',
@@ -216,7 +216,7 @@ export const sectors: Sector[] = [
       'Privacy-eisen (NEN 7510) maken AI-keuze complex',
     ],
     solutions: [
-      { title: 'Triage-AI (Marco)', description: 'AI bepaalt urgentie, plant niet-spoedeisende afspraken zelf, verbindt spoed direct door. NEN 7510-compliant.' },
+      { title: 'Triage-AI (Emma)', description: 'AI bepaalt urgentie, plant niet-spoedeisende afspraken zelf, verbindt spoed direct door. NEN 7510-compliant.' },
       { title: 'Intake-formulieren via WhatsApp', description: 'Patiënt krijgt 24u voor afspraak een WhatsApp met de intake-vragen. AI verwerkt antwoorden in patiëntdossier.' },
       { title: 'Afspraak-herinneringen', description: 'Automatische SMS/WhatsApp 1 dag van tevoren. Patiënt kan via knop verzetten — AI verwerkt direct.' },
       { title: 'Beveiligde EU-verwerking', description: 'Alle data binnen EU (Frankfurt of Amsterdam), NEN 7510-conform, verwerkersovereenkomst standaard.' },
@@ -231,7 +231,7 @@ export const sectors: Sector[] = [
         { label: 'Intakes correct ingevuld', value: '93%' },
       ],
     },
-    recommendedServices: ['marco', 'emma'],
+    recommendedServices: ['emma'],
   },
   {
     slug: 'automotive',
@@ -241,7 +241,7 @@ export const sectors: Sector[] = [
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 17h14M6 13h12M7 17v2M17 17v2"/></svg>',
     hero: {
       headline: 'AI voor de garage die elke afspraak vastlegt.',
-      subheadline: 'Terwijl uw monteurs sleutelen, neemt Marco de telefoon aan: APK, onderhoud, pech. Geen gemiste klant meer, de planning altijd vol.',
+      subheadline: 'Terwijl uw monteurs sleutelen, neemt Emma de telefoon aan: APK, onderhoud, pech. Geen gemiste klant meer, de planning altijd vol.',
     },
     challenges: [
       'Telefoon gaat over terwijl het team in de werkplaats staat — klant belt de volgende garage',
@@ -251,7 +251,7 @@ export const sectors: Sector[] = [
       'Offerte-aanvragen voor banden/reparatie blijven liggen',
     ],
     solutions: [
-      { title: 'Afspraken via telefoon (Marco)', description: 'AI-receptionist neemt APK-, onderhouds- en pechcalls 24/7 aan en plant direct in uw werkplaatsplanning.' },
+      { title: 'Afspraken via telefoon (Emma)', description: 'AI-receptionist neemt APK-, onderhouds- en pechcalls 24/7 aan en plant direct in uw werkplaatsplanning.' },
       { title: 'Status-updates via WhatsApp (Emma)', description: '"Uw auto is klaar" of "onderdeel besteld" automatisch via WhatsApp — minder terugbel-verkeer aan de balie.' },
       { title: 'Afspraakherinneringen', description: 'Reminder de dag vóór de werkplaatsafspraak verlaagt no-shows en houdt de planning vol.' },
       { title: 'Offerte-intake', description: 'Aanvragen voor banden, reparatie of inruil worden gestructureerd vastgelegd en naar uw systeem gerouteerd.' },
@@ -266,7 +266,7 @@ export const sectors: Sector[] = [
         { label: 'Baliestoringen/dag', value: '−40%' },
       ],
     },
-    recommendedServices: ['marco', 'emma'],
+    recommendedServices: ['emma'],
   },
   {
     slug: 'installatie',
@@ -276,7 +276,7 @@ export const sectors: Sector[] = [
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M14 7l-3 3m0 0l-7 7 3 3 7-7m-3-3l3 3m4-9a4 4 0 01-5 5l-7 7"/></svg>',
     hero: {
       headline: 'AI die uw spoedcalls nooit mist.',
-      subheadline: 'Lekkage om 22:00? Storing in het weekend? Marco neemt op, filtert spoed van regulier en schakelt de dienstdoende monteur direct in.',
+      subheadline: 'Lekkage om 22:00? Storing in het weekend? Emma neemt op, filtert spoed van regulier en schakelt de dienstdoende monteur direct in.',
     },
     challenges: [
       'Spoedcalls (lekkage, gas, stroomuitval) komen vaak ’s avonds en in het weekend',
@@ -286,7 +286,7 @@ export const sectors: Sector[] = [
       'Planning van onderhoud en storingen handmatig',
     ],
     solutions: [
-      { title: 'Spoed-triage (Marco)', description: 'AI-receptionist herkent spoed (lekkage, gas, breuk), filtert van regulier en escaleert urgente gevallen direct naar de dienstdoende monteur.' },
+      { title: 'Spoed-triage (Emma)', description: 'AI-receptionist herkent spoed (lekkage, gas, breuk), filtert van regulier en escaleert urgente gevallen direct naar de dienstdoende monteur.' },
       { title: 'Inplannen in uw systeem', description: 'Reguliere afspraken worden direct ingepland in Bouw7, Werkbon of uw eigen planning.' },
       { title: 'WhatsApp-bevestiging (Emma)', description: 'Klant krijgt automatisch een bevestiging met tijdvak en een reminder — minder no-shows en belverkeer.' },
       { title: 'Offerte-intake', description: 'Aanvragen onder een drempelbedrag automatisch gestructureerd vastgelegd voor snelle opvolging.' },
@@ -294,24 +294,24 @@ export const sectors: Sector[] = [
     caseExample: {
       company: 'Voorbeeldscenario',
       location: 'Utrecht',
-      quote: 'Een installatiebedrijf verliest avond- en weekendspoed omdat niemand opneemt. Marco filtert spoed en zet die direct door naar de monteur van dienst.',
+      quote: 'Een installatiebedrijf verliest avond- en weekendspoed omdat niemand opneemt. Emma filtert spoed en zet die direct door naar de monteur van dienst.',
       metrics: [
         { label: 'Spoed correct doorgezet', value: '95%' },
         { label: 'Gemiste avond/weekend-calls', value: '−80%' },
         { label: 'Tijd aan telefoon/week', value: '−9 uur' },
       ],
     },
-    recommendedServices: ['marco', 'emma'],
+    recommendedServices: ['emma'],
   },
   {
     slug: 'schoonheid',
     title: 'Schoonheid & kappers',
-    shortDescription: 'Telefoon tijdens de behandeling? Marco neemt op, Emma stuurt reminders — no-shows omlaag.',
+    shortDescription: 'Telefoon tijdens de behandeling? Emma neemt op, Emma stuurt reminders — no-shows omlaag.',
     description: 'AI-oplossingen voor kapsalons, schoonheidssalons, nagelstudio’s en pedicures die geen afspraak meer willen missen en no-shows willen terugdringen.',
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M14.5 9.5L21 3m-7 7l-3 3m0 0l-6 6m6-6l-3-3M9 4a5 5 0 100 10A5 5 0 009 4z"/></svg>',
     hero: {
       headline: 'AI die opneemt terwijl u knipt.',
-      subheadline: 'U staat met de handen vol — Marco neemt de telefoon aan en boekt direct in uw agenda. Emma stuurt reminders en haalt no-shows naar beneden.',
+      subheadline: 'U staat met de handen vol — Emma neemt de telefoon aan en boekt direct in uw agenda. Emma stuurt reminders en haalt no-shows naar beneden.',
     },
     challenges: [
       'Telefoon gaat over tijdens een behandeling — beller boekt elders',
@@ -321,7 +321,7 @@ export const sectors: Sector[] = [
       'Geen tijd om buiten openingstijd terug te bellen',
     ],
     solutions: [
-      { title: 'Afspraken via telefoon (Marco)', description: 'AI-receptionist neemt op tijdens behandelingen en boekt direct in uw systeem (Salonized, Treatwell, Shore, etc.).' },
+      { title: 'Afspraken via telefoon (Emma)', description: 'AI-receptionist neemt op tijdens behandelingen en boekt direct in uw systeem (Salonized, Treatwell, Shore, etc.).' },
       { title: 'No-show-reductie (Emma)', description: 'WhatsApp-bevestiging plus reminder 24u en 2u vooraf — no-shows fors omlaag.' },
       { title: 'Recall-berichten', description: 'Automatische terugkomberichten ("tijd voor uw volgende afspraak") houden de agenda gevuld.' },
       { title: 'Multi-channel afspraken', description: 'Telefoon, WhatsApp en Instagram-DM komen samen — geen gemiste boeking meer.' },
@@ -329,14 +329,14 @@ export const sectors: Sector[] = [
     caseExample: {
       company: 'Voorbeeldscenario',
       location: 'Haarlem',
-      quote: 'Een drukke salon mist telefoontjes tijdens behandelingen. Marco neemt ze aan en boekt direct, Emma stuurt reminders zodat stoelen niet leeg blijven.',
+      quote: 'Een drukke salon mist telefoontjes tijdens behandelingen. Emma neemt ze aan en boekt direct, Emma stuurt reminders zodat stoelen niet leeg blijven.',
       metrics: [
         { label: 'No-shows', value: '−55%' },
         { label: 'Gemiste afspraken', value: '−70%' },
         { label: 'Recall-omzet', value: '+15%' },
       ],
     },
-    recommendedServices: ['emma', 'marco'],
+    recommendedServices: ['emma'],
   },
   {
     slug: 'fitness',
@@ -357,7 +357,7 @@ export const sectors: Sector[] = [
     ],
     solutions: [
       { title: 'Ledenvragen via WhatsApp (Emma)', description: '24/7 antwoord op de meest gestelde vragen, getraind op uw tarieven, rooster en voorwaarden.' },
-      { title: 'Proefles-intake (Marco/Emma)', description: 'Leads worden gekwalificeerd en direct ingepland voor een proefles — ook ’s avonds en in het weekend.' },
+      { title: 'Proefles-intake (Emma)', description: 'Leads worden gekwalificeerd en direct ingepland voor een proefles — ook ’s avonds en in het weekend.' },
       { title: 'Reserveringen en reminders', description: 'Les- of baanreserveringen met automatische herinnering, minder no-shows.' },
       { title: 'Administratie-automatisering', description: 'Opzeg-, pauze- en wijzigingsverzoeken gestructureerd naar uw systeem.' },
     ],
@@ -371,7 +371,7 @@ export const sectors: Sector[] = [
         { label: 'Balietijd/week', value: '−10 uur' },
       ],
     },
-    recommendedServices: ['emma', 'marco'],
+    recommendedServices: ['emma'],
   },
   {
     slug: 'recruitment',
@@ -381,7 +381,7 @@ export const sectors: Sector[] = [
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 10-4-4 4 4 0 004 4z"/></svg>',
     hero: {
       headline: 'AI die elke kandidaat te woord staat.',
-      subheadline: 'Kandidaten bellen op het moment dat ú in gesprek bent. Marco neemt op, screent op beschikbaarheid en locatie, en plant de intake direct in.',
+      subheadline: 'Kandidaten bellen op het moment dat ú in gesprek bent. Emma neemt op, screent op beschikbaarheid en locatie, en plant de intake direct in.',
     },
     challenges: [
       'Kandidaat-calls komen binnen terwijl recruiters in gesprek zijn',
@@ -391,7 +391,7 @@ export const sectors: Sector[] = [
       'Intakes handmatig inplannen',
     ],
     solutions: [
-      { title: 'Kandidaat-intake (Marco)', description: 'AI-receptionist neemt op, pre-screent op beschikbaarheid, locatie en ervaring en plant de intake direct in.' },
+      { title: 'Kandidaat-intake (Emma)', description: 'AI-receptionist neemt op, pre-screent op beschikbaarheid, locatie en ervaring en plant de intake direct in.' },
       { title: 'WhatsApp-opvolging (Emma)', description: 'Snelle, geautomatiseerde opvolging en statusupdates houden kandidaten warm.' },
       { title: 'Custom screening-workflow', description: 'Kwalificatie volgens uw criteria, met routering van geschikte kandidaten naar de juiste recruiter.' },
       { title: 'Vacaturevragen 24/7', description: 'Veelgestelde vragen over functies, uren en voorwaarden automatisch beantwoord.' },
@@ -399,14 +399,14 @@ export const sectors: Sector[] = [
     caseExample: {
       company: 'Voorbeeldscenario',
       location: 'Rotterdam',
-      quote: 'Een uitzendbureau verliest kandidaten doordat recruiters in gesprek zijn. Marco staat elke beller te woord, screent voor en plant intakes in.',
+      quote: 'Een uitzendbureau verliest kandidaten doordat recruiters in gesprek zijn. Emma staat elke beller te woord, screent voor en plant intakes in.',
       metrics: [
         { label: 'Kandidaten te woord gestaan', value: '100%' },
         { label: 'Tijd aan pre-screening', value: '−50%' },
         { label: 'Intakes per week', value: '+30%' },
       ],
     },
-    recommendedServices: ['marco', 'custom'],
+    recommendedServices: ['emma', 'custom'],
   },
   {
     slug: 'onderwijs',
@@ -416,7 +416,7 @@ export const sectors: Sector[] = [
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M12 14l9-5-9-5-9 5 9 5zm0 0v6m-4-4v3a4 4 0 008 0v-3"/></svg>',
     hero: {
       headline: 'AI die uw aanmeldingen vastlegt.',
-      subheadline: 'Terwijl u lesgeeft, neemt Marco aanmeldingen en vragen aan en plant proeflessen in. Emma stuurt lesherinneringen en houdt de planning vol.',
+      subheadline: 'Terwijl u lesgeeft, neemt Emma aanmeldingen en vragen aan en plant proeflessen in. Emma stuurt lesherinneringen en houdt de planning vol.',
     },
     challenges: [
       'Telefoon gaat over tijdens een les of rijles — aanmelding gemist',
@@ -426,7 +426,7 @@ export const sectors: Sector[] = [
       'Aanmeldingen ’s avonds en in het weekend blijven liggen',
     ],
     solutions: [
-      { title: 'Aanmeld-intake (Marco)', description: 'AI-receptionist neemt aanmeldingen en vragen aan, ook tijdens lessen, en plant proeflessen direct in.' },
+      { title: 'Aanmeld-intake (Emma)', description: 'AI-receptionist neemt aanmeldingen en vragen aan, ook tijdens lessen, en plant proeflessen direct in.' },
       { title: 'Lesherinneringen (Emma)', description: 'WhatsApp-reminders voor (rij)lessen verlagen no-shows en houden het rooster gevuld.' },
       { title: 'Planning en omboekingen', description: 'Les-afspraken en wijzigingen worden gestructureerd verwerkt in uw planning.' },
       { title: 'Vragen 24/7', description: 'Standaardvragen over pakketten, prijzen en voorwaarden automatisch beantwoord.' },
@@ -434,19 +434,18 @@ export const sectors: Sector[] = [
     caseExample: {
       company: 'Voorbeeldscenario',
       location: 'Groningen',
-      quote: 'Een rijschool mist aanmeldingen tijdens lessen. Marco neemt ze aan en plant proeflessen in, Emma stuurt lesherinneringen tegen no-shows.',
+      quote: 'Een rijschool mist aanmeldingen tijdens lessen. Emma neemt ze aan en plant proeflessen in, Emma stuurt lesherinneringen tegen no-shows.',
       metrics: [
         { label: 'Aanmeldingen vastgelegd', value: '+40%' },
         { label: 'No-shows op lessen', value: '−45%' },
         { label: 'Planningstijd/week', value: '−7 uur' },
       ],
     },
-    recommendedServices: ['marco', 'emma'],
+    recommendedServices: ['emma'],
   },
 ];
 
 export const serviceLabels: Record<string, string> = {
-  marco: 'Marco — AI sekreter',
   emma: 'Emma — WhatsApp agent',
   'telefoon-assistent': 'AI telefoon assistent',
   custom: 'Custom AI workflows',

@@ -45,7 +45,7 @@ Wilt u eerst weten of het bij u rendeert? Doe de gratis AI-scan (3 min) — u kr
 https://aanloopai.nl/gratis-ai-scan/
 
 Groet,
-Mustafa — Aanloop AI · Rotterdam · KvK 56312075
+Mustafa — Aanloop AI · Rotterdam · KvK 88606902
 
 [Afmelden: reply met "stop" en u hoort niets meer.]
 ```

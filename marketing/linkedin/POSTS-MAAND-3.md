@@ -1,7 +1,7 @@
 # LinkedIn — Maand 3 (20 ready-to-paste posts, weken 9-12)
 
 > Vervolg op `POSTS-MAAND-1.md` (week 1-4) en `POSTS-MAAND-2.md` (week 5-8). 1 post per werkdag.
-> Fact-correct: KvK 56312075 · Mustafa Agah Dogan · v.a. €249/€597/€1.197 · GEO v.a. €595 · AVG · EU-data.
+> Fact-correct: KvK 88606902 · Mustafa Agah Dogan · v.a. €249/€597/€1.197 · GEO v.a. €595 · AVG · EU-data.
 > Geen verzonnen cijfers (klantaantal/besparing/percentages). Verhalen zijn illustratief ("stel je voor"), geen echte cases.
 > Andere invalshoeken dan maand 1 en 2.
 

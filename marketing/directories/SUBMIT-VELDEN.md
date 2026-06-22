@@ -11,7 +11,7 @@ Website:        https://aanloopai.nl
 E-mail:         hello@aanloopai.nl
 Telefoon:       +31 6 2474 1597
 Adres:          Blokfluit 31, 3068 KZ Rotterdam, Nederland
-KvK:            56312075
+KvK:            88606902
 BTW:            NL004672676B48
 Opgericht:      2023
 Oprichter/CEO:  Mustafa Agah Dogan

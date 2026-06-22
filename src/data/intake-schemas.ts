@@ -28,12 +28,12 @@ export interface IntakeSchema {
   steps: IntakeStep[];
 }
 
-const MARCO: IntakeSchema = {
+const EMMA_TELEFOON: IntakeSchema = {
   steps: [
     {
       key: 'bedrijf',
       title: 'Uw bedrijf',
-      intro: 'Zodat Marco zich correct voorstelt aan uw bellers.',
+      intro: 'Zodat Emma zich correct voorstelt aan uw bellers.',
       fields: [
         { name: 'bedrijfsnaam', label: 'Bedrijfsnaam', type: 'text', required: true },
         { name: 'branche', label: 'Branche', type: 'text', required: true, placeholder: 'bijv. tandartspraktijk, webshop' },
@@ -48,18 +48,18 @@ const MARCO: IntakeSchema = {
         { name: 'huidig_nummer', label: 'Huidig telefoonnummer', type: 'tel', required: true, hint: 'Het nummer waarop u nu gebeld wordt.' },
         { name: 'openingstijden', label: 'Openingstijden', type: 'textarea', required: true, placeholder: 'Ma-Vr 09:00-17:00\nZa gesloten' },
         { name: 'buiten_tijden', label: 'Buiten openingstijden', type: 'select', required: true,
-          options: ['Marco neemt altijd op (24/7)', 'Alleen tijdens openingstijden', 'Voicemail buiten openingstijden'] },
+          options: ['Emma neemt altijd op (24/7)', 'Alleen tijdens openingstijden', 'Voicemail buiten openingstijden'] },
       ],
     },
     {
       key: 'afhandeling',
       title: 'Gespreksafhandeling',
-      intro: 'Wat moet Marco met inkomende gesprekken doen?',
+      intro: 'Wat moet Emma met inkomende gesprekken doen?',
       fields: [
-        { name: 'taken', label: 'Marco mag', type: 'multiselect', required: true,
+        { name: 'taken', label: 'Emma mag', type: 'multiselect', required: true,
           options: ['Afspraken inplannen', 'Doorverbinden naar een medewerker', 'Een bericht aannemen', 'Veelgestelde vragen beantwoorden'] },
         { name: 'doorverbind_nummers', label: 'Doorverbindnummers', type: 'textarea', placeholder: 'Verkoop — 010 123 4567\nSupport — 010 123 4568' },
-        { name: 'escalatie', label: 'Escalatiecontact', type: 'text', hint: 'Wie belt Marco bij een urgente situatie?' },
+        { name: 'escalatie', label: 'Escalatiecontact', type: 'text', hint: 'Wie belt Emma bij een urgente situatie?' },
       ],
     },
     {
@@ -197,7 +197,7 @@ const GENERIC: IntakeSchema = {
 };
 
 export const INTAKE_SCHEMAS: Record<string, IntakeSchema> = {
-  marco: MARCO,
+  marco: EMMA_TELEFOON,
   emma: EMMA,
   seo: SEO,
   geo: GEO,

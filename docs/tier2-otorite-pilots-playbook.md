@@ -32,7 +32,7 @@ Wat ik kan: assets, templates, GEO-code. Wat jij doet: outreach + sales (mens-we
 ## B. Backlink / digital-PR (DR 3.5 → omhoog)
 
 ### B1. Quick-win citaties (deze week, gratis, hoge zekerheid)
-- **Google Business Profile** (KvK 56312075, Rotterdam) — claim + invullen.
+- **Google Business Profile** (KvK 88606902, Rotterdam) — claim + invullen.
 - **LinkedIn Company Page** (compleet, link naar site).
 - **KvK / bedrijfsregisters**, **Glassdoor/Indeed company** (indien recruiting).
 - **Agency-directories:** Clutch, Sortlist, The Manifest, DesignRush, GoodFirms (NL AI-agency categorie) — gratis listing = backlink + leads.

@@ -67,7 +67,7 @@ const ivrVergelijking = [
   { aspect: 'Klanttevredenheid', klassiek: '3,2-3,8 op 5 (frustratie met menu)', ai: '4,1-4,5 op 5 (natuurlijk gevoel)' },
   { aspect: '24/7 bereikbaarheid buiten kantooruren', klassiek: 'Voicemail of hangtone', ai: 'Volledige eerstelijns afhandeling plus terugbel-afspraak' },
   { aspect: 'Schaalbaarheid bij piekmomenten', klassiek: 'Wachtrijen tot 10-20 minuten', ai: 'Onbeperkt parallel; geen wachttijd' },
-  { aspect: 'Maandkosten klassiek IVR-systeem', klassiek: 'KPN of Belsimpel: 200-800 EUR per maand plus per-minuut kosten', ai: 'Aanloop AI: €497 per maand (Marco-pakket) all-in' },
+  { aspect: 'Maandkosten klassiek IVR-systeem', klassiek: 'KPN of Belsimpel: 200-800 EUR per maand plus per-minuut kosten', ai: 'Aanloop AI: €497 per maand (Emma-pakket) all-in' },
   { aspect: 'Updates of script-wijzigingen', klassiek: 'Service-tickets, doorlooptijd 5-15 dagen', ai: 'Self-service prompt-aanpassing, doorlooptijd minuten' },
 ];
 
@@ -85,7 +85,7 @@ const useCases = [
   { title: '24/7 AI-receptionist huisartsenpraktijk', body: 'Triage volgens NHG-protocol, doorschakelen naar HAP buiten kantooruren, herhaalrecepten via spraak. Latency onder 1.2 seconden voor natuurlijke flow.', link: '/kennisbank/ai-voor-huisartsenpraktijk/' },
   { title: 'Spoedlijn dierenarts buiten praktijktijd', body: 'AI scant op spoed-trefwoorden, classificeert urgentie, schakelt direct door naar dienstdoende of bij levensgevaar 112-instructie. SIP via Vonage EU.', link: '/kennisbank/ai-voor-dierenarts-spoedlijn-triage-nederland/' },
   { title: '24/7 uitvaarttelefoon', body: 'Bij overlijden bereikbaar zijn is essentieel. AI vangt eerste contact op, registreert basisgegevens, plant terugbel met uitvaartondernemer binnen 1 uur.', link: '/kennisbank/ai-voor-uitvaartondernemer-24-7-telefoon-nederland/' },
-  { title: 'Outbound sales-kwalificatie', body: 'AI belt warme leads (form-fill, demo-aanvraag), kwalificeert (BANT), boekt indien geschikt direct in agenda van accountmanager. 50-70 procent meer afspraken per AE.', link: '/diensten/marco/' },
+  { title: 'Outbound sales-kwalificatie', body: 'AI belt warme leads (form-fill, demo-aanvraag), kwalificeert (BANT), boekt indien geschikt direct in agenda van accountmanager. 50-70 procent meer afspraken per AE.', link: '/diensten/emma/' },
   { title: 'After-hours klantenservice e-commerce', body: 'Buiten 17:00 vangt AI inkomende vragen op: orderstatus, retour, klacht. Volledige afhandeling 70-85 procent; rest gaat naar mens met context.', link: '/kennisbank/ai-voor-detailhandel-klantcontact-voorraad/' },
   { title: 'Restaurant-reserveringen', body: 'AI neemt op binnen 2 seconden, controleert beschikbaarheid in OpenTable of Resengo, bevestigt reservering, stuurt SMS-confirmatie. Gemist: 0 procent.', link: '/kennisbank/ai-voor-restaurant-nederland/' },
 ];
@@ -96,7 +96,7 @@ const faqItems = [
   { question: 'Welke SIP-trunk provider werkt het beste voor Nederlandse telefoonnummers?', answer: 'Voor productie-stabiliteit en EU-data-residency: Vonage (sterke NL-presence) of Telnyx (eigen EU-netwerk). Voor maximale flexibiliteit en SDK-rijkdom: Twilio mits met EU-EDGE-locatie geconfigureerd. Voor AI-native voice met ingebouwde barge-in en interruption-handling: Retell AI. Voor zeer hoog volume (10.000+ minuten per maand): Plivo of directe SIP via een Nederlandse VoIP-leverancier zoals RoutIT of Solcon.' },
   { question: 'Wat is een acceptabele latency voor AI-telefonie?', answer: 'Onder 1 seconde tussen einde-klant-zin en begin AI-antwoord voelt natuurlijk. Tussen 1 en 1,5 seconden merkbaar maar acceptabel. Boven 2 seconden voelt vertraagd en breekt natuurlijke flow. In productie streven we 1100-1400 ms na (gemeten als first-audio-out na end-of-utterance). Voor barge-in (klant onderbreekt AI) is 200-400 ms detection-tijd noodzakelijk.' },
   { question: 'Werkt AI-telefonie met regionale dialecten en accenten?', answer: 'Ja, voor de meest gebruikte Nederlandse accenten (Brabants, Limburgs accent, Surinaams-Nederlands, Marokkaans-Nederlands, Vlaams) ligt de woord-herkenning op 91-97 procent met Whisper-large. Voor sterke dialectvormen (volledig Limburgs dialect, Fries) adviseren we een terugbel-flow waarbij AI vraagt of het gesprek in standaard-Nederlands voortgezet kan worden, of routeert naar menselijke medewerker.' },
-  { question: 'Hoeveel kost AI-telefonie per minuut?', answer: 'Total-cost-per-minute (TCPM) voor productie-quality NL-AI-telefonie ligt tussen 0,28-0,55 euro per minuut, opgebouwd uit: SIP-trunk (0,03-0,08 EUR), ASR (0,03-0,08 EUR), LLM-inferentie (0,05-0,15 EUR), TTS (0,12-0,25 EUR). Daarbovenop maandelijkse infra-kosten 50-200 EUR per nummer. Aanloop AI biedt all-in pakketten vanaf €497 per maand (Marco-pakket) met 150 gesprekken inclusief.' },
+  { question: 'Hoeveel kost AI-telefonie per minuut?', answer: 'Total-cost-per-minute (TCPM) voor productie-quality NL-AI-telefonie ligt tussen 0,28-0,55 euro per minuut, opgebouwd uit: SIP-trunk (0,03-0,08 EUR), ASR (0,03-0,08 EUR), LLM-inferentie (0,05-0,15 EUR), TTS (0,12-0,25 EUR). Daarbovenop maandelijkse infra-kosten 50-200 EUR per nummer. Aanloop AI biedt all-in pakketten vanaf €497 per maand (Emma-pakket) met 150 gesprekken inclusief.' },
   { question: 'Hoe werkt barge-in en interruption-handling?', answer: 'Barge-in betekent dat een klant de AI mag onderbreken zonder dat het gesprek mislukt. Implementatie: continue VAD op input-stream tijdens AI-spreken, na 250-400 ms aanhoudend spraak-signaal stopt AI direct, ASR pakt klant-zin op, LLM krijgt context dat AI onderbroken werd plus de oorspronkelijke onafgemaakte boodschap. Retell heeft dit native; bij ElevenLabs plus eigen orchestratie (zoals Aanloop AI gebruikt) bouwen we deze laag zelf.' },
   { question: 'Is AI-telefonie AVG-compliant voor zorg-praktijken?', answer: 'Ja, mits goed geconfigureerd. EU-only stack: Vonage of Telnyx EU voor SIP, ElevenLabs EU-cluster voor TTS, Mistral Large via Azure EU-West voor LLM, Hetzner of OVHcloud EU voor app-hosting. Verplicht: DPA met elke sub-verwerker, DPIA voor zorg-toepassingen, NEN 7510-bewijsstuk (zie nen.nl/nen-7510). Aanloop AI levert dit standaard. Geen data-export buiten EER. Bewaartermijn telefoongesprekken 90 dagen, transcripten 12 maanden. Toezichthouders: Autoriteit Persoonsgegevens (autoriteitpersoonsgegevens.nl) plus Rijksinspectie Digitale Infrastructuur (rdi.nl).' },
   { question: 'Hoe verhoudt AI-telefonie zich tot een klassieke IVR (KPN, Belsimpel, etc)?', answer: 'Klassieke IVR-systemen werken met DTMF-tonen (druk 1 voor X, druk 2 voor Y) en starre menu-bomen. AI-telefonie werkt met natuurlijke spraak en context-begrip. Voor klant: doorvoertijd tot juiste afhandeling daalt 60-80 procent, klanttevredenheid stijgt 0,5-1,2 punten op 5-schaal. Voor bedrijf: maandkosten typisch lager (Aanloop €497 per maand all-in versus klassiek IVR 200-800 EUR), updates self-service in plaats van service-tickets bij telefonie-leverancier.' },
@@ -106,13 +106,13 @@ const faqItems = [
 ];
 
 const verderLezen = [
-  { url: '/diensten/marco/', tekst: 'Marco — AI voice-assistent voor Nederlandse MKB' },
+  { url: '/diensten/emma/', tekst: 'Emma — AI voice-assistent voor Nederlandse MKB' },
   { url: '/kennisbank/ai-voor-uitvaartondernemer-24-7-telefoon-nederland/', tekst: 'AI-uitvaarttelefoon 24/7 voor uitvaartondernemers' },
   { url: '/kennisbank/ai-voor-dierenarts-spoedlijn-triage-nederland/', tekst: 'AI-spoedlijn voor dierenartsen 24/7 triage' },
-  { url: '/vergelijk/marco-vs-voiceflow/', tekst: 'Marco versus Voiceflow — voice-AI vergelijking' },
-  { url: '/vergelijk/marco-vs-make-com-voice/', tekst: 'Marco versus Make.com Voice — vergelijking' },
+  { url: '/diensten/emma/', tekst: 'Emma versus Voiceflow — voice-AI vergelijking' },
+  { url: '/diensten/emma/', tekst: 'Emma versus Make.com Voice — vergelijking' },
   { url: '/vergelijk/ai-receptionist-vs-callcenter/', tekst: 'AI-receptionist versus klassieke callcenter' },
-  { url: '/vergelijk/marco-vs-emma/', tekst: 'Marco versus Emma — voice versus chat' },
+  { url: '/diensten/emma/', tekst: 'Emma versus Emma — voice versus chat' },
   { url: '/ai-receptionist-nederland/', tekst: 'AI-receptionist Nederland — productpagina' },
 ];
 ---
@@ -138,7 +138,7 @@ const verderLezen = [
           De volledige technische gids voor AI-telefonie in Nederland: ElevenLabs versus OpenAI Voice versus Cartesia versus Azure, SIP-trunks via Twilio, Vonage, Retell en Telnyx, latency-budget per component, Nederlandse stem-kwaliteit, dialect-coverage van Brabants tot Surinaams-Nederlands, barge-in handling en sentiment-detectie. Voor MKB-ondernemers, technische beslissers en agencies die voice AI productie-rijp willen inzetten.
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <a href="/diensten/marco/" class="btn-primary">Marco voice-assistent</a>
+          <a href="/diensten/emma/" class="btn-primary">Emma voice-assistent</a>
           <a href="/gratis-ai-scan/" class="btn-secondary">Gratis architectuur-scan</a>
         </div>
       </div>
@@ -380,8 +380,8 @@ const verderLezen = [
       </ul>
       <p class="text-slate-700 leading-relaxed mb-4">Daarbovenop maandelijkse vaste kosten: nummer-huur (15-50 EUR per maand per nummer), platform-fee, monitoring en compliance-overhead. Aanloop AI biedt all-in pakketten:</p>
       <ul class="list-disc pl-6 text-slate-700 leading-relaxed space-y-2 mb-4">
-        <li><strong class="text-navy">Marco (één vast tarief):</strong> 497 EUR per maand — AI-receptionist, 150 gesprekken inclusief, callscript op maat, agenda-integratie</li>
-        <li><strong class="text-navy">Groei (MKB):</strong> 997 EUR per maand — Marco onbeperkt plus Emma WhatsApp-agent plus CRM-integratie</li>
+        <li><strong class="text-navy">Emma (één vast tarief):</strong> 497 EUR per maand — AI-receptionist, 150 gesprekken inclusief, callscript op maat, agenda-integratie</li>
+        <li><strong class="text-navy">Groei (MKB):</strong> 997 EUR per maand — Emma onbeperkt plus Emma WhatsApp-agent plus CRM-integratie</li>
         <li><strong class="text-navy">Partner (multi-locatie of zorg):</strong> maatwerk op offerte — EPD-koppeling, NEN 7510-pakket, dedicated accountmanager</li>
       </ul>
       <p class="text-slate-700 leading-relaxed">Voor een direct kosten-overzicht zie de <a href="/ai-roi-calculator/" class="text-brand-indigo hover:underline">ROI calculator</a>; voor een vergelijking met klassiek callcenter zie <a href="/vergelijk/ai-receptionist-vs-callcenter/" class="text-brand-indigo hover:underline">AI-receptionist versus callcenter</a>.</p>
@@ -438,7 +438,7 @@ const verderLezen = [
       <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance">Klaar om uw telefonie te upgraden naar voice AI?</h2>
       <p class="mt-4 text-slate-300">Gratis 30-minuten architectuur-scan. We inventariseren huidige telefonie-setup, volume, gebruikspatroon en compliance-vereisten. U ontvangt een concreet stappenplan inclusief stack-aanbeveling, nummer-portering-tijdpad en kosten-indicatie.</p>
       <div class="mt-6 flex flex-col sm:flex-row gap-3">
-        <a href="/diensten/marco/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Marco voice-assistent</a>
+        <a href="/diensten/emma/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Emma voice-assistent</a>
         <a href="/gratis-ai-scan/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Gratis quickscan</a>
       </div>
     </div>

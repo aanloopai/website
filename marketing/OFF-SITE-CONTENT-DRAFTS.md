@@ -2,7 +2,7 @@
 
 > Vult de Execution Pack aan met **volledige** content (de pack heeft alleen templates/outlines).
 > Alle teksten gebruiken uitsluitend canonical feiten uit `OFF-SITE-AUTHORITY-EXECUTION-PACK.md`:
-> Aanloop AI B.V. · KvK 56312075 · opgericht 2023 · oprichter Mustafa Agah Dogan · Rotterdam (Blokfluit 31) ·
+> Aanloop AI B.V. · KvK 88606902 · opgericht 2023 · oprichter Mustafa Agah Dogan · Rotterdam (Blokfluit 31) ·
 > Marco v.a. €249/€597/€1.197 · GEO v.a. €595/mnd + gratis GEO Quick Scan · AVG-compliant · EU-data.
 > ❌ NOOIT: klantaantallen, "€8.014", "200-respondent onderzoek", ISO 27001, Daan Verhoeven, KvK 88606902.
 > Opgesteld 2026-06-13. Eigenaar verzendt/publiceert zelf (vereist login/identiteit).
@@ -27,7 +27,7 @@ Om dat inzichtelijk te maken biedt Aanloop AI een gratis GEO Quick Scan aan, waa
 
 Aanloop AI werkt AVG-compliant en op EU-infrastructuur, met transparante prijzen vanaf €249 per maand en zonder vendor lock-in.
 
-**Over Aanloop AI** — Aanloop AI B.V. (KvK 56312075, opgericht 2023, gevestigd in Rotterdam) is een AI-bureau voor het Nederlandse MKB. Het bedrijf bouwt praktische AI-agents en maakt bedrijven vindbaar in AI-zoekomgevingen.
+**Over Aanloop AI** — Aanloop AI B.V. (KvK 88606902, opgericht 2023, gevestigd in Rotterdam) is een AI-bureau voor het Nederlandse MKB. Het bedrijf bouwt praktische AI-agents en maakt bedrijven vindbaar in AI-zoekomgevingen.
 
 *Noot voor de redactie (niet voor publicatie):* Mustafa Agah Dogan is beschikbaar voor een interview en kan een gratis GEO-scan van een willekeurig bedrijf live demonstreren. Contact: hello@aanloopai.nl · +31 6 2474 1597 · aanloopai.nl
 
@@ -45,7 +45,7 @@ Terwijl veel technologie-aanbieders hun tarieven achter een offerte-formulier ve
 
 Aanloop AI levert kant-en-klare AI-medewerkers voor het MKB: Marco, een AI-receptionist die 24/7 de telefoon aanneemt in vloeiend Nederlands, en Emma, die WhatsApp- en klantvragen afhandelt. Alles draait AVG-compliant op EU-infrastructuur, zonder jaarcontract of vendor lock-in. Daarnaast helpt het bureau ondernemers vindbaar te worden in AI-assistenten als ChatGPT en Gemini (GEO).
 
-**Over Aanloop AI** — Aanloop AI B.V. (KvK 56312075, opgericht 2023, Rotterdam) is een AI-bureau voor het Nederlandse MKB. Contact: hello@aanloopai.nl · +31 6 2474 1597 · aanloopai.nl
+**Over Aanloop AI** — Aanloop AI B.V. (KvK 88606902, opgericht 2023, Rotterdam) is een AI-bureau voor het Nederlandse MKB. Contact: hello@aanloopai.nl · +31 6 2474 1597 · aanloopai.nl
 
 ---
 
