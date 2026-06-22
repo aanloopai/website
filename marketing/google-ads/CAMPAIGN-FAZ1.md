@@ -54,7 +54,7 @@
 
 ## Advertentie-assets
 - **Sitelinks:** Gratis AI-Scan (`/gratis-ai-scan/`) · Tarieven vanaf €597 (`/tarieven/`) · AI-Receptionist (`/diensten/`) · Plan Strategiegesprek (`/demo-inplannen/`)
-- **Callouts:** AVG-compliant · EU-data · KvK 56312075 · 24/7 bereikbaar · Kant-en-klaar · Custom mogelijk
+- **Callouts:** AVG-compliant · EU-data · KvK 88606902 · 24/7 bereikbaar · Kant-en-klaar · Custom mogelijk
 - **Structured snippet** (Diensten): AI-receptionist, WhatsApp-assistent, Workflow-automatisering, Custom AI agents
 - **Call asset:** +31 6 24741597 (alleen kantooruren plannen)
 

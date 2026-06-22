@@ -82,7 +82,7 @@ async function sendMail(env, to, naam, subject, innerHtml) {
       sender: { name: 'Aanloop AI', email: 'hello@aanloopai.nl' },
       to: [{ email: to, name: naam || to }],
       subject,
-      htmlContent: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#0f172a">${innerHtml}<hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0"><p style="font-size:12px;color:#64748b">Aanloop AI — aanloopai.nl — KvK 56312075</p></body></html>`,
+      htmlContent: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:24px;color:#0f172a">${innerHtml}<hr style="border:none;border-top:1px solid #e2e8f0;margin:24px 0"><p style="font-size:12px;color:#64748b">Aanloop AI — aanloopai.nl — KvK 88606902</p></body></html>`,
     }),
   });
 }

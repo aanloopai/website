@@ -24,7 +24,7 @@
 - `social media`: LinkedIn (P4264/P2013) → aanloop-ai; Instagram (P2003) → aanloop.ai
 
 **References (voeg toe bij elke claim, anders kans op verwijdering):**
-- KvK-uittreksel (KvK 56312075), official website, + 1 externe bron (persbericht/G2/Capterra zodra beschikbaar).
+- KvK-uittreksel (KvK 88606902), official website, + 1 externe bron (persbericht/G2/Capterra zodra beschikbaar).
 
 **Na aanmaak:** voeg de Wikidata-URL (`https://www.wikidata.org/wiki/Q…`) toe aan de Organization `sameAs` in `src/layouts/BaseLayout.astro` (er staat al een TODO-regel klaar) → ik zet het er dan in.
 
@@ -34,7 +34,7 @@
 
 Platforms: **G2 · Capterra · Trustpilot · Software Advice · GetApp**. Claim/voeg product toe, vraag founding-klanten om reviews op dezelfde plek.
 
-**Vendor:** Aanloop AI · Rotterdam, NL · https://aanloopai.nl · hello@aanloopai.nl · KvK 56312075
+**Vendor:** Aanloop AI · Rotterdam, NL · https://aanloopai.nl · hello@aanloopai.nl · KvK 88606902
 
 ## Product A — Marco (AI Receptionist / AI Voice Agent)
 - **Categorieën:** Conversational AI, AI Agents, Virtual Receptionist, Auto Dialer/Voice, Customer Self-Service

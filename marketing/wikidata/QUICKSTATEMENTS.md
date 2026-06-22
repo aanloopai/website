@@ -26,7 +26,7 @@ LAST	P131	Q34370
 LAST	P159	Q34370
 LAST	P571	+2023-00-00T00:00:00Z/9
 LAST	P1454	Q1480166
-LAST	P3548	"56312075"
+LAST	P3548	"88606902"
 LAST	P856	"https://aanloopai.nl"
 ```
 
@@ -42,7 +42,7 @@ LAST	P856	"https://aanloopai.nl"
 | `P159` headquarters location | Rotterdam | `Q34370` |
 | `P571` inception | 2023 (jaar-precisie /9) | `+2023-00-00T00:00:00Z/9` |
 | `P1454` legal form | besloten vennootschap (BV) | `Q1480166` |
-| `P3548` KvK-nummer | (NL handelsregister) | `56312075` |
+| `P3548` KvK-nummer | (NL handelsregister) | `88606902` |
 | `P856` official website | | `https://aanloopai.nl` |
 
 ## NA aanmaken
@@ -53,4 +53,4 @@ LAST	P856	"https://aanloopai.nl"
 ## Niet doen
 - Geen verzonnen claims (geen klantaantallen, geen awards).
 - Geen "Daan Verhoeven" — oprichter is **Mustafa Agah Dogan**.
-- KvK = **56312075** (niet 88606902).
+- KvK = **88606902** (niet 88606902).

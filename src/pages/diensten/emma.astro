@@ -4,14 +4,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import emmaWhatsapp from '../../assets/images/emma-whatsapp.png';
 
 const sectorUseCases = [
-  { title: 'Webshops & e-commerce', slug: '/sectoren/ai-voor-webshops/', body: 'Emma beantwoordt vragen over voorraad, levertijden, retouren en orderstatus 24/7. Gekoppeld aan uw Shopify of WooCommerce winkel zoekt ze realtime in uw bestellingen — minder ticketdruk, hogere conversie.' },
-  { title: 'Horeca & restaurants', slug: '/sectoren/horeca/', body: 'Reserveringen, openingstijden, allergeneninformatie en bestellingen via WhatsApp. Emma synchroniseert direct met uw reserveringssysteem (Resengo, Formitable, eigen agenda) zonder personeel uit de keuken te halen.' },
-  { title: 'Vastgoed & makelaars', slug: '/sectoren/vastgoed/', body: 'Inkomende WhatsApp-aanvragen worden direct gekwalificeerd: budget, locatie, gewenste woning. Emma stuurt eerste objectvoorstellen en plant bezichtigingen in uw agenda — uw kandidaten landen warm in het CRM.' },
-  { title: 'Zakelijke dienstverlening', slug: '/sectoren/zakelijk/', body: 'Voor consultants, accountants en juristen: Emma vangt eerstelijnsvragen op (fees, beschikbaarheid, dossierstatus), en escaleert naar de juiste collega met volledige gespreksgeschiedenis.' },
-  { title: 'ZZP & freelancers', slug: '/sectoren/ai-voor-zzp/', body: 'Eén ZZP&apos;er, één agenda, vele klanten. Emma neemt vragen op terwijl u werkt, plant kennismakingen in en stuurt offertes uit — u beantwoordt alleen wat écht persoonlijke aandacht vraagt.' },
+  { title: 'Webshops & e-commerce', slug: '/sectoren/ai-voor-webshops/', body: 'Emma beantwoordt vragen over voorraad, levertijden, retouren en orderstatus 24/7 — via telefoon én WhatsApp. Gekoppeld aan uw Shopify of WooCommerce winkel zoekt ze realtime in uw bestellingen — minder ticketdruk, hogere conversie.' },
+  { title: 'Horeca & restaurants', slug: '/sectoren/horeca/', body: 'Reserveringen, openingstijden, allergeneninformatie en bestellingen via telefoon én WhatsApp. Emma neemt inkomende gesprekken zelf aan, synchroniseert direct met uw reserveringssysteem (Resengo, Formitable, eigen agenda) en verbindt door wanneer nodig — zonder personeel uit de keuken te halen.' },
+  { title: 'Vastgoed & makelaars', slug: '/sectoren/vastgoed/', body: 'Inkomende aanvragen via telefoon én WhatsApp worden direct gekwalificeerd: budget, locatie, gewenste woning. Emma stuurt eerste objectvoorstellen en plant bezichtigingen in uw agenda — uw kandidaten landen warm in het CRM.' },
+  { title: 'Zakelijke dienstverlening', slug: '/sectoren/zakelijk/', body: 'Voor consultants, accountants en juristen: Emma vangt eerstelijnsvragen op (fees, beschikbaarheid, dossierstatus) aan de telefoon en op WhatsApp, en verbindt door of escaleert naar de juiste collega met volledige gespreksgeschiedenis en transcript.' },
+  { title: 'ZZP & freelancers', slug: '/sectoren/ai-voor-zzp/', body: 'Eén ZZP&apos;er, één agenda, vele klanten. Emma neemt telefoon én WhatsApp op terwijl u werkt, plant kennismakingen in en stuurt offertes uit — u beantwoordt alleen wat écht persoonlijke aandacht vraagt.' },
 ];
 
 const integrations = {
+  Telefonie: ['Inkomende telefonie (ElevenLabs NL-stem)', 'Doorverbinden naar team', 'Voicemail & gesprekstranscripts', 'Eigen NL-telefoonnummer of porting'],
   Messaging: ['WhatsApp Business API (Meta)', 'WhatsApp Cloud API', 'Telegram', 'Facebook Messenger', 'Webchat-widget'],
   CRM: ['HubSpot', 'Pipedrive', 'Salesforce', 'Microsoft Dynamics', 'Custom REST API'],
   'E-commerce': ['Shopify', 'WooCommerce', 'Magento 2', 'Lightspeed', 'PrestaShop'],
@@ -20,45 +21,48 @@ const integrations = {
 
 const comparison = [
   { feature: '24/7 beschikbaar zonder bemensing', emma: true, livechat: 'Tijdens kantooruren', chatgpt: true, email: false },
+  { feature: 'Omnichannel: telefoon + WhatsApp + workflow', emma: true, livechat: 'Alleen chat', chatgpt: false, email: false },
+  { feature: 'Inkomende telefonie aannemen + doorverbinden', emma: true, livechat: false, chatgpt: false, email: false },
   { feature: 'Officieel WhatsApp Business API geverifieerd', emma: true, livechat: 'Variabel', chatgpt: false, email: false },
   { feature: 'Getraind op eigen kennisbank', emma: true, livechat: false, chatgpt: 'Beperkt', email: false },
   { feature: 'Realtime productdata (voorraad, orders)', emma: true, livechat: 'Handmatig', chatgpt: false, email: false },
   { feature: 'Naadloze handover naar mens', emma: true, livechat: true, chatgpt: false, email: 'Manueel' },
   { feature: 'CRM-koppeling met conversatiehistorie', emma: true, livechat: 'Variabel', chatgpt: false, email: 'Variabel' },
-  { feature: 'Maandelijkse kosten (MKB-volume)', emma: 'Vanaf €49', livechat: '€500-2.000', chatgpt: '€20/user', email: 'Personeelskosten' },
+  { feature: 'Maandelijkse kosten (MKB-volume)', emma: 'Vanaf €99', livechat: '€500-2.000', chatgpt: '€20/user', email: 'Personeelskosten' },
   { feature: 'AVG/GDPR-compliant + EU-data', emma: true, livechat: 'Variabel', chatgpt: false, email: 'Variabel' },
 ];
 
 const faqItems = [
-  { question: 'Heb ik een WhatsApp Business account nodig?', answer: 'Niet bij start. Wij regelen de WhatsApp Business API-aanmelding bij Meta (gratis verificatie via een 360dialog of Twilio-partner). U behoudt eigenaarschap van het nummer en de history. Als u al een WhatsApp Business-account heeft, koppelen we Emma aan uw bestaande nummer.' },
-  { question: 'Hoe wordt Emma getraind voor mijn bedrijf?', answer: 'Tijdens onboarding voeden we Emma met uw FAQ-sectie, productcatalogus, leveringsvoorwaarden en eventuele interne documenten. We doen twee testrondes met u — u stelt lastige vragen en stuurt op het antwoordgedrag. Pas daarna gaat Emma live.' },
-  { question: 'Wat doet Emma bij een vraag die ze niet kan beantwoorden?', answer: 'Emma escaleert volgens uw protocol: kan doorzetten naar een specifiek teamlid, een ticket openen in uw helpdesk, een terugbelafspraak plannen of de klant doorverwijzen naar het juiste contactkanaal. U bepaalt zelf de escalatieregels.' },
-  { question: 'Wat kost Emma precies?', answer: 'Emma heeft vier prijspunten: Emma Lite €49/maand standalone (tot 500 berichten, standaard FAQ-training, NL/EN auto-detect — instap voor budget-MKB die WhatsApp wil testen). Emma Standard €197/maand standalone (onbeperkte berichten, eigen kennisbank, native Shopify/WooCommerce/HubSpot-koppeling, multilingual NL/EN/FR/DE). In bundels: gratis inbegrepen vanaf het Marco Groei-pakket €997/maand (onbeperkt, met Marco AI-telefoniste). Custom-volume of multi-team setups via Partner-pakket. WhatsApp-conversatiekosten van Meta (gemiddeld €0,03-0,08 per uniek 24-uurs venster) zijn niet inbegrepen — u betaalt deze direct aan Meta. Wij rekenen geen marge op WhatsApp-fees. Zie /tarieven voor de volledige opbouw.' },
+  { question: 'Neemt Emma ook echt de telefoon aan?', answer: 'Ja. Emma is uw omnichannel AI-agent: ze neemt inkomende telefoongesprekken 24/7 zelf aan met een natuurlijke NL-stem (ElevenLabs), beantwoordt vragen, plant afspraken in uw agenda, verbindt door naar de juiste collega en levert van elk gesprek een transcript. Daarnaast handelt ze WhatsApp en webchat af en triggert ze workflows — telefoon, chat en automatisering in één agent, op één nummer, met één gespreksgeschiedenis.' },
+  { question: 'Heb ik een WhatsApp Business account of telefoonnummer nodig?', answer: 'Niet bij start. Wij regelen de WhatsApp Business API-aanmelding bij Meta (gratis verificatie via een 360dialog of Twilio-partner) én een Nederlands telefoonnummer voor de AI-receptionist — of we porten uw bestaande nummer. U behoudt eigenaarschap van nummer en history. Heeft u al een WhatsApp Business-nummer of vaste lijn, dan koppelt Emma aan uw bestaande nummers.' },
+  { question: 'Hoe wordt Emma getraind voor mijn bedrijf?', answer: 'Tijdens onboarding voeden we Emma met uw FAQ-sectie, productcatalogus, leveringsvoorwaarden en eventuele interne documenten — voor zowel telefoon als WhatsApp. We doen twee testrondes met u — u belt en appt met lastige vragen en stuurt op het antwoordgedrag. Pas daarna gaat Emma live.' },
+  { question: 'Wat doet Emma bij een vraag die ze niet kan beantwoorden?', answer: 'Emma escaleert volgens uw protocol: aan de telefoon verbindt ze direct door naar een specifiek teamlid, op WhatsApp zet ze het gesprek door, opent ze een ticket in uw helpdesk, plant ze een terugbelafspraak of verwijst ze door naar het juiste kanaal. U bepaalt zelf de escalatie- en doorverbindregels.' },
+  { question: 'Wat kost Emma precies?', answer: 'Emma kent vier tiers, allemaal zonder setup-kosten: Emma Start €99/mnd (instap: WhatsApp + workflow-automatisering + een beperkt aantal belminuten). Emma Core €249/mnd (volledige omnichannel: telefoon + WhatsApp + workflow — meest gekozen). Emma Pro €497/mnd (hoog volume + meerdere telefoonnummers + integraties + priority support). Emma Enterprise op aanvraag (SLA, dedicated tenant, custom). WhatsApp-conversatiekosten van Meta (gemiddeld €0,03-0,08 per uniek 24-uurs venster) zijn niet inbegrepen — die factureert Meta direct aan u; wij rekenen er geen marge op. Zie /tarieven voor de volledige opbouw.' },
   { question: 'Werkt Emma met mijn bestaande Shopify of WooCommerce?', answer: 'Ja. Voor Shopify, WooCommerce, Magento, Lightspeed en PrestaShop hebben we native koppelingen. Emma kan voorraad, orderstatus, retourstatus en levertijden realtime opzoeken en delen met de klant.' },
   { question: 'Worden gesprekken opgeslagen en hoe lang?', answer: 'Conversaties worden bewaard in EU-datacenters (Amsterdam/Frankfurt) met encryptie at-rest en in-transit. Default bewaartermijn is 90 dagen, configureerbaar tussen 7 en 365 dagen. Voor klanten met aparte compliance-eisen leveren we een dedicated tenant.' },
   { question: 'Kan Emma in meerdere talen tegelijk werken?', answer: 'Ja. Emma detecteert automatisch de taal van de klant (NL, EN, FR, DE standaard; ES, IT, PL op aanvraag) en antwoordt in dezelfde taal. Voor toeristische gebieden of internationale webshops is dit een grote conversie-booster.' },
-  { question: 'Wat is het verschil tussen Emma en een gewone ChatGPT-koppeling?', answer: 'Emma is een productie-grade WhatsApp-integratie met officiële Meta-verificatie, getrainde kennisbank, CRM-routing, multilingual support, AVG-compliance en handover-protocollen. Een ChatGPT-koppeling die u zelf bouwt mist deze lagen en kan na een Meta API-update zomaar offline gaan. Wij zorgen voor uptime en compliance.' },
+  { question: 'Wat is het verschil tussen Emma en een gewone ChatGPT-koppeling?', answer: 'Emma is een productie-grade omnichannel agent: inkomende telefonie met NL-stem, officieel Meta-geverifieerde WhatsApp, workflow-automatisering, getrainde kennisbank, CRM-routing, multilingual support, AVG-compliance en handover-protocollen — alles in één agent. Een ChatGPT-koppeling die u zelf bouwt mist deze lagen, kan geen telefoon aannemen en kan na een Meta API-update zomaar offline gaan. Wij zorgen voor uptime en compliance.' },
   { question: 'Hoe snel is Emma live in mijn bedrijf?', answer: 'Standaard 7 werkdagen. Onboarding-vragenlijst (1 uur), kennisbank-import (1 dag), Meta API-verificatie (2-3 dagen), training & testrondes (2 dagen). Bij urgentie kunnen we versnellen naar 3 werkdagen voor een express-fee.' },
-  { question: 'Is Emma AVG/GDPR-compliant?', answer: 'Ja. Aanloop AI is een Nederlandse B.V. (KVK 56312075), alle data wordt binnen de EU verwerkt en bewaard, we leveren een verwerkersovereenkomst-template en ondersteunen recht op verwijdering binnen 24 uur. Voor zorg- en juridische klanten leveren we een NEN 7510-compatibele opzet.' },
+  { question: 'Is Emma AVG/GDPR-compliant?', answer: 'Ja. Aanloop AI is een Nederlandse B.V. (KVK 88606902), alle data wordt binnen de EU verwerkt en bewaard, we leveren een verwerkersovereenkomst-template en ondersteunen recht op verwijdering binnen 24 uur. Voor zorg- en juridische klanten leveren we een NEN 7510-compatibele opzet.' },
   { question: 'Kan ik Emma testen voordat ik teken?', answer: 'Ja, gratis. Tijdens een 30-minuten demo laten we Emma uw exacte branche-scenario afhandelen via een testnummer. U mag zelf vragen stellen, lastige edge-cases proberen en sturen op het script. Pas daarna beslist u.' },
-  { question: 'Wat als ik Emma wil opzeggen?', answer: 'Maandelijkse opzegtermijn van één maand. Geen exit-fees. WhatsApp-nummer en conversatiehistorie blijven uw eigendom — wij leveren een export in JSON of CSV. Bij jaarbetaling krijgt u 16% korting maar bij vroegtijdige opzegging is er geen restitutie.' },
+  { question: 'Wat als ik Emma wil opzeggen?', answer: 'Maandelijkse opzegtermijn van één maand. Geen exit-fees. Uw telefoonnummer, WhatsApp-nummer en conversatie- en gesprekshistorie blijven uw eigendom — wij leveren een export in JSON of CSV. Bij jaarbetaling krijgt u 16% korting maar bij vroegtijdige opzegging is er geen restitutie.' },
 ];
 
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
-  name: 'Emma — AI WhatsApp Bot voor MKB',
-  alternateName: ['AI chatbot bouwen Nederland', 'chatbot laten maken MKB', 'MKB chatbot', 'AI chat-assistent', 'klantenservice chatbot Nederland'],
-  description: 'AI WhatsApp Business bot voor het Nederlandse MKB die klantvragen 24/7 beantwoordt, getraind op uw eigen kennisbank, met naadloze handover naar uw team.',
+  name: 'Emma — Omnichannel AI-agent (telefoon + WhatsApp + workflow)',
+  alternateName: ['AI-receptionist Nederland', 'AI-telefoniste MKB', 'AI WhatsApp agent', 'omnichannel AI-agent', 'AI klantenservice telefoon en WhatsApp Nederland'],
+  description: 'Omnichannel AI-agent voor het Nederlandse MKB: neemt 24/7 de telefoon aan (NL-stem, doorverbinden, afspraken inplannen), handelt WhatsApp af en automatiseert workflows — getraind op uw eigen kennisbank, met naadloze handover naar uw team.',
   brand: { '@type': 'Brand', name: 'Aanloop AI' },
-  category: 'AI WhatsApp Bot Software',
+  category: 'Omnichannel AI-agent Software (telefoon + WhatsApp + workflow)',
   url: 'https://aanloopai.nl/diensten/emma/',
   audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
   offers: {
     '@type': 'AggregateOffer',
     priceCurrency: 'EUR',
-    lowPrice: '49',
-    highPrice: '2500',
+    lowPrice: '99',
+    highPrice: '497',
     offerCount: '4',
     availability: 'https://schema.org/InStock',
     seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
@@ -68,33 +72,36 @@ const schema = {
 const softwareSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
-  name: 'Emma — AI WhatsApp Bot',
-  alternateName: ['AI chatbot bouwen Nederland', 'chatbot laten maken MKB', 'MKB chatbot', 'AI chat-assistent', 'klantenservice chatbot'],
-  description: 'Cloud-gebaseerde AI WhatsApp Business agent voor MKB Nederland: 24/7 klantvragen, getraind op eigen kennisbank, native koppeling met Shopify/WooCommerce/HubSpot, multilingual auto-detect, EU-only data.',
+  name: 'Emma — Omnichannel AI-agent (telefoon + WhatsApp + workflow)',
+  alternateName: ['AI-receptionist Nederland', 'AI-telefoniste MKB', 'AI WhatsApp agent', 'omnichannel AI-agent', 'AI klantenservice telefoon en WhatsApp'],
+  description: 'Cloud-gebaseerde omnichannel AI-agent voor MKB Nederland: neemt 24/7 de telefoon aan (NL-stem, doorverbinden, afspraken inplannen, transcripts), handelt WhatsApp af en automatiseert workflows. Getraind op eigen kennisbank, native koppeling met Shopify/WooCommerce/HubSpot, multilingual auto-detect, EU-only data.',
   url: 'https://aanloopai.nl/diensten/emma/',
   applicationCategory: 'BusinessApplication',
-  applicationSubCategory: 'AI Chatbot / WhatsApp Business Agent',
-  operatingSystem: 'Cloud (WhatsApp Business API + browser dashboard)',
+  applicationSubCategory: 'Omnichannel AI-agent (telefoon + WhatsApp + workflow)',
+  operatingSystem: 'Cloud (inkomende telefonie + WhatsApp Business API + browser dashboard)',
   inLanguage: ['nl-NL', 'en', 'de', 'fr', 'es', 'it', 'pl'],
   isAccessibleForFree: false,
   creator: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
   offers: {
     '@type': 'AggregateOffer',
     priceCurrency: 'EUR',
-    lowPrice: '49',
-    highPrice: '2500',
+    lowPrice: '99',
+    highPrice: '497',
     offerCount: '4',
     availability: 'https://schema.org/InStock',
   },
   featureList: [
+    'Inkomende telefonie 24/7 aannemen met natuurlijke NL-stem (ElevenLabs)',
+    'Doorverbinden naar het juiste teamlid + gesprekstranscripts',
+    'Afspraken inplannen in uw agenda via telefoon én WhatsApp',
     'WhatsApp Business API officieel Meta-verified',
-    '24/7 klantvragen automatisch beantwoorden',
+    'Workflow-automatisering en escalatie volgens uw protocol',
     'Getraind op eigen FAQ + productcatalogus + interne documenten',
     'Realtime productdata via Shopify, WooCommerce, Magento, Lightspeed, PrestaShop',
     'Native CRM-koppeling (HubSpot, Pipedrive, Salesforce, Microsoft Dynamics)',
     'Helpdesk integratie (Zendesk, Freshdesk, Intercom, Crisp)',
     'Multilingual auto-detection (NL/EN/FR/DE standaard, ES/IT/PL op aanvraag)',
-    'Naadloze handover naar uw team met conversatie-history',
+    'Naadloze handover naar uw team met conversatie- en gesprekshistorie',
     'AVG/GDPR-compliant — EU datacenters, encryptie at-rest + in-transit',
     'Conversatie-bewaartermijn configureerbaar (default 90 dagen)',
   ],
@@ -103,8 +110,8 @@ const softwareSchema = {
 ---
 
 <BaseLayout
-  title="Emma — AI Chatbot voor Website & WhatsApp Business"
-  description="Emma is uw AI-klantenservicechatbot voor WhatsApp Business en website. Chatbot laten maken in 7 werkdagen, getraind op uw eigen kennisbank."
+  title="Emma — uw omnichannel AI-agent (telefoon + WhatsApp + workflow)"
+  description="Emma is uw omnichannel AI-agent: neemt 24/7 de telefoon aan (NL-stem, doorverbinden, afspraken), handelt WhatsApp af en automatiseert workflows. Live in 7 werkdagen, getraind op uw eigen kennisbank."
   schema={[schema, softwareSchema]}
   faqSchema={faqItems}
 >
@@ -112,12 +119,12 @@ const softwareSchema = {
     <div class="container-page py-16 lg:py-28">
       <div class="grid lg:grid-cols-2 gap-16 items-center">
         <div>
-          <span class="eyebrow mb-6 block">Emma — WhatsApp agent</span>
+          <span class="eyebrow mb-6 block">Emma — uw omnichannel AI-agent</span>
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
-            Emma — AI-Chatbot voor uw Website + WhatsApp (NL bouwen)
+            Emma — uw omnichannel AI-agent: telefoon + WhatsApp + workflow
           </h1>
           <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-lg">
-            Emma is uw MKB chatbot voor WhatsApp Business en website: beantwoordt klantvragen in seconden, getraind op uw eigen kennisbank, met naadloze handover naar uw team. AI chatbot bouwen voor uw bedrijf — live in 7 werkdagen.
+            Eén AI-agent voor uw hele klantcontact: Emma neemt 24/7 de telefoon aan (Nederlandse stem, doorverbinden, afspraken inplannen), handelt WhatsApp en webchat af en automatiseert uw workflows. Getraind op uw eigen kennisbank, met naadloze handover naar uw team — live in 7 werkdagen.
           </p>
           <div class="mt-8 flex flex-col sm:flex-row gap-3">
             <a href="/demo-aanvragen/" class="btn-primary text-base px-6 py-3.5">
@@ -146,7 +153,7 @@ const softwareSchema = {
         <div class="flex justify-center reveal reveal-delay-2">
           <Image
             src={emmaWhatsapp}
-            alt="Emma WhatsApp AI agent — klantgesprek voorbeeld"
+            alt="Emma omnichannel AI-agent — telefoon- en WhatsApp-gesprek voorbeeld"
             class="w-72 lg:w-80 rounded-3xl shadow-2xl border border-slate-200"
             loading="eager"
             decoding="async"
@@ -170,15 +177,15 @@ const softwareSchema = {
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {[
+          'Inkomende telefonie 24/7 aannemen — natuurlijke NL-stem (ElevenLabs)',
+          'Doorverbinden naar het juiste teamlid + gesprekstranscripts',
+          'WhatsApp Business API — officieel geverifieerd',
+          'Workflow-automatisering en escalatie volgens uw protocol',
           'Eigen kennisbank — getraind op uw FAQ, website, documenten',
           'Naadloze handover naar mens bij complexe vragen',
-          'Herkent terugkerende klanten en personaliseert antwoord',
           'Meertalig: NL, EN, FR, DE op aanvraag',
-          'WhatsApp Business API — officieel geverifieerd',
           'CRM-koppeling: HubSpot, Pipedrive, eigen systeem',
-          'Conversatie-analytics en maandrapportage',
-          'Escalatie via e-mail, Telegram of interne chat',
-          'Afspraken plannen via WhatsApp (Google Calendar koppeling)',
+          'Afspraken plannen via telefoon én WhatsApp (Google Calendar)',
           'GDPR-conform — data binnen de EU',
         ].map((f, i) => (
           <div class={`flex items-start gap-3 p-4 rounded-xl bg-slate-50 border border-slate-100 reveal reveal-delay-${(i % 4) + 1}`}>
@@ -194,18 +201,18 @@ const softwareSchema = {
   <section class="section border-b border-slate-200">
     <div class="container-page">
       <div class="max-w-3xl reveal">
-        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy mb-4">Een AI-chatbot bouwen voor uw bedrijf — wat houdt het in?</h2>
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy mb-4">Een omnichannel AI-agent voor uw bedrijf — wat houdt het in?</h2>
         <p class="text-slate-600 leading-relaxed mb-4">
-          <strong>AI chatbot bouwen</strong> voor uw bedrijf is niet hetzelfde als een simpel FAQ-formulier online zetten. Een moderne <strong>MKB chatbot</strong> zoals Emma begrijpt de intentie achter een vraag, haalt realtime data op uit uw webshop of CRM, en geeft een contextgevoelig antwoord — zonder dat een medewerker daarvoor aanwezig hoeft te zijn.
+          Een <strong>omnichannel AI-agent</strong> opzetten is meer dan een chatbot online zetten. Emma begrijpt de intentie achter een vraag — of die nu binnenkomt via de telefoon, WhatsApp of webchat — haalt realtime data op uit uw webshop of CRM, en geeft een contextgevoelig antwoord. Als <strong>AI-receptionist</strong> neemt ze inkomende gesprekken zelf aan, verbindt door en plant afspraken in, zonder dat een medewerker daarvoor aanwezig hoeft te zijn.
         </p>
         <p class="text-slate-600 leading-relaxed mb-4">
-          Het proces van <strong>chatbot laten maken</strong> bij Aanloop AI verloopt in drie fases. Eerst voeden we de <strong>AI chat-assistent</strong> met uw kennisbank: FAQ-documenten, productcatalogus, leveringsvoorwaarden en eventuele interne procedures. Daarna configureren we de integraties — WhatsApp Business API (officieel Meta-geverifieerd), uw CRM (HubSpot, Pipedrive of eigen systeem) en eventueel uw webshop (Shopify, WooCommerce). Ten slotte doorlopen we twee testrondes waarbij u zelf lastige vragen stelt en op het antwoordgedrag stuurt. Pas daarna gaat de <strong>klantenservice chatbot</strong> live.
+          Het inrichten bij Aanloop AI verloopt in drie fases. Eerst voeden we de <strong>AI-agent</strong> met uw kennisbank: FAQ-documenten, productcatalogus, leveringsvoorwaarden en eventuele interne procedures. Daarna configureren we de kanalen en integraties — inkomende telefonie met Nederlandse stem (ElevenLabs), WhatsApp Business API (officieel Meta-geverifieerd), uw CRM (HubSpot, Pipedrive of eigen systeem) en eventueel uw webshop (Shopify, WooCommerce). Ten slotte doorlopen we twee testrondes waarbij u zelf belt en appt met lastige vragen en op het antwoordgedrag stuurt. Pas daarna gaat de <strong>AI-agent</strong> live.
         </p>
         <p class="text-slate-600 leading-relaxed mb-4">
-          Het resultaat is een productie-grade AI chat-assistent die officieel via WhatsApp Business API werkt, multilingual is (NL/EN/FR/DE standaard), AVG-compliant is met EU-only dataopslag, en zich via een handover-protocol naadloos overdraagt aan een menselijke medewerker bij complexe situaties. Voor webshops koppelen we realtime voorraad- en orderstatus zodat de chatbot altijd actuele informatie geeft — iets wat een klassieke regel-gebaseerde chatbot nooit kan bieden.
+          Het resultaat is een productie-grade AI-agent die de telefoon aanneemt én via WhatsApp Business API werkt, workflows automatiseert, multilingual is (NL/EN/FR/DE standaard), AVG-compliant is met EU-only dataopslag, en zich via een handover-protocol naadloos overdraagt — doorverbinden aan de telefoon of doorzetten op WhatsApp — bij complexe situaties. Voor webshops koppelen we realtime voorraad- en orderstatus zodat de agent altijd actuele informatie geeft — iets wat een klassieke regel-gebaseerde chatbot nooit kan bieden.
         </p>
         <p class="text-slate-600 leading-relaxed mb-4">
-          Standaard levert Aanloop AI een volledig ingerichte MKB chatbot binnen 7 werkdagen. De maandelijkse kosten zijn vast en voorspelbaar — geen extra kosten per gesprek of per bericht. Wilt u weten wat een AI-chatbot voor uw specifieke situatie kost?
+          Standaard levert Aanloop AI een volledig ingerichte omnichannel AI-agent binnen 7 werkdagen. De maandelijkse kosten zijn vast en voorspelbaar, zonder setup-kosten. Wilt u weten wat Emma voor uw specifieke situatie kost?
         </p>
         <a href="/kennisbank/hoeveel-kost-een-ai-agent/" class="inline-flex items-center gap-1.5 text-brand-indigo font-medium hover:underline text-sm">
           Lees: Wat kost een AI-agent of chatbot in Nederland? (volledig kostenoverzicht)
@@ -221,11 +228,11 @@ const softwareSchema = {
       <div class="max-w-3xl mb-14 reveal">
         <p class="eyebrow mb-3">Emma voor uw sector</p>
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">
-          Eén WhatsApp bot, branche-specifieke configuratie.
+          Eén AI-agent, branche-specifieke configuratie.
         </h2>
         <p class="mt-4 text-slate-600 leading-relaxed">
-          Emma is geen generieke chatbot. Per sector configureren we andere intents, productdata-koppelingen
-          en escalatieregels zodat ze direct waarde levert vanaf dag één.
+          Emma is geen generieke chatbot. Per sector configureren we andere intents, telefonie- en WhatsApp-flows,
+          productdata-koppelingen en escalatieregels zodat ze direct waarde levert vanaf dag één — op elk kanaal.
         </p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -251,8 +258,9 @@ const softwareSchema = {
           Emma vs. live chat, ChatGPT en e-mail support
         </h2>
         <p class="mt-4 text-slate-600 leading-relaxed">
-          De meeste MKB-bedrijven zoeken een WhatsApp- of klantcontact-oplossing en kiezen tussen vier opties.
-          Hieronder de eerlijke vergelijking — inclusief kostenrange, schaalbaarheid en compliance.
+          De meeste MKB-bedrijven zoeken een klantcontact-oplossing en kiezen tussen vier opties. Emma is de enige
+          die telefoon, WhatsApp én workflow in één agent combineert. Hieronder de eerlijke vergelijking — inclusief
+          kostenrange, schaalbaarheid en compliance.
         </p>
       </div>
       <div class="overflow-x-auto reveal">
@@ -296,10 +304,10 @@ const softwareSchema = {
       <div class="max-w-3xl mb-12 reveal">
         <p class="eyebrow mb-3">Integraties</p>
         <h2 class="text-3xl font-bold tracking-tightest text-navy text-balance">
-          Emma werkt met de tools die uw klantcontact al gebruikt.
+          Emma werkt met de telefonie en tools die uw klantcontact al gebruikt.
         </h2>
         <p class="mt-4 text-slate-600 leading-relaxed">
-          Native koppelingen voor de populairste Nederlandse e-commerce, CRM en helpdesk-systemen.
+          Native koppelingen voor inkomende telefonie en de populairste Nederlandse e-commerce-, CRM- en helpdesk-systemen.
           Mist u iets? We bouwen op aanvraag een custom integratie via REST API of webhook.
         </p>
       </div>
@@ -327,7 +335,7 @@ const softwareSchema = {
       <div class="max-w-3xl mb-14 reveal">
         <p class="eyebrow mb-3">Veelgestelde vragen</p>
         <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">
-          Antwoorden op de 12 meest gestelde vragen over Emma.
+          Antwoorden op de meest gestelde vragen over Emma.
         </h2>
       </div>
       <div class="max-w-3xl mx-auto space-y-3">
@@ -350,18 +358,18 @@ const softwareSchema = {
   <section class="section bg-slate-50 border-y border-slate-200">
     <div class="container-page max-w-4xl">
       <p class="eyebrow text-brand-indigo mb-2">Website + AI = 1 partner</p>
-      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-4">Emma werkt nóg krachtiger samen met website + Marco</h2>
-      <p class="text-slate-600 mb-8 leading-relaxed">Emma standalone biedt 24/7 WhatsApp Business-afhandeling. In de AI-Website Bundel komt daar een AI-ready website + Marco (telefoon-AI 24/7) bij — bespaart op jaarbasis t.o.v. losse leveranciers, met één contract en één aanspreekpunt.</p>
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-4">Emma werkt nóg krachtiger samen met een AI-ready website</h2>
+      <p class="text-slate-600 mb-8 leading-relaxed">Emma dekt zelfstandig uw hele klantcontact: telefoon, WhatsApp en workflow in één agent. In de AI-Website Bundel komt daar een AI-ready website bij waarin Emma vanaf dag één is ingebouwd — bespaart op jaarbasis t.o.v. losse leveranciers, met één contract en één aanspreekpunt.</p>
       <div class="grid md:grid-cols-3 gap-4">
         <a href="/diensten/ai-website-bundel-mkb-nederland/" class="card hover:border-brand-indigo transition-all">
           <h3 class="font-bold text-navy text-sm mb-2">AI-Website Bundel</h3>
-          <p class="text-xs text-slate-600 mb-3">Website + Marco + Emma in 1 pakket. €4.950 setup + €397/mnd. Bespaart op jaarbasis.</p>
+          <p class="text-xs text-slate-600 mb-3">AI-ready website + Emma (telefoon + WhatsApp + workflow) in 1 pakket. Bespaart op jaarbasis.</p>
           <span class="text-xs text-brand-indigo font-medium">Bekijk bundel →</span>
         </a>
-        <a href="/diensten/marco/" class="card hover:border-brand-indigo transition-all">
-          <h3 class="font-bold text-navy text-sm mb-2">Marco — telefoon-AI</h3>
-          <p class="text-xs text-slate-600 mb-3">Emma's broer voor inkomende telefonie: 24/7 afspraken, intake, lead-routing, no-show reductie.</p>
-          <span class="text-xs text-brand-indigo font-medium">Ontmoet Marco →</span>
+        <a href="/tarieven/" class="card hover:border-brand-indigo transition-all">
+          <h3 class="font-bold text-navy text-sm mb-2">Emma — prijsopbouw</h3>
+          <p class="text-xs text-slate-600 mb-3">Vanaf €99/mnd, geen setup-kosten. Start → Core → Pro → Enterprise. Telefoon, WhatsApp en workflow inbegrepen.</p>
+          <span class="text-xs text-brand-indigo font-medium">Bekijk tarieven →</span>
         </a>
         <a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="card hover:border-brand-indigo transition-all">
           <h3 class="font-bold text-navy text-sm mb-2">AI-ready website laten maken</h3>

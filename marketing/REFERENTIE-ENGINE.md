@@ -2,7 +2,7 @@
 
 > Doel: doorbreek de kip-ei uit `RESEARCH-DEMAND-2026.md` (koopcriterium #1 = aanbelbare referenties, nu 0).
 > Pipeline: 1) bied pilots aan → 2) lever + meet → 3) leg vast als case + review + referentie.
-> Fact-correct: Aanloop AI B.V. · KvK 56312075 · Mustafa Agah Dogan · v.a. €249/€597/€1.197 · AVG · EU-data.
+> Fact-correct: Aanloop AI B.V. · KvK 88606902 · Mustafa Agah Dogan · v.a. €249/€597/€1.197 · AVG · EU-data.
 > ❌ Geen verzonnen cijfers. Case-cijfers = échte meetwaarden uit de pilot ([VELD] = invullen na pilot).
 
 ---
@@ -33,7 +33,7 @@
 > AVG-proof, EU-data, maandelijks opzegbaar. Mag ik je in 15 minuten laten zien wat het voor [bedrijf] concreet oplevert?
 >
 > Met vriendelijke groet,
-> Mustafa Agah Dogan — Aanloop AI · hello@aanloopai.nl · +31 6 2474 1597 · aanloopai.nl · KvK 56312075
+> Mustafa Agah Dogan — Aanloop AI · hello@aanloopai.nl · +31 6 2474 1597 · aanloopai.nl · KvK 88606902
 
 ### 1c. Telefoon-opener (warm/koud)
 > "Hoi [naam], Mustafa van Aanloop AI. Ik bel kort en eerlijk: we zoeken een paar [sector]-bedrijven die 30 dagen gratis onze AI-telefoonassistent willen testen — die neemt op als jullie niet kunnen, ook 's avonds. In ruil hoor ik graag wat je ervan vindt. Heb je deze week 15 minuten om te kijken of het past?"

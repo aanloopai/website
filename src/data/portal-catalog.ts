@@ -3,7 +3,14 @@
 // `key` matches services.product_key. `prijsCent` + `betaling` drive Mollie checkout.
 // NB: tier `naam` is stored in D1 (service_orders.tier) — never rename/remove, only reprice.
 
-import { CORE, GROEI, CORE_MND, GROEI_MND } from './pricing';
+// Portal/Mollie pricing is checkout-critical (D1 tier-namen). Use LEGACY constants so
+// monthlyCent stays identical — marketing pages use the new Emma ladder (START/CORE/PRO).
+import {
+  PORTAL_CORE_497 as CORE,
+  PORTAL_GROEI_997 as GROEI,
+  PORTAL_CORE_MND as CORE_MND,
+  PORTAL_GROEI_MND as GROEI_MND,
+} from './pricing';
 
 export type TierBetaling = 'maandelijks' | 'eenmalig' | 'aanvraag';
 
@@ -27,15 +34,15 @@ export interface CatalogProduct {
 export const PORTAL_CATALOG: CatalogProduct[] = [
   {
     key: 'marco',
-    naam: 'Marco — AI-receptionist',
+    naam: 'Emma — AI-receptionist',
     categorie: 'Voice AI',
     omschrijving:
       'Neemt inkomende telefoongesprekken 24/7 aan, plant afspraken in en legt leads vast. Nederlandse stem, klinkt natuurlijk.',
-    meerInfoUrl: 'https://aanloopai.nl/diensten/marco/',
+    meerInfoUrl: 'https://aanloopai.nl/diensten/emma/',
     tiers: [
       { naam: 'Starter', prijs: CORE_MND, prijsCent: CORE.monthlyCent, betaling: 'maandelijks', kenmerken: ['Max 150 gesprekken/mnd', 'Eigen belscript', 'Transcripties', 'Live in 10 dagen'] },
       { naam: 'Groei', prijs: GROEI_MND, prijsCent: GROEI.monthlyCent, betaling: 'maandelijks', kenmerken: ['Onbeperkt gesprekken', 'Emma WhatsApp inbegrepen', 'CRM-koppeling', 'Priority support <4u'] },
-      { naam: 'Partner', prijs: 'Op aanvraag', prijsCent: null, betaling: 'aanvraag', kenmerken: ['Onbeperkt Marco + Emma', 'Custom workflows', 'Dedicated accountmanager', 'SLA 99,9%'] },
+      { naam: 'Partner', prijs: 'Op aanvraag', prijsCent: null, betaling: 'aanvraag', kenmerken: ['Onbeperkt Emma', 'Custom workflows', 'Dedicated accountmanager', 'SLA 99,9%'] },
     ],
   },
   {
@@ -92,10 +99,10 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
     naam: 'AI-Website Bundel',
     categorie: 'Website',
     omschrijving:
-      'Een nieuwe AI-ready website inclusief Marco en Emma — alles in één pakket opgezet.',
+      'Een nieuwe AI-ready website inclusief Emma — alles in één pakket opgezet.',
     meerInfoUrl: 'https://aanloopai.nl/diensten/ai-website-bundel-mkb-nederland/',
     tiers: [
-      { naam: 'Bundel', prijs: '€4.950 setup + €397/mnd', prijsCent: null, betaling: 'aanvraag', kenmerken: ['AI-ready website', 'Marco AI-receptionist', 'Emma WhatsApp-assistent', 'Eén vast maandbedrag'] },
+      { naam: 'Bundel', prijs: '€4.950 setup + €397/mnd', prijsCent: null, betaling: 'aanvraag', kenmerken: ['AI-ready website', 'Emma AI-receptionist', 'Emma WhatsApp-assistent', 'Eén vast maandbedrag'] },
     ],
   },
   {

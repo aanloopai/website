@@ -25,8 +25,8 @@ export const EXPERIMENTS = {
   TARIEVEN_LAYOUT: 'tarieven-layout',
   TARIEVEN_CTA_TEXT: 'tarieven-cta-text',
 
-  // Marco
-  MARCO_HERO_COPY: 'marco-hero-copy',
+  // Emma
+  EMMA_HERO_COPY: 'marco-hero-copy',
 
   // AI-Website Bundel
   BUNDEL_HERO_COPY: 'bundel-hero-copy',
@@ -46,11 +46,11 @@ export const VARIANTS = {
     },
     emotional: {
       headline: 'Stop gemiste leads. Voor altijd.',
-      sub: 'Elke onbeantwoorde beller is een lead die naar uw concurrent gaat. Marco pakt 24/7 op — ook zaterdagnacht.',
+      sub: 'Elke onbeantwoorde beller is een lead die naar uw concurrent gaat. Emma pakt 24/7 op — ook zaterdagnacht.',
     },
     roi: {
       headline: 'Bespaar €40k+/jaar op personeelskosten',
-      sub: 'MKB-bedrijven die Marco inzetten betalen €497/mnd en elimineren een fulltime receptionist. Terugverdientijd: 6 weken.',
+      sub: 'MKB-bedrijven die Emma inzetten betalen €497/mnd en elimineren een fulltime receptionist. Terugverdientijd: 6 weken.',
     },
   },
   [EXPERIMENTS.HOMEPAGE_CTA_TEXT]: {
@@ -63,23 +63,23 @@ export const VARIANTS = {
     scan: 'Gratis AI-scan',
     vandaag: 'Plan direct een demo',
   },
-  [EXPERIMENTS.MARCO_HERO_COPY]: {
+  [EXPERIMENTS.EMMA_HERO_COPY]: {
     control: {
-      headline: 'Marco — AI Receptionist & AI Telefoniste',
+      headline: 'Emma — AI Receptionist & AI Telefoniste',
       sub: 'Neemt 24/7 gesprekken aan in vloeiend Nederlands, plant afspraken en levert leads direct in uw inbox.',
     },
     emotional: {
       headline: 'Nooit meer een gemiste klant',
-      sub: 'Terwijl u slaapt, werkt, of op de werf staat — Marco pakt elke beller op en zet leads om in afspraken.',
+      sub: 'Terwijl u slaapt, werkt, of op de werf staat — Emma pakt elke beller op en zet leads om in afspraken.',
     },
     roi: {
-      headline: 'Marco vervangt een €42k/jaar receptionist voor €497/mnd',
+      headline: 'Emma vervangt een €42k/jaar receptionist voor €497/mnd',
       sub: 'Geen ziekte, geen vakantie, geen loonkosten. 24/7 NL-telefoon, CRM-integratie en agenda-planning inbegrepen.',
     },
   },
   [EXPERIMENTS.BUNDEL_HERO_COPY]: {
     control: {
-      headline: 'AI-Website Bundel — Website + Marco + Emma',
+      headline: 'AI-Website Bundel — Website + Emma',
       sub: 'Eén partner voor website én AI automatisering. Eén factuur, één SLA, live binnen 8 weken.',
     },
     emotional: {
@@ -179,11 +179,11 @@ function applyTarievenExperiments(): void {
   }
 }
 
-function applyMarcoExperiments(): void {
-  const heroVariant = getFeatureValue(EXPERIMENTS.MARCO_HERO_COPY, 'control');
+function applyEmmaExperiments(): void {
+  const heroVariant = getFeatureValue(EXPERIMENTS.EMMA_HERO_COPY, 'control');
   if (heroVariant !== 'control') {
-    const data = VARIANTS[EXPERIMENTS.MARCO_HERO_COPY][heroVariant as keyof typeof VARIANTS[typeof EXPERIMENTS.MARCO_HERO_COPY]];
-    if (data) swapText(EXPERIMENTS.MARCO_HERO_COPY, data as Record<string, string>);
+    const data = VARIANTS[EXPERIMENTS.EMMA_HERO_COPY][heroVariant as keyof typeof VARIANTS[typeof EXPERIMENTS.EMMA_HERO_COPY]];
+    if (data) swapText(EXPERIMENTS.EMMA_HERO_COPY, data as Record<string, string>);
   }
 
   // CTA gedeeld met homepage-cta-text experiment
@@ -227,8 +227,8 @@ const PAGE_APPLICATORS: Record<string, () => void> = {
   '/': applyHomepageExperiments,
   '/tarieven/': applyTarievenExperiments,
   '/tarieven': applyTarievenExperiments,
-  '/diensten/marco/': applyMarcoExperiments,
-  '/diensten/marco': applyMarcoExperiments,
+  '/diensten/emma/': applyEmmaExperiments,
+  '/diensten/emma': applyEmmaExperiments,
   '/diensten/ai-website-bundel-mkb-nederland/': applyBundelExperiments,
   '/diensten/ai-website-bundel-mkb-nederland': applyBundelExperiments,
   '/ai-roi-calculator/': applyRoiCalcExperiments,

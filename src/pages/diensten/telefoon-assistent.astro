@@ -30,17 +30,17 @@ const comparison = [
 ];
 
 const faqItems = [
-  { question: 'Wat is het verschil tussen Marco en de AI telefoon assistent?', answer: 'Marco is onze gestandaardiseerde AI receptionist met één personage en standaard scripts — ideaal voor kleinere MKB-bedrijven. De AI Telefoon Assistent is een volledig configureerbare telefooncentrale met eigen IVR-menu, multi-team routing en custom integraties — geschikt voor grotere organisaties met meerdere afdelingen of meertalige eisen. Beide draaien op dezelfde technologie maar verschillen in flexibiliteit en setup-diepte.' },
+  { question: 'Wat is het verschil tussen Emma en de AI telefoon assistent?', answer: 'Emma is onze gestandaardiseerde AI receptionist met één personage en standaard scripts — ideaal voor kleinere MKB-bedrijven. De AI Telefoon Assistent is een volledig configureerbare telefooncentrale met eigen IVR-menu, multi-team routing en custom integraties — geschikt voor grotere organisaties met meerdere afdelingen of meertalige eisen. Beide draaien op dezelfde technologie maar verschillen in flexibiliteit en setup-diepte.' },
   { question: 'Hoe wordt het IVR-menu opgezet?', answer: 'Tijdens onboarding ontwerpen we samen met u de menustructuur: welke afdelingen, welke openingstijden per afdeling, welke escalatiepaden. We gebruiken intent-gebaseerde routing (de AI snapt wat de beller wil ook zonder dat hij een keuze doormaakt) bovenop traditionele DTMF-keuzes als fallback. Wijzigingen achteraf doorvoeren we binnen 24 uur.' },
   { question: 'Kan ik mijn bestaande telefoonnummer gebruiken?', answer: 'Ja. We porten uw bestaande NL-nummer (010, 020, 030, 070, 085, 088 of 06) naar onze infrastructuur. U houdt hetzelfde nummer en uw klanten merken niets van de overgang. Alternatief: doorschakeling vanaf uw huidige operator zonder portering.' },
   { question: 'Welke talen ondersteunt de telefoonassistent?', answer: 'Standaard Nederlands met natuurlijke prosodie. Op aanvraag voegen we Engels, Duits, Frans en Spaans toe. De assistent detecteert automatisch de taal van de beller en wisselt waar nodig. Voor toeristische gebieden of internationale dienstverlening werkt dit uitstekend.' },
   { question: 'Worden gesprekken opgenomen?', answer: 'Standaard ja, met een wettelijke aankondiging aan het begin van het gesprek. Opnames staan in EU-datacenters (Frankfurt of Amsterdam) met encryptie at-rest en TLS 1.3 in-transit. Default bewaartermijn 90 dagen, configureerbaar 7-365 dagen. Voor zorg- en juridische klanten is volledige opname-uitschakeling mogelijk.' },
-  { question: 'Wat kost de AI telefoon assistent?', answer: 'Marco is €497/maand (tot 150 gesprekken, 1 IVR-menu, 3 team-routings), Groei €997/maand (onbeperkt, multi-team, Marco + Emma WhatsApp, prioriteit support), Partner op maat. Setup-fee is €495 (Marco) of €795 (Groei) — zelfde tarieven als /tarieven Marco-pakketten omdat het dezelfde technologie is.' },
-  { question: 'Hoe snel ben ik live?', answer: 'Standaard 7-10 werkdagen voor Marco, 14-21 dagen voor Professional. Tijdsverdeling: onboarding-vragenlijst (1 dag), IVR-design (2-3 dagen), nummer-portering of doorschakeling (3-5 dagen), training & testrondes (2 dagen). Bij urgentie kunnen we Marco binnen 5 werkdagen leveren met express-fee.' },
+  { question: 'Wat kost de AI telefoon assistent?', answer: 'Emma is €497/maand (tot 150 gesprekken, 1 IVR-menu, 3 team-routings), Groei €997/maand (onbeperkt, multi-team, Emma WhatsApp, prioriteit support), Partner op maat. Setup-fee is €495 (Emma) of €795 (Groei) — zelfde tarieven als /tarieven Emma-pakketten omdat het dezelfde technologie is.' },
+  { question: 'Hoe snel ben ik live?', answer: 'Standaard 7-10 werkdagen voor Emma, 14-21 dagen voor Professional. Tijdsverdeling: onboarding-vragenlijst (1 dag), IVR-design (2-3 dagen), nummer-portering of doorschakeling (3-5 dagen), training & testrondes (2 dagen). Bij urgentie kunnen we Emma binnen 5 werkdagen leveren met express-fee.' },
   { question: 'Werkt het met mijn bestaande PBX of Microsoft Teams Phone?', answer: 'Ja. We integreren via SIP-trunking met de meeste zakelijke PBX&apos;en (3CX, Asterisk, Cisco Webex Calling) en met Microsoft Teams Phone via Direct Routing. De AI Telefoon Assistent kan ook standalone draaien zonder bestaand PBX.' },
   { question: 'Kan de assistent doorverbinden naar specifieke medewerkers?', answer: 'Ja. We configureren routeringsregels op basis van afdeling, taal, klanttype, tijd-van-dag en zelfs onderwerp van het gesprek (intent-gebaseerd). Beschikbaarheid checken we via uw agenda — bij geen-bezet gaat het naar de volgende collega of een terugbelafspraak.' },
   { question: 'Wat als de assistent een vraag niet kan beantwoorden?', answer: 'Volgens uw escalatieprotocol: doorverbinden naar mens, terugbelafspraak inplannen, ticket openen in helpdesk of e-mail-samenvatting sturen. U bepaalt zelf wat er gebeurt bij welk type vraag. Standaard escaleren we ook wanneer de beller letterlijk om "menselijke medewerker" vraagt.' },
-  { question: 'Is dit AVG/GDPR en NEN 7510 compliant?', answer: 'AVG/GDPR: ja, standaard. EU-only data, verwerkersovereenkomst-template, recht op verwijdering binnen 24 uur. NEN 7510: leverbaar als add-on voor zorginstellingen — extra audit-logging, dedicated tenant, role-based access controls. Aanloop AI is een Nederlandse B.V. (KVK 56312075).' },
+  { question: 'Is dit AVG/GDPR en NEN 7510 compliant?', answer: 'AVG/GDPR: ja, standaard. EU-only data, verwerkersovereenkomst-template, recht op verwijdering binnen 24 uur. NEN 7510: leverbaar als add-on voor zorginstellingen — extra audit-logging, dedicated tenant, role-based access controls. Aanloop AI is een Nederlandse B.V. (KVK 88606902).' },
   { question: 'Kan ik de assistent testen voor ik teken?', answer: 'Ja. Tijdens een gratis demo van 30 minuten configureren we een testscenario uit uw branche. U krijgt een testnummer waar u zelf kunt bellen, lastige vragen kunt stellen en het IVR-menu kunt doorlopen. Pas daarna beslist u of u verder wilt.' },
 ];
 
@@ -146,7 +146,7 @@ const schema = {
       <div class="mt-12 text-center reveal">
         <p class="text-sm text-slate-600">
           Kleinere organisatie? Bekijk onze gestandaardiseerde AI receptionist
-          <a href="/diensten/marco/" class="text-brand-indigo font-medium hover:underline">Marco</a>
+          <a href="/diensten/emma/" class="text-brand-indigo font-medium hover:underline">Emma</a>
           — vanaf €497/maand, live in 7 dagen.
         </p>
       </div>
@@ -264,13 +264,13 @@ const schema = {
       <div class="grid md:grid-cols-3 gap-4">
         <a href="/diensten/ai-website-bundel-mkb-nederland/" class="card hover:border-brand-indigo transition-all">
           <h3 class="font-bold text-navy text-sm mb-2">AI-Website Bundel</h3>
-          <p class="text-xs text-slate-600 mb-3">Website + Marco + Emma in 1 pakket. €4.950 setup + €397/mnd. Bespaart op jaarbasis.</p>
+          <p class="text-xs text-slate-600 mb-3">Website + Emma in 1 pakket. €4.950 setup + €397/mnd. Bespaart op jaarbasis.</p>
           <span class="text-xs text-brand-indigo font-medium">Bekijk bundel →</span>
         </a>
-        <a href="/diensten/marco/" class="card hover:border-brand-indigo transition-all">
-          <h3 class="font-bold text-navy text-sm mb-2">Marco — onze telefoon-AI</h3>
-          <p class="text-xs text-slate-600 mb-3">Volledig profiel van Marco: 24/7 afspraken, intake, lead-routing, no-show reductie en NL-taal.</p>
-          <span class="text-xs text-brand-indigo font-medium">Ontmoet Marco →</span>
+        <a href="/diensten/emma/" class="card hover:border-brand-indigo transition-all">
+          <h3 class="font-bold text-navy text-sm mb-2">Emma — onze telefoon-AI</h3>
+          <p class="text-xs text-slate-600 mb-3">Volledig profiel van Emma: 24/7 afspraken, intake, lead-routing, no-show reductie en NL-taal.</p>
+          <span class="text-xs text-brand-indigo font-medium">Ontmoet Emma →</span>
         </a>
         <a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="card hover:border-brand-indigo transition-all">
           <h3 class="font-bold text-navy text-sm mb-2">AI-ready website laten maken</h3>

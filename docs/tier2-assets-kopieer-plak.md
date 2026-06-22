@@ -14,7 +14,7 @@ Direct bruikbaar. Pas [HAAKJES] aan waar nodig.
 
 **Aanloop AI lanceert een jaarlijks, sector-overstijgend onderzoek naar het gebruik van AI in Nederlandse mkb-bedrijven (1–250 medewerkers). Waar het CBS in 2024 nog 18% AI-gebruik onder Nederlandse bedrijven mat, brengt dit onderzoek voor het eerst per sector in kaart hoe ver het mkb écht is — en welke barrières adoptie tegenhouden. De eerste resultaten verschijnen in Q3 2026.**
 
-Rotterdam, [DATUM] — Het Nederlandse mkb staat voor een AI-kantelpunt, maar betrouwbare, sector-specifieke cijfers ontbreken. AI-bureau Aanloop AI (KvK 56312075) start daarom een doorlopend onderzoek naar AI-adoptie onder Nederlandse mkb-bedrijven. Het onderzoek meet adoptiegraad, belangrijkste toepassingen, terugverdientijd en barrières — uitgesplitst per sector en bedrijfsgrootte, gewogen op CBS Statline.
+Rotterdam, [DATUM] — Het Nederlandse mkb staat voor een AI-kantelpunt, maar betrouwbare, sector-specifieke cijfers ontbreken. AI-bureau Aanloop AI (KvK 88606902) start daarom een doorlopend onderzoek naar AI-adoptie onder Nederlandse mkb-bedrijven. Het onderzoek meet adoptiegraad, belangrijkste toepassingen, terugverdientijd en barrières — uitgesplitst per sector en bedrijfsgrootte, gewogen op CBS Statline.
 
 "Iedereen praat over AI, maar niemand weet precies hoe ver de slager, de tandarts of het installatiebedrijf op de hoek werkelijk is", zegt Mustafa Agah Dogan, oprichter van Aanloop AI. "Wij willen dat met harde, transparante cijfers in kaart brengen — ook al hebben wij als AI-leverancier zelf belang bij meer adoptie. Juist daarom publiceren we de methodologie en de ruwe trends open."
 
@@ -23,7 +23,7 @@ Rotterdam, [DATUM] — Het Nederlandse mkb staat voor een AI-kantelpunt, maar be
 **Meedoen.** Mkb-ondernemers kunnen deelnemen (4–6 minuten) en ontvangen een persoonlijke benchmark plus het volledige rapport: https://aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/
 
 **Over Aanloop AI**
-Aanloop AI is het AI-bureau voor het Nederlandse mkb, gevestigd in Rotterdam (KvK 56312075). Het bedrijf levert kant-en-klare AI-assistenten — Marco (24/7 AI-receptionist) en Emma (WhatsApp-AI) — plus maatwerk-workflows. AVG-compliant, EU-data, live binnen 7–14 werkdagen.
+Aanloop AI is het AI-bureau voor het Nederlandse mkb, gevestigd in Rotterdam (KvK 88606902). Het bedrijf levert kant-en-klare AI-assistenten — Marco (24/7 AI-receptionist) en Emma (WhatsApp-AI) — plus maatwerk-workflows. AVG-compliant, EU-data, live binnen 7–14 werkdagen.
 
 **Noot voor de redactie (niet voor publicatie)**
 Interview met oprichter Mustafa Agah Dogan, grafieken (PNG/SVG) en sector-data op aanvraag. Contact: hello@aanloopai.nl · +31 6 2474 1597 · https://aanloopai.nl
@@ -41,7 +41,7 @@ Interview met oprichter Mustafa Agah Dogan, grafieken (PNG/SVG) en sector-data o
 **Bedrijfsnaam:** Aanloop AI
 **Website:** https://aanloopai.nl
 **E-mail:** hello@aanloopai.nl · **Tel:** +31 6 2474 1597
-**Vestiging:** Rotterdam, Nederland · **KvK:** 56312075 · **Opgericht:** 2023
+**Vestiging:** Rotterdam, Nederland · **KvK:** 88606902 · **Opgericht:** 2023
 **Categorieën:** Artificial Intelligence, AI Agency, Marketing/Automation, Business Software, Conversational AI
 **Tags:** AI receptionist, WhatsApp AI, workflow automation, MKB, Nederland, AVG/GDPR
 
@@ -55,7 +55,7 @@ Interview met oprichter Mustafa Agah Dogan, grafieken (PNG/SVG) en sector-data o
 > Aanloop AI levert kant-en-klare AI-assistenten voor het Nederlandse MKB: Marco (24/7 AI-receptionist) en Emma (WhatsApp-AI). AVG-compliant, live in 7–14 dagen.
 
 **Beschrijving — 300 tekens:**
-> Aanloop AI is het AI-bureau voor het Nederlandse MKB. Marco neemt 24/7 de telefoon aan, plant afspraken en mist nooit een lead; Emma handelt WhatsApp-klantvragen af. Plus maatwerk-workflows (facturen, e-mail, leads). AVG-compliant, EU-data, vaste prijzen vanaf €497/mnd, live binnen 7–14 werkdagen. Rotterdam, KvK 56312075.
+> Aanloop AI is het AI-bureau voor het Nederlandse MKB. Marco neemt 24/7 de telefoon aan, plant afspraken en mist nooit een lead; Emma handelt WhatsApp-klantvragen af. Plus maatwerk-workflows (facturen, e-mail, leads). AVG-compliant, EU-data, vaste prijzen vanaf €497/mnd, live binnen 7–14 werkdagen. Rotterdam, KvK 88606902.
 
 **USP's (bullets voor directories die ze vragen):**
 - 24/7 Nederlandstalige AI-receptionist (ElevenLabs-stem)

@@ -84,14 +84,14 @@ function buildConfig(productKey, intake) {
   const taken = sArr(af.taken, 8, 60);
   return {
     systemPrompt:
-      `Je bent Marco, de AI-telefoonreceptionist van ${naam}${branche ? ` (${branche})` : ''}. ` +
+      `Je bent Emma, de AI-telefoonreceptionist van ${naam}${branche ? ` (${branche})` : ''}. ` +
       `Openingstijden: ${s(br.openingstijden, 100) || 'onbekend'}. Buiten openingstijden: ${s(br.buiten_tijden, 120) || '-'}. ` +
       `Je taken: ${taken.join(', ') || 'vragen beantwoorden'}. ` +
       (af.doorverbind_nummers ? `Doorverbindnummers: ${s(af.doorverbind_nummers, 200)}. ` : '') +
       (af.escalatie ? `Bij urgente situaties: ${s(af.escalatie, 200)}. ` : '') +
       `Toon: ${s(k.toon, 60) || 'zakelijk en warm'}. Spreek altijd Nederlands, wees beknopt en behulpzaam. ` +
       `Gebruik de kennisbank voor antwoorden.`,
-    firstMessage: `Goedendag, u spreekt met Marco van ${naam}. Waarmee kan ik u helpen?`,
+    firstMessage: `Goedendag, u spreekt met Emma van ${naam}. Waarmee kan ik u helpen?`,
     kbText: buildKbText(k.faq, k.diensten),
   };
 }

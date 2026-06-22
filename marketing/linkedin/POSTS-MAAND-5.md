@@ -1,7 +1,7 @@
 # LinkedIn — Maand 5 (20 ready-to-paste posts, weken 17-20)
 
 > Vervolg op maand 1-4 (`POSTS-MAAND-1/2/3/4.md`). 1 post per werkdag. Founder Mustafa deelt/repost.
-> Fact-correct: KvK 56312075 · Mustafa Agah Dogan · v.a. €249/€597/€1.197 · GEO v.a. €595 · AVG · EU-data.
+> Fact-correct: KvK 88606902 · Mustafa Agah Dogan · v.a. €249/€597/€1.197 · GEO v.a. €595 · AVG · EU-data.
 > Geen verzonnen cijfers — ROI-posts verwijzen naar "reken zelf met de calculator", geen harde claims.
 > Andere invalshoeken dan maand 1-4. Meer engagement (polls/vragen).
 

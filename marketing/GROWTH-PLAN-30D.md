@@ -23,7 +23,7 @@ Site, content en automatisering zijn al sterk (220 pagina's, 18 diensten, 83 art
 |---|---|---|---|
 | 1 | **GEO-landingspagina** `/ai-vindbaarheid/` bouwen (verkocht maar geen pagina; doel IG wave-7) | **BEN** | pagina live + form |
 | 2 | **27 kapotte externe + 2 interne links** fixen (scorecard Links 0/100 → composite 66→omhoog) | **BEN** | scorecard Links >80 |
-| 3 | `/admin/*` uit publieke sitemap halen (security) + KvK-nummer consistent (56312075 vs 88606902) | **BEN** | sitemap schoon |
+| 3 | `/admin/*` uit publieke sitemap halen (security) + KvK-nummer consistent (88606902 vs 88606902) | **BEN** | sitemap schoon |
 | 4 | **Press-pitches VERZENDEN** (5 wk klaar, nooit verstuurd) — Emerce/MT-Sprout/Bright/Frankwatching | **SEN** (ik finaliseer) | 5 verzonden |
 | 5 | **Google Ads LIVE** — campagne uit `google-ads/CAMPAIGN-FAZ1.md` | **SEN** (account+€) | reklam draait |
 | 6 | **Clarity project-ID** aanmaken → ik wire code (`BaseLayout.astro:421`) | **SEN**+ik | heatmaps live |

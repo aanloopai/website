@@ -1,7 +1,7 @@
 # LinkedIn — Maand 1 (20 ready-to-paste posts)
 
 > 1 post per werkdag. Plak in volgorde. Founder Mustafa kan elke post delen/reposten (3-5x reach).
-> Fact-correct: KvK 56312075 · Mustafa Agah Dogan · v.a. €249/€597/€1.197 · GEO v.a. €595 · AVG · EU-data.
+> Fact-correct: KvK 88606902 · Mustafa Agah Dogan · v.a. €249/€597/€1.197 · GEO v.a. €595 · AVG · EU-data.
 > Geen verzonnen cijfers (klantaantal/besparing). Beeld/carrousel toevoegen waar mogelijk = hogere reach.
 
 ---

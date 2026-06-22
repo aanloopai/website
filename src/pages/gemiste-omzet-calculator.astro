@@ -3,8 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const faq = [
   { question: 'Hoeveel omzet loopt een MKB-bedrijf mis door gemiste telefoontjes?', answer: 'Gemiddeld wordt 20–30% van de inkomende calls buiten kantoortijd of tijdens piekdrukte gemist. Bij 20 calls/dag, 25% gemist, 40% conversie en €250 klantwaarde loopt dat op tot duizenden euro\'s gemiste omzet per maand. Reken het exact uit met de calculator hierboven.' },
-  { question: 'Hoe voorkomt een AI-receptionist gemiste omzet?', answer: 'Marco (AI-receptionist) neemt 24/7 elke inkomende call aan — ook buiten kantoortijd en tijdens piekuren — kwalificeert de beller, plant afspraken en zet leads door naar uw CRM. Geen voicemail, geen gemiste klant.' },
-  { question: 'Wat kost dat?', answer: 'Marco kost €497 per maand all-in (maandelijks opzegbaar, geen kosten per gesprek). Bij de meeste bedrijven is dat al terugverdiend met één tot twee extra klanten per maand.' },
+  { question: 'Hoe voorkomt een AI-receptionist gemiste omzet?', answer: 'Emma (AI-receptionist) neemt 24/7 elke inkomende call aan — ook buiten kantoortijd en tijdens piekuren — kwalificeert de beller, plant afspraken en zet leads door naar uw CRM. Geen voicemail, geen gemiste klant.' },
+  { question: 'Wat kost dat?', answer: 'Emma kost €497 per maand all-in (maandelijks opzegbaar, geen kosten per gesprek). Bij de meeste bedrijven is dat al terugverdiend met één tot twee extra klanten per maand.' },
 ];
 
 const schema = {
@@ -73,11 +73,11 @@ const schema = {
           </div>
 
           <div class="mt-6 bg-brand-emerald/10 border border-brand-emerald/30 rounded-xl p-4">
-            <p class="text-sm text-slate-700"><strong class="text-navy">Marco (AI-receptionist) kost €497/mnd</strong> en vangt deze calls 24/7 op. <span id="g-payback"></span></p>
+            <p class="text-sm text-slate-700"><strong class="text-navy">Emma (AI-receptionist) kost €497/mnd</strong> en vangt deze calls 24/7 op. <span id="g-payback"></span></p>
           </div>
 
           <div class="mt-5 flex flex-wrap gap-3">
-            <a href="/demo-aanvragen/" class="btn-primary text-sm">Gratis demo — laat Marco horen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+            <a href="/demo-aanvragen/" class="btn-primary text-sm">Gratis demo — laat Emma horen<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
             <a href="/gratis-ai-scan/" class="btn-outline text-sm">Gratis AI-scan</a>
           </div>
         </div>
@@ -102,7 +102,7 @@ const schema = {
 
   <script is:inline>
     (function () {
-      var WERKDAGEN = 22, MARCO = 497;
+      var WERKDAGEN = 22, EMMA = 497;
       var calls = document.getElementById('g-calls'), missed = document.getElementById('g-missed'),
           value = document.getElementById('g-value'), conv = document.getElementById('g-conv');
       var fmt = function (n) { return '€' + Math.round(n).toLocaleString('nl-NL'); };
@@ -120,8 +120,8 @@ const schema = {
         document.getElementById('g-clients').textContent = Math.round(gemisteKlanten);
         document.getElementById('g-month').textContent = fmt(omzetMnd);
         var pay = document.getElementById('g-payback');
-        pay.textContent = omzetMnd > MARCO
-          ? 'Dat verdient u ' + (omzetMnd / MARCO).toFixed(1).replace('.', ',') + 'x terug — al met één maand opgevangen omzet.'
+        pay.textContent = omzetMnd > EMMA
+          ? 'Dat verdient u ' + (omzetMnd / EMMA).toFixed(1).replace('.', ',') + 'x terug — al met één maand opgevangen omzet.'
           : 'Al met één extra klant per maand terugverdiend.';
         if (!tracked && window._track) { tracked = true; window._track('tool_used', { tool: 'gemiste_omzet_calculator' }); }
       }
