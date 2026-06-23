@@ -33,7 +33,7 @@ export interface CatalogProduct {
 
 export const PORTAL_CATALOG: CatalogProduct[] = [
   {
-    key: 'marco',
+    key: 'emma-telefoon',
     naam: 'Emma — AI-receptionist',
     categorie: 'Voice AI',
     omschrijving:

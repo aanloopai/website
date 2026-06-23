@@ -77,7 +77,7 @@ function buildConfig(productKey, intake) {
       kbText: buildKbText(k.faq, k.productcatalogus),
     };
   }
-  // default: marco (voice receptionist)
+  // default: emma-telefoon (voice receptionist)
   const b = i.bedrijf || {}, br = i.bereikbaarheid || {}, af = i.afhandeling || {}, k = i.kennis || {};
   const naam = s(b.bedrijfsnaam, 100) || 'het bedrijf';
   const branche = s(b.branche, 80);
@@ -117,5 +117,5 @@ export async function provisionAgent(apiKey, productKey, serviceNaam, intake) {
 
 // Products this module can auto-provision.
 export function canProvision(productKey) {
-  return productKey === 'marco' || productKey === 'emma';
+  return productKey === 'emma-telefoon' || productKey === 'emma';
 }

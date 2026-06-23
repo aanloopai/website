@@ -197,7 +197,7 @@ const GENERIC: IntakeSchema = {
 };
 
 export const INTAKE_SCHEMAS: Record<string, IntakeSchema> = {
-  marco: EMMA_TELEFOON,
+  'emma-telefoon': EMMA_TELEFOON,
   emma: EMMA,
   seo: SEO,
   geo: GEO,
