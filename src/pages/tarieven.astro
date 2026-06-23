@@ -2,84 +2,61 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import dashboardMockup from '../assets/images/dashboard-mockup.png';
-import { START, CORE, PRO } from '../data/pricing';
+import { EMMA, GROEI } from '../data/pricing';
 
 // ── Pricing logic ──────────────────────────────────────────────
 // Prijzen komen uit src/data/pricing.ts (single source of truth).
 // Emma = één omnichannel AI-agent: telefoon (AI-receptionist 24/7, NL-nummer,
 // doorverbinden, afspraken/agenda) + WhatsApp (Business API) + workflow-automatisering.
-// Eén heldere ladder: Start instap (€99), Core meest gekozen (€249), Pro hoog volume (€497),
+// Eén heldere ladder: Emma (€497), Groei meest gekozen (€997),
 // Enterprise op aanvraag. Setup = €0 op ALLE pakketten — markt-differentiator.
 
 const plans = [
   {
-    id: 'start',
-    name: 'Emma Start',
-    tagline: 'Instap omnichannel — WhatsApp + workflow + belminuten',
-    price: { monthly: START.monthly, annual: START.annual },
+    id: 'emma',
+    name: 'Emma',
+    tagline: 'AI-telefoniste + WhatsApp + workflow — omnichannel',
+    price: { monthly: EMMA.monthly, annual: EMMA.annual },
     badge: 'Geen setup-kosten',
     highlight: false,
-    includes: 'Emma — omnichannel instap',
-    features: [
-      { text: 'WhatsApp AI (Business API)', included: true },
-      { text: 'Workflow-automatisering (basis)', included: true },
-      { text: 'AI-telefoon — beperkte belminuten', included: true },
-      { text: 'Standaard FAQ-training', included: true },
-      { text: 'Lead-melding via e-mail', included: true },
-      { text: 'Dashboard + transcripts', included: true },
-      { text: 'Live binnen 10 werkdagen', included: true },
-      { text: 'Onbeperkte telefoon + agenda-integratie', included: false },
-      { text: 'CRM-integratie (HubSpot / Pipedrive)', included: false },
-      { text: 'Multi-number + priority support', included: false },
-    ],
-    cta: 'Start met Emma Start',
-    ctaHref: '/aanvragen/?plan=start',
-  },
-  {
-    id: 'core',
-    name: 'Emma Core',
-    tagline: 'Volledige omnichannel — telefoon + WhatsApp + workflow',
-    price: { monthly: CORE.monthly, annual: CORE.annual },
-    badge: 'Meest gekozen',
-    highlight: true,
-    includes: 'Emma — volledige omnichannel',
+    includes: 'Emma — omnichannel AI-agent',
     features: [
       { text: 'AI-telefoon 24/7 (NL-nummer, doorverbinden)', included: true },
       { text: 'WhatsApp AI (Business API)', included: true },
       { text: 'Workflow-automatisering', included: true },
       { text: 'Afspraken + agenda-integratie (Google / Outlook)', included: true },
       { text: 'Tot 3 callscripts op maat', included: true },
-      { text: 'CRM-integratie (HubSpot / Pipedrive)', included: true },
-      { text: 'Lead-melding via e-mail + Telegram', included: true },
-      { text: 'Dashboard + transcripts + opnames', included: true },
+      { text: 'Lead-melding via e-mail', included: true },
+      { text: 'Dashboard + transcripts', included: true },
       { text: 'Live binnen 7 werkdagen', included: true },
+      { text: 'Onbeperkt volume + CRM-maatwerk', included: false },
       { text: 'Multi-number + priority support', included: false },
     ],
-    cta: 'Start met Emma Core',
-    ctaHref: '/aanvragen/?plan=core',
+    cta: 'Start met Emma',
+    ctaHref: '/aanvragen/?plan=emma',
   },
   {
-    id: 'pro',
-    name: 'Emma Pro',
-    tagline: 'Hoog volume — multi-number + integraties + priority support',
-    price: { monthly: PRO.monthly, annual: PRO.annual },
-    badge: null,
-    highlight: false,
-    includes: 'Emma — hoog volume',
+    id: 'groei',
+    name: 'Groei',
+    tagline: 'Onbeperkt volume — WhatsApp + CRM + priority',
+    price: { monthly: GROEI.monthly, annual: GROEI.annual },
+    badge: 'Meest gekozen',
+    highlight: true,
+    includes: 'Emma — onbeperkt volume',
     features: [
-      { text: 'Alles uit Emma Core', included: true },
-      { text: 'Hoog gespreksvolume + onbeperkte WhatsApp', included: true },
+      { text: 'Alles uit Emma', included: true },
+      { text: 'Onbeperkt gespreksvolume + onbeperkte WhatsApp', included: true },
       { text: 'Multi-number (meerdere NL-nummers)', included: true },
-      { text: 'CRM- + agenda-integraties (maatwerk)', included: true },
+      { text: 'CRM-integratie (HubSpot / Pipedrive)', included: true },
       { text: 'Onbeperkte callscripts', included: true },
       { text: 'Geavanceerde workflow-automatisering', included: true },
       { text: 'Multi-team routing & escalatie', included: true },
       { text: 'Priority support (reactie < 1 uur)', included: true },
-      { text: 'Live binnen 7 werkdagen', included: true },
+      { text: 'Gespreksopnames', included: true },
       { text: 'SLA + dedicated accountmanager', included: false },
     ],
-    cta: 'Start met Emma Pro',
-    ctaHref: '/aanvragen/?plan=pro',
+    cta: 'Start met Groei',
+    ctaHref: '/aanvragen/?plan=groei',
   },
   {
     id: 'enterprise',
@@ -188,39 +165,38 @@ const seoGeoPlans = [
 ];
 
 const eenmaligSetup = [
-  { plan: 'Emma Start', prijs: '€0', desc: 'Geen setup-kosten — intake, training en go-live volledig inbegrepen' },
-  { plan: 'Emma Core', prijs: '€0', desc: 'Geen setup-kosten — intake, training, CRM-koppeling en testfase inbegrepen' },
-  { plan: 'Emma Pro', prijs: '€0', desc: 'Geen setup-kosten — intake, multi-number config en integraties inbegrepen' },
+  { plan: 'Emma', prijs: '€0', desc: 'Geen setup-kosten — intake, training, agenda-koppeling en go-live volledig inbegrepen' },
+  { plan: 'Groei', prijs: '€0', desc: 'Geen setup-kosten — intake, training, CRM-koppeling, multi-number config en testfase inbegrepen' },
   { plan: 'Emma Enterprise', prijs: '€0', desc: 'Geen setup-kosten — implementatie op maat, inbegrepen in het maatwerktraject' },
 ];
 
 const faqs = [
   { q: 'Zijn de prijzen exclusief btw?', a: 'Ja, alle prijzen zijn exclusief 21% btw. Dit is standaard voor B2B-diensten in Nederland.' },
-  { q: 'Zijn er setup-kosten?', a: 'Nee. Setup is €0 op alle Emma-pakketten — Start, Core, Pro én Enterprise. Intake, training op uw bedrijf, technische configuratie en go-live begeleiding zijn volledig inbegrepen. Geen verborgen kosten, nooit.' },
+  { q: 'Zijn er setup-kosten?', a: 'Nee. Setup is €0 op alle Emma-pakketten — Emma, Groei én Enterprise. Intake, training op uw bedrijf, technische configuratie en go-live begeleiding zijn volledig inbegrepen. Geen verborgen kosten, nooit.' },
   { q: 'Wat is inbegrepen in het maandabonnement?', a: 'Emma als omnichannel AI-agent: telefoon (AI-receptionist 24/7), WhatsApp en workflow-automatisering. Plus hosting, onderhoud, platform-updates, monitoring en support. U betaalt nooit extra per gesprek of bericht.' },
-  { q: 'Wat is het verschil tussen Start, Core en Pro?', a: 'Emma Start (€99/mnd) is de instap met gecapte volumes: WhatsApp + workflow + beperkte belminuten. Emma Core (€249/mnd) is volledige omnichannel: telefoon + WhatsApp + workflow, agenda en CRM. Emma Pro (€497/mnd) voegt hoog volume, multi-number, maatwerk-integraties en priority support toe. Enterprise is op aanvraag.' },
+  { q: 'Wat is het verschil tussen Emma en Groei?', a: 'Emma (€497/mnd) is de omnichannel AI-agent: AI-telefoniste 24/7 + WhatsApp + workflow-automatisering, agenda-integratie en tot 150 gesprekken per maand. Groei (€997/mnd) voegt onbeperkt gespreksvolume, CRM-integratie, multi-number en priority support toe. Enterprise is op aanvraag.' },
   { q: 'Hoe werkt jaarlijkse betaling?', a: 'Bij jaarlijkse betaling bespaart u circa 16% (±2 maanden gratis). U betaalt het volledige jaarbedrag vooruit en ontvangt één factuur per jaar.' },
   { q: 'Kan ik maandelijks opzeggen?', a: 'Ja, alle Emma-pakketten zijn maandelijks opzegbaar met één maand opzegtermijn. Geen boetes, geen gedoe.' },
-  { q: 'Hoe snel ben ik live?', a: 'Emma Start: gemiddeld 10 werkdagen. Emma Core en Pro: 7 werkdagen. Enterprise: afhankelijk van de scope. Na ondertekening ontvangt u direct een onboarding-plan.' },
-  { q: 'Kan ik upgraden van Start naar Core of Pro?', a: 'Ja, u kunt op elk moment upgraden van Emma Start naar Core of Pro. U betaalt alleen het verschil in abonnement. Omdat setup overal €0 is, zijn er geen extra eenmalige kosten bij een upgrade.' },
+  { q: 'Hoe snel ben ik live?', a: 'Emma en Groei: 7 werkdagen. Enterprise: afhankelijk van de scope. Na ondertekening ontvangt u direct een onboarding-plan.' },
+  { q: 'Kan ik upgraden van Emma naar Groei?', a: 'Ja, u kunt op elk moment upgraden van Emma naar Groei. U betaalt alleen het verschil in abonnement. Omdat setup overal €0 is, zijn er geen extra eenmalige kosten bij een upgrade.' },
   { q: 'Is er een gratis proefperiode?', a: 'We bieden geen automatische proefperiode, maar wel een gratis AI scan van 30 minuten en een live demo. U ziet Emma in actie voordat u beslist.' },
 ];
 
 const vergelijkRows = [
-  ['AI-telefoon (24/7, NL-nummer)', 'Beperkt', '✓', '✓ hoog volume'],
-  ['WhatsApp AI (Business API)', '✓', '✓', 'Onbeperkt'],
-  ['Workflow automation', 'Basis', '✓', 'Geavanceerd'],
-  ['Belminuten / gesprekken', 'Gecapt', 'Inbegrepen', 'Hoog volume'],
-  ['Callscripts', 'Standaard', '3 op maat', 'Onbeperkt'],
-  ['Agenda-integratie', '—', '✓', '✓'],
-  ['CRM-integratie', '—', '✓', '✓ maatwerk'],
-  ['Multi-number', '—', '—', '✓'],
-  ['Lead-melding Telegram', '—', '✓', '✓'],
-  ['Gespreksopnames', '—', '✓', '✓'],
-  ['Multi-team routing & escalatie', '—', '—', '✓'],
-  ['Support reactietijd', '< 24 uur', '< 4 uur', '< 1 uur'],
-  ['Eenmalige setup', '€0', '€0', '€0'],
-  ['Live binnen', '10 dgn', '7 dgn', '7 dgn'],
+  ['AI-telefoon (24/7, NL-nummer)', '✓', '✓ onbeperkt'],
+  ['WhatsApp AI (Business API)', '✓', 'Onbeperkt'],
+  ['Workflow automation', '✓', 'Geavanceerd'],
+  ['Belminuten / gesprekken', 'Tot 150/mnd', 'Onbeperkt'],
+  ['Callscripts', '3 op maat', 'Onbeperkt'],
+  ['Agenda-integratie', '✓', '✓'],
+  ['CRM-integratie', '—', '✓ maatwerk'],
+  ['Multi-number', '—', '✓'],
+  ['Lead-melding Telegram', '—', '✓'],
+  ['Gespreksopnames', '—', '✓'],
+  ['Multi-team routing & escalatie', '—', '✓'],
+  ['Support reactietijd', '< 4 uur', '< 1 uur'],
+  ['Eenmalige setup', '€0', '€0'],
+  ['Live binnen', '7 dgn', '7 dgn'],
 ];
 
 // Product + Offer schema per tier — AI Overview citation trigger (P1 audit fix)
@@ -229,59 +205,9 @@ const productOfferGraph = {
   '@graph': [
     {
       '@type': 'Product',
-      '@id': 'https://aanloopai.nl/tarieven/#start',
-      name: 'Aanloop AI — Emma Start',
-      description: 'Emma omnichannel AI-agent (instap) voor Nederlandse MKB. WhatsApp Business API + workflow-automatisering + beperkte belminuten, standaard FAQ-training en dashboard. Geen setup-kosten, maandelijks opzegbaar. Live binnen 10 werkdagen.',
-      brand: { '@type': 'Brand', name: 'Aanloop AI' },
-      category: 'Omnichannel AI Agent',
-      offers: {
-        '@type': 'Offer',
-        price: '99',
-        priceCurrency: 'EUR',
-        priceSpecification: {
-          '@type': 'UnitPriceSpecification',
-          price: '99',
-          priceCurrency: 'EUR',
-          unitText: 'maand',
-          referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
-        },
-        availability: 'https://schema.org/InStock',
-        url: 'https://aanloopai.nl/aanvragen/?plan=start',
-        seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
-        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
-        priceValidUntil: '2026-12-31',
-      },
-    },
-    {
-      '@type': 'Product',
-      '@id': 'https://aanloopai.nl/tarieven/#core',
-      name: 'Aanloop AI — Emma Core',
-      description: 'Emma volledige omnichannel AI-agent voor Nederlandse MKB: AI-telefoon 24/7 (NL-nummer, doorverbinden) + WhatsApp Business API + workflow-automatisering, agenda-integratie, CRM-integratie (HubSpot/Pipedrive), dashboard met opnames. Geen setup-kosten. Live binnen 7 werkdagen.',
-      brand: { '@type': 'Brand', name: 'Aanloop AI' },
-      category: 'Omnichannel AI Agent',
-      offers: {
-        '@type': 'Offer',
-        price: '249',
-        priceCurrency: 'EUR',
-        priceSpecification: {
-          '@type': 'UnitPriceSpecification',
-          price: '249',
-          priceCurrency: 'EUR',
-          unitText: 'maand',
-          referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
-        },
-        availability: 'https://schema.org/InStock',
-        url: 'https://aanloopai.nl/aanvragen/?plan=core',
-        seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
-        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
-        priceValidUntil: '2026-12-31',
-      },
-    },
-    {
-      '@type': 'Product',
-      '@id': 'https://aanloopai.nl/tarieven/#pro',
-      name: 'Aanloop AI — Emma Pro',
-      description: 'Emma omnichannel AI-agent voor hoog volume voor Nederlandse MKB: alles uit Emma Core plus multi-number (meerdere NL-nummers), maatwerk CRM- en agenda-integraties, geavanceerde workflow-automatisering en priority support. Geen setup-kosten.',
+      '@id': 'https://aanloopai.nl/tarieven/#emma',
+      name: 'Aanloop AI — Emma',
+      description: 'Emma omnichannel AI-agent voor Nederlandse MKB: AI-telefoon 24/7 (NL-nummer, doorverbinden) + WhatsApp Business API + workflow-automatisering, agenda-integratie en dashboard. Geen setup-kosten, maandelijks opzegbaar. Live binnen 7 werkdagen.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       category: 'Omnichannel AI Agent',
       offers: {
@@ -296,7 +222,32 @@ const productOfferGraph = {
           referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
         },
         availability: 'https://schema.org/InStock',
-        url: 'https://aanloopai.nl/aanvragen/?plan=pro',
+        url: 'https://aanloopai.nl/aanvragen/?plan=emma',
+        seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
+        priceValidUntil: '2026-12-31',
+      },
+    },
+    {
+      '@type': 'Product',
+      '@id': 'https://aanloopai.nl/tarieven/#groei',
+      name: 'Aanloop AI — Groei',
+      description: 'Emma omnichannel AI-agent met onbeperkt volume voor Nederlandse MKB: alles uit Emma plus onbeperkt gespreksvolume, multi-number (meerdere NL-nummers), CRM-integratie (HubSpot/Pipedrive), geavanceerde workflow-automatisering en priority support. Geen setup-kosten.',
+      brand: { '@type': 'Brand', name: 'Aanloop AI' },
+      category: 'Omnichannel AI Agent',
+      offers: {
+        '@type': 'Offer',
+        price: '997',
+        priceCurrency: 'EUR',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '997',
+          priceCurrency: 'EUR',
+          unitText: 'maand',
+          referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
+        },
+        availability: 'https://schema.org/InStock',
+        url: 'https://aanloopai.nl/aanvragen/?plan=groei',
         seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
         eligibleRegion: { '@type': 'Country', name: 'Nederland' },
         priceValidUntil: '2026-12-31',
@@ -402,7 +353,7 @@ const valueCompareRows = [
   { feature: 'Nederlandstalige NL-native voice', selfService: 'Vaak Engels accent of beperkte stemmen', aanloop: 'ElevenLabs NL — natuurlijke intonatie' },
   { feature: 'Data uitsluitend in EU + AVG-strict', selfService: 'Vaak US/global cloud', aanloop: 'EU-only datacenters, AVG art. 28 verwerkers­overeenkomst' },
   { feature: 'KvK-geregistreerd Nederlands bedrijf', selfService: 'Vaak buitenlandse vendor', aanloop: 'KVK 88606902, Rotterdam — NL-aansprakelijk' },
-  { feature: 'CRM-integratie (HubSpot/Pipedrive)', selfService: 'Tegen meerprijs of zelf bouwen', aanloop: 'Inbegrepen vanaf Emma Core' },
+  { feature: 'CRM-integratie (HubSpot/Pipedrive)', selfService: 'Tegen meerprijs of zelf bouwen', aanloop: 'Inbegrepen vanaf Groei' },
   { feature: 'Maandelijkse optimalisatie + script-updates', selfService: 'Doet u zelf', aanloop: 'Wij verbeteren Emma elke maand op uw data' },
   { feature: 'Geen extra kosten per gesprek of minuut', selfService: 'Vaak per minuut/credit', aanloop: 'Vast bedrag, voorspelbaar' },
   { feature: 'Dedicated NL support', selfService: 'E-mail tickets, vaak Engels', aanloop: 'Direct contact NL implementatie-team' },
@@ -412,7 +363,7 @@ const valueCompareRows = [
 
 <BaseLayout
   title="AI-Agent Prijs Nederland 2026 — Tarieven Aanloop AI"
-  description="Emma omnichannel AI-agent vanaf €99/mnd, Core €249, Pro €497. Geen setup-kosten, maandelijks opzegbaar."
+  description="Emma AI-agent vanaf €497/mnd, Groei €997. Geen setup-kosten, maandelijks opzegbaar."
   schema={productOfferGraph}
   faqSchema={faqs.map(f => ({ question: f.q, answer: f.a }))}
 >
@@ -652,10 +603,10 @@ const valueCompareRows = [
       <div class="mb-10 text-center reveal">
         <p class="eyebrow mb-3">Waarom Aanloop AI?</p>
         <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tightest text-navy text-balance">
-          €249 managed omnichannel vs €99–€299 zelf-service tools.
+          €497 managed omnichannel vs €99–€299 zelf-service tools.
         </h2>
         <p class="mt-4 text-slate-600 leading-relaxed max-w-2xl mx-auto">
-          Er zijn AI-tools vanaf €99/mnd. Op papier voordeliger. In de praktijk betaalt u tijd, integratiewerk en compliance-risico. Hier is wat Emma Core precies dekt — telefoon, WhatsApp en workflow in één.
+          Er zijn AI-tools vanaf €99/mnd. Op papier voordeliger. In de praktijk betaalt u tijd, integratiewerk en compliance-risico. Hier is wat Emma precies dekt — telefoon, WhatsApp en workflow in één.
         </p>
       </div>
 
@@ -665,7 +616,7 @@ const valueCompareRows = [
             <tr class="border-b border-slate-200 bg-slate-50">
               <th class="text-left py-4 px-5 text-slate-500 font-medium">Wat krijgt u?</th>
               <th class="text-center py-4 px-4 font-bold text-slate-500 w-[26%]">Zelf-service tools<br/><span class="text-xs font-normal">€99–€299/mnd</span></th>
-              <th class="text-center py-4 px-4 font-bold text-navy bg-brand-emerald/5 w-[26%]">Aanloop AI<br/><span class="text-xs font-normal text-brand-emerald">Emma Core €249/mnd managed</span></th>
+              <th class="text-center py-4 px-4 font-bold text-navy bg-brand-emerald/5 w-[26%]">Aanloop AI<br/><span class="text-xs font-normal text-brand-emerald">Emma €497/mnd managed</span></th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
@@ -783,10 +734,10 @@ const valueCompareRows = [
             <label class="text-xs font-semibold text-slate-600 uppercase tracking-wide block mb-2">Aanloop pakket</label>
             <div class="grid grid-cols-2 gap-1.5" role="radiogroup" aria-label="Aanloop pakket selectie">
               {[
-                { id: 'core', label: 'Emma Core', sub: '€249/m' },
-                { id: 'pro', label: 'Emma Pro', sub: '€497/m' },
+                { id: 'emma', label: 'Emma', sub: '€497/m' },
+                { id: 'groei', label: 'Groei', sub: '€997/m' },
               ].map(t => (
-                <button type="button" class="tco-tier-btn rounded-lg border border-slate-300 bg-white px-2 py-2 text-center hover:border-navy focus:outline-none focus:ring-2 focus:ring-brand-indigo aria-checked:border-navy aria-checked:bg-navy aria-checked:text-white" role="radio" aria-checked={t.id === 'pro' ? 'true' : 'false'} data-tier={t.id} data-monthly={t.id === 'core' ? 249 : 497} data-setup={0}>
+                <button type="button" class="tco-tier-btn rounded-lg border border-slate-300 bg-white px-2 py-2 text-center hover:border-navy focus:outline-none focus:ring-2 focus:ring-brand-indigo aria-checked:border-navy aria-checked:bg-navy aria-checked:text-white" role="radio" aria-checked={t.id === 'emma' ? 'true' : 'false'} data-tier={t.id} data-monthly={t.id === 'emma' ? 497 : 997} data-setup={0}>
                   <span class="block text-xs font-bold">{t.label}</span>
                   <span class="block text-[10px] opacity-70">{t.sub}</span>
                 </button>
@@ -852,7 +803,7 @@ const valueCompareRows = [
       </div>
 
       <div class="mt-6 flex flex-wrap gap-3 justify-center reveal reveal-delay-2">
-        <a href="/aanvragen/?plan=core" class="btn-primary text-sm">Start met Emma Core <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+        <a href="/aanvragen/?plan=emma" class="btn-primary text-sm">Start met Emma <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
         <a href="/ai-roi-calculator/" class="btn-outline text-sm">Uitgebreidere ROI-calculator</a>
         <a href="/contact/?type=tco" class="btn-outline text-sm">Vraag een persoonlijke TCO-analyse</a>
       </div>
@@ -904,7 +855,7 @@ const valueCompareRows = [
             saving.textContent = fmt(savingAbs);
             saving.classList.add('text-rose-600');
             saving.classList.remove('text-brand-emerald');
-            savingPct.textContent = 'Aanloop kost meer dan een mens bij dit scenario — overweeg het Emma Start-pakket';
+            savingPct.textContent = 'Aanloop kost meer dan een mens bij dit scenario — overweeg het Emma-pakket';
           }
 
           if (isFinite(paybackMonths) && paybackMonths > 0) {
@@ -946,18 +897,16 @@ const valueCompareRows = [
           <thead>
             <tr class="border-b border-slate-200">
               <th class="text-left py-4 pr-6 text-slate-500 font-medium w-2/5">Functie</th>
-              <th class="text-center py-4 px-3 font-bold text-navy">Emma Start<br/><span class="text-xs font-normal text-slate-400">€99/mnd</span></th>
-              <th class="text-center py-4 px-3 font-bold text-navy bg-navy/5 rounded-t-xl">Emma Core<br/><span class="text-xs font-normal text-slate-400">€249/mnd</span></th>
-              <th class="text-center py-4 px-3 font-bold text-navy">Emma Pro<br/><span class="text-xs font-normal text-slate-400">€497/mnd</span></th>
+              <th class="text-center py-4 px-3 font-bold text-navy">Emma<br/><span class="text-xs font-normal text-slate-400">€497/mnd</span></th>
+              <th class="text-center py-4 px-3 font-bold text-navy bg-navy/5 rounded-t-xl">Groei<br/><span class="text-xs font-normal text-slate-400">€997/mnd</span></th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
-            {vergelijkRows.map(([feature, start, core, pro]) => (
+            {vergelijkRows.map(([feature, emma, groei]) => (
               <tr>
                 <td class="py-3 pr-6 text-slate-700">{feature}</td>
-                <td class="py-3 px-3 text-center text-slate-500">{start}</td>
-                <td class="py-3 px-3 text-center text-navy font-medium bg-navy/5">{core}</td>
-                <td class="py-3 px-3 text-center text-slate-500">{pro}</td>
+                <td class="py-3 px-3 text-center text-slate-500">{emma}</td>
+                <td class="py-3 px-3 text-center text-navy font-medium bg-navy/5">{groei}</td>
               </tr>
             ))}
           </tbody>
