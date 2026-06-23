@@ -3,11 +3,14 @@
 // `key` matches services.product_key. `prijsCent` + `betaling` drive Mollie checkout.
 // NB: tier `naam` is stored in D1 (service_orders.tier) — never rename/remove, only reprice.
 
-// Portal/Mollie pricing is checkout-critical (D1 tier-namen — never rename/remove, only reprice).
-// 2026-06-22: repriced to the new Emma ladder (Start €99 / Core €249 / Pro €497). Existing
-// subscriptions bill from subscriptions.bedrag_cent (frozen at signup) so they are unaffected;
-// only NEW portal checkouts read these prices.
-import { START, CORE, PRO, START_MND, CORE_MND, PRO_MND } from './pricing';
+// Portal/Mollie pricing is checkout-critical (D1 tier-namen). Use LEGACY constants so
+// monthlyCent stays identical — marketing pages use the new Emma ladder (START/CORE/PRO).
+import {
+  PORTAL_CORE_497 as CORE,
+  PORTAL_GROEI_997 as GROEI,
+  PORTAL_CORE_MND as CORE_MND,
+  PORTAL_GROEI_MND as GROEI_MND,
+} from './pricing';
 
 export type TierBetaling = 'maandelijks' | 'eenmalig' | 'aanvraag';
 
@@ -38,7 +41,7 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
     meerInfoUrl: 'https://aanloopai.nl/diensten/emma/',
     tiers: [
       { naam: 'Starter', prijs: CORE_MND, prijsCent: CORE.monthlyCent, betaling: 'maandelijks', kenmerken: ['Max 150 gesprekken/mnd', 'Eigen belscript', 'Transcripties', 'Live in 10 dagen'] },
-      { naam: 'Groei', prijs: PRO_MND, prijsCent: PRO.monthlyCent, betaling: 'maandelijks', kenmerken: ['Onbeperkt gesprekken', 'WhatsApp + workflow inbegrepen', 'CRM-koppeling', 'Priority support <4u'] },
+      { naam: 'Groei', prijs: GROEI_MND, prijsCent: GROEI.monthlyCent, betaling: 'maandelijks', kenmerken: ['Onbeperkt gesprekken', 'Emma WhatsApp inbegrepen', 'CRM-koppeling', 'Priority support <4u'] },
       { naam: 'Partner', prijs: 'Op aanvraag', prijsCent: null, betaling: 'aanvraag', kenmerken: ['Onbeperkt Emma', 'Custom workflows', 'Dedicated accountmanager', 'SLA 99,9%'] },
     ],
   },
@@ -50,8 +53,8 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'Beantwoordt WhatsApp- en chatvragen automatisch, 24/7. Getraind op uw FAQ en productcatalogus.',
     meerInfoUrl: 'https://aanloopai.nl/diensten/emma/',
     tiers: [
-      { naam: 'Lite', prijs: START_MND, prijsCent: START.monthlyCent, betaling: 'maandelijks', kenmerken: ['Tot 500 berichten/mnd', 'Standaard FAQ-training', 'WhatsApp Business API', 'NL/EN auto-detectie'] },
-      { naam: 'Standard', prijs: CORE_MND, prijsCent: CORE.monthlyCent, betaling: 'maandelijks', kenmerken: ['Onbeperkt berichten', 'Eigen FAQ + productcatalogus', 'Shopify/WooCommerce-koppeling', 'Meertalig NL/EN/FR/DE'] },
+      { naam: 'Lite', prijs: '€49/mnd', prijsCent: 4900, betaling: 'maandelijks', kenmerken: ['500 berichten/mnd', 'Standaard FAQ-training', 'WhatsApp Business API', 'NL/EN auto-detectie'] },
+      { naam: 'Standard', prijs: '€197/mnd', prijsCent: 19700, betaling: 'maandelijks', kenmerken: ['Onbeperkt berichten', 'Eigen FAQ + productcatalogus', 'Shopify/WooCommerce-koppeling', 'Meertalig NL/EN/FR/DE'] },
     ],
   },
   {
