@@ -3,7 +3,7 @@
 // GEEN setup-fee — markt-differentiator (de meeste NL-concurrenten rekenen €299-999 setup).
 // Marketing pages AND portal-catalog.ts (Mollie checkout) derive from here.
 // Benchmark (jun 2026): voice managed €199-299 · WhatsApp €99-199 · omnichannel mid €290-499.
-// Publieke ladder (2026-06-23, M-besluit): Emma €497 · Groei €997 · Enterprise op aanvraag — setup €0.
+// Publieke ladder: Emma Lite €49 · Emma €497 · Groei €997 · Enterprise op aanvraag — setup €0.
 
 export interface PricePoint {
   /** Maandprijs (excl. btw) in euro */
@@ -17,6 +17,9 @@ export interface PricePoint {
 }
 
 // ── PUBLIEKE MARKETING-LADDER (single source voor /tarieven + diensten/emma) ──
+/** Emma Lite — WhatsApp-only AI-assistent (instap). Geen setup. */
+export const EMMA_LITE: PricePoint = { monthly: 49, annual: 41, monthlyCent: 4900, setup: 0 };
+
 /** Emma — AI-telefoniste + WhatsApp + workflow (instap omnichannel). Geen setup. */
 export const EMMA: PricePoint = { monthly: 497, annual: 416, monthlyCent: 49700, setup: 0 };
 
@@ -40,13 +43,15 @@ export const CORE_LABEL = '€249';
 export const CORE_MND = '€249/mnd';
 export const PRO_LABEL = '€497';
 export const PRO_MND = '€497/mnd';
+export const EMMA_LITE_LABEL = '€49';
+export const EMMA_LITE_MND = '€49/mnd';
 export const EMMA_LABEL = '€497';
 export const EMMA_MND = '€497/mnd';
 export const GROEI_LABEL = '€997';
 export const GROEI_MND = '€997/mnd';
-export const VANAF = 'Vanaf €497/mnd';
+export const VANAF = 'Vanaf €49/mnd';
 /** schema.org Organization priceRange */
-export const PRICE_RANGE = '€497-€5000';
+export const PRICE_RANGE = '€49-€5000';
 
 // ── LEGACY portal/Mollie tiers — D1-bound tier-namen (service_orders.tier), checkout-kritisch.
 //    NIET gebruiken op marketingpagina's. monthlyCent ONGEWIJZIGD = Mollie blijft identiek.

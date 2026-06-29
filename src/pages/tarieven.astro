@@ -2,7 +2,7 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import dashboardMockup from '../assets/images/dashboard-mockup.png';
-import { EMMA, GROEI } from '../data/pricing';
+import { EMMA_LITE, EMMA, GROEI } from '../data/pricing';
 
 // ── Pricing logic ──────────────────────────────────────────────
 // Prijzen komen uit src/data/pricing.ts (single source of truth).
@@ -12,6 +12,27 @@ import { EMMA, GROEI } from '../data/pricing';
 // Enterprise op aanvraag. Setup = €0 op ALLE pakketten — markt-differentiator.
 
 const plans = [
+  {
+    id: 'emma-lite',
+    name: 'Emma Lite',
+    tagline: 'WhatsApp-only AI-assistent — starter',
+    price: { monthly: EMMA_LITE.monthly, annual: EMMA_LITE.annual },
+    badge: null,
+    highlight: false,
+    includes: 'Emma Lite — WhatsApp-only',
+    features: [
+      { text: 'WhatsApp Business AI-assistent', included: true },
+      { text: 'Tot 1.000 conversaties/mnd', included: true },
+      { text: 'Eigen kennisbank (Dify)', included: true },
+      { text: 'Maandelijks opzegbaar', included: true },
+      { text: 'AI-telefoniste (telefoon)', included: false },
+      { text: 'Workflow-automatisering', included: false },
+      { text: 'CRM-koppeling', included: false },
+      { text: 'SLA + dedicated accountmanager', included: false },
+    ],
+    cta: 'Start met Emma Lite',
+    ctaHref: '/aanvragen/?plan=emma-lite',
+  },
   {
     id: 'emma',
     name: 'Emma',
@@ -68,7 +89,7 @@ const plans = [
     includes: 'Emma — enterprise op maat',
     features: [
       { text: 'Emma omnichannel (onbeperkt volume)', included: true },
-      { text: 'SLA 99,9% uptime garantie', included: true },
+      { text: 'Uptime-doel 99,9% (SLA op aanvraag)', included: true },
       { text: 'Dedicated accountmanager', included: true },
       { text: 'Custom n8n workflows', included: true },
       { text: 'White-label optie', included: true },
@@ -328,7 +349,7 @@ const productOfferGraph = {
       '@type': 'Product',
       '@id': 'https://aanloopai.nl/tarieven/#enterprise',
       name: 'Aanloop AI — Emma Enterprise',
-      description: 'Emma omnichannel AI-agent op maat voor grotere organisaties: SLA 99,9% uptime, dedicated accountmanager, custom n8n workflows, white-label optie, on-premise/private cloud optie en maatwerk CRM/ERP-integraties.',
+      description: 'Emma omnichannel AI-agent op maat voor grotere organisaties: uptime-doel 99,9% (SLA op aanvraag), dedicated accountmanager, custom n8n workflows, white-label optie, on-premise/private cloud optie en maatwerk CRM/ERP-integraties.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       category: 'Enterprise AI Agent Suite',
       offers: {
@@ -363,7 +384,7 @@ const valueCompareRows = [
 
 <BaseLayout
   title="AI-Agent Prijs Nederland 2026 — Tarieven Aanloop AI"
-  description="Emma AI-agent vanaf €497/mnd, Groei €997. Geen setup-kosten, maandelijks opzegbaar."
+  description="Emma Lite vanaf €49/mnd, Emma AI-agent vanaf €497/mnd, Groei €997. Geen setup-kosten, maandelijks opzegbaar."
   schema={productOfferGraph}
   faqSchema={faqs.map(f => ({ question: f.q, answer: f.a }))}
 >
@@ -942,7 +963,7 @@ const valueCompareRows = [
       <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <p class="eyebrow mb-2">Enterprise</p>
-          <h2 class="text-xl lg:text-2xl font-bold text-navy">200+ medewerkers? Dedicated account manager + SLA 99.9%</h2>
+          <h2 class="text-xl lg:text-2xl font-bold text-navy">200+ medewerkers? Dedicated account manager + uptime-doel 99,9%</h2>
           <p class="text-sm text-slate-600 mt-1">Voor grotere organisaties bieden we een Enterprise-pakket met multi-team routing, on-premise opties en maatwerk-integraties.</p>
         </div>
         <a href="/enterprise/" class="btn-outline shrink-0">Bekijk Enterprise →</a>

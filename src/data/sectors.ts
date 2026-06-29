@@ -216,10 +216,10 @@ export const sectors: Sector[] = [
       'Privacy-eisen (NEN 7510) maken AI-keuze complex',
     ],
     solutions: [
-      { title: 'Triage-AI (Emma)', description: 'AI bepaalt urgentie, plant niet-spoedeisende afspraken zelf, verbindt spoed direct door. NEN 7510-compliant.' },
+      { title: 'Triage-AI (Emma)', description: 'AI bepaalt urgentie, plant niet-spoedeisende afspraken zelf, verbindt spoed direct door. NEN 7510 add-on indien van toepassing.' },
       { title: 'Intake-formulieren via WhatsApp', description: 'Patiënt krijgt 24u voor afspraak een WhatsApp met de intake-vragen. AI verwerkt antwoorden in patiëntdossier.' },
       { title: 'Afspraak-herinneringen', description: 'Automatische SMS/WhatsApp 1 dag van tevoren. Patiënt kan via knop verzetten — AI verwerkt direct.' },
-      { title: 'Beveiligde EU-verwerking', description: 'Alle data binnen EU (Frankfurt of Amsterdam), NEN 7510-conform, verwerkersovereenkomst standaard.' },
+      { title: 'Beveiligde EU-verwerking', description: 'Alle data binnen EU (Frankfurt of Amsterdam), NEN 7510 add-on indien van toepassing, verwerkersovereenkomst beschikbaar.' },
     ],
     caseExample: {
       company: 'Voorbeeldscenario',

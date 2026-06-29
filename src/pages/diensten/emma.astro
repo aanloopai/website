@@ -28,8 +28,8 @@ const comparison = [
   { feature: 'Realtime productdata (voorraad, orders)', emma: true, livechat: 'Handmatig', chatgpt: false, email: false },
   { feature: 'Naadloze handover naar mens', emma: true, livechat: true, chatgpt: false, email: 'Manueel' },
   { feature: 'CRM-koppeling met conversatiehistorie', emma: true, livechat: 'Variabel', chatgpt: false, email: 'Variabel' },
-  { feature: 'Maandelijkse kosten (MKB-volume)', emma: 'Vanaf €497', livechat: '€500-2.000', chatgpt: '€20/user', email: 'Personeelskosten' },
-  { feature: 'AVG/GDPR-compliant + EU-data', emma: true, livechat: 'Variabel', chatgpt: false, email: 'Variabel' },
+  { feature: 'Maandelijkse kosten (MKB-volume)', emma: 'Vanaf €49 (Lite) / €497 (Omnichannel)', livechat: '€500-2.000', chatgpt: '€20/user', email: 'Personeelskosten' },
+  { feature: 'AVG-bewust, EU-only data, DPA mogelijk', emma: true, livechat: 'Variabel', chatgpt: false, email: 'Variabel' },
 ];
 
 const faqItems = [
@@ -37,7 +37,7 @@ const faqItems = [
   { question: 'Heb ik een WhatsApp Business account of telefoonnummer nodig?', answer: 'Niet bij start. Wij regelen de WhatsApp Business API-aanmelding bij Meta (gratis verificatie via een 360dialog of Twilio-partner) én een Nederlands telefoonnummer voor de AI-receptionist — of we porten uw bestaande nummer. U behoudt eigenaarschap van nummer en history. Heeft u al een WhatsApp Business-nummer of vaste lijn, dan koppelt Emma aan uw bestaande nummers.' },
   { question: 'Hoe wordt Emma getraind voor mijn bedrijf?', answer: 'Tijdens onboarding voeden we Emma met uw FAQ-sectie, productcatalogus, leveringsvoorwaarden en eventuele interne documenten — voor zowel telefoon als WhatsApp. We doen twee testrondes met u — u belt en appt met lastige vragen en stuurt op het antwoordgedrag. Pas daarna gaat Emma live.' },
   { question: 'Wat doet Emma bij een vraag die ze niet kan beantwoorden?', answer: 'Emma escaleert volgens uw protocol: aan de telefoon verbindt ze direct door naar een specifiek teamlid, op WhatsApp zet ze het gesprek door, opent ze een ticket in uw helpdesk, plant ze een terugbelafspraak of verwijst ze door naar het juiste kanaal. U bepaalt zelf de escalatie- en doorverbindregels.' },
-  { question: 'Wat kost Emma precies?', answer: 'Emma kent drie pakketten, allemaal zonder setup-kosten: Emma €497/mnd (AI-telefoniste + WhatsApp + workflow-automatisering, tot 150 gesprekken). Groei €997/mnd (onbeperkt volume + WhatsApp + CRM-koppeling + multi-number + priority support — meest gekozen). Emma Enterprise op aanvraag (SLA, dedicated tenant, custom workflows). WhatsApp-conversatiekosten van Meta (gemiddeld €0,03-0,08 per uniek 24-uurs venster) zijn niet inbegrepen — die factureert Meta direct aan u; wij rekenen er geen marge op. Zie /tarieven voor de volledige opbouw.' },
+  { question: 'Wat kost Emma precies?', answer: 'Emma kent drie pakketten, allemaal zonder setup-kosten: Emma Lite €49/mnd (WhatsApp-only AI-assistent, tot 1.000 conversaties). Emma €497/mnd (AI-telefoniste + WhatsApp + workflow-automatisering, tot 150 gesprekken). Groei €997/mnd (onbeperkt volume + WhatsApp + CRM-koppeling + multi-number + priority support — meest gekozen). Emma Enterprise op aanvraag (SLA, dedicated tenant, custom workflows). WhatsApp-conversatiekosten van Meta (gemiddeld €0,03-0,08 per uniek 24-uurs venster) zijn niet inbegrepen — die factureert Meta direct aan u; wij rekenen er geen marge op. Zie /tarieven voor de volledige opbouw.' },
   { question: 'Werkt Emma met mijn bestaande Shopify of WooCommerce?', answer: 'Ja. Voor Shopify, WooCommerce, Magento, Lightspeed en PrestaShop hebben we native koppelingen. Emma kan voorraad, orderstatus, retourstatus en levertijden realtime opzoeken en delen met de klant.' },
   { question: 'Worden gesprekken opgeslagen en hoe lang?', answer: 'Conversaties worden bewaard in EU-datacenters (Amsterdam/Frankfurt) met encryptie at-rest en in-transit. Default bewaartermijn is 90 dagen, configureerbaar tussen 7 en 365 dagen. Voor klanten met aparte compliance-eisen leveren we een dedicated tenant.' },
   { question: 'Kan Emma in meerdere talen tegelijk werken?', answer: 'Ja. Emma detecteert automatisch de taal van de klant (NL, EN, FR, DE standaard; ES, IT, PL op aanvraag) en antwoordt in dezelfde taal. Voor toeristische gebieden of internationale webshops is dit een grote conversie-booster.' },
@@ -61,8 +61,8 @@ const schema = {
   offers: {
     '@type': 'AggregateOffer',
     priceCurrency: 'EUR',
-    lowPrice: '99',
-    highPrice: '497',
+    lowPrice: '49',
+    highPrice: '997',
     offerCount: '4',
     availability: 'https://schema.org/InStock',
     seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
@@ -85,8 +85,8 @@ const softwareSchema = {
   offers: {
     '@type': 'AggregateOffer',
     priceCurrency: 'EUR',
-    lowPrice: '99',
-    highPrice: '497',
+    lowPrice: '49',
+    highPrice: '997',
     offerCount: '4',
     availability: 'https://schema.org/InStock',
   },
@@ -102,7 +102,7 @@ const softwareSchema = {
     'Helpdesk integratie (Zendesk, Freshdesk, Intercom, Crisp)',
     'Multilingual auto-detection (NL/EN/FR/DE standaard, ES/IT/PL op aanvraag)',
     'Naadloze handover naar uw team met conversatie- en gesprekshistorie',
-    'AVG/GDPR-compliant — EU datacenters, encryptie at-rest + in-transit',
+    'AVG-bewust — EU datacenters, encryptie at-rest + in-transit, DPA mogelijk',
     'Conversatie-bewaartermijn configureerbaar (default 90 dagen)',
   ],
   audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
