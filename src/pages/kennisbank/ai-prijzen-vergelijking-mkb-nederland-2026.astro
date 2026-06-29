@@ -8,9 +8,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 // verborgen kosten en eerlijke concurrentenvergelijking op publieke data.
 //
 // Canonieke tarieven (source-of-truth: /tarieven/):
-// - Emma €497/mnd, setup €495, incl. Emma 150 gesprekken/mnd
-// - Groei €997/mnd, setup €795, incl. Emma onbeperkt + Emma
-// - Emma standalone: vanaf €49/mnd
+// - Emma €497/mnd, setup €0, incl. Emma 150 gesprekken/mnd
+// - Groei €997/mnd, setup €0, incl. Emma onbeperkt + Emma
+// - Emma Lite: vanaf €49/mnd
 // - AI-Website Bundel: €4.950 setup + €397/mnd
 // - Partner: op maat (geen vastgestelde prijs)
 //
@@ -64,7 +64,7 @@ const offerGraph = {
       '@type': 'Product',
       '@id': 'https://aanloopai.nl/tarieven/#starter',
       name: 'Aanloop AI Emma — Emma AI telefoniste',
-      description: 'AI telefoniste Emma voor Nederlands MKB. 150 gesprekken per maand, 1 callscript op maat, agenda-integratie en dashboard. Setup 495 euro eenmalig.',
+      description: 'AI telefoniste Emma voor Nederlands MKB. 150 gesprekken per maand, 1 callscript op maat, agenda-integratie en dashboard. Geen setup-kosten.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       offers: {
         '@type': 'Offer',
@@ -80,7 +80,7 @@ const offerGraph = {
       '@type': 'Product',
       '@id': 'https://aanloopai.nl/tarieven/#groei',
       name: 'Aanloop AI Groei — Emma',
-      description: 'AI telefoniste Emma plus WhatsApp-agent Emma. Onbeperkte gesprekken, CRM-koppeling, prioriteit support. Setup 795 euro eenmalig.',
+      description: 'AI telefoniste Emma plus WhatsApp-agent Emma. Onbeperkte gesprekken, CRM-koppeling, prioriteit support. Geen setup-kosten.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       offers: {
         '@type': 'Offer',
@@ -95,8 +95,8 @@ const offerGraph = {
     {
       '@type': 'Product',
       '@id': 'https://aanloopai.nl/diensten/emma/#emma-standalone',
-      name: 'Aanloop AI Emma — WhatsApp-agent standalone',
-      description: 'WhatsApp Business AI-agent Emma voor MKB. Automatische beantwoording, agenda-boekingen en lead-kwalificatie via WhatsApp. Vanaf 49 euro per maand.',
+      name: 'Aanloop AI Emma Lite — WhatsApp-agent',
+      description: 'WhatsApp Business AI-agent Emma Lite voor MKB. Automatische beantwoording, agenda-boekingen en lead-kwalificatie via WhatsApp. Vanaf 49 euro per maand, geen setup-kosten.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       offers: {
         '@type': 'Offer', priceSpecification: { '@type': 'PriceSpecification', priceCurrency: 'EUR', valueAddedTaxIncluded: false },
@@ -114,7 +114,7 @@ const offerGraph = {
 const faqItems = [
   {
     question: 'Wat zijn de actuele Aanloop AI tarieven in 2026?',
-    answer: 'Aanloop AI hanteert drie vaste pakketten. Emma: 497 euro per maand, eenmalige setup 495 euro. Inbegrepen: Emma AI telefoniste, 150 gesprekken per maand, 1 callscript op maat, agenda-integratie en dashboard. Groei: 997 euro per maand, eenmalige setup 795 euro. Inbegrepen: Emma onbeperkt plus Emma WhatsApp-agent, 3 callscripts, CRM-koppeling (HubSpot/Pipedrive), gespreksopnames en prioriteit support (reactie onder 4 uur). Emma standalone: vanaf 49 euro per maand voor alleen WhatsApp-automatisering. AI-Website Bundel: 4.950 euro setup plus 397 euro per maand (website plus Emma plus Emma als gecombineerd pakket). Partner op maat: op offerte. Alle prijzen zijn exclusief 21% btw.',
+    answer: 'Aanloop AI hanteert drie vaste pakketten, allemaal zonder setup-kosten. Emma: 497 euro per maand, geen setup-kosten. Inbegrepen: Emma AI telefoniste, 150 gesprekken per maand, 1 callscript op maat, agenda-integratie en dashboard. Groei: 997 euro per maand, geen setup-kosten. Inbegrepen: Emma onbeperkt plus Emma WhatsApp-agent, 3 callscripts, CRM-koppeling (HubSpot/Pipedrive), gespreksopnames en prioriteit support (reactie onder 4 uur). Emma Lite: vanaf 49 euro per maand voor alleen WhatsApp-automatisering. AI-Website Bundel: 4.950 euro setup plus 397 euro per maand (website plus Emma als gecombineerd pakket). Partner op maat: op offerte. Alle prijzen zijn exclusief 21% btw.',
   },
   {
     question: 'Welke verborgen kosten heeft AI voor MKB?',
@@ -122,7 +122,7 @@ const faqItems = [
   },
   {
     question: 'Wanneer is een AI telefoniste goedkoper dan een mens?',
-    answer: 'Een fulltime telefoniste in Nederland kost werkgevers all-in 36.000-48.000 euro per jaar (CAO plus vakantiegeld plus werkgeverslasten plus ziekteverzuim plus werving). Emma kost 5.964 euro per jaar (12 x 497 euro plus 495 euro setup). Break-even ligt bij circa 22-30 telefoongesprekken per dag die anders door de telefoniste zouden worden afgehandeld. Bij MKB-bedrijven met meer dan 30 inkomende gesprekken per dag — tandartsen, fysiotherapiepraktijken, webshops, horecabedrijven, accountantskantoren — is Emma structureel goedkoper dan fulltime personeel. Onder 15 gesprekken per dag kan een parttime receptionist of call-forwarding naar een medewerker kosteneffectiever zijn.',
+    answer: 'Een fulltime telefoniste in Nederland kost werkgevers all-in 36.000-48.000 euro per jaar (CAO plus vakantiegeld plus werkgeverslasten plus ziekteverzuim plus werving). Emma kost 5.964 euro per jaar (12 x 497 euro, geen setup-kosten). Break-even ligt bij circa 22-30 telefoongesprekken per dag die anders door de telefoniste zouden worden afgehandeld. Bij MKB-bedrijven met meer dan 30 inkomende gesprekken per dag — tandartsen, fysiotherapiepraktijken, webshops, horecabedrijven, accountantskantoren — is Emma structureel goedkoper dan fulltime personeel. Onder 15 gesprekken per dag kan een parttime receptionist of call-forwarding naar een medewerker kosteneffectiever zijn.',
   },
   {
     question: 'Wanneer is AI duurder dan een mens?',
@@ -166,7 +166,7 @@ const faqItems = [
   },
   {
     question: 'Hoe snel verdien ik de investering in een AI telefoniste terug?',
-    answer: 'De terugverdientijd hangt af van uw sector, belvolume en gemiddelde transactiewaarde. In de ROI-tabel hierboven varieert de terugverdientijd van circa 5 tot 14 dagen voor de doorgerekende sectoren. De setup-fee (495 tot 795 euro) is bij veel bedrijven al terugverdiend met de eerste afspraak of lead die anders buiten kantooruren verloren was gegaan. Voor een realistische, op uw eigen cijfers gebaseerde berekening kunt u de ROI-calculator gebruiken; reken daarbij conservatief met uw werkelijke conversie en marges in plaats van met bovengrenzen.',
+    answer: 'De terugverdientijd hangt af van uw sector, belvolume en gemiddelde transactiewaarde. In de ROI-tabel hierboven varieert de terugverdientijd van circa 5 tot 14 dagen voor de doorgerekende sectoren. Omdat er geen setup-kosten zijn, is uw investering bij veel bedrijven al terugverdiend met de eerste afspraak of lead die anders buiten kantooruren verloren was gegaan. Voor een realistische, op uw eigen cijfers gebaseerde berekening kunt u de ROI-calculator gebruiken; reken daarbij conservatief met uw werkelijke conversie en marges in plaats van met bovengrenzen.',
   },
 ];
 
@@ -188,7 +188,7 @@ const pricingModels = [
   {
     name: 'Managed service abonnement',
     range: '500-2.000 euro/mnd',
-    setup: '495-795 euro',
+    setup: '0-795 euro',
     pro: 'Vaste prijs, geen verrassingen, professionele configuratie, NL-taal en sector-kennis inbegrepen',
     con: 'Hogere instapprijs dan self-service; vereist onboarding-investering in tijd (4-6 uur)',
   },
@@ -202,19 +202,19 @@ const pricingModels = [
 ];
 
 const aanloopTiers = [
-  { tier: 'Emma', prijs: '497 euro/mnd', setup: '495 euro eenmalig', inhoud: 'Emma AI telefoniste, 150 gesprekken/mnd, 1 callscript, agenda-integratie, e-mail lead-melding, dashboard', liveTijd: '10 werkdagen', best: false },
-  { tier: 'Groei', prijs: '997 euro/mnd', setup: '795 euro eenmalig', inhoud: 'Emma onbeperkt + Emma WhatsApp-agent, 3 callscripts, CRM HubSpot/Pipedrive, Telegram lead-melding, gespreksopnames, prioriteit support', liveTijd: '7 werkdagen', best: true },
-  { tier: 'Emma standalone', prijs: 'Vanaf 49 euro/mnd', setup: 'Inbegrepen', inhoud: 'WhatsApp Business AI-agent, automatische beantwoording, agenda-boekingen, lead-kwalificatie, FAQ-afhandeling', liveTijd: '7 werkdagen', best: false },
+  { tier: 'Emma', prijs: '497 euro/mnd', setup: 'Geen (€0)', inhoud: 'Emma AI telefoniste, 150 gesprekken/mnd, 1 callscript, agenda-integratie, e-mail lead-melding, dashboard', liveTijd: '10 werkdagen', best: false },
+  { tier: 'Groei', prijs: '997 euro/mnd', setup: 'Geen (€0)', inhoud: 'Emma onbeperkt + Emma WhatsApp-agent, 3 callscripts, CRM HubSpot/Pipedrive, Telegram lead-melding, gespreksopnames, prioriteit support', liveTijd: '7 werkdagen', best: true },
+  { tier: 'Emma Lite', prijs: 'Vanaf 49 euro/mnd', setup: 'Geen (€0)', inhoud: 'WhatsApp Business AI-agent, automatische beantwoording, agenda-boekingen, lead-kwalificatie, FAQ-afhandeling', liveTijd: '7 werkdagen', best: false },
   { tier: 'AI-Website Bundel', prijs: '397 euro/mnd', setup: '4.950 euro eenmalig', inhoud: 'AI-ready website + Emma als gecombineerd pakket, 1 leverancier, 1 contract, 1 aanspreekpunt', liveTijd: '21 werkdagen', best: false },
-  { tier: 'Partner op maat', prijs: 'Op offerte', setup: 'Op offerte', inhoud: 'Emma onbeperkt + custom n8n workflows, multi-team routing, dedicated account manager, SLA 99,9% uptime, maatwerk CRM/ERP', liveTijd: '14 werkdagen', best: false },
+  { tier: 'Partner op maat', prijs: 'Op offerte', setup: 'Op offerte', inhoud: 'Emma onbeperkt + custom n8n workflows, multi-team routing, dedicated account manager, uptime-doel 99,9% (SLA op aanvraag), maatwerk CRM/ERP', liveTijd: '14 werkdagen', best: false },
 ];
 
 const hiddenCosts = [
   {
     kostenpost: 'Onboarding- en trainingstijd',
-    beschrijving: 'Bij ongemanagede platforms investeert u zelf 40-100 uur in configuratie, kennisbank-schrijven en testen. Bij Aanloop AI is onboarding inbegrepen in de setup-fee — uw tijdsinvestering: circa 4-6 uur intakegesprek en review.',
+    beschrijving: 'Bij ongemanagede platforms investeert u zelf 40-100 uur in configuratie, kennisbank-schrijven en testen. Bij Aanloop AI is onboarding inbegrepen in het abonnement (geen setup-fee) — uw tijdsinvestering: circa 4-6 uur intakegesprek en review.',
     risico: 'Hoog bij self-service',
-    aanloop: 'Inbegrepen in setup',
+    aanloop: 'Inbegrepen, geen setup-fee',
   },
   {
     kostenpost: 'CRM- en agenda-integratie',
@@ -249,8 +249,8 @@ const hiddenCosts = [
 ];
 
 const concurrentenTabel = [
-  { naam: 'Aanloop AI Emma', type: 'Managed NL', prijs: '497 euro/mnd', setup: '495 euro', datalocatie: 'EU (Frankfurt/AMS)', opzeggen: 'Maandelijks', hl: true },
-  { naam: 'Aanloop AI Groei', type: 'Managed NL', prijs: '997 euro/mnd', setup: '795 euro', datalocatie: 'EU (Frankfurt/AMS)', opzeggen: 'Maandelijks', hl: true },
+  { naam: 'Aanloop AI Emma', type: 'Managed NL', prijs: '497 euro/mnd', setup: '€0', datalocatie: 'EU (Frankfurt/AMS)', opzeggen: 'Maandelijks', hl: true },
+  { naam: 'Aanloop AI Groei', type: 'Managed NL', prijs: '997 euro/mnd', setup: '€0', datalocatie: 'EU (Frankfurt/AMS)', opzeggen: 'Maandelijks', hl: true },
   { naam: 'Voicelabs Robin', type: 'Platform NL', prijs: 'Op aanvraag', setup: 'Op aanvraag', datalocatie: 'NL / EU', opzeggen: 'Op aanvraag', hl: false },
   { naam: 'Watermelon', type: 'Chat-platform NL', prijs: 'Op aanvraag', setup: 'Op aanvraag', datalocatie: 'NL', opzeggen: 'Op aanvraag', hl: false },
   { naam: 'MIKE365', type: 'AI receptionist NL', prijs: 'Op aanvraag', setup: 'Op aanvraag', datalocatie: 'NL / EU', opzeggen: 'Op aanvraag', hl: false },
@@ -261,9 +261,9 @@ const concurrentenTabel = [
 const tcoTabel = [
   { post: 'Fulltime telefoniste (NL CAO all-in)', jr1: '36.000-48.000 euro', maand: '3.000-4.000 euro', toelichting: 'Bruto salaris + werkgeverslasten (ca. 30%) + vakantiegeld (8%) + gemiddeld ziekteverzuim (5-7%)' },
   { post: 'Werving en onboarding telefoniste', jr1: '2.000-6.000 euro eenmalig', maand: '—', toelichting: 'Recruiter/advertentiekosten + inwerktijd (2-4 weken) + productiviteitsverlies invalkracht' },
-  { post: 'Emma — jaar 1 totaal', jr1: '6.459 euro', maand: '497 euro + 495 setup', toelichting: '12 x 497 euro = 5.964 euro + 495 euro setup eenmalig', highlight: true },
+  { post: 'Emma — jaar 1 totaal', jr1: '5.964 euro', maand: '497 euro', toelichting: '12 x 497 euro = 5.964 euro; geen setup-kosten', highlight: true },
   { post: 'Emma — jaar 2+ totaal', jr1: '5.964 euro/jr', maand: '497 euro', toelichting: 'Geen jaarlijkse indexering; geen wervingskosten herhaling' },
-  { post: 'Emma Groei — jaar 1 totaal', jr1: '12.759 euro', maand: '997 euro + 795 setup', toelichting: '12 x 997 euro = 11.964 euro + 795 euro setup; incl. Emma onbeperkt + Emma WhatsApp', highlight: true },
+  { post: 'Emma Groei — jaar 1 totaal', jr1: '11.964 euro', maand: '997 euro', toelichting: '12 x 997 euro = 11.964 euro; geen setup-kosten; incl. Emma onbeperkt + Emma WhatsApp', highlight: true },
   { post: 'Emma Groei — jaar 2+ totaal', jr1: '11.964 euro/jr', maand: '997 euro', toelichting: 'Incl. Emma onbeperkt + Emma onbeperkt WhatsApp; geen extra kosten' },
 ];
 
@@ -379,7 +379,7 @@ const sectorRoi = [
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">Canonieke tarieven</p>
         <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Aanloop AI tarieven 2026 — volledig overzicht.</h2>
-        <p class="mt-3 text-slate-600 max-w-2xl">Alle prijzen zijn exclusief 21% btw. Setup-fee is eenmalig en dekt intake, training, configuratie en go-live begeleiding. Maandabonnement is maandelijks opzegbaar met 1 maand opzegtermijn. Bron van waarheid voor alle tarieven: <a href="/tarieven/" class="text-brand-indigo hover:underline font-medium">/tarieven/</a>.</p>
+        <p class="mt-3 text-slate-600 max-w-2xl">Alle prijzen zijn exclusief 21% btw. Setup is €0 op alle Emma-pakketten — intake, training, configuratie en go-live begeleiding zijn inbegrepen in het abonnement. Maandabonnement is maandelijks opzegbaar met 1 maand opzegtermijn. Bron van waarheid voor alle tarieven: <a href="/tarieven/" class="text-brand-indigo hover:underline font-medium">/tarieven/</a>.</p>
       </div>
       <div class="overflow-x-auto reveal reveal-delay-1">
         <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
@@ -510,7 +510,7 @@ const sectorRoi = [
           </tbody>
         </table>
       </div>
-      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Conclusie: Emma kost in jaar 1 circa 6.459 euro all-in tegenover 38.000-54.000 euro all-in voor een fulltime telefoniste. Dat is een besparing van 30.000-46.000 euro per jaar — plus 24/7 beschikbaarheid en nul ziekteverzuim. De payback op de setup (495 euro) is bereikt na de eerste extra afspraak of lead die u anders had gemist.</p>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Conclusie: Emma kost in jaar 1 circa 5.964 euro all-in tegenover 38.000-54.000 euro all-in voor een fulltime telefoniste. Dat is een besparing van 32.000-48.000 euro per jaar — plus 24/7 beschikbaarheid en nul ziekteverzuim. Omdat Emma geen setup-kosten kent, is de investering al terugverdiend na de eerste extra afspraak of lead die u anders had gemist.</p>
     </div>
   </section>
 
@@ -613,7 +613,7 @@ const sectorRoi = [
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 reveal reveal-delay-1">
           <p class="font-bold text-navy mb-2">Stap 2 — Bepaal uw kanalenmix</p>
-          <p class="text-sm text-slate-600 leading-relaxed">Komt klantcontact vooral via telefoon, dan volstaat Emma (Emma). Komt een substantieel deel via WhatsApp of webchat, dan is het Groei-pakket (Emma plus Emma) of Emma standalone passender. Telefoon en WhatsApp dekken samen ongeveer 95% van het inkomende contact.</p>
+          <p class="text-sm text-slate-600 leading-relaxed">Komt klantcontact vooral via telefoon, dan volstaat Emma (Emma). Komt een substantieel deel via WhatsApp of webchat, dan is het Groei-pakket (Emma plus Emma) of Emma Lite passender. Telefoon en WhatsApp dekken samen ongeveer 95% van het inkomende contact.</p>
         </div>
         <div class="rounded-2xl border border-slate-200 bg-white p-5 reveal reveal-delay-2">
           <p class="font-bold text-navy mb-2">Stap 3 — Reken met de volledige TCO, niet alleen de maandprijs</p>
@@ -720,7 +720,7 @@ const sectorRoi = [
           Bereken uw eigen ROI — gratis, in 30 minuten.
         </h2>
         <p class="mt-4 text-slate-300 leading-relaxed reveal reveal-delay-1">
-          Elke MKB-situatie is anders. Tijdens een gratis demo van 30 minuten berekenen we samen uw specifieke break-even punt, terugverdientijd en verwachte jaarlijkse besparing. U ziet Emma in actie op een echte telefoonlijn en WhatsApp — geconfigureerd voor uw sector. EU-only data, geen lock-in, maandelijks opzegbaar. Setup 495-795 euro eenmalig, daarna vaste maandprijs zonder verborgen kosten.
+          Elke MKB-situatie is anders. Tijdens een gratis demo van 30 minuten berekenen we samen uw specifieke break-even punt, terugverdientijd en verwachte jaarlijkse besparing. U ziet Emma in actie op een echte telefoonlijn en WhatsApp — geconfigureerd voor uw sector. EU-only data, geen lock-in, maandelijks opzegbaar. Geen setup-kosten, daarna vaste maandprijs zonder verborgen kosten.
         </p>
         <div class="mt-6 flex flex-col sm:flex-row gap-3 reveal reveal-delay-2">
           <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
