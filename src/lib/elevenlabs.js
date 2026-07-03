@@ -22,6 +22,22 @@ async function createKbDoc(apiKey, name, text) {
   return elFetch(apiKey, '/convai/knowledge-base/text', { name: name.slice(0, 100), text: text.slice(0, 50000) });
 }
 
+// DELETE /v1/convai/knowledge-base/{documentation_id} — cleanup helper for
+// when a later provisioning step fails after the KB doc was already created.
+// Endpoint verified against ElevenLabs ConvAI API docs (knowledge base
+// delete-document); same base URL / auth header as createKbDoc, but DELETE
+// has no body and no JSON response to parse.
+async function deleteKbDoc(apiKey, kbDocId) {
+  const res = await fetch(`${API}/convai/knowledge-base/${kbDocId}`, {
+    method: 'DELETE',
+    headers: { 'xi-api-key': apiKey },
+  });
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`ElevenLabs KB delete HTTP ${res.status}: ${text.slice(0, 300)}`);
+  }
+}
+
 // POST /v1/convai/agents/create → { agent_id }
 async function createAgent(apiKey, { name, systemPrompt, firstMessage, kbDoc }) {
   const agent = { prompt: { prompt: systemPrompt }, first_message: firstMessage, language: 'nl' };
@@ -101,12 +117,25 @@ function buildConfig(productKey, intake) {
 export async function provisionAgent(apiKey, productKey, serviceNaam, intake) {
   const cfg = buildConfig(productKey, intake);
   const kbDoc = await createKbDoc(apiKey, `${serviceNaam} — kennisbank`, cfg.kbText);
-  const agent = await createAgent(apiKey, {
-    name: serviceNaam,
-    systemPrompt: cfg.systemPrompt,
-    firstMessage: cfg.firstMessage,
-    kbDoc: { id: kbDoc.id, name: kbDoc.name },
-  });
+  let agent;
+  try {
+    agent = await createAgent(apiKey, {
+      name: serviceNaam,
+      systemPrompt: cfg.systemPrompt,
+      firstMessage: cfg.firstMessage,
+      kbDoc: { id: kbDoc.id, name: kbDoc.name },
+    });
+  } catch (err) {
+    // Agent creation failed after the KB doc was already created — clean up
+    // the orphaned doc so it doesn't accumulate in the ElevenLabs account.
+    // Best-effort: a cleanup failure must not mask the original error.
+    try {
+      await deleteKbDoc(apiKey, kbDoc.id);
+    } catch (cleanupErr) {
+      console.error(`ElevenLabs KB doc cleanup failed for ${kbDoc.id}:`, cleanupErr);
+    }
+    throw err;
+  }
   return {
     status: 'agent_aangemaakt',
     agent_id: agent.agent_id || null,

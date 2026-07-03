@@ -6,8 +6,9 @@ import {
   sha256Hex, randomToken, randomId, createSession,
   sessionCookie, clearCookie, getSessionUser,
 } from './auth.js';
-import { handleCheckoutStart } from './mollie.js';
+import { handleCheckoutStart, cancelSubscription } from './mollie.js';
 import { getCatalogProduct } from '../data/portal-catalog.ts';
+import { escapeHtml } from './escape.js';
 
 const SITE_ORIGIN = 'https://aanloopai.nl';
 const MUTATING_METHODS = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
@@ -27,11 +28,6 @@ const AANLOOP_EMAIL = 'hello@aanloopai.nl';
 // ── helpers ────────────────────────────────────────────────────────────────
 function isValidEmail(s) {
   return typeof s === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
-}
-function escapeHtml(s) {
-  return String(s ?? '')
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 function safeParse(s) {
   if (!s) return null;
@@ -126,11 +122,20 @@ export async function handleAuthRequest(request, env) {
   });
 }
 
-// Accepts both GET (legacy direct-link, kept for backward compatibility) and
-// POST (new flow: e-mail link → /portal/verify page → form-POST). POST keeps
-// the raw token out of server access logs, browser history, and Referer
-// headers — and stops e-mail security scanners from silently burning the
-// single-use token by pre-fetching.
+// POST-only token consumption (new flow: e-mail link → /portal/verify page →
+// same-origin form-POST). POST keeps the raw token out of server access
+// logs, browser history, and Referer headers — and stops e-mail security
+// scanners from silently burning the single-use token by pre-fetching.
+//
+// GET is accepted only as a redirect shim to the /portal/verify interstitial
+// (legacy direct-link e-mails may still point at this endpoint). It must
+// NEVER consume the token or mint a session cookie: because this handler
+// SETS a fresh cookie, SameSite=Strict does not protect a GET that mints —
+// an attacker could otherwise plant <img src="/api/auth/verify?token=X">
+// to silently log a victim into the attacker's account (login-CSRF /
+// session fixation). Routing GET through the interstitial page means the
+// actual consumption only ever happens via same-origin POST, which is
+// covered by the checkOrigin() guard below.
 export async function handleAuthVerify(request, env) {
   const url = new URL(request.url);
   const isPost = request.method === 'POST';
@@ -139,15 +144,21 @@ export async function handleAuthVerify(request, env) {
   const fail = () => (isPost ? failJson() : failRedirect());
   if (!env.PORTAL_DB || !env.PORTAL_SESSION_SECRET) return fail();
 
-  let token = '';
-  if (isPost) {
-    try {
-      const form = await request.formData();
-      token = (form.get('token') || '').toString();
-    } catch { return fail(); }
-  } else {
-    token = url.searchParams.get('token') || '';
+  if (!isPost) {
+    const token = url.searchParams.get('token') || '';
+    if (!token) return fail();
+    return Response.redirect(`${url.origin}/portal/verify?token=${encodeURIComponent(token)}`, 302);
   }
+
+  // CSRF / origin guard — must run before any token consumption or cookie mint.
+  const csrf = checkOrigin(request);
+  if (csrf) return csrf;
+
+  let token = '';
+  try {
+    const form = await request.formData();
+    token = (form.get('token') || '').toString();
+  } catch { return fail(); }
   if (!token) return fail();
 
   const tokenHash = await sha256Hex(token);
@@ -156,25 +167,28 @@ export async function handleAuthVerify(request, env) {
     .bind(tokenHash).first();
   if (!row || row.used || Date.now() > row.expires_at) return fail();
 
-  await env.PORTAL_DB.prepare('UPDATE magic_links SET used = 1 WHERE token_hash = ?').bind(tokenHash).run();
+  // Atomic single-use claim (compare-and-swap) — a raced double-POST of the
+  // same token must not both pass the pre-check above and mint two sessions.
+  const claim = await env.PORTAL_DB
+    .prepare('UPDATE magic_links SET used = 1 WHERE token_hash = ? AND used = 0')
+    .bind(tokenHash).run();
+  if (claim.meta?.changes !== 1) return fail();
+
   await env.PORTAL_DB.prepare('UPDATE users SET last_login = ? WHERE id = ?').bind(Date.now(), row.user_id).run();
 
   const user = await env.PORTAL_DB.prepare('SELECT role FROM users WHERE id = ?').bind(row.user_id).first();
   const dest = user?.role === 'staff' ? '/admin/' : '/portal/';
   const session = await createSession(row.user_id, env.PORTAL_SESSION_SECRET);
-  if (isPost) {
-    return new Response(JSON.stringify({ ok: true, redirect: dest }), {
-      status: 200,
-      headers: { 'content-type': 'application/json', 'Set-Cookie': sessionCookie(session) },
-    });
-  }
-  return new Response(null, {
-    status: 302,
-    headers: { Location: `${url.origin}${dest}`, 'Set-Cookie': sessionCookie(session) },
+  return new Response(JSON.stringify({ ok: true, redirect: dest }), {
+    status: 200,
+    headers: { 'content-type': 'application/json', 'Set-Cookie': sessionCookie(session) },
   });
 }
 
 export async function handleAuthLogout(request, env) {
+  // A bare GET force-logout link is a (low-severity) CSRF vector — require
+  // POST so a third-party page cannot silently clear a visitor's session.
+  if (request.method !== 'POST') return errorResponse('Method not allowed', 405);
   const url = new URL(request.url);
   return new Response(null, {
     status: 302,
@@ -182,13 +196,52 @@ export async function handleAuthLogout(request, env) {
   });
 }
 
+// Minimal same-origin self-submitting form — used to convert the unsafe GET
+// entry point into a same-origin POST navigation. There is no dedicated
+// Astro interstitial page for invite-accept (unlike /portal/verify for the
+// magic-link flow), so this inline page fills that role. Token is hex
+// (sha256Hex / randomToken output) but is still escaped defensively before
+// being placed in an HTML attribute.
+function inviteAcceptForm(url, token) {
+  return `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;max-width:420px;margin:80px auto;padding:24px;text-align:center;color:#0f172a">
+    <p>Uitnodiging accepteren…</p>
+    <form id="f" method="POST" action="${escapeHtml(url.pathname)}">
+      <input type="hidden" name="token" value="${escapeHtml(token)}">
+      <noscript><button type="submit">Doorgaan</button></noscript>
+    </form>
+    <script>document.getElementById('f').submit();</script>
+  </body></html>`;
+}
+
 // ── team-invite accept ──────────────────────────────────────────────────────
+// POST-only token consumption — mirrors handleAuthVerify's login-CSRF fix.
+// This handler also mints a session cookie, so GET must never consume the
+// invite token; it only serves a same-origin auto-submitting form that
+// re-POSTs the token, which is then covered by the checkOrigin() guard.
 export async function handleInviteAccept(request, env) {
   const url = new URL(request.url);
+  const isPost = request.method === 'POST';
   const fail = (e) => Response.redirect(`${url.origin}/portal/login?error=${e}`, 302);
   if (!env.PORTAL_DB || !env.PORTAL_SESSION_SECRET) return fail('invite');
 
-  const token = url.searchParams.get('token') || '';
+  if (!isPost) {
+    const token = url.searchParams.get('token') || '';
+    if (!token) return fail('invite');
+    return new Response(inviteAcceptForm(url, token), {
+      status: 200,
+      headers: { 'content-type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
+    });
+  }
+
+  // CSRF / origin guard — must run before any token consumption or cookie mint.
+  const csrf = checkOrigin(request);
+  if (csrf) return csrf;
+
+  let token = '';
+  try {
+    const form = await request.formData();
+    token = (form.get('token') || '').toString();
+  } catch { return fail('invite'); }
   if (!token) return fail('invite');
 
   const tokenHash = await sha256Hex(token);
@@ -204,11 +257,18 @@ export async function handleInviteAccept(request, env) {
   const existing = await env.PORTAL_DB.prepare('SELECT id FROM users WHERE email = ?').bind(email).first();
   if (existing) return fail('bestaat'); // email already has an account
 
+  // Atomic single-use claim (compare-and-swap) — claim the invite before
+  // granting its effect, so a raced double-POST cannot create two accounts
+  // (or one account plus an orphaned insert) off one invite.
+  const claim = await env.PORTAL_DB
+    .prepare('UPDATE team_invites SET accepted = 1 WHERE id = ? AND accepted = 0')
+    .bind(invite.id).run();
+  if (claim.meta?.changes !== 1) return fail('invite');
+
   const userId = randomId('usr');
   await env.PORTAL_DB
     .prepare('INSERT INTO users (id, customer_id, email, naam, role, created_at) VALUES (?, ?, ?, ?, ?, ?)')
     .bind(userId, invite.customer_id, email, email.split('@')[0], invite.role, new Date().toISOString().slice(0, 10)).run();
-  await env.PORTAL_DB.prepare('UPDATE team_invites SET accepted = 1 WHERE id = ?').bind(invite.id).run();
   await env.PORTAL_DB.prepare('UPDATE users SET last_login = ? WHERE id = ?').bind(Date.now(), userId).run();
 
   const session = await createSession(userId, env.PORTAL_SESSION_SECRET);
@@ -258,6 +318,7 @@ export async function handlePortalApi(request, env) {
     if (path === '/api/portal/order/submit' && method === 'POST') return await submitOrder(request, env, user);
     if (path === '/api/portal/service-config' && method === 'PATCH') return await updateServiceConfig(request, env, user);
     if (path === '/api/portal/checkout/start' && method === 'POST') return await handleCheckoutStart(request, env, user);
+    if (path === '/api/portal/subscription/cancel' && method === 'POST') return await portalCancelSubscription(request, env, user);
     if (path === '/api/portal/invoice') return await portalInvoice(env, user, url);
     return errorResponse('Niet gevonden', 404);
   } catch (err) {
@@ -335,11 +396,26 @@ async function createServiceRequest(request, env, user) {
   const valid = ['upgrade', 'downgrade', 'pause', 'resume', 'new_product', 'cancel'];
   if (!valid.includes(type)) return errorResponse('Ongeldig aanvraagtype', 400);
 
+  // Ownership check — service_id must belong to the caller's own customer,
+  // mirroring the id=? AND customer_id=? guard used by every other mutating
+  // handler in this file (createOrder, saveOrder, updateServiceConfig, ...).
+  const serviceId = body.service_id || null;
+  if (serviceId) {
+    const svc = await env.PORTAL_DB
+      .prepare('SELECT id FROM services WHERE id = ? AND customer_id = ?')
+      .bind(serviceId, user.customer_id).first();
+    if (!svc) return errorResponse('Dienst niet gevonden', 400);
+  }
+  // Pin product_key to the static catalog, same as createOrder — prevents
+  // arbitrary values leaking into downstream admin/provisioning views.
+  const productKey = body.product_key || null;
+  if (productKey && !getCatalogProduct(productKey)) return errorResponse('Onbekend product', 400);
+
   const id = randomId('req');
   await env.PORTAL_DB
     .prepare('INSERT INTO service_requests (id, customer_id, user_id, type, service_id, product_key, bericht, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)')
     .bind(id, user.customer_id, user.id, type,
-      (body.service_id || null), (body.product_key || null),
+      serviceId, productKey,
       (body.bericht || '').toString().slice(0, 2000), 'open', Date.now()).run();
 
   await notifyAanloop(env, `Nieuwe aanvraag (${type})`,
@@ -371,6 +447,24 @@ async function portalInvoice(env, user, url) {
       .bind(inv.subscription_id, user.customer_id).first();
   }
   return jsonResponse({ ok: true, invoice: inv, customer, product });
+}
+
+// Authenticated subscription cancellation. Only eigenaar/bewerker (not the
+// read-only kijker role) may cancel — matches the write-gate used elsewhere
+// in this file (canWrite). Origin/CSRF and session checks already happened
+// in handlePortalApi before this is reached.
+async function portalCancelSubscription(request, env, user) {
+  if (!canWrite(user.role)) return errorResponse('U heeft geen rechten om een abonnement op te zeggen', 403);
+  const body = await request.json().catch(() => null);
+  const subscriptionId = (body?.subscriptionId || '').toString().trim();
+  if (!subscriptionId) return errorResponse('Abonnement-id ontbreekt', 400);
+
+  const res = await cancelSubscription(env, { subscriptionId, customerId: user.customer_id });
+  if (!res.ok) {
+    const status = res.error === 'Abonnement niet gevonden' ? 404 : 400;
+    return errorResponse(res.error || 'Kon abonnement niet opzeggen', status);
+  }
+  return jsonResponse({ ok: true, message: 'Abonnement opgezegd' });
 }
 
 async function portalTickets(env, user) {
@@ -595,12 +689,46 @@ async function removeMember(request, env, user) {
     return errorResponse('Er moet minstens één eigenaar zijn', 400);
   }
 
-  // Defence-in-depth — scope the writes to this customer too, not just the
-  // pre-check SELECT, so a future bug or race cannot delete cross-tenant.
-  await env.PORTAL_DB.prepare(
-    'DELETE FROM magic_links WHERE user_id = ? AND user_id IN (SELECT id FROM users WHERE customer_id = ?)',
-  ).bind(targetId, user.customer_id).run();
-  await env.PORTAL_DB.prepare('DELETE FROM users WHERE id = ? AND customer_id = ?')
-    .bind(targetId, user.customer_id).run();
+  // M3: user_id on support_tickets / service_requests / service_orders is
+  // NOT NULL REFERENCES users(id) (migrations 0003_portal_v2.sql,
+  // 0005_orders.sql) — the columns are not nullable, so NULLing out or
+  // reassigning ownership is not a safe option here without a separate
+  // product decision on who inherits the records. D1 enforces FK constraints
+  // by default, so a hard DELETE FROM users would throw on ANY referencing
+  // row regardless of status (a closed/afgerond ticket blocks it just as
+  // much as an open one). Guard up front with a clear 409 instead of letting
+  // that surface as an unhandled 500 after magic_links has already been
+  // deleted.
+  const refCounts = await env.PORTAL_DB.prepare(
+    `SELECT
+       (SELECT COUNT(*) FROM support_tickets   WHERE user_id = ?) +
+       (SELECT COUNT(*) FROM service_requests  WHERE user_id = ?) +
+       (SELECT COUNT(*) FROM service_orders    WHERE user_id = ?) AS n`,
+  ).bind(targetId, targetId, targetId).first();
+  if ((refCounts?.n || 0) > 0) {
+    return errorResponse(
+      'Kan teamlid niet verwijderen: er zijn nog tickets, aanvragen of bestellingen aan dit teamlid gekoppeld.',
+      409,
+    );
+  }
+
+  try {
+    // Defence-in-depth — scope the writes to this customer too, not just the
+    // pre-check SELECT, so a future bug or race cannot delete cross-tenant.
+    // Batched (mirrors mollie.js's payment+subscription batch) so the
+    // magic_links delete and the user delete commit atomically — no window
+    // where magic_links is gone but the user row (still FK-referenced
+    // elsewhere) survives, or vice versa.
+    await env.PORTAL_DB.batch([
+      env.PORTAL_DB.prepare(
+        'DELETE FROM magic_links WHERE user_id = ? AND user_id IN (SELECT id FROM users WHERE customer_id = ?)',
+      ).bind(targetId, user.customer_id),
+      env.PORTAL_DB.prepare('DELETE FROM users WHERE id = ? AND customer_id = ?')
+        .bind(targetId, user.customer_id),
+    ]);
+  } catch (err) {
+    console.error('[portal] removeMember failed:', err.message || err);
+    return errorResponse('Kon teamlid niet verwijderen', 500);
+  }
   return jsonResponse({ ok: true, message: 'Teamlid verwijderd' });
 }

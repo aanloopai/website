@@ -2,6 +2,7 @@
 // Ported from the (dead) functions/api/* Pages-Functions tree; the project
 // deploys as a Cloudflare Worker, so route logic must live in the Worker bundle.
 import { getAccessToken, jsonResponse, errorResponse } from './google-auth.js';
+import { escapeHtml } from './escape.js';
 
 const TIMEZONE = 'Europe/Amsterdam';
 
@@ -108,6 +109,9 @@ function isValidEmail(s) {
   return typeof s === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 }
 
+// Escapes user-controlled values before they are interpolated into
+// HTML email bodies (Brevo). Covers all five HTML-significant chars.
+
 export async function handleBook(request, env) {
   if (request.method !== 'POST') return errorResponse('Method not allowed', 405);
   try {
@@ -121,10 +125,43 @@ export async function handleBook(request, env) {
     const slotEnd = new Date(slot.end);
     if (isNaN(slotStart) || isNaN(slotEnd)) return errorResponse('Invalid slot dates', 400);
     if (slotStart.getTime() <= Date.now()) return errorResponse('Slot is in the past', 400);
+    if (slotEnd.getTime() <= slotStart.getTime()) return errorResponse('Slot end must be after slot start', 400);
     if (slotEnd.getTime() - slotStart.getTime() > 60 * 60_000) return errorResponse('Slot too long', 400);
+
+    // Reject off-grid / off-hours slots: the requested start must be one of the
+    // canonical 30-min slots generateSlots() would produce for that NL-local day
+    // (generateSlots returns [] for weekdays with no WORKING_HOURS entry, e.g. Sunday).
+    const slotDateStr = new Intl.DateTimeFormat('en-CA', { timeZone: TIMEZONE }).format(slotStart);
+    const canonicalSlots = generateSlots(slotDateStr);
+    const isLegalSlot = canonicalSlots.some((s) => new Date(s.start).getTime() === slotStart.getTime());
+    if (!isLegalSlot) return errorResponse('Tijdslot valt buiten de werkuren', 400);
 
     const accessToken = await getAccessToken(env);
     const calendarId = env.BOOKING_CALENDAR_ID || 'primary';
+
+    // Re-validate availability at book time (closes most of the TOCTOU window
+    // between the client fetching /availability and posting /book). This is
+    // best-effort only — the Calendar API has no atomic reserve/lock primitive,
+    // so two requests can still both pass this check in the same instant and
+    // both create overlapping events. It reduces, but does not fully eliminate,
+    // the double-booking race.
+    const fbCheck = await fetch(FREEBUSY_URL, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ timeMin: slot.start, timeMax: slot.end, timeZone: TIMEZONE, items: [{ id: calendarId }] }),
+    });
+    if (!fbCheck.ok) {
+      const txt = await fbCheck.text();
+      return errorResponse(`FreeBusy check failed: ${fbCheck.status} ${txt}`, 502);
+    }
+    const fbData = await fbCheck.json();
+    const busyRanges = fbData.calendars?.[calendarId]?.busy || [];
+    const isBusy = busyRanges.some((b) => {
+      const bs = new Date(b.start).getTime();
+      const be = new Date(b.end).getTime();
+      return slotStart.getTime() < be && slotEnd.getTime() > bs;
+    });
+    if (isBusy) return errorResponse('Tijdslot niet meer beschikbaar', 409);
 
     const eventBody = {
       summary: `Aanloop AI strategiegesprek — ${name}`,
@@ -184,11 +221,11 @@ export async function handleBook(request, env) {
             replyTo: { email: 'hello@aanloopai.nl', name: 'Aanloop AI' },
             subject: `Bevestiging: strategiegesprek Aanloop AI — ${formattedDate}`,
             htmlContent: [
-              `<p>Hoi ${name.split(' ')[0]},</p>`,
+              `<p>Hoi ${escapeHtml(name.split(' ')[0])},</p>`,
               `<p>Je 30-min strategiegesprek met Aanloop AI staat ingepland op <strong>${formattedDate}</strong>.</p>`,
               meetLink ? `<p><strong>Google Meet link:</strong><br><a href="${meetLink}">${meetLink}</a></p>` : '',
-              `<p>De Google Calendar uitnodiging is ook naar ${email} gestuurd, met daarin de Meet-link.</p>`,
-              `<p>Bericht ontvangen:<br><em>${(message || '(geen bericht)').replace(/</g, '&lt;')}</em></p>`,
+              `<p>De Google Calendar uitnodiging is ook naar ${escapeHtml(email)} gestuurd, met daarin de Meet-link.</p>`,
+              `<p>Bericht ontvangen:<br><em>${escapeHtml(message || '(geen bericht)')}</em></p>`,
               `<p style="margin-top:2rem">Tot dan,<br>Mustafa Agah Dogan<br>Aanloop AI<br><a href="https://aanloopai.nl">aanloopai.nl</a></p>`,
             ].join(''),
           }),

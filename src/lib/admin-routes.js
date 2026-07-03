@@ -3,15 +3,12 @@
 import { jsonResponse, errorResponse } from './google-auth.js';
 import { randomId, getSessionUser } from './auth.js';
 import { provisionAgent, canProvision } from './elevenlabs.js';
+import { escapeHtml } from './escape.js';
 
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
 const AANLOOP_EMAIL = 'hello@aanloopai.nl';
+const BTW_RATE = 0.21;
 
-function escapeHtml(s) {
-  return String(s ?? '')
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
 function today() { return new Date().toISOString().slice(0, 10); }
 
 async function mailCustomer(env, to, naam, subject, innerHtml) {
@@ -144,7 +141,7 @@ async function listCustomers(env) {
        (SELECT COUNT(*) FROM services s WHERE s.customer_id = c.id) AS dienst_count,
        (SELECT COUNT(*) FROM users u WHERE u.customer_id = c.id) AS user_count,
        (SELECT COUNT(*) FROM service_requests r WHERE r.customer_id = c.id AND r.status IN ('open','in_behandeling')) AS open_requests
-     FROM customers c ORDER BY c.created_at DESC`,
+     FROM customers c ORDER BY c.created_at DESC LIMIT 200`,
   ).all()).results || [];
   const openReq = await env.PORTAL_DB.prepare("SELECT COUNT(*) AS n FROM service_requests WHERE status IN ('open','in_behandeling')").first();
   const openTkt = await env.PORTAL_DB.prepare("SELECT COUNT(*) AS n FROM support_tickets WHERE status IN ('open','in_behandeling')").first();
@@ -253,8 +250,8 @@ async function listRequests(env, url) {
     JOIN customers c ON c.id = r.customer_id
     JOIN users u ON u.id = r.user_id`;
   const q = status
-    ? env.PORTAL_DB.prepare(`${base} WHERE r.status = ? ORDER BY r.created_at DESC`).bind(status)
-    : env.PORTAL_DB.prepare(`${base} ORDER BY r.created_at DESC`);
+    ? env.PORTAL_DB.prepare(`${base} WHERE r.status = ? ORDER BY r.created_at DESC LIMIT 200`).bind(status)
+    : env.PORTAL_DB.prepare(`${base} ORDER BY r.created_at DESC LIMIT 200`);
   return jsonResponse({ ok: true, requests: (await q.all()).results || [] });
 }
 
@@ -278,8 +275,8 @@ async function listTickets(env, url) {
     JOIN customers c ON c.id = t.customer_id
     JOIN users u ON u.id = t.user_id`;
   const q = status
-    ? env.PORTAL_DB.prepare(`${base} WHERE t.status = ? ORDER BY t.created_at DESC`).bind(status)
-    : env.PORTAL_DB.prepare(`${base} ORDER BY t.created_at DESC`);
+    ? env.PORTAL_DB.prepare(`${base} WHERE t.status = ? ORDER BY t.created_at DESC LIMIT 200`).bind(status)
+    : env.PORTAL_DB.prepare(`${base} ORDER BY t.created_at DESC LIMIT 200`);
   return jsonResponse({ ok: true, tickets: (await q.all()).results || [] });
 }
 
@@ -327,8 +324,8 @@ async function listOrders(env, url) {
     JOIN customers c ON c.id = o.customer_id
     JOIN users u ON u.id = o.user_id`;
   const q = status
-    ? env.PORTAL_DB.prepare(`${base} WHERE o.status = ? ORDER BY o.created_at DESC`).bind(status)
-    : env.PORTAL_DB.prepare(`${base} ORDER BY o.created_at DESC`);
+    ? env.PORTAL_DB.prepare(`${base} WHERE o.status = ? ORDER BY o.created_at DESC LIMIT 200`).bind(status)
+    : env.PORTAL_DB.prepare(`${base} ORDER BY o.created_at DESC LIMIT 200`);
   return jsonResponse({ ok: true, orders: (await q.all()).results || [] });
 }
 
@@ -348,31 +345,36 @@ async function updateOrder(request, env) {
   const o = await env.PORTAL_DB.prepare('SELECT * FROM service_orders WHERE id = ?').bind(b.id).first();
   if (!o) return errorResponse('Aanvraag niet gevonden', 404);
 
-  await env.PORTAL_DB.prepare('UPDATE service_orders SET status = ? WHERE id = ?').bind(b.status, b.id).run();
-
-  // When an order goes 'actief', materialise it as a service (once) and
-  // auto-provision an ElevenLabs agent from the intake (best-effort).
-  // The UNIQUE index on services.order_id (migration 0008) makes the INSERT
-  // atomic — only the first concurrent activation actually inserts.
+  // When an order goes 'actief', the status flip and the service materialisation
+  // must commit atomically — a failure between the two steps used to leave the
+  // order marked 'actief' with no corresponding service row. The UNIQUE index
+  // on services.order_id (migration 0008) still makes the INSERT idempotent —
+  // only the first concurrent activation actually inserts.
+  const svcId = randomId('svc');
+  const stmts = [env.PORTAL_DB.prepare('UPDATE service_orders SET status = ? WHERE id = ?').bind(b.status, b.id)];
   if (b.status === 'actief') {
-    const svcId = randomId('svc');
-    const ins = await env.PORTAL_DB.prepare(
-      'INSERT OR IGNORE INTO services (id, customer_id, product_key, naam, tier, status, config_json, started_at, created_at, order_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-    ).bind(svcId, o.customer_id, o.product_key, o.product_key, o.tier || null,
-      'onboarding', o.intake_json || null, today(), today(), o.id).run();
+    stmts.push(
+      env.PORTAL_DB.prepare(
+        'INSERT OR IGNORE INTO services (id, customer_id, product_key, naam, tier, status, config_json, started_at, created_at, order_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      ).bind(svcId, o.customer_id, o.product_key, o.product_key, o.tier || null,
+        'onboarding', o.intake_json || null, today(), today(), o.id),
+    );
+  }
+  const results = await env.PORTAL_DB.batch(stmts);
 
-    // Only the worker that actually inserted the service should fire provisioning.
-    if (ins.meta?.changes === 1 && env.ELEVENLABS_API_KEY && canProvision(o.product_key)) {
-      let prov;
-      try {
-        prov = await provisionAgent(env.ELEVENLABS_API_KEY, o.product_key, o.product_key, safeParseJson(o.intake_json));
-      } catch (err) {
-        console.error('[admin] ElevenLabs provisioning failed:', err.message || err);
-        prov = { status: 'fout', error: String(err.message || err).slice(0, 400), provisioned_at: new Date().toISOString() };
-      }
-      await env.PORTAL_DB.prepare('UPDATE services SET provisioning_json = ? WHERE id = ?')
-        .bind(JSON.stringify(prov), svcId).run();
+  // The ElevenLabs call is external/async and can throw, so it must stay
+  // outside the D1 batch above — only the two writes go in the atomic batch.
+  // Only the worker that actually inserted the service should fire provisioning.
+  if (b.status === 'actief' && results[1]?.meta?.changes === 1 && env.ELEVENLABS_API_KEY && canProvision(o.product_key)) {
+    let prov;
+    try {
+      prov = await provisionAgent(env.ELEVENLABS_API_KEY, o.product_key, o.product_key, safeParseJson(o.intake_json));
+    } catch (err) {
+      console.error('[admin] ElevenLabs provisioning failed:', err.message || err);
+      prov = { status: 'fout', error: String(err.message || err).slice(0, 400), provisioned_at: new Date().toISOString() };
     }
+    await env.PORTAL_DB.prepare('UPDATE services SET provisioning_json = ? WHERE id = ?')
+      .bind(JSON.stringify(prov), svcId).run();
   }
   return jsonResponse({ ok: true, message: 'Aanvraag bijgewerkt' });
 }
@@ -384,9 +386,21 @@ async function createInvoice(request, env) {
     return errorResponse('Klant, periode en bedrag zijn verplicht', 400);
   }
   const status = b.status === 'betaald' ? 'betaald' : 'open';
+  const subtotaal = Math.round(bedrag / (1 + BTW_RATE));
+  const btw = bedrag - subtotaal;
+
+  const year = new Date().getFullYear();
+  const cName = `factuur-${year}`;
+  // Atomic single-statement counter — no COUNT()+1 race. Uses the SAME counter
+  // key/sequence as webhook-created invoices (mollie.js createInvoice) so
+  // admin- and webhook-created invoices share one factuurnummer sequence.
+  await env.PORTAL_DB.prepare('INSERT OR IGNORE INTO counters (name, n) VALUES (?, 0)').bind(cName).run();
+  const seq = await env.PORTAL_DB.prepare('UPDATE counters SET n = n + 1 WHERE name = ? RETURNING n').bind(cName).first();
+  const factuurnummer = `${year}-${String(seq?.n || 1).padStart(4, '0')}`;
+
   await env.PORTAL_DB.prepare(
-    'INSERT INTO invoices (id, customer_id, periode, bedrag_cent, status, pdf_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    'INSERT INTO invoices (id, customer_id, periode, bedrag_cent, status, factuurnummer, subtotaal_cent, btw_cent, pdf_url, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
   ).bind(randomId('inv'), b.customer_id, b.periode.toString().slice(0, 40), bedrag, status,
-    (b.pdf_url || '').toString().slice(0, 500) || null, today()).run();
+    factuurnummer, subtotaal, btw, (b.pdf_url || '').toString().slice(0, 500) || null, today()).run();
   return jsonResponse({ ok: true, message: 'Factuur toegevoegd' });
 }
