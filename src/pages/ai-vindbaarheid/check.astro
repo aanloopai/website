@@ -111,6 +111,10 @@ const schema = {
     var label = document.getElementById('geo-btn-label');
     var errEl = document.getElementById('geo-error');
 
+    function escapeHtml(s) {
+      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
     form.addEventListener('submit', async function (e) {
       e.preventDefault();
       if (form.botcheck && form.botcheck.value) return;
@@ -141,7 +145,7 @@ const schema = {
           var icon = c.ok
             ? '<span class="text-brand-emerald text-lg leading-none mt-0.5">✓</span>'
             : '<span class="text-brand-rose text-lg leading-none mt-0.5">✗</span>';
-          row.innerHTML = icon + '<div><p class="font-semibold text-navy text-sm">' + c.label + '</p><p class="text-xs text-slate-500 mt-0.5">' + c.detail + '</p></div>';
+          row.innerHTML = icon + '<div><p class="font-semibold text-navy text-sm">' + escapeHtml(c.label) + '</p><p class="text-xs text-slate-500 mt-0.5">' + escapeHtml(c.detail) + '</p></div>';
           box.appendChild(row);
         });
         document.getElementById('geo-results').classList.remove('hidden');

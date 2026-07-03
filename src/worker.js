@@ -362,6 +362,101 @@ function isValidEmail(s) {
   return typeof s === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 }
 
+// --- Double opt-in: signed marketing-consent confirmation token -----------
+// H3 fix: a self-declared POST boolean (akkoord_marketing / nieuwsbrief) is
+// attacker-controlled and is not, by itself, valid AVG/GDPR consent to add a
+// third party's email address to a marketing list. Before enrollment we now
+// require proof-of-inbox-access: a signed, expiring link the recipient must
+// click. Token shape: base64url(JSON payload).hex(HMAC-SHA256 signature) —
+// same construction as createSession/verifySession in src/lib/auth.js, but
+// reimplemented locally (not imported) because the payload here is
+// email+purpose+nurture-flag rather than a portal user id, and worker.js is
+// kept self-contained for the lead-capture path. Signed with the same secret
+// (env.PORTAL_SESSION_SECRET) since it is already a Worker-wide HMAC secret.
+const CONSENT_TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+const consentEncoder = new TextEncoder();
+
+function consentB64urlEncode(str) {
+  return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function consentB64urlDecode(str) {
+  return atob(str.replace(/-/g, '+').replace(/_/g, '/'));
+}
+function consentBytesToHex(buf) {
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+async function consentHmacKey(secret) {
+  return crypto.subtle.importKey(
+    'raw', consentEncoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign', 'verify'],
+  );
+}
+
+// Signs { email, purpose: 'marketing-consent', nurture, exp }. `nurture`
+// carries whether the nurture/drip list should also be granted on confirm
+// (mirrors the formType !== 'newsletter' rule the old code applied inline).
+async function signConsentToken(email, nurture, secret) {
+  const payload = JSON.stringify({
+    email,
+    purpose: 'marketing-consent',
+    nurture: !!nurture,
+    exp: Date.now() + CONSENT_TOKEN_TTL_MS,
+  });
+  const body = consentB64urlEncode(payload);
+  const key = await consentHmacKey(secret);
+  const sig = await crypto.subtle.sign('HMAC', key, consentEncoder.encode(body));
+  return `${body}.${consentBytesToHex(sig)}`;
+}
+
+// Verify + decode a consent token. Returns { email, nurture } or null on any
+// invalid signature, malformed payload, wrong purpose, expiry, or malformed
+// email. crypto.subtle.verify is constant-time (no timing side-channel).
+async function verifyConsentToken(token, secret) {
+  if (!token || typeof token !== 'string' || !token.includes('.')) return null;
+  const parts = token.split('.');
+  if (parts.length !== 2) return null;
+  const [body, sigHex] = parts;
+  if (!body || !sigHex || !/^[0-9a-f]+$/.test(sigHex) || sigHex.length % 2 !== 0) return null;
+  const key = await consentHmacKey(secret);
+  const sigBytes = Uint8Array.from(sigHex.match(/.{2}/g).map((h) => parseInt(h, 16)));
+  const valid = await crypto.subtle.verify('HMAC', key, sigBytes, consentEncoder.encode(body));
+  if (!valid) return null;
+  let payload;
+  try { payload = JSON.parse(consentB64urlDecode(body)); } catch { return null; }
+  if (!payload?.email || payload.purpose !== 'marketing-consent' || !payload?.exp) return null;
+  if (Date.now() > payload.exp) return null;
+  if (!isValidEmail(payload.email)) return null;
+  return { email: payload.email, nurture: !!payload.nurture };
+}
+
+// Dutch double opt-in confirmation email — separate from the transactional
+// autoresponse, sent only when marketing consent was indicated.
+function buildConsentConfirmHtml(userName, confirmUrl) {
+  const safeUrl = escapeHtml(confirmUrl);
+  return `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#0f172a">
+    <p>Hallo ${escapeHtml(userName)},</p>
+    <p>Bevestig je inschrijving voor de nieuwsbrief van Aanloop AI door op onderstaande knop te klikken. Dit is een extra controle zodat alleen jij — en niemand anders — dit e-mailadres aanmeldt.</p>
+    <p style="margin:24px 0">
+      <a href="${safeUrl}" style="display:inline-block;background:#4f46e5;color:#fff;padding:12px 20px;border-radius:10px;text-decoration:none;font-weight:600;font-size:14px">Bevestig inschrijving →</a>
+    </p>
+    <p style="font-size:13px;color:#64748b">Werkt de knop niet? Kopieer deze link naar je browser:<br><span style="word-break:break-all">${safeUrl}</span></p>
+    <p style="font-size:12px;color:#64748b">Deze link is 7 dagen geldig. Heb je dit niet zelf aangevraagd? Dan kun je deze e-mail negeren — zonder bevestiging wordt niemand aangemeld.</p>
+    <p>Met vriendelijke groet,<br>Het team van Aanloop AI</p>
+    ${FOOTER_HTML}
+  </body></html>`;
+}
+
+// Small standalone Dutch HTML page for the /api/consent/confirm landing —
+// intentionally not the full site shell (no build-time asset access here).
+function consentPageHtml(title, message, ok) {
+  return `<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${escapeHtml(title)} — Aanloop AI</title></head>
+  <body style="font-family:system-ui,sans-serif;max-width:480px;margin:80px auto;padding:24px;color:#0f172a;text-align:center">
+    <h1 style="font-size:22px;margin:0 0 12px;color:${ok ? '#16a34a' : '#dc2626'}">${escapeHtml(title)}</h1>
+    <p style="color:#475569;font-size:15px;line-height:1.6">${escapeHtml(message)}</p>
+    <p style="margin-top:32px"><a href="${SITE_ORIGIN}" style="color:#4f46e5;text-decoration:none;font-weight:600">← Terug naar aanloopai.nl</a></p>
+  </body></html>`;
+}
+
 async function handleSubmit(request, env) {
   if (!env.BREVO_API_KEY) {
     return jsonResponse({
@@ -440,17 +535,15 @@ async function handleSubmit(request, env) {
       const hasMarketingConsent =
         formType === 'newsletter' ||
         MARKETING_CONSENT_FIELDS.some((k) => isTruthy(fields[k]));
-      // KNOWN GAP (Phase 1, AVG/GDPR): hasMarketingConsent is derived purely from
-      // attacker-controlled POST booleans (akkoord_marketing / nieuwsbrief) — there
-      // is no double opt-in / confirmation-click yet, so this alone is NOT
-      // sufficient legal consent to add someone to a marketing list. Full double
-      // opt-in (send a confirmation link, only add to the list once clicked) is a
-      // larger change and is deferred to a follow-up task. As a stopgap, marketing/
-      // nurture-list enrollment below is now gated behind (a) a syntactically valid,
-      // rate-limited submission (see isValidEmail + rateLimit above) rather than
-      // trusting the raw form booleans unconditionally — this raises the cost of
-      // mass-forging consent flags to spam third-party inboxes onto the list, but
-      // does not by itself make the consent AVG-compliant.
+      // H3 fix (AVG/GDPR double opt-in — was KNOWN GAP): hasMarketingConsent
+      // above is still derived from a self-declared, attacker-controllable
+      // POST boolean, so it is NOT used to add the contact to a marketing
+      // list here. It only decides whether we send a separate double
+      // opt-in confirmation email. The contact is added to
+      // BREVO_LIST_ID / BREVO_NURTURE_LIST_ID only after the recipient
+      // clicks the signed, expiring link in that email and
+      // GET /api/consent/confirm verifies it (signConsentToken /
+      // verifyConsentToken + handleConsentConfirm, defined above / below).
 
       if (hasPrivacyConsent) {
         const attributes = {
@@ -466,23 +559,36 @@ async function handleSubmit(request, env) {
             : (formType === 'demo' || formType === 'aanvraag') ? formType
             : 'lead',
           OPT_IN_DATE: new Date().toISOString().slice(0, 10),
-          MARKETING_CONSENT: hasMarketingConsent,
+          // Pending until the double opt-in link is clicked — see comment above.
+          MARKETING_CONSENT: false,
         };
         // Drop empty values so a re-submit never overwrites existing data with blanks.
         for (const k of Object.keys(attributes)) {
           if (attributes[k] === '') delete attributes[k];
         }
-        const contact = { email: userEmail, attributes };
-        // Lists: marketing-list (newsletter) + nurture-list (drip-automation trigger).
-        // Beide alleen bij expliciete marketing-consent (AVG). Nurture-drip workflow
-        // wordt in het Brevo-dashboard gekoppeld aan BREVO_NURTURE_LIST_ID.
-        const listId = parseInt(env.BREVO_LIST_ID, 10);
-        const nurtureListId = parseInt(env.BREVO_NURTURE_LIST_ID, 10);
-        const lists = [];
-        if (hasMarketingConsent && Number.isFinite(listId)) lists.push(listId);
-        if (hasMarketingConsent && Number.isFinite(nurtureListId) && formType !== 'newsletter') lists.push(nurtureListId);
-        if (lists.length) contact.listIds = lists;
-        await brevoUpsertContact(env.BREVO_API_KEY, contact);
+        // Base upsert: transactional relationship only (lets us follow up on
+        // THIS submission) — deliberately no listIds here. Marketing/nurture
+        // list membership is granted only via /api/consent/confirm below.
+        await brevoUpsertContact(env.BREVO_API_KEY, { email: userEmail, attributes });
+
+        if (hasMarketingConsent) {
+          if (env.PORTAL_SESSION_SECRET) {
+            // Nurture-drip list is only ever paired with non-newsletter
+            // lead forms, mirroring the old inline formType check.
+            const nurture = formType !== 'newsletter';
+            const token = await signConsentToken(userEmail, nurture, env.PORTAL_SESSION_SECRET);
+            const confirmUrl = `${SITE_ORIGIN}/api/consent/confirm?token=${encodeURIComponent(token)}`;
+            await sendBrevoEmail(env.BREVO_API_KEY, {
+              sender: { name: SENDER_NAME, email: SENDER_EMAIL },
+              to: [{ email: userEmail, name: fullName }],
+              replyTo: { email: NOTIFICATION_EMAIL, name: 'Aanloop AI' },
+              subject: 'Bevestig je inschrijving voor de nieuwsbrief — Aanloop AI',
+              htmlContent: buildConsentConfirmHtml(firstName, confirmUrl),
+            }, 'consent-confirm');
+          } else {
+            console.error('[/api/submit] PORTAL_SESSION_SECRET not configured — cannot send double opt-in confirmation email, marketing-list enrollment skipped');
+          }
+        }
       }
     } catch (contactErr) {
       console.error('[/api/submit] Brevo contact upsert failed (non-fatal):', contactErr.message || contactErr);
@@ -497,6 +603,81 @@ async function handleSubmit(request, env) {
       hint: 'Common causes: 1) Invalid BREVO_API_KEY 2) hello@aanloopai.nl not verified as sender in Brevo 3) Free plan credits exhausted',
     }, 502);
   }
+}
+
+// GET /api/consent/confirm?token=... — double opt-in landing page. Verifies
+// the signed token (see signConsentToken/verifyConsentToken above), then
+// idempotently upserts the contact onto the marketing/nurture Brevo list(s).
+// Re-confirming an already-confirmed email is harmless (brevoUpsertContact
+// is an update-or-create with updateEnabled: true).
+async function handleConsentConfirm(request, env) {
+  const url = new URL(request.url);
+  const token = url.searchParams.get('token') || '';
+
+  if (!env.PORTAL_SESSION_SECRET) {
+    return new Response(consentPageHtml('Niet beschikbaar', 'Bevestigen van je inschrijving is momenteel niet beschikbaar. Probeer het later opnieuw.', false), {
+      status: 500,
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+    });
+  }
+
+  // Defense-in-depth against automated abuse of this public link, matching
+  // the rate-limit posture applied to every other public endpoint in this
+  // file. The token itself is HMAC-signed (infeasible to guess/brute-force),
+  // so this is a courtesy cap, not the primary protection.
+  const confirmIp = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const confirmRl = await rateLimit(env.GOOGLE_TOKENS, `rl:consent:${confirmIp}`, 20, 3600);
+  if (!confirmRl.allowed) {
+    return new Response(consentPageHtml('Te veel pogingen', 'Te veel bevestigingspogingen vanaf dit IP-adres. Probeer het later opnieuw.', false), {
+      status: 429,
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+    });
+  }
+
+  const claim = await verifyConsentToken(token, env.PORTAL_SESSION_SECRET);
+  if (!claim) {
+    return new Response(consentPageHtml('Link ongeldig of verlopen', 'Deze bevestigingslink is ongeldig of verlopen. Meld je opnieuw aan voor de nieuwsbrief om een nieuwe link te ontvangen.', false), {
+      status: 400,
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+    });
+  }
+
+  if (!env.BREVO_API_KEY) {
+    return new Response(consentPageHtml('Niet beschikbaar', 'Je bevestiging kon niet worden verwerkt. Probeer het later opnieuw of neem contact op.', false), {
+      status: 500,
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+    });
+  }
+
+  try {
+    const listId = parseInt(env.BREVO_LIST_ID, 10);
+    const nurtureListId = parseInt(env.BREVO_NURTURE_LIST_ID, 10);
+    const lists = [];
+    if (Number.isFinite(listId)) lists.push(listId);
+    if (claim.nurture && Number.isFinite(nurtureListId)) lists.push(nurtureListId);
+
+    const contact = {
+      email: claim.email,
+      attributes: {
+        MARKETING_CONSENT: true,
+        OPT_IN_DATE: new Date().toISOString().slice(0, 10),
+      },
+    };
+    if (lists.length) contact.listIds = lists;
+
+    await brevoUpsertContact(env.BREVO_API_KEY, contact);
+  } catch (err) {
+    console.error('[/api/consent/confirm] Brevo upsert failed:', err.message || err);
+    return new Response(consentPageHtml('Er ging iets mis', 'Je bevestiging kon niet worden verwerkt. Probeer het later opnieuw of neem contact op via hello@aanloopai.nl.', false), {
+      status: 502,
+      headers: { 'content-type': 'text/html; charset=utf-8' },
+    });
+  }
+
+  return new Response(consentPageHtml('Inschrijving bevestigd', 'Bedankt! Je inschrijving voor de nieuwsbrief is bevestigd. Je ontvangt voortaan updates van Aanloop AI in je inbox.', true), {
+    status: 200,
+    headers: { 'content-type': 'text/html; charset=utf-8' },
+  });
 }
 
 function jsonResponse(body, status = 200) {
@@ -640,6 +821,14 @@ export default {
         return handleSubmit(request, env);
       }
       return jsonResponse({ success: false, message: 'Method not allowed. Use POST.' }, 405);
+    }
+
+    // Double opt-in landing page for the marketing-list confirmation email
+    // sent from handleSubmit (H3 fix). No CORS needed — this is a top-level
+    // browser navigation (the recipient clicking the link in their inbox),
+    // not a same-origin fetch() call.
+    if (url.pathname === '/api/consent/confirm') {
+      return handleConsentConfirm(request, env);
     }
 
     // Native Google Calendar booking API (powers /demo-inplannen/)
