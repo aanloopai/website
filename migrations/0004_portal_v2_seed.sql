@@ -1,6 +1,12 @@
 -- Portal v2 seed (Faz 1). Aanloop staff user + one synthetic test customer.
 -- Apply: wrangler d1 execute aanloop-portal --remote --file=migrations/0004_portal_v2_seed.sql
 -- The staff row is real (Aanloop admin); the customer rows are synthetic test data.
+--
+-- HYGIENE NOTE (L11): the INSERT below hardcodes a real staff email
+-- address in this git-tracked SQL file (PII in source control). Left unchanged
+-- here since it may be a required seed value — flagging only, not removing/
+-- parameterizing. If this can be replaced with an env var / secrets-managed
+-- value or a placeholder, do that in a follow-up, not as a silent SQL edit.
 
 -- Aanloop staff (admin) — logs in at /admin.
 INSERT OR IGNORE INTO users (id, customer_id, email, naam, role, notif_json, last_login, created_at) VALUES

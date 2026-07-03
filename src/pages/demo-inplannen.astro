@@ -97,12 +97,26 @@ const description = 'Boek direct een 30-min strategiegesprek met Mustafa Agah Do
         return new Intl.DateTimeFormat('nl-NL', { timeZone: TIMEZONE, ...opts }).format(date);
       }
 
+      // Single source of truth for "what calendar date is this instant in Amsterdam" —
+      // used for the day-tab iso key AND for matching slot.start (UTC ISO from the API)
+      // back to a day, so the visible label, the day key, and the slot filter can never disagree.
+      const amsterdamIsoFmt = new Intl.DateTimeFormat('en-CA', { timeZone: TIMEZONE, year: 'numeric', month: '2-digit', day: '2-digit' });
+      function amsterdamDateKey(date) {
+        return amsterdamIsoFmt.format(date);
+      }
+
       function buildDays() {
         const days = [];
+        // Anchor on "today" in the Amsterdam calendar (not host/browser local time),
+        // then walk forward in whole UTC days. Amsterdam is always UTC+1 or UTC+2
+        // (never negative), so a UTC-midnight anchor always lands on the same Amsterdam
+        // calendar date, keeping the iteration boundary DST-safe.
+        const [y, m, d0] = amsterdamDateKey(new Date()).split('-').map(Number);
+        const anchor = new Date(Date.UTC(y, m - 1, d0));
         for (let i = 0; i < 14; i++) {
-          const d = new Date();
-          d.setDate(d.getDate() + i);
-          const iso = d.toISOString().slice(0, 10);
+          const d = new Date(anchor.getTime());
+          d.setUTCDate(d.getUTCDate() + i);
+          const iso = amsterdamDateKey(d);
           const dow = fmtNL(d, { weekday: 'short' });
           if (dow === 'za' || dow === 'zo') continue;
           days.push({ iso, label: `${dow} ${fmtNL(d, { day: 'numeric', month: 'short' })}` });
@@ -135,7 +149,10 @@ const description = 'Boek direct een 30-min strategiegesprek met Mustafa Agah Do
       }
 
       function renderSlots() {
-        const slotsToday = allSlots.filter((s) => s.start.slice(0, 10) === activeDay);
+        // s.start is a UTC ISO string (see calendar-routes.js generateSlots()); convert
+        // to the Amsterdam calendar date before comparing — raw slice(0,10) would use the
+        // UTC date instead and can disagree with activeDay near midnight.
+        const slotsToday = allSlots.filter((s) => amsterdamDateKey(new Date(s.start)) === activeDay);
         slotGrid.innerHTML = '';
         if (slotsToday.length === 0) {
           noSlotsMsg.classList.remove('hidden');

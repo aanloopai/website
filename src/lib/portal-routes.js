@@ -13,13 +13,19 @@ import { escapeHtml } from './escape.js';
 const SITE_ORIGIN = 'https://aanloopai.nl';
 const MUTATING_METHODS = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
 
-// CSRF guard — defence in depth on top of SameSite=Strict. A mutating request
-// must either have no Origin (same-origin / certain GET-equivalents) or have
-// the right Origin.
+// CSRF guard — defence in depth on top of SameSite=Strict. Fails CLOSED for
+// mutating methods: a missing Origin header is treated the same as a wrong
+// one and rejected. Same-origin fetch() always sends an Origin header on
+// POST/PUT/PATCH/DELETE (per the Fetch spec), so this does not break any
+// legitimate same-origin call from the portal frontend. GET is left
+// permissive — it must not mutate state, so it is not this guard's concern.
+// No server-to-server caller is expected to reach this guard: the Mollie
+// webhook (the only server-to-server POST in this app) is wired directly to
+// handleMollieWebhook in worker.js and never passes through checkOrigin.
 function checkOrigin(request) {
   if (!MUTATING_METHODS.has(request.method)) return null;
   const origin = request.headers.get('Origin');
-  if (origin && origin !== SITE_ORIGIN) return errorResponse('Verboden (origin)', 403);
+  if (origin !== SITE_ORIGIN) return errorResponse('Verboden (origin)', 403);
   return null;
 }
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
