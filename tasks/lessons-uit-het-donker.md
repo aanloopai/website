@@ -44,7 +44,7 @@
    standalone 8-digit KvK (incl. mollie.js / worker.js / admin-routes invoice footers, BaseLayout
    Organization schema, footer trust strip, llms.txt). dist gate PASSED.
    **NOTE — flip-flop:** 88606902 is the CONFIRMED canonical (M, 2026-06-22), reversing a prior
-   2026-06-12 switch to 56312075. Do NOT flip back. If doubt: verify KvK.nl.
+   2026-06-12 switch to the old 56312075. Do NOT flip back. If doubt: verify KvK.nl.
 
 ### Repo hygiene (from memory)
 
