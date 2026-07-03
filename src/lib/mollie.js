@@ -21,11 +21,32 @@ async function buildWebhookUrl(env) {
   return `${SITE}/api/webhooks/mollie?k=${t}`;
 }
 
+// L2: constant-time string compare — no early-exit on first mismatch, so the
+// URL-token check below doesn't leak timing info. WebCrypto has no built-in
+// timingSafeEqual, so this is the small equal-length XOR-accumulation version.
+function constantTimeEqual(a, b) {
+  const aBytes = new TextEncoder().encode(a || '');
+  const bBytes = new TextEncoder().encode(b || '');
+  const len = Math.max(aBytes.length, bBytes.length, 1);
+  let diff = aBytes.length ^ bBytes.length;
+  for (let i = 0; i < len; i++) {
+    diff |= (aBytes[i] || 0) ^ (bBytes[i] || 0);
+  }
+  return diff === 0;
+}
+
 function euros(cents) { return (Number(cents) / 100).toFixed(2); }
 function todayStr() { return new Date().toISOString().slice(0, 10); }
 function addMonth(dateStr) {
   const d = dateStr ? new Date(`${dateStr}T00:00:00Z`) : new Date();
+  // L1: clamp to the last valid day of the target month — plain setUTCMonth(m+1)
+  // overflows (Jan 31 + 1mo → Mar 3) because Feb has fewer days. Set day=1 first
+  // so the month-advance can't itself overflow, then clamp back down.
+  const day = d.getUTCDate();
+  d.setUTCDate(1);
   d.setUTCMonth(d.getUTCMonth() + 1);
+  const daysInTargetMonth = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate();
+  d.setUTCDate(Math.min(day, daysInTargetMonth));
   return d.toISOString().slice(0, 10);
 }
 
@@ -101,6 +122,36 @@ export async function handleCheckoutStart(request, env, user) {
   if (!order) return errorResponse('Aanvraag niet gevonden', 404);
   if (order.status !== 'concept') return errorResponse('Deze aanvraag is al ingediend', 409);
 
+  // Duplicate-checkout guard (H5): order.status only advances after onPaid, so
+  // two checkout starts fired before either payment settles would otherwise
+  // both pass the check above and create two active subscriptions → double
+  // billing. Defense-in-depth on top of the UNIQUE(order_id) index.
+  const existingSub = await env.PORTAL_DB
+    .prepare("SELECT id, status FROM subscriptions WHERE order_id = ? AND status IN ('pending_payment', 'active') ORDER BY created_at DESC LIMIT 1")
+    .bind(order.id).first();
+  if (existingSub) {
+    if (existingSub.status === 'active') {
+      return errorResponse('Deze aanvraag heeft al een actief abonnement', 409);
+    }
+    // pending_payment — try to idempotently re-use the still-open checkout URL
+    // instead of creating a second Mollie payment for the same order.
+    const existingPayment = await env.PORTAL_DB
+      .prepare('SELECT id FROM payments WHERE subscription_id = ? ORDER BY created_at DESC LIMIT 1')
+      .bind(existingSub.id).first();
+    if (existingPayment) {
+      try {
+        const payment = await mollieFetch(env.MOLLIE_API_KEY, 'GET', `/payments/${existingPayment.id}`);
+        const checkoutUrl = payment._links && payment._links.checkout && payment._links.checkout.href;
+        if (checkoutUrl && (payment.status === 'open' || payment.status === 'pending')) {
+          return jsonResponse({ ok: true, checkoutUrl });
+        }
+      } catch (err) {
+        console.error('[mollie] re-fetch existing checkout failed:', err.message || err);
+      }
+    }
+    return errorResponse('Er is al een checkout gestart voor deze aanvraag. Probeer het opnieuw of neem contact op met support.', 409);
+  }
+
   const tier = getCatalogTier(order.product_key, order.tier);
   if (!tier || tier.betaling === 'aanvraag' || !tier.prijsCent) {
     return errorResponse('Voor dit pakket is geen online betaling beschikbaar.', 400);
@@ -168,9 +219,10 @@ export async function handleMollieWebhook(request, env) {
   if (!env.MOLLIE_API_KEY || !env.PORTAL_DB) return new Response('ok', { status: 200 });
 
   // 1. URL-secret check — drops spurious / DoS calls before any Mollie API hit.
+  //    L2: constant-time compare so a mismatch can't be timed byte-by-byte.
   const url = new URL(request.url);
   const expected = await webhookToken(env.PORTAL_SESSION_SECRET || '');
-  if (url.searchParams.get('k') !== expected) return new Response('ok', { status: 200 });
+  if (!constantTimeEqual(url.searchParams.get('k') || '', expected)) return new Response('ok', { status: 200 });
 
   // 2. Parse + strict id-shape check.
   let id = '';
@@ -304,6 +356,26 @@ async function onFailed(env, subId) {
   } catch (e) { console.error('[mollie] dunning customer mail:', e.message || e); }
 }
 
+// ── cancel: called from the portal (customer or admin action) ───────────────
+// Tenant-scoped: only cancels a subscription that belongs to customerId. Sets
+// status = 'canceled' (never deletes the row) which stops billMonthlySubscriptions
+// (it only selects status = 'active'). Idempotent for an already-canceled sub.
+export async function cancelSubscription(env, { subscriptionId, customerId }) {
+  const sub = await env.PORTAL_DB
+    .prepare('SELECT id, status FROM subscriptions WHERE id = ? AND customer_id = ?')
+    .bind(subscriptionId, customerId).first();
+  if (!sub) return { ok: false, error: 'Abonnement niet gevonden' };
+
+  if (sub.status === 'canceled') return { ok: true };
+  if (sub.status === 'completed') {
+    return { ok: false, error: 'Dit abonnement is al afgerond en kan niet worden geannuleerd' };
+  }
+
+  await env.PORTAL_DB.prepare("UPDATE subscriptions SET status = 'canceled' WHERE id = ?")
+    .bind(sub.id).run();
+  return { ok: true };
+}
+
 // ── cron: maandelijkse betaallinks versturen ────────────────────────────────
 // Voor elke actieve maand-subscription waarvan next_payment_date verstreken is:
 // maak een iDEAL-betaling, mail de klant de link, schuif de datum een maand op.
@@ -319,6 +391,20 @@ export async function billMonthlySubscriptions(env) {
   const webhookUrl = await buildWebhookUrl(env);
   for (const sub of due) {
     try {
+      // M6: claim this subscription BEFORE creating the Mollie payment. Two
+      // overlapping cron invocations can both SELECT the same due row above;
+      // without a claim, both would create a payment for the same cycle
+      // (double-bill). The CAS UPDATE only succeeds while next_payment_date
+      // still matches what we just read — the invocation that loses the race
+      // sees changes !== 1 and skips this sub entirely (mirrors the payment/
+      // webhook CAS pattern used elsewhere in this file).
+      const claimedFrom = sub.next_payment_date;
+      const nextDate = addMonth(claimedFrom || today);
+      const claim = await env.PORTAL_DB.prepare(
+        'UPDATE subscriptions SET next_payment_date = ? WHERE id = ? AND next_payment_date = ?',
+      ).bind(nextDate, sub.id, claimedFrom).run();
+      if (claim.meta?.changes !== 1) continue; // another invocation already claimed it
+
       const paymentBody = {
         amount: { currency: 'EUR', value: euros(sub.bedrag_cent) },
         description: `Aanloop AI — ${sub.product_key} ${sub.tier || ''} maandbetaling`,
@@ -329,18 +415,17 @@ export async function billMonthlySubscriptions(env) {
       };
       if (sub.mollie_customer_id) paymentBody.customerId = sub.mollie_customer_id;
       if (profileId) paymentBody.profileId = profileId;
+      // Trade-off: if payment creation below throws AFTER the claim above
+      // succeeded, next_payment_date has already moved a month forward, so
+      // this sub is NOT retried this cycle — only once the new (later) date
+      // passes. Acceptable: it trades a rare, logged payment-creation failure
+      // for eliminating the far more likely cross-invocation double-bill.
       const payment = await mollieFetch(env.MOLLIE_API_KEY, 'POST', '/payments', paymentBody);
 
-      // Atomic: payment INSERT + next_payment_date UPDATE either both commit or
-      // both fail. Prevents the "advanced date but no payment row" data hole.
-      await env.PORTAL_DB.batch([
-        env.PORTAL_DB.prepare(
-          'INSERT INTO payments (id, customer_id, subscription_id, order_id, bedrag_cent, status, sequence_type, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        ).bind(payment.id, sub.customer_id, sub.id, null, sub.bedrag_cent,
-          payment.status || 'open', 'maand', Date.now()),
-        env.PORTAL_DB.prepare('UPDATE subscriptions SET next_payment_date = ? WHERE id = ?')
-          .bind(addMonth(sub.next_payment_date || today), sub.id),
-      ]);
+      await env.PORTAL_DB.prepare(
+        'INSERT INTO payments (id, customer_id, subscription_id, order_id, bedrag_cent, status, sequence_type, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+      ).bind(payment.id, sub.customer_id, sub.id, null, sub.bedrag_cent,
+        payment.status || 'open', 'maand', Date.now()).run();
 
       const link = payment._links && payment._links.checkout && payment._links.checkout.href;
       if (link) {

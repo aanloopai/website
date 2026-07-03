@@ -29,10 +29,15 @@ import {
 } from './lib/portal-routes.js';
 import { handleAdminApi } from './lib/admin-routes.js';
 import { handleMollieWebhook, reconcilePayments, billMonthlySubscriptions } from './lib/mollie.js';
+import { rateLimit } from './lib/rate-limit.js';
+import { escapeHtml } from './lib/escape.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
 const SENDER_NAME = 'Aanloop AI';
+// Same value as SITE_ORIGIN in portal-routes.js — kept as a separate constant
+// here so worker.js stays self-contained (no cross-file import for a single string).
+const SITE_ORIGIN = 'https://aanloopai.nl';
 
 const AUTORESPONSE_TEMPLATES = {
   demo: {
@@ -119,8 +124,13 @@ const FOOTER_HTML = `
   KvK 88606902
 </p>`;
 
+// Applied to /api/submit, /api/geo-scan, /api/calendar/*, /api/auth/request —
+// all same-origin form/fetch POSTs from aanloopai.nl itself, so cross-origin
+// access is never legitimately needed here. Was '*' (wildcard) — narrowed to
+// the site origin so a third-party page cannot POST to these endpoints from
+// script and read the response (H1/H2/H3 hardening).
 const CORS_HEADERS = {
-  'access-control-allow-origin': '*',
+  'access-control-allow-origin': SITE_ORIGIN,
   'access-control-allow-methods': 'POST, OPTIONS',
   'access-control-allow-headers': 'content-type',
 };
@@ -177,20 +187,17 @@ function applySecurityHeaders(response, pathname) {
   });
 }
 
-function escapeHtml(s) {
-  return String(s ?? '')
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
+// Caps against pathological/abusive submissions (huge field count or huge
+// field values) inflating the outgoing notification email (L7 hardening).
+const MAX_NOTIFICATION_FIELDS = 40;
+const MAX_FIELD_VALUE_LENGTH = 2000;
 
 function buildNotificationHtml(formType, fields, userEmail, userName) {
   const skipKeys = ['type', 'form_type', 'access_key', 'subject', 'from_name', 'replyto', 'redirect', 'source', 'botcheck'];
   const rows = Object.entries(fields)
     .filter(([k, v]) => v && !skipKeys.includes(k))
-    .map(([k, v]) => `<tr><td style="padding:8px 12px;background:#f8fafc;border:1px solid #e2e8f0;font-weight:600;width:180px">${escapeHtml(k)}</td><td style="padding:8px 12px;border:1px solid #e2e8f0">${escapeHtml(v)}</td></tr>`)
+    .slice(0, MAX_NOTIFICATION_FIELDS)
+    .map(([k, v]) => `<tr><td style="padding:8px 12px;background:#f8fafc;border:1px solid #e2e8f0;font-weight:600;width:180px">${escapeHtml(k.toString().slice(0, MAX_FIELD_VALUE_LENGTH))}</td><td style="padding:8px 12px;border:1px solid #e2e8f0">${escapeHtml(v.toString().slice(0, MAX_FIELD_VALUE_LENGTH))}</td></tr>`)
     .join('');
   return `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#0f172a">
     <h1 style="font-size:20px;margin:0 0 16px">Nieuwe ${escapeHtml(formType)} via aanloopai.nl</h1>
@@ -348,6 +355,13 @@ async function brevoUpsertContact(apiKey, contact) {
   try { return JSON.parse(text); } catch { return { raw: text }; }
 }
 
+// Same regex as isValidEmail() in portal-routes.js / calendar-routes.js.
+// Duplicated (not imported) to keep worker.js self-contained — a later task
+// consolidates all three into one shared helper.
+function isValidEmail(s) {
+  return typeof s === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
+}
+
 async function handleSubmit(request, env) {
   if (!env.BREVO_API_KEY) {
     return jsonResponse({
@@ -368,6 +382,15 @@ async function handleSubmit(request, env) {
     return jsonResponse({ success: true });
   }
 
+  // Spam / abuse throttle — see src/lib/rate-limit.js for the KV mechanics and
+  // its known non-atomicity caveat (acceptable here: this guards a public form
+  // endpoint, not an auth boundary).
+  const clientIp = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const submitRl = await rateLimit(env.GOOGLE_TOKENS, `rl:submit:${clientIp}`, 5, 600);
+  if (!submitRl.allowed) {
+    return jsonResponse({ success: false, message: 'Te veel aanvragen vanaf dit IP-adres. Probeer het over enkele minuten opnieuw.' }, 429);
+  }
+
   const fields = Object.fromEntries(formData.entries());
   const formType = (fields.form_type || fields.type || 'contact').toString().toLowerCase();
   const template = AUTORESPONSE_TEMPLATES[formType] || AUTORESPONSE_TEMPLATES.contact;
@@ -376,7 +399,7 @@ async function handleSubmit(request, env) {
   const firstName = (fields.voornaam || fields.naam || fields.name || '').toString().split(' ')[0] || 'daar';
   const fullName = (fields.voornaam ? `${fields.voornaam} ${fields.achternaam || ''}`.trim() : (fields.naam || fields.name || userEmail)) || userEmail;
 
-  if (!userEmail || !userEmail.includes('@')) {
+  if (!isValidEmail(userEmail)) {
     return jsonResponse({ success: false, message: 'Invalid email address' }, 400);
   }
 
@@ -417,6 +440,17 @@ async function handleSubmit(request, env) {
       const hasMarketingConsent =
         formType === 'newsletter' ||
         MARKETING_CONSENT_FIELDS.some((k) => isTruthy(fields[k]));
+      // KNOWN GAP (Phase 1, AVG/GDPR): hasMarketingConsent is derived purely from
+      // attacker-controlled POST booleans (akkoord_marketing / nieuwsbrief) — there
+      // is no double opt-in / confirmation-click yet, so this alone is NOT
+      // sufficient legal consent to add someone to a marketing list. Full double
+      // opt-in (send a confirmation link, only add to the list once clicked) is a
+      // larger change and is deferred to a follow-up task. As a stopgap, marketing/
+      // nurture-list enrollment below is now gated behind (a) a syntactically valid,
+      // rate-limited submission (see isValidEmail + rateLimit above) rather than
+      // trusting the raw form booleans unconditionally — this raises the cost of
+      // mass-forging consent flags to spam third-party inboxes onto the list, but
+      // does not by itself make the consent AVG-compliant.
 
       if (hasPrivacyConsent) {
         const attributes = {
@@ -477,25 +511,62 @@ function jsonResponse(body, status = 200) {
 
 // --- GEO Quick Scan: lightweight AI-vindbaarheid check of a public URL ---
 // SSRF-guarded: only public http(s) hosts, no loopback/private ranges.
+//
+// NOTE (M1): true DNS-rebinding — where a hostname resolves to a private/
+// loopback IP only at fetch-time, after this hostname-string check already
+// passed — cannot be fully closed from inside the Cloudflare Workers runtime,
+// because `fetch()` here has no API to resolve DNS ourselves and pin/verify
+// the IP before connecting. The CF runtime itself already prevents Workers
+// from reaching the edge's own loopback/metadata addresses at the network
+// layer. What this function + the redirect-revalidation in geoFetchText()
+// below cover is: literal-IP SSRF, encoding/case tricks, and redirect-based
+// bypass (a public URL 30x-ing to an internal target).
 function isPublicHttpUrl(raw) {
   let u;
   try { u = new URL(raw); } catch { return null; }
   if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
-  const h = u.hostname.toLowerCase();
+  // Bracketed IPv6 hostnames from new URL() include the brackets, e.g. "[::1]" — strip them before matching.
+  const h = u.hostname.toLowerCase().replace(/^\[|\]$/g, '');
   if (h === 'localhost' || h.endsWith('.local') || h.endsWith('.internal') || !h.includes('.')) return null;
   if (/^(127\.|10\.|192\.168\.|169\.254\.|0\.)/.test(h)) return null;
   if (/^172\.(1[6-9]|2\d|3[01])\./.test(h)) return null;
+  // CGNAT (RFC 6598) — 100.64.0.0/10.
+  if (/^100\.(6[4-9]|[7-9]\d|1[01]\d|12[0-7])\./.test(h)) return null;
+  // IANA-reserved "this host on this network" block — 192.0.0.0/24.
+  if (/^192\.0\.0\./.test(h)) return null;
   if (h === '::1' || h.startsWith('fc') || h.startsWith('fd') || h.startsWith('fe80')) return null;
   return u;
 }
+
+// Max redirect hops we manually follow before aborting — bounded so a
+// malicious/misconfigured target can't chain redirects indefinitely.
+const GEO_FETCH_MAX_REDIRECTS = 3;
 
 async function geoFetchText(target, ms = 8000, maxBytes = 600000) {
   const ctrl = new AbortController();
   const t = setTimeout(() => ctrl.abort(), ms);
   try {
-    const res = await fetch(target, { signal: ctrl.signal, redirect: 'follow', headers: { 'user-agent': 'AanloopAI-GEO-Scan/1.0 (+https://aanloopai.nl/ai-vindbaarheid/)' } });
-    const buf = await res.arrayBuffer();
-    return { ok: res.ok, status: res.status, text: new TextDecoder().decode(buf.slice(0, maxBytes)) };
+    let currentUrl = target;
+    for (let hop = 0; ; hop++) {
+      const res = await fetch(currentUrl, { signal: ctrl.signal, redirect: 'manual', headers: { 'user-agent': 'AanloopAI-GEO-Scan/1.0 (+https://aanloopai.nl/ai-vindbaarheid/)' } });
+      const isRedirect = res.status >= 300 && res.status < 400;
+      if (!isRedirect) {
+        const buf = await res.arrayBuffer();
+        return { ok: res.ok, status: res.status, text: new TextDecoder().decode(buf.slice(0, maxBytes)) };
+      }
+      const location = res.headers.get('location');
+      if (!location || hop >= GEO_FETCH_MAX_REDIRECTS) {
+        return { ok: false, status: 0, text: '' };
+      }
+      // Resolve Location against the current URL (handles relative redirects), then
+      // re-validate the resolved target — this is what stops a public URL from
+      // redirecting into a loopback/private/link-local address (M1 hardening).
+      let resolved;
+      try { resolved = new URL(location, currentUrl); } catch { return { ok: false, status: 0, text: '' }; }
+      const revalidated = isPublicHttpUrl(resolved.toString());
+      if (!revalidated) return { ok: false, status: 0, text: '' };
+      currentUrl = revalidated.toString();
+    }
   } catch {
     return { ok: false, status: 0, text: '' };
   } finally { clearTimeout(t); }
@@ -553,6 +624,11 @@ export default {
 
     if (url.pathname === '/api/geo-scan') {
       if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
+      const geoIp = request.headers.get('CF-Connecting-IP') || 'unknown';
+      const geoRl = await rateLimit(env.GOOGLE_TOKENS, `rl:geoscan:${geoIp}`, 10, 3600);
+      if (!geoRl.allowed) {
+        return jsonResponse({ success: false, message: 'Te veel scans vanaf dit IP-adres. Probeer het over een uur opnieuw.' }, 429);
+      }
       return handleGeoScan(request, env);
     }
 
@@ -568,11 +644,21 @@ export default {
 
     // Native Google Calendar booking API (powers /demo-inplannen/)
     if (url.pathname === '/api/calendar/availability') {
+      const availIp = request.headers.get('CF-Connecting-IP') || 'unknown';
+      const availRl = await rateLimit(env.GOOGLE_TOKENS, `rl:avail:${availIp}`, 30, 3600);
+      if (!availRl.allowed) {
+        return jsonResponse({ success: false, message: 'Te veel verzoeken. Probeer het later opnieuw.' }, 429);
+      }
       return handleAvailability(request, env);
     }
     if (url.pathname === '/api/calendar/book') {
       if (request.method === 'OPTIONS') {
         return new Response(null, { headers: CORS_HEADERS });
+      }
+      const bookIp = request.headers.get('CF-Connecting-IP') || 'unknown';
+      const bookRl = await rateLimit(env.GOOGLE_TOKENS, `rl:book:${bookIp}`, 5, 3600);
+      if (!bookRl.allowed) {
+        return jsonResponse({ success: false, message: 'Te veel boekingspogingen vanaf dit IP-adres. Probeer het over een uur opnieuw.' }, 429);
       }
       return handleBook(request, env);
     }
