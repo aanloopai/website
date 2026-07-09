@@ -57,6 +57,7 @@ function priorityFor(url) {
   if (url.startsWith('/sectoren/')) return '0.85';
   if (url.startsWith('/cases/')) return '0.8';
   if (url.startsWith('/kennisbank/')) return '0.8';
+  if (url === '/blog/' || url.startsWith('/blog/')) return '0.8';
   if (url.startsWith('/locaties/')) return '0.75';
   if (url.startsWith('/vergelijk/')) return '0.75';
   if (url === '/glossarium/') return '0.75';
@@ -108,6 +109,23 @@ const sectorsSrc = fs.readFileSync(path.join(ROOT, 'src', 'data', 'sectors.ts'),
 const sectorSlugs = Array.from(sectorsSrc.matchAll(/slug:\s*'([^']+)'/g)).map((m) => m[1]);
 for (const s of sectorSlugs) {
   urls.push(`/sectoren/${s}/`);
+}
+
+// /blog/[slug] dynamic route — one markdown file per post in src/content/blog/.
+// The route file itself is skipped by isDynamicRoute(), so posts are derived
+// directly from the content files (draft: true posts are excluded).
+const BLOG_CONTENT_DIR = path.join(ROOT, 'src', 'content', 'blog');
+if (fs.existsSync(BLOG_CONTENT_DIR)) {
+  const blogFiles = fs.readdirSync(BLOG_CONTENT_DIR).filter((f) => f.endsWith('.md'));
+  for (const file of blogFiles) {
+    const raw = fs.readFileSync(path.join(BLOG_CONTENT_DIR, file), 'utf8');
+    const fmMatch = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+    const frontmatter = fmMatch ? fmMatch[1] : '';
+    const isDraft = /^draft:\s*true\s*$/m.test(frontmatter);
+    if (isDraft) continue;
+    const slug = file.replace(/\.md$/, '');
+    urls.push(`/blog/${slug}/`);
+  }
 }
 
 const uniqueSorted = Array.from(new Set(urls)).sort();

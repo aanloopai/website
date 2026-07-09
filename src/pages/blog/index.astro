@@ -1,0 +1,88 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = allPosts.sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf());
+
+const dateFmt = (d: Date) => d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': 'https://aanloopai.nl/blog/#collection',
+  name: 'Blog Aanloop AI',
+  description: 'Praktische artikelen over AI-automatisering voor het Nederlandse MKB.',
+  url: 'https://aanloopai.nl/blog/',
+  inLanguage: 'nl-NL',
+  isPartOf: { '@type': 'WebSite', '@id': 'https://aanloopai.nl/#website' },
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: posts.length,
+    itemListElement: posts.map((p, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      item: `https://aanloopai.nl/blog/${p.slug}/`,
+      name: p.data.title,
+    })),
+  },
+};
+---
+
+<BaseLayout
+  title="Blog — AI-automatisering voor het Nederlandse MKB"
+  description="Praktische artikelen over AI-automatisering, AI agents en workflow automation voor het Nederlandse MKB."
+  schema={collectionSchema}
+>
+  <!-- Hero -->
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Blog</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          Praktische inzichten over AI voor uw bedrijf.
+        </h1>
+        <p class="mt-4 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">
+          Artikelen over AI-automatisering, AI agents en workflow automation — geschreven voor ondernemers.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      {posts.length === 0 ? (
+        <p class="text-slate-500">Binnenkort de eerste artikelen.</p>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {posts.map((post, i) => (
+            <article class={`card card-interactive flex flex-col reveal reveal-delay-${(i % 3) + 1}`}>
+              <div class="flex items-center justify-between mb-4">
+                <span class="pill text-[11px] bg-brand-indigo/10 text-brand-indigo">{post.data.category}</span>
+                {post.data.readingMinutes && (
+                  <span class="text-xs text-slate-400">{post.data.readingMinutes} min leestijd</span>
+                )}
+              </div>
+              <h2 class="text-base font-bold text-navy leading-snug mb-3 flex-1">
+                <a href={`/blog/${post.slug}/`} class="hover:text-brand-indigo transition-colors">
+                  {post.data.title}
+                </a>
+              </h2>
+              <p class="text-sm text-slate-600 leading-relaxed mb-4">{post.data.excerpt}</p>
+              <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                <span class="text-xs text-slate-400">{dateFmt(post.data.published)}</span>
+                <a href={`/blog/${post.slug}/`} class="text-xs font-medium text-brand-indigo hover:underline flex items-center gap-1" aria-label={`Lees: ${post.data.title}`}>
+                  Lees artikel
+                  <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
