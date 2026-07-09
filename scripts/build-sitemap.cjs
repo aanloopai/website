@@ -57,7 +57,6 @@ function priorityFor(url) {
   if (url.startsWith('/sectoren/')) return '0.85';
   if (url.startsWith('/cases/')) return '0.8';
   if (url.startsWith('/kennisbank/')) return '0.8';
-  if (url === '/blog/' || url.startsWith('/blog/')) return '0.8';
   if (url.startsWith('/locaties/')) return '0.75';
   if (url.startsWith('/vergelijk/')) return '0.75';
   if (url === '/glossarium/') return '0.75';
@@ -111,20 +110,23 @@ for (const s of sectorSlugs) {
   urls.push(`/sectoren/${s}/`);
 }
 
-// /blog/[slug] dynamic route — one markdown file per post in src/content/blog/.
-// The route file itself is skipped by isDynamicRoute(), so posts are derived
-// directly from the content files (draft: true posts are excluded).
-const BLOG_CONTENT_DIR = path.join(ROOT, 'src', 'content', 'blog');
-if (fs.existsSync(BLOG_CONTENT_DIR)) {
-  const blogFiles = fs.readdirSync(BLOG_CONTENT_DIR).filter((f) => f.endsWith('.md'));
-  for (const file of blogFiles) {
-    const raw = fs.readFileSync(path.join(BLOG_CONTENT_DIR, file), 'utf8');
+// /kennisbank/[slug] dynamic route — one markdown file per article in
+// src/content/kennisbank/. The route file itself is skipped by
+// isDynamicRoute(), so md articles are derived directly from the content
+// files (draft: true articles are excluded). The 84 hand-written
+// src/pages/kennisbank/*.astro articles are already picked up by the normal
+// walk() above; this only adds the markdown-sourced ones.
+const KENNISBANK_CONTENT_DIR = path.join(ROOT, 'src', 'content', 'kennisbank');
+if (fs.existsSync(KENNISBANK_CONTENT_DIR)) {
+  const kennisbankFiles = fs.readdirSync(KENNISBANK_CONTENT_DIR).filter((f) => f.endsWith('.md'));
+  for (const file of kennisbankFiles) {
+    const raw = fs.readFileSync(path.join(KENNISBANK_CONTENT_DIR, file), 'utf8');
     const fmMatch = raw.match(/^---\r?\n([\s\S]*?)\r?\n---/);
     const frontmatter = fmMatch ? fmMatch[1] : '';
     const isDraft = /^draft:\s*true\s*$/m.test(frontmatter);
     if (isDraft) continue;
     const slug = file.replace(/\.md$/, '');
-    urls.push(`/blog/${slug}/`);
+    urls.push(`/kennisbank/${slug}/`);
   }
 }
 
