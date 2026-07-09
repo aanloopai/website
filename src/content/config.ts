@@ -1,9 +1,11 @@
 import { defineCollection, z } from 'astro:content';
 
-// Blog collection — publishing an article means dropping ONE markdown file
-// into src/content/blog/. Astro content collections handle the rest
-// (schema validation, getCollection/getEntry, <Content /> rendering).
-const blog = defineCollection({
+// Kennisbank markdown collection — publishing an article means dropping ONE
+// markdown file into src/content/kennisbank/. Astro content collections
+// handle the rest (schema validation, getCollection/getEntry, <Content /> rendering).
+// Served at /kennisbank/<slug>/ alongside the existing src/pages/kennisbank/*.astro
+// articles and merged into the src/pages/kennisbank.astro listing.
+const kennisbank = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
@@ -17,4 +19,4 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { blog };
+export const collections = { kennisbank };

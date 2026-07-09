@@ -2,21 +2,26 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
+// Markdown kennisbank articles — one .md file in src/content/kennisbank/ per
+// article. Astro resolves static routes (src/pages/kennisbank/*.astro) before
+// this dynamic route, so the 84 existing hand-written articles always win on
+// a slug collision. No collision currently exists (verified against
+// src/data/kennisbank-articles.ts and src/pages/kennisbank/*.astro).
 export async function getStaticPaths() {
-  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const posts = await getCollection('kennisbank', ({ data }) => !data.draft);
   return posts.map((post) => ({
     params: { slug: post.slug },
     props: { post },
   }));
 }
 
-type Props = { post: CollectionEntry<'blog'> };
+type Props = { post: CollectionEntry<'kennisbank'> };
 const { post } = Astro.props;
 const { Content } = await post.render();
 
 const dateFmt = (d: Date) => d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
 
-const pageUrl = new URL(`/blog/${post.slug}/`, Astro.site).toString();
+const pageUrl = new URL(`/kennisbank/${post.slug}/`, Astro.site).toString();
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -44,7 +49,7 @@ const articleSchema = {
       <div class="max-w-3xl">
         <div class="flex items-center gap-4 mb-6 reveal">
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
-          <span class="eyebrow">Blog · {post.data.category}</span>
+          <span class="eyebrow">Kennisbank · {post.data.category}</span>
         </div>
         <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">
           {post.data.title}
@@ -67,7 +72,7 @@ const articleSchema = {
         <Content />
       </article>
       <div class="max-w-3xl mx-auto mt-12 pt-8 border-t border-slate-200">
-        <a href="/blog/" class="text-sm font-medium text-brand-indigo hover:underline">← Terug naar blog</a>
+        <a href="/kennisbank/" class="text-sm font-medium text-brand-indigo hover:underline">← Terug naar kennisbank</a>
       </div>
     </div>
   </section>

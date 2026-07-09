@@ -1,9 +1,33 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { KENNISBANK_ARTICLES as articles } from '../data/kennisbank-articles';
-
+import { getCollection } from 'astro:content';
+import { KENNISBANK_ARTICLES } from '../data/kennisbank-articles';
 
 const categories = ['Alle', 'Uitleg', 'Gids', 'Finance', 'Sector', 'Vergelijk', 'Technisch'];
+
+// Merge markdown kennisbank articles (src/content/kennisbank/*.md) into the
+// existing hand-written listing — dropping one .md file is meant to be all it
+// takes to publish. The existing data array always wins on a slug collision
+// (a markdown drop must never shadow a live URL). Existing entries have no
+// stable chronological order (manually curated), so that order is preserved
+// as-is and markdown articles — freshly authored — are prepended at the top,
+// newest-first among themselves.
+const existingSlugs = new Set(KENNISBANK_ARTICLES.map((a) => a.slug));
+const dateFmt = (d: Date) => d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+const mdEntries = await getCollection('kennisbank', ({ data }) => !data.draft);
+const mdArticles = mdEntries
+  .filter((entry) => !existingSlugs.has(entry.slug))
+  .sort((a, b) => b.data.published.valueOf() - a.data.published.valueOf())
+  .map((entry) => ({
+    slug: entry.slug,
+    category: entry.data.category,
+    categoryColor: 'bg-slate-100 text-slate-600',
+    title: entry.data.title,
+    excerpt: entry.data.excerpt,
+    readTime: entry.data.readingMinutes ? `${entry.data.readingMinutes} min` : '—',
+    date: dateFmt(entry.data.published),
+  }));
+const articles = [...mdArticles, ...KENNISBANK_ARTICLES];
 
 // ── CollectionPage + ItemList schema for rich results ──────────────
 const collectionSchema = {
