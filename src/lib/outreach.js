@@ -3,6 +3,7 @@
 // guard already run in handleAdminApi before any of these handlers execute.
 import { jsonResponse, errorResponse } from './google-auth.js';
 import { randomId } from './auth.js';
+import { annuleerOpenstaandeFollowups, logCrmActivity, volgendeWerkdag } from './crm.js';
 
 const GEMINI_MODEL = 'gemini-2.5-flash';
 const KEUKENINBEELD_PROSPECTS_URL = 'https://keukeninbeeld.nl/api/prospects';
@@ -564,13 +565,16 @@ async function advanceProspectAfterSend(env, mail) {
       `UPDATE outreach_prospects
        SET laatste_contact = ?, status = 'mail1', volgende_actie = ?, volgende_actie_datum = ?
        WHERE id = ?`,
-    ).bind(today(), 'Follow-up mail sturen', werkdagenLater(4), mail.prospect_id).run();
+      // volgendeWerkdag: werkdagenLater(n) telt alleen weekend-dagen mee, geen
+      // NL feestdagen — snap de uitkomst daarom nog een keer af zodat een
+      // follow-up nooit op een feestdag gepland staat.
+    ).bind(today(), 'Follow-up mail sturen', volgendeWerkdag(werkdagenLater(4)), mail.prospect_id).run();
   } else if (mail.soort === 'followup') {
     await env.PORTAL_DB.prepare(
       `UPDATE outreach_prospects
        SET laatste_contact = ?, status = 'followup', volgende_actie = ?, volgende_actie_datum = ?
        WHERE id = ?`,
-    ).bind(today(), 'Nabellen', werkdagenLater(3), mail.prospect_id).run();
+    ).bind(today(), 'Nabellen', volgendeWerkdag(werkdagenLater(3)), mail.prospect_id).run();
   }
 }
 
@@ -704,6 +708,30 @@ export async function outreachUpdateProspect(request, env) {
   await env.PORTAL_DB.prepare(
     'UPDATE outreach_prospects SET status = ?, notities = ?, volgende_actie = ?, volgende_actie_datum = ? WHERE id = ?',
   ).bind(status, notities, volgendeActie, volgendeActieDatum, body.id).run();
+
+  // Conversiedoel: zodra een prospect definitief geinteresseerd of afgewezen
+  // is, mag er geen nog-niet-verzonden follow-up meer klaarstaan (voorkomt
+  // een follow-up-mail naar iemand die al gereageerd heeft) — en de
+  // status-wijziging komt in de gedeelde crm_activities-tijdlijn te staan.
+  const statusVeranderd = status !== prospect.status;
+  if (statusVeranderd && (status === 'geinteresseerd' || status === 'afgewezen')) {
+    try {
+      await annuleerOpenstaandeFollowups(env, body.id);
+    } catch (err) {
+      console.error('[outreach] annuleerOpenstaandeFollowups mislukt:', err.message || err);
+    }
+  }
+  if (statusVeranderd) {
+    try {
+      await logCrmActivity(env, {
+        entityType: 'prospect', entityId: body.id, soort: 'status_change',
+        titel: `Status: ${prospect.status || 'onbekend'} → ${status}`,
+        meta: { van: prospect.status, naar: status },
+      });
+    } catch (err) {
+      console.error('[outreach] crm_activities status_change log mislukt:', err.message || err);
+    }
+  }
 
   const updated = await env.PORTAL_DB.prepare('SELECT * FROM outreach_prospects WHERE id = ?').bind(body.id).first();
   return jsonResponse({ ok: true, prospect: updated });

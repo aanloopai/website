@@ -13,6 +13,7 @@ const { title, active = '' } = Astro.props;
 const nav = [
   { key: 'dashboard', label: 'Dashboard', href: '/admin/' },
   { key: 'klanten', label: 'Klanten', href: '/admin/klanten' },
+  { key: 'pipeline', label: 'Pipeline', href: '/admin/pipeline' },
   { key: 'aanvragen', label: 'Aanvragen', href: '/admin/aanvragen' },
   { key: 'support', label: 'Support', href: '/admin/support' },
   { key: 'leadgen', label: 'Leadgen', href: '/admin/leadgen' },
@@ -47,6 +48,9 @@ const nav = [
         <header class="flex items-center justify-between border-b px-5 py-3 lg:px-8" style="background:var(--p-surface);border-color:var(--p-border)">
           <div class="text-sm font-semibold" style="color:var(--p-ink)">Beheer</div>
           <div class="flex items-center gap-3">
+            <button id="al-cmdk-btn" type="button" class="pbtn pbtn--subtle pbtn--sm" title="Zoeken (Ctrl/Cmd+K)">
+              🔍 Zoeken <span class="al-cmdk-hint">Ctrl/⌘ K</span>
+            </button>
             <span class="hidden text-sm sm:inline" id="al-user" style="color:var(--p-ink-2)"></span>
             <form method="POST" action="/api/auth/logout" class="inline"><button type="submit" class="pbtn pbtn--subtle pbtn--sm">Uitloggen</button></form>
           </div>
@@ -56,6 +60,32 @@ const nav = [
         </main>
       </div>
     </div>
+
+    <div id="al-cmdk-backdrop" class="al-cmdk-backdrop">
+      <div class="al-cmdk-box">
+        <input id="al-cmdk-input" class="al-cmdk-input" type="text" placeholder="Zoek klanten, prospects, deals, tickets..." autocomplete="off" />
+        <div id="al-cmdk-results" class="al-cmdk-results"></div>
+        <div id="al-cmdk-empty" class="al-cmdk-empty hidden">Geen resultaten.</div>
+        <div id="al-cmdk-hint" class="al-cmdk-footer">↑↓ navigeren · Enter openen · Esc sluiten</div>
+      </div>
+    </div>
+
+    <style>
+      .al-cmdk-hint { display: none; margin-left: 4px; opacity: 0.6; font-size: 11px; }
+      @media (min-width: 640px) { .al-cmdk-hint { display: inline; } }
+
+      .al-cmdk-backdrop { position: fixed; inset: 0; z-index: 70; display: none; align-items: flex-start; justify-content: center; background: rgba(26, 31, 54, 0.45); padding: 12vh 16px 16px; }
+      .al-cmdk-backdrop.open { display: flex; }
+      .al-cmdk-box { width: 100%; max-width: 34rem; background: var(--p-surface); border-radius: 10px; box-shadow: 0 20px 50px rgba(26, 31, 54, 0.28); overflow: hidden; }
+      .al-cmdk-input { width: 100%; height: 48px; padding: 0 16px; border: none; border-bottom: 1px solid var(--p-border); font-size: 15px; color: var(--p-ink); outline: none; }
+      .al-cmdk-results { max-height: 50vh; overflow-y: auto; }
+      .al-cmdk-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 16px; cursor: pointer; font-size: 13px; }
+      .al-cmdk-item:hover, .al-cmdk-item.al-active { background: var(--p-accent-fill); }
+      .al-cmdk-item-label { color: var(--p-ink); font-weight: 500; }
+      .al-cmdk-item-sub { color: var(--p-ink-3); font-size: 12px; }
+      .al-cmdk-empty { padding: 18px 16px; font-size: 13px; color: var(--p-ink-3); text-align: center; }
+      .al-cmdk-footer { padding: 8px 16px; border-top: 1px solid var(--p-border); font-size: 11px; color: var(--p-ink-4); }
+    </style>
 
     <script is:inline>
       fetch('/api/admin/me', { credentials: 'same-origin' })
@@ -70,6 +100,97 @@ const nav = [
           document.dispatchEvent(new CustomEvent('admin:ready', { detail: d }));
         })
         .catch(function () {});
+    </script>
+
+    <script is:inline>
+      // Cmd-K global search palette — self-contained, geen afhankelijkheid van
+      // de per-pagina scripts. Debounced fetch naar /api/admin/search.
+      (function () {
+        function esc(s) {
+          return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+            return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+          });
+        }
+        var TYPE_LABEL = { prospect: 'Prospect', customer: 'Klant', deal: 'Deal', ticket: 'Ticket' };
+
+        var backdrop = document.getElementById('al-cmdk-backdrop');
+        var input = document.getElementById('al-cmdk-input');
+        var resultsEl = document.getElementById('al-cmdk-results');
+        var emptyEl = document.getElementById('al-cmdk-empty');
+        var results = [];
+        var activeIndex = -1;
+        var debounceTimer = null;
+
+        function open() {
+          backdrop.classList.add('open');
+          input.value = '';
+          results = [];
+          activeIndex = -1;
+          resultsEl.innerHTML = '';
+          emptyEl.classList.add('hidden');
+          setTimeout(function () { input.focus(); }, 0);
+        }
+        function close() {
+          backdrop.classList.remove('open');
+        }
+
+        function render() {
+          resultsEl.innerHTML = results.map(function (r, i) {
+            return '<div class="al-cmdk-item' + (i === activeIndex ? ' al-active' : '') + '" data-i="' + i + '">' +
+              '<span class="al-cmdk-item-label">' + esc(r.label) + '</span>' +
+              '<span class="al-cmdk-item-sub">' + esc(TYPE_LABEL[r.type] || r.type) + (r.sub ? ' · ' + esc(r.sub) : '') + '</span>' +
+              '</div>';
+          }).join('');
+          emptyEl.classList.toggle('hidden', results.length > 0 || input.value.trim().length < 2);
+          resultsEl.querySelectorAll('.al-cmdk-item').forEach(function (el) {
+            el.addEventListener('mouseenter', function () { activeIndex = parseInt(el.getAttribute('data-i'), 10); render(); });
+            el.addEventListener('click', function () { navigate(parseInt(el.getAttribute('data-i'), 10)); });
+          });
+        }
+
+        function navigate(i) {
+          var r = results[i];
+          if (r && r.url) location.href = r.url;
+        }
+
+        function search(q) {
+          fetch('/api/admin/search?q=' + encodeURIComponent(q), { credentials: 'same-origin' })
+            .then(function (r) { return r.json(); })
+            .then(function (d) {
+              results = (d && d.results) || [];
+              activeIndex = results.length ? 0 : -1;
+              render();
+            })
+            .catch(function () { results = []; render(); });
+        }
+
+        document.getElementById('al-cmdk-btn').addEventListener('click', open);
+        backdrop.addEventListener('click', function (e) { if (e.target === backdrop) close(); });
+
+        input.addEventListener('input', function () {
+          var q = input.value.trim();
+          clearTimeout(debounceTimer);
+          if (q.length < 2) { results = []; activeIndex = -1; render(); return; }
+          debounceTimer = setTimeout(function () { search(q); }, 220);
+        });
+
+        input.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowDown') { e.preventDefault(); if (results.length) { activeIndex = (activeIndex + 1) % results.length; render(); } }
+          else if (e.key === 'ArrowUp') { e.preventDefault(); if (results.length) { activeIndex = (activeIndex - 1 + results.length) % results.length; render(); } }
+          else if (e.key === 'Enter') { e.preventDefault(); if (activeIndex >= 0) navigate(activeIndex); }
+          else if (e.key === 'Escape') { e.preventDefault(); close(); }
+        });
+
+        document.addEventListener('keydown', function (e) {
+          var isK = (e.key === 'k' || e.key === 'K');
+          if ((e.metaKey || e.ctrlKey) && isK) {
+            e.preventDefault();
+            if (backdrop.classList.contains('open')) close(); else open();
+          } else if (e.key === 'Escape' && backdrop.classList.contains('open')) {
+            close();
+          }
+        });
+      })();
     </script>
   </body>
 </html>

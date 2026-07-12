@@ -1,0 +1,249 @@
+---
+// Admin panel — Prospect-detail (F1 CRM core). 3 kolommen: bewerkbare velden
+// + gepinde notities (links), tijdlijn (midden), Emma AI-plek voor F2 (rechts).
+// Data: /api/admin/outreach/prospects (voor de basisgegevens — er is geen
+// single-prospect-endpoint, dus we filteren client-side, net als outreach.astro
+// al doet), /api/admin/outreach/prospect (PATCH-achtige update), /api/admin/
+// crm/timeline en /api/admin/crm/activities (notities).
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Prospect" active="outreach">
+  <a href="/admin/outreach" class="p-link text-sm">← Alle prospects</a>
+  <h1 id="pr-titel" class="page-title mt-2">Prospect</h1>
+
+  <div id="pr-loading" class="mt-6"><div class="pskel h-48 w-full"></div></div>
+  <div id="pr-notfound" class="mt-6 empty hidden">
+    <p class="empty-title">Prospect niet gevonden</p>
+    <p class="empty-text">Deze prospect bestaat niet (meer) of is verwijderd.</p>
+  </div>
+
+  <div id="pr-content" class="mt-6 hidden pr-grid">
+    <div class="space-y-4">
+      <section class="pcard">
+        <div class="pcard-h">Gegevens</div>
+        <div class="pcard-b space-y-3 text-sm" id="pr-info"></div>
+      </section>
+
+      <section class="pcard">
+        <div class="pcard-h">Beheer</div>
+        <div class="pcard-b space-y-3">
+          <div>
+            <label class="plabel">Status</label>
+            <select id="pr-status" class="pselect">
+              <option value="nieuw">Nieuw</option>
+              <option value="mail1">Mail 1 verstuurd</option>
+              <option value="followup">Follow-up verstuurd</option>
+              <option value="gebeld">Gebeld</option>
+              <option value="geinteresseerd">Geïnteresseerd</option>
+              <option value="proeflead">Proeflead</option>
+              <option value="klant">Klant</option>
+              <option value="afgewezen">Afgewezen</option>
+            </select>
+          </div>
+          <div>
+            <label class="plabel">Volgende actie</label>
+            <input id="pr-actie" class="pinput" placeholder="bv. bellen" />
+          </div>
+          <div>
+            <label class="plabel">Datum volgende actie</label>
+            <input id="pr-actie-datum" type="date" class="pinput" />
+          </div>
+          <div>
+            <label class="plabel">Notities</label>
+            <textarea id="pr-notities" class="ptextarea" rows="3"></textarea>
+          </div>
+          <div class="flex items-center gap-3">
+            <button id="pr-save" class="pbtn pbtn--primary pbtn--sm">Opslaan</button>
+            <span id="pr-save-msg" class="text-sm"></span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="space-y-4">
+      <section class="pcard" id="pr-pinned-card" style="display:none">
+        <div class="pcard-h">Gepinde notities</div>
+        <div class="pcard-b space-y-2" id="pr-pinned"></div>
+      </section>
+
+      <section class="pcard">
+        <div class="pcard-h">Tijdlijn</div>
+        <div class="pcard-b">
+          <div class="flex items-start gap-2">
+            <textarea id="pr-note-input" class="ptextarea" rows="2" placeholder="Notitie toevoegen..."></textarea>
+            <button id="pr-note-add" class="pbtn pbtn--subtle pbtn--sm" style="white-space:nowrap">+ Notitie</button>
+          </div>
+          <div id="pr-timeline" class="mt-4 space-y-3"></div>
+          <div id="pr-timeline-empty" class="empty hidden">
+            <p class="empty-title">Nog geen activiteit</p>
+            <p class="empty-text">Mails, notities en statuswijzigingen verschijnen hier.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="space-y-4">
+      <section class="pcard">
+        <div class="pcard-h">Emma AI</div>
+        <div class="pcard-b">
+          <div class="empty">
+            <p class="empty-title">Binnenkort beschikbaar</p>
+            <p class="empty-text">AI-samenvatting en volgende-beste-actie komen in F2.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <style>
+    .pr-grid { display: grid; gap: 16px; grid-template-columns: 1fr; }
+    @media (min-width: 1024px) { .pr-grid { grid-template-columns: 280px 1fr 260px; align-items: start; } }
+    .pr-item { border: 1px solid var(--p-border); border-radius: 6px; padding: 8px 10px; font-size: 12px; }
+    .pr-tl-row { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--p-border); }
+    .pr-tl-row:last-child { border-bottom: none; }
+    .pr-tl-icon { flex: 0 0 24px; text-align: center; font-size: 15px; line-height: 1.4; }
+    .pr-tl-title { font-weight: 500; color: var(--p-ink); font-size: 13px; }
+    .pr-tl-body { color: var(--p-ink-2); font-size: 13px; margin-top: 3px; white-space: pre-wrap; }
+    .pr-tl-meta { color: var(--p-ink-4); font-size: 11px; margin-top: 4px; }
+  </style>
+
+  <script is:inline>
+    (function () {
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      function orDash(v) { return (v === null || v === undefined || v === '') ? '—' : esc(v); }
+      function dateOnly(v) { if (!v) return '—'; var s = String(v).slice(0, 10); return s || '—'; }
+      function flash(el, text, ok) {
+        el.textContent = text || '';
+        el.style.color = ok ? '#0e6245' : '#b3093c';
+        if (text) setTimeout(function () { el.textContent = ''; }, 4000);
+      }
+
+      var SOORT_ICON = {
+        email_out: '✉️', email_in: '📥', call: '☎️', note: '📝',
+        status_change: '🔄', task: '✅', ai: '🤖',
+        support_ticket: '🎫', service_request: '🛠️',
+      };
+      var SOORT_LABEL = {
+        email_out: 'Mail', email_in: 'Inkomend', call: 'Belletje', note: 'Notitie',
+        status_change: 'Statuswijziging', task: 'Taak', ai: 'AI',
+        support_ticket: 'Support-ticket', service_request: 'Wijzigingsverzoek',
+      };
+
+      var id = new URLSearchParams(location.search).get('id');
+      if (!id) { location.href = '/admin/outreach'; return; }
+
+      var prospect = null;
+
+      function renderInfo(p) {
+        document.getElementById('pr-titel').textContent = p.bedrijfsnaam || 'Prospect';
+        document.getElementById('pr-info').innerHTML =
+          '<div><span class="p-muted">Sector:</span> ' + orDash(p.sector) + '</div>' +
+          '<div><span class="p-muted">Stad:</span> ' + orDash(p.stad) + '</div>' +
+          '<div><span class="p-muted">Website:</span> ' + orDash(p.website) + '</div>' +
+          '<div><span class="p-muted">E-mail:</span> ' + orDash(p.email) + '</div>' +
+          '<div><span class="p-muted">Telefoon:</span> ' + orDash(p.telefoon) + '</div>' +
+          '<div><span class="p-muted">Rating:</span> ' + orDash(p.rating) + (p.reviews != null ? ' (' + esc(p.reviews) + ' reviews)' : '') + '</div>' +
+          '<div><span class="p-muted">Laatste contact:</span> ' + dateOnly(p.laatste_contact) + '</div>' +
+          '<div><a class="p-link" href="/admin/outreach">Open in outreach-overzicht →</a></div>';
+        document.getElementById('pr-status').value = p.status || 'nieuw';
+        document.getElementById('pr-actie').value = p.volgende_actie || '';
+        document.getElementById('pr-actie-datum').value = p.volgende_actie_datum ? String(p.volgende_actie_datum).slice(0, 10) : '';
+        document.getElementById('pr-notities').value = p.notities || '';
+      }
+
+      function loadProspect() {
+        return fetch('/api/admin/outreach/prospects', { credentials: 'same-origin' })
+          .then(function (r) { if (r.status === 401 || r.status === 403) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (d) {
+            var list = (d && d.prospects) || [];
+            prospect = list.filter(function (p) { return String(p.id) === String(id); })[0] || null;
+            document.getElementById('pr-loading').classList.add('hidden');
+            if (!prospect) { document.getElementById('pr-notfound').classList.remove('hidden'); return; }
+            document.getElementById('pr-content').classList.remove('hidden');
+            renderInfo(prospect);
+          });
+      }
+
+      function timelineItemHtml(item) {
+        var icon = SOORT_ICON[item.soort] || '•';
+        var label = SOORT_LABEL[item.soort] || item.soort;
+        var when = item.created_at ? String(item.created_at).slice(0, 16).replace('T', ' ') : '';
+        var extra = '';
+        if (item.meta && item.meta.status) extra = '<span class="pbadge pbadge--gray" style="margin-left:6px">' + esc(item.meta.status) + '</span>';
+        return '<div class="pr-tl-row">' +
+          '<div class="pr-tl-icon">' + icon + '</div>' +
+          '<div class="flex-1">' +
+          '<div class="pr-tl-title">' + esc(label) + (item.titel ? ' — ' + esc(item.titel) : '') + extra + (item.pinned ? ' 📌' : '') + '</div>' +
+          (item.body ? '<div class="pr-tl-body">' + esc(item.body) + '</div>' : '') +
+          '<div class="pr-tl-meta">' + esc(when) + '</div>' +
+          '</div></div>';
+      }
+
+      function loadTimeline() {
+        return fetch('/api/admin/crm/timeline?entity_type=prospect&entity_id=' + encodeURIComponent(id), { credentials: 'same-origin' })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            var timeline = (d && d.timeline) || [];
+            document.getElementById('pr-timeline-empty').classList.toggle('hidden', timeline.length > 0);
+            document.getElementById('pr-timeline').innerHTML = timeline.map(timelineItemHtml).join('');
+
+            var pinned = timeline.filter(function (t) { return t.pinned; });
+            var pinnedCard = document.getElementById('pr-pinned-card');
+            if (pinned.length) {
+              pinnedCard.style.display = '';
+              document.getElementById('pr-pinned').innerHTML = pinned.map(function (t) {
+                return '<div class="pr-item">' + esc(t.body || t.titel || '') + '</div>';
+              }).join('');
+            } else {
+              pinnedCard.style.display = 'none';
+            }
+          })
+          .catch(function () {});
+      }
+
+      document.getElementById('pr-save').addEventListener('click', function () {
+        var btn = this; btn.disabled = true;
+        var msgEl = document.getElementById('pr-save-msg');
+        fetch('/api/admin/outreach/prospect', {
+          method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            id: id,
+            status: document.getElementById('pr-status').value,
+            notities: document.getElementById('pr-notities').value,
+            volgende_actie: document.getElementById('pr-actie').value,
+            volgende_actie_datum: document.getElementById('pr-actie-datum').value || null,
+          }),
+        })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (res) {
+            if (res.ok) { flash(msgEl, 'Opgeslagen.', true); loadProspect(); loadTimeline(); }
+            else flash(msgEl, (res.j && res.j.error) || 'Er ging iets mis.', false);
+          })
+          .finally(function () { btn.disabled = false; });
+      });
+
+      document.getElementById('pr-note-add').addEventListener('click', function () {
+        var input = document.getElementById('pr-note-input');
+        var text = input.value.trim();
+        if (!text) return;
+        var btn = this; btn.disabled = true;
+        fetch('/api/admin/crm/activities', {
+          method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ entity_type: 'prospect', entity_id: id, soort: 'note', body: text }),
+        })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (res) {
+            if (res.ok) { input.value = ''; loadTimeline(); }
+          })
+          .finally(function () { btn.disabled = false; });
+      });
+
+      loadProspect().then(function () { if (prospect) loadTimeline(); }).catch(function () {});
+    })();
+  </script>
+</AdminLayout>

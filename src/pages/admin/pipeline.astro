@@ -1,0 +1,211 @@
+---
+// Admin panel — Pipeline (F1 CRM core). Kanban voor de outreach-funnel
+// (prospects, status = kolom) en de services-funnel (crm_deals, stage =
+// kolom). Data: /api/admin/crm/pipeline, /api/admin/outreach/prospect,
+// /api/admin/crm/deals.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Pipeline" active="pipeline">
+  <div class="flex flex-wrap items-center justify-between gap-4">
+    <div>
+      <h1 class="page-title">Pipeline</h1>
+      <p class="page-sub">Sleep kaarten tussen kolommen om status/stage te wijzigen.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <div class="pl-tabs">
+        <button id="pl-tab-outreach" class="pl-tab pl-tab--active" data-pipeline="outreach">Outreach</button>
+        <button id="pl-tab-services" class="pl-tab" data-pipeline="services">Services</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-5 grid gap-4 sm:grid-cols-2">
+    <div class="kpi">
+      <div class="kpi-label">Gewogen forecast</div>
+      <div class="kpi-value" id="pl-forecast"><span class="pskel inline-block h-7 w-16"></span></div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-label">Rottende kaarten</div>
+      <div class="kpi-value" id="pl-rotting"><span class="pskel inline-block h-7 w-10"></span></div>
+    </div>
+  </div>
+
+  <div id="pl-board" class="pl-board mt-6"></div>
+  <div id="pl-skel" class="mt-6 grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
+    <div class="pskel h-64 w-full"></div>
+    <div class="pskel h-64 w-full"></div>
+    <div class="pskel h-64 w-full"></div>
+  </div>
+
+  <div id="pl-toast-host" class="pl-toast-host"></div>
+
+  <style>
+    .pl-tabs { display: inline-flex; border: 1px solid var(--p-border); border-radius: 8px; padding: 3px; background: var(--p-surface); }
+    .pl-tab { border: none; background: transparent; padding: 7px 14px; border-radius: 6px; font-size: 13px; font-weight: 500; color: var(--p-ink-3); cursor: pointer; }
+    .pl-tab--active { background: var(--p-accent-fill); color: var(--p-accent); }
+
+    .pl-board { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; }
+    .pl-col { flex: 0 0 260px; background: var(--p-subtle); border: 1px solid var(--p-border); border-radius: 8px; display: flex; flex-direction: column; max-height: 74vh; }
+    .pl-col-h { padding: 12px 14px; border-bottom: 1px solid var(--p-border); font-size: 13px; font-weight: 600; color: var(--p-ink); display: flex; align-items: center; justify-content: space-between; }
+    .pl-col-body { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; min-height: 60px; }
+    .pl-col-body.pl-dragover { background: var(--p-accent-fill); }
+
+    .pl-card { background: var(--p-surface); border: 1px solid var(--p-border); border-left: 3px solid var(--p-border); border-radius: 6px; padding: 10px 11px; font-size: 13px; cursor: grab; transition: box-shadow 0.12s; }
+    .pl-card:hover { box-shadow: 0 2px 6px rgba(26, 31, 54, 0.08); }
+    .pl-card.pl-dragging { opacity: 0.4; }
+    .pl-card.pl-rot { border-left-color: #df1b41; }
+    .pl-card-title { font-weight: 500; color: var(--p-ink); }
+    .pl-card-sub { color: var(--p-ink-3); font-size: 12px; margin-top: 3px; }
+    .pl-card-meta { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; font-size: 11px; color: var(--p-ink-4); }
+
+    .pl-toast-host { position: fixed; right: 16px; bottom: 16px; z-index: 60; display: flex; flex-direction: column; gap: 8px; }
+    .pl-toast { background: var(--p-ink); color: #fff; border-radius: 6px; padding: 10px 14px; font-size: 13px; box-shadow: 0 8px 20px rgba(26, 31, 54, 0.25); max-width: 320px; }
+    .pl-toast--err { background: #b3093c; }
+  </style>
+
+  <script is:inline>
+    (function () {
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      function euro(cent) { return (Number(cent || 0) / 100).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' }); }
+
+      var STAGE_LABELS = {
+        nieuw: 'Nieuw', mail1: 'Mail 1', followup: 'Follow-up', geinteresseerd: 'Geïnteresseerd', afgewezen: 'Afgewezen',
+        lead: 'Lead', offerte: 'Offerte', onderhandeling: 'Onderhandeling', gewonnen: 'Gewonnen', verloren: 'Verloren',
+      };
+
+      var params = new URLSearchParams(location.search);
+      var STATE = { pipeline: params.get('pipeline') === 'services' ? 'services' : 'outreach', columns: [] };
+
+      function toast(text, isErr) {
+        var host = document.getElementById('pl-toast-host');
+        var el = document.createElement('div');
+        el.className = 'pl-toast' + (isErr ? ' pl-toast--err' : '');
+        el.textContent = text;
+        host.appendChild(el);
+        setTimeout(function () { el.remove(); }, 4000);
+      }
+
+      function setTab(pipeline) {
+        STATE.pipeline = pipeline;
+        document.getElementById('pl-tab-outreach').classList.toggle('pl-tab--active', pipeline === 'outreach');
+        document.getElementById('pl-tab-services').classList.toggle('pl-tab--active', pipeline === 'services');
+        load();
+      }
+      document.getElementById('pl-tab-outreach').addEventListener('click', function () { setTab('outreach'); });
+      document.getElementById('pl-tab-services').addEventListener('click', function () { setTab('services'); });
+
+      function cardHtml(type, c) {
+        var rotClass = c.rot ? ' pl-rot' : '';
+        var title = type === 'deal' ? c.naam : c.naam;
+        var sub = type === 'deal'
+          ? euro(c.waarde_cent) + ' · ' + (c.kans_pct || 0) + '%'
+          : [(c.stad || ''), (c.email_aanwezig ? '' : 'geen e-mail')].filter(Boolean).join(' · ');
+        var actie = type === 'deal'
+          ? (c.verwachte_sluiting ? 'Verwacht: ' + esc(String(c.verwachte_sluiting).slice(0, 10)) : '')
+          : (c.volgende_actie ? esc(c.volgende_actie) + (c.volgende_actie_datum ? ' · ' + esc(String(c.volgende_actie_datum).slice(0, 10)) : '') : '');
+        return '<div class="pl-card' + rotClass + '" draggable="true" data-id="' + esc(c.id) + '" data-type="' + type + '">' +
+          '<div class="pl-card-title">' + esc(title) + (c.rot ? ' 🔴' : '') + '</div>' +
+          (sub ? '<div class="pl-card-sub">' + esc(sub) + '</div>' : '') +
+          '<div class="pl-card-meta"><span>' + (actie || '&nbsp;') + '</span>' +
+          '<span>' + (c.dagen_in_stage != null ? c.dagen_in_stage + 'd' : '') + '</span></div>' +
+          '</div>';
+      }
+
+      function render() {
+        var type = STATE.pipeline === 'services' ? 'deal' : 'prospect';
+        var board = document.getElementById('pl-board');
+        board.innerHTML = STATE.columns.map(function (col) {
+          return '<div class="pl-col" data-stage="' + esc(col.stage) + '">' +
+            '<div class="pl-col-h"><span>' + esc(STAGE_LABELS[col.stage] || col.stage) + '</span>' +
+            '<span class="pbadge pbadge--gray">' + col.cards.length + '</span></div>' +
+            '<div class="pl-col-body" data-stage="' + esc(col.stage) + '">' +
+            col.cards.map(function (c) { return cardHtml(type, c); }).join('') +
+            '</div></div>';
+        }).join('');
+        wireDragDrop();
+        if (type === 'prospect') {
+          board.querySelectorAll('.pl-card').forEach(function (el) {
+            el.addEventListener('dblclick', function () {
+              location.href = '/admin/prospect?id=' + encodeURIComponent(el.getAttribute('data-id'));
+            });
+          });
+        }
+      }
+
+      var dragged = null;
+      function wireDragDrop() {
+        document.querySelectorAll('.pl-card').forEach(function (card) {
+          card.addEventListener('dragstart', function () {
+            dragged = { id: card.getAttribute('data-id'), type: card.getAttribute('data-type'), fromStage: card.closest('.pl-col-body').getAttribute('data-stage'), el: card };
+            card.classList.add('pl-dragging');
+          });
+          card.addEventListener('dragend', function () { card.classList.remove('pl-dragging'); });
+        });
+        document.querySelectorAll('.pl-col-body').forEach(function (body) {
+          body.addEventListener('dragover', function (e) { e.preventDefault(); body.classList.add('pl-dragover'); });
+          body.addEventListener('dragleave', function () { body.classList.remove('pl-dragover'); });
+          body.addEventListener('drop', function (e) {
+            e.preventDefault();
+            body.classList.remove('pl-dragover');
+            if (!dragged) return;
+            var toStage = body.getAttribute('data-stage');
+            if (toStage === dragged.fromStage) return;
+            var fromEl = dragged.el;
+            var fromBody = fromEl.parentElement;
+            body.appendChild(fromEl); // optimistic move
+            moveCard(dragged, toStage, fromBody);
+          });
+        });
+      }
+
+      function moveCard(d, toStage, fromBody) {
+        var req = d.type === 'deal'
+          ? fetch('/api/admin/crm/deals', {
+              method: 'PATCH', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: d.id, stage: toStage }),
+            })
+          : fetch('/api/admin/outreach/prospect', {
+              method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: d.id, status: toStage }),
+            });
+        req.then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (res) {
+            if (res.ok) { load(); }
+            else {
+              fromBody.appendChild(d.el);
+              toast((res.j && res.j.error) || 'Verplaatsen mislukt.', true);
+            }
+          })
+          .catch(function () {
+            fromBody.appendChild(d.el);
+            toast('Verplaatsen mislukt (netwerkfout).', true);
+          });
+      }
+
+      function load() {
+        document.getElementById('pl-skel').classList.remove('hidden');
+        document.getElementById('pl-board').innerHTML = '';
+        fetch('/api/admin/crm/pipeline?pipeline=' + encodeURIComponent(STATE.pipeline), { credentials: 'same-origin' })
+          .then(function (r) { if (r.status === 401 || r.status === 403) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (d) {
+            document.getElementById('pl-skel').classList.add('hidden');
+            STATE.columns = (d && d.columns) || [];
+            var totals = (d && d.totals) || {};
+            document.getElementById('pl-forecast').textContent = STATE.pipeline === 'services' ? euro(totals.weighted_forecast_cent) : '—';
+            var rottingEl = document.getElementById('pl-rotting');
+            rottingEl.textContent = totals.rotting_count || 0;
+            rottingEl.style.color = (totals.rotting_count || 0) > 0 ? '#b3093c' : '';
+            render();
+          })
+          .catch(function () {});
+      }
+
+      load();
+    })();
+  </script>
+</AdminLayout>

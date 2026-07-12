@@ -260,8 +260,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             '<td><span class="pbadge ' + statusBadge + '">' + esc(p.status || '—') + '</span></td>' +
             '<td>' + mails + '</td>' +
             '<td>' + actieCell + '</td>' +
-            '<td><button class="pbtn pbtn--subtle pbtn--sm" data-detail-open="' + esc(p.id) + '">Detail</button></td>' +
-            '</tr>';
+            '<td style="white-space:nowrap">' +
+            '<button class="pbtn pbtn--subtle pbtn--sm" data-detail-open="' + esc(p.id) + '">Detail</button> ' +
+            '<a class="pbtn pbtn--ghost pbtn--sm" href="/admin/prospect?id=' + encodeURIComponent(p.id) + '">CRM</a>' +
+            '</td></tr>';
         }).join('');
         document.querySelectorAll('[data-detail-open]').forEach(function (btn) {
           btn.addEventListener('click', function () { openDetail(btn.getAttribute('data-detail-open'), true); });

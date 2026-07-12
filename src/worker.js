@@ -33,6 +33,7 @@ import { handleMollieWebhook, reconcilePayments, billMonthlySubscriptions } from
 import { rateLimit } from './lib/rate-limit.js';
 import { escapeHtml } from './lib/escape.js';
 import { countVandaagProspects, prospectsNeedingFollowupDraft, generateFollowupDraft, outreachImport } from './lib/outreach.js';
+import { isWerkdag } from './lib/crm.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -809,10 +810,16 @@ async function notifyOutreachFollowups(env) {
     const now = new Date();
     if (now.getUTCHours() !== 6 || now.getUTCMinutes() >= 15) return;
 
+    // Blackout: geen weekend/NL-feestdag-drafting of -notificatie. Er is 's
+    // ochtends niemand om follow-ups te versturen of te evalueren op een
+    // niet-werkdag, dus de hele ochtend-batch (import/draft/Telegram) slaat
+    // dan over.
+    const dateKey = now.toISOString().slice(0, 10);
+    if (!isWerkdag(dateKey)) return;
+
     const n = await countVandaagProspects(env);
     if (n <= 0) return;
 
-    const dateKey = now.toISOString().slice(0, 10);
     if (env.GOOGLE_TOKENS) {
       const dedupKey = `outreach:notified:${dateKey}`;
       if (await env.GOOGLE_TOKENS.get(dedupKey)) return;

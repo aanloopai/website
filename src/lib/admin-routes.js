@@ -10,6 +10,9 @@ import {
   outreachUpdateProspect, outreachReplySuggestion,
   outreachImproveMail, outreachPipeline, outreachSendMail,
 } from './outreach.js';
+import {
+  crmActivities, crmDeals, crmTimeline, crmPipelineData, crmSearch,
+} from './crm.js';
 
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
 const AANLOOP_EMAIL = 'hello@aanloopai.nl';
@@ -89,6 +92,11 @@ export async function handleAdminApi(request, env) {
     if (path === '/api/admin/outreach/prospect' && method === 'POST') return await outreachUpdateProspect(request, env);
     if (path === '/api/admin/outreach/reply' && method === 'POST') return await outreachReplySuggestion(request, env);
     if (path === '/api/admin/outreach/send' && method === 'POST') return await outreachSendMail(request, env);
+    if (path === '/api/admin/crm/activities') return await crmActivities(request, env);
+    if (path === '/api/admin/crm/deals') return await crmDeals(request, env);
+    if (path === '/api/admin/crm/timeline') return await crmTimeline(request, env);
+    if (path === '/api/admin/crm/pipeline') return await crmPipelineData(request, env);
+    if (path === '/api/admin/search') return await crmSearch(request, env);
     return errorResponse('Niet gevonden', 404);
   } catch (err) {
     console.error('[admin] API error:', err.message || err);

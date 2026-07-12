@@ -19,6 +19,17 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     <div class="kpi"><div class="kpi-label">Open tickets</div><div class="kpi-value" id="k-tickets"><span class="pskel inline-block h-7 w-10"></span></div></div>
   </div>
 
+  <div class="mt-4 grid gap-4 sm:grid-cols-2">
+    <a href="/admin/pipeline?pipeline=services" class="kpi" style="display:block">
+      <div class="kpi-label">Gewogen pipeline (services)</div>
+      <div class="kpi-value" id="k-forecast"><span class="pskel inline-block h-7 w-16"></span></div>
+    </a>
+    <a href="/admin/pipeline" class="kpi" style="display:block">
+      <div class="kpi-label">Rottende kaarten</div>
+      <div class="kpi-value" id="k-rotting"><span class="pskel inline-block h-7 w-10"></span></div>
+    </a>
+  </div>
+
   <div class="mt-6 grid gap-6 lg:grid-cols-2">
     <section class="pcard">
       <div class="pcard-h">Vereist aandacht</div>
@@ -45,6 +56,23 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </section>
   </div>
 
+  <section class="pcard mt-6">
+    <div class="pcard-h">
+      <span>Outreach-funnel</span>
+      <a href="/admin/outreach" class="p-link text-sm">Naar outreach →</a>
+    </div>
+    <div class="pcard-b">
+      <div id="d-funnel" class="d-funnel"><div class="pskel h-16 w-full"></div></div>
+    </div>
+  </section>
+
+  <style>
+    .d-funnel { display: flex; flex-wrap: wrap; gap: 10px; }
+    .d-funnel-step { flex: 1 1 120px; border: 1px solid var(--p-border); border-radius: 8px; padding: 12px 14px; text-align: center; }
+    .d-funnel-step .n { font-size: 22px; font-weight: 600; color: var(--p-ink); font-variant-numeric: tabular-nums; }
+    .d-funnel-step .l { font-size: 12px; color: var(--p-ink-3); margin-top: 2px; }
+  </style>
+
   <script is:inline>
     (function () {
       var KIND = { klant: 'pbadge--blue', aanvraag: 'pbadge--amber', wijziging: 'pbadge--gray', ticket: 'pbadge--gray' };
@@ -53,6 +81,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
         });
       }
+      function euro(cent) { return (Number(cent || 0) / 100).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' }); }
+
       fetch('/api/admin/overview', { credentials: 'same-origin' })
         .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
         .then(function (d) {
@@ -87,6 +117,39 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           }
         })
         .catch(function () {});
+
+      var FUNNEL_STAGES = [
+        { stage: 'nieuw', label: 'Nieuw' },
+        { stage: 'mail1', label: 'Mail 1' },
+        { stage: 'followup', label: 'Follow-up' },
+        { stage: 'geinteresseerd', label: 'Geïnteresseerd' },
+        { stage: 'afgewezen', label: 'Afgewezen' },
+      ];
+
+      var rottingTotal = 0;
+
+      Promise.all([
+        fetch('/api/admin/crm/pipeline?pipeline=outreach', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).catch(function () { return null; }),
+        fetch('/api/admin/crm/pipeline?pipeline=services', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).catch(function () { return null; }),
+      ]).then(function (res) {
+        var outreachData = res[0];
+        var servicesData = res[1];
+
+        var countByStage = {};
+        ((outreachData && outreachData.columns) || []).forEach(function (c) { countByStage[c.stage] = c.cards.length; });
+        document.getElementById('d-funnel').innerHTML = FUNNEL_STAGES.map(function (s) {
+          return '<div class="d-funnel-step"><div class="n">' + (countByStage[s.stage] || 0) + '</div><div class="l">' + esc(s.label) + '</div></div>';
+        }).join('');
+
+        rottingTotal = ((outreachData && outreachData.totals && outreachData.totals.rotting_count) || 0)
+          + ((servicesData && servicesData.totals && servicesData.totals.rotting_count) || 0);
+        var rottingEl = document.getElementById('k-rotting');
+        rottingEl.textContent = rottingTotal;
+        rottingEl.style.color = rottingTotal > 0 ? '#b3093c' : '';
+
+        var forecastCent = (servicesData && servicesData.totals && servicesData.totals.weighted_forecast_cent) || 0;
+        document.getElementById('k-forecast').textContent = euro(forecastCent);
+      });
     })();
   </script>
 </AdminLayout>
