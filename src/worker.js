@@ -32,7 +32,7 @@ import { handleAdminApi } from './lib/admin-routes.js';
 import { handleMollieWebhook, reconcilePayments, billMonthlySubscriptions } from './lib/mollie.js';
 import { rateLimit } from './lib/rate-limit.js';
 import { escapeHtml } from './lib/escape.js';
-import { countVandaagProspects } from './lib/outreach.js';
+import { countVandaagProspects, prospectsNeedingFollowupDraft, generateFollowupDraft } from './lib/outreach.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -819,12 +819,39 @@ async function notifyOutreachFollowups(env) {
       await env.GOOGLE_TOKENS.put(dedupKey, '1', { expirationTtl: 172800 });
     }
 
+    // Concept follow-up-mails vast klaarzetten zodat de mens 's ochtends alleen
+    // hoeft te evalueren/versturen i.p.v. vanaf nul te schrijven. Best-effort
+    // per prospect — 1 mislukte Gemini-call mag de rest van de batch niet
+    // blokkeren. Zonder GEMINI_API_KEY slaan we dit deel over en blijft het
+    // Telegram-bericht ongewijzigd.
+    let conceptCount = null;
+    if (env.GEMINI_API_KEY) {
+      conceptCount = 0;
+      try {
+        const prospects = await prospectsNeedingFollowupDraft(env);
+        for (const prospect of prospects) {
+          try {
+            await generateFollowupDraft(env, prospect);
+            conceptCount++;
+          } catch (err) {
+            console.error('[scheduled] followup-taslak mislukt voor prospect', prospect.id, ':', err.message || err);
+          }
+        }
+      } catch (err) {
+        console.error('[scheduled] followup-taslak query mislukt:', err.message || err);
+      }
+    }
+
+    const text = conceptCount === null
+      ? `📋 Outreach: ${n} follow-up(s) vandaag — aanloopai.nl/admin/outreach`
+      : `📋 Outreach: ${n} follow-up(s) vandaag, ${conceptCount} concept(en) klaargezet — aanloopai.nl/admin/outreach`;
+
     await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({
         chat_id: env.TELEGRAM_CHAT_ID,
-        text: `📋 Outreach: ${n} follow-up(s) vandaag — aanloopai.nl/admin/outreach`,
+        text,
       }),
     });
   } catch (err) {

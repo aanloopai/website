@@ -94,6 +94,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           <div class="flex gap-2">
             <button id="o-gen-mail1" class="pbtn pbtn--subtle pbtn--sm">✨ Genereer mail 1</button>
             <button id="o-gen-followup" class="pbtn pbtn--subtle pbtn--sm">✨ Genereer follow-up</button>
+            <button id="o-gen-auto" class="pbtn pbtn--subtle pbtn--sm">🤖 Auto: genereer + verbeter</button>
           </div>
         </div>
         <div id="o-mails-list" class="mt-2 space-y-1"></div>
@@ -109,6 +110,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         <div class="mt-3 flex flex-wrap items-center gap-2">
           <button id="o-m-save" class="pbtn pbtn--primary pbtn--sm">💾 Opslaan</button>
           <button id="o-m-eval" class="pbtn pbtn--subtle pbtn--sm">🧠 Evalueer</button>
+          <button id="o-m-improve" class="pbtn pbtn--subtle pbtn--sm" title="Eerst evalueren" disabled>♻️ Verbeter</button>
           <button id="o-m-gmail" class="pbtn pbtn--subtle pbtn--sm">📧 Open in Gmail</button>
           <button id="o-m-verzonden" class="pbtn pbtn--subtle pbtn--sm">✓ Markeer verzonden</button>
           <span id="o-m-msg" class="text-sm"></span>
@@ -179,7 +181,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         return 'pbadge--gray';
       }
 
-      var STATE = { prospects: [], vandaag: [], currentProspectId: null, currentMailId: null };
+      var STATE = { prospects: [], vandaag: [], currentProspectId: null, currentMailId: null, currentMailHasEvaluatie: false };
 
       function findProspect(id) {
         return STATE.prospects.filter(function (p) { return String(p.id) === String(id); })[0];
@@ -322,14 +324,22 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       // ---- Mail-editor ----
 
+      function updateImproveButtonState() {
+        var btn = document.getElementById('o-m-improve');
+        btn.disabled = !STATE.currentMailHasEvaluatie;
+        btn.title = STATE.currentMailHasEvaluatie ? '' : 'Eerst evalueren';
+      }
+
       function clearMailEditor() {
         STATE.currentMailId = null;
+        STATE.currentMailHasEvaluatie = false;
         document.getElementById('o-mail-editor').classList.add('hidden');
         document.getElementById('o-m-onderwerp').value = '';
         document.getElementById('o-m-body').value = '';
         document.getElementById('o-m-msg').textContent = '';
         document.getElementById('o-m-gmail-warn').classList.add('hidden');
         clearEvaluatie();
+        updateImproveButtonState();
       }
 
       function openMail(mailId) {
@@ -350,6 +360,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         if (mail.evaluatie) {
           try { ev = typeof mail.evaluatie === 'string' ? JSON.parse(mail.evaluatie) : mail.evaluatie; } catch (e) { ev = null; }
         }
+        STATE.currentMailHasEvaluatie = !!ev;
+        updateImproveButtonState();
         if (ev) renderEvaluatie(ev); else clearEvaluatie();
         document.getElementById('o-mail-editor').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
@@ -479,6 +491,31 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       document.getElementById('o-gen-mail1').addEventListener('click', function () { generateMail('mail1', 'o-gen-mail1'); });
       document.getElementById('o-gen-followup').addEventListener('click', function () { generateMail('followup', 'o-gen-followup'); });
 
+      document.getElementById('o-gen-auto').addEventListener('click', function () {
+        if (!STATE.currentProspectId) return;
+        var btn = this; btn.disabled = true;
+        var origText = btn.textContent;
+        btn.textContent = '⏳ Bezig... (kan tot 1 minuut duren)';
+        var msg = document.getElementById('o-gen-msg');
+        msg.classList.add('hidden');
+        postJson('/api/admin/outreach/pipeline', { prospect_id: STATE.currentProspectId, soort: 'mail1' })
+          .then(function (res) {
+            var j = res.j || {};
+            if (j.mail) openMailData(j.mail);
+            if (j.evaluatie) renderEvaluatie(j.evaluatie);
+            msg.classList.remove('hidden');
+            if (res.ok && j.ok) {
+              msg.className = 'palert palert--ok mt-2';
+              msg.textContent = (j.rondes || 0) + ' verbeter-ronde(s) uitgevoerd.';
+              reload(true);
+            } else {
+              msg.className = 'palert palert--warn mt-2';
+              msg.textContent = j.error || apiErrorMsg(res.status, j);
+            }
+          })
+          .finally(function () { btn.disabled = false; btn.textContent = origText; });
+      });
+
       document.getElementById('o-m-save').addEventListener('click', function () {
         if (!STATE.currentMailId) return;
         var btn = this; btn.disabled = true;
@@ -500,9 +537,36 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         btn.textContent = '⏳ Bezig...';
         var msgEl = document.getElementById('o-m-msg');
         postJson('/api/admin/outreach/evaluate', { mail_id: STATE.currentMailId }).then(function (res) {
-          if (res.ok && res.j.evaluatie) { renderEvaluatie(res.j.evaluatie); flash(msgEl, '', true); }
-          else flash(msgEl, apiErrorMsg(res.status, res.j), false);
+          if (res.ok && res.j.evaluatie) {
+            renderEvaluatie(res.j.evaluatie);
+            STATE.currentMailHasEvaluatie = true;
+            updateImproveButtonState();
+            flash(msgEl, '', true);
+          } else {
+            flash(msgEl, apiErrorMsg(res.status, res.j), false);
+          }
         }).finally(function () { btn.disabled = false; btn.textContent = origText; });
+      });
+
+      document.getElementById('o-m-improve').addEventListener('click', function () {
+        if (!STATE.currentMailId) return;
+        var msgEl = document.getElementById('o-m-msg');
+        if (!STATE.currentMailHasEvaluatie) {
+          flash(msgEl, 'Eerst evalueren voordat u kunt verbeteren.', false);
+          return;
+        }
+        var btn = this; btn.disabled = true;
+        var origText = btn.textContent;
+        btn.textContent = '⏳ Bezig...';
+        postJson('/api/admin/outreach/improve', { mail_id: STATE.currentMailId }).then(function (res) {
+          if (res.ok && res.j.mail) {
+            openMailData(res.j.mail);
+            flash(msgEl, 'Verbeterde versie geladen — evalueer opnieuw.', true);
+            reload(true);
+          } else {
+            flash(msgEl, apiErrorMsg(res.status, res.j), false);
+          }
+        }).finally(function () { btn.disabled = false; btn.textContent = origText; updateImproveButtonState(); });
       });
 
       document.getElementById('o-m-verzonden').addEventListener('click', function () {
