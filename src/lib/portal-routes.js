@@ -85,6 +85,47 @@ async function rateLimited(env, key, limit, windowSec) {
   return false;
 }
 
+// ── staff password-login helpers ────────────────────────────────────────────
+// STAFF_PASSWORD_HASH format: "<salt-hex>:<derived-key-hex>", derived via
+// PBKDF2-SHA256 / 100000 iterations / 256-bit output (same params used to
+// verify below). Independent of the magic-link crypto in src/lib/auth.js —
+// this is a local, self-contained helper set for the staff-only fallback.
+const pwEncoder = new TextEncoder();
+
+function bytesToHexLocal(buf) {
+  return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+function hexToBytes(hex) {
+  if (typeof hex !== 'string' || !/^[0-9a-f]+$/i.test(hex) || hex.length % 2 !== 0) return null;
+  const bytes = new Uint8Array(hex.length / 2);
+  for (let i = 0; i < bytes.length; i++) bytes[i] = parseInt(hex.substr(i * 2, 2), 16);
+  return bytes;
+}
+
+// Constant-time string compare — no early return, always walks the full
+// length once the length check passes, so timing does not leak which byte
+// of the derived hash first mismatched.
+function constantTimeEqualHex(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
+}
+
+async function verifyStaffPassword(password, hashConfig) {
+  const [saltHex, expectedHex] = (hashConfig || '').split(':');
+  if (!saltHex || !expectedHex) return false;
+  const saltBytes = hexToBytes(saltHex);
+  if (!saltBytes) return false;
+  const keyMaterial = await crypto.subtle.importKey('raw', pwEncoder.encode(password), 'PBKDF2', false, ['deriveBits']);
+  const derivedBits = await crypto.subtle.deriveBits(
+    { name: 'PBKDF2', salt: saltBytes, iterations: 100000, hash: 'SHA-256' },
+    keyMaterial, 256,
+  );
+  return constantTimeEqualHex(bytesToHexLocal(derivedBits), expectedHex.toLowerCase());
+}
+
 // ── auth: magic-link request / verify / logout ──────────────────────────────
 export async function handleAuthRequest(request, env) {
   if (request.method !== 'POST') return errorResponse('Method not allowed', 405);
@@ -125,6 +166,51 @@ export async function handleAuthRequest(request, env) {
   return jsonResponse({
     ok: true,
     message: 'Als dit e-mailadres bij ons bekend is, ontvangt u binnen enkele minuten een inloglink.',
+  });
+}
+
+// STAFF-ONLY password login. Customer accounts (role !== 'staff') can NEVER
+// authenticate here — magic-link (handleAuthRequest above) remains their only
+// path. This is a fallback for the Aanloop team so staff login does not
+// depend on Brevo mail delivery. Every failure path (unknown email, wrong
+// role, wrong password) returns the SAME generic 401 message — no account
+// enumeration, no signal about which check failed.
+export async function handleAuthPasswordLogin(request, env) {
+  if (request.method !== 'POST') return errorResponse('Method not allowed', 405);
+  if (!env.PORTAL_DB || !env.PORTAL_SESSION_SECRET) return errorResponse('Klantportaal is nog niet geconfigureerd', 503);
+  if (!env.STAFF_PASSWORD_HASH) return errorResponse('Wachtwoord-login niet geconfigureerd', 503);
+
+  let body;
+  try { body = await request.json(); } catch { return errorResponse('Ongeldige aanvraag', 400); }
+  const email = (body?.email || '').toString().trim().toLowerCase();
+  const password = (body?.password || '').toString();
+  if (!isValidEmail(email)) return errorResponse('Ongeldig e-mailadres', 400);
+  if (!password) return errorResponse('Ongeldige inloggegevens', 401);
+
+  const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+  if (await rateLimited(env, `pwip:${ip}`, 6, 600) ||
+      await rateLimited(env, `pwemail:${await sha256Hex(email)}`, 5, 600)) {
+    return errorResponse('Te veel verzoeken. Probeer het over 10 minuten opnieuw.', 429);
+  }
+
+  const user = await env.PORTAL_DB
+    .prepare('SELECT id, naam, role FROM users WHERE email = ?')
+    .bind(email).first();
+  // Same generic response whether the account does not exist, belongs to a
+  // customer (non-staff), or the password is wrong — checked below.
+  if (!user || user.role !== 'staff') return errorResponse('Ongeldige inloggegevens', 401);
+
+  const valid = await verifyStaffPassword(password, env.STAFF_PASSWORD_HASH);
+  if (!valid) return errorResponse('Ongeldige inloggegevens', 401);
+
+  // Session-mint identical to handleAuthVerify's success path below
+  // (this file, ~L269-277: last_login update, createSession, Set-Cookie via
+  // sessionCookie() with the same HttpOnly/Secure/SameSite/Max-Age/Path).
+  await env.PORTAL_DB.prepare('UPDATE users SET last_login = ? WHERE id = ?').bind(Date.now(), user.id).run();
+  const session = await createSession(user.id, env.PORTAL_SESSION_SECRET);
+  return new Response(JSON.stringify({ ok: true, redirect: '/admin/' }), {
+    status: 200,
+    headers: { 'content-type': 'application/json', 'Set-Cookie': sessionCookie(session) },
   });
 }
 

@@ -22,6 +22,7 @@ import {
 } from './lib/calendar-routes.js';
 import {
   handleAuthRequest,
+  handleAuthPasswordLogin,
   handleAuthVerify,
   handleAuthLogout,
   handleInviteAccept,
@@ -862,6 +863,13 @@ export default {
     if (url.pathname === '/api/auth/request') {
       if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
       return handleAuthRequest(request, env);
+    }
+    // STAFF-ONLY password login fallback — magic-link (above) remains the
+    // only auth path for customer accounts; handleAuthPasswordLogin enforces
+    // role === 'staff' server-side.
+    if (url.pathname === '/api/auth/login') {
+      if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
+      return handleAuthPasswordLogin(request, env);
     }
     if (url.pathname === '/api/auth/verify') {
       return handleAuthVerify(request, env);

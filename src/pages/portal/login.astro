@@ -38,6 +38,21 @@ import '../../styles/portal.css';
 
           <p id="message" class="palert mt-4 hidden"></p>
 
+          <div class="mt-6 flex items-center gap-3" style="color:var(--p-ink-4)">
+            <hr class="flex-1" style="border:none;border-top:1px solid var(--p-border)" />
+            <span class="text-xs">of</span>
+            <hr class="flex-1" style="border:none;border-top:1px solid var(--p-border)" />
+          </div>
+
+          <details class="mt-4">
+            <summary class="text-xs cursor-pointer" style="color:var(--p-ink-4)">Inloggen met wachtwoord (beheer)</summary>
+            <form id="password-login-form" class="mt-3" novalidate>
+              <label for="password" class="plabel">Wachtwoord</label>
+              <input type="password" id="password" name="password" required autocomplete="current-password" class="pinput" />
+              <button type="submit" id="password-submit-btn" class="pbtn pbtn--subtle mt-3 w-full">Inloggen</button>
+            </form>
+          </details>
+
           <p class="mt-6 text-xs" style="color:var(--p-ink-4)">
             Nog geen klant? <a href="/contact/" class="p-link">Neem contact op</a> —
             het portaal is voor actieve Aanloop AI klanten.
@@ -86,6 +101,41 @@ import '../../styles/portal.css';
             .finally(function () {
               btn.disabled = false;
               btn.textContent = 'Stuur inloglink';
+            });
+        });
+
+        // Staff-only password login. Shares the #email input above (one
+        // e-mail field, two submit buttons) — customer accounts still only
+        // ever use the magic-link form; the server enforces role === 'staff'.
+        var pwForm = document.getElementById('password-login-form');
+        var pwBtn = document.getElementById('password-submit-btn');
+        pwForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var email = document.getElementById('email').value.trim();
+          var password = document.getElementById('password').value;
+          if (!email) { showMsg('Vul eerst uw e-mailadres in.', false); return; }
+          if (!password) return;
+          pwBtn.disabled = true;
+          pwBtn.textContent = 'Bezig...';
+          fetch('/api/auth/login', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, password: password }),
+          })
+            .then(function (r) { return r.json().then(function (d) { return { status: r.status, body: d }; }); })
+            .then(function (res) {
+              if (res.status === 200 && res.body && res.body.ok) {
+                location.href = (res.body && res.body.redirect) || '/admin/';
+              } else {
+                showMsg((res.body && res.body.error) || 'Ongeldige inloggegevens.', false);
+              }
+            })
+            .catch(function () { showMsg('Netwerkfout. Probeer het opnieuw.', false); })
+            .finally(function () {
+              pwBtn.disabled = false;
+              pwBtn.textContent = 'Inloggen';
+              document.getElementById('password').value = '';
             });
         });
       })();
