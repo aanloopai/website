@@ -1,0 +1,184 @@
+---
+// Admin panel — Leadgen. Toont leads + prospects van partner-sites (keukeninbeeld.nl
+// e.a.) per sector. Data: /api/admin/leadgen/leads, /api/admin/leadgen/prospects.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Leadgen" active="leadgen">
+  <h1 class="page-title">Leadgen</h1>
+  <p class="page-sub">Leads en prospects per sector — verkoop aan partners.</p>
+
+  <div id="l-sectors" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"></div>
+
+  <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="kpi"><div class="kpi-label">Leads totaal</div><div class="kpi-value" id="k-leads-totaal"><span class="pskel inline-block h-7 w-10"></span></div></div>
+    <div class="kpi"><div class="kpi-label">Leads nieuw</div><div class="kpi-value" id="k-leads-nieuw"><span class="pskel inline-block h-7 w-10"></span></div></div>
+    <div class="kpi"><div class="kpi-label">Prospects geïnteresseerd+</div><div class="kpi-value" id="k-prospects-geint"><span class="pskel inline-block h-7 w-10"></span></div></div>
+    <div class="kpi"><div class="kpi-label">Klanten</div><div class="kpi-value" id="k-klanten"><span class="pskel inline-block h-7 w-10"></span></div></div>
+  </div>
+
+  <section class="pcard mt-6">
+    <div class="pcard-h">Leads — keuken</div>
+    <div id="l-leads-tablewrap" class="hidden" style="overflow-x:auto">
+      <table class="ptable">
+        <thead><tr>
+          <th>Datum</th><th>Naam</th><th>Telefoon</th><th>E-mail</th><th>Postcode</th>
+          <th>Route</th><th>Stijl</th><th>Budget</th><th>Status</th>
+        </tr></thead>
+        <tbody id="l-leads-rows"></tbody>
+      </table>
+    </div>
+    <div class="pcard-b" id="l-leads-skel">
+      <div class="pskel h-10 w-full"></div>
+      <div class="pskel mt-2 h-10 w-full"></div>
+      <div class="pskel mt-2 h-10 w-full"></div>
+    </div>
+    <div id="l-leads-empty" class="empty hidden">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      <p class="empty-title">Nog geen leads</p>
+      <p class="empty-text">Nieuwe leads van keukeninbeeld.nl verschijnen hier.</p>
+    </div>
+  </section>
+
+  <section class="pcard mt-6">
+    <div class="pcard-h">Prospects — keukenzaken</div>
+    <div id="l-prospects-tablewrap" class="hidden" style="overflow-x:auto">
+      <table class="ptable">
+        <thead><tr>
+          <th>Bedrijf</th><th>Stad</th><th>Status</th><th>Golf</th><th>Volgende actie</th><th>Laatste contact</th>
+        </tr></thead>
+        <tbody id="l-prospects-rows"></tbody>
+      </table>
+    </div>
+    <div class="pcard-b" id="l-prospects-skel">
+      <div class="pskel h-10 w-full"></div>
+      <div class="pskel mt-2 h-10 w-full"></div>
+      <div class="pskel mt-2 h-10 w-full"></div>
+    </div>
+    <div id="l-prospects-empty" class="empty hidden">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 100-8 4 4 0 000 8z"/></svg>
+      <p class="empty-title">Nog geen prospects</p>
+      <p class="empty-text">Prospects uit de outreach-campagne verschijnen hier.</p>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+
+      var LEAD_STATUS = { nieuw: 'pbadge--blue', verkocht: 'pbadge--green', ongeldig: 'pbadge--gray' };
+      var PROSPECT_STATUS = {
+        nieuw: 'pbadge--gray', mail1: 'pbadge--amber', followup: 'pbadge--amber',
+        geinteresseerd: 'pbadge--blue', proeflead: 'pbadge--blue', klant: 'pbadge--blue',
+        afgewezen: 'pbadge--gray', 'niet-benaderen': 'pbadge--gray',
+      };
+      var PROSPECT_GEINT_STATUSES = ['geinteresseerd', 'proeflead', 'klant'];
+
+      function dateOnly(v) {
+        if (!v) return '—';
+        var s = String(v).slice(0, 10);
+        return s ? esc(s) : '—';
+      }
+      function orDash(v) { return (v === null || v === undefined || v === '') ? '—' : esc(v); }
+
+      function renderSectors(leads) {
+        var bySector = {};
+        (leads || []).forEach(function (l) {
+          var sector = l.sector || 'onbekend';
+          if (!bySector[sector]) bySector[sector] = { count: 0, site: l.site };
+          bySector[sector].count += 1;
+        });
+        var wrap = document.getElementById('l-sectors');
+        var keys = Object.keys(bySector);
+        if (!keys.length) {
+          wrap.innerHTML = '<div class="kpi"><div class="kpi-label">Sectoren</div><div class="kpi-value">0</div><div class="kpi-hint">Nog geen leads binnen.</div></div>';
+          return;
+        }
+        wrap.innerHTML = keys.map(function (sector) {
+          var s = bySector[sector];
+          return '<div class="kpi">' +
+            '<div class="kpi-label">' + esc(sector) + '</div>' +
+            '<div class="kpi-value">' + s.count + '</div>' +
+            (s.site ? '<div class="kpi-hint">' + esc(s.site) + '</div>' : '') +
+            '</div>';
+        }).join('');
+      }
+
+      function renderLeads(leads) {
+        var list = leads || [];
+        document.getElementById('l-leads-skel').classList.add('hidden');
+        document.getElementById('l-leads-tablewrap').classList.toggle('hidden', list.length === 0);
+        document.getElementById('l-leads-empty').classList.toggle('hidden', list.length > 0);
+        document.getElementById('l-leads-rows').innerHTML = list.map(function (l) {
+          var routeBadge = l.pad === 'tegenofferte' ? 'pbadge--amber' : 'pbadge--gray';
+          var statusBadge = LEAD_STATUS[l.status] || 'pbadge--gray';
+          return '<tr>' +
+            '<td>' + dateOnly(l.created_at) + '</td>' +
+            '<td class="primary">' + orDash(l.naam) + '</td>' +
+            '<td>' + orDash(l.telefoon) + '</td>' +
+            '<td>' + orDash(l.email) + '</td>' +
+            '<td>' + orDash(l.postcode) + '</td>' +
+            '<td><span class="pbadge ' + routeBadge + '">' + esc(l.pad || '—') + '</span></td>' +
+            '<td>' + orDash(l.stijl) + '</td>' +
+            '<td>' + orDash(l.budget) + '</td>' +
+            '<td><span class="pbadge ' + statusBadge + '">' + esc(l.status || '—') + '</span></td>' +
+            '</tr>';
+        }).join('');
+      }
+
+      function renderProspects(prospects) {
+        var list = prospects || [];
+        document.getElementById('l-prospects-skel').classList.add('hidden');
+        document.getElementById('l-prospects-tablewrap').classList.toggle('hidden', list.length === 0);
+        document.getElementById('l-prospects-empty').classList.toggle('hidden', list.length > 0);
+        document.getElementById('l-prospects-rows').innerHTML = list.map(function (p) {
+          var statusBadge = PROSPECT_STATUS[p.status] || 'pbadge--gray';
+          return '<tr>' +
+            '<td class="primary">' + orDash(p.bedrijfsnaam) + '</td>' +
+            '<td>' + orDash(p.stad) + '</td>' +
+            '<td><span class="pbadge ' + statusBadge + '">' + esc(p.status || '—') + '</span></td>' +
+            '<td>' + orDash(p.golf) + '</td>' +
+            '<td>' + orDash(p.volgende_actie) + '</td>' +
+            '<td>' + dateOnly(p.laatste_contact) + '</td>' +
+            '</tr>';
+        }).join('');
+      }
+
+      function renderKpis(leads, prospects) {
+        var leadList = leads || [];
+        var prospectList = prospects || [];
+        document.getElementById('k-leads-totaal').textContent = leadList.length;
+        document.getElementById('k-leads-nieuw').textContent = leadList.filter(function (l) { return l.status === 'nieuw'; }).length;
+        document.getElementById('k-prospects-geint').textContent = prospectList.filter(function (p) {
+          return PROSPECT_GEINT_STATUSES.indexOf(p.status) > -1;
+        }).length;
+        document.getElementById('k-klanten').textContent = prospectList.filter(function (p) { return p.status === 'klant'; }).length;
+      }
+
+      Promise.all([
+        fetch('/api/admin/leadgen/leads', { credentials: 'same-origin' }),
+        fetch('/api/admin/leadgen/prospects', { credentials: 'same-origin' }),
+      ])
+        .then(function (responses) {
+          if (responses[0].status !== 200 || responses[1].status !== 200) {
+            location.href = '/portal/login';
+            throw new Error('no-access');
+          }
+          return Promise.all(responses.map(function (r) { return r.json(); }));
+        })
+        .then(function (results) {
+          var leads = (results[0] && results[0].leads) || [];
+          var prospects = (results[1] && results[1].prospects) || [];
+          renderSectors(leads);
+          renderKpis(leads, prospects);
+          renderLeads(leads);
+          renderProspects(prospects);
+        })
+        .catch(function () {});
+    })();
+  </script>
+</AdminLayout>

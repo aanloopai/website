@@ -69,6 +69,8 @@ export async function handleAdminApi(request, env) {
     if (path === '/api/admin/order') {
       return method === 'PATCH' ? await updateOrder(request, env) : await orderDetail(env, url);
     }
+    if (path === '/api/admin/leadgen/leads') return await leadgenLeads(env);
+    if (path === '/api/admin/leadgen/prospects') return await leadgenProspects(env);
     return errorResponse('Niet gevonden', 404);
   } catch (err) {
     console.error('[admin] API error:', err.message || err);
@@ -403,4 +405,31 @@ async function createInvoice(request, env) {
   ).bind(randomId('inv'), b.customer_id, b.periode.toString().slice(0, 40), bedrag, status,
     factuurnummer, subtotaal, btw, (b.pdf_url || '').toString().slice(0, 500) || null, today()).run();
   return jsonResponse({ ok: true, message: 'Factuur toegevoegd' });
+}
+
+// ── leadgen (keukeninbeeld.nl partner feed) ─────────────────────────────────
+async function leadgenLeads(env) {
+  if (!env.KEUKENINBEELD_TOKEN) return errorResponse('Leadgen niet geconfigureerd', 503);
+  try {
+    const upstream = await fetch(`https://keukeninbeeld.nl/api/leads?token=${env.KEUKENINBEELD_TOKEN}`);
+    if (!upstream.ok) return errorResponse(`Leadgen-bron onbereikbaar (${upstream.status})`, 502);
+    const data = await upstream.json();
+    return jsonResponse(data);
+  } catch (err) {
+    console.error('[admin] leadgen leads fetch failed:', err.message || err);
+    return errorResponse('Leadgen-bron onbereikbaar', 502);
+  }
+}
+
+async function leadgenProspects(env) {
+  if (!env.KEUKENINBEELD_TOKEN) return errorResponse('Leadgen niet geconfigureerd', 503);
+  try {
+    const upstream = await fetch(`https://keukeninbeeld.nl/api/prospects?token=${env.KEUKENINBEELD_TOKEN}`);
+    if (!upstream.ok) return errorResponse(`Leadgen-bron onbereikbaar (${upstream.status})`, 502);
+    const data = await upstream.json();
+    return jsonResponse(data);
+  } catch (err) {
+    console.error('[admin] leadgen prospects fetch failed:', err.message || err);
+    return errorResponse('Leadgen-bron onbereikbaar', 502);
+  }
 }
