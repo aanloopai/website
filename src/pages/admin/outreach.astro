@@ -1,0 +1,583 @@
+---
+// Admin panel — Outreach. Prospects, mail-generatie/evaluatie en opvolging
+// voor de outreach-campagne. Data: /api/admin/outreach/*.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Outreach" active="outreach">
+  <h1 class="page-title">Outreach</h1>
+  <p class="page-sub">Prospects, mails en opvolging voor de outreach-campagne.</p>
+
+  <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="kpi"><div class="kpi-label">Prospects</div><div class="kpi-value" id="o-k-prospects"><span class="pskel inline-block h-7 w-10"></span></div></div>
+    <div class="kpi"><div class="kpi-label">Concepten</div><div class="kpi-value" id="o-k-concepten"><span class="pskel inline-block h-7 w-10"></span></div></div>
+    <div class="kpi"><div class="kpi-label">Vandaag te doen</div><div class="kpi-value" id="o-k-vandaag"><span class="pskel inline-block h-7 w-10"></span></div></div>
+    <div class="kpi"><div class="kpi-label">Verzonden</div><div class="kpi-value" id="o-k-verzonden"><span class="pskel inline-block h-7 w-10"></span></div></div>
+  </div>
+
+  <section class="pcard mt-6 hidden" id="o-vandaag-card">
+    <div class="pcard-h">Vandaag te doen</div>
+    <div class="pcard-b" id="o-vandaag-rows"></div>
+  </section>
+
+  <section class="pcard mt-6">
+    <div class="pcard-h">
+      <span>Prospects</span>
+      <button id="o-import" class="pbtn pbtn--subtle pbtn--sm">Importeer prospects</button>
+    </div>
+    <div id="o-tablewrap" class="hidden" style="overflow-x:auto">
+      <table class="ptable">
+        <thead><tr>
+          <th>Bedrijf</th><th>Stad</th><th>Status</th><th>Mails</th><th>Volgende actie</th><th></th>
+        </tr></thead>
+        <tbody id="o-rows"></tbody>
+      </table>
+    </div>
+    <div class="pcard-b" id="o-skel">
+      <div class="pskel h-10 w-full"></div>
+      <div class="pskel mt-2 h-10 w-full"></div>
+      <div class="pskel mt-2 h-10 w-full"></div>
+    </div>
+    <div id="o-empty" class="empty hidden">
+      <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-1.13a4 4 0 100-8 4 4 0 000 8z"/></svg>
+      <p class="empty-title">Nog geen prospects</p>
+      <p class="empty-text">Importeer prospects met de knop rechtsboven.</p>
+    </div>
+    <p id="o-import-msg" class="palert mt-3 hidden" style="margin:0 20px 16px"></p>
+  </section>
+
+  <section class="pcard mt-6 hidden" id="o-detail">
+    <div class="pcard-h">
+      <span id="o-d-titel">Prospect</span>
+      <button id="o-d-close" class="pbtn pbtn--ghost pbtn--sm">Sluiten</button>
+    </div>
+    <div class="pcard-b space-y-5">
+      <div class="grid gap-x-6 gap-y-1 sm:grid-cols-2 text-sm" id="o-d-info"></div>
+
+      <div class="grid gap-3 sm:grid-cols-3">
+        <div>
+          <label class="plabel">Status</label>
+          <select id="o-d-status" class="pselect">
+            <option value="nieuw">Nieuw</option>
+            <option value="mail1">Mail 1 verstuurd</option>
+            <option value="followup">Follow-up verstuurd</option>
+            <option value="gebeld">Gebeld</option>
+            <option value="geinteresseerd">Geïnteresseerd</option>
+            <option value="proeflead">Proeflead</option>
+            <option value="klant">Klant</option>
+            <option value="afgewezen">Afgewezen</option>
+          </select>
+        </div>
+        <div>
+          <label class="plabel">Volgende actie</label>
+          <input id="o-d-actie" class="pinput" placeholder="bv. bellen" />
+        </div>
+        <div>
+          <label class="plabel">Datum volgende actie</label>
+          <input id="o-d-actie-datum" type="date" class="pinput" />
+        </div>
+      </div>
+
+      <div>
+        <label class="plabel">Notities</label>
+        <textarea id="o-d-notities" class="ptextarea" rows="3"></textarea>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button id="o-d-save" class="pbtn pbtn--primary pbtn--sm">Opslaan</button>
+        <span id="o-d-msg" class="text-sm"></span>
+      </div>
+
+      <div style="border-top:1px solid var(--p-border);padding-top:16px">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <label class="plabel" style="margin:0">Mails</label>
+          <div class="flex gap-2">
+            <button id="o-gen-mail1" class="pbtn pbtn--subtle pbtn--sm">✨ Genereer mail 1</button>
+            <button id="o-gen-followup" class="pbtn pbtn--subtle pbtn--sm">✨ Genereer follow-up</button>
+          </div>
+        </div>
+        <div id="o-mails-list" class="mt-2 space-y-1"></div>
+        <p id="o-mails-empty" class="text-sm p-muted mt-2 hidden">Nog geen mails voor deze prospect.</p>
+        <p id="o-gen-msg" class="palert mt-2 hidden"></p>
+      </div>
+
+      <div id="o-mail-editor" class="hidden" style="border-top:1px solid var(--p-border);padding-top:16px">
+        <label class="plabel">Onderwerp</label>
+        <input id="o-m-onderwerp" class="pinput" />
+        <label class="plabel mt-3 block">Body</label>
+        <textarea id="o-m-body" class="ptextarea" rows="15" style="font-family:inherit"></textarea>
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+          <button id="o-m-save" class="pbtn pbtn--primary pbtn--sm">💾 Opslaan</button>
+          <button id="o-m-eval" class="pbtn pbtn--subtle pbtn--sm">🧠 Evalueer</button>
+          <button id="o-m-gmail" class="pbtn pbtn--subtle pbtn--sm">📧 Open in Gmail</button>
+          <button id="o-m-verzonden" class="pbtn pbtn--subtle pbtn--sm">✓ Markeer verzonden</button>
+          <span id="o-m-msg" class="text-sm"></span>
+        </div>
+        <p id="o-m-gmail-warn" class="palert palert--warn mt-2 hidden"></p>
+
+        <div id="o-eval-panel" class="mt-4 hidden"></div>
+      </div>
+
+      <div style="border-top:1px solid var(--p-border);padding-top:16px">
+        <label class="plabel">Antwoord ontvangen?</label>
+        <textarea id="o-reply-text" class="ptextarea mt-1" rows="4" placeholder="Plak hier het antwoord van de prospect"></textarea>
+        <div class="mt-2 flex items-center gap-3">
+          <button id="o-reply-analyse" class="pbtn pbtn--subtle pbtn--sm">Analyseer antwoord</button>
+          <span id="o-reply-msg" class="text-sm"></span>
+        </div>
+        <div id="o-reply-result" class="mt-3 hidden"></div>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      function orDash(v) { return (v === null || v === undefined || v === '') ? '—' : esc(v); }
+      function dateOnly(v) {
+        if (!v) return '—';
+        var s = String(v).slice(0, 10);
+        return s ? esc(s) : '—';
+      }
+      function todayStr() { return new Date().toISOString().slice(0, 10); }
+      function flash(el, text, ok) {
+        el.textContent = text || '';
+        el.style.color = ok ? '#0e6245' : '#b3093c';
+        if (text) setTimeout(function () { el.textContent = ''; }, 4000);
+      }
+
+      var STATUS_BADGE = {
+        nieuw: 'pbadge--gray', mail1: 'pbadge--amber', followup: 'pbadge--amber', gebeld: 'pbadge--amber',
+        geinteresseerd: 'pbadge--blue', proeflead: 'pbadge--blue', klant: 'pbadge--blue', afgewezen: 'pbadge--gray',
+      };
+      function mailBadgeClass(status) {
+        if (status === 'verzonden') return 'pbadge--blue';
+        if (status === 'beantwoord') return 'pbadge--green';
+        return 'pbadge--gray';
+      }
+      function scoreBadgeClass(score) {
+        var n = Number(score);
+        if (n >= 8) return 'pbadge--green';
+        if (n >= 6) return 'pbadge--amber';
+        return 'pbadge--red';
+      }
+      function riskBadgeClass(risk) {
+        var r = String(risk || '').toLowerCase();
+        if (r === 'laag') return 'pbadge--green';
+        if (r === 'gemiddeld') return 'pbadge--amber';
+        if (r === 'hoog') return 'pbadge--red';
+        return 'pbadge--gray';
+      }
+      function sentimentBadgeClass(s) {
+        var v = String(s || '').toLowerCase();
+        if (v === 'positief') return 'pbadge--green';
+        if (v === 'negatief') return 'pbadge--red';
+        return 'pbadge--gray';
+      }
+
+      var STATE = { prospects: [], vandaag: [], currentProspectId: null, currentMailId: null };
+
+      function findProspect(id) {
+        return STATE.prospects.filter(function (p) { return String(p.id) === String(id); })[0];
+      }
+
+      function apiErrorMsg(status, data) {
+        if (status === 503) return 'AI niet geconfigureerd.';
+        return (data && data.error) || 'Er ging iets mis.';
+      }
+
+      function postJson(url, body) {
+        return fetch(url, {
+          method: 'POST', credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body || {}),
+        }).then(function (r) {
+          return r.json().catch(function () { return {}; }).then(function (j) {
+            return { ok: r.ok, status: r.status, j: j };
+          });
+        });
+      }
+
+      // ---- KPI + tabellen ----
+
+      function renderKpis() {
+        var prospects = STATE.prospects;
+        var concepten = 0, verzonden = 0;
+        prospects.forEach(function (p) {
+          (p.mails || []).forEach(function (m) {
+            if (m.status === 'concept') concepten += 1;
+            if (m.status === 'verzonden') verzonden += 1;
+          });
+        });
+        document.getElementById('o-k-prospects').textContent = prospects.length;
+        document.getElementById('o-k-concepten').textContent = concepten;
+        document.getElementById('o-k-vandaag').textContent = STATE.vandaag.length;
+        document.getElementById('o-k-verzonden').textContent = verzonden;
+      }
+
+      function renderVandaag() {
+        var card = document.getElementById('o-vandaag-card');
+        var rows = STATE.vandaag.map(function (id) { return findProspect(id); }).filter(Boolean);
+        if (!rows.length) { card.classList.add('hidden'); return; }
+        card.classList.remove('hidden');
+        document.getElementById('o-vandaag-rows').innerHTML = rows.map(function (p) {
+          return '<div class="flex items-center justify-between gap-3 py-2" style="border-bottom:1px solid var(--p-border)">' +
+            '<div><span class="primary" style="color:var(--p-ink);font-weight:500">' + esc(p.bedrijfsnaam) + '</span>' +
+            '<span class="ml-2 p-muted">' + orDash(p.volgende_actie) + '</span></div>' +
+            '<button class="pbtn pbtn--subtle pbtn--sm" data-vandaag-open="' + esc(p.id) + '">Openen</button></div>';
+        }).join('');
+        document.querySelectorAll('[data-vandaag-open]').forEach(function (btn) {
+          btn.addEventListener('click', function () { openDetail(btn.getAttribute('data-vandaag-open'), true); });
+        });
+      }
+
+      function renderTable() {
+        var list = STATE.prospects;
+        document.getElementById('o-skel').classList.add('hidden');
+        document.getElementById('o-tablewrap').classList.toggle('hidden', list.length === 0);
+        document.getElementById('o-empty').classList.toggle('hidden', list.length > 0);
+        var today = todayStr();
+        document.getElementById('o-rows').innerHTML = list.map(function (p) {
+          var statusBadge = STATUS_BADGE[p.status] || 'pbadge--gray';
+          var mails = (p.mails || []).map(function (m) {
+            return '<span class="pbadge ' + mailBadgeClass(m.status) + '" style="margin:0 4px 4px 0">' + esc(m.soort) + ' · ' + esc(m.status) + '</span>';
+          }).join('') || '<span class="p-muted">—</span>';
+          var overdue = p.volgende_actie_datum && String(p.volgende_actie_datum).slice(0, 10) <= today;
+          var actieCell = orDash(p.volgende_actie);
+          if (p.volgende_actie_datum) {
+            actieCell += ' <span class="pbadge ' + (overdue ? 'pbadge--amber' : 'pbadge--gray') + '">' + dateOnly(p.volgende_actie_datum) + '</span>';
+          }
+          return '<tr>' +
+            '<td class="primary">' + orDash(p.bedrijfsnaam) + '</td>' +
+            '<td>' + orDash(p.stad) + '</td>' +
+            '<td><span class="pbadge ' + statusBadge + '">' + esc(p.status || '—') + '</span></td>' +
+            '<td>' + mails + '</td>' +
+            '<td>' + actieCell + '</td>' +
+            '<td><button class="pbtn pbtn--subtle pbtn--sm" data-detail-open="' + esc(p.id) + '">Detail</button></td>' +
+            '</tr>';
+        }).join('');
+        document.querySelectorAll('[data-detail-open]').forEach(function (btn) {
+          btn.addEventListener('click', function () { openDetail(btn.getAttribute('data-detail-open'), true); });
+        });
+      }
+
+      // ---- Detail-paneel ----
+
+      function closeDetail() {
+        STATE.currentProspectId = null;
+        STATE.currentMailId = null;
+        document.getElementById('o-detail').classList.add('hidden');
+      }
+
+      function openDetail(id, scroll) {
+        var p = findProspect(id);
+        if (!p) return;
+        STATE.currentProspectId = id;
+        clearMailEditor();
+        document.getElementById('o-reply-text').value = '';
+        document.getElementById('o-reply-result').classList.add('hidden');
+        document.getElementById('o-reply-msg').textContent = '';
+
+        document.getElementById('o-detail').classList.remove('hidden');
+        document.getElementById('o-d-titel').textContent = p.bedrijfsnaam || 'Prospect';
+        document.getElementById('o-d-info').innerHTML =
+          '<div><span class="p-muted">Sector:</span> ' + orDash(p.sector) + '</div>' +
+          '<div><span class="p-muted">Stad:</span> ' + orDash(p.stad) + '</div>' +
+          '<div><span class="p-muted">Website:</span> ' + orDash(p.website) + '</div>' +
+          '<div><span class="p-muted">E-mail:</span> ' + orDash(p.email) + '</div>' +
+          '<div><span class="p-muted">Telefoon:</span> ' + orDash(p.telefoon) + '</div>' +
+          '<div><span class="p-muted">Rating:</span> ' + orDash(p.rating) + (p.reviews != null ? ' (' + esc(p.reviews) + ' reviews)' : '') + '</div>' +
+          '<div><span class="p-muted">Golf:</span> ' + orDash(p.golf) + '</div>' +
+          '<div><span class="p-muted">Laatste contact:</span> ' + dateOnly(p.laatste_contact) + '</div>';
+
+        document.getElementById('o-d-status').value = p.status || 'nieuw';
+        document.getElementById('o-d-actie').value = p.volgende_actie || '';
+        document.getElementById('o-d-actie-datum').value = p.volgende_actie_datum ? String(p.volgende_actie_datum).slice(0, 10) : '';
+        document.getElementById('o-d-notities').value = p.notities || '';
+        document.getElementById('o-d-msg').textContent = '';
+
+        renderMailsList(p);
+
+        if (scroll) {
+          document.getElementById('o-detail').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }
+
+      function renderMailsList(p) {
+        var mails = p.mails || [];
+        document.getElementById('o-mails-empty').classList.toggle('hidden', mails.length > 0);
+        document.getElementById('o-mails-list').innerHTML = mails.map(function (m) {
+          return '<div class="flex items-center justify-between rounded-md border px-3 py-2 text-sm cursor-pointer" style="border-color:var(--p-border)" data-mail-open="' + esc(m.id) + '">' +
+            '<span>' + esc(m.soort) + ' · <span class="pbadge ' + mailBadgeClass(m.status) + '">' + esc(m.status) + '</span></span>' +
+            '<span class="p-muted">' + dateOnly(m.created_at) + '</span></div>';
+        }).join('');
+        document.querySelectorAll('[data-mail-open]').forEach(function (el) {
+          el.addEventListener('click', function () { openMail(el.getAttribute('data-mail-open')); });
+        });
+      }
+
+      // ---- Mail-editor ----
+
+      function clearMailEditor() {
+        STATE.currentMailId = null;
+        document.getElementById('o-mail-editor').classList.add('hidden');
+        document.getElementById('o-m-onderwerp').value = '';
+        document.getElementById('o-m-body').value = '';
+        document.getElementById('o-m-msg').textContent = '';
+        document.getElementById('o-m-gmail-warn').classList.add('hidden');
+        clearEvaluatie();
+      }
+
+      function openMail(mailId) {
+        fetch('/api/admin/outreach/mail?id=' + encodeURIComponent(mailId), { credentials: 'same-origin' })
+          .then(function (r) { if (r.status === 401 || r.status === 403) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (d) { if (d && d.ok && d.mail) openMailData(d.mail); })
+          .catch(function () {});
+      }
+
+      function openMailData(mail) {
+        STATE.currentMailId = mail.id;
+        document.getElementById('o-mail-editor').classList.remove('hidden');
+        document.getElementById('o-m-onderwerp').value = mail.onderwerp || '';
+        document.getElementById('o-m-body').value = mail.body || '';
+        document.getElementById('o-m-msg').textContent = '';
+        document.getElementById('o-m-gmail-warn').classList.add('hidden');
+        var ev = null;
+        if (mail.evaluatie) {
+          try { ev = typeof mail.evaluatie === 'string' ? JSON.parse(mail.evaluatie) : mail.evaluatie; } catch (e) { ev = null; }
+        }
+        if (ev) renderEvaluatie(ev); else clearEvaluatie();
+        document.getElementById('o-mail-editor').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      function clearEvaluatie() {
+        var panel = document.getElementById('o-eval-panel');
+        panel.classList.add('hidden');
+        panel.innerHTML = '';
+      }
+
+      function renderEvaluatie(ev) {
+        var panel = document.getElementById('o-eval-panel');
+        var psy = ev.psychologie || {};
+        var mkt = ev.marketing || {};
+        function scoreBox(label, s) {
+          return '<div class="pcard" style="padding:14px">' +
+            '<div class="kpi-label">' + esc(label) + '</div>' +
+            '<div class="mt-1"><span class="pbadge ' + scoreBadgeClass(s.score) + '">' + esc(s.score != null ? s.score : '—') + '/10</span></div>' +
+            (s.sterk && s.sterk.length ? '<p class="mt-2 text-xs p-muted"><b>Sterk:</b> ' + s.sterk.map(esc).join(', ') + '</p>' : '') +
+            (s.zwak && s.zwak.length ? '<p class="mt-1 text-xs p-muted"><b>Zwak:</b> ' + s.zwak.map(esc).join(', ') + '</p>' : '') +
+            '</div>';
+        }
+        var verdict = ev.verdict || '';
+        var verdictClass = verdict === 'eerst-verbeteren' ? 'palert--warn' : 'palert--ok';
+        panel.innerHTML =
+          '<div class="grid gap-3 sm:grid-cols-2">' + scoreBox('Psychologie', psy) + scoreBox('Marketing', mkt) + '</div>' +
+          '<div class="mt-3 flex items-center gap-2">' +
+            '<span class="text-sm p-muted">Spam-risico:</span>' +
+            '<span class="pbadge ' + riskBadgeClass(ev.spam_risico) + '">' + orDash(ev.spam_risico) + '</span>' +
+          '</div>' +
+          (ev.verbeterpunten && ev.verbeterpunten.length
+            ? '<div class="mt-3"><p class="text-sm" style="font-weight:500;color:var(--p-ink)">Verbeterpunten</p>' +
+              '<ul class="mt-1 text-sm p-muted" style="padding-left:18px;list-style:disc">' +
+              ev.verbeterpunten.map(function (v) { return '<li>' + esc(v) + '</li>'; }).join('') + '</ul></div>'
+            : '') +
+          (verdict ? '<p class="palert ' + verdictClass + ' mt-3">Verdict: ' + esc(verdict) + '</p>' : '');
+        panel.classList.remove('hidden');
+      }
+
+      // ---- Data laden ----
+
+      function loadAll() {
+        return fetch('/api/admin/outreach/prospects', { credentials: 'same-origin' })
+          .then(function (r) { if (r.status === 401 || r.status === 403) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (d) {
+            STATE.prospects = (d && d.prospects) || [];
+            STATE.vandaag = (d && d.vandaag) || [];
+            renderKpis();
+            renderVandaag();
+            renderTable();
+          });
+      }
+
+      function reload(keepDetail) {
+        var keepId = keepDetail ? STATE.currentProspectId : null;
+        var keepMailId = keepDetail ? STATE.currentMailId : null;
+        return loadAll().then(function () {
+          if (keepId && findProspect(keepId)) {
+            openDetail(keepId, false);
+            if (keepMailId) {
+              var p = findProspect(keepId);
+              var m = (p.mails || []).filter(function (mm) { return String(mm.id) === String(keepMailId); })[0];
+              if (m) openMail(keepMailId);
+            }
+          }
+        }).catch(function () {});
+      }
+
+      // ---- Events ----
+
+      document.getElementById('o-import').addEventListener('click', function () {
+        var btn = this; btn.disabled = true;
+        var msg = document.getElementById('o-import-msg');
+        postJson('/api/admin/outreach/import', {}).then(function (res) {
+          msg.classList.remove('hidden');
+          if (res.ok) {
+            msg.className = 'palert palert--ok mt-3';
+            msg.textContent = 'Toegevoegd: ' + (res.j.toegevoegd || 0) + ', overgeslagen: ' + (res.j.overgeslagen || 0) + '.';
+            reload(true);
+          } else {
+            msg.className = 'palert palert--warn mt-3';
+            msg.textContent = apiErrorMsg(res.status, res.j);
+          }
+          setTimeout(function () { msg.classList.add('hidden'); }, 6000);
+        }).finally(function () { btn.disabled = false; });
+      });
+
+      document.getElementById('o-d-close').addEventListener('click', closeDetail);
+
+      document.getElementById('o-d-save').addEventListener('click', function () {
+        if (!STATE.currentProspectId) return;
+        var btn = this; btn.disabled = true;
+        var msgEl = document.getElementById('o-d-msg');
+        postJson('/api/admin/outreach/prospect', {
+          id: STATE.currentProspectId,
+          status: document.getElementById('o-d-status').value,
+          notities: document.getElementById('o-d-notities').value,
+          volgende_actie: document.getElementById('o-d-actie').value,
+          volgende_actie_datum: document.getElementById('o-d-actie-datum').value || null,
+        }).then(function (res) {
+          if (res.ok) { flash(msgEl, 'Opgeslagen.', true); reload(true); }
+          else { flash(msgEl, apiErrorMsg(res.status, res.j), false); }
+        }).finally(function () { btn.disabled = false; });
+      });
+
+      function generateMail(soort, btnId) {
+        var btn = document.getElementById(btnId);
+        var msg = document.getElementById('o-gen-msg');
+        if (!STATE.currentProspectId) return;
+        btn.disabled = true;
+        var origText = btn.textContent;
+        btn.textContent = '⏳ Bezig...';
+        msg.classList.add('hidden');
+        postJson('/api/admin/outreach/generate', { prospect_id: STATE.currentProspectId, soort: soort })
+          .then(function (res) {
+            if (res.ok && res.j.mail) {
+              openMailData(res.j.mail);
+              reload(true);
+            } else {
+              msg.classList.remove('hidden');
+              msg.className = 'palert palert--warn mt-2';
+              msg.textContent = apiErrorMsg(res.status, res.j);
+            }
+          })
+          .finally(function () { btn.disabled = false; btn.textContent = origText; });
+      }
+      document.getElementById('o-gen-mail1').addEventListener('click', function () { generateMail('mail1', 'o-gen-mail1'); });
+      document.getElementById('o-gen-followup').addEventListener('click', function () { generateMail('followup', 'o-gen-followup'); });
+
+      document.getElementById('o-m-save').addEventListener('click', function () {
+        if (!STATE.currentMailId) return;
+        var btn = this; btn.disabled = true;
+        var msgEl = document.getElementById('o-m-msg');
+        postJson('/api/admin/outreach/mail', {
+          id: STATE.currentMailId,
+          onderwerp: document.getElementById('o-m-onderwerp').value,
+          body: document.getElementById('o-m-body').value,
+        }).then(function (res) {
+          if (res.ok) flash(msgEl, 'Opgeslagen.', true);
+          else flash(msgEl, apiErrorMsg(res.status, res.j), false);
+        }).finally(function () { btn.disabled = false; });
+      });
+
+      document.getElementById('o-m-eval').addEventListener('click', function () {
+        if (!STATE.currentMailId) return;
+        var btn = this; btn.disabled = true;
+        var origText = btn.textContent;
+        btn.textContent = '⏳ Bezig...';
+        var msgEl = document.getElementById('o-m-msg');
+        postJson('/api/admin/outreach/evaluate', { mail_id: STATE.currentMailId }).then(function (res) {
+          if (res.ok && res.j.evaluatie) { renderEvaluatie(res.j.evaluatie); flash(msgEl, '', true); }
+          else flash(msgEl, apiErrorMsg(res.status, res.j), false);
+        }).finally(function () { btn.disabled = false; btn.textContent = origText; });
+      });
+
+      document.getElementById('o-m-verzonden').addEventListener('click', function () {
+        if (!STATE.currentMailId) return;
+        var btn = this; btn.disabled = true;
+        var msgEl = document.getElementById('o-m-msg');
+        postJson('/api/admin/outreach/mail', { id: STATE.currentMailId, status: 'verzonden' }).then(function (res) {
+          if (res.ok) { flash(msgEl, 'Gemarkeerd als verzonden.', true); reload(true); }
+          else flash(msgEl, apiErrorMsg(res.status, res.j), false);
+        }).finally(function () { btn.disabled = false; });
+      });
+
+      document.getElementById('o-m-gmail').addEventListener('click', function () {
+        var p = findProspect(STATE.currentProspectId);
+        if (!p) return;
+        var onderwerp = document.getElementById('o-m-onderwerp').value;
+        var body = document.getElementById('o-m-body').value;
+        var warn = document.getElementById('o-m-gmail-warn');
+        if (body.length > 1800) {
+          warn.classList.remove('hidden');
+          warn.innerHTML = 'Body is lang (' + body.length + ' tekens) — plak handmatig. ' +
+            '<button id="o-m-copy" class="pbtn pbtn--subtle pbtn--sm" style="margin-left:8px">Kopieer mail</button>';
+          document.getElementById('o-m-copy').addEventListener('click', function () {
+            var text = onderwerp + '\n\n' + body;
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(text).then(function () {
+                flash(document.getElementById('o-m-msg'), 'Gekopieerd naar klembord.', true);
+              });
+            }
+          });
+          return;
+        }
+        warn.classList.add('hidden');
+        var url = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodeURIComponent(p.email || '') +
+          '&su=' + encodeURIComponent(onderwerp) + '&body=' + encodeURIComponent(body);
+        window.open(url, '_blank');
+      });
+
+      document.getElementById('o-reply-analyse').addEventListener('click', function () {
+        if (!STATE.currentProspectId) return;
+        var replyText = document.getElementById('o-reply-text').value.trim();
+        if (!replyText) return;
+        var btn = this; btn.disabled = true;
+        var origText = btn.textContent;
+        btn.textContent = '⏳ Bezig...';
+        var msgEl = document.getElementById('o-reply-msg');
+        postJson('/api/admin/outreach/reply', { prospect_id: STATE.currentProspectId, reply_text: replyText })
+          .then(function (res) {
+            if (res.ok && res.j.analyse) {
+              var a = res.j.analyse;
+              var resultEl = document.getElementById('o-reply-result');
+              resultEl.classList.remove('hidden');
+              resultEl.innerHTML =
+                '<div class="flex items-center gap-2"><span class="pbadge ' + sentimentBadgeClass(a.sentiment) + '">' + orDash(a.sentiment) + '</span></div>' +
+                '<p class="mt-2 text-sm p-muted">' + orDash(a.samenvatting) + '</p>' +
+                (a.voorgestelde_status
+                  ? '<div class="mt-2 flex items-center gap-2 text-sm"><span>Voorgestelde status: <b>' + esc(a.voorgestelde_status) + '</b></span>' +
+                    '<button id="o-reply-overnemen" class="pbtn pbtn--subtle pbtn--sm">Overnemen</button></div>'
+                  : '');
+              if (a.voorgestelde_status) {
+                document.getElementById('o-reply-overnemen').addEventListener('click', function () {
+                  document.getElementById('o-d-status').value = a.voorgestelde_status;
+                  document.getElementById('o-d-save').click();
+                });
+              }
+              if (res.j.mail) openMailData(res.j.mail);
+              flash(msgEl, '', true);
+            } else {
+              flash(msgEl, apiErrorMsg(res.status, res.j), false);
+            }
+          })
+          .finally(function () { btn.disabled = false; btn.textContent = origText; });
+      });
+
+      loadAll().catch(function () {});
+    })();
+  </script>
+</AdminLayout>

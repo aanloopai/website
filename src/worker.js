@@ -32,6 +32,7 @@ import { handleAdminApi } from './lib/admin-routes.js';
 import { handleMollieWebhook, reconcilePayments, billMonthlySubscriptions } from './lib/mollie.js';
 import { rateLimit } from './lib/rate-limit.js';
 import { escapeHtml } from './lib/escape.js';
+import { countVandaagProspects } from './lib/outreach.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -794,6 +795,43 @@ async function handleGeoScan(request, env) {
   return jsonResponse({ success: true, url: origin, reachable: home.ok, score, grade, checks: checks.map(({ label, ok, detail }) => ({ label, ok, detail })) });
 }
 
+// Outreach follow-up reminder — fires once inside the 06:00-06:15 UTC cron
+// window (same */15 cron as the rest of scheduled()). Best-effort: any
+// failure (missing secrets, D1/Telegram error) is swallowed here so it never
+// takes down reconcilePayments/billMonthlySubscriptions in the same tick.
+// Dedup via GOOGLE_TOKENS KV (shared with the rest of the app) — a 2-day TTL
+// key per calendar day guards against the cron firing more than once in the
+// 06:00-06:15 window (every 15 min = at most one hit, but this is also a
+// safety net against a Cloudflare cron double-fire).
+async function notifyOutreachFollowups(env) {
+  try {
+    if (!env.PORTAL_DB || !env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) return;
+    const now = new Date();
+    if (now.getUTCHours() !== 6 || now.getUTCMinutes() >= 15) return;
+
+    const n = await countVandaagProspects(env);
+    if (n <= 0) return;
+
+    const dateKey = now.toISOString().slice(0, 10);
+    if (env.GOOGLE_TOKENS) {
+      const dedupKey = `outreach:notified:${dateKey}`;
+      if (await env.GOOGLE_TOKENS.get(dedupKey)) return;
+      await env.GOOGLE_TOKENS.put(dedupKey, '1', { expirationTtl: 172800 });
+    }
+
+    await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: env.TELEGRAM_CHAT_ID,
+        text: `📋 Outreach: ${n} follow-up(s) vandaag — aanloopai.nl/admin/outreach`,
+      }),
+    });
+  } catch (err) {
+    console.error('[scheduled] outreach follow-up notify failed:', err.message || err);
+  }
+}
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
@@ -907,6 +945,7 @@ export default {
   async scheduled(event, env, ctx) {
     ctx.waitUntil(reconcilePayments(env));
     ctx.waitUntil(billMonthlySubscriptions(env));
+    ctx.waitUntil(notifyOutreachFollowups(env));
   },
 };
 // Force redeploy after BREVO_API_KEY env var added (Sprint 38)

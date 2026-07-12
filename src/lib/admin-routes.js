@@ -4,6 +4,11 @@ import { jsonResponse, errorResponse } from './google-auth.js';
 import { randomId, getSessionUser } from './auth.js';
 import { provisionAgent, canProvision } from './elevenlabs.js';
 import { escapeHtml } from './escape.js';
+import {
+  outreachProspects, outreachMailDetail, outreachImport,
+  outreachGenerateMail, outreachEvaluateMail, outreachUpdateMail,
+  outreachUpdateProspect, outreachReplySuggestion,
+} from './outreach.js';
 
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
 const AANLOOP_EMAIL = 'hello@aanloopai.nl';
@@ -71,6 +76,15 @@ export async function handleAdminApi(request, env) {
     }
     if (path === '/api/admin/leadgen/leads') return await leadgenLeads(env);
     if (path === '/api/admin/leadgen/prospects') return await leadgenProspects(env);
+    if (path === '/api/admin/outreach/prospects') return await outreachProspects(env);
+    if (path === '/api/admin/outreach/mail') {
+      return method === 'POST' ? await outreachUpdateMail(request, env) : await outreachMailDetail(env, url);
+    }
+    if (path === '/api/admin/outreach/import' && method === 'POST') return await outreachImport(request, env);
+    if (path === '/api/admin/outreach/generate' && method === 'POST') return await outreachGenerateMail(request, env);
+    if (path === '/api/admin/outreach/evaluate' && method === 'POST') return await outreachEvaluateMail(request, env);
+    if (path === '/api/admin/outreach/prospect' && method === 'POST') return await outreachUpdateProspect(request, env);
+    if (path === '/api/admin/outreach/reply' && method === 'POST') return await outreachReplySuggestion(request, env);
     return errorResponse('Niet gevonden', 404);
   } catch (err) {
     console.error('[admin] API error:', err.message || err);
