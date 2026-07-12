@@ -244,12 +244,13 @@ export async function outreachImport(request, env) {
 
     await db.prepare(
       `INSERT INTO outreach_prospects
-         (id, site, sector, bedrijfsnaam, stad, website, email, telefoon, rating, reviews, notities, golf, status, created_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'nieuw', ?)`,
+         (site, sector, bedrijfsnaam, stad, website, email, telefoon, rating, reviews, notities, golf, status, volgende_actie, volgende_actie_datum, laatste_contact)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     ).bind(
-      randomId('pros'), site, r.sector || null, bedrijfsnaam, r.stad || null, r.website || null,
+      site || 'keukeninbeeld.nl', r.sector || 'keuken', bedrijfsnaam, r.stad || null, r.website || null,
       r.email || null, r.telefoon || null, r.rating ?? null, r.reviews ?? null,
-      r.notities || null, r.golf || null, Date.now(),
+      r.notities || null, r.golf || null, r.status || 'nieuw',
+      r.volgende_actie || null, r.volgende_actie_datum || null, r.laatste_contact || null,
     ).run();
     toegevoegd++;
   }
