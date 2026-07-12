@@ -289,15 +289,15 @@ export async function outreachGenerateMail(request, env) {
   }
   if (!result?.onderwerp || !result?.body) return errorResponse('AI-generatie mislukt', 502);
 
-  const id = randomId('mail');
-  await env.PORTAL_DB.prepare(
-    `INSERT INTO outreach_mails (id, prospect_id, soort, onderwerp, body, status, gegenereerd_door, created_at)
-     VALUES (?, ?, ?, ?, ?, 'concept', ?, ?)`,
+  const inserted = await env.PORTAL_DB.prepare(
+    `INSERT INTO outreach_mails (prospect_id, soort, onderwerp, body, status, gegenereerd_door)
+     VALUES (?, ?, ?, ?, 'concept', ?)`,
   ).bind(
-    id, body.prospect_id, soort,
+    body.prospect_id, soort,
     result.onderwerp.toString().slice(0, 300), result.body.toString().slice(0, 8000),
-    GEMINI_MODEL, Date.now(),
+    GEMINI_MODEL,
   ).run();
+  const id = inserted.meta.last_row_id;
 
   const mail = await env.PORTAL_DB.prepare('SELECT * FROM outreach_mails WHERE id = ?').bind(id).first();
   return jsonResponse({ ok: true, mail });
@@ -424,12 +424,12 @@ export async function outreachReplySuggestion(request, env) {
   }
   if (!analyse?.antwoord_body) return errorResponse('AI-generatie mislukt', 502);
 
-  const id = randomId('mail');
   const onderwerp = (analyse.antwoord_onderwerp || `Re: ${lastMail?.onderwerp || ''}`).toString().slice(0, 300);
-  await env.PORTAL_DB.prepare(
-    `INSERT INTO outreach_mails (id, prospect_id, soort, onderwerp, body, status, gegenereerd_door, created_at)
-     VALUES (?, ?, 'reply_suggestie', ?, ?, 'concept', ?, ?)`,
-  ).bind(id, body.prospect_id, onderwerp, analyse.antwoord_body.toString().slice(0, 8000), GEMINI_MODEL, Date.now()).run();
+  const inserted = await env.PORTAL_DB.prepare(
+    `INSERT INTO outreach_mails (prospect_id, soort, onderwerp, body, status, gegenereerd_door)
+     VALUES (?, 'reply_suggestie', ?, ?, 'concept', ?)`,
+  ).bind(body.prospect_id, onderwerp, analyse.antwoord_body.toString().slice(0, 8000), GEMINI_MODEL).run();
+  const id = inserted.meta.last_row_id;
 
   const mail = await env.PORTAL_DB.prepare('SELECT * FROM outreach_mails WHERE id = ?').bind(id).first();
   return jsonResponse({ ok: true, analyse, mail });
