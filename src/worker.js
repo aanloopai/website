@@ -34,6 +34,7 @@ import { rateLimit } from './lib/rate-limit.js';
 import { escapeHtml } from './lib/escape.js';
 import { countVandaagProspects, prospectsNeedingFollowupDraft, generateFollowupDraft, outreachImport } from './lib/outreach.js';
 import { isWerkdag } from './lib/crm.js';
+import { aiSignalScan } from './lib/ai-crm.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -858,6 +859,15 @@ async function notifyOutreachFollowups(env) {
       } catch (err) {
         console.error('[scheduled] followup-taslak query mislukt:', err.message || err);
       }
+    }
+
+    // Emma signaal-scan: max 5 prospects per ochtend op nieuwe signalen
+    // (vacature, uitbreiding, nieuws) — best-effort, mag de rest van de
+    // ochtend-batch (Telegram-notificatie hieronder) niet blokkeren.
+    try {
+      await aiSignalScan(env);
+    } catch (err) {
+      console.error('[scheduled] aiSignalScan mislukt:', err.message || err);
     }
 
     const text = conceptCount === null

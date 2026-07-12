@@ -99,6 +99,28 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       document.getElementById('pl-tab-outreach').addEventListener('click', function () { setTab('outreach'); });
       document.getElementById('pl-tab-services').addEventListener('click', function () { setTab('services'); });
 
+      // Emma AI-badges (F2) — alleen gecachte waarden (crmPipelineData doet
+      // zelf geen Gemini-calls), dus ontbreken is normaal (nog niet bezocht
+      // op de prospect-pagina).
+      function aiRiskBadgeClass(risico) {
+        var r = String(risico || '').toLowerCase();
+        if (r === 'laag') return 'pbadge--green';
+        if (r === 'hoog') return 'pbadge--red';
+        if (r === 'middel') return 'pbadge--amber';
+        return 'pbadge--gray';
+      }
+      function aiBadgesHtml(c) {
+        if (!c.ai_icp_fit && !c.ai_deal_risk) return '';
+        var parts = [];
+        if (c.ai_icp_fit && c.ai_icp_fit.score != null) {
+          parts.push('<span class="pbadge pbadge--gray" title="ICP-fit">🎯 ' + esc(c.ai_icp_fit.score) + '/10</span>');
+        }
+        if (c.ai_deal_risk && c.ai_deal_risk.risico) {
+          parts.push('<span class="pbadge ' + aiRiskBadgeClass(c.ai_deal_risk.risico) + '" title="Risico">' + esc(c.ai_deal_risk.risico) + '</span>');
+        }
+        return '<div class="mt-1" style="display:flex;gap:4px;flex-wrap:wrap">' + parts.join('') + '</div>';
+      }
+
       function cardHtml(type, c) {
         var rotClass = c.rot ? ' pl-rot' : '';
         var title = type === 'deal' ? c.naam : c.naam;
@@ -111,6 +133,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         return '<div class="pl-card' + rotClass + '" draggable="true" data-id="' + esc(c.id) + '" data-type="' + type + '">' +
           '<div class="pl-card-title">' + esc(title) + (c.rot ? ' 🔴' : '') + '</div>' +
           (sub ? '<div class="pl-card-sub">' + esc(sub) + '</div>' : '') +
+          (type === 'prospect' ? aiBadgesHtml(c) : '') +
           '<div class="pl-card-meta"><span>' + (actie || '&nbsp;') + '</span>' +
           '<span>' + (c.dagen_in_stage != null ? c.dagen_in_stage + 'd' : '') + '</span></div>' +
           '</div>';

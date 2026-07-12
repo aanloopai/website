@@ -85,11 +85,19 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
     <div class="space-y-4">
       <section class="pcard">
-        <div class="pcard-h">Emma AI</div>
+        <div class="pcard-h">
+          <div>
+            <span>Emma</span>
+            <div class="pr-ai-sub">AI-assistent</div>
+          </div>
+        </div>
         <div class="pcard-b">
-          <div class="empty">
-            <p class="empty-title">Binnenkort beschikbaar</p>
-            <p class="empty-text">AI-samenvatting en volgende-beste-actie komen in F2.</p>
+          <div id="ai-loading" class="pskel h-24 w-full"></div>
+          <p id="ai-error" class="palert palert--warn hidden"></p>
+          <div id="ai-fields" class="space-y-3 hidden"></div>
+          <div class="pr-ai-onderzoek">
+            <button id="ai-onderzoek" class="pbtn pbtn--subtle pbtn--sm">🔎 Onderzoek</button>
+            <span id="ai-onderzoek-msg" class="text-sm ml-2"></span>
           </div>
         </div>
       </section>
@@ -106,6 +114,15 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     .pr-tl-title { font-weight: 500; color: var(--p-ink); font-size: 13px; }
     .pr-tl-body { color: var(--p-ink-2); font-size: 13px; margin-top: 3px; white-space: pre-wrap; }
     .pr-tl-meta { color: var(--p-ink-4); font-size: 11px; margin-top: 4px; }
+    .pr-ai-sub { font-size: 11px; font-weight: 400; color: var(--p-ink-4); }
+    .pr-ai-card { border: 1px solid var(--p-border); border-radius: 8px; padding: 10px 12px; }
+    .pr-ai-card-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .pr-ai-card-label { font-size: 11px; color: var(--p-ink-4); text-transform: uppercase; letter-spacing: 0.03em; }
+    .pr-ai-refresh { border: none; background: transparent; cursor: pointer; font-size: 13px; color: var(--p-ink-3); padding: 2px 4px; line-height: 1; }
+    .pr-ai-refresh:hover { color: var(--p-ink); }
+    .pr-ai-card-body { margin-top: 6px; font-size: 13px; color: var(--p-ink); }
+    .pr-ai-card-reden { margin-top: 3px; font-size: 12px; color: var(--p-ink-3); }
+    .pr-ai-onderzoek { border-top: 1px solid var(--p-border); margin-top: 14px; padding-top: 14px; }
   </style>
 
   <script is:inline>
@@ -227,6 +244,131 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           .finally(function () { btn.disabled = false; });
       });
 
+      // ---- Emma AI-paneel (F2) ----
+
+      var AI_FIELD_LABEL = { icp_fit: 'ICP-fit', deal_risk: 'Risico', volgende_actie_ai: 'Volgende beste actie' };
+      var AI_FIELD_ORDER = ['icp_fit', 'deal_risk', 'volgende_actie_ai'];
+
+      function aiRiskColor(risico) {
+        var r = String(risico || '').toLowerCase();
+        if (r === 'laag') return '#0e6245';
+        if (r === 'middel') return '#983705';
+        if (r === 'hoog') return '#b3093c';
+        return 'var(--p-ink-3)';
+      }
+
+      function aiFieldBodyHtml(veldNaam, waarde) {
+        if (!waarde) return '<span class="p-muted">Geen data.</span>';
+        if (veldNaam === 'icp_fit') {
+          return '<span style="font-weight:600;font-size:16px">' + esc(waarde.score != null ? waarde.score : '—') + '/10</span>' +
+            (waarde.reden ? '<div class="pr-ai-card-reden">' + esc(waarde.reden) + '</div>' : '');
+        }
+        if (veldNaam === 'deal_risk') {
+          return '<span style="font-weight:600;color:' + aiRiskColor(waarde.risico) + '">' + esc(waarde.risico || '—') + '</span>' +
+            (waarde.reden ? '<div class="pr-ai-card-reden">' + esc(waarde.reden) + '</div>' : '');
+        }
+        if (veldNaam === 'volgende_actie_ai') {
+          return esc(waarde.actie || '—');
+        }
+        return esc(JSON.stringify(waarde));
+      }
+
+      function aiFieldCardHtml(f) {
+        var veldNaam = f.veld_naam;
+        var label = AI_FIELD_LABEL[veldNaam] || f.label || veldNaam;
+        var body = f.error ? '<span class="p-muted">Ophalen mislukt.</span>' : aiFieldBodyHtml(veldNaam, f.waarde);
+        return '<div class="pr-ai-card" data-ai-card="' + esc(veldNaam) + '">' +
+          '<div class="pr-ai-card-h"><span class="pr-ai-card-label">' + esc(label) + '</span>' +
+          '<button class="pr-ai-refresh" data-ai-refresh="' + esc(veldNaam) + '" title="Vernieuwen">↻</button></div>' +
+          '<div class="pr-ai-card-body">' + body + '</div></div>';
+      }
+
+      function renderAiFields(fields) {
+        document.getElementById('ai-loading').classList.add('hidden');
+        document.getElementById('ai-error').classList.add('hidden');
+        var byVeld = {};
+        (fields || []).forEach(function (f) { byVeld[f.veld_naam] = f; });
+        var ordered = AI_FIELD_ORDER.map(function (v) { return byVeld[v]; }).filter(Boolean);
+        var el = document.getElementById('ai-fields');
+        el.innerHTML = ordered.map(aiFieldCardHtml).join('');
+        el.classList.remove('hidden');
+        el.querySelectorAll('[data-ai-refresh]').forEach(function (btn) {
+          btn.addEventListener('click', function () { refreshAiField(btn.getAttribute('data-ai-refresh'), btn); });
+        });
+      }
+
+      function aiErrorMsg(status) {
+        if (status === 503) return 'AI niet geconfigureerd.';
+        return 'Kon AI-velden niet ophalen.';
+      }
+
+      function loadAiFields() {
+        document.getElementById('ai-loading').classList.remove('hidden');
+        document.getElementById('ai-fields').classList.add('hidden');
+        document.getElementById('ai-error').classList.add('hidden');
+        return fetch('/api/admin/ai/fields?entity_type=prospect&entity_id=' + encodeURIComponent(id), { credentials: 'same-origin' })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, status: r.status, j: j }; }); })
+          .then(function (res) {
+            document.getElementById('ai-loading').classList.add('hidden');
+            if (res.ok && res.j.fields) {
+              renderAiFields(res.j.fields);
+            } else {
+              var errEl = document.getElementById('ai-error');
+              errEl.textContent = aiErrorMsg(res.status);
+              errEl.classList.remove('hidden');
+            }
+          })
+          .catch(function () {
+            document.getElementById('ai-loading').classList.add('hidden');
+            var errEl = document.getElementById('ai-error');
+            errEl.textContent = 'Kon AI-velden niet ophalen.';
+            errEl.classList.remove('hidden');
+          });
+      }
+
+      function refreshAiField(veldNaam, btn) {
+        btn.disabled = true;
+        var origText = btn.textContent;
+        btn.textContent = '⏳';
+        fetch('/api/admin/ai/fields', {
+          method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ entity_type: 'prospect', entity_id: id, veld_naam: veldNaam, force: true }),
+        })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (res) {
+            if (res.ok && res.j.field) {
+              var card = document.querySelector('[data-ai-card="' + veldNaam + '"]');
+              if (card) card.outerHTML = aiFieldCardHtml(res.j.field);
+              var newCard = document.querySelector('[data-ai-card="' + veldNaam + '"] [data-ai-refresh]');
+              if (newCard) newCard.addEventListener('click', function () { refreshAiField(veldNaam, newCard); });
+            }
+          })
+          .finally(function () { btn.disabled = false; btn.textContent = origText; });
+      }
+
+      document.getElementById('ai-onderzoek').addEventListener('click', function () {
+        var btn = this; btn.disabled = true;
+        var origText = btn.textContent;
+        btn.textContent = '⏳ Bezig... (kan even duren)';
+        var msgEl = document.getElementById('ai-onderzoek-msg');
+        msgEl.textContent = '';
+        fetch('/api/admin/ai/onderzoek', {
+          method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prospect_id: id }),
+        })
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, status: r.status, j: j }; }); })
+          .then(function (res) {
+            if (res.ok && res.j.activity) {
+              flash(msgEl, res.j.cached ? 'Recent onderzoek hergebruikt.' : 'Onderzoek toegevoegd aan tijdlijn.', true);
+              loadTimeline();
+            } else {
+              flash(msgEl, aiErrorMsg(res.status), false);
+            }
+          })
+          .catch(function () { flash(msgEl, 'Kon onderzoek niet uitvoeren.', false); })
+          .finally(function () { btn.disabled = false; btn.textContent = origText; });
+      });
+
       document.getElementById('pr-note-add').addEventListener('click', function () {
         var input = document.getElementById('pr-note-input');
         var text = input.value.trim();
@@ -243,7 +385,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           .finally(function () { btn.disabled = false; });
       });
 
-      loadProspect().then(function () { if (prospect) loadTimeline(); }).catch(function () {});
+      loadProspect().then(function () { if (prospect) { loadTimeline(); loadAiFields(); } }).catch(function () {});
     })();
   </script>
 </AdminLayout>

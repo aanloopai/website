@@ -324,15 +324,32 @@ export async function crmPipelineData(request, env) {
 
   if (pipeline === 'outreach') {
     const prospects = (await db.prepare('SELECT * FROM outreach_prospects').all()).results || [];
+
+    // Gecachte Emma AI-badges (F2) — puur read van ai_field_values, GEEN
+    // Gemini-call vanuit een pipeline-load. icp_fit/deal_risk komen alleen
+    // mee als ze al eerder (via de prospect-pagina) opgehaald zijn.
+    const aiValues = (await db.prepare(
+      `SELECT entity_id, veld_naam, waarde FROM ai_field_values
+       WHERE entity_type = 'prospect' AND veld_naam IN ('icp_fit', 'deal_risk')`,
+    ).all()).results || [];
+    const aiByProspect = new Map();
+    for (const v of aiValues) {
+      const bucket = aiByProspect.get(v.entity_id) || {};
+      bucket[v.veld_naam] = safeParseJson(v.waarde);
+      aiByProspect.set(v.entity_id, bucket);
+    }
+
     for (const p of prospects) {
       const dagenInStage = dagenSinds(p.laatste_contact || p.created_at);
       const rotDagen = rotDagenByStage.get(p.status);
       const rot = rotDagen != null && dagenInStage != null && dagenInStage > rotDagen;
       if (rot) rottingCount++;
+      const ai = aiByProspect.get(p.id) || {};
       const card = {
         type: 'prospect', id: p.id, naam: p.bedrijfsnaam, stad: p.stad,
         email_aanwezig: !!p.email, volgende_actie: p.volgende_actie, volgende_actie_datum: p.volgende_actie_datum,
         dagen_in_stage: dagenInStage, rot,
+        ai_icp_fit: ai.icp_fit || null, ai_deal_risk: ai.deal_risk || null,
       };
       if (!cardsByStage.has(p.status)) cardsByStage.set(p.status, []);
       cardsByStage.get(p.status).push(card);

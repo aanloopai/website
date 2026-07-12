@@ -56,12 +56,25 @@ export function werkdagenLater(n) {
   return d.toISOString().slice(0, 10);
 }
 
+// ── openings/CTA-structuur-varianten ────────────────────────────────────────
+// generateMailInternal roteert deze op prospect.id % 3 zodat opeenvolgende
+// mails niet allemaal met dezelfde opzet openen. buildGeneratePrompt vraagt
+// Gemini om intern alle 3 te overwegen en toch de meegegeven variant als
+// concreet uitgangspunt te gebruiken (i.p.v. Gemini zelf vrij te laten kiezen
+// — dat zou de rotatie teniet doen).
+const VARIANT_HINTS = {
+  'vraag-opening': 'een korte, oprechte vraag aan de lezer (geen retorische vraag) — geen observatie, geen direct-voordeel-opzet',
+  'observatie-opening': 'een concrete observatie over het bedrijf (bijv. de rating, de plaats, iets uit de notitie) — geen vraag, geen direct-voordeel-opzet',
+  'direct-voordeel-opening': 'het concrete voordeel voor de lezer, direct en zonder omweg — geen vraag, geen observatie-opzet',
+};
+
 // ── prompt builders ──────────────────────────────────────────────────────────
-function buildGeneratePrompt(prospect, soort, vorigeMail) {
+function buildGeneratePrompt(prospect, soort, vorigeMail, variantHint) {
   const ratingRegel = (prospect.rating && prospect.reviews)
     ? `Google-beoordeling: ${prospect.rating} sterren op basis van ${prospect.reviews} reviews.`
     : '';
   const notitieRegel = prospect.notities ? `Notitie over dit bedrijf: ${prospect.notities}.` : '';
+  const variantRegel = `Overweeg intern 3 structureel verschillende openingszin/CTA-varianten (vraag-opening, observatie-opening, direct-voordeel-opening) en kies daarbinnen de sterkste uitwerking. Gebruik voor DEZE mail specifiek als opening-uitgangspunt: ${VARIANT_HINTS[variantHint] || VARIANT_HINTS['vraag-opening']}.`;
 
   const rolEnAanbod = `
 Je schrijft B2B-acquisitiemails voor Keuken in Beeld (keukeninbeeld.nl), een AI-keukenvisualisatie-platform dat koopklare keukenleads levert aan onafhankelijke keukenzaken.
@@ -72,6 +85,7 @@ Prospect-gegevens:
 ${ratingRegel}
 ${notitieRegel}
 Gebruik deze gegevens om de openingszin (1 zin) persoonlijk te maken — als de rating hoog is of de notitie iets specifieks vermeldt (bijv. "familiebedrijf sinds 1918"), verwijs daar dan naar.
+${variantRegel}
 
 Aanbod-feiten (gebruik UITSLUITEND deze, verzin niets anders):
 - Leads bevatten: naam, telefoon, e-mail, postcode, stijl, budgetklasse en termijn van de klant, vaak met een foto van de huidige keuken.
@@ -235,8 +249,9 @@ ${replyText}
 Taken:
 1. Bepaal het sentiment: "positief", "neutraal" of "negatief".
 2. Vat het antwoord samen in 1 zin.
-3. Stel een voorgestelde_status voor: "geinteresseerd", "afgewezen" of "followup".
-4. Schrijf een professioneel Nederlands antwoord-concept, ondertekend met exact:
+3. Classificeer de intent: "geinteresseerd" (wil meer weten/afspraak), "niet_geinteresseerd" (hard nee), "vraag" (stelt een vraag, nog geen ja/nee), "ooo" (automatisch afwezigheidsbericht) of "anders".
+4. Stel een voorgestelde_status voor: "geinteresseerd", "afgewezen" of "followup".
+5. Schrijf een professioneel Nederlands antwoord-concept, ondertekend met exact:
 "Met vriendelijke groet,
 Mustafa
 Keuken in Beeld · onderdeel van Alfa Reclame · KvK 88606902
@@ -254,7 +269,7 @@ STRIKT VERBODEN in het antwoord:
 - Toezeggingen over exclusiviteit of regiogrenzen die hierboven niet staan; regiovraag beantwoord je met: leads worden gekoppeld op postcode van de aanvrager.
 
 Geef het resultaat terug als STRICT JSON in exact dit formaat, zonder markdown-codeblok eromheen:
-{"sentiment":"positief|neutraal|negatief","samenvatting":"...","voorgestelde_status":"geinteresseerd|afgewezen|followup","antwoord_onderwerp":"...","antwoord_body":"..."}
+{"sentiment":"positief|neutraal|negatief","samenvatting":"...","intent":"geinteresseerd|niet_geinteresseerd|vraag|ooo|anders","voorgestelde_status":"geinteresseerd|afgewezen|followup","antwoord_onderwerp":"...","antwoord_body":"..."}
 `.trim();
 }
 
@@ -345,6 +360,8 @@ export async function outreachImport(request, env) {
 // door outreachPipeline (verbeter-loop) zodat er maar één implementatie is
 // van "genereer"/"evalueer"/"verbeter". Gooien door bij fouten; de aanroeper
 // (route-handler of pipeline) bepaalt hoe de fout wordt gerapporteerd. ────────
+const VARIANT_HINTS_BY_INDEX = ['vraag-opening', 'observatie-opening', 'direct-voordeel-opening'];
+
 async function generateMailInternal(env, prospect, soort) {
   let vorigeMail = null;
   if (soort === 'followup') {
@@ -354,7 +371,11 @@ async function generateMailInternal(env, prospect, soort) {
        ORDER BY verzonden_at DESC LIMIT 1`,
     ).bind(prospect.id).first();
   }
-  const result = await gemini(env, buildGeneratePrompt(prospect, soort, vorigeMail), { json: true });
+  // Rotatie op prospect.id i.p.v. willekeurig — deterministisch (zelfde
+  // prospect krijgt altijd dezelfde variant bij herhaalde generatie), maar
+  // verschillende prospects krijgen structureel andere openingen.
+  const variantHint = VARIANT_HINTS_BY_INDEX[Number(prospect.id) % VARIANT_HINTS_BY_INDEX.length];
+  const result = await gemini(env, buildGeneratePrompt(prospect, soort, vorigeMail, variantHint), { json: true });
   if (!result?.onderwerp || !result?.body) throw new Error('AI-generatie gaf geen geldig resultaat terug');
   return result;
 }
@@ -761,6 +782,21 @@ export async function outreachReplySuggestion(request, env) {
     return errorResponse('AI-generatie mislukt', 502);
   }
   if (!analyse?.antwoord_body) return errorResponse('AI-generatie mislukt', 502);
+
+  // Reactie + classificatie op de tijdlijn — zodat de mens ziet WAT er
+  // binnenkwam en WELKE intent Emma eraan gaf, ook als het voorstel niet
+  // wordt overgenomen. Best-effort: een logfout mag de reply-suggestie zelf
+  // niet blokkeren.
+  try {
+    await logCrmActivity(env, {
+      entityType: 'prospect', entityId: body.prospect_id, soort: 'email_in',
+      titel: `Reactie geclassificeerd: ${analyse.intent || 'onbekend'}`,
+      body: replyText,
+      meta: analyse,
+    });
+  } catch (err) {
+    console.error('[outreach] crm_activities email_in log mislukt:', err.message || err);
+  }
 
   const onderwerp = (analyse.antwoord_onderwerp || `Re: ${lastMail?.onderwerp || ''}`).toString().slice(0, 300);
   const inserted = await env.PORTAL_DB.prepare(

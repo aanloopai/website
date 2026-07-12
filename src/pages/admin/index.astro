@@ -66,6 +66,19 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
   </section>
 
+  <section class="pcard mt-6">
+    <div class="pcard-h">
+      <span>Emma AI-verbruik</span>
+    </div>
+    <div class="pcard-b">
+      <div id="d-ai-usage" class="space-y-2"><div class="pskel h-10 w-full"></div></div>
+      <div id="d-ai-usage-empty" class="empty hidden">
+        <p class="empty-title">Nog geen AI-gebruik</p>
+        <p class="empty-text">Verschijnt zodra Emma AI-velden of onderzoek aanroept.</p>
+      </div>
+    </div>
+  </section>
+
   <style>
     .d-funnel { display: flex; flex-wrap: wrap; gap: 10px; }
     .d-funnel-step { flex: 1 1 120px; border: 1px solid var(--p-border); border-radius: 8px; padding: 12px 14px; text-align: center; }
@@ -150,6 +163,32 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         var forecastCent = (servicesData && servicesData.totals && servicesData.totals.weighted_forecast_cent) || 0;
         document.getElementById('k-forecast').textContent = euro(forecastCent);
       });
+
+      fetch('/api/admin/ai/usage', { credentials: 'same-origin' })
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          var vandaag = (d && d.vandaag) || [];
+          var zevenDagen = (d && d.zeven_dagen) || [];
+          var box = document.getElementById('d-ai-usage');
+          if (!vandaag.length && !zevenDagen.length) {
+            box.innerHTML = '';
+            document.getElementById('d-ai-usage-empty').classList.remove('hidden');
+            return;
+          }
+          var zevenByFeature = {};
+          zevenDagen.forEach(function (r) { zevenByFeature[r.feature] = r.calls; });
+          var features = vandaag.map(function (r) { return r.feature; });
+          zevenDagen.forEach(function (r) { if (features.indexOf(r.feature) === -1) features.push(r.feature); });
+          var vandaagByFeature = {};
+          vandaag.forEach(function (r) { vandaagByFeature[r.feature] = r.calls; });
+          box.innerHTML = features.map(function (f) {
+            return '<div class="flex items-center justify-between text-sm">' +
+              '<span style="color:var(--p-ink-2)">' + esc(f) + '</span>' +
+              '<span class="p-muted">vandaag: <b style="color:var(--p-ink)">' + (vandaagByFeature[f] || 0) + '</b>' +
+              ' · 7 dagen: <b style="color:var(--p-ink)">' + (zevenByFeature[f] || 0) + '</b></span></div>';
+          }).join('');
+        })
+        .catch(function () {});
     })();
   </script>
 </AdminLayout>
