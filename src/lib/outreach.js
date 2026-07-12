@@ -170,6 +170,11 @@ Prijzen — noem ALLEEN als de prospect in het antwoord expliciet naar de prijs 
 - Tegenofferte-lead: €175
 - Bundel van 20 leads: €1.200
 
+STRIKT VERBODEN in het antwoord:
+- Verzonnen voorwaarden, garanties of betaalmodellen (zoals "no cure no pay", proefperiodes, kortingen) — de ENIGE voorwaarden zijn: eerste lead gratis, betaling per geleverde lead, geen abonnement, ongeldige leads (fout nummer, buiten regio, dubbel) worden gratis vervangen.
+- Verzonnen statistieken, klantnamen of resultaatclaims.
+- Toezeggingen over exclusiviteit of regiogrenzen die hierboven niet staan; regiovraag beantwoord je met: leads worden gekoppeld op postcode van de aanvrager.
+
 Geef het resultaat terug als STRICT JSON in exact dit formaat, zonder markdown-codeblok eromheen:
 {"sentiment":"positief|neutraal|negatief","samenvatting":"...","voorgestelde_status":"geinteresseerd|afgewezen|followup","antwoord_onderwerp":"...","antwoord_body":"..."}
 `.trim();
