@@ -32,7 +32,7 @@ import { handleAdminApi } from './lib/admin-routes.js';
 import { handleMollieWebhook, reconcilePayments, billMonthlySubscriptions } from './lib/mollie.js';
 import { rateLimit } from './lib/rate-limit.js';
 import { escapeHtml } from './lib/escape.js';
-import { countVandaagProspects, prospectsNeedingFollowupDraft, generateFollowupDraft } from './lib/outreach.js';
+import { countVandaagProspects, prospectsNeedingFollowupDraft, generateFollowupDraft, outreachImport } from './lib/outreach.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -817,6 +817,17 @@ async function notifyOutreachFollowups(env) {
       const dedupKey = `outreach:notified:${dateKey}`;
       if (await env.GOOGLE_TOKENS.get(dedupKey)) return;
       await env.GOOGLE_TOKENS.put(dedupKey, '1', { expirationTtl: 172800 });
+    }
+
+    // Nieuwe prospects importeren vóór de follow-up-taslak-batch, zodat vers
+    // geïmporteerde bedrijven dezelfde ochtend nog meegenomen worden. Best-
+    // effort: outreachImport dedupt zelf (site+bedrijfsnaam) — 1 mislukte
+    // import (bv. KEUKENINBEELD_TOKEN ontbreekt) mag de rest van de
+    // notificatie/taslak-batch niet blokkeren.
+    try {
+      await outreachImport(null, env);
+    } catch (err) {
+      console.error('[scheduled] outreach import mislukt:', err.message || err);
     }
 
     // Concept follow-up-mails vast klaarzetten zodat de mens 's ochtends alleen

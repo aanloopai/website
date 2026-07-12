@@ -6,6 +6,11 @@ import { randomId } from './auth.js';
 
 const GEMINI_MODEL = 'gemini-2.5-flash';
 const KEUKENINBEELD_PROSPECTS_URL = 'https://keukeninbeeld.nl/api/prospects';
+const BREVO_SMTP_API = 'https://api.brevo.com/v3/smtp/email';
+// Interne kopie van elke echt verzonden outreach-mail — zelfde constante-patroon
+// als AANLOOP_EMAIL in admin-routes.js. Bewust hardgecodeerd (geen secret).
+const INTERN_BCC = 'doganagahm@gmail.com';
+const DAGLIMIET_VERZENDEN = 15;
 
 function today() { return new Date().toISOString().slice(0, 10); }
 
@@ -549,6 +554,26 @@ export async function outreachPipeline(request, env) {
   return jsonResponse({ ok: true, mail, evaluatie, rondes: ronde, geschiedenis });
 }
 
+// ── prospect-pipeline een stap verder zetten na verzending ─────────────────
+// Gedeeld door outreachUpdateMail (handmatige "markeer verzonden") EN
+// outreachSendMail (automatisch versturen via Brevo) zodat er maar één
+// implementatie is van deze status/volgende-actie-regels.
+async function advanceProspectAfterSend(env, mail) {
+  if (mail.soort === 'mail1') {
+    await env.PORTAL_DB.prepare(
+      `UPDATE outreach_prospects
+       SET laatste_contact = ?, status = 'mail1', volgende_actie = ?, volgende_actie_datum = ?
+       WHERE id = ?`,
+    ).bind(today(), 'Follow-up mail sturen', werkdagenLater(4), mail.prospect_id).run();
+  } else if (mail.soort === 'followup') {
+    await env.PORTAL_DB.prepare(
+      `UPDATE outreach_prospects
+       SET laatste_contact = ?, status = 'followup', volgende_actie = ?, volgende_actie_datum = ?
+       WHERE id = ?`,
+    ).bind(today(), 'Nabellen', werkdagenLater(3), mail.prospect_id).run();
+  }
+}
+
 // ── POST /api/admin/outreach/mail (update) ──────────────────────────────────
 export async function outreachUpdateMail(request, env) {
   const body = await request.json().catch(() => null);
@@ -570,23 +595,87 @@ export async function outreachUpdateMail(request, env) {
     'UPDATE outreach_mails SET onderwerp = ?, body = ?, status = ?, verzonden_at = ? WHERE id = ?',
   ).bind(onderwerp, bodyText, status, verzondenAt, body.id).run();
 
-  if (wordtVerzonden) {
-    if (mail.soort === 'mail1') {
-      await env.PORTAL_DB.prepare(
-        `UPDATE outreach_prospects
-         SET laatste_contact = ?, status = 'mail1', volgende_actie = ?, volgende_actie_datum = ?
-         WHERE id = ?`,
-      ).bind(today(), 'Follow-up mail sturen', werkdagenLater(4), mail.prospect_id).run();
-    } else if (mail.soort === 'followup') {
-      await env.PORTAL_DB.prepare(
-        `UPDATE outreach_prospects
-         SET laatste_contact = ?, status = 'followup', volgende_actie = ?, volgende_actie_datum = ?
-         WHERE id = ?`,
-      ).bind(today(), 'Nabellen', werkdagenLater(3), mail.prospect_id).run();
-    }
-  }
+  if (wordtVerzonden) await advanceProspectAfterSend(env, mail);
 
   const updated = await env.PORTAL_DB.prepare('SELECT * FROM outreach_mails WHERE id = ?').bind(body.id).first();
+  return jsonResponse({ ok: true, mail: updated });
+}
+
+// ── interne Brevo-verzendhelper ─────────────────────────────────────────────
+// Mirrort het fetch/error-pattern van sendBrevoEmail in src/worker.js:311,
+// maar lokaal gehouden zodat outreach.js self-contained blijft (geen
+// cross-import van worker.js nodig). Brevo geeft 201 + { messageId } terug.
+async function sendOutreachMailViaBrevo(env, prospect, mail) {
+  const res = await fetch(BREVO_SMTP_API, {
+    method: 'POST',
+    headers: {
+      'api-key': env.BREVO_API_KEY,
+      'content-type': 'application/json',
+      accept: 'application/json',
+    },
+    body: JSON.stringify({
+      sender: { name: 'Mustafa | Keuken in Beeld', email: 'info@keukeninbeeld.nl' },
+      to: [{ email: prospect.email, name: prospect.bedrijfsnaam || prospect.email }],
+      bcc: [{ email: INTERN_BCC }],
+      replyTo: { email: 'info@keukeninbeeld.nl' },
+      subject: mail.onderwerp,
+      textContent: mail.body,
+    }),
+  });
+  const text = await res.text();
+  if (!res.ok) {
+    throw new Error(`Brevo HTTP ${res.status}: ${text.slice(0, 400)}`);
+  }
+  try { return JSON.parse(text); } catch { return { raw: text }; }
+}
+
+// ── POST /api/admin/outreach/send ───────────────────────────────────────────
+// Verstuurt een goedgekeurde mail ECHT via Brevo (i.p.v. de handmatige
+// "open in Gmail"-knop). Daglimiet van 15/dag als ingebouwde rem tegen
+// per-ongeluk-spammen. Bij succes hergebruikt dit dezelfde pipeline-advance-
+// logica als de handmatige "markeer verzonden" (outreachUpdateMail hierboven).
+export async function outreachSendMail(request, env) {
+  const body = await request.json().catch(() => null);
+  if (!body?.mailId) return errorResponse('Mail-id ontbreekt', 400);
+
+  const mail = await env.PORTAL_DB.prepare('SELECT * FROM outreach_mails WHERE id = ?').bind(body.mailId).first();
+  if (!mail) return errorResponse('Mail niet gevonden', 404);
+  if (mail.status !== 'goedgekeurd') return errorResponse("Mail moet eerst status 'goedgekeurd' hebben", 400);
+
+  const prospect = await env.PORTAL_DB.prepare('SELECT * FROM outreach_prospects WHERE id = ?')
+    .bind(mail.prospect_id).first();
+  if (!prospect) return errorResponse('Prospect niet gevonden', 404);
+  if (!prospect.email) return errorResponse('Prospect heeft geen e-mailadres', 400);
+
+  if (!env.BREVO_API_KEY) return errorResponse('Brevo niet geconfigureerd (BREVO_API_KEY ontbreekt)', 503);
+
+  // Daglimiet: verzonden_at is epoch-ms (zie advanceProspectAfterSend/Date.now()
+  // hierboven), dus vergelijken tegen het epoch-ms-tijdstip van middernacht UTC
+  // vandaag — NIET tegen SQLite's date('now') (dat is een TEXT-waarde en zou
+  // door SQLite's storage-class-vergelijking altijd false opleveren tegen een
+  // INTEGER-kolom, waardoor de limiet stilzwijgend nooit zou triggeren).
+  const middernachtVandaag = Date.parse(`${today()}T00:00:00Z`);
+  const verzondVandaag = await env.PORTAL_DB.prepare(
+    'SELECT COUNT(*) AS n FROM outreach_mails WHERE verzonden_at >= ?',
+  ).bind(middernachtVandaag).first();
+  if ((verzondVandaag?.n || 0) >= DAGLIMIET_VERZENDEN) {
+    return errorResponse(`Daglimiet van ${DAGLIMIET_VERZENDEN} mails bereikt`, 429);
+  }
+
+  let result;
+  try {
+    result = await sendOutreachMailViaBrevo(env, prospect, mail);
+  } catch (err) {
+    console.error('[outreach] Brevo verzenden mislukt:', err.message || err);
+    return errorResponse('Versturen via Brevo mislukt', 502);
+  }
+
+  await env.PORTAL_DB.prepare(
+    'UPDATE outreach_mails SET status = ?, verzonden_at = ?, message_id = ?, verzonden_via = ? WHERE id = ?',
+  ).bind('verzonden', Date.now(), result?.messageId || null, 'brevo', mail.id).run();
+  await advanceProspectAfterSend(env, mail);
+
+  const updated = await env.PORTAL_DB.prepare('SELECT * FROM outreach_mails WHERE id = ?').bind(mail.id).first();
   return jsonResponse({ ok: true, mail: updated });
 }
 

@@ -8,7 +8,7 @@ import {
   outreachProspects, outreachMailDetail, outreachImport,
   outreachGenerateMail, outreachEvaluateMail, outreachUpdateMail,
   outreachUpdateProspect, outreachReplySuggestion,
-  outreachImproveMail, outreachPipeline,
+  outreachImproveMail, outreachPipeline, outreachSendMail,
 } from './outreach.js';
 
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
@@ -88,6 +88,7 @@ export async function handleAdminApi(request, env) {
     if (path === '/api/admin/outreach/pipeline' && method === 'POST') return await outreachPipeline(request, env);
     if (path === '/api/admin/outreach/prospect' && method === 'POST') return await outreachUpdateProspect(request, env);
     if (path === '/api/admin/outreach/reply' && method === 'POST') return await outreachReplySuggestion(request, env);
+    if (path === '/api/admin/outreach/send' && method === 'POST') return await outreachSendMail(request, env);
     return errorResponse('Niet gevonden', 404);
   } catch (err) {
     console.error('[admin] API error:', err.message || err);

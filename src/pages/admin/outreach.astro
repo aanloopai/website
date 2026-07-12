@@ -113,6 +113,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           <button id="o-m-improve" class="pbtn pbtn--subtle pbtn--sm" title="Eerst evalueren" disabled>♻️ Verbeter</button>
           <button id="o-m-gmail" class="pbtn pbtn--subtle pbtn--sm">📧 Open in Gmail</button>
           <button id="o-m-verzonden" class="pbtn pbtn--subtle pbtn--sm">✓ Markeer verzonden</button>
+          <button id="o-m-send-brevo" class="pbtn pbtn--primary pbtn--sm hidden">🚀 Verzenden via Brevo</button>
           <span id="o-m-msg" class="text-sm"></span>
         </div>
         <p id="o-m-gmail-warn" class="palert palert--warn mt-2 hidden"></p>
@@ -338,6 +339,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         document.getElementById('o-m-body').value = '';
         document.getElementById('o-m-msg').textContent = '';
         document.getElementById('o-m-gmail-warn').classList.add('hidden');
+        document.getElementById('o-m-send-brevo').classList.add('hidden');
         clearEvaluatie();
         updateImproveButtonState();
       }
@@ -356,6 +358,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         document.getElementById('o-m-body').value = mail.body || '';
         document.getElementById('o-m-msg').textContent = '';
         document.getElementById('o-m-gmail-warn').classList.add('hidden');
+        document.getElementById('o-m-send-brevo').classList.toggle('hidden', mail.status !== 'goedgekeurd');
         var ev = null;
         if (mail.evaluatie) {
           try { ev = typeof mail.evaluatie === 'string' ? JSON.parse(mail.evaluatie) : mail.evaluatie; } catch (e) { ev = null; }
@@ -577,6 +580,26 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           if (res.ok) { flash(msgEl, 'Gemarkeerd als verzonden.', true); reload(true); }
           else flash(msgEl, apiErrorMsg(res.status, res.j), false);
         }).finally(function () { btn.disabled = false; });
+      });
+
+      document.getElementById('o-m-send-brevo').addEventListener('click', function () {
+        if (!STATE.currentMailId) return;
+        var p = findProspect(STATE.currentProspectId);
+        var email = (p && p.email) || '(onbekend adres)';
+        if (!window.confirm('Mail wordt echt verstuurd naar ' + email + '. Doorgaan?')) return;
+        var btn = this; btn.disabled = true;
+        var origText = btn.textContent;
+        btn.textContent = '⏳ Versturen...';
+        var msgEl = document.getElementById('o-m-msg');
+        postJson('/api/admin/outreach/send', { mailId: STATE.currentMailId }).then(function (res) {
+          if (res.ok && res.j.mail) {
+            openMailData(res.j.mail);
+            flash(msgEl, 'Verzonden via Brevo.', true);
+            reload(true);
+          } else {
+            flash(msgEl, apiErrorMsg(res.status, res.j), false);
+          }
+        }).finally(function () { btn.disabled = false; btn.textContent = origText; });
       });
 
       document.getElementById('o-m-gmail').addEventListener('click', function () {
