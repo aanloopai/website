@@ -23,7 +23,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       <table class="ptable">
         <thead><tr>
           <th>Datum</th><th>Naam</th><th>Telefoon</th><th>E-mail</th><th>Postcode</th>
-          <th>Route</th><th>Stijl</th><th>Budget</th><th>Status</th>
+          <th>Route</th><th>Stijl</th><th>Budget</th><th>Status</th><th></th>
         </tr></thead>
         <tbody id="l-leads-rows"></tbody>
       </table>
@@ -61,6 +61,27 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       <p class="empty-text">Prospects uit de outreach-campagne verschijnen hier.</p>
     </div>
   </section>
+
+  <div id="vk-modal" class="pmodal-backdrop">
+    <div class="pmodal">
+      <h3 class="page-title" style="font-size:17px">Verkoop registreren</h3>
+      <p class="page-sub">Lead verkopen aan een prospect — wordt bij keukeninbeeld.nl én lokaal in de CRM geregistreerd.</p>
+      <div class="mt-4 space-y-3">
+        <select id="vk-prospect" class="pinput">
+          <option value="">Kies koper (prospect)...</option>
+        </select>
+        <input id="vk-prijs" type="number" min="1" step="0.01" placeholder="Prijs (EUR) *" class="pinput" />
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--p-ink-3)">
+          <input id="vk-exclusief" type="checkbox" /> Exclusief verkocht
+        </label>
+      </div>
+      <p id="vk-msg" class="palert mt-3 hidden"></p>
+      <div class="mt-4 flex justify-end gap-2">
+        <button id="vk-cancel" class="pbtn pbtn--subtle pbtn--sm">Annuleren</button>
+        <button id="vk-save" class="pbtn pbtn--primary pbtn--sm">Registreren</button>
+      </div>
+    </div>
+  </div>
 
   <script is:inline>
     (function () {
@@ -116,6 +137,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         document.getElementById('l-leads-rows').innerHTML = list.map(function (l) {
           var routeBadge = l.pad === 'tegenofferte' ? 'pbadge--amber' : 'pbadge--gray';
           var statusBadge = LEAD_STATUS[l.status] || 'pbadge--gray';
+          var verkoopBtn = l.status === 'verkocht'
+            ? ''
+            : '<button class="l-verkoop pbtn pbtn--subtle pbtn--sm" data-lead-id="' + esc(l.id) + '">Verkoop registreren</button>';
           return '<tr>' +
             '<td>' + dateOnly(l.created_at) + '</td>' +
             '<td class="primary">' + orDash(l.naam) + '</td>' +
@@ -126,8 +150,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             '<td>' + orDash(l.stijl) + '</td>' +
             '<td>' + orDash(l.budget) + '</td>' +
             '<td><span class="pbadge ' + statusBadge + '">' + esc(l.status || '—') + '</span></td>' +
+            '<td>' + verkoopBtn + '</td>' +
             '</tr>';
         }).join('');
+        document.querySelectorAll('.l-verkoop').forEach(function (btn) {
+          btn.addEventListener('click', function () { openVerkoopModal(btn.getAttribute('data-lead-id')); });
+        });
       }
 
       function renderProspects(prospects) {
@@ -159,26 +187,92 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         document.getElementById('k-klanten').textContent = prospectList.filter(function (p) { return p.status === 'klant'; }).length;
       }
 
-      Promise.all([
-        fetch('/api/admin/leadgen/leads', { credentials: 'same-origin' }),
-        fetch('/api/admin/leadgen/prospects', { credentials: 'same-origin' }),
-      ])
-        .then(function (responses) {
-          if (responses[0].status !== 200 || responses[1].status !== 200) {
-            location.href = '/portal/login';
-            throw new Error('no-access');
-          }
-          return Promise.all(responses.map(function (r) { return r.json(); }));
+      var STATE = { leads: [], prospects: [] };
+
+      function fillProspectSelect() {
+        var sel = document.getElementById('vk-prospect');
+        var options = ['<option value="">Kies koper (prospect)...</option>'];
+        STATE.prospects.forEach(function (p) {
+          options.push('<option value="' + esc(p.id) + '">' + esc(p.bedrijfsnaam) + (p.stad ? ' — ' + esc(p.stad) : '') + '</option>');
+        });
+        sel.innerHTML = options.join('');
+      }
+
+      function load() {
+        return Promise.all([
+          fetch('/api/admin/leadgen/leads', { credentials: 'same-origin' }),
+          fetch('/api/admin/leadgen/prospects', { credentials: 'same-origin' }),
+        ])
+          .then(function (responses) {
+            if (responses[0].status !== 200 || responses[1].status !== 200) {
+              location.href = '/portal/login';
+              throw new Error('no-access');
+            }
+            return Promise.all(responses.map(function (r) { return r.json(); }));
+          })
+          .then(function (results) {
+            STATE.leads = (results[0] && results[0].leads) || [];
+            STATE.prospects = (results[1] && results[1].prospects) || [];
+            renderSectors(STATE.leads);
+            renderKpis(STATE.leads, STATE.prospects);
+            renderLeads(STATE.leads);
+            renderProspects(STATE.prospects);
+            fillProspectSelect();
+          })
+          .catch(function () {});
+      }
+
+      // ── Verkoop registreren-modal ──────────────────────────────────────────
+      var vkLeadId = null;
+      function openVerkoopModal(leadId) {
+        vkLeadId = leadId;
+        document.getElementById('vk-prospect').value = '';
+        document.getElementById('vk-prijs').value = '';
+        document.getElementById('vk-exclusief').checked = false;
+        document.getElementById('vk-msg').classList.add('hidden');
+        document.getElementById('vk-modal').classList.add('open');
+      }
+      function closeVerkoopModal() { document.getElementById('vk-modal').classList.remove('open'); }
+      document.getElementById('vk-cancel').addEventListener('click', closeVerkoopModal);
+      document.getElementById('vk-save').addEventListener('click', function () {
+        var btn = this;
+        var msg = document.getElementById('vk-msg');
+        var koperProspectId = document.getElementById('vk-prospect').value;
+        var prijsEur = parseFloat(document.getElementById('vk-prijs').value);
+        var exclusief = document.getElementById('vk-exclusief').checked;
+        if (!koperProspectId || !prijsEur || prijsEur <= 0) {
+          msg.className = 'palert palert--warn mt-3';
+          msg.textContent = 'Kies een koper en vul een geldige prijs in.';
+          msg.classList.remove('hidden');
+          return;
+        }
+        btn.disabled = true;
+        fetch('/api/admin/leadgen/verkoop', {
+          method: 'POST', credentials: 'same-origin', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            lead_id: vkLeadId, koper_prospect_id: Number(koperProspectId), prijs_eur: prijsEur, exclusief: exclusief,
+          }),
         })
-        .then(function (results) {
-          var leads = (results[0] && results[0].leads) || [];
-          var prospects = (results[1] && results[1].prospects) || [];
-          renderSectors(leads);
-          renderKpis(leads, prospects);
-          renderLeads(leads);
-          renderProspects(prospects);
-        })
-        .catch(function () {});
+          .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (res) {
+            if (res.ok) {
+              closeVerkoopModal();
+              load();
+            } else {
+              msg.className = 'palert palert--warn mt-3';
+              msg.textContent = (res.j && res.j.error) || 'Verkoop registreren mislukt.';
+              msg.classList.remove('hidden');
+            }
+          })
+          .catch(function () {
+            msg.className = 'palert palert--warn mt-3';
+            msg.textContent = 'Verkoop registreren mislukt (netwerkfout).';
+            msg.classList.remove('hidden');
+          })
+          .finally(function () { btn.disabled = false; });
+      });
+
+      load();
     })();
   </script>
 </AdminLayout>

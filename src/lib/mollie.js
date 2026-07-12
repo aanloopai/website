@@ -5,6 +5,7 @@
 import { jsonResponse, errorResponse } from './google-auth.js';
 import { randomId, sha256Hex } from './auth.js';
 import { getCatalogTier } from '../data/portal-catalog.ts';
+import { dealWonVoorOrder } from './crm.js';
 
 const SITE = 'https://aanloopai.nl';
 const MOLLIE = 'https://api.mollie.com/v2';
@@ -304,6 +305,11 @@ async function onPaid(env, payment, subId, orderId) {
     }
   }
   await createInvoice(env, payment, sub);
+
+  // F3: CRM-deal op gewonnen zetten — nooit de betaal-flow blokkeren,
+  // dealWonVoorOrder slikt zijn eigen fouten (zie crm.js).
+  const bedragCent = Math.round(Number(payment.amount?.value || 0) * 100);
+  await dealWonVoorOrder(env, { orderId, waardeCent: bedragCent });
 }
 
 async function createInvoice(env, payment, sub) {

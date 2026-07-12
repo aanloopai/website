@@ -30,6 +30,7 @@ import {
 } from './lib/portal-routes.js';
 import { handleAdminApi } from './lib/admin-routes.js';
 import { handleMollieWebhook, reconcilePayments, billMonthlySubscriptions } from './lib/mollie.js';
+import { handleMcp } from './lib/mcp.js';
 import { rateLimit } from './lib/rate-limit.js';
 import { escapeHtml } from './lib/escape.js';
 import { countVandaagProspects, prospectsNeedingFollowupDraft, generateFollowupDraft, outreachImport } from './lib/outreach.js';
@@ -977,6 +978,12 @@ export default {
     // be browser-accessible. Handler validates the URL secret token.
     if (url.pathname === '/api/webhooks/mollie') {
       return handleMollieWebhook(request, env);
+    }
+    // MCP server (F3.3) — server-to-server JSON-RPC, eigen Bearer-token-auth
+    // (env.MCP_SECRET). Geen CORS/OPTIONS nodig, zelfde reden als de
+    // Mollie-webhook hierboven.
+    if (url.pathname === '/mcp') {
+      return handleMcp(request, env);
     }
     // Customer portal API + admin panel API — origin locked to aanloopai.nl.
     if (url.pathname.startsWith('/api/portal/')) {

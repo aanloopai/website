@@ -7,11 +7,16 @@ import {
   sessionCookie, clearCookie, getSessionUser,
 } from './auth.js';
 import { handleCheckoutStart, cancelSubscription } from './mollie.js';
-import { getCatalogProduct } from '../data/portal-catalog.ts';
+import { getCatalogProduct, getCatalogTier } from '../data/portal-catalog.ts';
+import { dealVoorOrder } from './crm.js';
 import { escapeHtml } from './escape.js';
 
 const SITE_ORIGIN = 'https://aanloopai.nl';
 const MUTATING_METHODS = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
+// Catalogusprijzen zijn EXCL. btw — zelfde omrekening als mollie.js's
+// handleCheckoutStart, zodat een deal-waarde hier overeenkomt met wat er
+// straks daadwerkelijk via Mollie in rekening wordt gebracht.
+const BTW_RATE = 0.21;
 
 // CSRF guard — defence in depth on top of SameSite=Strict. Fails CLOSED for
 // mutating methods: a missing Origin header is treated the same as a wrong
@@ -743,6 +748,19 @@ async function submitOrder(request, env, user) {
   }
   await env.PORTAL_DB.prepare('UPDATE service_orders SET status = ?, submitted_at = ? WHERE id = ?')
     .bind('ingediend', Date.now(), body.id).run();
+
+  // F3: open een services-deal voor deze order — dealVoorOrder is idempotent
+  // (op order_id) en slikt zijn eigen fouten, blokkeert dus nooit de indiening.
+  const tier = getCatalogTier(o.product_key, o.tier);
+  const waardeCent = tier?.prijsCent ? Math.round(tier.prijsCent * (1 + BTW_RATE)) : 0;
+  const customer = await env.PORTAL_DB.prepare('SELECT bedrijf FROM customers WHERE id = ?').bind(user.customer_id).first();
+  await dealVoorOrder(env, {
+    orderId: o.id,
+    customerId: user.customer_id,
+    naam: `${customer?.bedrijf || user.naam} — ${o.product_key}${o.tier ? ` ${o.tier}` : ''}`,
+    waardeCent,
+  });
+
   await notifyAanloop(env, 'Nieuwe aanvraag — intake compleet',
     `Klant-id: ${user.customer_id}\nProduct: ${o.product_key} (${o.tier || '-'})\nDoor: ${user.naam} (${user.email})\nAanvraag: ${o.id}\nBekijk de volledige intake in het admin-panel.`);
   return jsonResponse({ ok: true, message: 'Uw aanvraag is ingediend. We nemen het in behandeling.' });

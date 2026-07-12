@@ -121,6 +121,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         return '<div class="mt-1" style="display:flex;gap:4px;flex-wrap:wrap">' + parts.join('') + '</div>';
       }
 
+      function bronBadgeHtml(c) {
+        if (!c.bron) return '';
+        return '<div class="mt-1" style="display:flex;gap:4px;flex-wrap:wrap"><span class="pbadge pbadge--gray" title="Bron">' + esc(c.bron) + '</span></div>';
+      }
+
       function cardHtml(type, c) {
         var rotClass = c.rot ? ' pl-rot' : '';
         var title = type === 'deal' ? c.naam : c.naam;
@@ -134,6 +139,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           '<div class="pl-card-title">' + esc(title) + (c.rot ? ' 🔴' : '') + '</div>' +
           (sub ? '<div class="pl-card-sub">' + esc(sub) + '</div>' : '') +
           (type === 'prospect' ? aiBadgesHtml(c) : '') +
+          (type === 'deal' ? bronBadgeHtml(c) : '') +
           '<div class="pl-card-meta"><span>' + (actie || '&nbsp;') + '</span>' +
           '<span>' + (c.dagen_in_stage != null ? c.dagen_in_stage + 'd' : '') + '</span></div>' +
           '</div>';

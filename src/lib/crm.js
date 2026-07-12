@@ -106,6 +106,103 @@ export async function annuleerOpenstaandeFollowups(env, prospectId) {
   ).bind(prospectId).run();
 }
 
+// ── F3: deal-lifecycle gekoppeld aan een service_order/Mollie-betaling ─────
+// Nooit de betaal-flow blokkeren: elke fout hier wordt gelogd en geslikt,
+// nooit doorgegooid — zelfde ctx-loze try/catch-conventie als mollie.js's
+// onPaid (dat zelf geen try/catch om zijn subcalls heeft, maar hier is de
+// aanroeper de betaal-webhook, dus de bescherming moet aan deze kant staan).
+
+// Maakt (idempotent, op order_id) een services-deal aan zodra een order wordt
+// ingediend. bron wordt hier bepaald — niet door de aanroeper — via een
+// e-mailmatch tussen de klant en outreach_prospects: converteert een
+// outreach-prospect automatisch naar 'klant' zodra die klant een order start.
+export async function dealVoorOrder(env, { orderId, customerId, naam, waardeCent, bron }) {
+  const db = env.PORTAL_DB;
+  try {
+    const existing = await db.prepare('SELECT id FROM crm_deals WHERE order_id = ?').bind(orderId).first();
+    if (existing) return existing.id;
+
+    let resolvedBron = bron || 'website';
+    if (customerId) {
+      const customer = await db.prepare('SELECT email FROM customers WHERE id = ?').bind(customerId).first();
+      if (customer?.email) {
+        const prospect = await db.prepare('SELECT id, status FROM outreach_prospects WHERE email = ?')
+          .bind(customer.email).first();
+        if (prospect) {
+          resolvedBron = 'outreach';
+          if (prospect.status !== 'klant') {
+            const vorigeStatus = prospect.status;
+            await db.prepare('UPDATE outreach_prospects SET status = ? WHERE id = ?').bind('klant', prospect.id).run();
+            await logCrmActivity(env, {
+              entityType: 'prospect', entityId: prospect.id, soort: 'status_change',
+              titel: `Status: ${vorigeStatus || 'onbekend'} → klant`,
+              meta: { van: vorigeStatus, naar: 'klant', order_id: orderId },
+            });
+          }
+        }
+      }
+    }
+
+    const waarde = Number.isFinite(Number(waardeCent)) ? Math.max(0, parseInt(waardeCent, 10)) : 0;
+    const inserted = await db.prepare(
+      `INSERT INTO crm_deals (entity_type, entity_id, naam, pipeline, stage, waarde_cent, kans_pct, status, order_id, bron)
+       VALUES ('customer', ?, ?, 'services', 'offerte', ?, 50, 'open', ?, ?)`,
+    ).bind(customerId || null, naam || 'Order', waarde, orderId, resolvedBron).run();
+    const dealId = inserted.meta.last_row_id;
+
+    await logCrmActivity(env, {
+      entityType: 'deal', entityId: dealId, soort: 'status_change',
+      titel: 'Deal geopend (order)', meta: { order_id: orderId },
+    });
+    return dealId;
+  } catch (err) {
+    console.error('[crm] dealVoorOrder mislukt:', err.message || err);
+    return null;
+  }
+}
+
+// Zet een deal op gewonnen zodra de bijbehorende order betaald is (aangeroepen
+// vanuit mollie.js's onPaid). Maakt de deal alsnog aan als dealVoorOrder om
+// wat voor reden dan ook nog niet gedraaid heeft (order_id ontbreekt in
+// crm_deals) — nooit de betaal-flow laten falen op een ontbrekende deal-rij.
+export async function dealWonVoorOrder(env, { orderId, waardeCent }) {
+  const db = env.PORTAL_DB;
+  try {
+    if (!orderId) return;
+    let deal = await db.prepare('SELECT * FROM crm_deals WHERE order_id = ?').bind(orderId).first();
+
+    if (!deal) {
+      const order = await db.prepare('SELECT customer_id, product_key, tier FROM service_orders WHERE id = ?')
+        .bind(orderId).first();
+      if (!order) return;
+      const dealId = await dealVoorOrder(env, {
+        orderId,
+        customerId: order.customer_id,
+        naam: `${order.product_key}${order.tier ? ` ${order.tier}` : ''}`,
+        waardeCent: 0,
+        bron: null,
+      });
+      if (!dealId) return;
+      deal = await db.prepare('SELECT * FROM crm_deals WHERE id = ?').bind(dealId).first();
+      if (!deal) return;
+    }
+
+    const waarde = Number.isFinite(Number(waardeCent)) && Number(waardeCent) > 0
+      ? Math.max(0, parseInt(waardeCent, 10)) : deal.waarde_cent;
+
+    await db.prepare(
+      `UPDATE crm_deals SET stage = 'gewonnen', status = 'won', won_at = ?, waarde_cent = ?, kans_pct = 100 WHERE id = ?`,
+    ).bind(today(), waarde, deal.id).run();
+
+    await logCrmActivity(env, {
+      entityType: 'deal', entityId: deal.id, soort: 'status_change',
+      titel: 'Deal gewonnen (betaling)', meta: { order_id: orderId },
+    });
+  } catch (err) {
+    console.error('[crm] dealWonVoorOrder mislukt:', err.message || err);
+  }
+}
+
 // ── GET/POST/PATCH /api/admin/crm/activities ────────────────────────────────
 const ACTIVITY_SOORTEN = ['email_out', 'email_in', 'call', 'note', 'status_change', 'task', 'ai'];
 const ENTITY_TYPES = ['prospect', 'customer', 'deal'];
@@ -366,7 +463,7 @@ export async function crmPipelineData(request, env) {
       const card = {
         type: 'deal', id: d.id, naam: d.naam, waarde_cent: d.waarde_cent, kans_pct: d.kans_pct,
         gewogen_waarde_cent: gewogenWaarde, status: d.status, verwachte_sluiting: d.verwachte_sluiting,
-        dagen_in_stage: dagenInStage, rot,
+        dagen_in_stage: dagenInStage, rot, bron: d.bron || null,
       };
       if (!cardsByStage.has(d.stage)) cardsByStage.set(d.stage, []);
       cardsByStage.get(d.stage).push(card);

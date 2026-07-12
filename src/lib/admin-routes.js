@@ -11,7 +11,7 @@ import {
   outreachImproveMail, outreachPipeline, outreachSendMail,
 } from './outreach.js';
 import {
-  crmActivities, crmDeals, crmTimeline, crmPipelineData, crmSearch,
+  crmActivities, crmDeals, crmTimeline, crmPipelineData, crmSearch, logCrmActivity,
 } from './crm.js';
 import { aiFields, aiOnderzoek, aiUsage } from './ai-crm.js';
 
@@ -81,6 +81,7 @@ export async function handleAdminApi(request, env) {
     }
     if (path === '/api/admin/leadgen/leads') return await leadgenLeads(env);
     if (path === '/api/admin/leadgen/prospects') return await leadgenProspects(env);
+    if (path === '/api/admin/leadgen/verkoop' && method === 'POST') return await leadgenVerkoop(request, env);
     if (path === '/api/admin/outreach/prospects') return await outreachProspects(env);
     if (path === '/api/admin/outreach/mail') {
       return method === 'POST' ? await outreachUpdateMail(request, env) : await outreachMailDetail(env, url);
@@ -462,4 +463,58 @@ async function leadgenProspects(env) {
     console.error('[admin] leadgen prospects fetch failed:', err.message || err);
     return errorResponse('Leadgen-bron onbereikbaar', 502);
   }
+}
+
+// ── F3.2: verkoop registreren — een keukeninbeeld-lead verkopen aan een
+// outreach-prospect (koper). Atomiciteit: eerst naar keukeninbeeld.nl
+// schrijven, pas bij succes lokaal (crm_deals + prospect-status) muteren —
+// zo staat er nooit een lokale "verkocht"-registratie zonder dat de upstream
+// bron het ook weet.
+async function leadgenVerkoop(request, env) {
+  if (!env.KEUKENINBEELD_TOKEN) return errorResponse('Leadgen niet geconfigureerd', 503);
+  const body = await request.json().catch(() => null);
+
+  const leadId = Number(body?.lead_id);
+  const koperProspectId = Number(body?.koper_prospect_id);
+  const prijsEur = Number(body?.prijs_eur);
+  const exclusief = !!body?.exclusief;
+
+  if (!Number.isInteger(leadId) || leadId <= 0) return errorResponse('Ongeldig lead_id', 400);
+  if (!Number.isInteger(koperProspectId) || koperProspectId <= 0) return errorResponse('Ongeldig koper_prospect_id', 400);
+  if (!Number.isFinite(prijsEur) || prijsEur <= 0) return errorResponse('Ongeldige prijs', 400);
+
+  const koper = await env.PORTAL_DB.prepare('SELECT id, bedrijfsnaam, status FROM outreach_prospects WHERE id = ?')
+    .bind(koperProspectId).first();
+  if (!koper) return errorResponse('Koper-prospect niet gevonden', 404);
+
+  try {
+    const upstream = await fetch(`https://keukeninbeeld.nl/api/verkopen?token=${env.KEUKENINBEELD_TOKEN}`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        lead_id: leadId, koper: koper.bedrijfsnaam, prijs_eur: prijsEur, exclusief: exclusief ? 1 : 0,
+      }),
+    });
+    if (!upstream.ok) return errorResponse(`Verkoop registreren bij keukeninbeeld.nl mislukt (${upstream.status})`, 502);
+  } catch (err) {
+    console.error('[admin] leadgen verkoop upstream mislukt:', err.message || err);
+    return errorResponse('Verkoop registreren bij keukeninbeeld.nl mislukt', 502);
+  }
+
+  const waardeCent = Math.round(prijsEur * 100);
+  const inserted = await env.PORTAL_DB.prepare(
+    `INSERT INTO crm_deals (entity_type, entity_id, naam, pipeline, stage, waarde_cent, kans_pct, status, won_at, bron)
+     VALUES ('prospect', ?, ?, 'outreach', 'gewonnen', ?, 100, 'won', ?, 'leadgen')`,
+  ).bind(koperProspectId, `Lead verkoop — ${koper.bedrijfsnaam}`, waardeCent, today()).run();
+  const dealId = inserted.meta.last_row_id;
+
+  await env.PORTAL_DB.prepare('UPDATE outreach_prospects SET status = ? WHERE id = ?')
+    .bind('klant', koperProspectId).run();
+  await logCrmActivity(env, {
+    entityType: 'prospect', entityId: koperProspectId, soort: 'status_change',
+    titel: `Klant geworden — lead verkocht (€${prijsEur})`,
+    meta: { deal_id: dealId, lead_id: leadId, prijs_eur: prijsEur, exclusief },
+  });
+
+  return jsonResponse({ ok: true, deal_id: dealId });
 }
