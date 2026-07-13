@@ -671,6 +671,161 @@ def post_geo_05() -> None:
     img.save(OUT_DIR / "geo-05-word-gevonden.png", "PNG", optimize=True)
 
 
+def post_wave8_01_tijd_tekort() -> None:
+    """Wave 8.1 — Hook: tijd verloren aan repetitief werk."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AANLOOP AI  ·  TIJD TERUGWINNEN", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 110)
+    lines = ["Hoeveel uur", "verlies jij", "deze week?"]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 8
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 36
+    y = draw_line(d, y, 200, ROSE, 6)
+    y += 46
+    draw_centered(d, "Aan bellen, agenda's en WhatsApp.", y, font(FONT_LIGHT, 38), PEARL)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave8-01-tijd-tekort.png", "PNG", optimize=True)
+
+
+def post_wave8_02_agenda_assistent() -> None:
+    """Wave 8.2 — Feature: AI agenda-assistent."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AI-AGENDA-ASSISTENT", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 120)
+    lines = ["Agenda vol.", "Zonder gedoe."]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 10
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 40
+    y = draw_line(d, y, 200, INDIGO, 6)
+    y += 50
+    f_sub = font(FONT_LIGHT, 40)
+    for ln in ["Plant, bevestigt en herinnert", "automatisch — geen heen-en-weer mail."]:
+        y = draw_centered(d, ln, y, f_sub, PEARL)
+        y += 14
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave8-02-agenda-assistent.png", "PNG", optimize=True)
+
+
+def post_wave8_03_voice_agent() -> None:
+    """Wave 8.3 — Feature: AI voice-agent / telefonie."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AI-TELEFONIE  ·  VOICE-AGENT", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    _draw_waveform(d, SIZE // 2, 470)
+
+    f_big = font(FONT_BLACK, 100)
+    y = 620
+    for ln in ["Elke oproep", "opgenomen. 24/7."]:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += 8
+    y += 30
+    y = draw_line(d, y, 200, EMERALD, 6)
+    y += 46
+    draw_centered(d, "In het Nederlands. Ook na sluitingstijd.", y, font(FONT_LIGHT, 38), PEARL)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave8-03-voice-agent.png", "PNG", optimize=True)
+
+
+def post_wave8_04_whatsapp_bot() -> None:
+    """Wave 8.4 — Feature: AI WhatsApp-bot."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AI-WHATSAPP-BOT", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    _draw_chat_bubble(d, SIZE // 2 - 120, 460, 360, 150, tail_left=True)
+    _draw_chat_bubble(d, SIZE // 2 + 120, 600, 360, 150, tail_left=False)
+
+    f_big = font(FONT_BLACK, 92)
+    y = 780
+    for ln in ["Direct antwoord.", "Ook om 23:00."]:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += 8
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave8-04-whatsapp-bot.png", "PNG", optimize=True)
+
+
+def post_wave8_05_ai_scan() -> None:
+    """Wave 8.5 — Proof: gratis AI-scan (vindbaarheid + gemiste omzet)."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "GRATIS AI-SCAN  ·  AANLOOPAI.NL", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 110)
+    lines = ["Waar loop jij", "omzet mis?"]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 10
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 40
+    y = draw_line(d, y, 200, AMBER, 6)
+    y += 50
+    f_sub = font(FONT_LIGHT, 40)
+    for ln in ["60 seconden. Gratis.", "Zie precies wat een AI-agent oplevert."]:
+        y = draw_centered(d, ln, y, f_sub, PEARL)
+        y += 14
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave8-05-ai-scan.png", "PNG", optimize=True)
+
+
+def post_wave8_06_cta() -> None:
+    """Wave 8.6 — CTA: vraag je gratis AI-scan aan."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AANLOOP AI  ·  AAN DE SLAG", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 108)
+    lines = ["Vraag je", "gratis AI-scan", "aan."]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 8
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 36
+    y = draw_line(d, y, 200, INDIGO, 6)
+    y += 46
+    draw_centered(d, "DM 'AI' of aanloopai.nl/gratis-ai-scan", y, font(FONT_LIGHT, 34), PEARL)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave8-06-cta-gratis-scan.png", "PNG", optimize=True)
+
+
 def main() -> None:
     post_01()
     post_02()
@@ -691,7 +846,15 @@ def main() -> None:
     post_geo_02()
     post_geo_03()
     post_geo_05()
+    post_wave8_01_tijd_tekort()
+    post_wave8_02_agenda_assistent()
+    post_wave8_03_voice_agent()
+    post_wave8_04_whatsapp_bot()
+    post_wave8_05_ai_scan()
+    post_wave8_06_cta()
     for p in sorted(OUT_DIR.glob("post-*.png")):
+        print(f"{p.name}\t{p.stat().st_size} bytes")
+    for p in sorted(OUT_DIR.glob("wave8-*.png")):
         print(f"{p.name}\t{p.stat().st_size} bytes")
 
 
