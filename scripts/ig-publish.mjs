@@ -239,7 +239,41 @@ async function main() {
       const status = p.posted_at ? `posted ${p.posted_at}` : `pending (slot ${p.slot_iso})`;
       console.log(`  - ${p.id}: ${status}`);
     }
-    return;
+
+    const hasPending = sched.posts.some((p) => p.posted_at === null);
+    if (hasPending) {
+      // Some slot(s) still ahead of us in this wave — nothing due yet, that's normal.
+      console.log("\nFuture slot(s) pending in this wave. Nothing due yet.");
+      return;
+    }
+
+    // Every slot in the resolved schedule is already posted. resolveSchedulePath()
+    // only falls back to a fully-posted wave when NO wave file (current or later)
+    // has any pending slot left — so this is genuine content exhaustion, not a
+    // transient gap. Fail loudly instead of exiting 0, so the workflow's
+    // failure-issue step fires and someone notices before the pipeline goes dark.
+    const waveNum = sched.wave;
+    const entries = await fs.readdir(SCHEDULE_DIR);
+    const hasLaterWaveFile = entries.some((f) => {
+      const m = f.match(/^wave-(\d+)(?:-week\d+)?-schedule\.json$/);
+      return m && typeof waveNum === "number" && parseInt(m[1], 10) > waveNum;
+    });
+
+    if (!hasLaterWaveFile) {
+      console.error(
+        `\nCONTENT SUPPLY EMPTY: wave-${waveNum} exhausted, no wave-${waveNum + 1} (or later) schedule file found in ${path.relative(REPO_ROOT, SCHEDULE_DIR)}. ` +
+          `Create marketing/instagram/wave-${waveNum + 1}-schedule.json to resume posting.`,
+      );
+      process.exit(1);
+    }
+
+    // A later wave file exists but also has zero pending slots (unusual — likely
+    // also exhausted or malformed). Still treat as content-supply-empty: there is
+    // nothing left to post right now.
+    console.error(
+      `\nCONTENT SUPPLY EMPTY: wave-${waveNum} exhausted. A later wave file exists in ${path.relative(REPO_ROOT, SCHEDULE_DIR)} but it has no pending slots either — check its content/dates.`,
+    );
+    process.exit(1);
   }
 
   const baseUrl = sched.image_base_url.replace(/\/+$/, "");
