@@ -25,12 +25,3 @@ database_id = "e7e0d9e9-3400-476b-bd27-ede26f6d41e1"
 # Cron — reconcile stale Mollie payments every 15 minutes (V4 Sprint D).
 [triggers]
 crons = ["*/15 * * * *"]
-
-# F1.3b intake wizard (aanloopai.nl/start -> POST /api/intake, src/worker.js
-# handleIntake). D1 write always happens; the Hetzner forward below is
-# best-effort and optional. Apply migrations/0014_intake_requests.sql first.
-# Still required (secrets, never put values in this file):
-#   wrangler secret put INTAKE_WEBHOOK_URL     (Hetzner/fleetclaw receiving endpoint)
-#   wrangler secret put INTAKE_WEBHOOK_SECRET  (HMAC-SHA256 key for X-Intake-Signature)
-# Without these two, /api/intake still stores every submission in D1
-# (forwarded=0) and returns success to the browser — forward is simply skipped.
