@@ -312,6 +312,130 @@ function buildScanAutoresponseHtml(template, userName, fields) {
   </body></html>`;
 }
 
+// --- /api/intake: pre-sale intake wizard (aanloopai.nl/start) ---------------
+// Stores every submission durably in D1 first, then best-effort forwards to
+// Hetzner/fleetclaw (INTAKE_WEBHOOK_URL, HMAC-signed). A forward failure never
+// blocks the success response to the browser — the row already exists in D1
+// with forwarded=0. See migrations/0014_intake_requests.sql.
+const INTAKE_ALLOWED_SERVICES = new Set(['agenda-assistant', 'voice-agent', 'whatsapp-bot', 'ai-scan-consult']);
+const INTAKE_MAX_ANSWERS_JSON_LENGTH = 8000;
+
+// Generic HMAC-SHA256 hex signer — intentionally separate from
+// signConsentToken/verifyConsentToken above (those sign a specific
+// {email,purpose,exp} shape for the double opt-in flow). This one signs an
+// arbitrary raw string (the outgoing webhook body) so Hetzner can verify the
+// X-Intake-Signature header against the exact bytes it received.
+async function hmacSha256Hex(secret, message) {
+  const enc = new TextEncoder();
+  const key = await crypto.subtle.importKey('raw', enc.encode(secret), { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  const sig = await crypto.subtle.sign('HMAC', key, enc.encode(message));
+  return [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function handleIntake(request, env) {
+  if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
+  if (request.method !== 'POST') return jsonResponse({ success: false, message: 'Use POST' }, 405);
+
+  const clientIp = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const intakeRl = await rateLimit(env.GOOGLE_TOKENS, `rl:intake:${clientIp}`, 5, 600);
+  if (!intakeRl.allowed) {
+    return jsonResponse({ success: false, message: 'Te veel aanvragen vanaf dit IP-adres. Probeer het over enkele minuten opnieuw.' }, 429);
+  }
+
+  if (!env.PORTAL_DB) {
+    return jsonResponse({ success: false, message: 'Database niet geconfigureerd' }, 500);
+  }
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return jsonResponse({ success: false, message: 'Ongeldige JSON' }, 400);
+  }
+
+  const serviceId = String((body && body.service_id) || '').trim();
+  if (!INTAKE_ALLOWED_SERVICES.has(serviceId)) {
+    return jsonResponse({ success: false, message: 'Ongeldige dienst geselecteerd.' }, 400);
+  }
+
+  const customerIn = (body && typeof body.customer === 'object' && body.customer) || {};
+  const email = String(customerIn.email || '').trim();
+  if (!isValidEmail(email)) {
+    return jsonResponse({ success: false, message: 'Ongeldig e-mailadres.' }, 400);
+  }
+  const name = String(customerIn.name || '').trim().slice(0, 200);
+  if (!name) {
+    return jsonResponse({ success: false, message: 'Naam is verplicht.' }, 400);
+  }
+  const company = String(customerIn.company || '').trim().slice(0, 200);
+  const phone = String(customerIn.phone || '').trim().slice(0, 40);
+  const lang = (String(customerIn.lang || 'nl').trim().slice(0, 5) || 'nl');
+
+  // Server-side consent gate — a client-declared `true` is still required
+  // input validation (same posture as the checkbox on every other form in
+  // this file), not a substitute for it being present at all.
+  if (body?.consent !== true) {
+    return jsonResponse({ success: false, message: 'Toestemming voor gegevensverwerking is verplicht.' }, 400);
+  }
+
+  const answersIn = (body && typeof body.answers === 'object' && body.answers) || {};
+  const answersJson = JSON.stringify(answersIn).slice(0, INTAKE_MAX_ANSWERS_JSON_LENGTH);
+  const customer = { email, name, company, phone, lang };
+  const customerJson = JSON.stringify(customer);
+
+  const id = crypto.randomUUID();
+  const createdAt = new Date().toISOString();
+
+  try {
+    await env.PORTAL_DB.prepare(
+      `INSERT INTO intake_requests (id, service_id, customer_json, answers_json, consent, forwarded, created_at) VALUES (?, ?, ?, ?, 1, 0, ?)`
+    ).bind(id, serviceId, customerJson, answersJson, createdAt).run();
+  } catch (err) {
+    console.error('[/api/intake] D1 insert failed:', err.message || err);
+    return jsonResponse({ success: false, message: 'Opslaan van uw aanvraag is mislukt — probeer het opnieuw.' }, 500);
+  }
+
+  // Best-effort forward. Never blocks the success response below — the row is
+  // already durable in D1 (forwarded=0 on any failure here, incl. missing env).
+  if (env.INTAKE_WEBHOOK_URL && env.INTAKE_WEBHOOK_SECRET) {
+    try {
+      const forwardPayload = JSON.stringify({
+        service_id: serviceId,
+        customer,
+        answers: answersIn,
+        source: 'aanloopai.nl/start',
+        consent: true,
+        ts: createdAt,
+      });
+      const signature = await hmacSha256Hex(env.INTAKE_WEBHOOK_SECRET, forwardPayload);
+      const ctrl = new AbortController();
+      const t = setTimeout(() => ctrl.abort(), 8000);
+      let res;
+      try {
+        res = await fetch(env.INTAKE_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'content-type': 'application/json', 'x-intake-signature': `sha256=${signature}` },
+          body: forwardPayload,
+          signal: ctrl.signal,
+        });
+      } finally {
+        clearTimeout(t);
+      }
+      if (res.ok) {
+        await env.PORTAL_DB.prepare(`UPDATE intake_requests SET forwarded = 1 WHERE id = ?`).bind(id).run();
+      } else {
+        console.error(`[/api/intake] webhook forward non-2xx (row kept forwarded=0, id=${id}):`, res.status);
+      }
+    } catch (err) {
+      console.error(`[/api/intake] webhook forward failed — non-fatal, row kept forwarded=0 for later retry (id=${id}):`, err.message || err);
+    }
+  } else {
+    console.log('[/api/intake] INTAKE_WEBHOOK_URL/INTAKE_WEBHOOK_SECRET not configured — forward skipped (local/dev), row kept forwarded=0');
+  }
+
+  return jsonResponse({ success: true, message: 'Aanvraag ontvangen' });
+}
+
 async function sendBrevoEmail(apiKey, payload, label) {
   const res = await fetch('https://api.brevo.com/v3/smtp/email', {
     method: 'POST',
@@ -988,6 +1112,11 @@ export default {
         return handleSubmit(request, env);
       }
       return jsonResponse({ success: false, message: 'Method not allowed. Use POST.' }, 405);
+    }
+
+    // Pre-sale intake wizard (aanloopai.nl/start) — see handleIntake above.
+    if (url.pathname === '/api/intake') {
+      return handleIntake(request, env);
     }
 
     // Double opt-in landing page for the marketing-list confirmation email
