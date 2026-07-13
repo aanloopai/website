@@ -27,7 +27,8 @@ const TOKEN = (process.env.IG_PAGE_ACCESS_TOKEN || "").trim();
 const IG_ID_OVERRIDE = (process.env.IG_USER_ID || "").trim();
 const DRY = process.env.DRY_RUN === "1";
 const VALIDATE_ONLY = process.env.VALIDATE_ONLY === "1";
-const GRAPH = "https://graph.instagram.com/v23.0";
+const GRAPH_VERSION = "v23.0";
+const GRAPH = `https://graph.instagram.com/${GRAPH_VERSION}`;
 
 function mask(s) {
   if (!s) return "(empty)";
@@ -108,6 +109,22 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
+// Diagnostic-only: on container ERROR, re-query the container through the
+// Facebook Graph host (as opposed to graph.instagram.com, used for the normal
+// poll loop above). Some IG container failures only surface a useful reason
+// on this host/field combination; this call is best-effort and never masks
+// or replaces the original error — it only adds a log line before we throw.
+async function logDiagnosticContainerStatus(containerId) {
+  try {
+    const url = `https://graph.facebook.com/${GRAPH_VERSION}/${containerId}?fields=status_code,status&access_token=${TOKEN}`;
+    const res = await fetch(url);
+    const text = await res.text();
+    console.error(`Diagnostic (graph.facebook.com) container status: HTTP ${res.status}: ${text.slice(0, 500)}`);
+  } catch (diagErr) {
+    console.error(`Diagnostic container status fetch failed (non-fatal): ${diagErr.message}`);
+  }
+}
+
 async function pollContainerReady(containerId, { maxWaitSec = 180, intervalSec = 6 } = {}) {
   const deadline = Date.now() + maxWaitSec * 1000;
   let last;
@@ -117,6 +134,7 @@ async function pollContainerReady(containerId, { maxWaitSec = 180, intervalSec =
     console.log(`  container ${containerId} status=${data.status_code} (${data.status || ""})`);
     if (data.status_code === "FINISHED") return data;
     if (data.status_code === "ERROR" || data.status_code === "EXPIRED") {
+      await logDiagnosticContainerStatus(containerId);
       throw new Error(`Container failed: ${JSON.stringify(data)}`);
     }
     await sleep(intervalSec * 1000);
