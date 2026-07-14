@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import sectorImage from '../../assets/images/sectoren/bouw.jpg';
+import { EMMA } from '../../data/pricing';
 
 const faqSchema = [
   {
@@ -35,9 +36,9 @@ const articleSchema = {
   areaServed: 'NL',
   offers: {
     '@type': 'Offer',
-    price: '997',
+    price: String(EMMA.monthly),
     priceCurrency: 'EUR',
-    priceSpecification: { '@type': 'UnitPriceSpecification', priceType: 'monthly' },
+    priceSpecification: { '@type': 'UnitPriceSpecification', price: EMMA.monthly, priceCurrency: 'EUR', unitText: 'MONTH' },
   },
 };
 ---

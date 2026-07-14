@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { EMMA, GROEI, EMMA_MND, GROEI_MND, EMMA_SETUP_LABEL, GROEI_SETUP_LABEL, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../data/pricing';
 
 const serviceSchema = {
   '@context': 'https://schema.org',
@@ -16,15 +17,15 @@ const serviceSchema = {
   areaServed: { '@type': 'Country', name: 'Nederland' },
   audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
   offers: [
-    { '@type': 'Offer', name: 'Emma', price: '497.00', priceCurrency: 'EUR' },
-    { '@type': 'Offer', name: 'Groei', price: '997.00', priceCurrency: 'EUR' },
+    { '@type': 'Offer', name: 'Emma', price: EMMA.monthly.toFixed(2), priceCurrency: 'EUR' },
+    { '@type': 'Offer', name: 'Groei', price: GROEI.monthly.toFixed(2), priceCurrency: 'EUR' },
   ],
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
     name: 'AI Agent Pakketten',
     itemListElement: [
-      { '@type': 'Offer', name: 'Emma', price: '497.00', priceCurrency: 'EUR', description: 'Emma AI-telefoon-agent, tot 150 gesprekken per maand, 1 callscript op maat, agenda-integratie. Eenmalige setup EUR 495.' },
-      { '@type': 'Offer', name: 'Groei', price: '997.00', priceCurrency: 'EUR', description: 'Emma WhatsApp-agent, onbeperkte gesprekken, CRM-integratie, dashboard met opnames. Eenmalige setup EUR 795.' },
+      { '@type': 'Offer', name: 'Emma', price: EMMA.monthly.toFixed(2), priceCurrency: 'EUR', description: `Emma AI-telefoon-agent, tot 150 gesprekken per maand, 1 callscript op maat, agenda-integratie. Eenmalige setup ${EMMA_SETUP_LABEL}.` },
+      { '@type': 'Offer', name: 'Groei', price: GROEI.monthly.toFixed(2), priceCurrency: 'EUR', description: `Emma AI-telefoon-agent, onbeperkte gesprekken, WhatsApp inbegrepen, CRM-integratie, dashboard met opnames. Eenmalige setup ${GROEI_SETUP_LABEL}.` },
       { '@type': 'Offer', priceSpecification: { '@type': 'PriceSpecification', priceCurrency: 'EUR', valueAddedTaxIncluded: false }, name: 'Partner', priceCurrency: 'EUR', description: 'Emma + custom AI-workflows op maat, dedicated account manager, SLA. Prijs op aanvraag.' },
     ],
   },
@@ -224,15 +225,15 @@ const faqItems = [
       <div class="space-y-4 mb-6">
         <div class="card p-6 bg-white border border-slate-200">
           <div class="flex items-baseline justify-between gap-4 flex-wrap">
-            <h3 class="text-lg font-bold text-navy">Emma — €497/mnd</h3>
-            <span class="text-xs text-slate-500">eenmalige setup €495</span>
+            <h3 class="text-lg font-bold text-navy">Emma — {EMMA_MND}</h3>
+            <span class="text-xs text-slate-500">eenmalige setup {EMMA_SETUP_LABEL}</span>
           </div>
           <p class="text-sm text-slate-600 leading-relaxed mt-2">Emma AI-telefoon-agent, tot 150 gesprekken per maand, 1 callscript op maat, agenda-integratie en dashboard. De laagdrempelige instap in AI-automatisering.</p>
         </div>
         <div class="card p-6 bg-white border-2 border-navy shadow-md">
           <div class="flex items-baseline justify-between gap-4 flex-wrap">
-            <h3 class="text-lg font-bold text-navy">Groei — €997/mnd</h3>
-            <span class="text-xs text-slate-500">eenmalige setup €795 · meest gekozen</span>
+            <h3 class="text-lg font-bold text-navy">Groei — {GROEI_MND}</h3>
+            <span class="text-xs text-slate-500">eenmalige setup {GROEI_SETUP_LABEL} · meest gekozen</span>
           </div>
           <p class="text-sm text-slate-600 leading-relaxed mt-2">Emma met onbeperkte gesprekken, CRM-integratie (HubSpot, Pipedrive) en dashboard met opnames. Telefoon én WhatsApp volledig geautomatiseerd.</p>
         </div>
@@ -270,8 +271,8 @@ const faqItems = [
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder lezen</h2>
       <ul class="space-y-3 text-slate-700">
         <li><a href="/ai-agency-nederland/" class="text-brand-indigo hover:underline">AI agency Nederland — de complete pillar-gids</a></li>
-        <li><a href="/diensten/emma/" class="text-brand-indigo hover:underline">Emma — onze AI-telefoon-agent (productpagina)</a></li>
-        <li><a href="/diensten/emma/" class="text-brand-indigo hover:underline">Emma — onze AI WhatsApp-agent (productpagina)</a></li>
+        <li><a href={EMMA_TELEFOON_URL} class="text-brand-indigo hover:underline">Emma — onze AI-telefoon-agent (productpagina)</a></li>
+        <li><a href={EMMA_WHATSAPP_URL} class="text-brand-indigo hover:underline">Emma — onze AI WhatsApp-agent (productpagina)</a></li>
         <li><a href="/diensten/custom/" class="text-brand-indigo hover:underline">Custom AI Workflows — document-, e-mail- en workflow-agents</a></li>
         <li><a href="/diensten/ai-document-processing/" class="text-brand-indigo hover:underline">AI document processing — facturen en formulieren verwerken</a></li>
         <li><a href="/diensten/ai-email-assistent/" class="text-brand-indigo hover:underline">AI e-mail assistent — inbox automatisch afhandelen</a></li>

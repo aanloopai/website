@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EMMA_LITE_MND, EMMA_MND, EMMA_TELEFOON_NAAM, EMMA_WHATSAPP_NAAM, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../../data/pricing';
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -29,9 +30,9 @@ const comparison = [
   { feature: 'Doelgroep', a: 'MKB 5-250 medewerkers', b: 'Enterprise 500+ medewerkers, multinationals' },
   { feature: 'Onboarding-model', a: 'Done-for-you door Aanloop-specialist', b: 'Self-service met optionele professional services' },
   { feature: 'Telefoon-AI (voice)', a: 'Ja - Emma', b: 'Beperkt; Sinch-voice apart product' },
-  { feature: 'WhatsApp Business', a: 'Ja - Emma, vanaf 49 euro/maand', b: 'Ja - via Sinch-channels' },
+  { feature: 'WhatsApp Business', a: `Ja - ${EMMA_WHATSAPP_NAAM}, vanaf ${EMMA_LITE_MND}`, b: 'Ja - via Sinch-channels' },
   { feature: 'Web-chat', a: 'Ja, snel deploybaar widget', b: 'Ja, geavanceerde flow-builder' },
-  { feature: 'Startprijs', a: '49 euro per maand (Emma Lite)', b: 'Vanaf circa 1.500 euro/maand (enterprise tier)' },
+  { feature: 'Startprijs', a: `${EMMA_LITE_MND} (${EMMA_WHATSAPP_NAAM}) · ${EMMA_MND} (${EMMA_TELEFOON_NAAM}, incl. WhatsApp)`, b: 'Vanaf circa 1.500 euro/maand (enterprise tier)' },
   { feature: 'Doorlooptijd', a: '7-14 werkdagen', b: '6-12 weken (enterprise project)' },
   { feature: 'Nederlands NLU', a: 'Native NL, sector-tuned', b: 'NL-ondersteund, vereist eigen training' },
   { feature: 'Integraties', a: 'HubSpot, Salesforce, Pipedrive, AFAS, Exact, Twinfield', b: 'API-first, werkt met alles maar vereist build' },
@@ -62,7 +63,7 @@ const faqs = [
   },
   {
     q: 'Wat is het prijsverschil concreet?',
-    a: 'Aanloop start vanaf 49 euro/maand. Chatlayer enterprise contracten beginnen rond 1.500 euro/maand exclusief implementatie-budget van 20-50K eenmalig.',
+    a: `${EMMA_WHATSAPP_NAAM} start vanaf ${EMMA_LITE_MND}; ${EMMA_TELEFOON_NAAM} (incl. WhatsApp) vanaf ${EMMA_MND}. Chatlayer enterprise contracten beginnen rond 1.500 euro/maand exclusief implementatie-budget van 20-50K eenmalig.`,
   },
   {
     q: 'Welke is sneller live?',
@@ -166,8 +167,8 @@ const combinedSchema = [articleSchema, faqSchema];
       <p class="text-slate-700 leading-relaxed mb-4">Aanloop AI is gebouwd voor Nederlands MKB: snelle implementatie, sector-specifieke templates, voorspelbare maandprijs. Voor 95 procent van de MKB-bedrijven is dit de juiste keuze.</p>
       <p class="text-slate-700 leading-relaxed mb-4">Vuistregel: heeft u een eigen IT-afdeling van 5+ FTE en budget van 20K+ voor implementatie? Overweeg Chatlayer. Anders: Aanloop AI.</p>
       <div class="mt-8 flex flex-wrap gap-3">
-        <a href="/diensten/emma/" class="btn-secondary">Emma - telefoon-AI</a>
-        <a href="/diensten/emma/" class="btn-secondary">Emma - WhatsApp-AI</a>
+        <a href={EMMA_TELEFOON_URL} class="btn-secondary">Emma - telefoon-AI</a>
+        <a href={EMMA_WHATSAPP_URL} class="btn-secondary">Emma - WhatsApp-AI</a>
         <a href="/aanvragen/" class="btn-primary">Adviesgesprek aanvragen</a>
       </div>
     </div>
@@ -192,7 +193,7 @@ const combinedSchema = [articleSchema, faqSchema];
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder vergelijken</h2>
       <ul class="space-y-3 text-slate-700">
         <li><a href="/vergelijk/aanloop-vs-watermelon/" class="text-navy hover:underline">Aanloop AI versus Watermelon</a></li>
-        <li><a href="/diensten/emma/" class="text-navy hover:underline">Emma versus Emma</a></li>
+        <li><a href="/diensten/emma/" class="text-navy hover:underline">Emma — AI-receptie & WhatsApp Agent (productpagina)</a></li>
         <li><a href="/vergelijk/ai-receptionist-vs-callcenter/" class="text-navy hover:underline">AI-receptionist versus extern callcenter</a></li>
         <li><a href="/vergelijk/" class="text-navy hover:underline">Alle vergelijkingen</a></li>
       </ul>

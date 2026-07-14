@@ -1,5 +1,13 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EMMA, EMMA_SETUP, WEBSITE_BUNDEL } from '../../data/pricing';
+
+// Website-onderhoud bij losse afname (niet in pricing.ts — losse dienst, geen Emma-tier).
+const WEBSITE_ONDERHOUD_MND = 197;
+const WEBSITE_SETUP_LOS = 5950;
+const INTEGRATIE_LOS = 1500;
+
+const euro = (n: number) => `€${n.toLocaleString('nl-NL')}`;
 
 const inhoud = [
   { categorie: 'Website (Groei pakket)', items: ['Tot 30 paginas + CMS', 'Schema.org + Speakable + WCAG 2.2 AA', 'Astro/Next.js framework, GitHub bij u', 'Multilingual NL/EN/DE', 'Cloudflare Pages hosting'] },
@@ -8,23 +16,30 @@ const inhoud = [
   { categorie: 'Operational tooling', items: ['ROI-calc widget op uw site', 'AI-scan formulier (lead-magnet)', 'GA4 + GrowthBook A/B-test setup', 'Maandelijkse performance-rapport', 'Prioriteit support binnen 4u werkdag'] },
 ];
 
+// Losse afname = wat u jaar 1 kwijt bent als u alles apart inkoopt.
+// LET OP: WhatsApp zit AL in het Emma-abonnement (€497) — dus GEEN losse WhatsApp-regel
+// erbij optellen. Dat was dubbeltelling en blies de besparing kunstmatig op.
 const losseFacturen = [
-  { item: 'Website Groei pakket — eenmalige bouw', toelichting: 'Tot 30 paginas, CMS, multilingual NL/EN/DE', prijs: '€5.950' },
-  { item: 'Website onderhoud — 12 × €197', toelichting: 'Hosting, updates, security, monitoring', prijs: '€2.364' },
-  { item: 'Emma AI-receptie (telefoon) — 12 × €497', toelichting: 'Neemt uw telefoon 24/7 op: voert het gesprek, zet de afspraak in de agenda, stuurt de lead naar uw CRM', prijs: '€5.964' },
-  { item: 'Emma WhatsApp Agent (chat) — 12 × €197', toelichting: 'Beantwoordt WhatsApp-berichten 24/7: FAQ, offerte-aanvragen, lead-capture. Tekst — geen telefonie', prijs: '€2.364' },
-  { item: 'Integratie-werk tussen de systemen', toelichting: 'Website ↔ telefoon ↔ WhatsApp aan elkaar koppelen', prijs: '€1.500' },
+  { item: 'Website Groei pakket — eenmalige bouw', toelichting: 'Tot 30 paginas, CMS, multilingual NL/EN/DE', bedrag: WEBSITE_SETUP_LOS },
+  { item: `Website onderhoud — 12 × ${euro(WEBSITE_ONDERHOUD_MND)}`, toelichting: 'Hosting, updates, security, monitoring', bedrag: WEBSITE_ONDERHOUD_MND * 12 },
+  { item: 'Emma AI-receptie — eenmalige setup', toelichting: 'Belscript, stem-training, telefoonnummer, koppeling agenda en CRM', bedrag: EMMA_SETUP },
+  { item: `Emma AI-receptie — 12 × ${euro(EMMA.monthly)}`, toelichting: 'Neemt uw telefoon 24/7 op: voert het gesprek, plant de afspraak, stuurt de lead naar uw CRM. WhatsApp-agent is hierbij inbegrepen', bedrag: EMMA.monthly * 12 },
+  { item: 'Integratie-werk tussen de systemen', toelichting: 'Website, telefonie en WhatsApp aan elkaar koppelen — bij losse leveranciers doet niemand dit voor u', bedrag: INTEGRATIE_LOS },
 ];
-const totaalLos = 5950 + 2364 + 5964 + 2364 + 1500;
+const totaalLos = losseFacturen.reduce((som, f) => som + f.bedrag, 0);
 
-const bundelPrijs = { setup: 4950, mnd: 397 };
+const bundelPrijs = { setup: WEBSITE_BUNDEL.setup, mnd: WEBSITE_BUNDEL.maand };
 const bundelJaar1 = bundelPrijs.setup + (bundelPrijs.mnd * 12);
 const besparing = totaalLos - bundelJaar1;
+
+// Structureel voordeel vanaf jaar 2 (alleen de terugkerende maandlasten).
+const losseMaandlastJaar2 = (WEBSITE_ONDERHOUD_MND + EMMA.monthly) * 12;
+const besparingJaar2 = losseMaandlastJaar2 - (bundelPrijs.mnd * 12);
 
 const waaromUniek = [
   { titel: 'Eén partner, één factuur, één SLA', body: 'Geen "verwijst u naar de webdeveloper" als de chatbot bug heeft. Wij leveren website + AI als één geïntegreerd systeem en zijn aanspreekpunt voor alles.' },
   { titel: 'Architectuur is vanaf dag 1 AI-ready', body: 'Webbureaus bouwen meestal eerst de site, AI komt achteraf. Bij ons zijn de plug-in-slots, schema.org-markup en data-flows al ingebouwd op launch-dag — geen €5-15k retrofit-kosten.' },
-  { titel: 'Korting tov losse afname (€8-15k op jaar 1)', body: `Losse afname kost ~€${totaalLos.toLocaleString('nl-NL')}. Bundel jaar 1 = €${bundelJaar1.toLocaleString('nl-NL')}. Besparing: €${besparing.toLocaleString('nl-NL')}.` },
+  { titel: `Korting tov losse afname (${euro(besparing)} op jaar 1)`, body: `Losse afname kost ${euro(totaalLos)}. Bundel jaar 1 = ${euro(bundelJaar1)}. Besparing: ${euro(besparing)} — en vanaf jaar 2 nog ${euro(besparingJaar2)} per jaar, omdat het onderhoud en de AI-licentie in één maandbedrag zitten.` },
   { titel: 'Time-to-revenue 6-8 weken ipv 12-20', body: 'Parallel design + AI-training in één traject. Concurrent-route (eerst webdev klaar, dan AI-agency briefen) duurt 3-5 maanden langer. U bent 2-4 maanden eerder live met €30-60k extra omzet.' },
 ];
 
@@ -44,8 +59,8 @@ const proces = [
 
 const faqItems = [
   { question: 'Wat zit er precies in de bundel?', answer: 'Website (Groei pakket: tot 30 paginas, CMS, multilingual NL/EN/DE) + Emma AI-receptionist (24/7 NL-telefoon, agenda, CRM-koppeling) + Emma WhatsApp Agent (24/7 chat, lead-capture) + alle koppelingen tussen de 3 systemen + ROI-calc/AI-scan widgets op uw site + GA4/GrowthBook setup + maandelijks onderhoud op alles. Eén factuur, één contract, één aanspreekpunt.' },
-  { question: 'Hoeveel bespaar ik tegenover losse afname?', answer: `Losse afname jaar 1: ${losseFacturen.map(f => `${f.item} = ${f.prijs}`).join(', ')}. Samen €${totaalLos.toLocaleString('nl-NL')}. Bundel jaar 1 (€${bundelPrijs.setup.toLocaleString('nl-NL')} setup + 12 × €${bundelPrijs.mnd}) = €${bundelJaar1.toLocaleString('nl-NL')}. Besparing: €${besparing.toLocaleString('nl-NL')} in jaar 1, structureel ~€2.400/jaar daarna.` },
-  { question: 'Wat is het verschil tussen Emma AI-receptie en Emma WhatsApp Agent?', answer: 'Het zijn twee losse producten met dezelfde naam-familie, maar ander werk. Emma AI-receptie (€497/mnd) neemt uw telefoon op: zij voert een echt gesprek in het Nederlands, plant afspraken in uw agenda en zet de lead in uw CRM. Emma WhatsApp Agent (€197/mnd) doet geen telefonie — zij beantwoordt WhatsApp-berichten met tekst: FAQ, offerte-aanvragen en lead-capture. Het prijsverschil komt door telefonie: spraakherkenning, stem-synthese en telefoonlijnen per gespreksminuut zijn fors duurder dan tekstberichten. In de bundel zitten ze allebei.' },
+  { question: 'Hoeveel bespaar ik tegenover losse afname?', answer: `Losse afname jaar 1: ${losseFacturen.map(f => `${f.item} = ${euro(f.bedrag)}`).join('; ')}. Samen ${euro(totaalLos)}. Bundel jaar 1 (${euro(bundelPrijs.setup)} setup + 12 × ${euro(bundelPrijs.mnd)}) = ${euro(bundelJaar1)}. Besparing: ${euro(besparing)} in jaar 1. Vanaf jaar 2 bespaart u ${euro(besparingJaar2)} per jaar, omdat website-onderhoud en AI-licentie in één maandbedrag zitten in plaats van twee losse abonnementen.` },
+  { question: 'Emma AI-receptie of Emma WhatsApp Agent — wat is het verschil?', answer: 'Emma bestaat in twee smaken. Emma WhatsApp Agent (vanaf €49/mnd, Standard €197/mnd) doet alleen chat: zij beantwoordt WhatsApp-berichten met tekst — FAQ, offerte-aanvragen, lead-capture. Geen telefonie. Emma AI-receptie (€497/mnd) neemt daarnaast ook écht uw telefoon op: een gesprek in het Nederlands, afspraak in de agenda, lead in het CRM. Belangrijk: bij Emma AI-receptie is de WhatsApp-agent al inbegrepen — u betaalt dus niet twee keer. Het prijsverschil komt door telefonie: spraakherkenning, stem-synthese en telefoonminuten zijn fors duurder dan tekstberichten. In deze bundel zit de volledige Emma AI-receptie, dus telefoon én WhatsApp.' },
   { question: 'Kan ik bestaande website behouden en alleen Emma toevoegen?', answer: 'Ja, dat kan via een los Emma-abonnement (zie /diensten/emma/ — daar staan zowel de telefoon- als de WhatsApp-variant). De bundel is voordeliger als u sowieso een nieuwe of vernieuwde site wilt. Als uw huidige site jonger dan 2 jaar is en al schema.org markup heeft, adviseren we losse AI-modules ipv bundel.' },
   { question: 'Wat als ik later wil opzeggen?', answer: 'Maandelijks onderhoud is opzegbaar per maand met 1 maand opzegtermijn. De setup-fee is eenmalig. Bij opzegging behoudt u: uw website-code (in eigen GitHub), uw domeinnaam, alle CRM-data van Emma. Emma stoppen we met doorschakelen, maar de transcripts/lead-data exporteren we naar u toe.' },
   { question: 'Hoe lang duurt het tot we live zijn?', answer: 'Discovery week 1, design + AI-training parallel weken 2-6, soft-launch week 7, public-launch week 8. Bij complexe integraties (zoals zorg-EPD of advocaten-DMS koppeling) kan het 10-12 weken zijn. We werken in vaste sprints met wekelijkse demo-momenten.' },
@@ -159,13 +174,13 @@ const speakableSchema = {
       <div class="grid lg:grid-cols-2 gap-6">
         <div class="card">
           <h3 class="text-base font-bold text-slate-600 mb-1">Losse afname — alles apart ingekocht</h3>
-          <p class="text-xs text-slate-500 mb-4">Vijf losse posten, drie losse contracten, drie keer een aanspreekpunt.</p>
+          <p class="text-xs text-slate-500 mb-4">Losse posten, losse contracten, en bij storing twee partijen die naar elkaar wijzen.</p>
           <ul class="space-y-3 mb-4">
             {losseFacturen.map(f => (
               <li class="border-b border-slate-100 pb-2.5">
                 <div class="flex items-start justify-between gap-3 text-sm">
                   <span class="text-slate-700 font-medium">{f.item}</span>
-                  <span class="font-medium text-slate-700 whitespace-nowrap">{f.prijs}</span>
+                  <span class="font-medium text-slate-700 whitespace-nowrap">{euro(f.bedrag)}</span>
                 </div>
                 <p class="mt-0.5 text-xs text-slate-500 leading-snug">{f.toelichting}</p>
               </li>
@@ -195,7 +210,7 @@ const speakableSchema = {
           </div>
         </div>
       </div>
-      <p class="mt-6 text-xs text-slate-500 max-w-3xl">Emma AI-receptie (telefoon) en Emma WhatsApp Agent (chat) zijn twee losse producten met een eigen abonnement — vandaar twee regels. De genoemde bedragen zijn onze eigen listprijzen bij losse afname (peildatum 2026-05-04). Het integratie-werk is een geschatte gemiddelde marktprijs voor het koppelen van website, telefonie en WhatsApp wanneer die bij verschillende leveranciers lopen. Alle bedragen exclusief BTW.</p>
+      <p class="mt-6 text-xs text-slate-500 max-w-3xl">De WhatsApp-agent staat bewust <strong>niet</strong> als aparte regel in deze vergelijking: die zit al in het Emma-abonnement van {euro(EMMA.monthly)}/mnd. Hem er los bij optellen zou de besparing kunstmatig opblazen. De genoemde bedragen zijn onze eigen listprijzen bij losse afname, inclusief de eenmalige setup-fee van {euro(EMMA_SETUP)} die u bij een los Emma-abonnement óók betaalt. Het integratie-werk is een geschatte gemiddelde marktprijs voor het koppelen van website, telefonie en WhatsApp wanneer die bij verschillende leveranciers lopen. Alle bedragen exclusief BTW.</p>
     </div>
   </section>
 

@@ -581,7 +581,7 @@ export const KENNISBANK_ARTICLES = [
     category: 'Kosten & Tarieven',
     categoryColor: 'bg-brand-amber/10 text-brand-amber',
     title: 'Hoeveel kost een AI-agent? Compleet kostenoverzicht voor MKB Nederland 2026',
-    excerpt: 'Alle prijzen per AI-agent type: Emma (€497–€997/mnd), Emma (€49–€197/mnd), chatbot, omnichannel, e-mail, lead qualification, document processing, HR-recruitment en AI-Website Bundel. TCO 5 jaar, ROI-berekening, AVG-compliance — geen verborgen kosten.',
+    excerpt: 'Alle prijzen per AI-agent type: Emma AI-receptie (€497–€997/mnd), Emma WhatsApp Agent (€49–€197/mnd), chatbot, omnichannel, e-mail, lead qualification, document processing, HR-recruitment en AI-Website Bundel. TCO 5 jaar, ROI-berekening, AVG-compliance — geen verborgen kosten.',
     readTime: '15 min',
     date: '7 mei 2026',
   },
