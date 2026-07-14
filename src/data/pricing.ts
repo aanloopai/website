@@ -7,9 +7,8 @@
 // Let op: WhatsApp zit AL in €497 en €997. Tel een los WhatsApp-abonnement er dus nooit
 // bovenop in een kostenvergelijking — dat is dubbeltelling (deze fout stond tot 2026-07-14
 // in ai-website-bundel-mkb-nederland.astro en blies de "besparing" kunstmatig op).
-// Historie: het telefoonproduct heette "Marco" en is in commit 4f01db4 hernoemd naar Emma.
-// Die rename heeft de onderscheidende labels weggevaagd. Label ze OVERAL expliciet
-// (kanaal tussen haakjes) — anders leest het prijsverschil als willekeurig.
+// Label beide lijnen OVERAL expliciet (kanaal tussen haakjes) — zonder dat label
+// leest het prijsverschil als willekeurig en denkt de klant dat hij dubbel betaalt.
 //
 // SETUP-FEE: die is er WEL (€495 Emma / €795 Groei). Dit bestand claimde tot 2026-07-14
 // "geen setup-fee — markt-differentiator" terwijl 9 andere pagina's + 2 JSON-LD Offers
