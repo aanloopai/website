@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { EMMA_LABEL, GROEI_LABEL, SETUP_ZIN, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../data/pricing';
 
 const serviceSchema = {
   '@context': 'https://schema.org',
@@ -30,7 +31,7 @@ const faqItems = [
   { question: 'Wat is een AI marketing bureau?', answer: 'Een AI marketing bureau is een bureau dat marketingprocessen automatiseert met kunstmatige intelligentie in plaats van die processen uitsluitend handmatig uit te voeren. Aanloop AI richt zich specifiek op het automatiseren van lead-generatie, lead-kwalificatie en klantcommunicatie. Wij vangen inbound leads op met een AI-receptionist, beantwoorden marketing-vragen via WhatsApp en synchroniseren contacten met uw CRM — 24/7, zonder personeelskosten.' },
   { question: 'Doet een AI marketing bureau ook advertenties en creatie?', answer: 'Aanloop AI is in de eerste plaats een AI-automatiseringsbureau, geen klassiek reclamebureau. Wij kopen geen advertentieruimte en maken geen campagnebeelden of video. Onze focus ligt op het automatiseren van lead-opvolging en klantcommunicatie. Voor advertentie-inkoop en creatieve productie werkt u met een traditioneel bureau; wij zorgen ervoor dat de leads die uit die campagnes komen direct en consistent worden opgevolgd.' },
   { question: 'Voor welke MKB-bedrijven werkt AI marketing?', answer: 'AI marketing-automatisering werkt het best bij Nederlandse MKB-bedrijven met een meetbare inbound-stroom: telefoontjes, formulieren of WhatsApp-berichten van potentiele klanten. Denk aan installatiebedrijven, adviesbureaus, makelaars, webshops, praktijken en B2B-dienstverleners. Heeft u nauwelijks inbound, dan levert lead-opvolging weinig op en is generatie eerst nodig.' },
-  { question: 'Wat kost een AI marketing bureau in Nederland?', answer: 'Aanloop AI hanteert vaste maandtarieven. Emma kost €497 per maand en bevat Emma, de AI-receptionist die inbound marketing-leads opvangt. Groei kost €997 per maand en voegt Emma, de WhatsApp-agent, plus CRM-integratie en lead-nurturing toe. Partner is maatwerk op offerte. Alle prijzen zijn exclusief 21% btw. De setup-kosten worden eenmalig apart gefactureerd.' },
+  { question: 'Wat kost een AI marketing bureau in Nederland?', answer: `Aanloop AI hanteert vaste maandtarieven. Emma kost ${EMMA_LABEL} per maand en bevat Emma, de AI-receptionist die inbound marketing-leads opvangt. Groei kost ${GROEI_LABEL} per maand en voegt Emma, de WhatsApp-agent, plus CRM-integratie en lead-nurturing toe. Partner is maatwerk op offerte. Alle prijzen zijn exclusief 21% btw. ${SETUP_ZIN}` },
   { question: 'Hoe snel is AI marketing-automatisering live?', answer: 'Het Emma-pakket is gemiddeld binnen 10 werkdagen live, het Groei-pakket binnen 7 werkdagen en het Partner-pakket binnen 14 werkdagen afhankelijk van de scope. Na de gratis AI-scan trainen we de agents op uw aanbod, openingstijden en kwalificatievragen, koppelen we agenda en CRM en draaien we een korte testronde voordat het verkeer volledig live gaat.' },
   { question: 'Is AI marketing-automatisering AVG-compliant?', answer: 'Ja. Aanloop AI verwerkt persoonsgegevens uitsluitend binnen de EU en sluit een verwerkersovereenkomst conform AVG artikel 28. Bewaartermijnen zijn instelbaar en lead-data wordt alleen gebruikt voor het overeengekomen marketingdoel. Voor zorg- en juridische sectoren bouwen we extra waarborgen in. Aanloop AI B.V. is geregistreerd in Rotterdam onder KVK 88606902.' },
   { question: 'Vervangt AI marketing mijn marketeer of marketingbureau?', answer: 'Nee. AI marketing-automatisering vervangt de repetitieve uitvoering — leads opvangen, kwalificeren, eerste vragen beantwoorden en data bijwerken — niet de strategie. Uw marketeer of bureau blijft verantwoordelijk voor positionering, campagnekeuzes en creatie. De AI-agents zorgen ervoor dat geen enkele lead blijft liggen en dat opvolging altijd binnen seconden gebeurt.' },
@@ -226,8 +227,8 @@ const faqItems = [
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder lezen</h2>
       <ul class="space-y-3 text-slate-700">
         <li><a href="/ai-agency-nederland/" class="text-brand-indigo hover:underline">AI-agency Nederland — de volledige gids (pillar)</a></li>
-        <li><a href="/diensten/emma/" class="text-brand-indigo hover:underline">Emma — AI-receptionist voor inbound leads</a></li>
-        <li><a href="/diensten/emma/" class="text-brand-indigo hover:underline">Emma — AI WhatsApp-agent</a></li>
+        <li><a href={EMMA_TELEFOON_URL} class="text-brand-indigo hover:underline">Emma — AI-receptionist voor inbound leads</a></li>
+        <li><a href={EMMA_WHATSAPP_URL} class="text-brand-indigo hover:underline">Emma — AI WhatsApp-agent</a></li>
         <li><a href="/diensten/ai-lead-qualification/" class="text-brand-indigo hover:underline">AI lead-kwalificatie — automatisch leads scoren</a></li>
         <li><a href="/diensten/ai-social-media-agent/" class="text-brand-indigo hover:underline">AI social-media-agent</a></li>
         <li><a href="/diensten/ai-seo-content-generator/" class="text-brand-indigo hover:underline">AI SEO-content-generator</a></li>

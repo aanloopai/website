@@ -1,9 +1,14 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { EMMA, GROEI, EMMA_LABEL, GROEI_LABEL, EMMA_MND, GROEI_MND, EMMA_SETUP_LABEL, GROEI_SETUP_LABEL } from '../data/pricing';
+
+// Founding-korting = 50% van de normale maandprijs, eerste 3 maanden.
+const foundingEmma = Math.round(EMMA.monthly / 2);
+const foundingGroei = Math.round(GROEI.monthly / 2);
 
 const give = [
-  { icon: '50%', label: '3 maanden 50% korting', desc: 'Emma €249/mnd of Groei €499/mnd de eerste 3 maanden (i.p.v. €497 / €997).' },
-  { icon: '€0', label: 'Gratis setup', desc: 'Geen eenmalige setup-kosten — t.w.v. €495 (Emma) tot €795 (Groei).' },
+  { icon: '50%', label: '3 maanden 50% korting', desc: `Emma €${foundingEmma}/mnd of Groei €${foundingGroei}/mnd de eerste 3 maanden (i.p.v. ${EMMA_LABEL} / ${GROEI_LABEL}).` },
+  { icon: '€0', label: 'Gratis setup', desc: `Geen eenmalige setup-kosten — t.w.v. ${EMMA_SETUP_LABEL} (Emma) tot ${GROEI_SETUP_LABEL} (Groei).` },
   { icon: '⚡', label: 'Voorrang onboarding', desc: 'Live binnen 7 werkdagen, directe lijn met de oprichter tijdens de pilot.' },
   { icon: '🛡️', label: 'Maandelijks opzegbaar', desc: 'Geen jaarcontract, geen risico. Bevalt het niet, dan stopt u.' },
 ];
@@ -16,7 +21,7 @@ const ask = [
 
 const faq = [
   { q: 'Waarom een founding-aanbod?', a: 'Aanloop AI is in 2026 opgericht. We bouwen liever bewijs met echte resultaten dan met loze beloftes. De eerste 10 klanten krijgen een scherpe deal; in ruil delen ze hun ervaring. Eerlijk en transparant — precies hoe we werken.' },
-  { q: 'Wat kost het na de pilot?', a: 'Na 3 maanden gaat u over op het normale tarief: Emma €497/mnd of Groei €997/mnd. Geen verrassingen, maandelijks opzegbaar. De gratis setup en de korting hoeft u nooit terug te betalen.' },
+  { q: 'Wat kost het na de pilot?', a: `Na 3 maanden gaat u over op het normale tarief: Emma ${EMMA_MND} of Groei ${GROEI_MND}. Geen verrassingen, maandelijks opzegbaar. De gratis setup en de korting hoeft u nooit terug te betalen.` },
   { q: 'Voor welke bedrijven is dit?', a: 'Nederlands MKB met inkomend telefoon- of WhatsApp-verkeer: zorgpraktijken, installateurs, makelaars, horeca, e-commerce, zakelijke dienstverlening. Twijfelt u? Doe eerst de gratis AI-scan.' },
   { q: 'Hoeveel plekken zijn er?', a: 'We nemen bewust de eerste 10 founding-klanten aan, zodat we elke implementatie persoonlijk begeleiden. Daarna geldt het reguliere tarief.' },
 ];

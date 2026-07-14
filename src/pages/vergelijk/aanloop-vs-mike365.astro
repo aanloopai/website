@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EMMA_MND, GROEI_MND } from '../../data/pricing';
 
 // Comparison page: Aanloop AI vs MIKE365
 // Bron: mike365.nl/tarieven publieke website per mei 2026.
@@ -39,7 +40,7 @@ const faqSchema = {
       name: 'Wat is het belangrijkste verschil tussen Aanloop AI en MIKE365?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'MIKE365 is een self-service voice-AI met een transparante prijsladder van 14,99 tot 149,99 euro per maand plus 0,55 tot 0,65 euro per extra gesprek, geschikt voor ZZPers en micro-shops met laag belvolume die zelf de configuratie willen doen. Aanloop AI is een managed service vanaf 497 euro per maand voor 150 gesprekken (Emma) of 997 euro per maand voor onbeperkt gesprekken inclusief Emma WhatsApp-agent en CRM-integratie (Groei) — wij doen de implementatie, training en maandelijkse optimalisatie. Het verschil is fundamenteel: budget DIY versus volledig ontzorgd partnerschap.',
+        text: `MIKE365 is een self-service voice-AI met een transparante prijsladder van 14,99 tot 149,99 euro per maand plus 0,55 tot 0,65 euro per extra gesprek, geschikt voor ZZPers en micro-shops met laag belvolume die zelf de configuratie willen doen. Aanloop AI is een managed service vanaf ${EMMA_MND} voor 150 gesprekken inclusief WhatsApp (Emma), of ${GROEI_MND} voor onbeperkt gesprekken plus CRM-integratie (Groei) — wij doen de implementatie, training en maandelijkse optimalisatie. Het verschil is fundamenteel: budget DIY versus volledig ontzorgd partnerschap.`,
       },
     },
     {
@@ -90,14 +91,14 @@ const faqSchema = {
 // MIKE365 data: mike365.nl + mike365.nl/tarieven (per mei 2026).
 const comparison = [
   { feature: 'Type service',                     aanloop: 'Managed (Done-For-You)',                               mike365: 'Self-service voice-AI platform' },
-  { feature: 'Instapprijs',                      aanloop: '€497/mnd Emma (150 gesprekken)',             mike365: '€14,99/mnd budget-tier (laag volume)' },
-  { feature: 'Hoogste tier',                     aanloop: '€997/mnd Groei (Emma + CRM, onbeperkt)',     mike365: '€149,99/mnd hoogste tier' },
+  { feature: 'Instapprijs',                      aanloop: `${EMMA_MND} Emma (150 gesprekken, WhatsApp inbegrepen)`,             mike365: '€14,99/mnd budget-tier (laag volume)' },
+  { feature: 'Hoogste tier',                     aanloop: `${GROEI_MND} Groei (Emma + WhatsApp + CRM, onbeperkt)`,     mike365: '€149,99/mnd hoogste tier' },
   { feature: 'Per-gesprek bijbetaling',          aanloop: 'Geen — gesprekken inbegrepen in tier',                 mike365: '€0,55-€0,65 per extra gesprek' },
   { feature: 'Setup-kosten',                     aanloop: 'Eenmalig €495 Emma / €795 Groei (incl. training)',  mike365: 'Geen setup-fee genoemd op website' },
   { feature: 'Gratis trial',                     aanloop: 'Gratis 30-min AI-scan (geconsulteerd gesprek)',        mike365: '14 dagen gratis trial zonder creditcard' },
   { feature: 'Implementatie',                    aanloop: 'Volledig door Aanloop-team (7-14 werkdagen)',          mike365: 'Self-service via platform (DIY 2-8 uur)' },
   { feature: 'Nederlandstalige voice',           aanloop: 'ElevenLabs NL (expliciet vermeld)',                    mike365: '10+ voice options (NL onderdeel)' },
-  { feature: 'WhatsApp-agent inbegrepen',        aanloop: 'Emma vanaf Groei-tier (€997/mnd)',                   mike365: 'Niet expliciet als WhatsApp-product vermeld' },
+  { feature: 'WhatsApp-agent inbegrepen',        aanloop: `Emma vanaf ${EMMA_MND} (WhatsApp al inbegrepen)`,                   mike365: 'Niet expliciet als WhatsApp-product vermeld' },
   { feature: 'CRM-integratie',                   aanloop: 'HubSpot, Pipedrive (vanaf Groei inbegrepen)',          mike365: 'Beperkt — niet prominent op website' },
   { feature: 'Datalocatie',                      aanloop: 'EU-only (Frankfurt, Amsterdam) expliciet',             mike365: 'Niet expliciet publiek vermeld' },
   { feature: 'AVG-verwerkers­overeenkomst',     aanloop: 'Standaard inbegrepen, NEN 7510 op aanvraag',           mike365: 'Vraag op bij evaluatie' },

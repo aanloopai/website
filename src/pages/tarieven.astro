@@ -2,24 +2,34 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import dashboardMockup from '../assets/images/dashboard-mockup.png';
-import { EMMA_LITE, EMMA, GROEI } from '../data/pricing';
+import {
+  EMMA_LITE,
+  EMMA_WHATSAPP_STANDARD,
+  EMMA,
+  GROEI,
+  EMMA_SETUP_LABEL,
+  GROEI_SETUP_LABEL,
+  SETUP_ZIN,
+} from '../data/pricing';
 
 // ── Pricing logic ──────────────────────────────────────────────
 // Prijzen komen uit src/data/pricing.ts (single source of truth).
-// Emma = één omnichannel AI-agent: telefoon (AI-receptionist 24/7, NL-nummer,
-// doorverbinden, afspraken/agenda) + WhatsApp (Business API) + workflow-automatisering.
-// Eén heldere ladder: Emma (€497), Groei meest gekozen (€997),
-// Enterprise op aanvraag. Setup = €0 op ALLE pakketten — markt-differentiator.
+// Emma is TWEE productlijnen onder één merk:
+//   • WhatsApp-only (chat): Emma Lite €49/mnd, Emma WhatsApp Standard €197/mnd. Geen telefonie, geen setup-fee.
+//   • Telefoon + WhatsApp (WhatsApp is INBEGREPEN, nooit los bijtellen): Emma €497/mnd, Groei €997/mnd.
+// Enterprise op aanvraag. Setup: €495 (Emma) / €795 (Groei) — WhatsApp-only pakketten kennen geen setup-fee.
+// Tot 2026-07-14 claimde deze pagina "geen setup-fee" als markt-differentiator; dat was fout (owner-bevestigd,
+// zie pricing.ts). Gecorrigeerd — gebruik SETUP_ZIN / EMMA_SETUP_LABEL / GROEI_SETUP_LABEL, nooit hardcoded €0.
 
 const plans = [
   {
     id: 'emma-lite',
     name: 'Emma Lite',
     tagline: 'WhatsApp-only AI-assistent — starter',
-    price: { monthly: EMMA_LITE.monthly, annual: EMMA_LITE.annual },
+    price: { monthly: EMMA_LITE.monthly, annual: EMMA_LITE.annual, setup: EMMA_LITE.setup },
     badge: null,
     highlight: false,
-    includes: 'Emma Lite — WhatsApp-only',
+    includes: 'Emma WhatsApp Agent (chat) — Lite',
     features: [
       { text: 'WhatsApp Business AI-assistent', included: true },
       { text: 'Tot 1.000 conversaties/mnd', included: true },
@@ -34,16 +44,37 @@ const plans = [
     ctaHref: '/aanvragen/?plan=emma-lite',
   },
   {
+    id: 'emma-standard',
+    name: 'Emma WhatsApp Standard',
+    tagline: 'WhatsApp-only AI-assistent — onbeperkt berichten',
+    price: { monthly: EMMA_WHATSAPP_STANDARD.monthly, annual: EMMA_WHATSAPP_STANDARD.annual, setup: EMMA_WHATSAPP_STANDARD.setup },
+    badge: null,
+    highlight: false,
+    includes: 'Emma WhatsApp Agent (chat) — Standard',
+    features: [
+      { text: 'WhatsApp Business AI-assistent', included: true },
+      { text: 'Onbeperkt conversaties/mnd', included: true },
+      { text: 'Eigen FAQ + productcatalogus', included: true },
+      { text: 'Webshop-koppeling (Shopify / WooCommerce)', included: true },
+      { text: 'Meertalig NL/EN/FR/DE', included: true },
+      { text: 'Maandelijks opzegbaar', included: true },
+      { text: 'AI-telefoniste (telefoon)', included: false },
+      { text: 'CRM-koppeling', included: false },
+    ],
+    cta: 'Start met WhatsApp Standard',
+    ctaHref: '/aanvragen/?plan=emma-standard',
+  },
+  {
     id: 'emma',
     name: 'Emma',
     tagline: 'AI-telefoniste + WhatsApp + workflow — omnichannel',
-    price: { monthly: EMMA.monthly, annual: EMMA.annual },
-    badge: 'Geen setup-kosten',
+    price: { monthly: EMMA.monthly, annual: EMMA.annual, setup: EMMA.setup },
+    badge: 'WhatsApp inbegrepen',
     highlight: false,
-    includes: 'Emma — omnichannel AI-agent',
+    includes: 'Emma AI-receptie (telefoon) — incl. WhatsApp',
     features: [
       { text: 'AI-telefoon 24/7 (NL-nummer, doorverbinden)', included: true },
-      { text: 'WhatsApp AI (Business API)', included: true },
+      { text: 'WhatsApp AI (Business API) — inbegrepen', included: true },
       { text: 'Workflow-automatisering', included: true },
       { text: 'Afspraken + agenda-integratie (Google / Outlook)', included: true },
       { text: 'Tot 3 callscripts op maat', included: true },
@@ -60,10 +91,10 @@ const plans = [
     id: 'groei',
     name: 'Groei',
     tagline: 'Onbeperkt volume — WhatsApp + CRM + priority',
-    price: { monthly: GROEI.monthly, annual: GROEI.annual },
+    price: { monthly: GROEI.monthly, annual: GROEI.annual, setup: GROEI.setup },
     badge: 'Meest gekozen',
     highlight: true,
-    includes: 'Emma — onbeperkt volume',
+    includes: 'Emma AI-receptie (telefoon) — onbeperkt + WhatsApp',
     features: [
       { text: 'Alles uit Emma', included: true },
       { text: 'Onbeperkt gespreksvolume + onbeperkte WhatsApp', included: true },
@@ -83,7 +114,7 @@ const plans = [
     id: 'enterprise',
     name: 'Emma Enterprise',
     tagline: 'Volledige AI-automatisering op maat',
-    price: { monthly: null, annual: null },
+    price: { monthly: null, annual: null, setup: null },
     badge: null,
     highlight: false,
     includes: 'Emma — enterprise op maat',
@@ -193,20 +224,22 @@ const seoGeoPlans = [
 ];
 
 const eenmaligSetup = [
-  { plan: 'Emma', prijs: '€0', desc: 'Geen setup-kosten — intake, training, agenda-koppeling en go-live volledig inbegrepen' },
-  { plan: 'Groei', prijs: '€0', desc: 'Geen setup-kosten — intake, training, CRM-koppeling, multi-number config en testfase inbegrepen' },
-  { plan: 'Emma Enterprise', prijs: '€0', desc: 'Geen setup-kosten — implementatie op maat, inbegrepen in het maatwerktraject' },
+  { plan: 'Emma Lite', prijs: '€0', desc: 'WhatsApp-only — geen setup-fee, direct live' },
+  { plan: 'Emma WhatsApp Standard', prijs: '€0', desc: 'WhatsApp-only — geen setup-fee, direct live' },
+  { plan: 'Emma', prijs: EMMA_SETUP_LABEL, desc: 'Eenmalige setup — intake, training, agenda-koppeling en go-live' },
+  { plan: 'Groei', prijs: GROEI_SETUP_LABEL, desc: 'Eenmalige setup — intake, training, CRM-koppeling, multi-number config en testfase' },
+  { plan: 'Emma Enterprise', prijs: 'Op maat', desc: 'Setup inbegrepen in het maatwerktraject' },
 ];
 
 const faqs = [
   { q: 'Zijn de prijzen exclusief btw?', a: 'Ja, alle prijzen zijn exclusief 21% btw. Dit is standaard voor B2B-diensten in Nederland.' },
-  { q: 'Zijn er setup-kosten?', a: 'Nee. Setup is €0 op alle Emma-pakketten — Emma, Groei én Enterprise. Intake, training op uw bedrijf, technische configuratie en go-live begeleiding zijn volledig inbegrepen. Geen verborgen kosten, nooit.' },
-  { q: 'Wat is inbegrepen in het maandabonnement?', a: 'Emma als omnichannel AI-agent: telefoon (AI-receptionist 24/7), WhatsApp en workflow-automatisering. Plus hosting, onderhoud, platform-updates, monitoring en support. U betaalt nooit extra per gesprek of bericht.' },
-  { q: 'Wat is het verschil tussen Emma en Groei?', a: 'Emma (€497/mnd) is de omnichannel AI-agent: AI-telefoniste 24/7 + WhatsApp + workflow-automatisering, agenda-integratie en tot 150 gesprekken per maand. Groei (€997/mnd) voegt onbeperkt gespreksvolume, CRM-integratie, multi-number en priority support toe. Enterprise is op aanvraag.' },
+  { q: 'Zijn er setup-kosten?', a: 'Bij Emma en Groei wel: eenmalige setup van €495 (Emma) of €795 (Groei), voor intake, training op uw bedrijf, technische configuratie en go-live begeleiding. De WhatsApp-only pakketten Emma Lite (€49/mnd) en Emma WhatsApp Standard (€197/mnd) kennen geen setup-fee. Geen andere verborgen kosten.' },
+  { q: 'Wat is inbegrepen in het maandabonnement?', a: 'Emma als omnichannel AI-agent: telefoon (AI-receptionist 24/7), WhatsApp (Business API — standaard inbegrepen, u betaalt hier nooit apart voor) en workflow-automatisering. Plus hosting, onderhoud, platform-updates, monitoring en support. U betaalt nooit extra per gesprek of bericht.' },
+  { q: 'Wat is het verschil tussen Emma en Groei?', a: 'Emma (€497/mnd, eenmalige setup €495) is de omnichannel AI-agent: AI-telefoniste 24/7 + WhatsApp + workflow-automatisering, agenda-integratie en tot 150 gesprekken per maand. Groei (€997/mnd, eenmalige setup €795) voegt onbeperkt gespreksvolume, CRM-integratie, multi-number en priority support toe. Enterprise is op aanvraag.' },
   { q: 'Hoe werkt jaarlijkse betaling?', a: 'Bij jaarlijkse betaling bespaart u circa 16% (±2 maanden gratis). U betaalt het volledige jaarbedrag vooruit en ontvangt één factuur per jaar.' },
   { q: 'Kan ik maandelijks opzeggen?', a: 'Ja, alle Emma-pakketten zijn maandelijks opzegbaar met één maand opzegtermijn. Geen boetes, geen gedoe.' },
   { q: 'Hoe snel ben ik live?', a: 'Emma en Groei: 7 werkdagen. Enterprise: afhankelijk van de scope. Na ondertekening ontvangt u direct een onboarding-plan.' },
-  { q: 'Kan ik upgraden van Emma naar Groei?', a: 'Ja, u kunt op elk moment upgraden van Emma naar Groei. U betaalt alleen het verschil in abonnement. Omdat setup overal €0 is, zijn er geen extra eenmalige kosten bij een upgrade.' },
+  { q: 'Kan ik upgraden van Emma naar Groei?', a: 'Ja, u kunt op elk moment upgraden van Emma naar Groei. U betaalt het verschil in maandabonnement; wat dit betekent voor de eenmalige setup bespreken we in het intake-gesprek.' },
   { q: 'Is er een gratis proefperiode?', a: 'We bieden geen automatische proefperiode, maar wel een gratis AI scan van 30 minuten en een live demo. U ziet Emma in actie voordat u beslist.' },
 ];
 
@@ -223,7 +256,7 @@ const vergelijkRows = [
   ['Gespreksopnames', '—', '✓'],
   ['Multi-team routing & escalatie', '—', '✓'],
   ['Support reactietijd', '< 4 uur', '< 1 uur'],
-  ['Eenmalige setup', '€0', '€0'],
+  ['Eenmalige setup', EMMA_SETUP_LABEL, GROEI_SETUP_LABEL],
   ['Live binnen', '7 dgn', '7 dgn'],
 ];
 
@@ -235,7 +268,7 @@ const productOfferGraph = {
       '@type': 'Product',
       '@id': 'https://aanloopai.nl/tarieven/#emma',
       name: 'Aanloop AI — Emma',
-      description: 'Emma omnichannel AI-agent voor Nederlandse MKB: AI-telefoon 24/7 (NL-nummer, doorverbinden) + WhatsApp Business API + workflow-automatisering, agenda-integratie en dashboard. Geen setup-kosten, maandelijks opzegbaar. Live binnen 7 werkdagen.',
+      description: 'Emma omnichannel AI-agent voor Nederlandse MKB: AI-telefoon 24/7 (NL-nummer, doorverbinden) + WhatsApp Business API (inbegrepen) + workflow-automatisering, agenda-integratie en dashboard. Eenmalige setup €495, maandelijks opzegbaar. Live binnen 7 werkdagen.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       category: 'Omnichannel AI Agent',
       offers: {
@@ -260,7 +293,7 @@ const productOfferGraph = {
       '@type': 'Product',
       '@id': 'https://aanloopai.nl/tarieven/#groei',
       name: 'Aanloop AI — Groei',
-      description: 'Emma omnichannel AI-agent met onbeperkt volume voor Nederlandse MKB: alles uit Emma plus onbeperkt gespreksvolume, multi-number (meerdere NL-nummers), CRM-integratie (HubSpot/Pipedrive), geavanceerde workflow-automatisering en priority support. Geen setup-kosten.',
+      description: 'Emma omnichannel AI-agent met onbeperkt volume voor Nederlandse MKB: alles uit Emma plus onbeperkt gespreksvolume, multi-number (meerdere NL-nummers), CRM-integratie (HubSpot/Pipedrive), geavanceerde workflow-automatisering en priority support. Eenmalige setup €795, maandelijks opzegbaar.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       category: 'Omnichannel AI Agent',
       offers: {
@@ -387,11 +420,30 @@ const valueCompareRows = [
   { feature: 'Dedicated NL support', selfService: 'E-mail tickets, vaak Engels', aanloop: 'Direct contact NL implementatie-team' },
   { feature: 'Maandelijks opzegbaar', selfService: 'Wisselend', aanloop: 'Ja — geen jaarcontract verplicht' },
 ];
+
+// TCO-calculator default state (Emma tier pre-selected). Setup komt uit EMMA.setup
+// (pricing.ts) — tot 2026-07-14 hardcoded op 0, wat de 5-jaars TCO en de payback-tekst
+// "Direct (geen setup)" onterecht liet kloppen. Zelfde formule als de client-side recalc().
+const fmtEUR = (n: number) => '€' + Math.round(n).toLocaleString('nl-NL');
+const tcoDefaultFte = 0.5;
+const tcoDefaultSalary = 47520;
+const tcoAanloopTotal = EMMA.setup + EMMA.monthly * 60;
+const tcoFteTotal = tcoDefaultSalary * tcoDefaultFte * 5;
+const tcoSaving = tcoFteTotal - tcoAanloopTotal;
+const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 : 0;
+const tcoFtePerMonth = (tcoDefaultSalary * tcoDefaultFte) / 12;
+const tcoMonthlyDiff = tcoFtePerMonth - EMMA.monthly;
+const tcoPaybackMonths = tcoMonthlyDiff > 0 ? EMMA.setup / tcoMonthlyDiff : Infinity;
+const tcoPaybackLabel = !isFinite(tcoPaybackMonths)
+  ? (EMMA.setup === 0 ? 'Direct (geen setup)' : 'n.v.t.')
+  : tcoPaybackMonths < 1
+    ? '< 1 mnd'
+    : tcoPaybackMonths.toFixed(1).replace('.', ',') + ' mnd';
 ---
 
 <BaseLayout
   title="AI-Agent Prijs Nederland 2026 — Tarieven Aanloop AI"
-  description="Emma Lite vanaf €49/mnd, Emma AI-agent vanaf €497/mnd, Groei €997. Geen setup-kosten, maandelijks opzegbaar."
+  description="Emma Lite vanaf €49/mnd, Emma AI-agent vanaf €497/mnd, Groei €997. Setup €0-€795, maandelijks opzegbaar."
   schema={productOfferGraph}
   faqSchema={faqs.map(f => ({ question: f.q, answer: f.a }))}
 >
@@ -437,7 +489,7 @@ const valueCompareRows = [
   <!-- Pricing cards -->
   <section class="section" data-ab-layout-group="tarieven-layout" data-ab-layout="control">
     <div class="container-page">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-7xl mx-auto">
         {plans.map((plan) => (
           <div class:list={[
             'relative rounded-2xl p-8 flex flex-col reveal',
@@ -469,7 +521,9 @@ const valueCompareRows = [
                   <p class="text-xs text-slate-400 mt-1 annual-note hidden">
                     €{(plan.price.annual ?? 0) * 12}/jaar bij jaarlijkse betaling
                   </p>
-                  <p class="text-xs text-slate-400 mt-1">excl. btw · geen setup-kosten</p>
+                  <p class="text-xs text-slate-400 mt-1">
+                    excl. btw · {plan.price.setup ? `eenmalige setup €${plan.price.setup}` : 'geen setup-kosten'}
+                  </p>
                 </div>
               ) : (
                 <div>
@@ -506,7 +560,7 @@ const valueCompareRows = [
         ))}
       </div>
 
-      <p class="text-center text-xs text-slate-400 mt-8">Alle prijzen exclusief 21% btw · Maandelijks opzegbaar · €0 setup op elk pakket</p>
+      <p class="text-center text-xs text-slate-400 mt-8">Alle prijzen exclusief 21% btw · Maandelijks opzegbaar · WhatsApp-only zonder setup-fee · {SETUP_ZIN}</p>
     </div>
   </section>
 
@@ -579,18 +633,18 @@ const valueCompareRows = [
         </table>
       </div>
 
-      <p class="text-center text-xs text-slate-400 mt-8">Alle prijzen exclusief 21% btw · Maandelijks opzegbaar · €0 setup op elk pakket</p>
+      <p class="text-center text-xs text-slate-400 mt-8">Alle prijzen exclusief 21% btw · Maandelijks opzegbaar · WhatsApp-only zonder setup-fee · {SETUP_ZIN}</p>
     </div>
   </section>
 
-  <!-- Geen setup-kosten — markt-differentiator -->
+  <!-- Setup-kosten — transparant per pakket -->
   <section class="section-tight bg-amber-50/60 border-y border-amber-100">
     <div class="container-page max-w-4xl mx-auto">
       <div class="flex flex-col md:flex-row items-start gap-8">
         <div class="flex-1">
           <p class="text-xs font-semibold uppercase tracking-widest text-amber-700 mb-2">Transparantie</p>
-          <h2 class="text-xl font-bold text-navy mb-2">Geen setup-kosten</h2>
-          <p class="text-sm text-slate-600">€0 setup op elk Emma-pakket. U betaalt alleen het vaste maandabonnement — intake, training en go-live zijn inbegrepen. Geen verborgen kosten, nooit.</p>
+          <h2 class="text-xl font-bold text-navy mb-2">Setup-kosten — helder per pakket</h2>
+          <p class="text-sm text-slate-600">WhatsApp-only (Lite en WhatsApp Standard) kent geen setup-fee. {SETUP_ZIN} Dat dekt intake, training op uw bedrijf, technische configuratie en go-live begeleiding. Geen andere verborgen kosten.</p>
         </div>
         <div class="flex-1 space-y-3 w-full">
           {eenmaligSetup.map(s => (
@@ -835,10 +889,10 @@ const valueCompareRows = [
             <label class="text-xs font-semibold text-slate-600 uppercase tracking-wide block mb-2">Aanloop pakket</label>
             <div class="grid grid-cols-2 gap-1.5" role="radiogroup" aria-label="Aanloop pakket selectie">
               {[
-                { id: 'emma', label: 'Emma', sub: '€497/m' },
-                { id: 'groei', label: 'Groei', sub: '€997/m' },
+                { id: 'emma', label: 'Emma', sub: `€${EMMA.monthly}/m`, monthly: EMMA.monthly, setup: EMMA.setup },
+                { id: 'groei', label: 'Groei', sub: `€${GROEI.monthly}/m`, monthly: GROEI.monthly, setup: GROEI.setup },
               ].map(t => (
-                <button type="button" class="tco-tier-btn rounded-lg border border-slate-300 bg-white px-2 py-2 text-center hover:border-navy focus:outline-none focus:ring-2 focus:ring-brand-indigo aria-checked:border-navy aria-checked:bg-navy aria-checked:text-white" role="radio" aria-checked={t.id === 'emma' ? 'true' : 'false'} data-tier={t.id} data-monthly={t.id === 'emma' ? 497 : 997} data-setup={0}>
+                <button type="button" class="tco-tier-btn rounded-lg border border-slate-300 bg-white px-2 py-2 text-center hover:border-navy focus:outline-none focus:ring-2 focus:ring-brand-indigo aria-checked:border-navy aria-checked:bg-navy aria-checked:text-white" role="radio" aria-checked={t.id === 'emma' ? 'true' : 'false'} data-tier={t.id} data-monthly={t.monthly} data-setup={t.setup}>
                   <span class="block text-xs font-bold">{t.label}</span>
                   <span class="block text-[10px] opacity-70">{t.sub}</span>
                 </button>
@@ -872,30 +926,30 @@ const valueCompareRows = [
           <div class="grid grid-cols-2 gap-4 mb-6">
             <div>
               <p class="text-xs text-slate-500 uppercase tracking-wide mb-1">TCO Aanloop AI (5j)</p>
-              <p id="tco-aanloop" class="text-2xl font-bold text-navy tabular-nums">€29.820</p>
-              <p id="tco-aanloop-detail" class="text-[11px] text-slate-500 mt-0.5">Setup €0 + €497 × 60</p>
+              <p id="tco-aanloop" class="text-2xl font-bold text-navy tabular-nums">{fmtEUR(tcoAanloopTotal)}</p>
+              <p id="tco-aanloop-detail" class="text-[11px] text-slate-500 mt-0.5">Setup {fmtEUR(EMMA.setup)} + {fmtEUR(EMMA.monthly)} × 60</p>
             </div>
             <div>
               <p class="text-xs text-slate-500 uppercase tracking-wide mb-1">TCO Receptionist (5j)</p>
-              <p id="tco-fte-total" class="text-2xl font-bold text-slate-700 tabular-nums">€118.800</p>
-              <p id="tco-fte-detail" class="text-[11px] text-slate-500 mt-0.5">€47.520 × 0,5 × 5</p>
+              <p id="tco-fte-total" class="text-2xl font-bold text-slate-700 tabular-nums">{fmtEUR(tcoFteTotal)}</p>
+              <p id="tco-fte-detail" class="text-[11px] text-slate-500 mt-0.5">{fmtEUR(tcoDefaultSalary)} × 0,5 × 5</p>
             </div>
           </div>
 
           <div class="bg-brand-emerald/10 border border-brand-emerald/30 rounded-xl p-4 mb-4">
             <p class="text-xs text-brand-emerald uppercase tracking-widest font-bold mb-1">Uw besparing 5 jaar</p>
-            <p id="tco-saving" class="text-3xl font-bold text-brand-emerald tabular-nums">€88.980</p>
-            <p id="tco-saving-pct" class="text-xs text-slate-600 mt-1">ROI: 298,4% over 5 jaar</p>
+            <p id="tco-saving" class="text-3xl font-bold text-brand-emerald tabular-nums">{fmtEUR(tcoSaving)}</p>
+            <p id="tco-saving-pct" class="text-xs text-slate-600 mt-1">ROI: {tcoSavingPct.toFixed(1).replace('.', ',')}% over 5 jaar</p>
           </div>
 
           <div class="grid grid-cols-2 gap-3 text-sm">
             <div class="bg-white border border-slate-200 rounded-lg p-3">
               <p class="text-[10px] text-slate-500 uppercase tracking-wide">Terugverdientijd</p>
-              <p id="tco-payback" class="text-lg font-bold text-navy">Direct (geen setup)</p>
+              <p id="tco-payback" class="text-lg font-bold text-navy">{tcoPaybackLabel}</p>
             </div>
             <div class="bg-white border border-slate-200 rounded-lg p-3">
               <p class="text-[10px] text-slate-500 uppercase tracking-wide">Aanloop / maand</p>
-              <p id="tco-monthly" class="text-lg font-bold text-navy">€497/mnd</p>
+              <p id="tco-monthly" class="text-lg font-bold text-navy">{fmtEUR(EMMA.monthly)}/mnd</p>
             </div>
           </div>
 
@@ -910,7 +964,7 @@ const valueCompareRows = [
       </div>
     </div>
 
-    <script is:inline>
+    <script is:inline define:vars={{ emmaMonthly: EMMA.monthly, emmaSetup: EMMA.setup }}>
       (function() {
         const fmt = n => '€' + Math.round(n).toLocaleString('nl-NL');
         const tiers = document.querySelectorAll('.tco-tier-btn');
@@ -926,8 +980,8 @@ const valueCompareRows = [
         const payback = document.getElementById('tco-payback');
         const monthly = document.getElementById('tco-monthly');
 
-        let activeMonthly = 497;
-        let activeSetup = 0;
+        let activeMonthly = emmaMonthly;
+        let activeSetup = emmaSetup;
 
         function recalc() {
           const fteVals = parseFloat(fte.value);

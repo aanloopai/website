@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EMMA_LITE_MND, EMMA_TELEFOON_NAAM, EMMA_WHATSAPP_NAAM, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../../data/pricing';
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -58,11 +59,11 @@ const faqs = [
   },
   {
     q: 'Welke is goedkoper?',
-    a: 'Hangt af van team-grootte. Trengo prijst per agent (39-99 euro). Emma is per gebruik (vanaf 49 euro/maand all-in). Voor 1-2 mensen is Trengo goedkoper. Voor 5+ mensen wint Emma.',
+    a: `Hangt af van team-grootte. Trengo prijst per agent (39-99 euro). ${EMMA_WHATSAPP_NAAM} is per gebruik (vanaf ${EMMA_LITE_MND} all-in). Voor 1-2 mensen is Trengo goedkoper. Voor 5+ mensen wint Emma.`,
   },
   {
     q: 'Kan Emma ook e-mail en social media?',
-    a: 'Emma is gespecialiseerd in WhatsApp. Voor multi-channel kunt u Emma (telefoon) en custom workflows van Aanloop AI combineren. Trengo dekt out-of-the-box meer kanalen.',
+    a: `${EMMA_WHATSAPP_NAAM} is gespecialiseerd in WhatsApp. Voor multi-channel kunt u ${EMMA_TELEFOON_NAAM} en custom workflows van Aanloop AI combineren. Trengo dekt out-of-the-box meer kanalen.`,
   },
   {
     q: 'Welke is sneller live?',
@@ -166,8 +167,8 @@ const combinedSchema = [articleSchema, faqSchema];
       <p class="text-slate-700 leading-relaxed mb-4">Emma is op zijn best als u 80 procent van uw WhatsApp-volume volledig automatisch wilt laten afhandelen door AI - zonder agent-licenties per gebruiker, zonder team om in te delen.</p>
       <p class="text-slate-700 leading-relaxed mb-4">Vuistregel: heeft u eigenaar/founders die ook reageren op klantberichten? Emma. Heeft u een dedicated support-team van 5+? Trengo. Heeft u beide nodig? Combineer ze: Emma als eerste-lijn AI, escalatie naar Trengo voor team-werk.</p>
       <div class="mt-8 flex flex-wrap gap-3">
-        <a href="/diensten/emma/" class="btn-secondary">Meer over Emma</a>
-        <a href="/diensten/emma/" class="btn-secondary">Meer over Emma (telefoon-AI)</a>
+        <a href={EMMA_WHATSAPP_URL} class="btn-secondary">Meer over Emma WhatsApp Agent</a>
+        <a href={EMMA_TELEFOON_URL} class="btn-secondary">Meer over Emma (telefoon-AI)</a>
         <a href="/aanvragen/" class="btn-primary">Adviesgesprek aanvragen</a>
       </div>
     </div>
@@ -193,7 +194,7 @@ const combinedSchema = [articleSchema, faqSchema];
       <ul class="space-y-3 text-slate-700">
         <li><a href="/vergelijk/aanloop-vs-watermelon/" class="text-navy hover:underline">Aanloop AI versus Watermelon</a></li>
         <li><a href="/vergelijk/aanloop-vs-chatlayer/" class="text-navy hover:underline">Aanloop AI versus Chatlayer (Sinch)</a></li>
-        <li><a href="/diensten/emma/" class="text-navy hover:underline">Emma versus Emma</a></li>
+        <li><a href="/diensten/emma/" class="text-navy hover:underline">Emma — AI-receptie & WhatsApp Agent (productpagina)</a></li>
         <li><a href="/vergelijk/" class="text-navy hover:underline">Alle vergelijkingen</a></li>
       </ul>
     </div>

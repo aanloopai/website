@@ -26,7 +26,11 @@ export const EXPERIMENTS = {
   TARIEVEN_CTA_TEXT: 'tarieven-cta-text',
 
   // Emma
-  EMMA_HERO_COPY: 'marco-hero-copy',
+  // 2026-07-14: key hernoemd naar 'emma-hero-copy' (droeg nog de oude productnaam).
+  // GrowthBook-key hier ≠ GrowthBook-key in het panel tot iemand de feature-flag key daar ook
+  // handmatig update naar 'emma-hero-copy' — anders draait dit experiment door op een dode key
+  // en komt er nooit meer testdata binnen (fail-open toont dan altijd control, stil).
+  EMMA_HERO_COPY: 'emma-hero-copy',
 
   // AI-Website Bundel
   BUNDEL_HERO_COPY: 'bundel-hero-copy',

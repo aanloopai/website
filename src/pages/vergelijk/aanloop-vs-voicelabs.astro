@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EMMA_MND, GROEI_MND, EMMA_SETUP_LABEL, GROEI_SETUP_LABEL } from '../../data/pricing';
 
 // Comparison page: Aanloop AI vs Voicelabs
 // Verbeterd met competitive audit inzichten (mei 2026).
@@ -64,7 +65,7 @@ const faqSchema = {
       name: 'Hoe transparant zijn de tarieven van beide aanbieders?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Aanloop AI publiceert vaste maandprijzen op de tarievenpagina: Emma 497 euro per maand (150 gesprekken, setup 495 euro), Emma Groei 997 euro per maand (onbeperkt plus Emma WhatsApp plus CRM, setup 795 euro). Voicelabs Robin Zelf Starten staat op 299 euro per maand inclusief 1.000 belminuten; voor extra minuten of hogere volumes verwijst de website naar een offerte. Controleer de actuele Voicelabs-tarievenpagina voor uw specifieke situatie.',
+        text: `Aanloop AI publiceert vaste maandprijzen op de tarievenpagina: Emma ${EMMA_MND} (150 gesprekken, WhatsApp al inbegrepen, setup ${EMMA_SETUP_LABEL}), Emma Groei ${GROEI_MND} (onbeperkt gesprekken, WhatsApp inbegrepen, plus CRM, setup ${GROEI_SETUP_LABEL}). Voicelabs Robin Zelf Starten staat op 299 euro per maand inclusief 1.000 belminuten; voor extra minuten of hogere volumes verwijst de website naar een offerte. Controleer de actuele Voicelabs-tarievenpagina voor uw specifieke situatie.`,
       },
     },
     {
@@ -107,8 +108,8 @@ const faqSchema = {
 // Voicelabs data: voicelabs.nl homepage + pricing-pagina (per mei 2026).
 const comparison = [
   { feature: 'Type service',                    aanloop: 'Managed bureau (Done-For-You)',                        voicelabs: 'Zelf-instelbaar SaaS-platform (Zelf Starten)' },
-  { feature: 'Instapprijs',                     aanloop: '€497/mnd Emma (150 gesprekken)',             voicelabs: '€299/mnd Robin Zelf Starten (1.000 belmin + WhatsApp + chat)' },
-  { feature: 'All-in bundel',                   aanloop: '€997/mnd Groei (Emma + CRM, onbeperkt)',     voicelabs: 'Hogere volumes op offerte (website per mei 2026)' },
+  { feature: 'Instapprijs',                     aanloop: `${EMMA_MND} Emma (150 gesprekken, WhatsApp inbegrepen)`,             voicelabs: '€299/mnd Robin Zelf Starten (1.000 belmin + WhatsApp + chat)' },
+  { feature: 'All-in bundel',                   aanloop: `${GROEI_MND} Groei (Emma + WhatsApp + CRM, onbeperkt)`,     voicelabs: 'Hogere volumes op offerte (website per mei 2026)' },
   { feature: 'Prijstransparantie',              aanloop: 'Publieke tarieven op website (alle tiers)',            voicelabs: '€299 zelf starten; hogere tiers op offerte' },
   { feature: 'Website + AI-bundel',             aanloop: 'AI-Website Bundel (WordPress + Emma in 1 pakket)',    voicelabs: 'Niet beschikbaar — puur voice/WhatsApp platform' },
   { feature: 'Setup-kosten',                    aanloop: 'Eenmalig €495 Emma / €795 Groei (incl. training)', voicelabs: 'Niet expliciet vermeld op homepage per mei 2026' },

@@ -2,6 +2,14 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import emmaWhatsapp from '../../assets/images/emma-whatsapp.png';
+import {
+  EMMA_MND,
+  GROEI_MND,
+  EMMA_LITE_MND,
+  EMMA_WHATSAPP_STANDARD_MND,
+  EMMA_SETUP_LABEL,
+  GROEI_SETUP_LABEL,
+} from '../../data/pricing';
 
 const sectorUseCases = [
   { title: 'Webshops & e-commerce', slug: '/sectoren/ai-voor-webshops/', body: 'Emma beantwoordt vragen over voorraad, levertijden, retouren en orderstatus 24/7 — via telefoon én WhatsApp. Gekoppeld aan uw Shopify of WooCommerce winkel zoekt ze realtime in uw bestellingen — minder ticketdruk, hogere conversie.' },
@@ -28,16 +36,18 @@ const comparison = [
   { feature: 'Realtime productdata (voorraad, orders)', emma: true, livechat: 'Handmatig', chatgpt: false, email: false },
   { feature: 'Naadloze handover naar mens', emma: true, livechat: true, chatgpt: false, email: 'Manueel' },
   { feature: 'CRM-koppeling met conversatiehistorie', emma: true, livechat: 'Variabel', chatgpt: false, email: 'Variabel' },
-  { feature: 'Maandelijkse kosten (MKB-volume)', emma: 'Vanaf €49 (Lite) / €497 (Omnichannel)', livechat: '€500-2.000', chatgpt: '€20/user', email: 'Personeelskosten' },
+  { feature: 'Maandelijkse kosten (MKB-volume)', emma: `Vanaf ${EMMA_LITE_MND} (WhatsApp) / ${EMMA_MND} (telefoon + WhatsApp)`, livechat: '€500-2.000', chatgpt: '€20/user', email: 'Personeelskosten' },
   { feature: 'AVG-bewust, EU-only data, DPA mogelijk', emma: true, livechat: 'Variabel', chatgpt: false, email: 'Variabel' },
 ];
+
+const kostenAnswer = `Emma is niet één pakket, maar twee productlijnen. WhatsApp-only (chat, geen telefonie), geen setup-kosten: Emma Lite ${EMMA_LITE_MND} (tot 1.000 conversaties) of Emma WhatsApp Standard ${EMMA_WHATSAPP_STANDARD_MND} (onbeperkte berichten + webshop-koppeling). Telefoon + WhatsApp samen — WhatsApp zit er al bij, u betaalt dit dan niet nog een keer los: Emma ${EMMA_MND} (AI-telefoniste + WhatsApp + workflow-automatisering, tot 150 gesprekken, eenmalige setup ${EMMA_SETUP_LABEL}) of Groei ${GROEI_MND} (onbeperkt volume + WhatsApp + CRM-koppeling + multi-number + priority support, eenmalige setup ${GROEI_SETUP_LABEL} — meest gekozen). Emma Enterprise op aanvraag (SLA, dedicated tenant, custom workflows). WhatsApp-conversatiekosten van Meta (gemiddeld €0,03-0,08 per uniek 24-uurs venster) zijn niet inbegrepen — die factureert Meta direct aan u; wij rekenen er geen marge op. Zie /tarieven voor de volledige opbouw.`;
 
 const faqItems = [
   { question: 'Neemt Emma ook echt de telefoon aan?', answer: 'Ja. Emma is uw omnichannel AI-agent: ze neemt inkomende telefoongesprekken 24/7 zelf aan met een natuurlijke NL-stem (ElevenLabs), beantwoordt vragen, plant afspraken in uw agenda, verbindt door naar de juiste collega en levert van elk gesprek een transcript. Daarnaast handelt ze WhatsApp en webchat af en triggert ze workflows — telefoon, chat en automatisering in één agent, op één nummer, met één gespreksgeschiedenis.' },
   { question: 'Heb ik een WhatsApp Business account of telefoonnummer nodig?', answer: 'Niet bij start. Wij regelen de WhatsApp Business API-aanmelding bij Meta (gratis verificatie via een 360dialog of Twilio-partner) én een Nederlands telefoonnummer voor de AI-receptionist — of we porten uw bestaande nummer. U behoudt eigenaarschap van nummer en history. Heeft u al een WhatsApp Business-nummer of vaste lijn, dan koppelt Emma aan uw bestaande nummers.' },
   { question: 'Hoe wordt Emma getraind voor mijn bedrijf?', answer: 'Tijdens onboarding voeden we Emma met uw FAQ-sectie, productcatalogus, leveringsvoorwaarden en eventuele interne documenten — voor zowel telefoon als WhatsApp. We doen twee testrondes met u — u belt en appt met lastige vragen en stuurt op het antwoordgedrag. Pas daarna gaat Emma live.' },
   { question: 'Wat doet Emma bij een vraag die ze niet kan beantwoorden?', answer: 'Emma escaleert volgens uw protocol: aan de telefoon verbindt ze direct door naar een specifiek teamlid, op WhatsApp zet ze het gesprek door, opent ze een ticket in uw helpdesk, plant ze een terugbelafspraak of verwijst ze door naar het juiste kanaal. U bepaalt zelf de escalatie- en doorverbindregels.' },
-  { question: 'Wat kost Emma precies?', answer: 'Emma kent drie pakketten, allemaal zonder setup-kosten: Emma Lite €49/mnd (WhatsApp-only AI-assistent, tot 1.000 conversaties). Emma €497/mnd (AI-telefoniste + WhatsApp + workflow-automatisering, tot 150 gesprekken). Groei €997/mnd (onbeperkt volume + WhatsApp + CRM-koppeling + multi-number + priority support — meest gekozen). Emma Enterprise op aanvraag (SLA, dedicated tenant, custom workflows). WhatsApp-conversatiekosten van Meta (gemiddeld €0,03-0,08 per uniek 24-uurs venster) zijn niet inbegrepen — die factureert Meta direct aan u; wij rekenen er geen marge op. Zie /tarieven voor de volledige opbouw.' },
+  { question: 'Wat kost Emma precies?', answer: kostenAnswer },
   { question: 'Werkt Emma met mijn bestaande Shopify of WooCommerce?', answer: 'Ja. Voor Shopify, WooCommerce, Magento, Lightspeed en PrestaShop hebben we native koppelingen. Emma kan voorraad, orderstatus, retourstatus en levertijden realtime opzoeken en delen met de klant.' },
   { question: 'Worden gesprekken opgeslagen en hoe lang?', answer: 'Conversaties worden bewaard in EU-datacenters (Amsterdam/Frankfurt) met encryptie at-rest en in-transit. Default bewaartermijn is 90 dagen, configureerbaar tussen 7 en 365 dagen. Voor klanten met aparte compliance-eisen leveren we een dedicated tenant.' },
   { question: 'Kan Emma in meerdere talen tegelijk werken?', answer: 'Ja. Emma detecteert automatisch de taal van de klant (NL, EN, FR, DE standaard; ES, IT, PL op aanvraag) en antwoordt in dezelfde taal. Voor toeristische gebieden of internationale webshops is dit een grote conversie-booster.' },
@@ -120,10 +130,10 @@ const softwareSchema = {
       <div class="grid lg:grid-cols-2 gap-16 items-center">
         <div>
           <span class="eyebrow mb-6 block">Emma — uw omnichannel AI-agent</span>
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]" data-ab="marco-hero-copy" data-ab-field="headline">
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]" data-ab="emma-hero-copy" data-ab-field="headline">
             Emma — uw omnichannel AI-agent: telefoon + WhatsApp + workflow
           </h1>
-          <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-lg" data-ab="marco-hero-copy" data-ab-field="sub">
+          <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-lg" data-ab="emma-hero-copy" data-ab-field="sub">
             Eén AI-agent voor uw hele klantcontact: Emma neemt 24/7 de telefoon aan (Nederlandse stem, doorverbinden, afspraken inplannen), handelt WhatsApp en webchat af en automatiseert uw workflows. Getraind op uw eigen kennisbank, met naadloze handover naar uw team — live in 7 werkdagen.
           </p>
           <div class="mt-8 flex flex-col sm:flex-row gap-3">
@@ -175,24 +185,69 @@ const softwareSchema = {
           Alles wat Emma voor u doet.
         </h2>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {[
-          'Inkomende telefonie 24/7 aannemen — natuurlijke NL-stem (ElevenLabs)',
-          'Doorverbinden naar het juiste teamlid + gesprekstranscripts',
-          'WhatsApp Business API — officieel geverifieerd',
-          'Workflow-automatisering en escalatie volgens uw protocol',
-          'Eigen kennisbank — getraind op uw FAQ, website, documenten',
-          'Naadloze handover naar mens bij complexe vragen',
-          'Meertalig: NL, EN, FR, DE op aanvraag',
-          'CRM-koppeling: HubSpot, Pipedrive, eigen systeem',
-          'Afspraken plannen via telefoon én WhatsApp (Google Calendar)',
-          'GDPR-conform — data binnen de EU',
-        ].map((f, i) => (
-          <div class={`flex items-start gap-3 p-4 rounded-xl bg-slate-50 border border-slate-100 reveal reveal-delay-${(i % 4) + 1}`}>
-            <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            <span class="text-sm text-slate-700">{f}</span>
-          </div>
-        ))}
+
+      <!-- Telefonie -->
+      <div id="telefoon" class="scroll-mt-24 mb-12">
+        <h3 class="text-xl font-bold text-navy mb-1">Telefonie — Emma neemt de telefoon aan</h3>
+        <p class="text-sm text-slate-600 mb-5">
+          Onderdeel van Emma AI-receptie (telefoon): {EMMA_MND} of Groei {GROEI_MND} — WhatsApp zit in beide
+          al inbegrepen. Eenmalige setup: {EMMA_SETUP_LABEL} (Emma) of {GROEI_SETUP_LABEL} (Groei).
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            'Inkomende telefonie 24/7 aannemen — natuurlijke NL-stem (ElevenLabs)',
+            'Doorverbinden naar het juiste teamlid + gesprekstranscripts',
+            'Voicemail bij bezet of buiten bereik',
+            'Afspraken plannen via telefoon (Google Calendar)',
+          ].map((f, i) => (
+            <div class={`flex items-start gap-3 p-4 rounded-xl bg-slate-50 border border-slate-100 reveal reveal-delay-${(i % 4) + 1}`}>
+              <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-sm text-slate-700">{f}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- WhatsApp -->
+      <div id="whatsapp" class="scroll-mt-24 mb-12">
+        <h3 class="text-xl font-bold text-navy mb-1">WhatsApp — als los abonnement of inbegrepen bij telefonie</h3>
+        <p class="text-sm text-slate-600 mb-5">
+          Los verkrijgbaar als WhatsApp-only abonnement (chat, geen telefonie), geen setup-kosten:
+          Emma Lite {EMMA_LITE_MND} of Emma WhatsApp Standard {EMMA_WHATSAPP_STANDARD_MND}. Kiest u voor
+          telefoon (hierboven), dan zit WhatsApp daar al bij — u betaalt dit dan niet nog een keer los.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            'WhatsApp Business API — officieel geverifieerd',
+            'Onbeperkte berichten en webshop-koppeling (Standard)',
+            'Afspraken plannen via WhatsApp (Google Calendar)',
+            'Naadloze handover naar mens bij complexe vragen',
+          ].map((f, i) => (
+            <div class={`flex items-start gap-3 p-4 rounded-xl bg-slate-50 border border-slate-100 reveal reveal-delay-${(i % 4) + 1}`}>
+              <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-sm text-slate-700">{f}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Gedeeld -->
+      <div>
+        <h3 class="text-xl font-bold text-navy mb-5">Ook inbegrepen — bij elk kanaal</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {[
+            'Workflow-automatisering en escalatie volgens uw protocol',
+            'Eigen kennisbank — getraind op uw FAQ, website, documenten',
+            'Meertalig: NL, EN, FR, DE op aanvraag',
+            'CRM-koppeling: HubSpot, Pipedrive, eigen systeem',
+            'GDPR-conform — data binnen de EU',
+          ].map((f, i) => (
+            <div class={`flex items-start gap-3 p-4 rounded-xl bg-slate-50 border border-slate-100 reveal reveal-delay-${(i % 4) + 1}`}>
+              <svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-sm text-slate-700">{f}</span>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   </section>
@@ -212,7 +267,7 @@ const softwareSchema = {
           Het resultaat is een productie-grade AI-agent die de telefoon aanneemt én via WhatsApp Business API werkt, workflows automatiseert, multilingual is (NL/EN/FR/DE standaard), AVG-compliant is met EU-only dataopslag, en zich via een handover-protocol naadloos overdraagt — doorverbinden aan de telefoon of doorzetten op WhatsApp — bij complexe situaties. Voor webshops koppelen we realtime voorraad- en orderstatus zodat de agent altijd actuele informatie geeft — iets wat een klassieke regel-gebaseerde chatbot nooit kan bieden.
         </p>
         <p class="text-slate-600 leading-relaxed mb-4">
-          Standaard levert Aanloop AI een volledig ingerichte omnichannel AI-agent binnen 7 werkdagen. De maandelijkse kosten zijn vast en voorspelbaar, zonder setup-kosten. Wilt u weten wat Emma voor uw specifieke situatie kost?
+          Standaard levert Aanloop AI een volledig ingerichte omnichannel AI-agent binnen 7 werkdagen. De maandelijkse kosten zijn vast en voorspelbaar. Kiest u telefoon + WhatsApp, dan geldt eenmalig een setup-fee van {EMMA_SETUP_LABEL} (Emma) of {GROEI_SETUP_LABEL} (Groei) — WhatsApp-only pakketten (Lite, Standard) kennen geen setup-kosten. Wilt u weten wat Emma voor uw specifieke situatie kost?
         </p>
         <a href="/kennisbank/hoeveel-kost-een-ai-agent/" class="inline-flex items-center gap-1.5 text-brand-indigo font-medium hover:underline text-sm">
           Lees: Wat kost een AI-agent of chatbot in Nederland? (volledig kostenoverzicht)
@@ -368,7 +423,7 @@ const softwareSchema = {
         </a>
         <a href="/tarieven/" class="card hover:border-brand-indigo transition-all">
           <h3 class="font-bold text-navy text-sm mb-2">Emma — prijsopbouw</h3>
-          <p class="text-xs text-slate-600 mb-3">Vanaf €497/mnd, geen setup-kosten. Emma → Groei → Enterprise. Telefoon, WhatsApp en workflow inbegrepen.</p>
+          <p class="text-xs text-slate-600 mb-3">Vanaf {EMMA_MND} (eenmalige setup {EMMA_SETUP_LABEL}). Emma → Groei → Enterprise. Telefoon, WhatsApp en workflow inbegrepen.</p>
           <span class="text-xs text-brand-indigo font-medium">Bekijk tarieven →</span>
         </a>
         <a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="card hover:border-brand-indigo transition-all">
