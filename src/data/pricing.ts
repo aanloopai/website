@@ -98,4 +98,16 @@ export const PORTAL_GROEI_MND = '€997/mnd';
 export const SEO = { audit: 495, setup: 1950, maand: 795 } as const;
 export const GEO = { setup: 1450, maand: 595 } as const;
 export const SEO_GEO_BUNDEL = 1195;
-export const WEBSITE_BUNDEL = { setup: 4950, maand: 397 } as const;
+// AI-Website Bundel = website Groei (€5.950 setup + €197/mnd) + Emma AI-receptie
+// (€495 setup + €497/mnd) + integratiewerk (€1.500), in één contract.
+//
+// Was €4.950 + €397/mnd. Dat was NIET houdbaar: het maandbedrag lag onder de
+// prijs van Emma alleen (€497), dus de bundel was goedkoper dan één van zijn
+// eigen onderdelen. Dat produceerde een "besparing" van €6.559 (40%) op de
+// vergelijkingspagina — een korting die zo groot is dat hij ongeloofwaardig
+// wordt, en die de losse prijzen impliciet tot onzin verklaart.
+//
+// Nu: setup gelijk aan de website alleen (Emma-setup + integratie zijn het
+// setup-voordeel, €1.995), maandbedrag €45 onder de som van de losse
+// abonnementen (€694). Een pakketkorting die klopt, geen verkooptruc.
+export const WEBSITE_BUNDEL = { setup: 5950, maand: 649 } as const;
