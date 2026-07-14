@@ -102,7 +102,7 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'Een nieuwe AI-ready website inclusief Emma — alles in één pakket opgezet.',
     meerInfoUrl: 'https://aanloopai.nl/diensten/ai-website-bundel-mkb-nederland/',
     tiers: [
-      { naam: 'Bundel', prijs: '€4.950 setup + €397/mnd', prijsCent: null, betaling: 'aanvraag', kenmerken: ['AI-ready website', 'Emma AI-receptionist', 'Emma WhatsApp-assistent', 'Eén vast maandbedrag'] },
+      { naam: 'Bundel', prijs: '€5.950 setup + €649/mnd', prijsCent: null, betaling: 'aanvraag', kenmerken: ['AI-ready website', 'Emma AI-receptionist', 'Emma WhatsApp-assistent', 'Eén vast maandbedrag'] },
     ],
   },
   {

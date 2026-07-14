@@ -16,30 +16,33 @@ const inhoud = [
   { categorie: 'Operational tooling', items: ['ROI-calc widget op uw site', 'AI-scan formulier (lead-magnet)', 'GA4 + GrowthBook A/B-test setup', 'Maandelijkse performance-rapport', 'Prioriteit support binnen 4u werkdag'] },
 ];
 
-// Losse afname = wat u jaar 1 kwijt bent als u alles apart inkoopt.
-// LET OP: WhatsApp zit AL in het Emma-abonnement (€497) — dus GEEN losse WhatsApp-regel
-// erbij optellen. Dat was dubbeltelling en blies de besparing kunstmatig op.
-const losseFacturen = [
-  { item: 'Website Groei pakket — eenmalige bouw', toelichting: 'Tot 30 paginas, CMS, multilingual NL/EN/DE', bedrag: WEBSITE_SETUP_LOS },
-  { item: `Website onderhoud — 12 × ${euro(WEBSITE_ONDERHOUD_MND)}`, toelichting: 'Hosting, updates, security, monitoring', bedrag: WEBSITE_ONDERHOUD_MND * 12 },
-  { item: 'Emma AI-receptie — eenmalige setup', toelichting: 'Belscript, stem-training, telefoonnummer, koppeling agenda en CRM', bedrag: EMMA_SETUP },
-  { item: `Emma AI-receptie — 12 × ${euro(EMMA.monthly)}`, toelichting: 'Neemt uw telefoon 24/7 op: voert het gesprek, plant de afspraak, stuurt de lead naar uw CRM. WhatsApp-agent is hierbij inbegrepen', bedrag: EMMA.monthly * 12 },
-  { item: 'Integratie-werk tussen de systemen', toelichting: 'Website, telefonie en WhatsApp aan elkaar koppelen — bij losse leveranciers doet niemand dit voor u', bedrag: INTEGRATIE_LOS },
+// Wat u apart inkoopt vs. wat er in de bundel zit. Onze eigen listprijzen —
+// geen opgeblazen "marktprijzen", en geen jaar-1-optelsom: wie los inkoopt,
+// koopt niet alles tegelijk. Eén regel per post, en per post wat de bundel
+// ermee doet. WhatsApp staat er niet apart in: die zit al in Emma AI-receptie.
+const setupPosten = [
+  { item: 'Website Groei — eenmalige bouw', toelichting: 'Tot 30 paginas, CMS, multilingual NL/EN/DE', los: euro(WEBSITE_SETUP_LOS), bundel: euro(WEBSITE_BUNDEL.setup) },
+  { item: 'Emma AI-receptie — eenmalige setup', toelichting: 'Belscript, stem-training, telefoonnummer, koppeling agenda en CRM', los: euro(EMMA_SETUP), bundel: 'Inbegrepen' },
+  { item: 'Integratie tussen website, telefonie en WhatsApp', toelichting: 'Bij losse leveranciers doet niemand dit voor u', los: euro(INTEGRATIE_LOS), bundel: 'Inbegrepen' },
 ];
-const totaalLos = losseFacturen.reduce((som, f) => som + f.bedrag, 0);
+const maandPosten = [
+  { item: 'Website-onderhoud', toelichting: 'Hosting, updates, security, monitoring', los: `${euro(WEBSITE_ONDERHOUD_MND)}/mnd`, bundel: 'Inbegrepen' },
+  { item: 'Emma AI-receptie', toelichting: 'Neemt 24/7 uw telefoon op, plant de afspraak, stuurt de lead naar uw CRM. WhatsApp-agent inbegrepen', los: `${euro(EMMA.monthly)}/mnd`, bundel: `${euro(WEBSITE_BUNDEL.maand)}/mnd all-in` },
+];
 
 const bundelPrijs = { setup: WEBSITE_BUNDEL.setup, mnd: WEBSITE_BUNDEL.maand };
-const bundelJaar1 = bundelPrijs.setup + (bundelPrijs.mnd * 12);
-const besparing = totaalLos - bundelJaar1;
 
-// Structureel voordeel vanaf jaar 2 (alleen de terugkerende maandlasten).
-const losseMaandlastJaar2 = (WEBSITE_ONDERHOUD_MND + EMMA.monthly) * 12;
-const besparingJaar2 = losseMaandlastJaar2 - (bundelPrijs.mnd * 12);
+// Het pakketvoordeel, eerlijk gerekend: de setup-fee van Emma en het
+// integratiewerk vervallen, en het maandbedrag ligt onder de som van de twee
+// losse abonnementen. Geen jaar-1-optelsom, geen kunstmatig grote korting.
+const setupVoordeel = (WEBSITE_SETUP_LOS + EMMA_SETUP + INTEGRATIE_LOS) - bundelPrijs.setup;
+const losseMaandlast = WEBSITE_ONDERHOUD_MND + EMMA.monthly;
+const maandVoordeel = losseMaandlast - bundelPrijs.mnd;
 
 const waaromUniek = [
   { titel: 'Eén partner, één factuur, één SLA', body: 'Geen "verwijst u naar de webdeveloper" als de chatbot bug heeft. Wij leveren website + AI als één geïntegreerd systeem en zijn aanspreekpunt voor alles.' },
   { titel: 'Architectuur is vanaf dag 1 AI-ready', body: 'Webbureaus bouwen meestal eerst de site, AI komt achteraf. Bij ons zijn de plug-in-slots, schema.org-markup en data-flows al ingebouwd op launch-dag — geen €5-15k retrofit-kosten.' },
-  { titel: `Korting tov losse afname (${euro(besparing)} op jaar 1)`, body: `Losse afname kost ${euro(totaalLos)}. Bundel jaar 1 = ${euro(bundelJaar1)}. Besparing: ${euro(besparing)} — en vanaf jaar 2 nog ${euro(besparingJaar2)} per jaar, omdat het onderhoud en de AI-licentie in één maandbedrag zitten.` },
+  { titel: 'Een pakketkorting die klopt', body: `De setup-fee van Emma (${euro(EMMA_SETUP)}) en het integratiewerk (${euro(INTEGRATIE_LOS)}) vervallen: samen ${euro(setupVoordeel)} voordeel op de eenmalige kosten. Maandelijks betaalt u ${euro(bundelPrijs.mnd)} in plaats van ${euro(losseMaandlast)} voor twee losse abonnementen — ${euro(maandVoordeel)} per maand lager. Geen dramatische kortingspercentages: onze losse prijzen zijn de echte prijzen, en de bundel is precies zoveel voordeliger als het scheelt om alles bij één partij te doen.` },
   { titel: 'Time-to-revenue 6-8 weken ipv 12-20', body: 'Parallel design + AI-training in één traject. Concurrent-route (eerst webdev klaar, dan AI-agency briefen) duurt 3-5 maanden langer. U bent 2-4 maanden eerder live met €30-60k extra omzet.' },
 ];
 
@@ -59,7 +62,7 @@ const proces = [
 
 const faqItems = [
   { question: 'Wat zit er precies in de bundel?', answer: 'Website (Groei pakket: tot 30 paginas, CMS, multilingual NL/EN/DE) + Emma AI-receptionist (24/7 NL-telefoon, agenda, CRM-koppeling) + Emma WhatsApp Agent (24/7 chat, lead-capture) + alle koppelingen tussen de 3 systemen + ROI-calc/AI-scan widgets op uw site + GA4/GrowthBook setup + maandelijks onderhoud op alles. Eén factuur, één contract, één aanspreekpunt.' },
-  { question: 'Hoeveel bespaar ik tegenover losse afname?', answer: `Losse afname jaar 1: ${losseFacturen.map(f => `${f.item} = ${euro(f.bedrag)}`).join('; ')}. Samen ${euro(totaalLos)}. Bundel jaar 1 (${euro(bundelPrijs.setup)} setup + 12 × ${euro(bundelPrijs.mnd)}) = ${euro(bundelJaar1)}. Besparing: ${euro(besparing)} in jaar 1. Vanaf jaar 2 bespaart u ${euro(besparingJaar2)} per jaar, omdat website-onderhoud en AI-licentie in één maandbedrag zitten in plaats van twee losse abonnementen.` },
+  { question: 'Wat scheelt de bundel tegenover losse afname?', answer: `Eenmalig: los betaalt u ${euro(WEBSITE_SETUP_LOS)} voor de website-bouw, ${euro(EMMA_SETUP)} Emma-setup en ${euro(INTEGRATIE_LOS)} integratiewerk. In de bundel kost de setup ${euro(bundelPrijs.setup)} — de Emma-setup en het integratiewerk vervallen, samen ${euro(setupVoordeel)} voordeel. Maandelijks: los is dat ${euro(WEBSITE_ONDERHOUD_MND)} website-onderhoud + ${euro(EMMA.monthly)} Emma = ${euro(losseMaandlast)} bij twee contracten; in de bundel ${euro(bundelPrijs.mnd)} all-in, dus ${euro(maandVoordeel)} per maand lager. We tellen die posten bewust niet op tot één jaarbedrag: wie los inkoopt, koopt niet alles op dezelfde dag, en zo'n optelsom laat de korting groter lijken dan hij is.` },
   { question: 'Emma AI-receptie of Emma WhatsApp Agent — wat is het verschil?', answer: 'Emma bestaat in twee smaken. Emma WhatsApp Agent (vanaf €49/mnd, Standard €197/mnd) doet alleen chat: zij beantwoordt WhatsApp-berichten met tekst — FAQ, offerte-aanvragen, lead-capture. Geen telefonie. Emma AI-receptie (€497/mnd) neemt daarnaast ook écht uw telefoon op: een gesprek in het Nederlands, afspraak in de agenda, lead in het CRM. Belangrijk: bij Emma AI-receptie is de WhatsApp-agent al inbegrepen — u betaalt dus niet twee keer. Het prijsverschil komt door telefonie: spraakherkenning, stem-synthese en telefoonminuten zijn fors duurder dan tekstberichten. In deze bundel zit de volledige Emma AI-receptie, dus telefoon én WhatsApp.' },
   { question: 'Kan ik bestaande website behouden en alleen Emma toevoegen?', answer: 'Ja, dat kan via een los Emma-abonnement (zie /diensten/emma/ — daar staan zowel de telefoon- als de WhatsApp-variant). De bundel is voordeliger als u sowieso een nieuwe of vernieuwde site wilt. Als uw huidige site jonger dan 2 jaar is en al schema.org markup heeft, adviseren we losse AI-modules ipv bundel.' },
   { question: 'Wat als ik later wil opzeggen?', answer: 'Maandelijks onderhoud is opzegbaar per maand met 1 maand opzegtermijn. De setup-fee is eenmalig. Bij opzegging behoudt u: uw website-code (in eigen GitHub), uw domeinnaam, alle CRM-data van Emma. Emma stoppen we met doorschakelen, maar de transcripts/lead-data exporteren we naar u toe.' },
@@ -76,7 +79,7 @@ const serviceSchema = {
   '@id': 'https://aanloopai.nl/diensten/ai-website-bundel-mkb-nederland/#service',
   name: 'AI-Website Bundel MKB Nederland — Website + Emma all-in-one',
   serviceType: 'Integrated Web Development & AI Service Bundle',
-  description: 'Combo-pakket: AI-ready website (Groei) + Emma AI-receptie + Emma WhatsApp Agent + integraties. Eén factuur, één SLA, €4.950 setup + €397/maand. Voordeliger dan losse afname.',
+  description: 'Combo-pakket: AI-ready website (Groei) + Emma AI-receptie + Emma WhatsApp Agent + integraties. Eén factuur, één SLA, €5.950 setup + €649/maand all-in.',
   url: 'https://aanloopai.nl/diensten/ai-website-bundel-mkb-nederland/',
   provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
   areaServed: { '@type': 'Country', name: 'Nederland' },
@@ -85,8 +88,8 @@ const serviceSchema = {
     '@type': 'Offer',
     name: 'AI-Website Bundel',
     priceCurrency: 'EUR',
-    price: '4950',
-    description: '€4.950 eenmalige setup + €397/maand all-in onderhoud + AI-licentie',
+    price: '5950',
+    description: '€5.950 eenmalige setup + €649/maand all-in onderhoud + AI-licentie',
     availability: 'https://schema.org/InStock',
     seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
   },
@@ -103,7 +106,7 @@ const speakableSchema = {
 
 <BaseLayout
   title="AI-Website Bundel MKB Nederland — Website + Emma"
-  description="AI-Website Bundel: AI-ready website + Emma AI-receptionist + Emma WhatsApp-agent in één pakket. €4.950 setup + €397 per maand. Eén factuur, één SLA."
+  description="AI-Website Bundel: AI-ready website + Emma AI-receptionist + Emma WhatsApp-agent in één pakket. €5.950 setup + €649 per maand all-in. Eén factuur, één SLA."
   schema={[serviceSchema, speakableSchema]}
   faqSchema={faqItems}
 >
@@ -133,7 +136,7 @@ const speakableSchema = {
     <div class="container-page">
       <p class="text-xs text-slate-400 text-center mb-4">Indicatieve cijfers · resultaten verschillen per situatie</p>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-        {[{v:'€4.950',l:'eenmalige setup'},{v:'€397',l:'per maand all-in'},{v:`€${besparing.toLocaleString('nl-NL')}`,l:'besparing jaar 1'},{v:'6-8 wk',l:'live na briefing'}].map(s=>(
+        {[{v:euro(bundelPrijs.setup),l:'eenmalige setup'},{v:euro(bundelPrijs.mnd),l:'per maand all-in'},{v:euro(setupVoordeel),l:'lager bij de start'},{v:'6-8 wk',l:'live na briefing'}].map(s=>(
           <div class="reveal"><p class="text-2xl font-bold text-navy">{s.v}</p><p class="text-xs text-slate-500 mt-1">{s.l}</p></div>
         ))}
       </div>
@@ -168,49 +171,58 @@ const speakableSchema = {
     <div class="container-page">
       <div class="max-w-3xl mb-12 reveal">
         <p class="eyebrow mb-3">Kosten-vergelijking</p>
-        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Bundel vs losse afname — jaar 1.</h2>
-        <p class="mt-4 text-slate-600 leading-relaxed">Honest math. Wij tonen wat losse afname werkelijk zou kosten als u alles afzonderlijk inkoopt.</p>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Wat u los betaalt, en wat de bundel ermee doet.</h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">Post voor post, tegen onze eigen listprijzen. Geen opgetelde jaartotalen — wie los inkoopt, koopt niet alles op dezelfde dag. Het verschil is wat het scheelt om alles bij één partij te doen, niet meer dan dat.</p>
       </div>
-      <div class="grid lg:grid-cols-2 gap-6">
-        <div class="card">
-          <h3 class="text-base font-bold text-slate-600 mb-1">Losse afname — alles apart ingekocht</h3>
-          <p class="text-xs text-slate-500 mb-4">Losse posten, losse contracten, en bij storing twee partijen die naar elkaar wijzen.</p>
-          <ul class="space-y-3 mb-4">
-            {losseFacturen.map(f => (
-              <li class="border-b border-slate-100 pb-2.5">
-                <div class="flex items-start justify-between gap-3 text-sm">
-                  <span class="text-slate-700 font-medium">{f.item}</span>
-                  <span class="font-medium text-slate-700 whitespace-nowrap">{euro(f.bedrag)}</span>
-                </div>
-                <p class="mt-0.5 text-xs text-slate-500 leading-snug">{f.toelichting}</p>
-              </li>
+
+      <div class="card overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b-2 border-slate-200">
+              <th class="text-left font-bold text-navy pb-3">Post</th>
+              <th class="text-right font-bold text-slate-600 pb-3 whitespace-nowrap px-4">Los afgenomen</th>
+              <th class="text-right font-bold text-brand-emerald pb-3 whitespace-nowrap">In de bundel</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="3" class="pt-4 pb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">Eenmalig</td></tr>
+            {setupPosten.map(p => (
+              <tr class="border-b border-slate-100">
+                <td class="py-2.5 pr-4">
+                  <span class="font-medium text-slate-700">{p.item}</span>
+                  <p class="mt-0.5 text-xs text-slate-500 leading-snug">{p.toelichting}</p>
+                </td>
+                <td class="py-2.5 px-4 text-right font-medium text-slate-700 whitespace-nowrap align-top">{p.los}</td>
+                <td class={`py-2.5 text-right font-medium whitespace-nowrap align-top ${p.bundel === 'Inbegrepen' ? 'text-brand-emerald' : 'text-slate-700'}`}>{p.bundel}</td>
+              </tr>
             ))}
-          </ul>
-          <div class="flex items-center justify-between pt-2 border-t-2 border-slate-300">
-            <span class="font-bold text-navy">Totaal jaar 1</span>
-            <span class="text-xl font-bold text-slate-700">€{totaalLos.toLocaleString('nl-NL')}</span>
+            <tr><td colspan="3" class="pt-5 pb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">Per maand</td></tr>
+            {maandPosten.map(p => (
+              <tr class="border-b border-slate-100">
+                <td class="py-2.5 pr-4">
+                  <span class="font-medium text-slate-700">{p.item}</span>
+                  <p class="mt-0.5 text-xs text-slate-500 leading-snug">{p.toelichting}</p>
+                </td>
+                <td class="py-2.5 px-4 text-right font-medium text-slate-700 whitespace-nowrap align-top">{p.los}</td>
+                <td class={`py-2.5 text-right font-medium whitespace-nowrap align-top ${p.bundel === 'Inbegrepen' ? 'text-brand-emerald' : 'text-slate-700'}`}>{p.bundel}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div class="mt-6 grid sm:grid-cols-2 gap-4">
+          <div class="p-4 rounded-lg bg-brand-emerald/10">
+            <p class="text-sm font-bold text-brand-emerald">{euro(setupVoordeel)} lager bij de start</p>
+            <p class="mt-1 text-xs text-slate-600 leading-relaxed">De Emma-setup ({euro(EMMA_SETUP)}) en het integratiewerk ({euro(INTEGRATIE_LOS)}) vervallen. De bouw van de website kost hetzelfde als los.</p>
           </div>
-        </div>
-        <div class="card border-2 border-brand-emerald relative">
-          <span class="absolute -top-3 left-5 px-2.5 py-0.5 bg-brand-emerald text-white text-[11px] font-medium tracking-wide uppercase rounded">Bundel</span>
-          <h3 class="text-base font-bold text-navy mb-4">AI-Website Bundel (1 partner)</h3>
-          <ul class="space-y-2.5 mb-4">
-            <li class="flex items-center justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-700">Eenmalige setup (alles inbegrepen)</span><span class="font-medium text-slate-700">€{bundelPrijs.setup.toLocaleString('nl-NL')}</span></li>
-            <li class="flex items-center justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-700">Maandelijks (12 × €{bundelPrijs.mnd})</span><span class="font-medium text-slate-700">€{(bundelPrijs.mnd * 12).toLocaleString('nl-NL')}</span></li>
-            <li class="flex items-center justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-700">Integratie-setup</span><span class="font-medium text-brand-emerald">Inbegrepen</span></li>
-            <li class="flex items-center justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-700">Onderhoud + monitoring</span><span class="font-medium text-brand-emerald">Inbegrepen</span></li>
-            <li class="flex items-center justify-between text-sm border-b border-slate-100 pb-2"><span class="text-slate-700">SLA + 1 aanspreekpunt</span><span class="font-medium text-brand-emerald">Inbegrepen</span></li>
-          </ul>
-          <div class="flex items-center justify-between pt-2 border-t-2 border-brand-emerald">
-            <span class="font-bold text-navy">Totaal jaar 1</span>
-            <span class="text-xl font-bold text-brand-emerald">€{bundelJaar1.toLocaleString('nl-NL')}</span>
-          </div>
-          <div class="mt-4 p-3 rounded-lg bg-brand-emerald/10 text-center">
-            <p class="text-sm font-bold text-brand-emerald">U bespaart €{besparing.toLocaleString('nl-NL')} in jaar 1</p>
+          <div class="p-4 rounded-lg bg-brand-emerald/10">
+            <p class="text-sm font-bold text-brand-emerald">{euro(maandVoordeel)} per maand lager</p>
+            <p class="mt-1 text-xs text-slate-600 leading-relaxed">{euro(bundelPrijs.mnd)} all-in in plaats van {euro(WEBSITE_ONDERHOUD_MND)} onderhoud + {euro(EMMA.monthly)} Emma bij twee losse contracten.</p>
           </div>
         </div>
       </div>
-      <p class="mt-6 text-xs text-slate-500 max-w-3xl">De WhatsApp-agent staat bewust <strong>niet</strong> als aparte regel in deze vergelijking: die zit al in het Emma-abonnement van {euro(EMMA.monthly)}/mnd. Hem er los bij optellen zou de besparing kunstmatig opblazen. De genoemde bedragen zijn onze eigen listprijzen bij losse afname, inclusief de eenmalige setup-fee van {euro(EMMA_SETUP)} die u bij een los Emma-abonnement óók betaalt. Het integratie-werk is een geschatte gemiddelde marktprijs voor het koppelen van website, telefonie en WhatsApp wanneer die bij verschillende leveranciers lopen. Alle bedragen exclusief BTW.</p>
+
+      <p class="mt-6 text-xs text-slate-500 max-w-3xl">De WhatsApp-agent staat bewust <strong>niet</strong> als aparte regel: die zit al in het Emma-abonnement van {euro(EMMA.monthly)}/mnd. Hem er los bij optellen zou het voordeel kunstmatig opblazen. Alle genoemde bedragen zijn onze eigen listprijzen — dezelfde die op <a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="underline">de website-pagina</a> en <a href="/diensten/emma/" class="underline">de Emma-pagina</a> staan. Het integratiewerk is een vaste post voor het koppelen van website, telefonie en WhatsApp. Alle bedragen exclusief BTW.</p>
     </div>
   </section>
 

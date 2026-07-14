@@ -2,8 +2,8 @@
 // Staff-only: manage customers, services, requests, tickets, invoices.
 import { jsonResponse, errorResponse } from './google-auth.js';
 import { randomId, getSessionUser } from './auth.js';
-import { provisionAgent, canProvision } from './elevenlabs.js';
 import { escapeHtml } from './escape.js';
+import { activateOrder } from './activation.js';
 import {
   outreachProspects, outreachMailDetail, outreachImport,
   outreachGenerateMail, outreachEvaluateMail, outreachUpdateMail,
@@ -79,6 +79,8 @@ export async function handleAdminApi(request, env) {
     if (path === '/api/admin/order') {
       return method === 'PATCH' ? await updateOrder(request, env) : await orderDetail(env, url);
     }
+    if (path === '/api/admin/leads') return await listLeads(env, url);
+    if (path === '/api/admin/lead' && method === 'PATCH') return await updateLead(request, env);
     if (path === '/api/admin/leadgen/leads') return await leadgenLeads(env);
     if (path === '/api/admin/leadgen/prospects') return await leadgenProspects(env);
     if (path === '/api/admin/leadgen/verkoop' && method === 'POST') return await leadgenVerkoop(request, env);
@@ -378,38 +380,63 @@ async function updateOrder(request, env) {
   const o = await env.PORTAL_DB.prepare('SELECT * FROM service_orders WHERE id = ?').bind(b.id).first();
   if (!o) return errorResponse('Aanvraag niet gevonden', 404);
 
-  // When an order goes 'actief', the status flip and the service materialisation
-  // must commit atomically — a failure between the two steps used to leave the
-  // order marked 'actief' with no corresponding service row. The UNIQUE index
-  // on services.order_id (migration 0008) still makes the INSERT idempotent —
-  // only the first concurrent activation actually inserts.
-  const svcId = randomId('svc');
-  const stmts = [env.PORTAL_DB.prepare('UPDATE service_orders SET status = ? WHERE id = ?').bind(b.status, b.id)];
+  // 'actief' runs the same activateOrder() the Mollie webhook uses: the service
+  // row is materialised and, where supported, the agent is provisioned —
+  // idempotently. The happy path already activated itself when the payment came
+  // in, so this click is a manual override / retry after a failure.
+  //
+  // manual:true lets staff declare a human-delivered product done. It does NOT
+  // let anyone mark an auto-provisionable product live without a successful
+  // provisioning run — activateOrder decides that, not this handler.
   if (b.status === 'actief') {
-    stmts.push(
-      env.PORTAL_DB.prepare(
-        'INSERT OR IGNORE INTO services (id, customer_id, product_key, naam, tier, status, config_json, started_at, created_at, order_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-      ).bind(svcId, o.customer_id, o.product_key, o.product_key, o.tier || null,
-        'onboarding', o.intake_json || null, today(), today(), o.id),
-    );
-  }
-  const results = await env.PORTAL_DB.batch(stmts);
-
-  // The ElevenLabs call is external/async and can throw, so it must stay
-  // outside the D1 batch above — only the two writes go in the atomic batch.
-  // Only the worker that actually inserted the service should fire provisioning.
-  if (b.status === 'actief' && results[1]?.meta?.changes === 1 && env.ELEVENLABS_API_KEY && canProvision(o.product_key)) {
-    let prov;
-    try {
-      prov = await provisionAgent(env.ELEVENLABS_API_KEY, o.product_key, o.product_key, safeParseJson(o.intake_json));
-    } catch (err) {
-      console.error('[admin] ElevenLabs provisioning failed:', err.message || err);
-      prov = { status: 'fout', error: String(err.message || err).slice(0, 400), provisioned_at: new Date().toISOString() };
+    const result = await activateOrder(env, o, { manual: true });
+    if (result.blocked) {
+      return errorResponse('Deze aanvraag is geannuleerd. Zet hem eerst op "ingediend" voordat je hem activeert.', 409);
     }
-    await env.PORTAL_DB.prepare('UPDATE services SET provisioning_json = ? WHERE id = ?')
-      .bind(JSON.stringify(prov), svcId).run();
+    if (result.status !== 'actief') {
+      // Do not report success for an activation that did not complete: the
+      // service exists but is not live. Staff already got the alert from
+      // activateOrder(), which also parked the order on in_uitvoering.
+      return jsonResponse({
+        ok: true,
+        status: result.status,
+        message: 'Dienst aangemaakt, maar de inrichting is niet afgerond — order staat op in_uitvoering. Zie de alert voor de oorzaak.',
+      });
+    }
+    return jsonResponse({ ok: true, status: 'actief', message: 'Aanvraag actief — dienst is ingericht.' });
   }
-  return jsonResponse({ ok: true, message: 'Aanvraag bijgewerkt' });
+
+  await env.PORTAL_DB.prepare('UPDATE service_orders SET status = ? WHERE id = ?').bind(b.status, b.id).run();
+  return jsonResponse({ ok: true, status: b.status, message: 'Aanvraag bijgewerkt' });
+}
+
+// ── inbound leads (public forms) ────────────────────────────────────────────
+async function listLeads(env, url) {
+  const status = url.searchParams.get('status');
+  const base = `SELECT id, created_at, form_type, email, naam, bedrijf, telefoon, bericht,
+      status, mail_status, mail_error, notitie FROM inbound_leads`;
+  const q = status
+    ? env.PORTAL_DB.prepare(`${base} WHERE status = ? ORDER BY created_at DESC LIMIT 200`).bind(status)
+    : env.PORTAL_DB.prepare(`${base} ORDER BY created_at DESC LIMIT 200`);
+  return jsonResponse({ ok: true, leads: (await q.all()).results || [] });
+}
+
+async function updateLead(request, env) {
+  const b = await request.json().catch(() => null);
+  const valid = ['nieuw', 'in_behandeling', 'gewonnen', 'verloren'];
+  if (!b?.id) return errorResponse('Lead-id ontbreekt', 400);
+  if (b.status !== undefined && !valid.includes(b.status)) return errorResponse('Ongeldige status', 400);
+
+  const sets = [];
+  const binds = [];
+  if (b.status !== undefined) { sets.push('status = ?'); binds.push(b.status); }
+  if (b.notitie !== undefined) { sets.push('notitie = ?'); binds.push(String(b.notitie).slice(0, 2000)); }
+  if (!sets.length) return errorResponse('Niets om bij te werken', 400);
+  binds.push(b.id);
+
+  const res = await env.PORTAL_DB.prepare(`UPDATE inbound_leads SET ${sets.join(', ')} WHERE id = ?`).bind(...binds).run();
+  if (!res.meta?.changes) return errorResponse('Lead niet gevonden', 404);
+  return jsonResponse({ ok: true, message: 'Lead bijgewerkt' });
 }
 
 async function createInvoice(request, env) {

@@ -12,7 +12,15 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
 
 <AdminLayout title="Aanvragen" active="aanvragen">
   <h1 class="page-title">Aanvragen</h1>
-  <p class="page-sub">Nieuwe intake-aanvragen en wijzigingsverzoeken van klanten.</p>
+  <p class="page-sub">Binnengekomen leads van de website, intake-aanvragen en wijzigingsverzoeken van klanten.</p>
+
+  <!-- Inbound leads (publieke formulieren) -->
+  <p class="section-title mt-6">Nieuwe leads (website-formulieren)</p>
+  <div id="l-list" class="mt-3 space-y-3"><div class="pskel h-24 w-full"></div></div>
+  <div id="l-empty" class="pcard mt-3 hidden"><div class="empty">
+    <p class="empty-title">Geen open leads</p>
+    <p class="empty-text">Contact-, demo- en scan-aanvragen van de website verschijnen hier.</p>
+  </div></div>
 
   <!-- Intake-aanvragen -->
   <p class="section-title mt-6">Nieuwe aanvragen (intake)</p>
@@ -160,6 +168,67 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
           .catch(function () {});
       }
 
+      // ── inbound leads (publieke formulieren) ──
+      var L_STATUS = { nieuw: 'pbadge--amber', in_behandeling: 'pbadge--blue', gewonnen: 'pbadge--green', verloren: 'pbadge--red' };
+      var FORM_LABEL = {
+        contact: 'Contact', demo: 'Demo-aanvraag', aanvraag: 'Aanvraag', newsletter: 'Nieuwsbrief',
+        roi_calculator: 'ROI-calculator', ai_readiness_scan: 'AI-scan', ai_vindbaarheid_scan: 'GEO-scan',
+        ai_matcher: 'Oplossing-matcher', founding: 'Founding member', survey_ai_adoption: 'Onderzoek',
+      };
+      function loadLeads() {
+        fetch('/api/admin/leads', { credentials: 'same-origin' })
+          .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (d) {
+            var list = (d.leads || []).filter(function (l) { return l.status !== 'gewonnen' && l.status !== 'verloren'; });
+            var box = document.getElementById('l-list');
+            if (!list.length) { box.innerHTML = ''; document.getElementById('l-empty').classList.remove('hidden'); return; }
+            document.getElementById('l-empty').classList.add('hidden');
+            box.innerHTML = list.map(function (l) {
+              var dt = new Date(l.created_at).toLocaleString('nl-NL');
+              // A failed mail means nobody was notified and the visitor got no
+              // autoresponse — that lead needs a human today, so say it loudly.
+              var mailWarn = l.mail_status === 'mislukt'
+                ? '<p class="mt-2 text-xs" style="color:var(--p-red,#dc2626)">⚠ E-mail niet verstuurd (' + esc(l.mail_error || 'onbekende fout') + ') — neem handmatig contact op.</p>'
+                : '';
+              return '<div class="pcard" data-id="' + esc(l.id) + '"><div class="pcard-b">' +
+                '<div class="flex items-center justify-between gap-2">' +
+                '<span class="primary" style="color:var(--p-ink);font-weight:600">' +
+                esc(FORM_LABEL[l.form_type] || l.form_type) + ' · ' + esc(l.naam || l.email) +
+                (l.bedrijf ? ' — ' + esc(l.bedrijf) : '') + '</span>' +
+                '<span class="pbadge ' + (L_STATUS[l.status] || 'pbadge--gray') + '">' + esc(l.status) + '</span></div>' +
+                '<p class="mt-1 text-xs" style="color:var(--p-ink-4)">' + dt + ' · ' +
+                '<a href="mailto:' + esc(l.email) + '" style="color:var(--p-ink-4)">' + esc(l.email) + '</a>' +
+                (l.telefoon ? ' · ' + esc(l.telefoon) : '') + '</p>' +
+                (l.bericht ? '<p class="mt-2 text-sm p-muted">' + esc(l.bericht) + '</p>' : '') +
+                mailWarn +
+                '<div class="mt-3 flex flex-wrap items-center gap-2">' +
+                '<select class="l-stat pselect" style="width:auto">' +
+                ['nieuw', 'in_behandeling', 'gewonnen', 'verloren'].map(function (s) {
+                  return '<option value="' + s + '"' + (s === l.status ? ' selected' : '') + '>' + s + '</option>';
+                }).join('') + '</select>' +
+                '<input class="l-note pinput flex-1" style="min-width:12rem" placeholder="Interne notitie" value="' + esc(l.notitie || '') + '" />' +
+                '<button class="l-save pbtn pbtn--primary pbtn--sm">Opslaan</button>' +
+                '</div></div></div>';
+            }).join('');
+            document.querySelectorAll('#l-list .l-save').forEach(function (b) {
+              b.addEventListener('click', function () {
+                var card = b.closest('[data-id]'); b.disabled = true;
+                fetch('/api/admin/lead', {
+                  method: 'PATCH', credentials: 'same-origin',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({
+                    id: card.getAttribute('data-id'),
+                    status: card.querySelector('.l-stat').value,
+                    notitie: card.querySelector('.l-note').value.trim(),
+                  }),
+                }).then(function () { loadLeads(); }).catch(function () { b.disabled = false; });
+              });
+            });
+          })
+          .catch(function () {});
+      }
+
+      loadLeads();
       loadOrders();
       loadRequests();
     })();
