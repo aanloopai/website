@@ -1,10 +1,47 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EMMA, EMMA_SETUP, WEBSITE_BUNDEL } from '../../data/pricing';
+
+// De TCO-tabel stond hier als vaste bedragen en was afgeleid van de OUDE
+// bundelprijs (€4.950 + €397/mnd). Toen die prijs werd gecorrigeerd, bleef deze
+// pagina met een verzonnen "AI-licentie van €397/mnd" rekenen — een tarief dat
+// nergens bestaat. Alles wordt nu uit pricing.ts berekend, zodat een
+// prijswijziging deze pagina niet meer stilletjes onwaar maakt.
+const WEBSITE_SETUP = 5950;   // Groei-pakket, zie /diensten/website-laten-maken...
+const WEBSITE_MND = 197;      // onderhoud, hosting, security
+
+// Wat een klassieke web-only site in jaar 2 alsnog moet betalen om AI te krijgen.
+// Bovengrens-vrij gekozen: de ondergrens van onze eigen "verborgen kosten"-tabel
+// hieronder (schema/speakable retrofit + chatbot/voice plug-in slot).
+const RETROFIT_SCHEMA = 1500;
+const RETROFIT_PLUGIN = 4500;
+const RETROFIT_TOTAAL = RETROFIT_SCHEMA + RETROFIT_PLUGIN;
+
+const euro = (n: number) => `€${n.toLocaleString('nl-NL')}`;
+const signed = (n: number) => (n > 0 ? `+${euro(n)}` : `−${euro(Math.abs(n))}`);
+
+// Jaar 1 — web-only heeft nog geen AI en is dus goedkoper. Dat hoort zo.
+const webJaar1 = WEBSITE_SETUP + WEBSITE_MND * 12;
+const aiJaar1 = WEBSITE_BUNDEL.setup + WEBSITE_BUNDEL.maand * 12;
+
+// Jaar 2 — de web-only klant wil alsnog AI: retrofit + Emma-setup + Emma-abonnement.
+const webJaar2 = WEBSITE_MND * 12 + RETROFIT_TOTAAL + EMMA_SETUP + EMMA.monthly * 12;
+const aiJaar2 = WEBSITE_BUNDEL.maand * 12;
+
+// Jaar 3 — beide draaien door; web-only betaalt twee losse abonnementen.
+const webJaar3 = WEBSITE_MND * 12 + EMMA.monthly * 12;
+const aiJaar3 = WEBSITE_BUNDEL.maand * 12;
+
+const webCum2 = webJaar1 + webJaar2;
+const aiCum2 = aiJaar1 + aiJaar2;
+const webCum3 = webCum2 + webJaar3;
+const aiCum3 = aiCum2 + aiJaar3;
+const voordeel3Jaar = webCum3 - aiCum3;
 
 const tcoTabel = [
-  { jaar: 'Jaar 1', web_only: '€8.314', ai_ready: '€9.714', verschil: '+€1.400' },
-  { jaar: 'Jaar 2 (incl. AI-retrofit web-only)', web_only: '€19.564', ai_ready: '€14.478', verschil: '−€5.086' },
-  { jaar: 'Jaar 3 totaal cumulatief', web_only: '€27.128', ai_ready: '€19.242', verschil: '−€7.886' },
+  { jaar: 'Jaar 1', web_only: euro(webJaar1), ai_ready: euro(aiJaar1), verschil: signed(aiJaar1 - webJaar1) },
+  { jaar: 'Jaar 2 cumulatief (web-only doet AI-retrofit)', web_only: euro(webCum2), ai_ready: euro(aiCum2), verschil: signed(aiCum2 - webCum2) },
+  { jaar: 'Jaar 3 cumulatief', web_only: euro(webCum3), ai_ready: euro(aiCum3), verschil: signed(aiCum3 - webCum3) },
 ];
 
 const verborgenKosten = [
@@ -43,7 +80,7 @@ const faqItems = [
   { question: 'Welke bewijs hebben jullie dat AI-ready websites beter scoren in 2026?', answer: 'Op basis van benchmarks en best practices kunnen AI-ready sites doorgaans 40-60% meer organisch verkeer in 6 maanden opleveren ten opzichte van klassieke sites, worden ze vaker geciteerd in Perplexity/ChatGPT en hebben ze hogere conversie door snellere Core Web Vitals. Externe bronnen: Search Engine Land, Search Engine Journal en SISTRIX rapporteren dat AI Overviews-rankings sterk correleren met Schema.org coverage.' },
   { question: 'Wat als mijn webbureau zegt "AI is een hype, focus op design"?', answer: 'Dit is een red flag. Design en AI-ready zijn niet wederzijds uitsluitend — een goed design heeft beiden. Bureaus die AI dismissen lopen achter op de markt. Vraag concreet: kunt u een referentie laten zien van een site die in Google AI Overviews wordt geciteerd? Zonder antwoord = waarschuwingssignaal. AI is in 2026 geen optie meer, het is verplichte basisinfrastructuur.' },
   { question: 'Hoeveel kost het om achteraf AI-functies toe te voegen aan een klassieke website?', answer: 'Indicatief: Schema.org + Speakable retrofit €1.500-€3.500. AI-chatbot integratie €2.000-€5.000. Emma AI-receptie koppeling €1.500-€3.000. Emma WhatsApp koppeling €1.000-€2.000. Totaal: €6.000-€13.500 extra investering die u kon vermijden door direct AI-ready te bouwen. Plus 3-6 maanden vertraging waarin u zonder AI-laag werkt.' },
-  { question: 'Wat staat er in de TCO-vergelijking jaar 1 vs jaar 2?', answer: 'Jaar 1 lijkt klassieke web-only goedkoper (€8.314 vs €9.714), maar zodra u in jaar 2 AI wilt toevoegen — wat 80% van de MKB doet — slaat de balans om. Web-only jaar 2 inclusief AI-retrofit: €19.564. AI-ready jaar 2 (alleen onderhoud): €14.478. Verschil over 3 jaar: AI-ready bespaart cumulatief €7.886 én u heeft 1 jaar eerder live AI-functies.' },
+  { question: 'Wat staat er in de TCO-vergelijking jaar 1 vs jaar 2?', answer: `Jaar 1 is web-only gewoon goedkoper (${euro(webJaar1)} vs ${euro(aiJaar1)}) — logisch, want u heeft dan nog geen AI. Wilt u die in jaar 2 alsnog, dan betaalt u de retrofit (${euro(RETROFIT_TOTAAL)}), de Emma-setup (${euro(EMMA_SETUP)}) en een los Emma-abonnement (${euro(EMMA.monthly)}/mnd) bovenop uw onderhoud. Cumulatief na jaar 2 staat web-only op ${euro(webCum2)} tegen ${euro(aiCum2)} AI-ready; na jaar 3 op ${euro(webCum3)} tegen ${euro(aiCum3)}. Het verschil over drie jaar is ${euro(voordeel3Jaar)} — geen dramatisch bedrag, en dat is ook niet het hoofdargument: u heeft een jaar eerder een werkende AI-laag, zonder retrofit-project.` },
   { question: 'Welke vragen moet ik mijn webbureau stellen voor ik teken?', answer: 'Onze 8-punts checklist (boven in dit artikel) is de minimum. Daarbij: (1) toon mij 3 live sites die u in laatste 12 maanden bouwde — is daar Schema.org + Speakable in te zien via view-source? (2) Hoeveel kost AI-chatbot toevoegen na launch? (3) Krijg ik mijn code in eigen GitHub? (4) Welke hosting raadt u aan en kan ik daar weg? (5) Wat is jullie AVG-DPA-template? Antwoorden op deze vragen vertellen u meer dan een mooi portfolio.' },
 ];
 
@@ -126,7 +163,16 @@ const speakableSchema = {
           </tbody>
         </table>
       </div>
-      <p class="text-sm text-slate-500">Bedragen exclusief BTW. Web-only setup €5.950 + €197/mnd onderhoud + €1.500 AI-retrofit jaar 2 + €4.500 chat/voice integratie + €4.250 maintenance escalatie. AI-ready setup €5.950 + €197/mnd onderhoud + €397/mnd AI-licentie. Cijfers gebaseerd op Aanloop AI listprijzen + benchmarks Q4 2025 van Nederlandse webbureaus.</p>
+      <p class="text-sm text-slate-500">
+        Bedragen exclusief BTW, berekend met onze eigen listprijzen — geen benchmarks, geen schattingen.
+        <strong>Web-only:</strong> {euro(WEBSITE_SETUP)} bouw + {euro(WEBSITE_MND)}/mnd onderhoud; in jaar 2 komt daar de AI-retrofit bij
+        ({euro(RETROFIT_SCHEMA)} schema/speakable + {euro(RETROFIT_PLUGIN)} chatbot/voice plug-in slot), plus {euro(EMMA_SETUP)} Emma-setup
+        en {euro(EMMA.monthly)}/mnd voor een los Emma-abonnement.
+        <strong>AI-ready:</strong> de AI-Website Bundel — {euro(WEBSITE_BUNDEL.setup)} setup + {euro(WEBSITE_BUNDEL.maand)}/mnd all-in
+        (onderhoud én Emma inbegrepen).
+        Jaar 1 is web-only goedkoper: u heeft dan nog geen AI. Het omslagpunt ligt in jaar 2, en pas na drie jaar loopt het verschil op tot {euro(voordeel3Jaar)}.
+        De retrofit-bedragen zijn de ondergrens uit de tabel hierboven; loopt uw retrofit uit, dan valt het verschil groter uit — niet kleiner.
+      </p>
     </div>
   </section>
 
