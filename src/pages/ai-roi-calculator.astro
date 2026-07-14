@@ -401,14 +401,6 @@ const faqItems = [
 </BaseLayout>
 
 <script>
-  import { initGrowthBook, getFeatureValue } from '../lib/growthbook';
-
-  // Feature-flag config voor email-CTA experiment (Sprint A v3.5).
-  // Default = control variant; B-variant ('Ontvang mijn ROI-rapport (gratis)')
-  // wordt vanuit GrowthBook gepusht zodra dashboard-experiment actief is.
-  const ROI_EMAIL_CTA_KEY = 'roi-email-cta-button-text';
-  const ROI_EMAIL_CTA_DEFAULT = 'Stuur rapport per e-mail →';
-
   function fmt(n: number): string {
     return '€ ' + Math.round(n).toLocaleString('nl-NL');
   }
@@ -683,17 +675,6 @@ const faqItems = [
   document.addEventListener('DOMContentLoaded', () => {
     updateCalc();
 
-    // GrowthBook init — fire-and-forget (geen await op DOMContentLoaded).
-    // Zodra features binnen zijn (typisch 50-300ms vanaf cache, max 3s timeout),
-    // updaten we de email-CTA button text. Als GB faalt, blijft default text staan.
-    void initGrowthBook().then(() => {
-      const ctaText = getFeatureValue(ROI_EMAIL_CTA_KEY, ROI_EMAIL_CTA_DEFAULT);
-      const btnText = document.getElementById('roi-email-btn-text');
-      if (btnText && ctaText && ctaText !== btnText.textContent) {
-        btnText.textContent = ctaText;
-      }
-    });
-
     // Preset cards click handlers
     document.querySelectorAll<HTMLElement>('.preset-card').forEach(btn => {
       btn.addEventListener('click', () => applyPreset(btn));
@@ -776,10 +757,4 @@ const faqItems = [
       }
     });
   });
-</script>
-
-<script>
-  // GrowthBook A/B experiments — Phase 2 (roi-calc-first-step variant)
-  import { initExperimentsOnConsent } from '../lib/ab-experiments';
-  initExperimentsOnConsent();
 </script>
