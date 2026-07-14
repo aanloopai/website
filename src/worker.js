@@ -33,6 +33,7 @@ import { handleMollieWebhook, reconcilePayments, billMonthlySubscriptions } from
 import { handleMcp } from './lib/mcp.js';
 import { rateLimit } from './lib/rate-limit.js';
 import { escapeHtml } from './lib/escape.js';
+import { alertStaff } from './lib/notify.js';
 import { countVandaagProspects, prospectsNeedingFollowupDraft, generateFollowupDraft, outreachImport } from './lib/outreach.js';
 import { isWerkdag } from './lib/crm.js';
 import { aiSignalScan } from './lib/ai-crm.js';
@@ -462,15 +463,54 @@ function consentPageHtml(title, message, ok) {
   </body></html>`;
 }
 
-async function handleSubmit(request, env) {
-  if (!env.BREVO_API_KEY) {
-    return jsonResponse({
-      success: false,
-      message: 'BREVO_API_KEY env var not configured',
-      hint: 'Set BREVO_API_KEY in Cloudflare Workers → Settings → Variables and Secrets, then redeploy',
-    }, 500);
+// Persist an inbound submission before anything else can fail. Mail is a
+// notification channel; this row is the system of record. Returns the lead id,
+// or null if D1 is unreachable (in which case we fall back to mail-only and say
+// so loudly — losing the lead silently is the one outcome that is not allowed).
+async function storeInboundLead(env, { formType, fields, userEmail, fullName, clientIp }) {
+  if (!env.PORTAL_DB) {
+    console.error('[/api/submit] PORTAL_DB not bound — lead cannot be persisted');
+    return null;
   }
+  const id = `lead_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
+  const payload = { ...fields };
+  delete payload.botcheck;
+  // Cap every free-text field: the form is public, and D1 row size is finite.
+  const cap = (v, max) => (v == null ? null : String(v).trim().slice(0, max) || null);
+  try {
+    await env.PORTAL_DB.prepare(
+      `INSERT INTO inbound_leads (id, created_at, form_type, email, naam, bedrijf, telefoon, bericht, fields_json, status, mail_status, ip)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'nieuw', 'pending', ?)`,
+    ).bind(
+      id,
+      Date.now(),
+      cap(formType, 60),
+      cap(userEmail, 200),
+      cap(fullName, 200),
+      cap(fields.bedrijf || fields.bedrijfsnaam || fields.company, 200),
+      cap(fields.telefoon || fields.phone, 60),
+      cap(fields.bericht || fields.message || fields.vraag, 4000),
+      JSON.stringify(payload).slice(0, 8000),
+      cap(clientIp, 60),
+    ).run();
+    return id;
+  } catch (err) {
+    console.error('[/api/submit] lead insert failed:', err.message || err);
+    return null;
+  }
+}
 
+async function markLeadMail(env, leadId, status, error) {
+  if (!leadId || !env.PORTAL_DB) return;
+  try {
+    await env.PORTAL_DB.prepare('UPDATE inbound_leads SET mail_status = ?, mail_error = ? WHERE id = ?')
+      .bind(status, error ? String(error).slice(0, 400) : null, leadId).run();
+  } catch (err) {
+    console.error('[/api/submit] lead mail-status update failed:', err.message || err);
+  }
+}
+
+async function handleSubmit(request, env) {
   let formData;
   try {
     formData = await request.formData();
@@ -504,6 +544,20 @@ async function handleSubmit(request, env) {
   }
 
   const subject = (fields.subject || `Nieuw ${formType} via aanloopai.nl — ${fields.bedrijf || fullName}`).toString();
+
+  // System of record first — everything below this line is best-effort delivery.
+  const leadId = await storeInboundLead(env, { formType, fields, userEmail, fullName, clientIp });
+
+  if (!env.BREVO_API_KEY) {
+    console.error('[/api/submit] BREVO_API_KEY not configured — lead stored, no mail sent');
+    await markLeadMail(env, leadId, 'mislukt', 'BREVO_API_KEY not configured');
+    await alertStaff(env, `Nieuwe ${formType}-aanvraag — mail niet verstuurd`,
+      `${fullName} <${userEmail}> heeft het formulier "${formType}" ingevuld.\n`
+      + `BREVO_API_KEY is niet geconfigureerd, dus er is geen e-mail verstuurd.\n`
+      + `De aanvraag staat wel in /admin/aanvragen (lead ${leadId || 'NIET OPGESLAGEN'}).`);
+    // The visitor's request IS captured, so this is not their failure to retry.
+    return jsonResponse({ success: leadId !== null, message: leadId ? 'Verzonden' : 'Opslaan mislukt' }, leadId ? 200 : 500);
+  }
 
   try {
     await sendBrevoEmail(env.BREVO_API_KEY, {
@@ -599,12 +653,30 @@ async function handleSubmit(request, env) {
       console.error('[/api/submit] Brevo contact upsert failed (non-fatal):', contactErr.message || contactErr);
     }
 
+    await markLeadMail(env, leadId, 'verzonden', null);
     return jsonResponse({ success: true, message: 'Verzonden' });
   } catch (err) {
-    console.error('[/api/submit] Brevo error:', err.message || err);
+    const message = err.message || 'Brevo send failed';
+    console.error('[/api/submit] Brevo error:', message);
+    await markLeadMail(env, leadId, 'mislukt', message);
+
+    if (leadId) {
+      // The lead is safe in D1. Telling the visitor "er ging iets mis, probeer
+      // opnieuw" would be a lie that makes them submit twice (or walk away) —
+      // their request HAS arrived. Staff get the alert instead, out of band,
+      // because the mail channel is precisely what just broke.
+      await alertStaff(env, `Mail MISLUKT voor nieuwe ${formType}-aanvraag`,
+        `${fullName} <${userEmail}> heeft het formulier "${formType}" ingevuld.\n`
+        + `De Brevo-mail is mislukt: ${message}\n\n`
+        + `De aanvraag staat in /admin/aanvragen (lead ${leadId}). Neem handmatig contact op.`);
+      return jsonResponse({ success: true, message: 'Verzonden' });
+    }
+
+    // No lead row AND no mail — nothing captured it. This one the visitor must
+    // know about, so they can try again or call us.
     return jsonResponse({
       success: false,
-      message: err.message || 'Brevo send failed',
+      message,
       hint: 'Common causes: 1) Invalid BREVO_API_KEY 2) hello@aanloopai.nl not verified as sender in Brevo 3) Free plan credits exhausted',
     }, 502);
   }

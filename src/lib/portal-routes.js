@@ -10,6 +10,7 @@ import { handleCheckoutStart, cancelSubscription } from './mollie.js';
 import { getCatalogProduct, getCatalogTier } from '../data/portal-catalog.ts';
 import { dealVoorOrder } from './crm.js';
 import { escapeHtml } from './escape.js';
+import { alertStaff } from './notify.js';
 
 const SITE_ORIGIN = 'https://aanloopai.nl';
 const MUTATING_METHODS = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
@@ -57,7 +58,10 @@ function mailButton(href, label) {
   return `<p style="margin:28px 0"><a href="${escapeHtml(href)}" style="display:inline-block;background:#4f46e5;color:#fff;padding:13px 22px;border-radius:10px;text-decoration:none;font-weight:600">${escapeHtml(label)}</a></p>`;
 }
 async function sendMail(env, to, toNaam, subject, innerHtml) {
-  if (!env.BREVO_API_KEY) return;
+  // Throws instead of no-opping: a missing key means the magic link never
+  // arrives, and the caller must be able to tell the user that rather than
+  // claim "check your inbox" for a mail that was never sent.
+  if (!env.BREVO_API_KEY) throw new Error('BREVO_API_KEY niet geconfigureerd');
   const res = await fetch(BREVO_API, {
     method: 'POST',
     headers: { 'api-key': env.BREVO_API_KEY, 'content-type': 'application/json', accept: 'application/json' },
@@ -165,7 +169,20 @@ export async function handleAuthRequest(request, env) {
          ${mailButton(`${SITE_ORIGIN}/portal/verify?token=${token}`, 'Inloggen op het portaal')}
          <p style="font-size:13px;color:#64748b">Deze link is 15 minuten geldig en kan één keer gebruikt worden. Niet aangevraagd? Negeer deze mail.</p>`);
     } catch (err) {
-      console.error('[portal] magic-link email failed:', err.message || err);
+      // This used to be logged and then answered with "check your inbox" — the
+      // customer waited for a mail that was never sent, and no one was told the
+      // portal login was down. Say it out loud instead, and page staff.
+      //
+      // Enumeration trade-off: during a mail outage a known address gets 502
+      // while an unknown one gets 200, which leaks existence *for the duration
+      // of the outage*. A login that silently never arrives is the worse
+      // failure, and the alert below is what makes that window short.
+      const message = err.message || String(err);
+      console.error('[portal] magic-link email failed:', message);
+      await alertStaff(env, 'Inloglink kon niet worden verstuurd',
+        `Klant ${email} vroeg een magic link aan, maar de mail is mislukt: ${message}\n\n`
+        + 'Zolang dit niet is opgelost kan geen enkele klant inloggen op het portaal.');
+      return errorResponse('We konden de inloglink nu niet versturen. Probeer het over enkele minuten opnieuw of mail hello@aanloopai.nl.', 502);
     }
   }
   return jsonResponse({
@@ -182,6 +199,10 @@ export async function handleAuthRequest(request, env) {
 // enumeration, no signal about which check failed.
 export async function handleAuthPasswordLogin(request, env) {
   if (request.method !== 'POST') return errorResponse('Method not allowed', 405);
+  // Same CSRF guard as every other session-minting POST (verify, invite-accept).
+  // Was the one mutating auth route without it.
+  const originErr = checkOrigin(request);
+  if (originErr) return originErr;
   if (!env.PORTAL_DB || !env.PORTAL_SESSION_SECRET) return errorResponse('Klantportaal is nog niet geconfigureerd', 503);
   if (!env.STAFF_PASSWORD_HASH) return errorResponse('Wachtwoord-login niet geconfigureerd', 503);
 
@@ -664,7 +685,14 @@ async function inviteTeam(request, env, user) {
        ${mailButton(`${SITE_ORIGIN}/api/team-invite/accept?token=${token}`, 'Uitnodiging accepteren')}
        <p style="font-size:13px;color:#64748b">Deze uitnodiging is 7 dagen geldig.</p>`);
   } catch (err) {
-    console.error('[portal] invite email failed:', err.message || err);
+    // The invite row exists and its token is valid, but the mail never left.
+    // Telling the owner "verstuurd" would leave them waiting on a colleague who
+    // was never actually invited.
+    const message = err.message || String(err);
+    console.error('[portal] invite email failed:', message);
+    await alertStaff(env, 'Team-uitnodiging kon niet worden verstuurd',
+      `Uitnodiging voor ${email} (klant ${user.customer_id}) is opgeslagen, maar de mail is mislukt: ${message}`);
+    return errorResponse(`De uitnodiging voor ${email} is opgeslagen, maar de e-mail kon niet worden verstuurd. Probeer het later opnieuw of mail hello@aanloopai.nl.`, 502);
   }
   return jsonResponse({ ok: true, message: `Uitnodiging verstuurd naar ${email}.` });
 }

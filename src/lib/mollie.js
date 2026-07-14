@@ -6,6 +6,8 @@ import { jsonResponse, errorResponse } from './google-auth.js';
 import { randomId, sha256Hex } from './auth.js';
 import { getCatalogTier } from '../data/portal-catalog.ts';
 import { dealWonVoorOrder } from './crm.js';
+import { activateOrder } from './activation.js';
+import { alertStaff } from './notify.js';
 
 const SITE = 'https://aanloopai.nl';
 const MOLLIE = 'https://api.mollie.com/v2';
@@ -298,10 +300,27 @@ async function onPaid(env, payment, subId, orderId) {
   }
 
   if (orderId) {
-    const o = await db.prepare('SELECT status FROM service_orders WHERE id = ?').bind(orderId).first();
+    const o = await db.prepare('SELECT * FROM service_orders WHERE id = ?').bind(orderId).first();
     if (o && o.status === 'concept') {
       await db.prepare('UPDATE service_orders SET status = ?, submitted_at = ? WHERE id = ?')
         .bind('ingediend', Date.now(), orderId).run();
+    }
+    // The customer has paid. portal/checkout.astro tells them "we starten direct
+    // met de inrichting" — so start it, instead of parking the order on
+    // 'ingediend' until a human happens to look at /admin/aanvragen.
+    // activateOrder() is idempotent (unique index on services.order_id), so a
+    // webhook replay or the reconcile cron re-running this is harmless. It
+    // never blocks the payment flow: a failure here still leaves a paid order
+    // + invoice, and staff get alerted.
+    if (o && (o.status === 'concept' || o.status === 'ingediend')) {
+      try {
+        await activateOrder(env, o);
+      } catch (err) {
+        console.error('[mollie] auto-activation failed:', err?.message || err);
+        await alertStaff(env, `Auto-activatie mislukt voor order ${orderId}`,
+          `De betaling is binnen, maar de order kon niet automatisch worden ingericht: ${String(err?.message || err).slice(0, 300)}\n\n`
+          + 'Handel de inrichting handmatig af in /admin/aanvragen.');
+      }
     }
   }
   await createInvoice(env, payment, sub);

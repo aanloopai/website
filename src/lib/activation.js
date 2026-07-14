@@ -1,0 +1,147 @@
+// Order activation — the step that turns a paid order into a live service.
+//
+// This used to live inline in admin-routes.js and could ONLY be triggered by a
+// human clicking in /admin/aanvragen. That left every paid order parked on
+// 'ingediend' until someone noticed — while portal/checkout.astro promises the
+// customer "we starten direct met de inrichting". Now the Mollie webhook calls
+// activateOrder() itself and the admin route reuses the exact same code, so the
+// manual click is an override/retry, not a requirement.
+//
+// State machine (service_orders.status):
+//   concept → ingediend        (customer submit, or payment confirmed)
+//   ingediend → in_uitvoering  (service row materialised, setup running)
+//   in_uitvoering → actief     (the thing the customer paid for actually exists)
+//
+// An order only reaches 'actief' when its service is really live:
+//   * auto-provisionable product (ElevenLabs)  → 'actief' requires a successful
+//     provisioning run. No key, or a failed run, stops at 'in_uitvoering' and
+//     alerts staff — it never claims to be live.
+//   * human-delivered product                  → only a staff member can call it
+//     done ({manual:true}); the webhook parks it on 'in_uitvoering' and alerts.
+//
+// Every step is idempotent and safe to replay: the Mollie webhook, the 15-minute
+// reconcile cron and an admin click can all race, and the unique index on
+// services.order_id (migration 0008) guarantees exactly one service per order.
+// Provisioning is never run twice for a service that already provisioned
+// successfully — that would create (and bill for) a second ElevenLabs agent.
+import { randomId } from './auth.js';
+import { provisionAgent, canProvision } from './elevenlabs.js';
+import { alertStaff } from './notify.js';
+
+function safeParseJson(s) {
+  if (!s) return null;
+  try { return JSON.parse(s); } catch { return null; }
+}
+const today = () => new Date().toISOString().slice(0, 10);
+
+// True when a provisioning attempt is still owed: never run, or the last run failed.
+function needsProvisioning(prov) {
+  return !prov || prov.status === 'fout';
+}
+
+/**
+ * Materialise `order` into a service row and provision it where we can.
+ *
+ * @param {object} env    Worker env (PORTAL_DB, ELEVENLABS_API_KEY, alert creds)
+ * @param {object} order  Full service_orders row.
+ * @param {{manual?: boolean}} opts
+ *        manual — a staff member clicked "actief" in /admin/aanvragen. Lets a
+ *        human-delivered product be marked done. It does NOT let anyone mark an
+ *        auto-provisionable product live without a successful provisioning run.
+ * @returns {Promise<{status: string, serviceId: string|null, provisioned: boolean, blocked?: boolean}>}
+ */
+export async function activateOrder(env, order, { manual = false } = {}) {
+  const db = env.PORTAL_DB;
+
+  // A cancelled order must never provision (it would create — and bill for — an
+  // agent for a customer who walked away). Re-open it to 'ingediend' first.
+  if (order.status === 'geannuleerd') {
+    return { status: 'geannuleerd', serviceId: null, provisioned: false, blocked: true };
+  }
+
+  // 1. Exactly one service per order. INSERT OR IGNORE + the unique index makes
+  //    concurrent activations converge on the same row instead of duplicating.
+  const newId = randomId('svc');
+  await db.prepare(
+    'INSERT OR IGNORE INTO services (id, customer_id, product_key, naam, tier, status, config_json, started_at, created_at, order_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+  ).bind(newId, order.customer_id, order.product_key, order.product_key, order.tier || null,
+    'onboarding', order.intake_json || null, today(), today(), order.id).run();
+
+  // Read back rather than trusting `changes`: on a replay the row already
+  // exists, and we need ITS id and provisioning state, not the one we minted.
+  const service = await db.prepare('SELECT id, provisioning_json FROM services WHERE order_id = ?')
+    .bind(order.id).first();
+  const svcId = service?.id || newId;
+  const prov = safeParseJson(service?.provisioning_json);
+
+  // 2. Decide what still has to happen for this order to be genuinely live.
+  const autoProduct = canProvision(order.product_key);
+
+  if (autoProduct && !needsProvisioning(prov)) {
+    // Provisioning already succeeded earlier. Re-running it would create (and
+    // bill for) a second agent — just make sure the order reflects reality.
+    // This is the replay / double-click / cron-rerun path, and it is checked
+    // FIRST so that a live service stays live even if the key was rotated out.
+    await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
+    return { status: 'actief', serviceId: svcId, provisioned: true };
+  }
+
+  if (autoProduct && !env.ELEVENLABS_API_KEY) {
+    // Config error, not a product decision — refuse to fake an active service.
+    return park(env, db, order, svcId,
+      `Order ${order.id} kan niet worden ingericht — ELEVENLABS_API_KEY ontbreekt`,
+      `Product: ${order.product_key}${order.tier ? ` (${order.tier})` : ''}\nKlant: ${order.customer_id}\n\n`
+      + 'De klant heeft betaald maar de agent kan niet worden aangemaakt: er is geen ElevenLabs-sleutel geconfigureerd.');
+  }
+
+  if (autoProduct) {
+    // First run, or a retry after a failure. Both go through the same call —
+    // a previously *successful* provisioning is never re-run (see below).
+    let result;
+    try {
+      result = await provisionAgent(env.ELEVENLABS_API_KEY, order.product_key, order.product_key, safeParseJson(order.intake_json));
+    } catch (err) {
+      const message = String(err?.message || err).slice(0, 400);
+      console.error('[activation] provisioning failed:', message);
+      result = { status: 'fout', error: message, provisioned_at: new Date().toISOString() };
+    }
+    await db.prepare('UPDATE services SET provisioning_json = ? WHERE id = ?')
+      .bind(JSON.stringify(result), svcId).run();
+
+    if (result.status === 'fout') {
+      // Previously this was written into provisioning_json and never mentioned
+      // again: the customer had paid and waited forever for a service that
+      // never came up. The failed row is left in place on purpose — the next
+      // call (admin retry, cron, webhook replay) sees status 'fout' and tries
+      // again.
+      return park(env, db, order, svcId,
+        `Provisioning MISLUKT voor order ${order.id}`,
+        `Product: ${order.product_key}${order.tier ? ` (${order.tier})` : ''}\nKlant: ${order.customer_id}\nService: ${svcId}\n`
+        + `Fout: ${result.error}\n\nDe klant heeft betaald. Los dit op en klik "actief" in /admin/aanvragen om opnieuw te proberen.`);
+    }
+
+    await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
+    return { status: 'actief', serviceId: svcId, provisioned: true };
+  }
+
+  // Human-delivered product. Only a staff member can declare it done.
+  if (manual) {
+    await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
+    return { status: 'actief', serviceId: svcId, provisioned: false };
+  }
+
+  return park(env, db, order, svcId,
+    `Order ${order.id} betaald — handmatige inrichting nodig`,
+    `Product: ${order.product_key}${order.tier ? ` (${order.tier})` : ''}\nKlant: ${order.customer_id}\n\n`
+    + 'Dit product kan niet automatisch worden ingericht. Rond de inrichting af en zet de order op "actief" in /admin/aanvragen.');
+}
+
+// Park an order on 'in_uitvoering' and page staff. Never downgrades an order
+// that is already live — an activation attempt that fails on a running service
+// must not take that service offline in the admin view.
+async function park(env, db, order, svcId, subject, body) {
+  await db.prepare("UPDATE service_orders SET status = 'in_uitvoering' WHERE id = ? AND status != 'actief'")
+    .bind(order.id).run();
+  await alertStaff(env, subject, body);
+  return { status: 'in_uitvoering', serviceId: svcId, provisioned: false };
+}
