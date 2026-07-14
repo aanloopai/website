@@ -9,11 +9,11 @@ const inhoud = [
 ];
 
 const losseFacturen = [
-  { item: 'Website Groei pakket setup', prijs: '€5.950' },
-  { item: 'Website onderhoud (12 mnd × €197)', prijs: '€2.364' },
-  { item: 'Emma (12 mnd × €497)', prijs: '€5.964' },
-  { item: 'Emma Standard (12 mnd × €197)', prijs: '€2.364' },
-  { item: 'Setup-koppeling website ↔ Emma', prijs: '€1.500' },
+  { item: 'Website Groei pakket — eenmalige bouw', toelichting: 'Tot 30 paginas, CMS, multilingual NL/EN/DE', prijs: '€5.950' },
+  { item: 'Website onderhoud — 12 × €197', toelichting: 'Hosting, updates, security, monitoring', prijs: '€2.364' },
+  { item: 'Emma AI-receptie (telefoon) — 12 × €497', toelichting: 'Neemt uw telefoon 24/7 op: voert het gesprek, zet de afspraak in de agenda, stuurt de lead naar uw CRM', prijs: '€5.964' },
+  { item: 'Emma WhatsApp Agent (chat) — 12 × €197', toelichting: 'Beantwoordt WhatsApp-berichten 24/7: FAQ, offerte-aanvragen, lead-capture. Tekst — geen telefonie', prijs: '€2.364' },
+  { item: 'Integratie-werk tussen de systemen', toelichting: 'Website ↔ telefoon ↔ WhatsApp aan elkaar koppelen', prijs: '€1.500' },
 ];
 const totaalLos = 5950 + 2364 + 5964 + 2364 + 1500;
 
@@ -44,13 +44,14 @@ const proces = [
 
 const faqItems = [
   { question: 'Wat zit er precies in de bundel?', answer: 'Website (Groei pakket: tot 30 paginas, CMS, multilingual NL/EN/DE) + Emma AI-receptionist (24/7 NL-telefoon, agenda, CRM-koppeling) + Emma WhatsApp Agent (24/7 chat, lead-capture) + alle koppelingen tussen de 3 systemen + ROI-calc/AI-scan widgets op uw site + GA4/GrowthBook setup + maandelijks onderhoud op alles. Eén factuur, één contract, één aanspreekpunt.' },
-  { question: 'Hoeveel bespaar ik tegenover losse afname?', answer: `Losse afname jaar 1 (website setup €5.950 + onderhoud €2.364 + Emma €7.164 + Emma €2.364 + integratie €1.500) = €${totaalLos.toLocaleString('nl-NL')}. Bundel jaar 1 (€${bundelPrijs.setup.toLocaleString('nl-NL')} setup + 12 × €${bundelPrijs.mnd}) = €${bundelJaar1.toLocaleString('nl-NL')}. Besparing: €${besparing.toLocaleString('nl-NL')} in jaar 1, structureel ~€2.400/jaar daarna.` },
-  { question: 'Kan ik bestaande website behouden en alleen Emma toevoegen?', answer: 'Ja, dat kan via losse Emma abonnementen (zie /diensten/emma/ en /diensten/emma/). De bundel is voordeliger als u sowieso een nieuwe of vernieuwde site wilt. Als uw huidige site jonger dan 2 jaar is en al schema.org markup heeft, adviseren we losse AI-modules ipv bundel.' },
+  { question: 'Hoeveel bespaar ik tegenover losse afname?', answer: `Losse afname jaar 1: ${losseFacturen.map(f => `${f.item} = ${f.prijs}`).join(', ')}. Samen €${totaalLos.toLocaleString('nl-NL')}. Bundel jaar 1 (€${bundelPrijs.setup.toLocaleString('nl-NL')} setup + 12 × €${bundelPrijs.mnd}) = €${bundelJaar1.toLocaleString('nl-NL')}. Besparing: €${besparing.toLocaleString('nl-NL')} in jaar 1, structureel ~€2.400/jaar daarna.` },
+  { question: 'Wat is het verschil tussen Emma AI-receptie en Emma WhatsApp Agent?', answer: 'Het zijn twee losse producten met dezelfde naam-familie, maar ander werk. Emma AI-receptie (€497/mnd) neemt uw telefoon op: zij voert een echt gesprek in het Nederlands, plant afspraken in uw agenda en zet de lead in uw CRM. Emma WhatsApp Agent (€197/mnd) doet geen telefonie — zij beantwoordt WhatsApp-berichten met tekst: FAQ, offerte-aanvragen en lead-capture. Het prijsverschil komt door telefonie: spraakherkenning, stem-synthese en telefoonlijnen per gespreksminuut zijn fors duurder dan tekstberichten. In de bundel zitten ze allebei.' },
+  { question: 'Kan ik bestaande website behouden en alleen Emma toevoegen?', answer: 'Ja, dat kan via een los Emma-abonnement (zie /diensten/emma/ — daar staan zowel de telefoon- als de WhatsApp-variant). De bundel is voordeliger als u sowieso een nieuwe of vernieuwde site wilt. Als uw huidige site jonger dan 2 jaar is en al schema.org markup heeft, adviseren we losse AI-modules ipv bundel.' },
   { question: 'Wat als ik later wil opzeggen?', answer: 'Maandelijks onderhoud is opzegbaar per maand met 1 maand opzegtermijn. De setup-fee is eenmalig. Bij opzegging behoudt u: uw website-code (in eigen GitHub), uw domeinnaam, alle CRM-data van Emma. Emma stoppen we met doorschakelen, maar de transcripts/lead-data exporteren we naar u toe.' },
   { question: 'Hoe lang duurt het tot we live zijn?', answer: 'Discovery week 1, design + AI-training parallel weken 2-6, soft-launch week 7, public-launch week 8. Bij complexe integraties (zoals zorg-EPD of advocaten-DMS koppeling) kan het 10-12 weken zijn. We werken in vaste sprints met wekelijkse demo-momenten.' },
   { question: 'Krijg ik training om zelf updates te doen?', answer: 'Ja. Bij oplevering 2u Loom-video training over: CMS-bewerking (paginas/blogs aanpassen), Emma script-aanpassingen, Emma FAQ-uitbreiden, dashboard-rapporten lezen. Daarna 1u/maand telefonische support voor vragen over zelfbeheer. Wij doen de technische updates, u doet de content-updates.' },
   { question: 'Is dit AVG- en NEN 7510-compliant?', answer: 'Ja. Standaard AVG/UAVG-conform: cookie-banner, DPA-template, EU-only hosting (Frankfurt/Amsterdam), encryptie at-rest en in-transit. Voor zorg/juridische klanten leveren we NEN 7510-compatibele opzet (DPIA-template, pseudonimiseringsbeleid, audit-logs). Aanloop AI is een Nederlandse B.V. (KvK 88606902).' },
-  { question: 'Kan ik later upgraden naar Pro?', answer: 'Ja. Bundel Groei → Bundel Pro upgrade (vanaf €11.500 setup + €797/mnd) voegt toe: Pro website-features (headless CMS, custom componenten, ERP-integratie), Emma Onbeperkt (geen gespreks-cap), Emma Multi-channel (Instagram DM + Facebook Messenger + Telegram), dedicated DevOps SLA. Geen nieuwe setup-fee voor reeds gebouwde delen.' },
+  { question: 'Kan ik later upgraden naar Pro?', answer: 'Ja. Bundel Groei → Bundel Pro upgrade (vanaf €11.500 setup + €797/mnd) voegt toe: Pro website-features (headless CMS, custom componenten, ERP-integratie), Emma AI-receptie zonder gespreks-cap (onbeperkt bellen), Emma WhatsApp Agent uitgebreid naar meer kanalen (Instagram DM + Facebook Messenger + Telegram), dedicated DevOps SLA. Geen nieuwe setup-fee voor reeds gebouwde delen.' },
   { question: 'Wat als ik alleen een webshop nodig heb (geen content-website)?', answer: 'Dan is de webshop-bouw service (vanaf €4.950 setup) plus losse Emma WhatsApp (€197/mnd) een betere fit. De AI-Website Bundel is bedoeld voor content-websites met telefoon-intake en chat-support. Voor pure webshop-scenarios met cart-recovery is een aparte bundel logischer — vraag tijdens discovery.' },
 ];
 
@@ -157,12 +158,16 @@ const speakableSchema = {
       </div>
       <div class="grid lg:grid-cols-2 gap-6">
         <div class="card">
-          <h3 class="text-base font-bold text-slate-600 mb-4">Losse afname (3 leveranciers)</h3>
-          <ul class="space-y-2.5 mb-4">
+          <h3 class="text-base font-bold text-slate-600 mb-1">Losse afname — alles apart ingekocht</h3>
+          <p class="text-xs text-slate-500 mb-4">Vijf losse posten, drie losse contracten, drie keer een aanspreekpunt.</p>
+          <ul class="space-y-3 mb-4">
             {losseFacturen.map(f => (
-              <li class="flex items-center justify-between text-sm border-b border-slate-100 pb-2">
-                <span class="text-slate-700">{f.item}</span>
-                <span class="font-medium text-slate-700">{f.prijs}</span>
+              <li class="border-b border-slate-100 pb-2.5">
+                <div class="flex items-start justify-between gap-3 text-sm">
+                  <span class="text-slate-700 font-medium">{f.item}</span>
+                  <span class="font-medium text-slate-700 whitespace-nowrap">{f.prijs}</span>
+                </div>
+                <p class="mt-0.5 text-xs text-slate-500 leading-snug">{f.toelichting}</p>
               </li>
             ))}
           </ul>
@@ -190,7 +195,7 @@ const speakableSchema = {
           </div>
         </div>
       </div>
-      <p class="mt-6 text-xs text-slate-500 max-w-3xl">Cijfers gebaseerd op listprijzen Aanloop AI per 2026-05-04. Losse setup-koppeling is geschatte gemiddelde marktprijs voor integratie-werk wanneer 3 verschillende leveranciers betrokken zijn. Exclusief BTW.</p>
+      <p class="mt-6 text-xs text-slate-500 max-w-3xl">Emma AI-receptie (telefoon) en Emma WhatsApp Agent (chat) zijn twee losse producten met een eigen abonnement — vandaar twee regels. De genoemde bedragen zijn onze eigen listprijzen bij losse afname (peildatum 2026-05-04). Het integratie-werk is een geschatte gemiddelde marktprijs voor het koppelen van website, telefonie en WhatsApp wanneer die bij verschillende leveranciers lopen. Alle bedragen exclusief BTW.</p>
     </div>
   </section>
 
@@ -274,8 +279,7 @@ const speakableSchema = {
         <ul class="flex flex-wrap gap-3">
           <li><a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="text-sm text-brand-indigo hover:underline">Alleen website (Groei) →</a></li>
           <li><a href="/diensten/webshop-laten-maken-shopify-woocommerce-nederland-2026/" class="text-sm text-brand-indigo hover:underline">Webshop laten maken →</a></li>
-          <li><a href="/diensten/emma/" class="text-sm text-brand-indigo hover:underline">Alleen Emma →</a></li>
-          <li><a href="/diensten/emma/" class="text-sm text-brand-indigo hover:underline">Alleen Emma →</a></li>
+          <li><a href="/diensten/emma/" class="text-sm text-brand-indigo hover:underline">Alleen Emma (telefoon + WhatsApp) →</a></li>
           <li><a href="/ai-roi-calculator/" class="text-sm text-brand-indigo hover:underline">Bereken uw ROI →</a></li>
         </ul>
       </div>
