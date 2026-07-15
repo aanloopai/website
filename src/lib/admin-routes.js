@@ -514,6 +514,18 @@ async function leadgenVerkoop(request, env) {
     .bind(koperProspectId).first();
   if (!koper) return errorResponse('Koper-prospect niet gevonden', 404);
 
+  // Idempotentie: een lead mag maar één keer verkocht worden. Zonder deze guard
+  // maakt een dubbele submit (dubbelklik/retry) twee crm_deals én een tweede
+  // upstream-verkoop bij keukeninbeeld.nl. lead_id staat niet als kolom op
+  // crm_deals, maar wél in de meta van de 'lead verkocht'-activity — check daar
+  // vóór de upstream-write, zodat we ook geen dubbele bron-mutatie veroorzaken.
+  const alVerkocht = await env.PORTAL_DB.prepare(
+    `SELECT id FROM crm_activities
+     WHERE soort = 'status_change' AND json_extract(meta_json, '$.lead_id') = ?
+     LIMIT 1`,
+  ).bind(leadId).first();
+  if (alVerkocht) return errorResponse('Deze lead is al verkocht', 409);
+
   try {
     const upstream = await fetch(`https://keukeninbeeld.nl/api/verkopen?token=${env.KEUKENINBEELD_TOKEN}`, {
       method: 'POST',
