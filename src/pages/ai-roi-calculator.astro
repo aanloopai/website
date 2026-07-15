@@ -1,6 +1,20 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Zo berekent u uw AI-ROI met de calculator',
+  description: 'In drie stappen berekent u de ROI van AI-automatisering voor uw MKB-bedrijf.',
+  inLanguage: 'nl-NL',
+  totalTime: 'PT2M',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Vul uw huidige situatie in', text: 'Voer uw dagelijkse belvolume, percentage gemiste calls, gemiddelde klantwaarde, handmatige uren per week en uurtarief in.' },
+    { '@type': 'HowToStep', position: 2, name: 'Kies eventueel een sector-preset', text: 'Selecteer een branchevoorbeeld om de vijf inputs in een klik op realistische defaults te zetten.' },
+    { '@type': 'HowToStep', position: 3, name: 'Bekijk direct uw resultaat', text: 'De calculator toont realtime uw besparing, FTE-equivalent, terugverdientijd en het aanbevolen Aanloop AI-pakket.' },
+  ],
+};
+
 const toolSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
@@ -51,7 +65,7 @@ const faqItems = [
 <BaseLayout
   title="AI ROI Calculator — Besparing"
   description="Bereken gratis hoeveel tijd en geld uw bedrijf bespaart met AI automatisering. Vul uw situatie in en zie direct uw ROI. Tool door Aanloop AI."
-  schema={[toolSchema]}
+  schema={[toolSchema, howToSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">

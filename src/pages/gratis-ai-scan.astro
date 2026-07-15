@@ -161,6 +161,20 @@ const questions = [
 ];
 
 // Wizard-tool schema
+const howToSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'HowTo',
+  name: 'Zo werkt de gratis AI-scan',
+  description: 'In drie stappen ontdekt u wat AI voor uw bedrijf kan betekenen.',
+  inLanguage: 'nl-NL',
+  totalTime: 'PT3M',
+  step: [
+    { '@type': 'HowToStep', position: 1, name: 'Scan invullen (3 min)', text: '11 gerichte vragen over uw bedrijf, tools en pijnpunten. Op uw eigen tempo, zonder account.' },
+    { '@type': 'HowToStep', position: 2, name: 'Direct resultaat', text: 'U ziet meteen uw score, tier en aanbevelingen - geen wachten, geen verkooppraatje.' },
+    { '@type': 'HowToStep', position: 3, name: 'Optioneel: rapport + gesprek', text: 'Stuur het rapport naar uzelf en plan eventueel een 30-minuten strategiegesprek voor een op-maat analyse.' },
+  ],
+};
+
 const toolSchema = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
@@ -202,7 +216,7 @@ const faqItems = [
 <BaseLayout
   title="Gratis AI-Readiness Scan"
   description="Gratis interactieve AI-Readiness Scan voor Nederlandse MKB. 11 vragen, 3 minuten — krijg uw score 0–100, tier-classificatie en sector-specifieke"
-  schema={[toolSchema]}
+  schema={[toolSchema, howToSchema]}
   faqSchema={faqItems}
 >
   <!-- Hero -->

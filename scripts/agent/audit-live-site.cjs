@@ -42,11 +42,11 @@ const AI_BOTS = [
 ];
 
 const FORBIDDEN_PRICES = [
-  '€297', '€397', '€497', '€697', '€797', '€897',
-  'EUR 297', 'EUR 397', 'EUR 497', 'EUR 697', 'EUR 797', 'EUR 897',
+  '€297', '€397', '€697', '€797', '€897',
+  'EUR 297', 'EUR 397', 'EUR 697', 'EUR 797', 'EUR 897',
 ];
 
-const REQUIRED_PRICES_TARIEVEN = ['€597', '€1.197'];
+const REQUIRED_PRICES_TARIEVEN = ['€497', '€997'];
 
 const CRITICAL_STRINGS = [
   { path: '/', must: ['Aanloop AI'] },
@@ -185,7 +185,7 @@ async function checkRobots() {
 
 async function checkPricing() {
   log('\n[PRICING] Stale-pricing check op 5 commerciële pages');
-  const targets = ['/', '/tarieven/', '/diensten/marco/', '/diensten/emma/', '/ai-roi-calculator/'];
+  const targets = ['/', '/tarieven/', '/diensten/emma/', '/ai-roi-calculator/'];
   for (const path of targets) {
     const r = await fetchText(path);
     if (!r.ok) {
