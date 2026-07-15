@@ -47,7 +47,9 @@ async function resolveStoriesSchedulePath() {
       const wb = parseInt((b.match(/-week(\d+)/) || [null, "1"])[1], 10);
       return wa - wb;
     });
-  if (!waves.length) throw new Error(`No wave-N-stories-schedule.json in ${SCHEDULE_DIR}`);
+  // No stories schedule at all = channel deliberately inactive (all archived).
+  // Return null so main() exits 0 quietly instead of failing every run.
+  if (!waves.length) return null;
   for (const f of waves) {
     const sched = JSON.parse(await fs.readFile(path.join(SCHEDULE_DIR, f), "utf8"));
     if ((sched.posts || []).some((p) => p.posted_at === null)) {
@@ -122,6 +124,10 @@ async function main() {
   console.log(`Token: ${mask(TOKEN)}`);
 
   const schedulePath = await resolveStoriesSchedulePath();
+  if (!schedulePath) {
+    console.log("No active stories schedule (all archived) - channel inactive, nothing to publish.");
+    return;
+  }
   console.log(`Stories schedule: ${path.relative(REPO_ROOT, schedulePath)}`);
   const sched = await readSchedule(schedulePath);
   const igUserId = IG_ID_OVERRIDE || sched.ig_user_id;
