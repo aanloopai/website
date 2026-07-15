@@ -88,6 +88,9 @@ for (const file of htmlFiles) {
       externalLinks.set(host, (externalLinks.get(host) || 0) + 1);
       // wa.me / WhatsApp deeplinks are not crawlable health signals — skip live check
       if (host === 'wa.me' || host === 'api.whatsapp.com') continue;
+      // Meta/Facebook domains blanket-reject non-browser requests (400) via TLS
+      // fingerprinting — UA spoofing does not help. Pages are valid for real users.
+      if (host === 'developers.facebook.com' || host === 'business.whatsapp.com' || host === 'facebook.com') continue;
       const clean = `${u.protocol}//${u.host}${u.pathname}${u.search}`;
       if (!externalUrls.has(clean)) externalUrls.set(clean, new Set());
       externalUrls.get(clean).add(src);
