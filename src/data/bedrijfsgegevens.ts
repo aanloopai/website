@@ -3,7 +3,7 @@
 // waarden — één plek, hier wijzigen volstaat.
 
 export const BEDRIJF = {
-  naam: 'Aanloop AI B.V.',
+  naam: 'Aanloop AI',
   kvk: '88606902',
   btwId: 'NL004672676B48',
   adres: 'Blokfluit 31',
