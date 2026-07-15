@@ -284,6 +284,19 @@ const videoSchemaLD = videoSchema ? {
   publisher: { '@type': 'Organization', name: 'Aanloop AI', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
 } : null;
 
+// Verrijk Article-schema centraal: injecteer image + mainEntityOfPage wanneer de
+// pagina ze niet zelf meegeeft, zodat elk kennisbank-artikel/pillar in aanmerking
+// komt voor Google Article rich results. Eén plek → alle artikelen. Bestaande
+// waarden blijven ongemoeid (idempotent).
+const enrichArticle = (s: Record<string, any>): Record<string, any> => {
+  if (!s || s['@type'] !== 'Article') return s;
+  return {
+    ...s,
+    image: s.image ?? { '@type': 'ImageObject', url: ogImage, width: 1200, height: 630 },
+    mainEntityOfPage: s.mainEntityOfPage ?? { '@type': 'WebPage', '@id': canonical },
+  };
+};
+
 const allSchemas = [
   orgSchema,
   websiteSchema,
@@ -291,7 +304,7 @@ const allSchemas = [
   breadcrumbSchema,
   faqSchemaLD,
   videoSchemaLD,
-  ...(Array.isArray(schema) ? schema : schema ? [schema] : []),
+  ...(Array.isArray(schema) ? schema : schema ? [schema] : []).map(enrichArticle),
 ].filter(Boolean);
 ---
 
