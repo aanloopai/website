@@ -111,6 +111,15 @@ async function sendMail(env, to, naam, subject, innerHtml) {
   });
 }
 
+// Eerste betaling = maand + eenmalige setup, beide incl. btw.
+// De setup-fee mag NOOIT in subscriptions.bedrag_cent belanden: dat veld drijft
+// billMonthlySubscriptions en zou de fee elke maand opnieuw incasseren.
+export function berekenEersteBetaling(tier) {
+  const maandInclCent = Math.round((tier.prijsCent || 0) * (1 + BTW_RATE));
+  const setupInclCent = Math.round((tier.setupCent || 0) * (1 + BTW_RATE));
+  return { maandInclCent, setupInclCent, totaalInclCent: maandInclCent + setupInclCent };
+}
+
 // ── checkout: POST /api/portal/checkout/start  { order_id } ─────────────────
 export async function handleCheckoutStart(request, env, user) {
   if (!env.MOLLIE_API_KEY) return errorResponse('Betalingen zijn nog niet geconfigureerd', 503);
@@ -160,7 +169,7 @@ export async function handleCheckoutStart(request, env, user) {
     return errorResponse('Voor dit pakket is geen online betaling beschikbaar.', 400);
   }
   // Catalogusprijzen zijn EXCL. btw — de klant betaalt incl. 21%.
-  const inclCent = Math.round(tier.prijsCent * (1 + BTW_RATE));
+  const { maandInclCent, totaalInclCent } = berekenEersteBetaling(tier);
   const maandelijks = tier.betaling === 'maandelijks';
 
   const customer = await env.PORTAL_DB
@@ -184,15 +193,16 @@ export async function handleCheckoutStart(request, env, user) {
     const subId = randomId('sub');
     await env.PORTAL_DB.prepare(
       'INSERT INTO subscriptions (id, customer_id, order_id, product_key, tier, bedrag_cent, betaling, status, mollie_customer_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-    ).bind(subId, user.customer_id, order.id, order.product_key, order.tier, inclCent,
+    ).bind(subId, user.customer_id, order.id, order.product_key, order.tier, maandInclCent,
       tier.betaling, 'pending_payment', mollieCustomerId, Date.now()).run();
 
     const profileId = await getProfileId(env.MOLLIE_API_KEY);
 
     const webhookUrl = await buildWebhookUrl(env);
     const paymentBody = {
-      amount: { currency: 'EUR', value: euros(inclCent) },
-      description: `Aanloop AI — ${order.product_key} ${order.tier} (${order.id})`,
+      amount: { currency: 'EUR', value: euros(totaalInclCent) },
+      description: `Aanloop AI — ${order.product_key} ${order.tier} (${order.id})`
+        + (totaalInclCent > maandInclCent ? ' incl. eenmalige inrichting' : ''),
       sequenceType: 'oneoff',
       customerId: mollieCustomerId,
       redirectUrl: `${SITE}/portal/checkout?order=${order.id}`,
@@ -204,7 +214,7 @@ export async function handleCheckoutStart(request, env, user) {
 
     await env.PORTAL_DB.prepare(
       'INSERT INTO payments (id, customer_id, subscription_id, order_id, bedrag_cent, status, sequence_type, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-    ).bind(payment.id, user.customer_id, subId, order.id, inclCent,
+    ).bind(payment.id, user.customer_id, subId, order.id, totaalInclCent,
       payment.status || 'open', maandelijks ? 'eerste' : 'eenmalig', Date.now()).run();
 
     const checkoutUrl = payment._links && payment._links.checkout && payment._links.checkout.href;
