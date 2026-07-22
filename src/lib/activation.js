@@ -79,6 +79,13 @@ function isFunnelOrder(order) {
 // C ships: at that point wacht_op_klant nudges the CUSTOMER through
 // /portal/onboarding instead of paging staff, per §9.
 //
+// Verwijder dit alert NOOIT los: de bevestigingsmail aan de klant
+// (sendOrderConfirmationMail in mollie.js) zegt in dit geval "u hoeft zelf
+// niets te doen" — dat is alleen waar zolang dit seintje een mens naar de
+// order stuurt. Zodra plak C live is moet die zin mee veranderen, want dan
+// moet de klant juist wél zelf de diepe intake invullen. Beide plekken
+// horen in dezelfde wijziging.
+//
 // Fires-once guard: the UPDATE's WHERE excludes 'in_uitvoering' as well as
 // 'actief', so it only actually changes a row (changes === 1) on the ONE call
 // that transitions the order INTO the wait state. Every replay after that —

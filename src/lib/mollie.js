@@ -480,6 +480,9 @@ async function onPaid(env, payment, subId, orderId) {
   // orderId — see billMonthlySubscriptions below — so the order-scoped mail
   // block further down has nothing to send for a renewal anyway).
   const isEersteBetaling = Boolean(sub && sub.status === 'pending_payment');
+  // Gevuld zodra vaststaat dat er een bevestigingsmail hoort te gaan; pas
+  // ná createInvoice() verstuurd (zie de volgorde-toelichting daar).
+  let bevestigingsmail = null;
 
   if (sub) {
     if (sub.status === 'pending_payment') {
@@ -529,14 +532,25 @@ async function onPaid(env, payment, subId, orderId) {
     // so a mail hiccup can never undo a successful payment or a successful
     // activation.
     if (isEersteBetaling && o) {
-      try {
-        await sendOrderConfirmationMail(env, o, payment, activationResult?.status === 'actief');
-      } catch (err) {
-        console.error('[mollie] orderbevestigingsmail mislukt:', err?.message || err);
-      }
+      bevestigingsmail = { order: o, live: activationResult?.status === 'actief' };
     }
   }
+
+  // Boekhouding vóór de klantmail: onPaid() draait dankzij de CAS op
+  // payments.status maar één keer per betaling, dus als een hangende
+  // Brevo-call de worker laat aflopen vóórdat createInvoice() heeft
+  // gedraaid, krijgt die klant nooit meer een factuurrij. Zelfde
+  // volgorde-redenering als in voorstel-verify.js: eerst wat de
+  // administratie nodig heeft, dan wat de klant leest.
   await createInvoice(env, payment, sub);
+
+  if (bevestigingsmail) {
+    try {
+      await sendOrderConfirmationMail(env, bevestigingsmail.order, payment, bevestigingsmail.live);
+    } catch (err) {
+      console.error('[mollie] orderbevestigingsmail mislukt:', err?.message || err);
+    }
+  }
 
   // F3: CRM-deal op gewonnen zetten — nooit de betaal-flow blokkeren,
   // dealWonVoorOrder slikt zijn eigen fouten (zie crm.js).
