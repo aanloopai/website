@@ -51,6 +51,19 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
             <a href="/portal/diensten" class="pbtn pbtn--subtle">Naar mijn diensten</a>
           </div>
         </div>
+        <!-- Prijs is gewijzigd sinds het voorstel (H3) — nooit automatisch
+             doorsturen tegen een ander bedrag dan de klant heeft gezien. -->
+        <div id="co-price-changed" class="hidden">
+          <h1 class="page-title">De prijs is gewijzigd</h1>
+          <p class="page-sub mx-auto mt-1" style="max-width:24rem">
+            Sinds uw voorstel is het tarief aangepast. Bevestig het nieuwe bedrag om verder te gaan — er wordt niets afgeschreven zonder uw akkoord.
+          </p>
+          <p class="mt-4 text-lg font-bold text-navy" id="co-price-new"></p>
+          <div class="mt-5 flex items-center justify-center gap-3">
+            <button id="co-price-confirm" class="pbtn pbtn--primary">Akkoord, ga door</button>
+            <a href="/portal/diensten" class="pbtn pbtn--subtle">Naar mijn diensten</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -73,7 +86,7 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
       var starting = false;
       var autostartFailed = false;
 
-      var panels = ['co-pending', 'co-starting', 'co-ok', 'co-wait', 'co-error'];
+      var panels = ['co-pending', 'co-starting', 'co-ok', 'co-wait', 'co-error', 'co-price-changed'];
       function showPanel(id) {
         panels.forEach(function (p) {
           document.getElementById(p).classList.toggle('hidden', p !== id);
@@ -115,7 +128,15 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
       // ── Checkout automatisch starten (autostart=1) ────────────────────
       var FETCH_TIMEOUT_MS = 30000; // zelfde timeoutwaarde als elders (start.astro, start/voorstel)
 
-      function startCheckout() {
+      function euro(cent) {
+        return '€' + Math.round(cent / 100).toLocaleString('nl-NL');
+      }
+
+      // confirmPrice: de klant heeft het nieuwe bedrag op #co-price-changed
+      // gezien en expliciet akkoord gegeven — pas dan mag deze aanroep de
+      // (afwijkende) prijs van de order accepteren (H3: nooit automatisch
+      // doorsturen tegen een ander bedrag dan wat op het voorstel stond).
+      function startCheckout(confirmPrice) {
         if (starting || resolved) return; // dubbele start voorkomen + race met een al-opgeloste poll
         starting = true;
         autostartFailed = false; // nieuwe poging — de vorige mislukking is niet meer het laatste woord
@@ -129,7 +150,7 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
           method: 'POST',
           credentials: 'same-origin',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ order_id: orderId }),
+          body: JSON.stringify({ order_id: orderId, confirm_price: confirmPrice === true }),
           signal: ctrl.signal,
         })
           .then(function (r) {
@@ -145,6 +166,15 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
             if (resolved) return;
             if (res.ok && res.j && res.j.checkoutUrl) {
               location.href = res.j.checkoutUrl;
+              return;
+            }
+            if (res.j && res.j.priceChanged) {
+              autostartFailed = true;
+              var j = res.j;
+              var tekst = euro(j.nieuwMaandInclCent) + ' per maand incl. btw'
+                + (j.nieuwSetupInclCent > 0 ? ' + ' + euro(j.nieuwSetupInclCent) + ' eenmalige inrichting incl. btw' : '');
+              document.getElementById('co-price-new').textContent = tekst;
+              showPanel('co-price-changed');
               return;
             }
             var msg = (res.j && res.j.error) || 'We konden de betaalpagina niet openen.';
@@ -167,11 +197,14 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
           });
       }
 
-      document.getElementById('co-retry').addEventListener('click', startCheckout);
+      document.getElementById('co-retry').addEventListener('click', function () { startCheckout(false); });
+      document.getElementById('co-price-confirm').addEventListener('click', function () { startCheckout(true); });
 
       // Kom je hier via de bevestigingsmail van een voorstel, dan is de keuze al
       // gemaakt — direct doorsturen naar Mollie in plaats van opnieuw laten klikken.
-      if (autostart) startCheckout();
+      // (confirm_price staat bewust op false: bij een prijswijziging moet de
+      // klant het nieuwe bedrag altijd eerst zien, ook via autostart.)
+      if (autostart) startCheckout(false);
     })();
   </script>
 </PortalLayout>

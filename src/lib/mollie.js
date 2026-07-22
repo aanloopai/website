@@ -129,7 +129,7 @@ export async function handleCheckoutStart(request, env, user) {
   if (!body?.order_id) return errorResponse('Aanvraag-id ontbreekt', 400);
 
   const order = await env.PORTAL_DB
-    .prepare('SELECT id, customer_id, product_key, tier, status FROM service_orders WHERE id = ? AND customer_id = ?')
+    .prepare('SELECT id, customer_id, product_key, tier, status, voorstel_id FROM service_orders WHERE id = ? AND customer_id = ?')
     .bind(body.order_id, user.customer_id).first();
   if (!order) return errorResponse('Aanvraag niet gevonden', 404);
   if (order.status !== 'concept') return errorResponse('Deze aanvraag is al ingediend', 409);
@@ -182,6 +182,35 @@ export async function handleCheckoutStart(request, env, user) {
   if (!tier || tier.betaling === 'aanvraag' || !tier.prijsCent) {
     return errorResponse('Voor dit pakket is geen online betaling beschikbaar.', 400);
   }
+
+  // Prijsvergelijking (H3): het voorstel bevriest maandbedrag + setup-fee 14
+  // dagen (voorstel.js), maar hierboven wordt altijd de ACTUELE catalogus
+  // gelezen. Wijzigt de prijs in die periode, dan zag de klant een ander
+  // bedrag op zijn voorstel dan wat hier zou worden afgerekend. Dit is de
+  // betrouwbaarste plek voor de vergelijking: handleCheckoutStart draait
+  // hoe dan ook, ook wanneer iemand de checkout-URL rechtstreeks/opnieuw
+  // opent (autostart=1 vanaf de magic-linkmail) zonder de voorstelpagina
+  // ooit te laden — een check daar alleen zou dat pad missen. Alleen orders
+  // die uit de self-serve funnel komen (voorstel_id gezet) hebben een
+  // bevroren voorstelprijs om tegen af te zetten; het bestaande portaalpad
+  // kent geen voorstel en blijft dus ongemoeid.
+  if (order.voorstel_id && body.confirm_price !== true) {
+    const voorstel = await env.PORTAL_DB
+      .prepare('SELECT prijs_cent, setup_cent FROM voorstellen WHERE id = ?')
+      .bind(order.voorstel_id).first();
+    if (voorstel && (voorstel.prijs_cent !== tier.prijsCent || voorstel.setup_cent !== tier.setupCent)) {
+      const nieuw = berekenEersteBetaling(tier);
+      return jsonResponse({
+        ok: false,
+        error: 'De prijs is gewijzigd sinds uw voorstel. Bevestig het nieuwe bedrag om door te gaan.',
+        priceChanged: true,
+        nieuwMaandInclCent: nieuw.maandInclCent,
+        nieuwSetupInclCent: nieuw.setupInclCent,
+        nieuwTotaalInclCent: nieuw.totaalInclCent,
+      }, 409);
+    }
+  }
+
   // Catalogusprijzen zijn EXCL. btw — de klant betaalt incl. 21%.
   const { maandInclCent, totaalInclCent } = berekenEersteBetaling(tier);
   const maandelijks = tier.betaling === 'maandelijks';
