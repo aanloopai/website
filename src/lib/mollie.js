@@ -412,9 +412,29 @@ async function createInvoice(env, payment, sub) {
 async function onFailed(env, subId) {
   if (!subId) return;
   const sub = await env.PORTAL_DB.prepare('SELECT * FROM subscriptions WHERE id = ?').bind(subId).first();
-  // Only an active (running) subscription triggers dunning. A failed first
-  // payment just means the customer abandoned checkout.
-  if (!sub || sub.status !== 'active') return;
+  if (!sub) return;
+
+  // H-eind-A: the FIRST payment of this subscription failed/expired/was
+  // canceled (customer closed the iDEAL tab, bank declined, etc.) — this is
+  // not a running subscription with a missed installment, so no dunning mail.
+  // Close the dead row instead of leaving it on 'pending_payment' forever:
+  // three separate guards filter on status IN ('pending_payment','active') —
+  // the checkout of this order itself, the customer+product guard in
+  // handleCheckoutStart, and the identical guard in voorstel-verify.js
+  // (mintKlantEnOrder) — all three read a stuck 'pending_payment' row as "an
+  // order is already running" and permanently refuse a retry. 'canceled' is
+  // an existing terminal status (migrations/0007_billing.sql) that falls
+  // outside all three, and this subscription never became billable, so
+  // canceling it (rather than any status that implies it once ran) is the
+  // correct and honest end state.
+  if (sub.status === 'pending_payment') {
+    await env.PORTAL_DB.prepare("UPDATE subscriptions SET status = 'canceled' WHERE id = ?").bind(subId).run();
+    return;
+  }
+
+  // Only an active (running) subscription triggers dunning. A missed monthly
+  // payment must not immediately cost the customer their subscription.
+  if (sub.status !== 'active') return;
 
   await env.PORTAL_DB.prepare("UPDATE subscriptions SET status = 'past_due' WHERE id = ?").bind(subId).run();
   try {
