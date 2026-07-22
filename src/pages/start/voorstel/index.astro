@@ -1,0 +1,284 @@
+---
+// Publieke voorstelpagina — het scherm waarop een MKB-ondernemer besluit een
+// betaald abonnement af te sluiten. Alle inhoud komt client-side uit
+// GET /api/voorstel?t=<token>; deze pagina zelf is statisch (output: 'static')
+// en bevat GEEN klantgegevens (geen naam/bedrijfsnaam — die zitten niet in de
+// publieke projectie van leesVoorstelViaToken, met opzet). noindex: dit is een
+// capability-URL (het token IS de autorisatie), geen vindbare pagina.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Uw voorstel"
+  description="Uw persoonlijke voorstel van Aanloop AI."
+  noindex={true}
+>
+  <section class="container-page section-tight">
+    <div class="mx-auto max-w-2xl">
+      <!-- Laden -->
+      <div id="vs-laden" class="text-center py-16 text-slate-500">
+        <div class="mx-auto h-10 w-10 rounded-full border-2 border-slate-200 border-t-brand-indigo animate-spin" aria-hidden="true"></div>
+        <p class="mt-4 text-sm">Uw voorstel wordt geladen…</p>
+      </div>
+
+      <!-- Foutstatus (onbekend/verlopen token, te veel verzoeken, storing, netwerkfout) -->
+      <div id="vs-fout" class="hidden card text-center">
+        <h1 id="vs-fout-kop" class="text-xl font-bold text-navy">Dit voorstel is niet meer beschikbaar</h1>
+        <p id="vs-fout-tekst" class="mt-2 text-slate-600 leading-relaxed">
+          Voorstellen zijn 14 dagen geldig. Vraag een nieuw voorstel aan — dat duurt een minuut.
+        </p>
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <button type="button" id="vs-opnieuw" class="btn-outline hidden">Opnieuw proberen</button>
+          <a href="/start/" class="btn-primary">Nieuw voorstel aanvragen</a>
+        </div>
+      </div>
+
+      <!-- Inhoud -->
+      <article id="vs-inhoud" class="hidden">
+        <h1 id="vs-kop" class="text-3xl sm:text-4xl font-bold text-navy tracking-tightest leading-tight"></h1>
+        <p id="vs-tekst" class="mt-4 text-lg leading-relaxed text-slate-700"></p>
+
+        <section id="vs-roi" class="mt-8 hidden card">
+          <h2 class="eyebrow">Wat u nu vermoedelijk misloopt</h2>
+          <p id="vs-roi-tekst" class="mt-2 text-2xl font-bold text-navy"></p>
+          <p id="vs-roi-aanname" class="mt-2 text-sm text-slate-500 leading-relaxed"></p>
+        </section>
+
+        <section class="mt-8 card border-brand-indigo/20 bg-brand-indigo/5">
+          <h2 class="eyebrow text-brand-indigo">Uw voorstel</h2>
+          <p id="vs-pakket" class="mt-2 text-xl font-semibold text-navy"></p>
+
+          <div class="mt-4 flex flex-wrap items-end gap-x-6 gap-y-2">
+            <p id="vs-prijs" class="text-3xl font-bold text-navy"></p>
+            <p id="vs-setup" class="text-base font-medium text-slate-700"></p>
+          </div>
+          <p class="mt-2 text-sm text-slate-500">Alle bedragen zijn exclusief btw. Maandelijks opzegbaar.</p>
+
+          <button
+            id="vs-start"
+            type="button"
+            class="btn-primary mt-6 w-full text-base py-4"
+          >
+            Ja, ik start
+          </button>
+          <p id="vs-melding" class="hidden mt-3 text-sm" role="status" aria-live="polite"></p>
+        </section>
+
+        <p class="mt-8 text-xs leading-relaxed text-slate-500">
+          Emma is een AI-assistent — geen mens. Dat wordt bij elk gesprek gemeld (EU AI Act, art. 50).
+          Aanloop AI · KvK 88606902.
+        </p>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // ============================================================================
+  // Voorstelpagina — leest GET /api/voorstel?t=<token> en toont het resultaat.
+  // Alle modelgegenereerde tekst (copy.kop/copy.tekst) gaat via textContent,
+  // NOOIT via innerHTML — dit is de enige verdediging tegen een gecompromitteerd
+  // of promptge-injecteerd taalmodel-antwoord dat als HTML zou worden ingelezen.
+  // ============================================================================
+
+  interface VoorstelRoi {
+    modus?: 'punt' | 'bereik' | 'geen' | string;
+    verliesPerMaandCent?: number;
+    verliesLaagCent?: number;
+    verliesHoogCent?: number;
+    gemistPerMaand?: number;
+    aannames?: { conversie?: number };
+  }
+
+  interface Voorstel {
+    serviceId?: string;
+    productKey: string;
+    tierNaam: string;
+    prijsCent: number;
+    setupCent: number;
+    roi?: VoorstelRoi;
+    copy?: { kop?: string; tekst?: string };
+    status?: string;
+  }
+
+  // Menselijk leesbare productnamen — matcht src/data/portal-catalog.ts (`key` -> `naam`).
+  // Onbekende keys vallen terug op de ruwe key (nooit een fabricatie, altijd platte tekst).
+  const PRODUCT_LABELS: Record<string, string> = {
+    'emma-telefoon': 'Emma — AI-receptionist',
+    'emma': 'Emma — WhatsApp-assistent',
+    'seo': 'SEO — vindbaarheid in Google',
+    'geo': 'GEO — vindbaarheid in AI-zoekmachines',
+    'seo-geo-bundel': 'SEO + GEO Bundel',
+    'ai-website-bundel': 'AI-Website Bundel',
+    'website': 'Website laten maken',
+    'webshop': 'Webshop laten maken',
+    'automation': 'Custom AI Workflows',
+  };
+
+  const params = new URLSearchParams(location.search);
+  const token = params.get('t') || '';
+  const TOKEN_RE = /^[0-9a-f]{64}$/;
+
+  const $ = (id: string) => document.getElementById(id) as HTMLElement;
+
+  function euro(cent: number): string {
+    return '€' + Math.round(cent / 100).toLocaleString('nl-NL');
+  }
+
+  function isFiniteNonNegative(n: unknown): n is number {
+    return typeof n === 'number' && Number.isFinite(n) && n >= 0;
+  }
+
+  // Valideert de vorm van de API-respons voordat er ook maar één veld op de
+  // pagina belandt. Een malafide of kapotte respons mag nooit een halfgevuld
+  // of technisch scherm opleveren — bij twijfel: foutstatus tonen.
+  function isValidVoorstel(v: unknown): v is Voorstel {
+    if (!v || typeof v !== 'object') return false;
+    const o = v as Record<string, unknown>;
+    return (
+      typeof o.productKey === 'string' &&
+      typeof o.tierNaam === 'string' &&
+      isFiniteNonNegative(o.prijsCent) &&
+      isFiniteNonNegative(o.setupCent) &&
+      typeof o.roi === 'object' && o.roi !== null &&
+      typeof o.copy === 'object' && o.copy !== null
+    );
+  }
+
+  // Eén generieke foutstatus, met een aan de situatie aangepaste tekst en een
+  // "opnieuw proberen"-knop die alleen zin heeft bij een tijdelijk probleem
+  // (te druk / storing / netwerkfout) — niet bij een echt verlopen token.
+  function toonFout(kind: 'onbekend' | 'druk' | 'storing' | 'netwerk'): void {
+    $('vs-laden').classList.add('hidden');
+    $('vs-inhoud').classList.add('hidden');
+    const kop = $('vs-fout-kop');
+    const tekst = $('vs-fout-tekst');
+    const opnieuw = $('vs-opnieuw') as HTMLButtonElement;
+
+    if (kind === 'druk') {
+      kop.textContent = 'Even geduld';
+      tekst.textContent = 'Er zijn op dit moment te veel verzoeken. Probeer het over een paar minuten opnieuw.';
+      opnieuw.classList.remove('hidden');
+    } else if (kind === 'storing' || kind === 'netwerk') {
+      kop.textContent = 'Er ging iets mis';
+      tekst.textContent = 'We konden uw voorstel nu niet laden. Probeer het over enkele minuten opnieuw, of neem contact met ons op als het blijft mislukken.';
+      opnieuw.classList.remove('hidden');
+    } else {
+      kop.textContent = 'Dit voorstel is niet meer beschikbaar';
+      tekst.textContent = 'Voorstellen zijn 14 dagen geldig. Vraag een nieuw voorstel aan — dat duurt een minuut.';
+      opnieuw.classList.add('hidden');
+    }
+    $('vs-fout').classList.remove('hidden');
+  }
+
+  $('vs-opnieuw')?.addEventListener('click', () => location.reload());
+
+  async function laad(): Promise<void> {
+    if (!TOKEN_RE.test(token)) return toonFout('onbekend');
+
+    let res: Response;
+    try {
+      res = await fetch(`/api/voorstel?t=${encodeURIComponent(token)}`);
+    } catch {
+      return toonFout('netwerk');
+    }
+
+    if (res.status === 429) return toonFout('druk');
+    if (res.status === 503) return toonFout('storing');
+
+    let data: unknown = null;
+    try {
+      data = await res.json();
+    } catch {
+      return toonFout('storing');
+    }
+
+    const body = data as { ok?: boolean; voorstel?: unknown } | null;
+    if (!res.ok || !body || body.ok !== true) return toonFout('onbekend');
+    if (!isValidVoorstel(body.voorstel)) return toonFout('storing');
+
+    const v = body.voorstel;
+
+    $('vs-kop').textContent = (v.copy?.kop || '').trim() || 'Uw voorstel';
+    $('vs-tekst').textContent = (v.copy?.tekst || '').trim();
+
+    const productLabel = PRODUCT_LABELS[v.productKey] || v.productKey;
+    $('vs-pakket').textContent = `${productLabel} — ${v.tierNaam}`;
+    $('vs-prijs').textContent = `${euro(v.prijsCent)} per maand`;
+    $('vs-setup').textContent = v.setupCent > 0
+      ? `+ ${euro(v.setupCent)} eenmalige inrichting`
+      : 'Geen eenmalige inrichtingskosten';
+
+    const roi = v.roi || {};
+    if (
+      roi.modus === 'punt' &&
+      isFiniteNonNegative(roi.verliesPerMaandCent) &&
+      typeof roi.gemistPerMaand === 'number'
+    ) {
+      $('vs-roi').classList.remove('hidden');
+      $('vs-roi-tekst').textContent = `${euro(roi.verliesPerMaandCent)} per maand`;
+      const conversie = typeof roi.aannames?.conversie === 'number' ? Math.round(roi.aannames.conversie * 100) : null;
+      $('vs-roi-aanname').textContent = conversie !== null
+        ? `Op basis van ${roi.gemistPerMaand} gemiste gesprekken per maand en ${conversie}% geschatte conversie naar klant.`
+        : `Op basis van ${roi.gemistPerMaand} gemiste gesprekken per maand.`;
+    } else if (
+      roi.modus === 'bereik' &&
+      isFiniteNonNegative(roi.verliesLaagCent) &&
+      isFiniteNonNegative(roi.verliesHoogCent)
+    ) {
+      $('vs-roi').classList.remove('hidden');
+      $('vs-roi-tekst').textContent = `${euro(roi.verliesLaagCent)} – ${euro(roi.verliesHoogCent)} per maand`;
+      $('vs-roi-aanname').textContent = typeof roi.gemistPerMaand === 'number'
+        ? `Op basis van ${roi.gemistPerMaand} gemiste gesprekken per maand. Vul uw gemiddelde klantwaarde in voor een preciezere schatting.`
+        : 'Een preciezere schatting kunnen we maken met uw gemiddelde klantwaarde.';
+    }
+    // modus 'geen' (of onherkend/onvolledig): ROI-blok blijft verborgen — nooit een getal verzinnen.
+
+    $('vs-laden').classList.add('hidden');
+    $('vs-inhoud').classList.remove('hidden');
+  }
+
+  $('vs-start').addEventListener('click', async () => {
+    const btn = $('vs-start') as HTMLButtonElement;
+    const melding = $('vs-melding');
+    btn.disabled = true;
+    melding.classList.add('hidden');
+
+    try {
+      const res = await fetch('/api/voorstel/claim', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ t: token }),
+      });
+
+      // /api/voorstel/claim kan nog niet bestaan (afhankelijkheid van een latere
+      // stap) — de worker valt dan terug op de statische 404-pagina (HTML, geen
+      // JSON). res.json() moet dus altijd apart gevangen worden.
+      let data: { ok?: boolean; message?: string } | null = null;
+      try {
+        data = await res.json();
+      } catch {
+        data = null;
+      }
+
+      const success = res.ok && data?.ok === true;
+      melding.textContent = (data && typeof data.message === 'string' && data.message.trim())
+        || (success ? 'Controleer uw e-mail.' : 'Aanvragen lukt nu niet — probeer het later opnieuw of neem contact met ons op.');
+      melding.className = success ? 'mt-3 text-sm text-brand-emerald' : 'mt-3 text-sm text-brand-rose';
+      melding.classList.remove('hidden');
+
+      if (success) {
+        btn.textContent = 'Controleer uw e-mail';
+      } else {
+        btn.disabled = false;
+      }
+    } catch {
+      melding.textContent = 'Netwerkfout — probeer het opnieuw.';
+      melding.className = 'mt-3 text-sm text-brand-rose';
+      melding.classList.remove('hidden');
+      btn.disabled = false;
+    }
+  });
+
+  laad();
+</script>
