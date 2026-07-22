@@ -73,6 +73,29 @@ async function roepLlmAan(env, prompt, llm) {
   }
 }
 
+// Grens tussen "aantal" en "bedrag": een getal telt alleen als geldbedrag/percentage
+// wanneer het direct (met alleen witruimte ertussen) een valuta- of percentage-marker
+// draagt: een €-teken, het woord "euro"/"eur", een frequentie-suffix als
+// "per maand"/"p/m"/"pm" (of het voorzetsel "voor maar" ervoor), of "%"/"procent".
+// Een getal zonder zo'n marker, of met andere woorden ertussen — bv.
+// "22 gemiste gesprekken per maand", waar "per maand" niet direct op het getal volgt —
+// is een gewoon aantal en blijft toegestaan. Dit voorkomt dat het model zelf een
+// prijs of korting kan verzinnen die nergens tegen de catalogus/roi.js gecontroleerd is.
+const BEDRAG_PATRONEN = [
+  { label: 'euroteken', re: /€\s*\d[\d.,]*|\d[\d.,]*\s*€/i },
+  { label: 'euro-woord', re: /\d[\d.,]*\s*(euro|eur)\b|\b(euro|eur)\s*\d[\d.,]*/i },
+  { label: 'per-maand-bedrag', re: /\d[\d.,]*\s*(per\s*maand|p\/m|pm)\b|voor\s+maar\s+\d[\d.,]*/i },
+  { label: 'percentage', re: /\d[\d.,]*\s*%|\d[\d.,]*\s*procent\b/i },
+];
+
+/** @param {string} text @returns {string|null} label van het eerst gevonden patroon, of null. */
+function vindBedrag(text) {
+  for (const { label, re } of BEDRAG_PATRONEN) {
+    if (re.test(text)) return label;
+  }
+  return null;
+}
+
 function parseCopy(raw) {
   if (!raw) return null;
   const match = String(raw).match(/\{[\s\S]*\}/);
@@ -82,6 +105,13 @@ function parseCopy(raw) {
   const kop = String(parsed?.kop || '').trim().slice(0, 120);
   const tekst = String(parsed?.tekst || '').trim().slice(0, 900);
   if (kop.length < 8 || tekst.length < 30) return null;
+  const bedragInKop = vindBedrag(kop);
+  const bedragInTekst = vindBedrag(tekst);
+  if (bedragInKop || bedragInTekst) {
+    const waar = bedragInKop ? `kop:${bedragInKop}` : `tekst:${bedragInTekst}`;
+    console.error(`[voorstel] LLM-copy geweigerd: zelfverzonnen bedrag/percentage gedetecteerd (${waar}), statische copy gebruikt.`);
+    return null;
+  }
   return { kop, tekst };
 }
 

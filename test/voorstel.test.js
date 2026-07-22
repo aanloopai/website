@@ -41,4 +41,48 @@ describe('buildVoorstelData', () => {
       buildVoorstelData({}, { serviceId: 'whatsapp-bot', customer: CUSTOMER, answers: {} }),
     ).rejects.toThrow(/niet verkoopbaar/i);
   });
+
+  it('weigert LLM-copy met een €-bedrag in de tekst en valt terug op statisch', async () => {
+    const env = { GEMINI_API_KEY: 'x' };
+    const llm = async () => JSON.stringify({
+      kop: 'Geldige kop hier',
+      tekst: 'Dit kost €497 per maand voor het pakket in totaal.',
+    });
+    const data = await buildVoorstelData(env, { serviceId: 'voice-agent', customer: CUSTOMER, answers: ANSWERS }, { llm });
+    expect(data.copy.bronnen).toBe('fallback');
+    expect(data.copy.kop).toBe(getFunnelEntry('voice-agent').fallbackKop);
+  });
+
+  it('weigert LLM-copy met een percentage en valt terug op statisch', async () => {
+    const env = { GEMINI_API_KEY: 'x' };
+    const llm = async () => JSON.stringify({
+      kop: 'Geldige kop hier',
+      tekst: 'Wij besparen u 30% op uw huidige kosten per maand gegarandeerd.',
+    });
+    const data = await buildVoorstelData(env, { serviceId: 'voice-agent', customer: CUSTOMER, answers: ANSWERS }, { llm });
+    expect(data.copy.bronnen).toBe('fallback');
+    expect(data.copy.kop).toBe(getFunnelEntry('voice-agent').fallbackKop);
+  });
+
+  it('weigert LLM-copy met een bedrag in de kop en valt terug op statisch', async () => {
+    const env = { GEMINI_API_KEY: 'x' };
+    const llm = async () => JSON.stringify({
+      kop: 'Bespaar nu €497 per maand',
+      tekst: 'Dit is een tekst zonder bedrag maar wel dertig tekens lang genoeg.',
+    });
+    const data = await buildVoorstelData(env, { serviceId: 'voice-agent', customer: CUSTOMER, answers: ANSWERS }, { llm });
+    expect(data.copy.bronnen).toBe('fallback');
+    expect(data.copy.kop).toBe(getFunnelEntry('voice-agent').fallbackKop);
+  });
+
+  it('accepteert LLM-copy met een toegestaan aantal (geen bedrag)', async () => {
+    const env = { GEMINI_API_KEY: 'x' };
+    const llm = async () => JSON.stringify({
+      kop: 'Geldige koptekst hier',
+      tekst: 'U mist 22 gemiste gesprekken per maand aan potentiele klanten helaas.',
+    });
+    const data = await buildVoorstelData(env, { serviceId: 'voice-agent', customer: CUSTOMER, answers: ANSWERS }, { llm });
+    expect(data.copy.bronnen).toBe('llm');
+    expect(data.copy.tekst).toContain('22 gemiste gesprekken per maand');
+  });
 });
