@@ -37,6 +37,7 @@ import { alertStaff } from './lib/notify.js';
 import { countVandaagProspects, prospectsNeedingFollowupDraft, generateFollowupDraft, outreachImport } from './lib/outreach.js';
 import { isWerkdag } from './lib/crm.js';
 import { aiSignalScan } from './lib/ai-crm.js';
+import { maakVoorstel } from './lib/voorstel-store.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -379,7 +380,10 @@ async function handleIntake(request, env) {
   }
 
   const answersIn = (body && typeof body.answers === 'object' && body.answers) || {};
-  const answersJson = JSON.stringify(answersIn).slice(0, INTAKE_MAX_ANSWERS_JSON_LENGTH);
+  const answersJson = JSON.stringify(answersIn);
+  if (answersJson.length > INTAKE_MAX_ANSWERS_JSON_LENGTH) {
+    return jsonResponse({ success: false, message: 'Uw antwoorden zijn te lang. Kort ze in en probeer het opnieuw.' }, 413);
+  }
   const customer = { email, name, company, phone, lang };
   const customerJson = JSON.stringify(customer);
 
@@ -433,7 +437,18 @@ async function handleIntake(request, env) {
     console.log('[/api/intake] INTAKE_WEBHOOK_URL/INTAKE_WEBHOOK_SECRET not configured — forward skipped (local/dev), row kept forwarded=0');
   }
 
-  return jsonResponse({ success: true, message: 'Aanvraag ontvangen' });
+  // Verkoopbare dienst → direct een voorstel genereren en de bezoeker
+  // doorsturen. Mislukt dat, dan valt de flow terug op het oude bedankscherm:
+  // de intake is al durable opgeslagen, dus er gaat nooit een lead verloren.
+  let voorstelToken = null;
+  try {
+    const voorstel = await maakVoorstel(env, { intakeId: id, serviceId, customer, answers: answersIn });
+    voorstelToken = voorstel?.token || null;
+  } catch (err) {
+    console.error('[/api/intake] voorstel genereren mislukt (intake blijft bewaard):', err?.message || err);
+  }
+
+  return jsonResponse({ success: true, message: 'Aanvraag ontvangen', voorstel_token: voorstelToken });
 }
 
 async function sendBrevoEmail(apiKey, payload, label) {
