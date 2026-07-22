@@ -174,18 +174,38 @@ describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', (
     expect(db.state.orderStatusUpdates).toEqual([{ status: 'actief', orderId: 'ord_portal_1' }]);
   });
 
-  it('een handmatige admin-klik (manual:true) op een funnel-order forceert GEEN actief zolang de diepe intake ontbreekt', async () => {
+  // ── Punt D (eindreview #2): manual:true MOET een funnel-order kunnen
+  // afsluiten. Vóór deze fix negeerde de wacht_op_klant-guard `manual`
+  // volledig — daardoor kon een mens de wachttoestand nooit doorbreken, ook
+  // niet nadat hij de diepe intake zelf handmatig had afgerond (openingstijden,
+  // doorschakelnummer, nummer koppelen — buiten dit systeem om). De
+  // automatische paden (webhook, cron — geen manual:true) moeten de
+  // wachttoestand wél blijven respecteren; dat dekken de tests hierboven
+  // (zonder { manual: true }) al af en blijven ongewijzigd.
+  it('een handmatige admin-klik (manual:true) op een AL GEPROVISIONEDE funnel-order sluit de order alsnog af op actief', async () => {
     const db = makeDb({
       servicesSeed: {
         id: 'svc_3', customer_id: 'cust_1', product_key: 'emma-telefoon', order_id: 'ord_funnel_1',
         provisioning_json: JSON.stringify({ status: 'agent_aangemaakt', agent_id: 'agent_3' }),
       },
     });
-    globalThis.fetch = async (url) => { throw new Error(`mag niet worden aangeroepen bij een replay: ${url}`); };
+    globalThis.fetch = async (url) => { throw new Error(`mag geen ElevenLabs-call doen bij een reeds geslaagde provisioning: ${url}`); };
 
     const env = { PORTAL_DB: db, ELEVENLABS_API_KEY: 'test_key' };
     const result = await activateOrder(env, funnelOrder(), { manual: true });
 
-    expect(result.status).toBe('wacht_op_klant');
+    expect(result.status).toBe('actief');
+    expect(db.state.orderStatusUpdates).toEqual([{ status: 'actief', orderId: 'ord_funnel_1' }]);
+  });
+
+  it('een handmatige admin-klik (manual:true) op een funnel-order die NU voor het eerst succesvol provisiont, sluit ook af op actief', async () => {
+    const db = makeDb();
+    globalThis.fetch = makeFetchStub();
+
+    const env = { PORTAL_DB: db, ELEVENLABS_API_KEY: 'test_key' };
+    const result = await activateOrder(env, funnelOrder(), { manual: true });
+
+    expect(result.status).toBe('actief');
+    expect(db.state.orderStatusUpdates).toEqual([{ status: 'actief', orderId: 'ord_funnel_1' }]);
   });
 });

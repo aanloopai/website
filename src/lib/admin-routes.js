@@ -373,7 +373,7 @@ async function orderDetail(env, url) {
   return jsonResponse({ ok: true, order: { ...o, intake: safeParseJson(o.intake_json) }, customer: c });
 }
 
-async function updateOrder(request, env) {
+export async function updateOrder(request, env) {
   const b = await request.json().catch(() => null);
   const valid = ['concept', 'ingediend', 'in_uitvoering', 'actief', 'geannuleerd'];
   if (!b?.id || !valid.includes(b.status)) return errorResponse('Ongeldige aanvraag', 400);
@@ -392,6 +392,18 @@ async function updateOrder(request, env) {
     const result = await activateOrder(env, o, { manual: true });
     if (result.blocked) {
       return errorResponse('Deze aanvraag is geannuleerd. Zet hem eerst op "ingediend" voordat je hem activeert.', 409);
+    }
+    if (result.status === 'wacht_op_klant') {
+      // NOT a failure: this is the self-serve funnel's normal intermediate
+      // state (spec §5) — the agent provisioned fine, but the deep intake
+      // hasn't happened yet. activateOrder() never calls alertStaff() for
+      // this outcome, so pointing staff at "de alert" would send them
+      // looking for something that, by design, was never sent.
+      return jsonResponse({
+        ok: true,
+        status: result.status,
+        message: 'Dienst aangemaakt en het account is ingericht, maar de order wacht nog op de diepe intake van de klant (self-serve funnel) — dit is normaal, geen storing.',
+      });
     }
     if (result.status !== 'actief') {
       // Do not report success for an activation that did not complete: the

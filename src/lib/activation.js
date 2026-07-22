@@ -22,7 +22,12 @@
 //     run still stops at 'in_uitvoering' ("wacht_op_klant", spec §5): the
 //     order only carries the shallow wizard intake, never the deep portal
 //     intake. This is a normal, expected state — NOT a failure — so it never
-//     alerts staff.
+//     alerts staff. Automatic callers (webhook, cron) always respect this
+//     wait state. A staff member's explicit {manual:true} click IS allowed
+//     to close it out — e.g. after completing the deep configuration by hand
+//     outside this system (opening hours, call forwarding, number linking) —
+//     since that click is itself the confirmation that the service is
+//     genuinely ready.
 //
 // Every step is idempotent and safe to replay: the Mollie webhook, the 15-minute
 // reconcile cron and an admin click can all race, and the unique index on
@@ -59,7 +64,9 @@ function isFunnelOrder(order) {
 // alertStaff(), no human paged. The order sits on 'in_uitvoering' (never
 // downgrading an order that is somehow already 'actief') until a later stage
 // (portal onboarding, spec plak C) completes the deep intake and re-runs
-// provisioning.
+// provisioning — OR until a staff member confirms by hand that it is done
+// and closes it out with an explicit {manual:true} activation (the two
+// call sites above skip this function entirely when manual is set).
 async function wachtOpKlant(db, order, svcId) {
   await db.prepare("UPDATE service_orders SET status = 'in_uitvoering' WHERE id = ? AND status != 'actief'")
     .bind(order.id).run();
@@ -73,8 +80,10 @@ async function wachtOpKlant(db, order, svcId) {
  * @param {object} order  Full service_orders row.
  * @param {{manual?: boolean}} opts
  *        manual — a staff member clicked "actief" in /admin/aanvragen. Lets a
- *        human-delivered product be marked done. It does NOT let anyone mark an
- *        auto-provisionable product live without a successful provisioning run.
+ *        human-delivered product be marked done, AND lets a self-serve funnel
+ *        order (voorstel_id set) skip its wacht_op_klant wait state. It does
+ *        NOT let anyone mark an auto-provisionable product live without a
+ *        successful provisioning run — a failed/missing run still parks.
  * @returns {Promise<{status: string, serviceId: string|null, provisioned: boolean, blocked?: boolean}>}
  */
 export async function activateOrder(env, order, { manual = false } = {}) {
@@ -109,7 +118,13 @@ export async function activateOrder(env, order, { manual = false } = {}) {
     // bill for) a second agent — just make sure the order reflects reality.
     // This is the replay / double-click / cron-rerun path, and it is checked
     // FIRST so that a live service stays live even if the key was rotated out.
-    if (isFunnelOrder(order)) return wachtOpKlant(db, order, svcId);
+    // H-eind-D: `manual` is the escape hatch — a staff member clicking
+    // "actief" is an explicit human confirmation that the deep intake really
+    // did happen (possibly outside this system entirely), so it may close
+    // out a funnel order that would otherwise sit on wacht_op_klant forever.
+    // Automatic callers (webhook, cron) never pass manual:true and keep
+    // respecting the wait state.
+    if (isFunnelOrder(order) && !manual) return wachtOpKlant(db, order, svcId);
     await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
     return { status: 'actief', serviceId: svcId, provisioned: true };
   }
@@ -148,7 +163,9 @@ export async function activateOrder(env, order, { manual = false } = {}) {
         + `Fout: ${result.error}\n\nDe klant heeft betaald. Los dit op en klik "actief" in /admin/aanvragen om opnieuw te proberen.`);
     }
 
-    if (isFunnelOrder(order)) return wachtOpKlant(db, order, svcId);
+    // Same manual-escape-hatch reasoning as above: only a human's explicit
+    // click may skip straight to 'actief' for a funnel order.
+    if (isFunnelOrder(order) && !manual) return wachtOpKlant(db, order, svcId);
     await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
     return { status: 'actief', serviceId: svcId, provisioned: true };
   }
