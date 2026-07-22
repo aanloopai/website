@@ -340,7 +340,20 @@ const allSchemas = [
         }
       } catch (e) {}
       gtag('js', new Date());
-      gtag('config', 'G-VS8SZZ6W45', { anonymize_ip: true, transport_type: 'beacon' });
+      // page_location expliciet zonder het "t"-queryparam: dat draagt op
+      // /start/voorstel/?t=<token> een 14-dagen-geldige capability (voorstel
+      // lezen + magic link versturen naar het klantadres). Zonder deze
+      // override stuurt gtag.js automatisch de volledige document.location.href
+      // mee als paginalocatie, en belandt dat token in de GA4-property — voor
+      // iedereen met viewer-toegang daar. Alleen "t" wordt verwijderd, geen
+      // andere querystring (UTM's etc. blijven gewoon meetellen).
+      var _gaPageLocation = location.href;
+      try {
+        var _gaUrl = new URL(location.href);
+        _gaUrl.searchParams.delete('t');
+        _gaPageLocation = _gaUrl.toString();
+      } catch (e) {}
+      gtag('config', 'G-VS8SZZ6W45', { anonymize_ip: true, transport_type: 'beacon', page_location: _gaPageLocation });
       // Global fail-safe event helper
       window._track = function(name, params) {
         try {
