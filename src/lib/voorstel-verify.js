@@ -209,8 +209,23 @@ export async function handleVoorstelVerify(request, env) {
     return foutPagina('Er ging iets mis bij het afronden van uw aanvraag. Probeer het over enkele minuten opnieuw.');
   }
 
-  await env.PORTAL_DB.prepare("UPDATE voorstellen SET status = 'omgezet' WHERE id = ?").bind(voorstel.id).run();
-  await env.PORTAL_DB.prepare('UPDATE users SET last_login = ? WHERE id = ?').bind(Date.now(), mint.userId).run();
+  // Beide hierna zijn pure boekhouding — de klant (customer/user/order) en
+  // straks de sessie zijn op dit punt al onherroepelijk tot stand gekomen, en
+  // het claim-token is al verbruikt. Een D1-storing hier mag de bezoeker niet
+  // alsnog zonder sessie en zonder doorverwijzing achterlaten: zijn link is
+  // dan definitief op en hij is nergens. Zelfde afweging als de
+  // status-update ná een verstuurde mail in voorstel-claim.js — loggen
+  // server-side volstaat, de flow gaat door.
+  try {
+    await env.PORTAL_DB.prepare("UPDATE voorstellen SET status = 'omgezet' WHERE id = ?").bind(voorstel.id).run();
+  } catch (err) {
+    console.error('[voorstel-verify] status-update naar omgezet mislukt (klant/order bestaan al):', err?.message || err);
+  }
+  try {
+    await env.PORTAL_DB.prepare('UPDATE users SET last_login = ? WHERE id = ?').bind(Date.now(), mint.userId).run();
+  } catch (err) {
+    console.error('[voorstel-verify] last_login-update mislukt (klant/order bestaan al):', err?.message || err);
+  }
 
   const session = await createSession(mint.userId, env.PORTAL_SESSION_SECRET);
   return new Response(null, {

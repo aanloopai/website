@@ -167,6 +167,10 @@ function makeVerifyDb(opts = {}) {
     orders: (opts.orders || []).map((o) => ({ ...o })),
     subscriptions: (opts.subscriptions || []).map((s) => ({ ...s })),
   };
+  // Sql-prefixen waarvan .run() moet gooien — simuleert een D1-storing op
+  // precies dat statement, zonder de andere te raken. Zelfde patroon als
+  // failOn in test/voorstel-claim.test.js.
+  const failOn = opts.failOn || [];
 
   function stmt(sql, args) {
     return {
@@ -198,6 +202,9 @@ function makeVerifyDb(opts = {}) {
         throw new Error(`makeVerifyDb: geen .first() canned voor: ${sql}`);
       },
       async run() {
+        if (failOn.some((prefix) => sql.startsWith(prefix))) {
+          throw new Error(`makeVerifyDb: gesimuleerde D1-storing op: ${sql}`);
+        }
         if (sql.startsWith('UPDATE voorstel_claims SET used = 1')) {
           const c = state.claims.find((row) => row.token_hash === args[0] && row.used === 0);
           if (!c) return { meta: { changes: 0 } };
@@ -279,7 +286,7 @@ function postRequest({ t, origin = SITE } = {}) {
 const KLANT_EMAIL = 'klant@example.nl';
 
 async function buildEnv({
-  claimUsed = 0, expiresAt = Date.now() + 100000, users = [], subscriptions = [],
+  claimUsed = 0, expiresAt = Date.now() + 100000, users = [], subscriptions = [], failOn = [],
 } = {}) {
   const tokenHash = await sha256Hex(GELDIG_TOKEN);
   const voorstel = {
@@ -296,6 +303,7 @@ async function buildEnv({
     intakeRequests: [intake],
     users,
     subscriptions,
+    failOn,
   });
   return { PORTAL_DB: db, PORTAL_SESSION_SECRET: SECRET };
 }
@@ -374,6 +382,29 @@ describe('handleVoorstelVerify', () => {
     const orderId = new URL(location).searchParams.get('order');
     expect(env.PORTAL_DB.state.orders.map((o) => o.id)).toContain(orderId);
     // De sessie is echt geldig en hoort bij de zojuist aangemaakte gebruiker.
+    const token = cookie.split(';')[0].split('=')[1];
+    const session = await verifySession(token, SECRET);
+    expect(session.uid).toBe(env.PORTAL_DB.state.users[0].id);
+  });
+
+  // ── Review-fix 5: boekhouding ná een geslaagde mint mag de sessie niet blokkeren ──
+  // Het claim-token is dan al verbruikt en de klant al aangemaakt — een
+  // storing op deze twee (pure administratie-)updates mag hem niet zonder
+  // sessie en zonder doorverwijzing achterlaten. Zelfde afweging als de
+  // status-update ná een verstuurde mail in voorstel-claim.js.
+  it.each([
+    ["UPDATE voorstellen SET status = 'omgezet'"],
+    ['UPDATE users SET last_login'],
+  ])('een falende %s-update blokkeert de sessie en de doorverwijzing niet', async (failingPrefix) => {
+    const env = await buildEnv({ failOn: [failingPrefix] });
+    const res = await handleVoorstelVerify(postRequest({ t: GELDIG_TOKEN }), env);
+    expect(res.status).toBe(302);
+    const cookie = res.headers.get('Set-Cookie');
+    expect(cookie).toMatch(/aanloop_portal_session=/);
+    const location = res.headers.get('Location');
+    expect(location).toMatch(/^https:\/\/aanloopai\.nl\/portal\/checkout\?order=ord_.+&autostart=1$/);
+    const orderId = new URL(location).searchParams.get('order');
+    expect(env.PORTAL_DB.state.orders.map((o) => o.id)).toContain(orderId);
     const token = cookie.split(';')[0].split('=')[1];
     const session = await verifySession(token, SECRET);
     expect(session.uid).toBe(env.PORTAL_DB.state.users[0].id);
