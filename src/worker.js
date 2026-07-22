@@ -39,6 +39,7 @@ import { isWerkdag } from './lib/crm.js';
 import { aiSignalScan } from './lib/ai-crm.js';
 import { maakVoorstel, leesVoorstelViaToken } from './lib/voorstel-store.js';
 import { handleVoorstelClaim } from './lib/voorstel-claim.js';
+import { handleVoorstelVerify } from './lib/voorstel-verify.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -1162,6 +1163,12 @@ export default {
     // src/lib/voorstel-claim.js voor het beveiligingsprincipe.
     if (url.pathname === '/api/voorstel/claim') {
       return handleVoorstelClaim(request, env);
+    }
+
+    // Bevestigingslink uit de "Ja, ik start"-mail. Hier ontstaan customer,
+    // user en order, en start de ingelogde sessie — zie src/lib/voorstel-verify.js.
+    if (url.pathname === '/api/voorstel/verify') {
+      return handleVoorstelVerify(request, env);
     }
 
     // Double opt-in landing page for the marketing-list confirmation email
