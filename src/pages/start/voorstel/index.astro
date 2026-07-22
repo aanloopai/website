@@ -50,7 +50,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
           <div class="mt-4 flex flex-wrap items-end gap-x-6 gap-y-2">
             <p id="vs-prijs" class="text-3xl font-bold text-navy"></p>
-            <p id="vs-setup" class="text-base font-medium text-slate-700"></p>
+            <p id="vs-setup" class="text-lg font-bold text-brand-indigo"></p>
           </div>
           <p class="mt-2 text-sm text-slate-500">Alle bedragen zijn exclusief btw. Maandelijks opzegbaar.</p>
 
@@ -173,14 +173,28 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
   $('vs-opnieuw')?.addEventListener('click', () => location.reload());
 
+  // 30s — zelfde timeoutwaarde als elders in de repo (o.a. start.astro,
+  // gratis-ai-scan.astro): AbortController + setTimeout, clearTimeout zodra
+  // de call terug is, en in de catch onderscheid tussen "afgebroken" en
+  // "gewone netwerkfout". Zonder dit blijft "wordt geladen…" oneindig staan
+  // bij een hangende backend.
+  const FETCH_TIMEOUT_MS = 30000;
+
   async function laad(): Promise<void> {
     if (!TOKEN_RE.test(token)) return toonFout('onbekend');
 
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
+
     let res: Response;
     try {
-      res = await fetch(`/api/voorstel?t=${encodeURIComponent(token)}`);
-    } catch {
-      return toonFout('netwerk');
+      res = await fetch(`/api/voorstel?t=${encodeURIComponent(token)}`, { signal: ctrl.signal });
+      clearTimeout(tid);
+    } catch (err: any) {
+      clearTimeout(tid);
+      // Een hangende backend mag de bezoeker nooit oneindig laten wachten —
+      // zelfde begrijpelijke storingsmelding + retry-knop als bij een 503.
+      return toonFout(err?.name === 'AbortError' ? 'storing' : 'netwerk');
     }
 
     if (res.status === 429) return toonFout('druk');
@@ -244,12 +258,17 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
     btn.disabled = true;
     melding.classList.add('hidden');
 
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
+
     try {
       const res = await fetch('/api/voorstel/claim', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ t: token }),
+        signal: ctrl.signal,
       });
+      clearTimeout(tid);
 
       // /api/voorstel/claim kan nog niet bestaan (afhankelijkheid van een latere
       // stap) — de worker valt dan terug op de statische 404-pagina (HTML, geen
@@ -272,8 +291,13 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
       } else {
         btn.disabled = false;
       }
-    } catch {
-      melding.textContent = 'Netwerkfout — probeer het opnieuw.';
+    } catch (err: any) {
+      clearTimeout(tid);
+      // Een klant die wil kopen mag nooit vastlopen: knop altijd weer bruikbaar,
+      // met een boodschap die klopt met wat er gebeurde.
+      melding.textContent = err?.name === 'AbortError'
+        ? 'Dit duurt te lang — probeer het opnieuw.'
+        : 'Netwerkfout — probeer het opnieuw.';
       melding.className = 'mt-3 text-sm text-brand-rose';
       melding.classList.remove('hidden');
       btn.disabled = false;
