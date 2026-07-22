@@ -5,6 +5,7 @@
 // order-creatie idempotent: een dubbelgeklikte mail levert één order.
 import { sha256Hex, randomId, createSession, sessionCookie } from './auth.js';
 import { escapeHtml } from './escape.js';
+import { buildProvisioningIntake } from './funnel-intake.js';
 
 const SITE = 'https://aanloopai.nl';
 const PORTAL_LOGIN = { href: `${SITE}/portal/login`, label: 'Inloggen op het portaal' };
@@ -74,13 +75,19 @@ export async function mintKlantEnOrder(env, { voorstel, email, klant }) {
   ).bind(user.customer_id, voorstel.product_key).first();
   if (actief) throw new VerifyFout('abonnement', 'Er is al een actief abonnement voor dit product');
 
+  // De platte wizard-antwoorden gaan hier NIET rechtstreeks als intake_json
+  // de order in — buildConfig() (elevenlabs.js) leest een geneste vorm
+  // (i.bedrijf, i.kennis, ...) en zag anders overal lege objecten. Zie
+  // funnel-intake.js voor de mapping en het bewijs in test/funnel-intake.test.js.
+  const provisioningIntake = buildProvisioningIntake(voorstel.product_key, klant);
+
   const nieuweOrderId = randomId('ord');
   try {
     await db.prepare(
       'INSERT OR IGNORE INTO service_orders (id, customer_id, user_id, product_key, tier, intake_json, voorstel_id, status, created_at) '
       + "VALUES (?, ?, ?, ?, ?, ?, ?, 'concept', ?)",
     ).bind(nieuweOrderId, user.customer_id, user.id, voorstel.product_key, voorstel.tier_naam,
-      JSON.stringify(klant?.answers || {}), voorstel.id, Date.now()).run();
+      JSON.stringify(provisioningIntake), voorstel.id, Date.now()).run();
   } catch (err) {
     // De customer/user hierboven bestaan al (nieuw aangemaakt of hergebruikt)
     // — dit is dus geen "geen account"-situatie meer, maar een "account

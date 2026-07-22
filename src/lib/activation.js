@@ -18,6 +18,11 @@
 //     alerts staff — it never claims to be live.
 //   * human-delivered product                  → only a staff member can call it
 //     done ({manual:true}); the webhook parks it on 'in_uitvoering' and alerts.
+//   * self-serve funnel order (voorstel_id set) → a successful provisioning
+//     run still stops at 'in_uitvoering' ("wacht_op_klant", spec §5): the
+//     order only carries the shallow wizard intake, never the deep portal
+//     intake. This is a normal, expected state — NOT a failure — so it never
+//     alerts staff.
 //
 // Every step is idempotent and safe to replay: the Mollie webhook, the 15-minute
 // reconcile cron and an admin click can all race, and the unique index on
@@ -37,6 +42,28 @@ const today = () => new Date().toISOString().slice(0, 10);
 // True when a provisioning attempt is still owed: never run, or the last run failed.
 function needsProvisioning(prov) {
   return !prov || prov.status === 'fout';
+}
+
+// An order minted by the self-serve funnel (voorstel-verify.js) carries
+// voorstel_id — the only intake it has is the shallow wizard mapping from
+// funnel-intake.js, never the full portal/intake.astro schema. The existing
+// portal path (admin-created orders, /portal/intake.astro) never sets this
+// column, so it stays null there and this check is a no-op for it.
+function isFunnelOrder(order) {
+  return Boolean(order.voorstel_id);
+}
+
+// Third provisioning outcome (spec §5, "wacht_op_klant"): a funnel order whose
+// agent provisioned successfully still isn't genuinely live — the deep intake
+// hasn't happened yet. This is a normal, expected state, NOT a failure: no
+// alertStaff(), no human paged. The order sits on 'in_uitvoering' (never
+// downgrading an order that is somehow already 'actief') until a later stage
+// (portal onboarding, spec plak C) completes the deep intake and re-runs
+// provisioning.
+async function wachtOpKlant(db, order, svcId) {
+  await db.prepare("UPDATE service_orders SET status = 'in_uitvoering' WHERE id = ? AND status != 'actief'")
+    .bind(order.id).run();
+  return { status: 'wacht_op_klant', serviceId: svcId, provisioned: true };
 }
 
 /**
@@ -82,6 +109,7 @@ export async function activateOrder(env, order, { manual = false } = {}) {
     // bill for) a second agent — just make sure the order reflects reality.
     // This is the replay / double-click / cron-rerun path, and it is checked
     // FIRST so that a live service stays live even if the key was rotated out.
+    if (isFunnelOrder(order)) return wachtOpKlant(db, order, svcId);
     await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
     return { status: 'actief', serviceId: svcId, provisioned: true };
   }
@@ -120,6 +148,7 @@ export async function activateOrder(env, order, { manual = false } = {}) {
         + `Fout: ${result.error}\n\nDe klant heeft betaald. Los dit op en klik "actief" in /admin/aanvragen om opnieuw te proberen.`);
     }
 
+    if (isFunnelOrder(order)) return wachtOpKlant(db, order, svcId);
     await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
     return { status: 'actief', serviceId: svcId, provisioned: true };
   }

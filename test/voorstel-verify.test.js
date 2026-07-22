@@ -37,7 +37,8 @@ function fakeDb(opts = {}) {
       if (failInsert === 'service_orders') throw new Error('gesimuleerde D1-storing op INSERT INTO service_orders');
       if (!db.orders.some((o) => o.voorstel_id === args[6])) {
         db.orders.push({
-          id: args[0], customer_id: args[1], user_id: args[2], product_key: args[3], tier: args[4], voorstel_id: args[6], status: 'concept',
+          id: args[0], customer_id: args[1], user_id: args[2], product_key: args[3], tier: args[4],
+          intake_json: args[5], voorstel_id: args[6], status: 'concept',
         });
       }
     }
@@ -139,6 +140,22 @@ describe('mintKlantEnOrder', () => {
     ).rejects.toThrow(/account aanmaken/i);
     expect(env.PORTAL_DB.data.customers).toHaveLength(0);
     expect(env.PORTAL_DB.data.users).toHaveLength(0);
+  });
+
+  // ── Punt 1 (eindreview): intake_json moet de buildConfig-vorm hebben ──────
+  it('schrijft intake_json in de vorm die buildConfig (elevenlabs.js) verwacht, niet de platte wizard-antwoorden', async () => {
+    const env = { PORTAL_DB: fakeDb() };
+    await mintKlantEnOrder(env, {
+      voorstel: VOORSTEL,
+      email: 'jan@example.nl',
+      klant: { name: 'Jan', company: 'Slagerij Jansen', answers: { openingstoon: 'Zakelijk en warm', call_volume: '10-30' } },
+    });
+    const order = env.PORTAL_DB.data.orders[0];
+    const intake = JSON.parse(order.intake_json);
+    expect(intake.bedrijf).toEqual({ bedrijfsnaam: 'Slagerij Jansen' });
+    expect(intake.kennis).toEqual({ toon: 'Zakelijk en warm' });
+    // Nooit de rauwe ROI-antwoorden (die horen niet in de agent-config).
+    expect(intake.call_volume).toBeUndefined();
   });
 
   it('houdt het account overeind wanneer alleen de order-insert ná een geslaagd account faalt', async () => {
