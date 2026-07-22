@@ -28,4 +28,18 @@ describe('funnel-map', () => {
       expect(tier.betaling).toBe('maandelijks');
     }
   });
+
+  // Punt 5 (eindreview): deze controle liep eerder alleen over sellable
+  // entries. Precies die filter verborg dat emma-whatsapp/ai-scan niet in de
+  // catalogus bestaan — "sellable omzetten is een vlag, geen codewijziging"
+  // (spec §8/§9) klopt alleen als ELKE entry, ook niet-sellable, al naar een
+  // bestaand catalogusproduct wijst.
+  it('verwijst voor ELKE entry (ook niet-sellable) naar een bestaande, betaalbare tier', () => {
+    for (const entry of FUNNEL_MAP) {
+      const tier = getCatalogTier(entry.productKey, entry.tierNaam);
+      expect(tier, `${entry.serviceId}: ${entry.productKey}/${entry.tierNaam} bestaat niet in de catalogus`).toBeTruthy();
+      expect(tier.prijsCent).toBeGreaterThan(0);
+      expect(tier.betaling).toBe('maandelijks');
+    }
+  });
 });

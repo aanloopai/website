@@ -44,23 +44,27 @@ export const FUNNEL_MAP: readonly FunnelEntry[] = [
     fallbackTekst: 'Afspraken worden direct in uw agenda gezet, zonder heen-en-weer gemail.',
   },
   {
+    // Catalogusproduct 'emma' is de WhatsApp/chat-assistent (portal-catalog.ts)
+    // — niet te verwarren met de gelijknamige buildConfig-variant in
+    // elevenlabs.js, die dezelfde key hergebruikt voor chat-provisioning.
+    // 'emma-whatsapp' bestond niet in de catalogus: sellable omzetten zou
+    // stil het oude bedankscherm hebben gegeven (spec §9).
     serviceId: 'whatsapp-bot',
-    productKey: 'emma-whatsapp',
+    productKey: 'emma',
     tierNaam: 'Standard',
     sellable: false,
     roiInputs: ['gemiste_gesprekken_week', 'gemiddelde_klantwaarde'],
     fallbackKop: 'Emma beantwoordt uw WhatsApp',
     fallbackTekst: 'Klanten krijgen binnen seconden antwoord, ook buiten kantooruren.',
   },
-  {
-    serviceId: 'ai-scan-consult',
-    productKey: 'ai-scan',
-    tierNaam: 'Scan',
-    sellable: false,
-    roiInputs: [],
-    fallbackKop: 'AI-scan voor uw bedrijf',
-    fallbackTekst: 'We brengen in kaart waar AI in uw bedrijf het snelst geld oplevert.',
-  },
+  // ai-scan-consult heeft BEWUST geen entry: het verkoopt vandaag een
+  // persoonlijk adviesgesprek (lead + intake, start.astro), geen
+  // catalogusproduct. Automatisch leveren zou er een ander product van maken
+  // — een eigenaarsbeslissing die nog niet genomen is (spec §3). Een
+  // verzonnen productKey/tierNaam zou de catalogus-controle hieronder alleen
+  // laten slagen door te doen alsof dat product al bestaat; getFunnelEntry()
+  // geeft voor deze dienst dus terecht null, en isSellable() daarmee false —
+  // exact het gedrag van vandaag (getest in funnel-map.test.js).
 ] as const;
 
 export function getFunnelEntry(serviceId: string): FunnelEntry | null {
