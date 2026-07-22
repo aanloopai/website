@@ -4,10 +4,20 @@
 // en mailt de klant de betaallink. Webhook is unsigned: altijd re-fetchen.
 import { jsonResponse, errorResponse } from './google-auth.js';
 import { randomId, sha256Hex } from './auth.js';
-import { getCatalogTier } from '../data/portal-catalog.ts';
+import { getCatalogTier, getCatalogProduct } from '../data/portal-catalog.ts';
 import { dealWonVoorOrder } from './crm.js';
 import { activateOrder } from './activation.js';
 import { alertStaff } from './notify.js';
+// Punt 2 (livegang-toevoeging): de klantbevestigingsmail na de EERSTE betaling
+// hergebruikt de huisstijl/KvK-voettekst-mailer van de portal in plaats van de
+// kale sendMail hieronder (die is en blijft alleen voor de bestaande interne/
+// dunning-mails van dit bestand). Aliased om botsing met die lokale functie te
+// vermijden. portal-routes.js importeert op zijn beurt handleCheckoutStart uit
+// dít bestand — een bestaande circulaire ES-module-import — maar dat is
+// onschadelijk zolang niemand de binding gebruikt vóórdat beide modules klaar
+// zijn met laden, en dat is hier het geval: sendMailNaKlant wordt pas
+// aangeroepen binnen onPaid(), lang na module-initialisatie.
+import { sendMail as sendMailNaKlant } from './portal-routes.js';
 
 const SITE = 'https://aanloopai.nl';
 const MOLLIE = 'https://api.mollie.com/v2';
@@ -426,9 +436,50 @@ export async function handleMollieWebhook(request, env) {
   }
 }
 
+// Punt 2 (livegang-toevoeging): korte NL-bevestigingsmail na de EERSTE
+// betaling van een order — wat is gekocht, wat is betaald, dat de inrichting
+// is gestart, en de eerstvolgende stap. Nooit een termijn beloven (niemand
+// bewaakt die) en nooit een garantie verzinnen — alleen de eigen data.
+//
+// Never blocks the payment flow: the caller wraps this in try/catch and only
+// logs a failure (same non-critical-step pattern as activateOrder()'s catch
+// and dealWonVoorOrder()'s internal swallow, both in this function).
+async function sendOrderConfirmationMail(env, order, payment, isLive) {
+  const owner = await env.PORTAL_DB
+    .prepare("SELECT email, naam FROM users WHERE customer_id = ? AND role = 'eigenaar' ORDER BY created_at LIMIT 1")
+    .bind(order.customer_id).first();
+  if (!owner || !owner.email) return; // geen bekend e-mailadres — niets te versturen
+
+  const productNaam = getCatalogProduct(order.product_key)?.naam || order.product_key;
+  const bedrag = payment.amount?.value || '0.00';
+  const status = isLive
+    ? '<p>De inrichting is voltooid — uw dienst staat al klaar.</p>'
+    : '<p>De inrichting is gestart. We ronden de laatste stap handmatig voor u af; u hoeft zelf niets te doen en ziet de voortgang terug in het klantportaal.</p>';
+
+  await sendMailNaKlant(env, owner.email, owner.naam, 'Bevestiging van uw bestelling — Aanloop AI', `
+    <p>Hallo ${(owner.naam || '').split(' ')[0] || 'daar'},</p>
+    <p>Bedankt voor uw bestelling bij Aanloop AI. U heeft besteld:</p>
+    <p><strong>${productNaam}${order.tier ? ` — ${order.tier}` : ''}</strong><br>
+    Betaald: €${bedrag} incl. btw</p>
+    ${status}
+    <p style="margin:24px 0"><a href="${SITE}/portal" style="display:inline-block;background:#4f46e5;color:#fff;padding:13px 22px;border-radius:10px;text-decoration:none;font-weight:600">Naar het klantportaal</a></p>`);
+}
+
 async function onPaid(env, payment, subId, orderId) {
   const db = env.PORTAL_DB;
   const sub = subId ? await db.prepare('SELECT * FROM subscriptions WHERE id = ?').bind(subId).first() : null;
+  // Captured BEFORE the transition below mutates the DB (not this local
+  // object) — this is the same "first payment of the subscription" branch
+  // the comment right below already distinguishes from a monthly renewal /
+  // past_due reactivation. It is the exactly-once hook for the confirmation
+  // mail: onPaid() itself only ever runs once per payment (the CAS on
+  // payments.status in handleMollieWebhook/reconcilePayments — "only the
+  // worker that flips state runs the business logic" — guarantees that), and
+  // within that single run, this flag is true on exactly the first payment of
+  // a subscription, never on a monthly renewal (which also never carries an
+  // orderId — see billMonthlySubscriptions below — so the order-scoped mail
+  // block further down has nothing to send for a renewal anyway).
+  const isEersteBetaling = Boolean(sub && sub.status === 'pending_payment');
 
   if (sub) {
     if (sub.status === 'pending_payment') {
@@ -458,14 +509,30 @@ async function onPaid(env, payment, subId, orderId) {
     // webhook replay or the reconcile cron re-running this is harmless. It
     // never blocks the payment flow: a failure here still leaves a paid order
     // + invoice, and staff get alerted.
+    let activationResult = null;
     if (o && (o.status === 'concept' || o.status === 'ingediend')) {
       try {
-        await activateOrder(env, o);
+        activationResult = await activateOrder(env, o);
       } catch (err) {
         console.error('[mollie] auto-activation failed:', err?.message || err);
         await alertStaff(env, `Auto-activatie mislukt voor order ${orderId}`,
           `De betaling is binnen, maar de order kon niet automatisch worden ingericht: ${String(err?.message || err).slice(0, 300)}\n\n`
           + 'Handel de inrichting handmatig af in /admin/aanvragen.');
+      }
+    }
+
+    // Confirmation mail — only ever the FIRST payment of a subscription (see
+    // isEersteBetaling above); the monthly betaallink-mail in
+    // billMonthlySubscriptions is the separate, existing flow for renewals
+    // and is untouched. Best-effort: sendMailNaKlant (portal-routes.js)
+    // throws on failure (missing key, Brevo non-2xx) by design — caught here
+    // so a mail hiccup can never undo a successful payment or a successful
+    // activation.
+    if (isEersteBetaling && o) {
+      try {
+        await sendOrderConfirmationMail(env, o, payment, activationResult?.status === 'actief');
+      } catch (err) {
+        console.error('[mollie] orderbevestigingsmail mislukt:', err?.message || err);
       }
     }
   }
