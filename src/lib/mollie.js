@@ -153,30 +153,64 @@ export async function handleCheckoutStart(request, env, user) {
   // two checkout starts fired before either payment settles would otherwise
   // both pass the check above and create two active subscriptions → double
   // billing. Defense-in-depth on top of the UNIQUE(order_id) index.
+  //
+  // No status filter here (deliberately, since the H-eind fix below): the
+  // UNIQUE(order_id) index (migration 0009) means there is at most ONE
+  // subscriptions row per order_id, ever, regardless of its status — so this
+  // always reads that single row when it exists, whatever state it's in.
   const existingSub = await env.PORTAL_DB
-    .prepare("SELECT id, status FROM subscriptions WHERE order_id = ? AND status IN ('pending_payment', 'active') ORDER BY created_at DESC LIMIT 1")
+    .prepare('SELECT id, status FROM subscriptions WHERE order_id = ? ORDER BY created_at DESC LIMIT 1')
     .bind(order.id).first();
+  let reuseSubId = null;
   if (existingSub) {
     if (existingSub.status === 'active') {
       return errorResponse('Deze aanvraag heeft al een actief abonnement', 409);
     }
-    // pending_payment — try to idempotently re-use the still-open checkout URL
-    // instead of creating a second Mollie payment for the same order.
-    const existingPayment = await env.PORTAL_DB
-      .prepare('SELECT id FROM payments WHERE subscription_id = ? ORDER BY created_at DESC LIMIT 1')
-      .bind(existingSub.id).first();
-    if (existingPayment) {
-      try {
-        const payment = await mollieFetch(env.MOLLIE_API_KEY, 'GET', `/payments/${existingPayment.id}`);
-        const checkoutUrl = payment._links && payment._links.checkout && payment._links.checkout.href;
-        if (checkoutUrl && (payment.status === 'open' || payment.status === 'pending')) {
-          return jsonResponse({ ok: true, checkoutUrl });
+    if (existingSub.status === 'pending_payment') {
+      // pending_payment — try to idempotently re-use the still-open checkout URL
+      // instead of creating a second Mollie payment for the same order.
+      const existingPayment = await env.PORTAL_DB
+        .prepare('SELECT id FROM payments WHERE subscription_id = ? ORDER BY created_at DESC LIMIT 1')
+        .bind(existingSub.id).first();
+      if (existingPayment) {
+        try {
+          const payment = await mollieFetch(env.MOLLIE_API_KEY, 'GET', `/payments/${existingPayment.id}`);
+          const checkoutUrl = payment._links && payment._links.checkout && payment._links.checkout.href;
+          if (checkoutUrl && (payment.status === 'open' || payment.status === 'pending')) {
+            return jsonResponse({ ok: true, checkoutUrl });
+          }
+        } catch (err) {
+          console.error('[mollie] re-fetch existing checkout failed:', err.message || err);
         }
-      } catch (err) {
-        console.error('[mollie] re-fetch existing checkout failed:', err.message || err);
       }
+      return errorResponse('Er is al een checkout gestart voor deze aanvraag. Probeer het opnieuw of neem contact op met support.', 409);
     }
-    return errorResponse('Er is al een checkout gestart voor deze aanvraag. Probeer het opnieuw of neem contact op met support.', 409);
+    if (existingSub.status !== 'canceled') {
+      // Defensive: any other status (e.g. 'completed') should be unreachable
+      // here — an order only reaches 'completed' after onPaid(), which also
+      // flips service_orders.status away from 'concept', and the guard above
+      // already 409'd on that. Refuse rather than silently reuse an unknown state.
+      return errorResponse('Er is al een checkout gestart voor deze aanvraag. Probeer het opnieuw of neem contact op met support.', 409);
+    }
+    // H-eind fix: onFailed() (this file) cancels the subscription row when the
+    // FIRST payment of an order fails, expires, or is closed by the customer
+    // before completion (H-eind-A, previous round) — correctly, since the
+    // subscription never became billable. But the UNIQUE(order_id) index
+    // means a plain INSERT on retry then always fails with a constraint
+    // violation, which the try/catch below turns into a generic 502 — the
+    // customer could never pay for this order again. Reusing this row instead
+    // (reset to pending_payment further down, with bedrag_cent recomputed
+    // from the CURRENT catalog — never the stale amount from the failed
+    // attempt) fixes that without touching the index or the dunning logic.
+    //
+    // Only one canceled row can ever exist per order_id (the same UNIQUE
+    // index that caused the bug guarantees it), so there is no "which one do
+    // we reuse" ambiguity. The old payments rows for this subscription_id
+    // (the failed/expired/canceled attempt) are left untouched as history —
+    // payments is already an append-only per-subscription log (see the
+    // monthly billing cron below, which inserts a fresh row per cycle for
+    // the same subscription_id); the new attempt just appends another one.
+    reuseSubId = existingSub.id;
   }
 
   // Dubbel-abonnement-guard (H2): de check hierboven is per order_id en ziet
@@ -258,11 +292,24 @@ export async function handleCheckoutStart(request, env, user) {
         .bind(mollieCustomerId, user.customer_id).run();
     }
 
-    const subId = randomId('sub');
-    await env.PORTAL_DB.prepare(
-      'INSERT INTO subscriptions (id, customer_id, order_id, product_key, tier, bedrag_cent, betaling, status, mollie_customer_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-    ).bind(subId, user.customer_id, order.id, order.product_key, order.tier, maandInclCent,
-      tier.betaling, 'pending_payment', mollieCustomerId, Date.now()).run();
+    let subId;
+    if (reuseSubId) {
+      // Retry after a canceled first attempt (see the H-eind comment above) —
+      // reuse the existing row instead of a second INSERT, which would hit
+      // the UNIQUE(order_id) index. bedrag_cent is the freshly-computed
+      // maandInclCent from the CURRENT catalog price, not carried over from
+      // the failed attempt.
+      subId = reuseSubId;
+      await env.PORTAL_DB.prepare(
+        "UPDATE subscriptions SET bedrag_cent = ?, betaling = ?, status = 'pending_payment', mollie_customer_id = ? WHERE id = ?",
+      ).bind(maandInclCent, tier.betaling, mollieCustomerId, subId).run();
+    } else {
+      subId = randomId('sub');
+      await env.PORTAL_DB.prepare(
+        'INSERT INTO subscriptions (id, customer_id, order_id, product_key, tier, bedrag_cent, betaling, status, mollie_customer_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      ).bind(subId, user.customer_id, order.id, order.product_key, order.tier, maandInclCent,
+        tier.betaling, 'pending_payment', mollieCustomerId, Date.now()).run();
+    }
 
     const profileId = await getProfileId(env.MOLLIE_API_KEY);
 

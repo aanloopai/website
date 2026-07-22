@@ -373,6 +373,10 @@ async function orderDetail(env, url) {
   return jsonResponse({ ok: true, order: { ...o, intake: safeParseJson(o.intake_json) }, customer: c });
 }
 
+// Exported for testability only — has no authorization check of its own. Callers
+// MUST route through handleAdminApi() above, which gates on getSessionUser()
+// + role === 'staff' before dispatching here. Never wire this into a path that
+// skips that dispatcher.
 export async function updateOrder(request, env) {
   const b = await request.json().catch(() => null);
   const valid = ['concept', 'ingediend', 'in_uitvoering', 'actief', 'geannuleerd'];
@@ -394,6 +398,10 @@ export async function updateOrder(request, env) {
       return errorResponse('Deze aanvraag is geannuleerd. Zet hem eerst op "ingediend" voordat je hem activeert.', 409);
     }
     if (result.status === 'wacht_op_klant') {
+      // Currently unreachable: activateOrder() only returns wacht_op_klant when
+      // manual is falsy (see activation.js), and the call above always passes
+      // manual: true. Left in place as a safety net for the day this handler
+      // (or a future caller of activateOrder from here) stops forcing manual:true.
       // NOT a failure: this is the self-serve funnel's normal intermediate
       // state (spec §5) — the agent provisioned fine, but the deep intake
       // hasn't happened yet. activateOrder() never calls alertStaff() for
