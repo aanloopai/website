@@ -164,6 +164,20 @@ export async function handleCheckoutStart(request, env, user) {
     return errorResponse('Er is al een checkout gestart voor deze aanvraag. Probeer het opnieuw of neem contact op met support.', 409);
   }
 
+  // Dubbel-abonnement-guard (H2): de check hierboven is per order_id en ziet
+  // dus niets wanneer een ANDERE order van dezelfde klant, voor hetzelfde
+  // product, al een pending/actieve subscriptions-rij heeft — bv. de wizard
+  // twee keer ingevuld, waarbij de eerste checkout nooit is gestart (dus geen
+  // subscriptions-rij bestond toen mintKlantEnOrder zijn eigen, gelijksoortige
+  // check in voorstel-verify.js deed). Zonder deze klant+product-brede check
+  // zou elke order onafhankelijk zijn eigen abonnement mogen aanmaken.
+  const dubbelAbonnement = await env.PORTAL_DB
+    .prepare("SELECT id FROM subscriptions WHERE customer_id = ? AND product_key = ? AND status IN ('pending_payment', 'active') LIMIT 1")
+    .bind(order.customer_id, order.product_key).first();
+  if (dubbelAbonnement) {
+    return errorResponse('Er loopt al een abonnement (of een openstaande betaling) voor dit product op uw account.', 409);
+  }
+
   const tier = getCatalogTier(order.product_key, order.tier);
   if (!tier || tier.betaling === 'aanvraag' || !tier.prijsCent) {
     return errorResponse('Voor dit pakket is geen online betaling beschikbaar.', 400);

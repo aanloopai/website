@@ -27,6 +27,11 @@ function makeDbStub({ order, existingSub, customer }) {
     if (sql.includes('FROM subscriptions WHERE order_id = ?')) {
       return { first: async () => existingSub || null };
     }
+    // Dubbel-abonnement-guard (H2, klant+product-breed) — geen van deze
+    // fixtures heeft een bestaand abonnement bij een ANDERE order, dus null.
+    if (sql.includes('FROM subscriptions WHERE customer_id = ? AND product_key = ?')) {
+      return { first: async () => null };
+    }
     if (sql.includes('FROM customers WHERE id = ?')) {
       return { first: async () => customer };
     }
