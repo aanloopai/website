@@ -13,7 +13,7 @@ import { EMMA, GROEI } from '../data/pricing.ts';
 const LLM_TIMEOUT_MS = 8000;
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
-/** Setup-fee per tiernaam. De portal-catalogus voert deze fee (nog) niet, de prijsbron wel. */
+/** Setup-fee per tiernaam. Losstaand van portal-catalogus.setupCent — deze bron blijft hier apart. */
 const SETUP_CENT_PER_TIER = {
   Starter: EMMA.setup * 100,
   Groei: GROEI.setup * 100,
