@@ -1,10 +1,15 @@
 // Legt de derde provisioning-uitkomst vast (spec §5, "wacht_op_klant"): een
 // order die uit de self-serve funnel komt (service_orders.voorstel_id gezet)
 // heeft alleen de ondiepe wizard-intake. Een geslaagde ElevenLabs-provisioning
-// mag zo'n order NOOIT op 'actief' zetten — de diepe intake ontbreekt nog —
-// maar mag ook geen alertStaff() afvuren: dit is een normale tussentoestand,
-// geen storing. Een order zonder voorstel_id (het bestaande portaalpad) moet
-// zich exact blijven gedragen als vandaag: succesvolle provisioning -> 'actief'.
+// mag zo'n order NOOIT op 'actief' zetten — de diepe intake ontbreekt nog.
+//
+// Punt 1 (livegang-toevoeging, 2026-07-22, TIJDELIJK — zie activation.js voor
+// de volledige uitleg + verwijderdatum): zolang de onboardingfase (plak C) er
+// niet is, stuurt deze wachttoestand wél één seintje naar het team — géén
+// storingsalert zoals park() die gebruikt, maar een normale "nieuwe klant
+// wacht op handmatige afronding"-melding. Een order zonder voorstel_id (het
+// bestaande portaalpad) moet zich exact blijven gedragen als vandaag:
+// succesvolle provisioning -> 'actief', geen enkele wijziging aan die tak.
 import { describe, it, expect, afterEach } from 'vitest';
 import { activateOrder } from '../src/lib/activation.js';
 
@@ -17,12 +22,20 @@ function jsonRes(obj) {
 
 // Stubt de twee ElevenLabs-aanroepen die provisionAgent doet (KB-doc + agent).
 // Telt ook aanroepen naar Brevo/Telegram (alertStaff) zodat een test kan
-// bewijzen dat er GEEN alert is afgevuurd.
+// bewijzen hoeveel keer (en wat) er is gealerteerd. alertBodies bevat de
+// geparste request-body per Brevo-aanroep, zodat een test de tekst kan
+// controleren (seintje-toon vs. storingstoon).
 function makeFetchStub({ elevenlabsFails = false } = {}) {
   const alertCalls = [];
+  const alertBodies = [];
   const fn = async (url, opts = {}) => {
     const u = String(url);
-    if (u.includes('api.brevo.com') || u.includes('api.telegram.org')) {
+    if (u.includes('api.brevo.com')) {
+      alertCalls.push(u);
+      alertBodies.push(opts.body ? JSON.parse(opts.body) : null);
+      return { ok: true, text: async () => '{}' };
+    }
+    if (u.includes('api.telegram.org')) {
       alertCalls.push(u);
       return { ok: true, text: async () => '{}' };
     }
@@ -36,15 +49,24 @@ function makeFetchStub({ elevenlabsFails = false } = {}) {
     throw new Error(`onverwachte fetch: ${u}`);
   };
   fn.alertCalls = alertCalls;
+  fn.alertBodies = alertBodies;
   return fn;
 }
 
 // In-memory D1-dubbel voor activation.js. `servicesSeed` laat een test een
 // reeds-geprovisionede services-rij vooraf plaatsen (replay-scenario).
-function makeDb({ servicesSeed = null } = {}) {
+// `initialOrderStatus` volgt de ECHTE service_orders.status die op dat moment
+// in D1 zou staan — bij een replay is dat 'in_uitvoering' (de vorige
+// activatie heeft die kolom al gezet), niet het standaard 'ingediend' van een
+// verse order. De 'in_uitvoering'-UPDATE is CAS: hij matcht alleen een rij
+// (changes: 1) als de status nog NIET 'in_uitvoering' of 'actief' is — precies
+// zoals de echte SQL in activation.js — zodat deze dubbel dezelfde
+// fires-once-garantie test die de productiecode moet leveren.
+function makeDb({ servicesSeed = null, initialOrderStatus = 'ingediend' } = {}) {
   const state = {
     services: servicesSeed ? [{ ...servicesSeed }] : [],
-    orderStatusUpdates: [], // [{status}], laatste = actueel
+    orderStatusUpdates: [], // [{status}], elke ECHTE transitie (geen no-op replay)
+    orderStatus: initialOrderStatus,
   };
   return {
     state,
@@ -72,9 +94,14 @@ function makeDb({ servicesSeed = null } = {}) {
               }
               if (sql.startsWith("UPDATE service_orders SET status = 'actief'")) {
                 state.orderStatusUpdates.push({ status: 'actief', orderId: args[0] });
+                state.orderStatus = 'actief';
                 return { meta: { changes: 1 } };
               }
               if (sql.startsWith("UPDATE service_orders SET status = 'in_uitvoering'")) {
+                if (state.orderStatus === 'in_uitvoering' || state.orderStatus === 'actief') {
+                  return { meta: { changes: 0 } }; // CAS-miss: al in die toestand — no-op replay
+                }
+                state.orderStatus = 'in_uitvoering';
                 state.orderStatusUpdates.push({ status: 'in_uitvoering', orderId: args[0] });
                 return { meta: { changes: 1 } };
               }
@@ -108,7 +135,7 @@ function portalOrder(overrides = {}) {
 }
 
 describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', () => {
-  it('funnel-order (voorstel_id gezet): geslaagde provisioning zet NOOIT op actief, wel op in_uitvoering, GEEN alert', async () => {
+  it('funnel-order (voorstel_id gezet): geslaagde provisioning zet NOOIT op actief, wel op in_uitvoering, en stuurt precies één tijdelijk seintje', async () => {
     const db = makeDb();
     const fetchStub = makeFetchStub();
     globalThis.fetch = fetchStub;
@@ -121,45 +148,88 @@ describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', (
     expect(result.provisioned).toBe(true);
     expect(db.state.orderStatusUpdates).toEqual([{ status: 'in_uitvoering', orderId: order.id }]);
     expect(db.state.orderStatusUpdates.some((u) => u.status === 'actief')).toBe(false);
-    expect(fetchStub.alertCalls).toEqual([]); // geen storing = geen mens gepingd
+
+    // Precies één seintje (Brevo-kant; Telegram niet geconfigureerd in deze env).
+    expect(fetchStub.alertCalls).toHaveLength(1);
+    const body = fetchStub.alertBodies[0];
+    expect(body.subject).toContain(order.id);
+    expect(body.subject.toLowerCase()).toContain('self-serve');
+    // Seintje-toon, geen storingstoon: bevat expliciet dat dit geen storing is,
+    // en de concrete instructie (welke klant/order/product + handmatig afronden).
+    expect(body.textContent).toContain('geen storing');
+    expect(body.textContent).toContain(order.product_key);
+    expect(body.textContent).toContain(order.tier);
+    expect(body.textContent).toContain(order.customer_id);
+    expect(body.textContent).toContain(order.id);
+    expect(body.textContent.toLowerCase()).toContain('handmatig');
+    expect(body.textContent.toLowerCase()).toContain('actief');
   });
 
-  it('portal-order (voorstel_id null): geslaagde provisioning gedraagt zich exact als vandaag — actief', async () => {
+  it('portal-order (voorstel_id null): geslaagde provisioning gedraagt zich exact als vandaag — actief, geen enkel seintje', async () => {
     const db = makeDb();
-    globalThis.fetch = makeFetchStub();
-    const env = { PORTAL_DB: db, ELEVENLABS_API_KEY: 'test_key' };
+    const fetchStub = makeFetchStub();
+    globalThis.fetch = fetchStub;
+    const env = { PORTAL_DB: db, ELEVENLABS_API_KEY: 'test_key', BREVO_API_KEY: 'brevo_key' };
 
     const order = portalOrder();
     const result = await activateOrder(env, order);
 
     expect(result.status).toBe('actief');
     expect(db.state.orderStatusUpdates).toEqual([{ status: 'actief', orderId: order.id }]);
+    expect(fetchStub.alertCalls).toEqual([]);
   });
 
-  it('replay (al eerder succesvol geprovisioned): funnel-order blijft wacht_op_klant, geen tweede provisioning-call', async () => {
+  it('replay via dezelfde D1-rij (webhook gevolgd door reconcile-cron): het seintje gaat maar één keer uit', async () => {
+    const db = makeDb();
+    const fetchStub = makeFetchStub();
+    globalThis.fetch = fetchStub;
+    const env = { PORTAL_DB: db, ELEVENLABS_API_KEY: 'test_key', BREVO_API_KEY: 'brevo_key' };
+
+    const order = funnelOrder();
+    const first = await activateOrder(env, order);
+    expect(first.status).toBe('wacht_op_klant');
+    expect(fetchStub.alertCalls).toHaveLength(1);
+
+    // Zelfde db (dus dezelfde D1-rij, nu al 'in_uitvoering') — simuleert de
+    // 15-minuten reconcile-cron of een tweede webhook-delivery die dezelfde
+    // order opnieuw activeert. ElevenLabs wordt hier niet opnieuw geraakt
+    // (provisioning_json staat al op geslaagd), dus dezelfde fetchStub volstaat.
+    const second = await activateOrder(env, order);
+    expect(second.status).toBe('wacht_op_klant');
+    expect(db.state.orderStatusUpdates).toEqual([{ status: 'in_uitvoering', orderId: order.id }]); // geen tweede transitie
+    expect(fetchStub.alertCalls).toHaveLength(1); // GEEN tweede seintje
+  });
+
+  it('replay (al eerder succesvol geprovisioned én al in_uitvoering): funnel-order blijft wacht_op_klant, geen tweede provisioning-call, geen seintje', async () => {
     const db = makeDb({
+      initialOrderStatus: 'in_uitvoering', // de eerdere activatie zette dit al
       servicesSeed: {
         id: 'svc_1', customer_id: 'cust_1', product_key: 'emma-telefoon', order_id: 'ord_funnel_1',
         provisioning_json: JSON.stringify({ status: 'agent_aangemaakt', agent_id: 'agent_1' }),
       },
     });
-    let elevenlabsCalled = false;
+    const fetchStub = makeFetchStub();
+    fetchStub.alertCalls = []; // her-init niet nodig, maar expliciet voor leesbaarheid
     globalThis.fetch = async (url) => {
       const u = String(url);
-      if (u.includes('/convai/')) { elevenlabsCalled = true; }
+      if (u.includes('api.brevo.com') || u.includes('api.telegram.org')) {
+        fetchStub.alertCalls.push(u);
+        return { ok: true, text: async () => '{}' };
+      }
       throw new Error(`mag niet worden aangeroepen bij een replay: ${u}`);
     };
 
-    const env = { PORTAL_DB: db, ELEVENLABS_API_KEY: 'test_key' };
+    const env = { PORTAL_DB: db, ELEVENLABS_API_KEY: 'test_key', BREVO_API_KEY: 'brevo_key' };
     const result = await activateOrder(env, funnelOrder());
 
     expect(result.status).toBe('wacht_op_klant');
-    expect(elevenlabsCalled).toBe(false);
-    expect(db.state.orderStatusUpdates.some((u) => u.status === 'actief')).toBe(false);
+    expect(db.state.orderStatusUpdates).toEqual([]); // geen enkele transitie — was al in_uitvoering
+    expect(fetchStub.alertCalls).toEqual([]);
   });
 
   it('replay (al eerder succesvol geprovisioned): portal-order gedraagt zich exact als vandaag — actief, geen tweede provisioning-call', async () => {
     const db = makeDb({
+      initialOrderStatus: 'ingediend',
       servicesSeed: {
         id: 'svc_2', customer_id: 'cust_2', product_key: 'emma-telefoon', order_id: 'ord_portal_1',
         provisioning_json: JSON.stringify({ status: 'agent_aangemaakt', agent_id: 'agent_2' }),

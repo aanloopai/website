@@ -60,16 +60,45 @@ function isFunnelOrder(order) {
 
 // Third provisioning outcome (spec §5, "wacht_op_klant"): a funnel order whose
 // agent provisioned successfully still isn't genuinely live — the deep intake
-// hasn't happened yet. This is a normal, expected state, NOT a failure: no
-// alertStaff(), no human paged. The order sits on 'in_uitvoering' (never
-// downgrading an order that is somehow already 'actief') until a later stage
-// (portal onboarding, spec plak C) completes the deep intake and re-runs
-// provisioning — OR until a staff member confirms by hand that it is done
-// and closes it out with an explicit {manual:true} activation (the two
-// call sites above skip this function entirely when manual is set).
-async function wachtOpKlant(db, order, svcId) {
-  await db.prepare("UPDATE service_orders SET status = 'in_uitvoering' WHERE id = ? AND status != 'actief'")
-    .bind(order.id).run();
+// hasn't happened yet. This is a normal, expected state, NOT a failure — it
+// does not go through park()'s "something broke" alert. The order sits on
+// 'in_uitvoering' (never downgrading an order that is somehow already
+// 'actief') until a later stage (portal onboarding, spec plak C) completes
+// the deep intake and re-runs provisioning — OR until a staff member confirms
+// by hand that it is done and closes it out with an explicit {manual:true}
+// activation (the two call sites above skip this function entirely when
+// manual is set).
+//
+// TIJDELIJK (owner-decided, 2026-07-22): plak C (the onboarding phase,
+// docs/superpowers/specs/2026-07-22-selfserve-funnel-design.md §9) does not
+// exist yet, so a customer landing here has paid for a service nobody is
+// looking at until a human happens to check /admin/aanvragen. For this
+// interim period the owner wants a heads-up — NOT a failure alert, a signal —
+// so this fires alertStaff() once per order, worded as "normal, go finish the
+// setup by hand". DELETE this alertStaff() call (and this comment) once plak
+// C ships: at that point wacht_op_klant nudges the CUSTOMER through
+// /portal/onboarding instead of paging staff, per §9.
+//
+// Fires-once guard: the UPDATE's WHERE excludes 'in_uitvoering' as well as
+// 'actief', so it only actually changes a row (changes === 1) on the ONE call
+// that transitions the order INTO the wait state. Every replay after that —
+// webhook retry, the reconcile cron, or an admin click without manual:true —
+// finds the order already sitting on 'in_uitvoering' and the UPDATE matches
+// zero rows, so the alert is skipped. A failed alert never blocks activation:
+// alertStaff() already never throws (see notify.js).
+async function wachtOpKlant(env, db, order, svcId) {
+  const r = await db.prepare(
+    "UPDATE service_orders SET status = 'in_uitvoering' WHERE id = ? AND status NOT IN ('in_uitvoering', 'actief')",
+  ).bind(order.id).run();
+  if (r.meta?.changes === 1) {
+    await alertStaff(env,
+      `Nieuwe self-serve klant — handmatige afronding nodig (order ${order.id})`,
+      `Product: ${order.product_key}${order.tier ? ` (${order.tier})` : ''}\nKlant: ${order.customer_id}\nOrder: ${order.id}\n\n`
+      + 'Dit is geen storing — de agent is automatisch ingericht. De diepe intake (openingstijden, '
+      + 'doorschakelnummer, FAQ) bestaat echter nog niet als aparte stap, dus deze self-serve order '
+      + 'wacht op een mens: rond de inrichting handmatig af en zet de order op "actief" in /admin/aanvragen.\n\n'
+      + '(Tijdelijk seintje — verdwijnt zodra de onboardingfase live is.)');
+  }
   return { status: 'wacht_op_klant', serviceId: svcId, provisioned: true };
 }
 
@@ -124,7 +153,7 @@ export async function activateOrder(env, order, { manual = false } = {}) {
     // out a funnel order that would otherwise sit on wacht_op_klant forever.
     // Automatic callers (webhook, cron) never pass manual:true and keep
     // respecting the wait state.
-    if (isFunnelOrder(order) && !manual) return wachtOpKlant(db, order, svcId);
+    if (isFunnelOrder(order) && !manual) return wachtOpKlant(env, db, order, svcId);
     await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
     return { status: 'actief', serviceId: svcId, provisioned: true };
   }
@@ -165,7 +194,7 @@ export async function activateOrder(env, order, { manual = false } = {}) {
 
     // Same manual-escape-hatch reasoning as above: only a human's explicit
     // click may skip straight to 'actief' for a funnel order.
-    if (isFunnelOrder(order) && !manual) return wachtOpKlant(db, order, svcId);
+    if (isFunnelOrder(order) && !manual) return wachtOpKlant(env, db, order, svcId);
     await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
     return { status: 'actief', serviceId: svcId, provisioned: true };
   }
