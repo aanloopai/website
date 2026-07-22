@@ -76,15 +76,17 @@ async function roepLlmAan(env, prompt, llm) {
 // Grens tussen "aantal" en "bedrag": een getal telt alleen als geldbedrag/percentage
 // wanneer het direct (met alleen witruimte ertussen) een valuta- of percentage-marker
 // draagt: een €-teken, het woord "euro"/"eur", een frequentie-suffix als
-// "per maand"/"p/m"/"pm" (of het voorzetsel "voor maar" ervoor), of "%"/"procent".
-// Een getal zonder zo'n marker, of met andere woorden ertussen — bv.
-// "22 gemiste gesprekken per maand", waar "per maand" niet direct op het getal volgt —
-// is een gewoon aantal en blijft toegestaan. Dit voorkomt dat het model zelf een
-// prijs of korting kan verzinnen die nergens tegen de catalogus/roi.js gecontroleerd is.
+// "per maand"/"p/m"/"pm" (of het voorzetsel "voor maar" ervoor), de Nederlandse
+// ",-"-notatie (bv. "497,-"), of "%"/"procent". Een getal zonder zo'n marker, of met
+// andere woorden ertussen — bv. "22 gemiste gesprekken per maand", waar "per maand"
+// niet direct op het getal volgt — is een gewoon aantal en blijft toegestaan. Dit
+// voorkomt dat het model zelf een prijs of korting kan verzinnen die nergens tegen de
+// catalogus/roi.js gecontroleerd is.
 const BEDRAG_PATRONEN = [
   { label: 'euroteken', re: /€\s*\d[\d.,]*|\d[\d.,]*\s*€/i },
   { label: 'euro-woord', re: /\d[\d.,]*\s*(euro|eur)\b|\b(euro|eur)\s*\d[\d.,]*/i },
   { label: 'per-maand-bedrag', re: /\d[\d.,]*\s*(per\s*maand|p\/m|pm)\b|voor\s+maar\s+\d[\d.,]*/i },
+  { label: 'nl-prijsnotatie', re: /\d[\d.,]*,-/ },
   { label: 'percentage', re: /\d[\d.,]*\s*%|\d[\d.,]*\s*procent\b/i },
 ];
 

@@ -75,6 +75,22 @@ describe('buildVoorstelData', () => {
     expect(data.copy.kop).toBe(getFunnelEntry('voice-agent').fallbackKop);
   });
 
+  it.each([
+    'een investering van 497,- per maand',
+    'slechts 497,- per maand',
+    'vanaf 497,- per maand',
+    '497,-/maand',
+  ])('weigert LLM-copy met NL-prijsnotatie ",-" zonder euroteken: %s', async (zin) => {
+    const env = { GEMINI_API_KEY: 'x' };
+    const llm = async () => JSON.stringify({
+      kop: 'Geldige kop hier',
+      tekst: `Dit pakket kost ${zin} in totaal excl. btw.`,
+    });
+    const data = await buildVoorstelData(env, { serviceId: 'voice-agent', customer: CUSTOMER, answers: ANSWERS }, { llm });
+    expect(data.copy.bronnen).toBe('fallback');
+    expect(data.copy.kop).toBe(getFunnelEntry('voice-agent').fallbackKop);
+  });
+
   it('accepteert LLM-copy met een toegestaan aantal (geen bedrag)', async () => {
     const env = { GEMINI_API_KEY: 'x' };
     const llm = async () => JSON.stringify({
