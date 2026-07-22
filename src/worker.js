@@ -38,6 +38,7 @@ import { countVandaagProspects, prospectsNeedingFollowupDraft, generateFollowupD
 import { isWerkdag } from './lib/crm.js';
 import { aiSignalScan } from './lib/ai-crm.js';
 import { maakVoorstel, leesVoorstelViaToken } from './lib/voorstel-store.js';
+import { handleVoorstelClaim } from './lib/voorstel-claim.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -1155,6 +1156,12 @@ export default {
       }
       if (!voorstel) return jsonResponse({ ok: false, message: 'Dit voorstel is niet (meer) beschikbaar.' }, 404);
       return jsonResponse({ ok: true, voorstel });
+    }
+
+    // "Ja, ik start" — verstuurt uitsluitend een verificatiemail. Zie
+    // src/lib/voorstel-claim.js voor het beveiligingsprincipe.
+    if (url.pathname === '/api/voorstel/claim') {
+      return handleVoorstelClaim(request, env);
     }
 
     // Double opt-in landing page for the marketing-list confirmation email

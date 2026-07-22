@@ -57,7 +57,7 @@ function mailLayout(inner) {
 function mailButton(href, label) {
   return `<p style="margin:28px 0"><a href="${escapeHtml(href)}" style="display:inline-block;background:#4f46e5;color:#fff;padding:13px 22px;border-radius:10px;text-decoration:none;font-weight:600">${escapeHtml(label)}</a></p>`;
 }
-async function sendMail(env, to, toNaam, subject, innerHtml) {
+export async function sendMail(env, to, toNaam, subject, innerHtml) {
   // Throws instead of no-opping: a missing key means the magic link never
   // arrives, and the caller must be able to tell the user that rather than
   // claim "check your inbox" for a mail that was never sent.
