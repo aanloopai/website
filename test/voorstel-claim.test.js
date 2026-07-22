@@ -29,7 +29,10 @@ const GELDIG_TOKEN = 'a'.repeat(64);
 // Minimale D1-dubbel over drie tabellen: voorstellen, intake_requests,
 // voorstel_claims. Elke .prepare(sql) matcht op een sql-substring, net als
 // de stub in test/checkout-start-bind.test.js.
-function makeDb({ voorstel, intake }) {
+//
+// `failOn`: lijst van sql-prefixen waarop .prepare() moet gooien — simuleert
+// een D1-storing op precies dat statement, zonder de andere te raken.
+function makeDb({ voorstel, intake, failOn = [] }) {
   const claimInserts = [];
   const statusUpdates = [];
   let voorstelRow = voorstel ? { ...voorstel } : null;
@@ -39,11 +42,14 @@ function makeDb({ voorstel, intake }) {
     statusUpdates,
     get voorstelRow() { return voorstelRow; },
     prepare(sql) {
+      if (failOn.some((prefix) => sql.startsWith(prefix))) {
+        throw new Error(`makeDb: gesimuleerde D1-storing op: ${sql}`);
+      }
       return {
         bind(...args) {
           return {
             async first() {
-              if (sql.startsWith('SELECT id, intake_id, expires_at FROM voorstellen')) {
+              if (sql.startsWith('SELECT id, intake_id, status, expires_at FROM voorstellen')) {
                 return voorstelRow && voorstelRow.token === args[0] ? voorstelRow : null;
               }
               if (sql.startsWith('SELECT customer_json FROM intake_requests')) {
@@ -70,10 +76,10 @@ function makeDb({ voorstel, intake }) {
   };
 }
 
-function makeRequest(bodyObj, method = 'POST') {
+function makeRequest(bodyObj, method = 'POST', ip = '203.0.113.9') {
   return {
     method,
-    headers: { get: () => '203.0.113.9' },
+    headers: { get: () => ip },
     json: async () => bodyObj,
   };
 }
@@ -85,7 +91,17 @@ function brevoFailFetch() {
   return async () => ({ ok: false, status: 500, text: async () => 'boom' });
 }
 
-const VOORSTEL = { id: 'vst_1', token: GELDIG_TOKEN, intake_id: 'intake_1', expires_at: Date.now() + 100000 };
+function makeKv() {
+  const kv = new Map();
+  return {
+    async get(key) { return kv.has(key) ? kv.get(key) : null; },
+    async put(key, value) { kv.set(key, value); },
+  };
+}
+
+const VOORSTEL = {
+  id: 'vst_1', token: GELDIG_TOKEN, intake_id: 'intake_1', status: 'open', expires_at: Date.now() + 100000,
+};
 const INTAKE = { id: 'intake_1', customer_json: JSON.stringify({ email: 'echte-klant@example.nl', name: 'Jan Jansen' }) };
 
 describe('handleVoorstelClaim', () => {
@@ -197,14 +213,9 @@ describe('handleVoorstelClaim', () => {
     expect(db.statusUpdates).toHaveLength(0);
   });
 
-  it('begrenst herhaalde aanvragen per IP (spam-vector)', async () => {
+  it('begrenst herhaalde aanvragen (IP- en e-mailas samen, spam-vector)', async () => {
     const db = makeDb({ voorstel: VOORSTEL, intake: INTAKE });
-    const kv = new Map();
-    const fakeKv = {
-      async get(key) { return kv.has(key) ? kv.get(key) : null; },
-      async put(key, value) { kv.set(key, value); },
-    };
-    const env = { PORTAL_DB: db, GOOGLE_TOKENS: fakeKv, BREVO_API_KEY: 'x' };
+    const env = { PORTAL_DB: db, GOOGLE_TOKENS: makeKv(), BREVO_API_KEY: 'x' };
     globalThis.fetch = brevoOkFetch();
 
     let laatsteStatus = 0;
@@ -214,7 +225,106 @@ describe('handleVoorstelClaim', () => {
       laatsteStatus = res.status;
     }
     expect(laatsteStatus).toBe(429);
-    // 5 toegestaan, de 6e geweigerd — dus hooguit 5 mails/claims.
-    expect(db.claimInserts.length).toBeLessThanOrEqual(5);
+    // Zowel de IP-as (5/600s) als de striktere e-mailas (3/600s, zie hieronder)
+    // begrenzen dit scenario (zelfde IP + zelfde e-mailadres elke keer) — de
+    // e-mailas is hier het strengste van de twee, dus hooguit 3 claims.
+    expect(db.claimInserts.length).toBeLessThanOrEqual(3);
+  });
+
+  // ── Review-fix 1: D1-fouten op de resterende twee (voorheen ongevangen) queries ──
+
+  it('D1-storing bij de intake-lookup: nette JSON 503, geen ongevangen exceptie', async () => {
+    const db = makeDb({ voorstel: VOORSTEL, intake: INTAKE, failOn: ['SELECT customer_json FROM intake_requests'] });
+    const env = { PORTAL_DB: db, BREVO_API_KEY: 'x' };
+    globalThis.fetch = brevoOkFetch();
+
+    const res = await handleVoorstelClaim(makeRequest({ t: GELDIG_TOKEN }), env);
+    expect(res.status).toBe(503);
+    const body = await res.json();
+    expect(body.ok).toBe(false);
+    expect(body.message).not.toMatch(/error|d1|sql|sqlite/i);
+    expect(db.claimInserts).toHaveLength(0);
+  });
+
+  it('D1-storing bij de afsluitende status-update: mail is al verstuurd, dus de bezoeker krijgt gewoon een succesantwoord', async () => {
+    const db = makeDb({ voorstel: VOORSTEL, intake: INTAKE, failOn: ["UPDATE voorstellen SET status = 'geclaimd'"] });
+    const env = { PORTAL_DB: db, BREVO_API_KEY: 'x' };
+    let mailVerzonden = false;
+    globalThis.fetch = async () => { mailVerzonden = true; return { ok: true, status: 200, text: async () => '{}' }; };
+
+    const res = await handleVoorstelClaim(makeRequest({ t: GELDIG_TOKEN }), env);
+    // De mail is echt verstuurd — dat mag de status-storing niet ongedaan maken
+    // of de bezoeker als mislukking laten zien.
+    expect(mailVerzonden).toBe(true);
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body.ok).toBe(true);
+    expect(db.claimInserts).toHaveLength(1);
+    // De update zelf is mislukt (gesimuleerd), dus statusUpdates blijft leeg —
+    // dat is server-side boekhouding, niet iets wat de bezoeker ziet of raakt.
+    expect(db.statusUpdates).toHaveLength(0);
+  });
+
+  // ── Review-fix 2: rate-limit ook per e-mailadres, ook als het IP wisselt ──
+
+  it('begrenst per e-mailadres (gehasht), ook wanneer het IP elke keer wisselt', async () => {
+    const db = makeDb({ voorstel: VOORSTEL, intake: INTAKE });
+    const kv = makeKv();
+    const env = { PORTAL_DB: db, GOOGLE_TOKENS: kv, BREVO_API_KEY: 'x' };
+    globalThis.fetch = brevoOkFetch();
+
+    const statussen = [];
+    for (let i = 0; i < 4; i += 1) {
+      // Elk verzoek komt van een ander IP — de IP-as (limiet 5) zou dit nooit
+      // blokkeren. Hetzelfde voorstel/dezelfde intake → hetzelfde e-mailadres.
+      // eslint-disable-next-line no-await-in-loop
+      const res = await handleVoorstelClaim(makeRequest({ t: GELDIG_TOKEN }, 'POST', `203.0.113.${i + 1}`), env);
+      statussen.push(res.status);
+    }
+    expect(statussen).toEqual([200, 200, 200, 429]);
+    expect(db.claimInserts).toHaveLength(3);
+  });
+
+  it('slaat het e-mailadres nooit in platte vorm op in de rate-limit-sleutel', async () => {
+    const db = makeDb({ voorstel: VOORSTEL, intake: INTAKE });
+    const sleutels = [];
+    const kv = {
+      async get(key) { sleutels.push(key); return null; },
+      async put(key) { sleutels.push(key); },
+    };
+    const env = { PORTAL_DB: db, GOOGLE_TOKENS: kv, BREVO_API_KEY: 'x' };
+    globalThis.fetch = brevoOkFetch();
+
+    await handleVoorstelClaim(makeRequest({ t: GELDIG_TOKEN }), env);
+    expect(sleutels.some((k) => k.includes('echte-klant@example.nl'))).toBe(false);
+  });
+
+  // ── Review-fix 3: al omgezet / al geclaimd ──
+
+  it('een al omgezet voorstel: 409 met verwijzing naar het portaal, geen nieuwe mail, geen nieuwe claim', async () => {
+    const omgezet = { ...VOORSTEL, status: 'omgezet' };
+    const db = makeDb({ voorstel: omgezet, intake: INTAKE });
+    const env = { PORTAL_DB: db, BREVO_API_KEY: 'x' };
+    let fetchAangeroepen = false;
+    globalThis.fetch = async () => { fetchAangeroepen = true; return { ok: true, status: 200, text: async () => '{}' }; };
+
+    const res = await handleVoorstelClaim(makeRequest({ t: GELDIG_TOKEN }), env);
+    expect(res.status).toBe(409);
+    const body = await res.json();
+    expect(body.ok).toBe(false);
+    expect(body.message.toLowerCase()).toContain('portaal');
+    expect(fetchAangeroepen).toBe(false);
+    expect(db.claimInserts).toHaveLength(0);
+  });
+
+  it('een al geclaimd voorstel (mail al eerder verstuurd, nog niet geverifieerd): opnieuw versturen blijft toegestaan', async () => {
+    const geclaimd = { ...VOORSTEL, status: 'geclaimd' };
+    const db = makeDb({ voorstel: geclaimd, intake: INTAKE });
+    const env = { PORTAL_DB: db, BREVO_API_KEY: 'x' };
+    globalThis.fetch = brevoOkFetch();
+
+    const res = await handleVoorstelClaim(makeRequest({ t: GELDIG_TOKEN }), env);
+    expect(res.status).toBe(200);
+    expect(db.claimInserts).toHaveLength(1);
   });
 });

@@ -53,7 +53,7 @@ export async function handleVoorstelClaim(request, env) {
   let voorstel;
   try {
     voorstel = await env.PORTAL_DB
-      .prepare('SELECT id, intake_id, expires_at FROM voorstellen WHERE token = ?')
+      .prepare('SELECT id, intake_id, status, expires_at FROM voorstellen WHERE token = ?')
       .bind(t).first();
   } catch (err) {
     console.error('[voorstel-claim] D1 query mislukt:', err?.message || err);
@@ -63,15 +63,47 @@ export async function handleVoorstelClaim(request, env) {
     return jsonResponse({ ok: false, message: 'Dit voorstel is niet (meer) beschikbaar.' }, 404);
   }
 
+  // Al omgezet in een betaalde bestelling — opnieuw de claim-flow starten
+  // heeft geen zin (de order bestaat al; de unieke index op
+  // service_orders.voorstel_id staat een tweede order voor dit voorstel
+  // sowieso niet toe) en zou alleen maar een verwarrende extra mail sturen.
+  // Stuur de bezoeker naar het portaal in plaats van een nieuwe verificatiemail.
+  // Een voorstel dat alleen 'geclaimd' is (mail al eerder verstuurd, nog niet
+  // geverifieerd) mag WEL opnieuw — mensen raken mails kwijt — begrensd door
+  // de e-mail-rate-limit hieronder, niet door deze guard.
+  if (voorstel.status === 'omgezet') {
+    return jsonResponse({ ok: false, message: 'Dit voorstel is al omgezet in een bestelling. Log in op het klantportaal om verder te gaan.' }, 409);
+  }
+
   // Het e-mailadres komt UITSLUITEND uit de intake-rij die bij dit voorstel
   // hoort — de request body wordt hier bewust nooit voor geraadpleegd.
-  const intake = await env.PORTAL_DB
-    .prepare('SELECT customer_json FROM intake_requests WHERE id = ?')
-    .bind(voorstel.intake_id).first();
+  let intake;
+  try {
+    intake = await env.PORTAL_DB
+      .prepare('SELECT customer_json FROM intake_requests WHERE id = ?')
+      .bind(voorstel.intake_id).first();
+  } catch (err) {
+    console.error('[voorstel-claim] intake-opzoek mislukt:', err?.message || err);
+    return jsonResponse({ ok: false, message: 'Er ging iets mis. Probeer het over enkele minuten opnieuw.' }, 503);
+  }
   let klant = {};
   try { klant = JSON.parse(intake?.customer_json || '{}'); } catch { klant = {}; }
   if (!klant.email) {
     return jsonResponse({ ok: false, message: 'Er ontbreken gegevens bij dit voorstel. Neem contact op via hello@aanloopai.nl.' }, 409);
+  }
+  const email = String(klant.email).toLowerCase();
+
+  // Tweede as, naast de IP-limiet hierboven — zelfde patroon als
+  // handleAuthRequest in portal-routes.js (ip + gehasht e-mailadres). Een
+  // geldig voorstel-token is zelf een publieke, 14 dagen geldige capability
+  // (staat in de voorstel-URL), dus IP-rotatie omzeilt de eerste as
+  // moeiteloos. Zonder deze as kan wie het token heeft dagenlang het
+  // slachtoffer-adres blijven bestoken vanaf wisselende IP's. Het adres
+  // wordt gehasht in de KV-sleutel, nooit in platte vorm opgeslagen. Zelfde
+  // limiet als handleAuthRequest's e-mail-as (3/600s).
+  const emailRl = await rateLimit(env.GOOGLE_TOKENS, `rl:claim-email:${await sha256Hex(email)}`, 3, 600);
+  if (!emailRl.allowed) {
+    return jsonResponse({ ok: false, message: 'Te veel verzoeken. Probeer het over enkele minuten opnieuw.' }, 429);
   }
 
   const raw = randomToken();
@@ -79,7 +111,7 @@ export async function handleVoorstelClaim(request, env) {
   try {
     await env.PORTAL_DB.prepare(
       'INSERT INTO voorstel_claims (token_hash, voorstel_id, email, expires_at, used, created_at) VALUES (?, ?, ?, ?, 0, ?)',
-    ).bind(await sha256Hex(raw), voorstel.id, String(klant.email).toLowerCase(), now + CLAIM_TTL_MS, now).run();
+    ).bind(await sha256Hex(raw), voorstel.id, email, now + CLAIM_TTL_MS, now).run();
   } catch (err) {
     console.error('[voorstel-claim] claim opslaan mislukt:', err?.message || err);
     return jsonResponse({ ok: false, message: 'Er ging iets mis. Probeer het over enkele minuten opnieuw.' }, 500);
@@ -88,7 +120,7 @@ export async function handleVoorstelClaim(request, env) {
   try {
     await sendMail(
       env,
-      klant.email,
+      email,
       klant.name,
       'Bevestig uw e-mailadres en rond af',
       bouwClaimMail(`${SITE}/api/voorstel/verify?t=${raw}`, klant.name),
@@ -98,8 +130,18 @@ export async function handleVoorstelClaim(request, env) {
     return jsonResponse({ ok: false, message: 'We konden de bevestigingsmail niet versturen. Probeer het over enkele minuten opnieuw.' }, 502);
   }
 
-  await env.PORTAL_DB.prepare("UPDATE voorstellen SET status = 'geclaimd' WHERE id = ? AND status = 'open'")
-    .bind(voorstel.id).run();
+  // De mail is op dit punt al succesvol de deur uit — dit is nu pure
+  // boekhouding (alleen gebruikt door de 'omgezet'-guard hierboven en om een
+  // dubbele claim-flow op hetzelfde open voorstel te signaleren). Een
+  // D1-storing hier mag de bezoeker niet alsnog een foutmelding tonen voor
+  // een actie die feitelijk is geslaagd: loggen server-side volstaat, de
+  // bezoeker krijgt gewoon de bevestiging.
+  try {
+    await env.PORTAL_DB.prepare("UPDATE voorstellen SET status = 'geclaimd' WHERE id = ? AND status = 'open'")
+      .bind(voorstel.id).run();
+  } catch (err) {
+    console.error('[voorstel-claim] status-update mislukt (mail is al verstuurd):', err?.message || err);
+  }
 
   return jsonResponse({ ok: true, message: 'Controleer uw e-mail — we hebben u een bevestigingslink gestuurd.' });
 }
