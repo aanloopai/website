@@ -37,7 +37,7 @@ import { alertStaff } from './lib/notify.js';
 import { countVandaagProspects, prospectsNeedingFollowupDraft, generateFollowupDraft, outreachImport } from './lib/outreach.js';
 import { isWerkdag } from './lib/crm.js';
 import { aiSignalScan } from './lib/ai-crm.js';
-import { maakVoorstel } from './lib/voorstel-store.js';
+import { maakVoorstel, leesVoorstelViaToken } from './lib/voorstel-store.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -1132,6 +1132,18 @@ export default {
     // Pre-sale intake wizard (aanloopai.nl/start) — see handleIntake above.
     if (url.pathname === '/api/intake') {
       return handleIntake(request, env);
+    }
+
+    // Publieke leesroute voor de voorstelpagina. Het token is de enige
+    // autorisatie; onbekend en verlopen geven exact hetzelfde antwoord, zodat
+    // niet te achterhalen is of een token ooit heeft bestaan.
+    if (url.pathname === '/api/voorstel') {
+      if (request.method !== 'GET') return jsonResponse({ ok: false }, 405);
+      const voorstel = env.PORTAL_DB
+        ? await leesVoorstelViaToken(env, url.searchParams.get('t') || '')
+        : null;
+      if (!voorstel) return jsonResponse({ ok: false, message: 'Dit voorstel is niet (meer) beschikbaar.' }, 404);
+      return jsonResponse({ ok: true, voorstel });
     }
 
     // Double opt-in landing page for the marketing-list confirmation email
