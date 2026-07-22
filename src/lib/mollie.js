@@ -128,9 +128,24 @@ export async function handleCheckoutStart(request, env, user) {
   const body = await request.json().catch(() => null);
   if (!body?.order_id) return errorResponse('Aanvraag-id ontbreekt', 400);
 
-  const order = await env.PORTAL_DB
-    .prepare('SELECT id, customer_id, product_key, tier, status, voorstel_id FROM service_orders WHERE id = ? AND customer_id = ?')
-    .bind(body.order_id, user.customer_id).first();
+  // H-eind-B: voorstel_id (migratie 0015) kan op deze deployment nog
+  // ontbreken — de checkout van GEWONE klanten mag daar nooit van afhangen.
+  // Probeer eerst de volledige query; gooit D1 ("no such column"), val dan
+  // terug op dezelfde query zonder die kolom. Alles verderop (de
+  // funnel-prijsvergelijking) is al voorwaardelijk op `order.voorstel_id`,
+  // dus een ontbrekende kolom betekent hooguit "geen funnel-prijscontrole",
+  // nooit "kan niet betalen".
+  let order;
+  try {
+    order = await env.PORTAL_DB
+      .prepare('SELECT id, customer_id, product_key, tier, status, voorstel_id FROM service_orders WHERE id = ? AND customer_id = ?')
+      .bind(body.order_id, user.customer_id).first();
+  } catch (err) {
+    console.error('[mollie] SELECT met voorstel_id mislukt (migratie 0015 nog niet toegepast?) — checkout degradeert zonder funnel-prijscheck:', err?.message || err);
+    order = await env.PORTAL_DB
+      .prepare('SELECT id, customer_id, product_key, tier, status FROM service_orders WHERE id = ? AND customer_id = ?')
+      .bind(body.order_id, user.customer_id).first();
+  }
   if (!order) return errorResponse('Aanvraag niet gevonden', 404);
   if (order.status !== 'concept') return errorResponse('Deze aanvraag is al ingediend', 409);
 
