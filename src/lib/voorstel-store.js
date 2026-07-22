@@ -46,7 +46,7 @@ function parse(json, fallback) {
 export async function leesVoorstelViaToken(env, token) {
   if (typeof token !== 'string' || !/^[0-9a-f]{64}$/.test(token)) return null;
   const row = await env.PORTAL_DB
-    .prepare('SELECT id, token, service_id, product_key, tier_naam, prijs_cent, setup_cent, roi_json, copy_json, status, expires_at FROM voorstellen WHERE token = ?')
+    .prepare('SELECT service_id, product_key, tier_naam, prijs_cent, setup_cent, roi_json, copy_json, status, expires_at FROM voorstellen WHERE token = ?')
     .bind(token).first();
   if (!row) return null;
   if (Date.now() > row.expires_at) return null;
