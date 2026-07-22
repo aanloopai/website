@@ -5,7 +5,7 @@
 // produceren. Ontbrekende input levert een eerlijk bereik of helemaal niets —
 // nooit een verzonnen puntgetal.
 
-/** Gemiddeld aantal weken per maand (365 / 7 / 12). */
+/** Gemiddeld aantal weken per maand (52 weken / 12 maanden). */
 export const WEKEN_PER_MAAND = 4.33;
 /** Aandeel gemiste gesprekken dat bij directe opvolging klant zou worden. */
 export const CONVERSIE_LAAG = 0.15;
@@ -19,7 +19,8 @@ const KLANTWAARDE_LAAG = 150;
 const KLANTWAARDE_HOOG = 750;
 
 function positiefGetal(raw, max) {
-  const n = Number(String(raw ?? '').replace(',', '.').trim());
+  if (typeof raw !== 'number' && typeof raw !== 'string') return null;
+  const n = Number(String(raw).replace(',', '.').trim());
   if (!Number.isFinite(n) || n <= 0) return null;
   return Math.min(n, max);
 }
@@ -35,7 +36,9 @@ export function berekenRoi(answers) {
     conversieHoog: CONVERSIE_HOOG,
   };
 
-  if (!perWeek) {
+  const gemistPerMaand = perWeek ? Math.round(perWeek * WEKEN_PER_MAAND) : 0;
+
+  if (!perWeek || gemistPerMaand === 0) {
     return {
       modus: 'geen',
       gemistPerMaand: null,
@@ -45,8 +48,6 @@ export function berekenRoi(answers) {
       aannames,
     };
   }
-
-  const gemistPerMaand = Math.round(perWeek * WEKEN_PER_MAAND);
 
   if (waarde) {
     return {
