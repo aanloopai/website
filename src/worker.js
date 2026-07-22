@@ -1139,9 +1139,20 @@ export default {
     // niet te achterhalen is of een token ooit heeft bestaan.
     if (url.pathname === '/api/voorstel') {
       if (request.method !== 'GET') return jsonResponse({ ok: false }, 405);
-      const voorstel = env.PORTAL_DB
-        ? await leesVoorstelViaToken(env, url.searchParams.get('t') || '')
-        : null;
+      const voorstelIp = request.headers.get('CF-Connecting-IP') || 'unknown';
+      const voorstelRl = await rateLimit(env.GOOGLE_TOKENS, `rl:voorstel:${voorstelIp}`, 30, 600);
+      if (!voorstelRl.allowed) {
+        return jsonResponse({ ok: false, message: 'Te veel verzoeken. Probeer het later opnieuw.' }, 429);
+      }
+      let voorstel;
+      try {
+        voorstel = env.PORTAL_DB
+          ? await leesVoorstelViaToken(env, url.searchParams.get('t') || '')
+          : null;
+      } catch (err) {
+        console.error('[/api/voorstel] D1 query mislukt:', err.message || err);
+        return jsonResponse({ ok: false, message: 'Er ging iets mis. Probeer het over enkele minuten opnieuw.' }, 503);
+      }
       if (!voorstel) return jsonResponse({ ok: false, message: 'Dit voorstel is niet (meer) beschikbaar.' }, 404);
       return jsonResponse({ ok: true, voorstel });
     }
