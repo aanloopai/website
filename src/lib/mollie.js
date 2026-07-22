@@ -186,9 +186,19 @@ export async function handleCheckoutStart(request, env, user) {
   // subscriptions-rij bestond toen mintKlantEnOrder zijn eigen, gelijksoortige
   // check in voorstel-verify.js deed). Zonder deze klant+product-brede check
   // zou elke order onafhankelijk zijn eigen abonnement mogen aanmaken.
+  //
+  // H-eind-C: MOET ook op tier filteren, niet alleen op product_key —
+  // Starter en Groei van emma-telefoon delen dezelfde product_key. Zonder
+  // tier zou een klant op Starter nooit kunnen upgraden naar Groei via het
+  // portaal (elke Groei-order zou 409'en op het lopende Starter-abonnement).
+  // Het gat dat deze guard moest dichten (funnelorder-dubbelkoop: twee
+  // voorstellen, twee orders, allebei betaald) zit uitsluitend bij DEZELFDE
+  // tier — de self-serve funnel verkoopt vandaag alleen emma-telefoon/Starter
+  // (src/data/funnel-map.ts) — dus die blijft met tier-scoping net zo goed
+  // geblokkeerd.
   const dubbelAbonnement = await env.PORTAL_DB
-    .prepare("SELECT id FROM subscriptions WHERE customer_id = ? AND product_key = ? AND status IN ('pending_payment', 'active') LIMIT 1")
-    .bind(order.customer_id, order.product_key).first();
+    .prepare("SELECT id FROM subscriptions WHERE customer_id = ? AND product_key = ? AND tier = ? AND status IN ('pending_payment', 'active') LIMIT 1")
+    .bind(order.customer_id, order.product_key, order.tier).first();
   if (dubbelAbonnement) {
     return errorResponse('Er loopt al een abonnement (of een openstaande betaling) voor dit product op uw account.', 409);
   }

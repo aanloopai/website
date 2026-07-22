@@ -70,9 +70,12 @@ export async function mintKlantEnOrder(env, { voorstel, email, klant }) {
   // Dubbel-abonnement-guard: de bestaande controle in mollie.js werkt per order,
   // niet per klant+product. Zonder deze check kan dezelfde klant via twee
   // intakes twee lopende abonnementen voor hetzelfde product krijgen.
+  // Ook hier (net als de mirror-guard in mollie.js) op tier filteren: anders
+  // zou een klant die al een lopend abonnement heeft nooit via een nieuw
+  // voorstel een ANDERE tier van hetzelfde product kunnen kopen.
   const actief = await db.prepare(
-    "SELECT id FROM subscriptions WHERE customer_id = ? AND product_key = ? AND status IN ('pending_payment','active') LIMIT 1",
-  ).bind(user.customer_id, voorstel.product_key).first();
+    "SELECT id FROM subscriptions WHERE customer_id = ? AND product_key = ? AND tier = ? AND status IN ('pending_payment','active') LIMIT 1",
+  ).bind(user.customer_id, voorstel.product_key, voorstel.tier_naam).first();
   if (actief) throw new VerifyFout('abonnement', 'Er is al een actief abonnement voor dit product');
 
   // De platte wizard-antwoorden gaan hier NIET rechtstreeks als intake_json

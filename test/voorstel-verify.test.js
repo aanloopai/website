@@ -18,7 +18,7 @@ function fakeDb(opts = {}) {
     if (sql.includes('FROM users WHERE email')) return db.users.find((u) => u.email === args[0]) || null;
     if (sql.includes('FROM service_orders WHERE voorstel_id')) return db.orders.find((o) => o.voorstel_id === args[0]) || null;
     if (sql.includes('FROM subscriptions')) {
-      return db.subscriptions.find((s) => s.customer_id === args[0] && s.product_key === args[1]) || null;
+      return db.subscriptions.find((s) => s.customer_id === args[0] && s.product_key === args[1] && s.tier === args[2]) || null;
     }
     return null;
   };
@@ -107,16 +107,34 @@ describe('mintKlantEnOrder', () => {
     expect(a.orderId).toBe(b.orderId);
   });
 
-  it('weigert wanneer er al een actief abonnement voor hetzelfde product is', async () => {
+  it('weigert wanneer er al een actief abonnement voor hetzelfde product+tier is', async () => {
     const env = { PORTAL_DB: fakeDb() };
     env.PORTAL_DB.data.customers.push({ id: 'cust_1', bedrijf: 'Jansen' });
     env.PORTAL_DB.data.users.push({
       id: 'usr_1', customer_id: 'cust_1', email: 'jan@example.nl', naam: 'Jan', role: 'eigenaar',
     });
-    env.PORTAL_DB.data.subscriptions.push({ customer_id: 'cust_1', product_key: 'emma-telefoon', status: 'active' });
+    env.PORTAL_DB.data.subscriptions.push({
+      customer_id: 'cust_1', product_key: 'emma-telefoon', tier: 'Starter', status: 'active',
+    });
     await expect(
       mintKlantEnOrder(env, { voorstel: VOORSTEL, email: 'jan@example.nl', klant: {} }),
     ).rejects.toThrow(/al een actief abonnement/i);
+  });
+
+  // ── Punt C (eindreview #2): de guard mag alleen DEZELFDE tier blokkeren ──
+  it('staat een nieuw voorstel voor een ANDERE tier van hetzelfde product toe (upgrade blijft mogelijk)', async () => {
+    const env = { PORTAL_DB: fakeDb() };
+    env.PORTAL_DB.data.customers.push({ id: 'cust_1', bedrijf: 'Jansen' });
+    env.PORTAL_DB.data.users.push({
+      id: 'usr_1', customer_id: 'cust_1', email: 'jan@example.nl', naam: 'Jan', role: 'eigenaar',
+    });
+    // Lopend abonnement is Groei — VOORSTEL hierboven is Starter — andere tier.
+    env.PORTAL_DB.data.subscriptions.push({
+      customer_id: 'cust_1', product_key: 'emma-telefoon', tier: 'Groei', status: 'active',
+    });
+    const res = await mintKlantEnOrder(env, { voorstel: VOORSTEL, email: 'jan@example.nl', klant: {} });
+    expect(res.orderId).toBeTruthy();
+    expect(env.PORTAL_DB.data.orders).toHaveLength(1);
   });
 
   // ── Review-fix 1: expliciete staff-guard ──────────────────────────────────
@@ -209,7 +227,7 @@ function makeVerifyDb(opts = {}) {
           return u ? { ...u } : null;
         }
         if (sql.startsWith('SELECT id FROM subscriptions')) {
-          const s = state.subscriptions.find((row) => row.customer_id === args[0] && row.product_key === args[1]);
+          const s = state.subscriptions.find((row) => row.customer_id === args[0] && row.product_key === args[1] && row.tier === args[2]);
           return s ? { id: s.id } : null;
         }
         if (sql.startsWith('SELECT id FROM service_orders WHERE voorstel_id')) {
@@ -445,13 +463,13 @@ describe('handleVoorstelVerify', () => {
     expect(body.toLowerCase()).not.toContain('u heeft dit product al lopen');
   });
 
-  it('bestaande klant met actief abonnement: geen tweede order, wijst naar portal/login', async () => {
+  it('bestaande klant met actief abonnement voor DEZELFDE tier: geen tweede order, wijst naar portal/login', async () => {
     const env = await buildEnv({
       users: [{
         id: 'usr_1', customer_id: 'cust_1', email: KLANT_EMAIL, naam: 'Jan', role: 'eigenaar',
       }],
       subscriptions: [{
-        id: 'sub_1', customer_id: 'cust_1', product_key: 'emma-telefoon', status: 'active',
+        id: 'sub_1', customer_id: 'cust_1', product_key: 'emma-telefoon', tier: 'Starter', status: 'active',
       }],
     });
     const res = await handleVoorstelVerify(postRequest({ t: GELDIG_TOKEN }), env);
@@ -460,6 +478,21 @@ describe('handleVoorstelVerify', () => {
     expect(env.PORTAL_DB.state.orders).toHaveLength(0);
     const body = await res.text();
     expect(body).toContain('/portal/login');
+  });
+
+  // ── Punt C (eindreview #2): een ANDERE tier mag gewoon een nieuwe order krijgen ──
+  it('bestaande klant met actief abonnement voor een ANDERE tier: het voorstel wordt gewoon omgezet in een order', async () => {
+    const env = await buildEnv({
+      users: [{
+        id: 'usr_1', customer_id: 'cust_1', email: KLANT_EMAIL, naam: 'Jan', role: 'eigenaar',
+      }],
+      subscriptions: [{
+        id: 'sub_1', customer_id: 'cust_1', product_key: 'emma-telefoon', tier: 'Groei', status: 'active',
+      }],
+    });
+    const res = await handleVoorstelVerify(postRequest({ t: GELDIG_TOKEN }), env);
+    expect(res.status).toBe(302);
+    expect(env.PORTAL_DB.state.orders).toHaveLength(1);
   });
 
   // ── Review-fix 3: overige foutpagina's wijzen naar /start/, niet /portal/login ──
