@@ -299,10 +299,31 @@ export async function handleCheckoutStart(request, env, user) {
       // the UNIQUE(order_id) index. bedrag_cent is the freshly-computed
       // maandInclCent from the CURRENT catalog price, not carried over from
       // the failed attempt.
+      //
+      // Race guard: nothing prevents two requests from both reading this row
+      // as 'canceled' above (two tabs, or a portal click racing an autostart
+      // redirect) — the SELECT above and this UPDATE are not atomic together.
+      // Without a condition on the expected status, both would flip the row
+      // to pending_payment and each create its own Mollie payment: two open
+      // payments on one subscription. Paying one then leaves the other to
+      // knock it back to past_due once it settles — a "betaling mislukt"
+      // mail right after the customer paid, and the monthly cron silently
+      // stopping (it only selects status = 'active'). Making the UPDATE
+      // conditional on status = 'canceled' and checking changes === 1 turns
+      // this into the same compare-and-swap already used for the fresh-order
+      // path (the UNIQUE(order_id) index), for handleAuthVerify's magic-link
+      // claim (portal-routes.js), and for the payment-status transitions
+      // below in this file — only the request that actually wins the flip
+      // proceeds; the loser gets the same "checkout already running" message
+      // the rest of this function already uses, so a double-click reads as
+      // "a payment is already waiting", not as broken.
       subId = reuseSubId;
-      await env.PORTAL_DB.prepare(
-        "UPDATE subscriptions SET bedrag_cent = ?, betaling = ?, status = 'pending_payment', mollie_customer_id = ? WHERE id = ?",
+      const claim = await env.PORTAL_DB.prepare(
+        "UPDATE subscriptions SET bedrag_cent = ?, betaling = ?, status = 'pending_payment', mollie_customer_id = ? WHERE id = ? AND status = 'canceled'",
       ).bind(maandInclCent, tier.betaling, mollieCustomerId, subId).run();
+      if (claim.meta?.changes !== 1) {
+        return errorResponse('Er is al een checkout gestart voor deze aanvraag. Probeer het opnieuw of neem contact op met support.', 409);
+      }
     } else {
       subId = randomId('sub');
       await env.PORTAL_DB.prepare(
