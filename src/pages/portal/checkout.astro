@@ -65,6 +65,13 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
       // ergens onderweg of al verwerkt), mag een trage/mislukte checkout-start
       // geen foutmelding meer over dat resultaat heen tekenen.
       var resolved = false;
+      // Zolang een checkout-start-poging loopt (starting) mag de poll niet
+      // opgeven en "u kunt deze pagina sluiten" tonen — dat zou een betaling
+      // beloven die er nog niet is. Faalt de poging, dan is #co-error (met
+      // retry-knop) de juiste eindstatus, niet co-wait: er bestaat dan geen
+      // betaling om op te wachten, dus de poll geeft die status niet meer af.
+      var starting = false;
+      var autostartFailed = false;
 
       var panels = ['co-pending', 'co-starting', 'co-ok', 'co-wait', 'co-error'];
       function showPanel(id) {
@@ -83,6 +90,16 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
               showPanel('co-ok');
               return;
             }
+            if (starting) {
+              // Checkout-start onderweg — nog geen oordeel, gewoon blijven kijken.
+              setTimeout(check, 3000);
+              return;
+            }
+            if (autostartFailed) {
+              // Er bestaat geen betaling (de poging is al mislukt, klant ziet
+              // #co-error met een retry-knop) — niets meer te pollen.
+              return;
+            }
             tries++;
             if (tries >= 5) {
               resolved = true;
@@ -96,12 +113,12 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
       check();
 
       // ── Checkout automatisch starten (autostart=1) ────────────────────
-      var starting = false;
       var FETCH_TIMEOUT_MS = 30000; // zelfde timeoutwaarde als elders (start.astro, start/voorstel)
 
       function startCheckout() {
         if (starting || resolved) return; // dubbele start voorkomen + race met een al-opgeloste poll
         starting = true;
+        autostartFailed = false; // nieuwe poging — de vorige mislukking is niet meer het laatste woord
         showPanel('co-starting');
         document.getElementById('co-retry').disabled = true;
 
@@ -122,14 +139,18 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
           })
           .then(function (res) {
             starting = false;
+            // Poll won de race (order is intussen al bevestigd elders) — een
+            // late uitkomst van deze aanroep, geslaagd of niet, mag het
+            // successcherm niet meer overschrijven of alsnog doorsturen.
+            if (resolved) return;
             if (res.ok && res.j && res.j.checkoutUrl) {
               location.href = res.j.checkoutUrl;
               return;
             }
-            if (resolved) return; // poll won de race — geen foutmelding meer nodig
             var msg = (res.j && res.j.error) || 'We konden de betaalpagina niet openen.';
             document.getElementById('co-error-msg').textContent = msg;
             document.getElementById('co-retry').disabled = false;
+            autostartFailed = true;
             showPanel('co-error');
           })
           .catch(function (err) {
@@ -141,6 +162,7 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
               ? 'Het duurt te lang om de betaalpagina te openen. Probeer het opnieuw.'
               : 'Netwerkfout — probeer het opnieuw of neem contact op met support.';
             document.getElementById('co-retry').disabled = false;
+            autostartFailed = true;
             showPanel('co-error');
           });
       }
