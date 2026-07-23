@@ -418,7 +418,7 @@ export async function handlePortalApi(request, env) {
     // a bug, it's what SameSite=Strict does on cross-site top-level
     // navigation. The verified state HMAC inside handleAgendaCallback is the
     // sole authorization for this route; see its own comment for detail.
-    if (path === '/api/portal/onboarding/agenda/callback') return await handleAgendaCallback(env, url);
+    if (path === '/api/portal/onboarding/agenda/callback') return await handleAgendaCallback(env, url, request);
 
     const user = await getSessionUser(request, env);
     // Staff accounts must use /api/admin; reject them here to avoid dual-role privilege confusion.

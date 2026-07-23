@@ -54,12 +54,15 @@ function makeKvStub(initial = {}) {
   };
 }
 
-async function makeRequest(path, userId) {
+async function makeRequest(path, userId, bindCookieValue) {
   const headers = {};
+  const cookieParts = [];
   if (userId) {
     const token = await createSession(userId, SECRET);
-    headers.Cookie = `${SESSION_COOKIE}=${token}`;
+    cookieParts.push(`${SESSION_COOKIE}=${token}`);
   }
+  if (bindCookieValue) cookieParts.push(`agenda_oauth_bind=${bindCookieValue}`);
+  if (cookieParts.length) headers.Cookie = cookieParts.join('; ');
   return new Request(`https://aanloopai.nl${path}`, { method: 'GET', headers });
 }
 
@@ -80,15 +83,17 @@ function mockTokenExchangeFetch({ access_token = 'access-xyz', refresh_token = '
   };
 }
 
+const FIFTEEN_MIN_MS = 15 * 60 * 1000;
+
 describe('buildAgendaState / verifyAgendaState', () => {
-  it('rond-trip: geldige state → { customerId, orderId }', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1');
+  it('rond-trip: geldige state → { customerId, orderId, nonce }', async () => {
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_abc123');
     const result = await verifyAgendaState(STATE_SECRET, state);
-    expect(result).toEqual({ customerId: 'cus_1', orderId: 'ord_1' });
+    expect(result).toEqual({ customerId: 'cus_1', orderId: 'ord_1', nonce: 'agn_abc123' });
   });
 
   it('één gewijzigd teken in de HMAC-hex → null', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1');
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_abc123');
     const [body, sigHex] = state.split('.');
     const flippedChar = sigHex[0] === '0' ? '1' : '0';
     const tampered = `${body}.${flippedChar}${sigHex.slice(1)}`;
@@ -96,13 +101,13 @@ describe('buildAgendaState / verifyAgendaState', () => {
   });
 
   it('gewijzigde payload (andere customerId) → null', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1');
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_abc123');
     const forged = await buildAgendaStateWithMismatchedSig(state);
     expect(await verifyAgendaState(STATE_SECRET, forged)).toBeNull();
   });
 
   it('verkeerd secret → null', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1');
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_abc123');
     expect(await verifyAgendaState('ander-secret', state)).toBeNull();
   });
 
@@ -114,6 +119,26 @@ describe('buildAgendaState / verifyAgendaState', () => {
     expect(await verifyAgendaState(STATE_SECRET, '')).toBeNull();
     expect(await verifyAgendaState(STATE_SECRET, undefined)).toBeNull();
   });
+
+  it('verlopen state (ts > 15 min geleden) → null', async () => {
+    const state = await buildStateWithTimestamp('cus_1', 'ord_1', 'agn_abc123', Date.now() - FIFTEEN_MIN_MS - 1000);
+    expect(await verifyAgendaState(STATE_SECRET, state)).toBeNull();
+  });
+
+  it('state net binnen de 15 minuten → geldig', async () => {
+    const state = await buildStateWithTimestamp('cus_1', 'ord_1', 'agn_abc123', Date.now() - FIFTEEN_MIN_MS + 1000);
+    expect(await verifyAgendaState(STATE_SECRET, state)).toEqual({ customerId: 'cus_1', orderId: 'ord_1', nonce: 'agn_abc123' });
+  });
+
+  it('ontbrekende/verkeerde prefix → null', async () => {
+    const state = await buildStateWithRawPayload('cus_1.ord_1.agn_abc123.' + Date.now());
+    expect(await verifyAgendaState(STATE_SECRET, state)).toBeNull();
+  });
+
+  it('te weinig velden na de prefix → null', async () => {
+    const state = await buildStateWithRawPayload(`agenda-state:v1|cus_1.ord_1.${Date.now()}`);
+    expect(await verifyAgendaState(STATE_SECRET, state)).toBeNull();
+  });
 });
 
 // Helper: neemt een geldige state, vervangt alleen de base64url-payload door
@@ -122,8 +147,27 @@ describe('buildAgendaState / verifyAgendaState', () => {
 // probeert te wijzigen zonder het secret te kennen.
 async function buildAgendaStateWithMismatchedSig(originalState) {
   const [, sigHex] = originalState.split('.');
-  const forgedPayload = btoa('cus_ATTACKER.ord_1').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  const forgedPayload = btoa('agenda-state:v1|cus_ATTACKER.ord_1.agn_x.0').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   return `${forgedPayload}.${sigHex}`;
+}
+
+// Helpers die rechtstreeks (correct-ondertekende) state-tokens bouwen met een
+// controleerbare timestamp of rauwe payload — voor TTL/prefix/veldtelling-tests.
+async function signRawPayload(payload) {
+  const key = await crypto.subtle.importKey(
+    'raw', new TextEncoder().encode(STATE_SECRET),
+    { name: 'HMAC', hash: 'SHA-256' }, false, ['sign'],
+  );
+  const sig = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload));
+  const sigHex = [...new Uint8Array(sig)].map((b) => b.toString(16).padStart(2, '0')).join('');
+  const body = btoa(payload).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  return `${body}.${sigHex}`;
+}
+async function buildStateWithTimestamp(customerId, orderId, nonce, ts) {
+  return signRawPayload(`agenda-state:v1|${customerId}.${orderId}.${nonce}.${ts}`);
+}
+async function buildStateWithRawPayload(payload) {
+  return signRawPayload(payload);
 }
 
 describe('GET /api/portal/onboarding/agenda/initiate', () => {
@@ -141,7 +185,7 @@ describe('GET /api/portal/onboarding/agenda/initiate', () => {
     expect(res.status).toBe(404);
   });
 
-  it('eigen order → 302 naar Google-consent met signed state + calendar.events scope', async () => {
+  it('eigen order → 302 naar Google-consent met signed state + calendar.events scope + Lax bind-cookie', async () => {
     const users = [{ id: 'usr_1', customer_id: 'cus_1', email: 'a@test.nl', naam: 'A', role: 'eigenaar' }];
     const orders = [{ id: 'ord_1', customer_id: 'cus_1' }];
     const env = baseEnv({ users, orders });
@@ -155,7 +199,19 @@ describe('GET /api/portal/onboarding/agenda/initiate', () => {
     expect(location.searchParams.get('access_type')).toBe('offline');
     expect(location.searchParams.get('prompt')).toBe('consent');
     const state = location.searchParams.get('state');
-    expect(await verifyAgendaState(STATE_SECRET, state)).toEqual({ customerId: 'cus_1', orderId: 'ord_1' });
+    const verified = await verifyAgendaState(STATE_SECRET, state);
+    expect(verified).toMatchObject({ customerId: 'cus_1', orderId: 'ord_1' });
+    expect(verified.nonce).toBeTruthy();
+
+    const setCookie = res.headers.get('Set-Cookie');
+    expect(setCookie).toContain('agenda_oauth_bind=');
+    expect(setCookie).toContain('SameSite=Lax');
+    expect(setCookie).toContain('Max-Age=900');
+    expect(setCookie).toContain('HttpOnly');
+    expect(setCookie).toContain('Secure');
+    expect(setCookie).toContain('Path=/api/portal/onboarding/agenda/callback');
+    // De cookie-waarde is exact de nonce die in de state zit.
+    expect(setCookie).toContain(`agenda_oauth_bind=${verified.nonce};`);
   });
 });
 
@@ -174,15 +230,20 @@ describe('GET /api/portal/onboarding/agenda/callback', () => {
     expect(res.status).toBe(400);
   });
 
-  it('geldige callback ZONDER sessiecookie: wisselt code in, slaat token op onder oauth:google:cust:<customerId uit state>, redirect naar /portal/onboarding', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1');
+  it('geldige state + MATCHENDE agenda_oauth_bind-cookie (zonder sessiecookie): wisselt code in, slaat token op onder oauth:google:cust:<customerId uit state>, redirect naar /portal/onboarding', async () => {
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_nonce1');
     const env = baseEnv({});
     mockTokenExchangeFetch({ access_token: 'access-123', refresh_token: 'refresh-123', expires_in: 3600 });
 
     const before = Date.now();
-    // makeRequest zonder userId → geen sessiecookie, exact het echte-browser-scenario.
+    // makeRequest zonder userId → geen sessiecookie, exact het echte-browser-scenario;
+    // WEL de bind-cookie (SameSite=Lax overleeft de cross-site redirect van Google).
     const res = await handlePortalApi(
-      await makeRequest(`/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`),
+      await makeRequest(
+        `/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`,
+        null,
+        'agn_nonce1',
+      ),
       env,
     );
 
@@ -197,24 +258,109 @@ describe('GET /api/portal/onboarding/agenda/callback', () => {
     expect(env.GOOGLE_TOKENS.store['oauth:google:admin']).toBeUndefined();
   });
 
+  it('geldige state ZONDER agenda_oauth_bind-cookie → 400, geen token-exchange, geen KV-put', async () => {
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_nonce1');
+    const env = baseEnv({});
+    let fetchCalled = false;
+    globalThis.fetch = async () => { fetchCalled = true; return { ok: true, json: async () => ({}) }; };
+
+    const res = await handlePortalApi(
+      await makeRequest(`/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`),
+      env,
+    );
+
+    expect(res.status).toBe(400);
+    expect(fetchCalled).toBe(false);
+    expect(env.GOOGLE_TOKENS.store['oauth:google:cust:cus_1']).toBeUndefined();
+  });
+
+  it('geldige state met VERKEERDE agenda_oauth_bind-cookie → 400, geen token-exchange, geen KV-put', async () => {
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_nonce1');
+    const env = baseEnv({});
+    let fetchCalled = false;
+    globalThis.fetch = async () => { fetchCalled = true; return { ok: true, json: async () => ({}) }; };
+
+    const res = await handlePortalApi(
+      await makeRequest(
+        `/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`,
+        null,
+        'agn_ANDERE-NONCE',
+      ),
+      env,
+    );
+
+    expect(res.status).toBe(400);
+    expect(fetchCalled).toBe(false);
+    expect(env.GOOGLE_TOKENS.store['oauth:google:cust:cus_1']).toBeUndefined();
+  });
+
+  it('verlopen state (ouder dan 15 min) mét matchende cookie → 400, geen token-exchange', async () => {
+    const nonce = 'agn_nonce1';
+    const payload = `agenda-state:v1|cus_1.ord_1.${nonce}.${Date.now() - FIFTEEN_MIN_MS - 1000}`;
+    const state = await signRawPayload(payload);
+    const env = baseEnv({});
+    let fetchCalled = false;
+    globalThis.fetch = async () => { fetchCalled = true; return { ok: true, json: async () => ({}) }; };
+
+    const res = await handlePortalApi(
+      await makeRequest(
+        `/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`,
+        null,
+        nonce,
+      ),
+      env,
+    );
+
+    expect(res.status).toBe(400);
+    expect(fetchCalled).toBe(false);
+  });
+
   it('Google levert geen refresh_token → 502, niets opgeslagen (ook zonder sessiecookie)', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1');
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_nonce1');
     const env = baseEnv({});
     globalThis.fetch = async () => ({ ok: true, json: async () => ({ access_token: 'access-123', expires_in: 3600 }) });
 
     const res = await handlePortalApi(
-      await makeRequest(`/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`),
+      await makeRequest(
+        `/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`,
+        null,
+        'agn_nonce1',
+      ),
       env,
     );
     expect(res.status).toBe(502);
     expect(env.GOOGLE_TOKENS.store['oauth:google:cust:cus_1']).toBeUndefined();
   });
 
-  it('OAuth error-param (gebruiker weigerde consent) → 400 (ook zonder sessiecookie)', async () => {
+  it('token-response zonder geldige expires_in → 502, niets opgeslagen', async () => {
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_nonce1');
+    const env = baseEnv({});
+    globalThis.fetch = async () => ({
+      ok: true,
+      json: async () => ({ access_token: 'access-123', refresh_token: 'refresh-123', expires_in: 'niet-een-getal' }),
+    });
+
+    const res = await handlePortalApi(
+      await makeRequest(
+        `/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`,
+        null,
+        'agn_nonce1',
+      ),
+      env,
+    );
+    expect(res.status).toBe(502);
+    expect(env.GOOGLE_TOKENS.store['oauth:google:cust:cus_1']).toBeUndefined();
+  });
+
+  it('OAuth error-param (gebruiker weigerde consent) → 400 met vaste boodschap, param wordt niet gereflecteerd', async () => {
     const env = baseEnv({});
     const res = await handlePortalApi(
-      await makeRequest('/api/portal/onboarding/agenda/callback?error=access_denied'), env,
+      await makeRequest('/api/portal/onboarding/agenda/callback?error=access_denied%3Cscript%3E'), env,
     );
     expect(res.status).toBe(400);
+    const body = await res.json();
+    expect(body.error).toBe('Google-agenda koppelen is niet gelukt');
+    expect(body.error).not.toContain('access_denied');
+    expect(body.error).not.toContain('<script>');
   });
 });

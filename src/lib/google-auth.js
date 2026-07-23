@@ -29,8 +29,8 @@ export async function getAccessToken(env, kvKey = ADMIN_KV_KEY) {
     }),
   });
   if (!r.ok) {
-    const txt = await r.text();
-    throw new Error(`Token refresh failed: ${r.status} ${txt}`);
+    // Never forward/log Google's raw error body — only the HTTP status.
+    throw new Error(`Token refresh failed: HTTP ${r.status}`);
   }
   const fresh = await r.json();
   const updated = {

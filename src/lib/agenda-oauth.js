@@ -9,13 +9,36 @@
 // expects — {access_token, refresh_token, expires_at} — under the per-klant
 // key `oauth:google:cust:<customerId>`, so getAccessToken(env,
 // `oauth:google:cust:<id>`) can refresh/read them unchanged.
+//
+// Security hardening (HIGH finding, opus security-review): a state-HMAC
+// alone is valid forever and isn't bound to the browser that requested it —
+// a leaked state (browser history / shared device / logs) could otherwise be
+// replayed by an attacker to bind their OWN Google-consent to the victim's
+// customer_id. Fixed with two independent layers:
+//   1. State TTL (15 min) + a domain-separation prefix, so a state token can
+//      never be confused with another HMAC-signed token type in this codebase
+//      (session tokens, consent tokens, ...) even if secrets were ever shared.
+//   2. Browser-binding: initiate mints a random nonce, embeds it in the state
+//      AND sets it as a separate SameSite=Lax cookie scoped to the callback
+//      path. SameSite=Lax (unlike Strict) IS sent on Google's top-level
+//      cross-site redirect back to us, so the callback can require the
+//      cookie's nonce to match the state's nonce — proving this request came
+//      from the same browser that started the flow. A leaked/replayed state
+//      without the matching cookie is now rejected.
 import { errorResponse } from './google-auth.js';
+import { randomId, readCookie } from './auth.js';
 
 const SITE = 'https://aanloopai.nl';
 const CALLBACK_PATH = '/api/portal/onboarding/agenda/callback';
 const GOOGLE_AUTH_URL = 'https://accounts.google.com/o/oauth2/v2/auth';
 const TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const AGENDA_SCOPE = 'https://www.googleapis.com/auth/calendar.events';
+const BIND_COOKIE = 'agenda_oauth_bind';
+
+// Domain-separation prefix for the state payload — see header comment.
+const STATE_PREFIX = 'agenda-state:v1|';
+const STATE_TTL_MS = 15 * 60 * 1000; // 15 minutes
+const STATE_CLOCK_SKEW_MS = 60 * 1000; // tolerate up to 60s of clock skew
 
 const encoder = new TextEncoder();
 
@@ -41,22 +64,40 @@ async function hmacKey(secret) {
   );
 }
 
-// Signed state token: base64url(`${customerId}.${orderId}`) + '.' + hex(HMAC).
-// Same construction as createSession/verifySession (src/lib/auth.js) and
-// signConsentToken/verifyConsentToken (src/worker.js) — a WebCrypto HMAC
-// sign/verify pair, which is constant-time by construction (no manual
-// timing-safe compare needed). customerId/orderId are randomId()-shaped
-// (`<prefix>_<hex>`, see auth.js) and never contain a literal '.', so the
-// payload.split('.') below is unambiguous.
-export async function buildAgendaState(secret, customerId, orderId) {
-  const payload = `${customerId}.${orderId}`;
+// Constant-time compare — same approach as mollie.js's / mcp.js's local
+// constantTimeEqual (no WebCrypto timingSafeEqual in Workers); kept local so
+// agenda-oauth.js stays self-contained rather than importing the
+// non-exported helper from another module.
+function constantTimeEqual(a, b) {
+  const aBytes = encoder.encode(a || '');
+  const bBytes = encoder.encode(b || '');
+  const len = Math.max(aBytes.length, bBytes.length, 1);
+  let diff = aBytes.length ^ bBytes.length;
+  for (let i = 0; i < len; i++) {
+    diff |= (aBytes[i] || 0) ^ (bBytes[i] || 0);
+  }
+  return diff === 0;
+}
+
+// Signed state token: base64url(`agenda-state:v1|${customerId}.${orderId}.${nonce}.${ts}`)
+// + '.' + hex(HMAC). Same outer construction as createSession/verifySession
+// (src/lib/auth.js) and signConsentToken/verifyConsentToken (src/worker.js) —
+// a WebCrypto HMAC sign/verify pair, which is constant-time by construction
+// (no manual timing-safe compare needed for the signature itself).
+// customerId/orderId/nonce are randomId()-shaped (`<prefix>_<hex>`, see
+// auth.js) and never contain a literal '.', so payload.split('.') is
+// unambiguous given the fixed 4-field guard in verifyAgendaState below.
+export async function buildAgendaState(secret, customerId, orderId, nonce) {
+  const payload = `${STATE_PREFIX}${customerId}.${orderId}.${nonce}.${Date.now()}`;
   const key = await hmacKey(secret);
   const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(payload));
   return `${b64urlEncode(payload)}.${bytesToHex(sig)}`;
 }
 
-// Verify + decode a state token. Returns { customerId, orderId } or null on
-// ANY mismatch/malformed input (bad signature, tampered payload, wrong shape).
+// Verify + decode a state token. Returns { customerId, orderId, nonce } or
+// null on ANY mismatch/malformed input (bad signature, tampered payload,
+// wrong shape, wrong/missing domain prefix, expired, or timestamp in the
+// future beyond tolerated clock skew).
 export async function verifyAgendaState(secret, state) {
   if (!state || typeof state !== 'string' || !state.includes('.')) return null;
   const dot = state.indexOf('.');
@@ -74,11 +115,20 @@ export async function verifyAgendaState(secret, state) {
   const valid = await crypto.subtle.verify('HMAC', key, sigBytes, encoder.encode(payload));
   if (!valid) return null;
 
-  const parts = payload.split('.');
-  if (parts.length !== 2) return null;
-  const [customerId, orderId] = parts;
-  if (!customerId || !orderId) return null;
-  return { customerId, orderId };
+  if (!payload.startsWith(STATE_PREFIX)) return null;
+  const rest = payload.slice(STATE_PREFIX.length);
+  const parts = rest.split('.');
+  if (parts.length !== 4) return null;
+  const [customerId, orderId, nonce, tsRaw] = parts;
+  if (!customerId || !orderId || !nonce || !tsRaw) return null;
+
+  const ts = Number(tsRaw);
+  if (!Number.isFinite(ts)) return null;
+  const now = Date.now();
+  if (now - ts > STATE_TTL_MS) return null; // expired
+  if (ts > now + STATE_CLOCK_SKEW_MS) return null; // implausibly-future timestamp
+
+  return { customerId, orderId, nonce };
 }
 
 // GET /api/portal/onboarding/agenda/initiate?order=<id>
@@ -100,7 +150,11 @@ export async function handleAgendaInitiate(env, user, url) {
     return errorResponse('Agenda-koppeling is nog niet geconfigureerd', 503);
   }
 
-  const state = await buildAgendaState(env.PORTAL_SESSION_SECRET, user.customer_id, order.id);
+  // Browser-binding nonce — embedded in the signed state AND set as a
+  // separate SameSite=Lax cookie scoped to the callback path. See header
+  // comment for why this defeats leaked-state replay.
+  const nonce = randomId('agn');
+  const state = await buildAgendaState(env.PORTAL_SESSION_SECRET, user.customer_id, order.id, nonce);
   const redirect = new URL(GOOGLE_AUTH_URL);
   redirect.searchParams.set('client_id', env.GOOGLE_CLIENT_ID);
   redirect.searchParams.set('redirect_uri', `${SITE}${CALLBACK_PATH}`);
@@ -109,7 +163,16 @@ export async function handleAgendaInitiate(env, user, url) {
   redirect.searchParams.set('access_type', 'offline');
   redirect.searchParams.set('prompt', 'consent');
   redirect.searchParams.set('state', state);
-  return Response.redirect(redirect.toString(), 302);
+
+  return new Response(null, {
+    status: 302,
+    headers: {
+      Location: redirect.toString(),
+      // SameSite=Lax (not Strict): DOES get sent on Google's top-level
+      // cross-site GET redirect back to CALLBACK_PATH, unlike Strict.
+      'Set-Cookie': `${BIND_COOKIE}=${nonce}; Path=${CALLBACK_PATH}; HttpOnly; Secure; SameSite=Lax; Max-Age=900`,
+    },
+  });
 }
 
 // GET /api/portal/onboarding/agenda/callback?code=&state=
@@ -118,23 +181,38 @@ export async function handleAgendaInitiate(env, user, url) {
 // auth.js's sessionCookie) is never attached by the browser on this request:
 // SameSite=Strict cookies are withheld on cross-site top-level navigations,
 // which is exactly what this redirect is. There is no session to check here,
-// by construction — not a bug to route around. The verified state HMAC is
-// therefore the ONLY authorization this handler needs: it was minted in
-// handleAgendaInitiate from a request that WAS session-gated and had already
-// passed the order-ownership check, so a valid signature proves the
-// (customerId, orderId) pair is legitimate — the standard OAuth "state"
-// pattern, doubling as CSRF protection. customerId/orderId used below come
-// exclusively from this verified state, never from a session.
-export async function handleAgendaCallback(env, url) {
+// by construction — not a bug to route around. Authorization instead rests
+// on TWO checks that must both pass: (1) the state HMAC verifies AND hasn't
+// expired (proves the (customerId, orderId) pair was minted by a session-
+// gated, order-ownership-checked initiate call within the last 15 minutes),
+// and (2) the agenda_oauth_bind cookie (SameSite=Lax, so it DOES survive this
+// cross-site redirect) matches the nonce embedded in that state (proves this
+// request comes from the same browser that started the flow, defeating
+// replay of a leaked state by a different browser/attacker). customerId/
+// orderId used below come exclusively from the verified state, never from a
+// session.
+export async function handleAgendaCallback(env, url, request) {
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
   const oauthError = url.searchParams.get('error');
-  if (oauthError) return errorResponse(`Google-koppeling geweigerd: ${oauthError}`, 400);
+  if (oauthError) {
+    // LOW fix: never reflect the error param back into the response — log
+    // server-side only, return a fixed message.
+    console.error('[agenda-oauth] Google-consent geweigerd of mislukt');
+    return errorResponse('Google-agenda koppelen is niet gelukt', 400);
+  }
   if (!code || !state) return errorResponse('Ongeldige callback', 400);
   if (!env.PORTAL_SESSION_SECRET) return errorResponse('Agenda-koppeling is nog niet geconfigureerd', 503);
 
   const verified = await verifyAgendaState(env.PORTAL_SESSION_SECRET, state);
   if (!verified) return errorResponse('Ongeldige of verlopen state', 400);
+
+  // Browser-binding check — must happen before any token-exchange. See
+  // header + handler comment.
+  const boundNonce = readCookie(request, BIND_COOKIE);
+  if (!boundNonce || !constantTimeEqual(boundNonce, verified.nonce)) {
+    return errorResponse('Ongeldige of verlopen state', 400);
+  }
 
   if (!env.GOOGLE_CLIENT_ID || !env.GOOGLE_CLIENT_SECRET) {
     return errorResponse('Agenda-koppeling is nog niet geconfigureerd', 503);
@@ -165,6 +243,10 @@ export async function handleAgendaCallback(env, url) {
       'Kon Google-agenda niet koppelen. Herroep eerdere toegang bij myaccount.google.com/permissions en probeer opnieuw.',
       502,
     );
+  }
+  if (!Number.isFinite(tokens.expires_in)) {
+    console.error('[agenda-oauth] token-response mist geldige expires_in');
+    return errorResponse('Kon Google-agenda niet koppelen', 502);
   }
 
   await env.GOOGLE_TOKENS.put(
