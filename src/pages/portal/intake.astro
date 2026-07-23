@@ -62,13 +62,16 @@ for (const p of PORTAL_CATALOG) {
   </div>
 
   <script is:inline set:html={`window.__SCHEMAS=${JSON.stringify(allSchemas)};window.__PRODUCTNAMES=${JSON.stringify(productNames)};window.__TIERMETA=${JSON.stringify(tierMeta)};`}></script>
-  <script is:inline>
+  <script>
+    import {
+      escHtml as esc,
+      fieldHtml,
+      wireFaqLists,
+      collectStepValues,
+      missingRequiredFields,
+    } from '../../lib/portal-intake-fields.js';
+
     (function () {
-      function esc(s) {
-        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
-          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
-        });
-      }
       var orderId = new URLSearchParams(location.search).get('order');
       if (!orderId) { location.href = '/portal/ontdekken'; return; }
 
@@ -116,74 +119,11 @@ for (const p of PORTAL_CATALOG) {
         wireFaqLists();
       }
 
-      function fieldHtml(f, val) {
-        var label = '<label class="plabel">' + esc(f.label) + (f.required ? ' *' : '') + '</label>';
-        var hint = f.hint ? '<p class="mt-1 text-xs p-muted">' + esc(f.hint) + '</p>' : '';
-        var body = '';
-        var id = 'fld_' + f.name;
-        if (f.type === 'textarea') {
-          body = '<textarea class="ptextarea" id="' + id + '" data-f="' + f.name + '" placeholder="' + esc(f.placeholder || '') + '">' + esc(val || '') + '</textarea>';
-        } else if (f.type === 'select') {
-          body = '<select class="pselect" id="' + id + '" data-f="' + f.name + '"><option value="">— Kies —</option>' +
-            (f.options || []).map(function (o) {
-              return '<option value="' + esc(o) + '"' + (val === o ? ' selected' : '') + '>' + esc(o) + '</option>';
-            }).join('') + '</select>';
-        } else if (f.type === 'multiselect') {
-          var arr = Array.isArray(val) ? val : [];
-          body = '<div class="space-y-1.5">' + (f.options || []).map(function (o) {
-            return '<label class="flex items-center gap-2 text-sm"><input type="checkbox" class="ms" data-f="' + f.name + '" value="' + esc(o) + '"' +
-              (arr.indexOf(o) > -1 ? ' checked' : '') + ' /> ' + esc(o) + '</label>';
-          }).join('') + '</div>';
-        } else if (f.type === 'faqlist') {
-          var pairs = Array.isArray(val) ? val : [];
-          body = '<div class="faqlist space-y-2" data-f="' + f.name + '">' +
-            (pairs.length ? pairs.map(faqRow).join('') : faqRow({ vraag: '', antwoord: '' })) +
-            '</div><button type="button" class="faq-add pbtn pbtn--subtle pbtn--sm mt-2" data-f="' + f.name + '">+ Vraag toevoegen</button>';
-        } else {
-          var t = (f.type === 'tel' || f.type === 'email' || f.type === 'url') ? f.type : 'text';
-          body = '<input type="' + t + '" class="pinput" id="' + id + '" data-f="' + f.name + '" value="' + esc(val || '') + '" placeholder="' + esc(f.placeholder || '') + '" />';
-        }
-        return label + body + hint;
-      }
-      function faqRow(p) {
-        return '<div class="faq-row rounded-md border p-2" style="border-color:var(--p-border)">' +
-          '<input class="pinput faq-v" placeholder="Vraag" value="' + esc(p.vraag || '') + '" />' +
-          '<textarea class="ptextarea faq-a mt-1" placeholder="Antwoord">' + esc(p.antwoord || '') + '</textarea></div>';
-      }
-      function wireFaqLists() {
-        Array.prototype.forEach.call(document.querySelectorAll('.faq-add'), function (b) {
-          b.addEventListener('click', function () {
-            var list = document.querySelector('.faqlist[data-f="' + b.getAttribute('data-f') + '"]');
-            var tmp = document.createElement('div');
-            tmp.innerHTML = faqRow({ vraag: '', antwoord: '' });
-            list.appendChild(tmp.firstChild);
-          });
-        });
-      }
-
       function collectStep() {
         var step = schema.steps[stepIdx];
-        var vals = {};
-        step.fields.forEach(function (f) {
-          if (f.type === 'multiselect') {
-            vals[f.name] = Array.prototype.slice.call(
-              document.querySelectorAll('.ms[data-f="' + f.name + '"]:checked')).map(function (c) { return c.value; });
-          } else if (f.type === 'faqlist') {
-            var rows = document.querySelectorAll('.faqlist[data-f="' + f.name + '"] .faq-row');
-            vals[f.name] = Array.prototype.slice.call(rows).map(function (row) {
-              return { vraag: row.querySelector('.faq-v').value.trim(), antwoord: row.querySelector('.faq-a').value.trim() };
-            }).filter(function (p) { return p.vraag || p.antwoord; });
-          } else {
-            var el = document.getElementById('fld_' + f.name);
-            vals[f.name] = el ? el.value.trim() : '';
-          }
-        });
+        var vals = collectStepValues(step);
         answers[step.key] = vals;
-        return step.fields.filter(function (f) {
-          if (!f.required) return false;
-          var v = vals[f.name];
-          return !v || (Array.isArray(v) && !v.length);
-        });
+        return missingRequiredFields(step, vals);
       }
 
       function renderSummary() {

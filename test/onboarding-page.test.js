@@ -67,4 +67,11 @@ describe('portal/onboarding.astro — post-pay onboardingwizard', () => {
     expect(pageSrc).toMatch(/from ['"]\.\.\/\.\.\/lib\/portal-intake-fields\.js['"]/);
     expect(pageSrc).not.toMatch(/function fieldHtml/);
   });
+
+  it('redirect naar /portal/login bij 401 tijdens submitStep (POST /api/portal/onboarding)', () => {
+    const submitStepMatch = pageSrc.match(/function submitStep\(stepAnswers\) \{[\s\S]*?\n {6}\}\n/);
+    expect(submitStepMatch).not.toBeNull();
+    const submitStepSrc = submitStepMatch[0];
+    expect(submitStepSrc).toMatch(/if \(r\.status === 401\) \{ location\.href = ['"]\/portal\/login['"]; throw new Error\(['"]unauth['"]\); \}/);
+  });
 });
