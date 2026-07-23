@@ -31,6 +31,7 @@ import {
 import { handleAdminApi } from './lib/admin-routes.js';
 import { handleMollieWebhook, reconcilePayments, billMonthlySubscriptions } from './lib/mollie.js';
 import { retryFailedProvisions } from './lib/activation.js';
+import { nudgeOnboarding } from './lib/onboarding-nudge.js';
 import { handleMcp } from './lib/mcp.js';
 import { rateLimit } from './lib/rate-limit.js';
 import { escapeHtml } from './lib/escape.js';
@@ -1271,6 +1272,18 @@ export default {
         await retryFailedProvisions(env);
       } catch (err) {
         console.error('[scheduled] retryFailedProvisions mislukt:', err.message || err);
+      }
+    })());
+    // Task 13: nudgt klanten die op wacht_op_klant zitten (onboarding-intake
+    // niet afgerond) elke 24u, max 3x, waarna alertStaff het overneemt. Eigen
+    // try/catch — zelfde stijl als retryFailedProvisions hierboven — zodat
+    // een fout hier nooit reconcilePayments/billMonthlySubscriptions in
+    // dezelfde tick meesleept.
+    ctx.waitUntil((async () => {
+      try {
+        await nudgeOnboarding(env);
+      } catch (err) {
+        console.error('[scheduled] nudgeOnboarding mislukt:', err.message || err);
       }
     })());
   },
