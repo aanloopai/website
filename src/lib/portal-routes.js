@@ -13,6 +13,7 @@ import { escapeHtml } from './escape.js';
 import { alertStaff } from './notify.js';
 import { onboardingState } from './onboarding.js';
 import { getIntakeSchema } from '../data/intake-schemas.ts';
+import { activateOrder } from './activation.js';
 
 const SITE_ORIGIN = 'https://aanloopai.nl';
 const MUTATING_METHODS = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
@@ -436,7 +437,9 @@ export async function handlePortalApi(request, env) {
       return method === 'PATCH' ? await saveOrder(request, env, user) : await getOrder(env, user, url);
     }
     if (path === '/api/portal/order/submit' && method === 'POST') return await submitOrder(request, env, user);
-    if (path === '/api/portal/onboarding') return await getOnboarding(env, user, url);
+    if (path === '/api/portal/onboarding') {
+      return method === 'POST' ? await postOnboarding(request, env, user) : await getOnboarding(env, user, url);
+    }
     if (path === '/api/portal/service-config' && method === 'PATCH') return await updateServiceConfig(request, env, user);
     if (path === '/api/portal/checkout/start' && method === 'POST') return await handleCheckoutStart(request, env, user);
     if (path === '/api/portal/subscription/cancel' && method === 'POST') return await portalCancelSubscription(request, env, user);
@@ -766,6 +769,79 @@ async function getOnboarding(env, user, url) {
     ? (await env.GOOGLE_TOKENS.get(`oauth:google:cust:${user.customer_id}`)) != null
     : false;
   const state = onboardingState(order, agendaGekoppeld);
+  return jsonResponse({ ok: true, ...state, schema: getIntakeSchema(state.productKey) });
+}
+
+// Keys that would reach the object prototype via bracket assignment
+// (`merged[stepKey] = ...`) rather than defining an own property — skipped
+// defensively so a crafted `answers` body can never repoint merged's
+// [[Prototype]]. JSON.parse itself is not affected by this (it defines own
+// properties directly), only the plain-object bracket-assignment below is.
+const UNSAFE_STEP_KEYS = new Set(['__proto__', 'constructor', 'prototype']);
+// Defensive cap on the merged intake_json — same kind of size guard as
+// updateSettings' notifStr.length check above; the intake wizard has no
+// hard-coded per-field limit today (saveOrder/submitOrder store whatever the
+// wizard sends), so this only stops a pathological/abusive payload, not a
+// realistic one.
+const MAX_INTAKE_JSON_LENGTH = 50000;
+
+// Deep-merges incoming per-step answers into the existing intake_json.
+// `answers` is nested exactly like intake_json itself — `answers[step.key]`
+// — so each present step gets its OWN sub-object merged over the existing
+// one; steps the caller didn't mention are left completely untouched. This
+// is the one thing that must never regress here: a customer finishing step
+// 5 of the onboarding wizard must not wipe out what they filled in at step 1.
+function mergeIntakeAnswers(existing, answers) {
+  const merged = { ...(existing || {}) };
+  for (const stepKey of Object.keys(answers || {})) {
+    if (UNSAFE_STEP_KEYS.has(stepKey)) continue;
+    const incoming = answers[stepKey];
+    // Only nested step objects are merged — a flat/garbage value (e.g. an
+    // attacker sending `answers.tier = 'Enterprise'`) is silently ignored
+    // rather than written into intake_json under a bogus key.
+    if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) continue;
+    merged[stepKey] = { ...(existing?.[stepKey] || {}), ...incoming };
+  }
+  return merged;
+}
+
+// POST /api/portal/onboarding — slaat de antwoorden van de onboarding-wizard
+// op en her-provisioneert de order. Sessie/eigenaarschap identiek aan
+// getOnboarding hierboven (id=? AND customer_id=? → 404, geen sessie → 401,
+// via handlePortalApi). `answers.tier`/`product_key`/prijs kunnen dit
+// endpoint NOOIT bereiken: alleen intake_json wordt geschreven, de
+// service_orders.tier/product_key-kolommen worden hier niet aangeraakt.
+async function postOnboarding(request, env, user) {
+  if (!canWrite(user.role)) return errorResponse('Geen rechten', 403);
+  const body = await request.json().catch(() => null);
+  const id = (body?.order_id || '').toString();
+  if (!id) return errorResponse('Aanvraag-id ontbreekt', 400);
+  if (!body?.answers || typeof body.answers !== 'object' || Array.isArray(body.answers)) {
+    return errorResponse('Ongeldige antwoorden', 400);
+  }
+
+  const order = await env.PORTAL_DB
+    .prepare('SELECT id, customer_id, product_key, tier, intake_json, status, voorstel_id FROM service_orders WHERE id = ? AND customer_id = ?')
+    .bind(id, user.customer_id).first();
+  if (!order) return errorResponse('Aanvraag niet gevonden', 404);
+
+  const existingIntake = safeParse(order.intake_json) || {};
+  const merged = mergeIntakeAnswers(existingIntake, body.answers);
+  const mergedJson = JSON.stringify(merged);
+  if (mergedJson.length > MAX_INTAKE_JSON_LENGTH) return errorResponse('Antwoorden te groot', 400);
+
+  await env.PORTAL_DB.prepare('UPDATE service_orders SET intake_json = ? WHERE id = ?')
+    .bind(mergedJson, id).run();
+
+  const result = await activateOrder(env, { ...order, intake_json: mergedJson });
+  if (result.status === 'actief') {
+    return jsonResponse({ ok: true, actief: true });
+  }
+
+  const agendaGekoppeld = env.GOOGLE_TOKENS
+    ? (await env.GOOGLE_TOKENS.get(`oauth:google:cust:${user.customer_id}`)) != null
+    : false;
+  const state = onboardingState({ ...order, intake_json: mergedJson }, agendaGekoppeld);
   return jsonResponse({ ok: true, ...state, schema: getIntakeSchema(state.productKey) });
 }
 
