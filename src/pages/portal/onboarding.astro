@@ -1,0 +1,219 @@
+---
+// Customer portal — post-pay onboarding wizard (Plak B/C,
+// docs/superpowers/specs/2026-07-22-selfserve-funnel-design.md). Na het
+// afronden van de betaling stuurt het portaal hierheen door (?order=<id>).
+// De pagina leest de openstaande stappen bij
+// GET /api/portal/onboarding?order=<id> ({ok, productKey, missing,
+// progressPct, klaar, schema}) en post per stap terug — genest als
+// {[stepKey]: {...}}, identiek aan de eerste-aanvraag wizard
+// (src/pages/portal/intake.astro). PortalLayout zet zelf al
+// `<meta name="robots" content="noindex, nofollow">`.
+import PortalLayout from '../../layouts/PortalLayout.astro';
+---
+
+<PortalLayout title="Dienst inrichten" active="diensten">
+  <div class="mx-auto max-w-2xl">
+    <div id="ow-loading"><div class="pskel h-64 w-full"></div></div>
+
+    <div id="ow-wizard" class="hidden">
+      <p class="section-title">Dienst inrichten</p>
+      <h1 class="page-title mt-1" id="ow-steptitle">Onboarding</h1>
+      <p class="page-sub" id="ow-stepintro"></p>
+
+      <div class="mt-4 flex items-center justify-between text-xs p-muted">
+        <span>Voortgang</span>
+        <span id="ow-progress-pct">0%</span>
+      </div>
+      <div class="mt-1 h-1.5 overflow-hidden rounded-full" style="background:var(--p-border)">
+        <div id="ow-progress-bar" class="h-full" style="width:0%;background:var(--p-accent);transition:width .3s"></div>
+      </div>
+
+      <div class="pcard mt-5">
+        <div class="pcard-b">
+          <div id="ow-fields" class="space-y-4"></div>
+        </div>
+      </div>
+
+      <p id="ow-msg" class="palert mt-3 hidden"></p>
+
+      <div id="ow-agenda-wrap" class="mt-3 hidden">
+        <p class="text-sm p-muted">
+          U koos Google Agenda tijdens de aanvraag — koppel uw agenda zodat Emma zelf afspraken kan inplannen.
+        </p>
+        <a id="ow-agenda-btn" href="#" class="pbtn pbtn--subtle mt-2">Koppel Google Agenda</a>
+      </div>
+
+      <div class="mt-5 flex items-center justify-between">
+        <button id="ow-prev" class="pbtn pbtn--subtle">← Vorige</button>
+        <span class="text-xs p-muted" id="ow-savehint"></span>
+        <button id="ow-next" class="pbtn pbtn--primary">Volgende →</button>
+      </div>
+
+      <p class="text-xs p-muted mt-6">
+        Emma is een AI-assistent (geen mens). Zodra deze dienst live is, beantwoordt Emma namens u telefoon-,
+        WhatsApp- of chatgesprekken — conform de transparantieplicht van de EU AI Act (art. 50) laten wij dat ook
+        aan uw klanten weten. Aanloop AI · KvK: 88606902.
+      </p>
+    </div>
+
+    <div id="ow-done" class="hidden">
+      <div class="pcard">
+        <div class="pcard-b text-center" style="padding:40px 24px">
+          <svg style="width:48px;height:48px;margin:0 auto 12px;color:#1a7f53" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <h1 class="page-title">Uw dienst is live</h1>
+          <p class="page-sub mx-auto mt-1" style="max-width:28rem">
+            Emma is ingericht en actief. Vanaf nu neemt Emma — onze AI-assistent, geen mens — gesprekken voor u in
+            behandeling.
+          </p>
+          <a href="/portal/diensten" class="pbtn pbtn--primary mt-5">Naar mijn diensten</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    import {
+      fieldHtml,
+      wireFaqLists,
+      collectStepValues,
+      missingRequiredFields,
+    } from '../../lib/portal-intake-fields.js';
+
+    (function () {
+      const orderId = new URLSearchParams(location.search).get('order');
+      if (!orderId) { location.href = '/portal/diensten'; return; }
+
+      let schema = null;
+      let missing = [];
+      let progressPct = 0;
+      let openSteps = [];
+      let stepIdx = 0;
+      const answers = {};
+
+      function agendaOpenstaand() { return missing.indexOf('agenda_koppeling') > -1; }
+
+      function computeOpenSteps() {
+        openSteps = (schema.steps || []).filter((step) => (
+          step.fields.some((f) => missing.indexOf(f.name) > -1)
+        ));
+      }
+
+      function loadState(d) {
+        schema = d.schema;
+        missing = d.missing || [];
+        progressPct = d.progressPct || 0;
+        computeOpenSteps();
+      }
+
+      fetch('/api/portal/onboarding?order=' + encodeURIComponent(orderId), { credentials: 'same-origin' })
+        .then((r) => {
+          if (r.status === 401) { location.href = '/portal/login'; throw new Error('unauth'); }
+          return r.json();
+        })
+        .then((d) => {
+          if (!d.ok) { location.href = '/portal/diensten'; return; }
+          loadState(d);
+          document.getElementById('ow-loading').classList.add('hidden');
+          if (!openSteps.length && !agendaOpenstaand()) { finishNow(); return; }
+          document.getElementById('ow-wizard').classList.remove('hidden');
+          stepIdx = 0;
+          renderStep();
+        })
+        .catch(() => {});
+
+      function renderStep() {
+        document.getElementById('ow-progress-pct').textContent = progressPct + '%';
+        document.getElementById('ow-progress-bar').style.width = progressPct + '%';
+        document.getElementById('ow-prev').style.visibility = stepIdx === 0 ? 'hidden' : 'visible';
+        document.getElementById('ow-msg').className = 'palert mt-3 hidden';
+
+        const agendaWrap = document.getElementById('ow-agenda-wrap');
+        if (agendaOpenstaand()) {
+          agendaWrap.classList.remove('hidden');
+          document.getElementById('ow-agenda-btn').href =
+            '/api/portal/onboarding/agenda/initiate?order=' + encodeURIComponent(orderId);
+        } else {
+          agendaWrap.classList.add('hidden');
+        }
+
+        const atLastStep = stepIdx >= openSteps.length;
+        document.getElementById('ow-next').textContent = atLastStep ? 'Afronden' : 'Volgende →';
+
+        if (atLastStep) {
+          document.getElementById('ow-steptitle').textContent = 'Bijna klaar';
+          document.getElementById('ow-stepintro').textContent = agendaOpenstaand()
+            ? 'Koppel hierboven uw agenda om de inrichting af te ronden.'
+            : 'Alle gegevens zijn ontvangen.';
+          document.getElementById('ow-fields').innerHTML = '';
+          return;
+        }
+
+        const step = openSteps[stepIdx];
+        document.getElementById('ow-steptitle').textContent = step.title;
+        document.getElementById('ow-stepintro').textContent = step.intro || '';
+        const vals = answers[step.key] || {};
+        document.getElementById('ow-fields').innerHTML = step.fields.map((f) => (
+          '<div>' + fieldHtml(f, vals[f.name]) + '</div>'
+        )).join('');
+        wireFaqLists(document.getElementById('ow-fields'));
+      }
+
+      document.getElementById('ow-prev').addEventListener('click', () => {
+        if (stepIdx > 0) { stepIdx--; renderStep(); }
+      });
+
+      document.getElementById('ow-next').addEventListener('click', () => {
+        const atLastStep = stepIdx >= openSteps.length;
+        if (atLastStep) { submitStep({}); return; }
+
+        const step = openSteps[stepIdx];
+        const vals = collectStepValues(step, document.getElementById('ow-fields'));
+        const stillMissing = missingRequiredFields(step, vals);
+        if (stillMissing.length) {
+          showMsg('Vul de verplichte velden in: ' + stillMissing.map((f) => f.label).join(', '), false);
+          return;
+        }
+        answers[step.key] = vals;
+        submitStep({ [step.key]: vals });
+      });
+
+      function submitStep(stepAnswers) {
+        const btn = document.getElementById('ow-next');
+        btn.disabled = true;
+        document.getElementById('ow-savehint').textContent = 'Opslaan...';
+        fetch('/api/portal/onboarding', {
+          method: 'POST',
+          credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order_id: orderId, answers: stepAnswers }),
+        })
+          .then((r) => r.json().then((j) => ({ ok: r.ok, j })))
+          .then((res) => {
+            btn.disabled = false;
+            document.getElementById('ow-savehint').textContent = '';
+            if (!res.ok) { showMsg(res.j.error || 'Er ging iets mis.', false); return; }
+            if (res.j.actief) { finishNow(); return; }
+            loadState(res.j);
+            stepIdx = Math.min(stepIdx, openSteps.length);
+            renderStep();
+          })
+          .catch(() => {
+            btn.disabled = false;
+            showMsg('Netwerkfout.', false);
+          });
+      }
+
+      function showMsg(t, ok) {
+        const m = document.getElementById('ow-msg');
+        m.className = 'palert mt-3 ' + (ok ? 'palert--ok' : 'palert--warn');
+        m.textContent = t;
+      }
+
+      function finishNow() {
+        document.getElementById('ow-loading').classList.add('hidden');
+        document.getElementById('ow-wizard').classList.add('hidden');
+        document.getElementById('ow-done').classList.remove('hidden');
+      }
+    })();
+  </script>
+</PortalLayout>
