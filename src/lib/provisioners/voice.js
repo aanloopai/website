@@ -24,11 +24,11 @@ function isEmpty(value) {
 // src/pages/portal/intake.astro) en buildConfig() leest (elevenlabs.js, bv.
 // `i.bedrijf.bedrijfsnaam`, `i.bereikbaarheid.openingstijden`).
 //
-// `intake` mag een `_productKey` meegeven (provision() zet 'm vanuit
-// order.product_key); zonder dat valt terug op 'emma-telefoon'.
-export function missingForLive(intake) {
+// `productKey` bepaalt welk schema geldt — expliciet, geen impliciete
+// `intake._productKey` meer. Ontbreekt/onbekend: valt terug op
+// getIntakeSchema()'s eigen default (GENERIC).
+export function missingForLive(intake, productKey) {
   const i = intake || {};
-  const productKey = i._productKey || 'emma-telefoon';
   const schema = getIntakeSchema(productKey);
   const missing = [];
   for (const step of schema.steps) {
@@ -49,7 +49,7 @@ export function missingForLive(intake) {
  * @returns {Promise<{status: 'klaar'|'wacht_op_klant'|'fout', wachtOp?: string[], error?: string, provisioning?: object}>}
  */
 export async function provision(env, { service, order, intake } = {}) {
-  const missing = missingForLive({ ...intake, _productKey: order?.product_key });
+  const missing = missingForLive(intake, order?.product_key);
   if (missing.length) {
     return { status: 'wacht_op_klant', wachtOp: missing };
   }

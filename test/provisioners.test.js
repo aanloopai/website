@@ -21,7 +21,6 @@ describe('voice.missingForLive', () => {
   // Geneste intake-structuur — exact zoals de intake-wizard opslaat
   // (answers[step.key] = vals) en buildConfig() leest (i.bedrijf.bedrijfsnaam, ...).
   const compleet = {
-    _productKey: 'emma-telefoon',
     bedrijf: { bedrijfsnaam: 'Testbedrijf', branche: 'tandarts' },
     bereikbaarheid: { huidig_nummer: '+31 6 1', openingstijden: 'Ma-Vr 9-17', buiten_tijden: 'Voicemail buiten openingstijden' },
     afhandeling: { taken: ['Afspraken inplannen'] },
@@ -30,12 +29,12 @@ describe('voice.missingForLive', () => {
   };
 
   it('geeft [] wanneer alle verplichte velden ingevuld zijn en geen agenda gekozen', () => {
-    expect(voice.missingForLive(compleet)).toEqual([]);
+    expect(voice.missingForLive(compleet, 'emma-telefoon')).toEqual([]);
   });
 
   it('noemt een ontbrekend genest verplicht veld', () => {
     const intake = { ...compleet, bereikbaarheid: { ...compleet.bereikbaarheid, openingstijden: '' } };
-    expect(voice.missingForLive(intake)).toContain('openingstijden');
+    expect(voice.missingForLive(intake, 'emma-telefoon')).toContain('openingstijden');
   });
 
   it('noemt ontbrekende verplichte velden uit meerdere stappen', () => {
@@ -44,7 +43,7 @@ describe('voice.missingForLive', () => {
       bedrijf: { bedrijfsnaam: 'Testbedrijf', branche: '' },
       afhandeling: { taken: [] },
     };
-    const missing = voice.missingForLive(intake);
+    const missing = voice.missingForLive(intake, 'emma-telefoon');
     expect(missing).toContain('branche');
     expect(missing).toContain('taken');
   });
@@ -52,9 +51,43 @@ describe('voice.missingForLive', () => {
   it('eist agenda_koppeling alleen als Google Agenda is gekozen én geen token', () => {
     const metGoogleAgenda = { ...compleet, integraties: { agenda: 'Google Agenda' }, agendaGekoppeld: false };
     const metGoogleAgendaGekoppeld = { ...compleet, integraties: { agenda: 'Google Agenda' }, agendaGekoppeld: true };
-    expect(voice.missingForLive(metGoogleAgenda)).toContain('agenda_koppeling');
-    expect(voice.missingForLive(metGoogleAgendaGekoppeld)).not.toContain('agenda_koppeling');
-    expect(voice.missingForLive(compleet)).not.toContain('agenda_koppeling');
+    expect(voice.missingForLive(metGoogleAgenda, 'emma-telefoon')).toContain('agenda_koppeling');
+    expect(voice.missingForLive(metGoogleAgendaGekoppeld, 'emma-telefoon')).not.toContain('agenda_koppeling');
+    expect(voice.missingForLive(compleet, 'emma-telefoon')).not.toContain('agenda_koppeling');
+  });
+
+  it('kiest het emma-schema op basis van de productKey-parameter, niet intake._productKey', () => {
+    // Complete emma-telefoon-intake — heeft geen kennis.faq / afhandeling.handover / kennis.talen.
+    const intakeMetVerkeerdeHint = { ...compleet, _productKey: 'emma-telefoon' };
+    const missingAlsEmma = voice.missingForLive(intakeMetVerkeerdeHint, 'emma');
+    const missingAlsEmmaTelefoon = voice.missingForLive(intakeMetVerkeerdeHint, 'emma-telefoon');
+    // Ondanks _productKey: 'emma-telefoon' op de intake, stuurt de expliciete
+    // parameter 'emma' het emma-schema aan (en dus andere missende velden).
+    expect(missingAlsEmma).not.toEqual(missingAlsEmmaTelefoon);
+    expect(missingAlsEmma).toContain('faq');
+    expect(missingAlsEmma).toContain('talen');
+    expect(missingAlsEmma).toContain('handover');
+    expect(missingAlsEmmaTelefoon).toEqual([]);
+  });
+
+  it('geeft [] voor een complete emma-intake (eigen schema: kennis.faq, afhandeling.handover, kennis.talen)', () => {
+    const emmaCompleet = {
+      bedrijf: { bedrijfsnaam: 'Testbedrijf', branche: 'tandarts' },
+      kanaal: {},
+      kennis: { faq: [{ vraag: 'Wat kost het?', antwoord: 'Vanaf €497' }], talen: ['Nederlands'] },
+      afhandeling: { handover: 'Emma handelt alles zelf af' },
+    };
+    expect(voice.missingForLive(emmaCompleet, 'emma')).toEqual([]);
+  });
+
+  it('noemt een leeg verplicht emma-veld (kennis.faq)', () => {
+    const emmaIntake = {
+      bedrijf: { bedrijfsnaam: 'Testbedrijf', branche: 'tandarts' },
+      kanaal: {},
+      kennis: { faq: [], talen: ['Nederlands'] },
+      afhandeling: { handover: 'Emma handelt alles zelf af' },
+    };
+    expect(voice.missingForLive(emmaIntake, 'emma')).toContain('faq');
   });
 });
 
@@ -92,5 +125,19 @@ describe('voice.provision', () => {
     const r = await voice.provision({ ELEVENLABS_API_KEY: 'k' }, { service: { id: 's1' }, order: { product_key: 'emma-telefoon' }, intake, customerId: 'c1' });
     expect(r.status).toBe('klaar');
     expect(r.provisioning?.agent_id).toBe('ag_1');
+  });
+
+  it('geeft status fout (geen throw) als de ElevenLabs-call faalt op een complete intake', async () => {
+    globalThis.fetch = async () => ({ ok: false, status: 500, text: async () => 'Internal Server Error' });
+    const intake = {
+      bedrijf: { bedrijfsnaam: 'Testbedrijf', branche: 'tandarts' },
+      bereikbaarheid: { huidig_nummer: '+31 6 1', openingstijden: 'Ma-Vr 9-17', buiten_tijden: 'Voicemail buiten openingstijden' },
+      afhandeling: { taken: ['Afspraken inplannen'] },
+      kennis: { toon: 'Zakelijk en warm' },
+      integraties: { agenda: 'Geen / weet ik nog niet' },
+    };
+    const r = await voice.provision({ ELEVENLABS_API_KEY: 'k' }, { service: { id: 's1' }, order: { product_key: 'emma-telefoon' }, intake, customerId: 'c1' });
+    expect(r.status).toBe('fout');
+    expect(r.error).toBeTruthy();
   });
 });
