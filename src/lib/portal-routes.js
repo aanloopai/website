@@ -14,6 +14,7 @@ import { alertStaff } from './notify.js';
 import { onboardingState } from './onboarding.js';
 import { getIntakeSchema } from '../data/intake-schemas.ts';
 import { activateOrder } from './activation.js';
+import { handleAgendaInitiate, handleAgendaCallback } from './agenda-oauth.js';
 
 const SITE_ORIGIN = 'https://aanloopai.nl';
 const MUTATING_METHODS = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
@@ -440,6 +441,11 @@ export async function handlePortalApi(request, env) {
     if (path === '/api/portal/onboarding') {
       return method === 'POST' ? await postOnboarding(request, env, user) : await getOnboarding(env, user, url);
     }
+    // Task 11: per-tenant Google-agenda OAuth. Both GET-only — the session
+    // gate above (getSessionUser → 401 if missing) already covers "sessie
+    // vereist" for both; ownership/state-match checks happen inside each handler.
+    if (path === '/api/portal/onboarding/agenda/initiate') return await handleAgendaInitiate(env, user, url);
+    if (path === '/api/portal/onboarding/agenda/callback') return await handleAgendaCallback(env, user, url);
     if (path === '/api/portal/service-config' && method === 'PATCH') return await updateServiceConfig(request, env, user);
     if (path === '/api/portal/checkout/start' && method === 'POST') return await handleCheckoutStart(request, env, user);
     if (path === '/api/portal/subscription/cancel' && method === 'POST') return await portalCancelSubscription(request, env, user);
