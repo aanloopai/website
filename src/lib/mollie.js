@@ -511,7 +511,8 @@ async function sendOrderConfirmationMail(env, order, payment, isLive) {
   const bedrag = payment.amount?.value || '0.00';
   const status = isLive
     ? '<p>De inrichting is voltooid — uw dienst staat al klaar.</p>'
-    : '<p>De inrichting is gestart. We ronden de laatste stap handmatig voor u af; u hoeft zelf niets te doen en ziet de voortgang terug in het klantportaal.</p>';
+    : `<p>Rond de laatste stap af in uw klantportaal — vul de gegevens in waarmee Emma uw telefoon aanneemt.</p>
+    <p style="margin:24px 0"><a href="${SITE}/portal/onboarding?order=${order.id}" style="display:inline-block;background:#4f46e5;color:#fff;padding:13px 22px;border-radius:10px;text-decoration:none;font-weight:600">Onboarding afronden</a></p>`;
 
   await sendMailNaKlant(env, owner.email, owner.naam, 'Bevestiging van uw bestelling — Aanloop AI', `
     <p>Hallo ${(owner.naam || '').split(' ')[0] || 'daar'},</p>

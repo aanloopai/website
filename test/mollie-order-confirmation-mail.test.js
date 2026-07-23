@@ -192,11 +192,13 @@ describe('onPaid (via reconcilePayments) — klantbevestigingsmail na de EERSTE 
     expect(html).toContain('Emma');
     expect(html).toContain('Starter');
     expect(html).toContain('603.03');
-    expect(html.toLowerCase()).toContain('handmatig'); // niet live -> geen loze "klaar"-claim
+    expect(html).toContain('Rond de laatste stap af'); // niet live -> verwijst naar onboarding-portaal
+    expect(html).toContain('/portal/onboarding?order=ord_1'); // klikbare link met order-id
+    expect(html.toLowerCase()).not.toContain('u hoeft zelf niets te doen'); // Plak C: klant rondt zelf af
     expect(html).not.toContain('marco');
   });
 
-  it('portal-order (direct actief): stuurt de bevestigingsmail, met "live"-tekst, niet de "handmatig"-tekst', async () => {
+  it('portal-order (direct actief): stuurt de bevestigingsmail, met "live"-tekst, niet de onboarding-tekst', async () => {
     activateOrderMock.mockResolvedValue({ status: 'actief', serviceId: 'svc_2', provisioned: true });
     const db = makeDb({
       payments: [{ id: 'tr_2', status: 'open', subscription_id: 'sub_2', order_id: 'ord_2', created_at: 0 }],
@@ -214,7 +216,8 @@ describe('onPaid (via reconcilePayments) — klantbevestigingsmail na de EERSTE 
     expect(sendMailMock).toHaveBeenCalledTimes(1);
     const html = sendMailMock.mock.calls[0][4];
     expect(html.toLowerCase()).toContain('voltooid');
-    expect(html.toLowerCase()).not.toContain('handmatig');
+    expect(html).not.toContain('/portal/onboarding'); // live-tak blijft ongewijzigd, geen onboarding-link
+    expect(html).not.toContain('Rond de laatste stap af');
   });
 
   it('maandelijkse verlenging (order_id null, abonnement was al active): GEEN bevestigingsmail — dat is de bestaande betaallink-mailstroom', async () => {
