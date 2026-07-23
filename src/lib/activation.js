@@ -252,3 +252,56 @@ async function stilFout(db, order, svcId) {
     .bind(order.id).run();
   return { status: 'in_uitvoering', serviceId: svcId, provisioned: false };
 }
+
+// Task 4: the automatic half of Task 3's silent-retry design. stilFout()
+// leaves a failed order sitting quietly on 'in_uitvoering' expecting "the
+// next replay" to retry it — but nothing actually replays a webhook or an
+// admin click on its own. This is that replay, run every 15 minutes from the
+// same cron as reconcilePayments/billMonthlySubscriptions (scheduled(),
+// worker.js).
+//
+// D1/SQLite can't filter JSON fields in SQL, so the query only narrows to
+// "candidate orders that still have work to do" (status='in_uitvoering',
+// joined to their one service row per the unique index on
+// services.order_id) and every provisioning_json check happens in JS below.
+// A row with no service yet (still 'ingediend'/'geannuleerd', or genuinely
+// human-delivered and already parked without ever provisioning) simply isn't
+// 'in_uitvoering' with a 'fout' service, so it never matches.
+//
+// attempts>=3 is deliberately excluded here too: those orders already paged
+// staff via park() (Task 3) and are waiting on a human fix, not another
+// silent auto-retry — retrying them again would just repeat the same
+// failure every 15 minutes.
+//
+// Never passes {manual:true}: this is an automatic caller, so a funnel order
+// sitting on wacht_op_klant (never 'fout') is untouched, and activateOrder's
+// existing replay-safety (idempotent INSERT OR IGNORE, provisioning never
+// re-run once it actually succeeded) makes calling it again for every match
+// exactly as safe as the webhook/admin-click paths that already do this.
+export async function retryFailedProvisions(env) {
+  const db = env.PORTAL_DB;
+  if (!db) return;
+
+  const rows = (await db.prepare(
+    `SELECT so.*, s.provisioning_json AS provisioning_json
+     FROM service_orders so
+     JOIN services s ON s.order_id = so.id
+     WHERE so.status = 'in_uitvoering'`,
+  ).all()).results || [];
+
+  const candidates = rows.filter((row) => {
+    const prov = safeParseJson(row.provisioning_json);
+    return prov?.status === 'fout' && (prov.attempts || 0) < 3;
+  });
+
+  // Best-effort, one order at a time (same shape as reconcilePayments in
+  // mollie.js): a single order's retry throwing must not stop the rest of
+  // the batch from being retried this tick.
+  for (const order of candidates) {
+    try {
+      await activateOrder(env, order);
+    } catch (err) {
+      console.error('[retryFailedProvisions] retry mislukt voor order', order.id, ':', err?.message || err);
+    }
+  }
+}

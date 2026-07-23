@@ -30,6 +30,7 @@ import {
 } from './lib/portal-routes.js';
 import { handleAdminApi } from './lib/admin-routes.js';
 import { handleMollieWebhook, reconcilePayments, billMonthlySubscriptions } from './lib/mollie.js';
+import { retryFailedProvisions } from './lib/activation.js';
 import { handleMcp } from './lib/mcp.js';
 import { rateLimit } from './lib/rate-limit.js';
 import { escapeHtml } from './lib/escape.js';
@@ -1261,6 +1262,17 @@ export default {
     ctx.waitUntil(reconcilePayments(env));
     ctx.waitUntil(billMonthlySubscriptions(env));
     ctx.waitUntil(notifyOutreachFollowups(env));
+    // Task 4: retries fout-services (attempts<3) every 15 min. Own try/catch
+    // (the initial SELECT itself failing must not read as an unhandled
+    // rejection or take down the other cron tasks in the same tick) — the
+    // per-order best-effort loop lives inside retryFailedProvisions itself.
+    ctx.waitUntil((async () => {
+      try {
+        await retryFailedProvisions(env);
+      } catch (err) {
+        console.error('[scheduled] retryFailedProvisions mislukt:', err.message || err);
+      }
+    })());
   },
 };
 // Force redeploy after BREVO_API_KEY env var added (Sprint 38)
