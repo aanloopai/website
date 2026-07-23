@@ -169,7 +169,7 @@ export async function handleCheckoutStart(request, env, user) {
   // subscriptions row per order_id, ever, regardless of its status — so this
   // always reads that single row when it exists, whatever state it's in.
   const existingSub = await env.PORTAL_DB
-    .prepare('SELECT id, status FROM subscriptions WHERE order_id = ? ORDER BY created_at DESC LIMIT 1')
+    .prepare('SELECT id, status, mollie_customer_id FROM subscriptions WHERE order_id = ? ORDER BY created_at DESC LIMIT 1')
     .bind(order.id).first();
   let reuseSubId = null;
   if (existingSub) {
@@ -182,18 +182,75 @@ export async function handleCheckoutStart(request, env, user) {
       const existingPayment = await env.PORTAL_DB
         .prepare('SELECT id FROM payments WHERE subscription_id = ? ORDER BY created_at DESC LIMIT 1')
         .bind(existingSub.id).first();
+      // Never create a SECOND Mollie payment while an earlier one for this order may
+      // still be open or already paid. A missing local payments-row is NOT proof
+      // that no Mollie payment exists: the Mollie POST can succeed and only the
+      // local INSERT fail, leaving a live payment at Mollie without a local row.
+      // So: with a local row we re-check that payment by id; without one (but with a
+      // known Mollie customer) we ask Mollie for any payment on THIS order before
+      // starting a new one.
+      const RUNNING_MSG = 'Er is al een checkout gestart voor deze aanvraag. Probeer het opnieuw of neem contact op met support.';
+      const PROCESSING_MSG = 'Uw betaling wordt verwerkt. Ververs deze pagina over enkele momenten.';
       if (existingPayment) {
+        let payment = null;
         try {
-          const payment = await mollieFetch(env.MOLLIE_API_KEY, 'GET', `/payments/${existingPayment.id}`);
-          const checkoutUrl = payment._links && payment._links.checkout && payment._links.checkout.href;
-          if (checkoutUrl && (payment.status === 'open' || payment.status === 'pending')) {
-            return jsonResponse({ ok: true, checkoutUrl });
-          }
+          payment = await mollieFetch(env.MOLLIE_API_KEY, 'GET', `/payments/${existingPayment.id}`);
         } catch (err) {
           console.error('[mollie] re-fetch existing checkout failed:', err.message || err);
+          // Unknown payment state — never open a second checkout on a maybe-open one.
+          return errorResponse(RUNNING_MSG, 409);
         }
+        const st = payment && payment.status;
+        const checkoutUrl = payment && payment._links && payment._links.checkout && payment._links.checkout.href;
+        if (st === 'open' || st === 'pending') {
+          // Still in progress — reuse the URL if present, otherwise refuse to start a
+          // second payment (an open payment exists regardless of the link).
+          return checkoutUrl ? jsonResponse({ ok: true, checkoutUrl }) : errorResponse(RUNNING_MSG, 409);
+        }
+        if (st === 'paid' || st === 'authorized' || st === 'paidout') {
+          // The first payment already succeeded (webhook not processed yet) — never
+          // start a second one; the order flips away from 'concept' shortly.
+          return errorResponse(PROCESSING_MSG, 409);
+        }
+        // Otherwise the prior payment is terminally non-payable (failed / expired /
+        // canceled) — fall through to the release + retry path below.
+      } else if (existingSub.mollie_customer_id) {
+        // No local payments-row, but a Mollie customer exists — the payment POST may
+        // have succeeded before its local INSERT failed. Verify against Mollie so a
+        // retry never double-charges a still-open or already-paid payment.
+        let orderPayments = [];
+        try {
+          const list = await mollieFetch(
+            env.MOLLIE_API_KEY, 'GET', `/customers/${existingSub.mollie_customer_id}/payments?limit=50`,
+          );
+          const all = (list._embedded && list._embedded.payments) || [];
+          orderPayments = all.filter((p) => p.metadata && p.metadata.order_id === order.id);
+        } catch (err) {
+          console.error('[mollie] order-payment lookup failed:', err.message || err);
+          // Could not verify with Mollie — never risk a second payment on an unknown state.
+          return errorResponse(RUNNING_MSG, 409);
+        }
+        const openOne = orderPayments.find((p) => p.status === 'open' || p.status === 'pending');
+        if (openOne) {
+          const url = openOne._links && openOne._links.checkout && openOne._links.checkout.href;
+          return url ? jsonResponse({ ok: true, checkoutUrl: url }) : errorResponse(RUNNING_MSG, 409);
+        }
+        if (orderPayments.some((p) => p.status === 'paid' || p.status === 'authorized' || p.status === 'paidout')) {
+          return errorResponse(PROCESSING_MSG, 409);
+        }
+        // Mollie confirms no open/paid payment for this order → safe to release + retry.
       }
-      return errorResponse('Er is al een checkout gestart voor deze aanvraag. Probeer het opnieuw of neem contact op met support.', 409);
+      // Orphaned pending_payment with no reusable/live payment: release the row with
+      // the same compare-and-swap the retry path uses (single-winner against a
+      // concurrent racer), then let the canceled-reuse path below recompute the
+      // amount from the current catalog and start a fresh checkout.
+      const release = await env.PORTAL_DB
+        .prepare("UPDATE subscriptions SET status = 'canceled' WHERE id = ? AND status = 'pending_payment'")
+        .bind(existingSub.id).run();
+      if (release.meta?.changes !== 1) {
+        return errorResponse(RUNNING_MSG, 409);
+      }
+      existingSub.status = 'canceled'; // fall through to the canceled-reuse path below
     }
     if (existingSub.status !== 'canceled') {
       // Defensive: any other status (e.g. 'completed') should be unreachable
