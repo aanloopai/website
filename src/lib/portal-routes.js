@@ -11,6 +11,8 @@ import { getCatalogProduct, getCatalogTier } from '../data/portal-catalog.ts';
 import { dealVoorOrder } from './crm.js';
 import { escapeHtml } from './escape.js';
 import { alertStaff } from './notify.js';
+import { onboardingState } from './onboarding.js';
+import { getIntakeSchema } from '../data/intake-schemas.ts';
 
 const SITE_ORIGIN = 'https://aanloopai.nl';
 const MUTATING_METHODS = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
@@ -434,6 +436,7 @@ export async function handlePortalApi(request, env) {
       return method === 'PATCH' ? await saveOrder(request, env, user) : await getOrder(env, user, url);
     }
     if (path === '/api/portal/order/submit' && method === 'POST') return await submitOrder(request, env, user);
+    if (path === '/api/portal/onboarding') return await getOnboarding(env, user, url);
     if (path === '/api/portal/service-config' && method === 'PATCH') return await updateServiceConfig(request, env, user);
     if (path === '/api/portal/checkout/start' && method === 'POST') return await handleCheckoutStart(request, env, user);
     if (path === '/api/portal/subscription/cancel' && method === 'POST') return await portalCancelSubscription(request, env, user);
@@ -745,6 +748,25 @@ async function getOrder(env, user, url) {
     .bind(id, user.customer_id).first();
   if (!o) return errorResponse('Aanvraag niet gevonden', 404);
   return jsonResponse({ ok: true, order: { ...o, intake: safeParse(o.intake_json) || {} } });
+}
+
+// Onboarding-state voor de post-pay wizard (Plak B/C). IDOR-scope identiek
+// aan getOrder hierboven: id=? AND customer_id=? in dezelfde query, dus een
+// order van een andere klant geeft exact dezelfde 404 als een onbekende
+// order-id — geen enumeratie of state-lek over de tenant-grens heen.
+async function getOnboarding(env, user, url) {
+  const id = url.searchParams.get('order');
+  if (!id) return errorResponse('Aanvraag-id ontbreekt', 400);
+  const order = await env.PORTAL_DB
+    .prepare('SELECT id, product_key, intake_json FROM service_orders WHERE id = ? AND customer_id = ?')
+    .bind(id, user.customer_id).first();
+  if (!order) return errorResponse('Aanvraag niet gevonden', 404);
+
+  const agendaGekoppeld = env.GOOGLE_TOKENS
+    ? (await env.GOOGLE_TOKENS.get(`oauth:google:cust:${user.customer_id}`)) != null
+    : false;
+  const state = onboardingState(order, agendaGekoppeld);
+  return jsonResponse({ ok: true, ...state, schema: getIntakeSchema(state.productKey) });
 }
 
 async function saveOrder(request, env, user) {
