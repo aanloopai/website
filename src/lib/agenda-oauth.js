@@ -18,15 +18,30 @@
 //   1. State TTL (15 min) + a domain-separation prefix, so a state token can
 //      never be confused with another HMAC-signed token type in this codebase
 //      (session tokens, consent tokens, ...) even if secrets were ever shared.
-//   2. Browser-binding: initiate mints a random nonce, embeds it in the state
-//      AND sets it as a separate SameSite=Lax cookie scoped to the callback
-//      path. SameSite=Lax (unlike Strict) IS sent on Google's top-level
-//      cross-site redirect back to us, so the callback can require the
-//      cookie's nonce to match the state's nonce — proving this request came
-//      from the same browser that started the flow. A leaked/replayed state
-//      without the matching cookie is now rejected.
+//   2. Browser-binding: initiate mints a random nonce, sets it as a separate
+//      SameSite=Lax cookie scoped to the callback path, and embeds a HASH of
+//      it in the state (see MEDIUM follow-up below for why the raw nonce
+//      never goes in the state). SameSite=Lax (unlike Strict) IS sent on
+//      Google's top-level cross-site redirect back to us, so the callback
+//      can require sha256(cookie's raw nonce) to match the state's
+//      nonceHash — proving this request came from the same browser that
+//      started the flow. A leaked/replayed state without the matching
+//      cookie is now rejected.
+//
+// MEDIUM follow-up (opus security-re-review): the raw nonce must never
+// appear in the state payload. base64url is an ENCODING, not encryption —
+// anyone who observes a leaked state (the same threat model as above) can
+// decode the payload and read the nonce in plaintext, then simply set
+// `agenda_oauth_bind=<nonce>` on their OWN request (HttpOnly only stops
+// script access on the victim's browser, it does nothing to stop an
+// attacker from setting that same cookie name/value themselves). That would
+// make the "browser-binding" check above pass trivially, defeating layer 2
+// entirely. Fixed by storing only sha256(nonce) in the state — the raw
+// nonce lives EXCLUSIVELY in the Set-Cookie response, which a state-leak
+// alone never exposes. The callback then re-hashes the cookie's raw nonce
+// and compares against the state's hash.
 import { errorResponse } from './google-auth.js';
-import { randomId, readCookie } from './auth.js';
+import { randomId, readCookie, sha256Hex } from './auth.js';
 
 const SITE = 'https://aanloopai.nl';
 const CALLBACK_PATH = '/api/portal/onboarding/agenda/callback';
@@ -79,23 +94,25 @@ function constantTimeEqual(a, b) {
   return diff === 0;
 }
 
-// Signed state token: base64url(`agenda-state:v1|${customerId}.${orderId}.${nonce}.${ts}`)
+// Signed state token: base64url(`agenda-state:v1|${customerId}.${orderId}.${nonceHash}.${ts}`)
 // + '.' + hex(HMAC). Same outer construction as createSession/verifySession
 // (src/lib/auth.js) and signConsentToken/verifyConsentToken (src/worker.js) —
 // a WebCrypto HMAC sign/verify pair, which is constant-time by construction
 // (no manual timing-safe compare needed for the signature itself).
-// customerId/orderId/nonce are randomId()-shaped (`<prefix>_<hex>`, see
-// auth.js) and never contain a literal '.', so payload.split('.') is
-// unambiguous given the fixed 4-field guard in verifyAgendaState below.
-export async function buildAgendaState(secret, customerId, orderId, nonce) {
-  const payload = `${STATE_PREFIX}${customerId}.${orderId}.${nonce}.${Date.now()}`;
+// customerId/orderId are randomId()-shaped (`<prefix>_<hex>`, see auth.js)
+// and nonceHash is sha256Hex() output (`[0-9a-f]{64}`) — none ever contain a
+// literal '.', so payload.split('.') is unambiguous given the fixed 4-field
+// guard in verifyAgendaState below. The caller passes sha256(nonce), never
+// the raw nonce — see the MEDIUM-fix header comment above.
+export async function buildAgendaState(secret, customerId, orderId, nonceHash) {
+  const payload = `${STATE_PREFIX}${customerId}.${orderId}.${nonceHash}.${Date.now()}`;
   const key = await hmacKey(secret);
   const sig = await crypto.subtle.sign('HMAC', key, encoder.encode(payload));
   return `${b64urlEncode(payload)}.${bytesToHex(sig)}`;
 }
 
-// Verify + decode a state token. Returns { customerId, orderId, nonce } or
-// null on ANY mismatch/malformed input (bad signature, tampered payload,
+// Verify + decode a state token. Returns { customerId, orderId, nonceHash }
+// or null on ANY mismatch/malformed input (bad signature, tampered payload,
 // wrong shape, wrong/missing domain prefix, expired, or timestamp in the
 // future beyond tolerated clock skew).
 export async function verifyAgendaState(secret, state) {
@@ -119,8 +136,8 @@ export async function verifyAgendaState(secret, state) {
   const rest = payload.slice(STATE_PREFIX.length);
   const parts = rest.split('.');
   if (parts.length !== 4) return null;
-  const [customerId, orderId, nonce, tsRaw] = parts;
-  if (!customerId || !orderId || !nonce || !tsRaw) return null;
+  const [customerId, orderId, nonceHash, tsRaw] = parts;
+  if (!customerId || !orderId || !nonceHash || !tsRaw) return null;
 
   const ts = Number(tsRaw);
   if (!Number.isFinite(ts)) return null;
@@ -128,7 +145,7 @@ export async function verifyAgendaState(secret, state) {
   if (now - ts > STATE_TTL_MS) return null; // expired
   if (ts > now + STATE_CLOCK_SKEW_MS) return null; // implausibly-future timestamp
 
-  return { customerId, orderId, nonce };
+  return { customerId, orderId, nonceHash };
 }
 
 // GET /api/portal/onboarding/agenda/initiate?order=<id>
@@ -150,11 +167,12 @@ export async function handleAgendaInitiate(env, user, url) {
     return errorResponse('Agenda-koppeling is nog niet geconfigureerd', 503);
   }
 
-  // Browser-binding nonce — embedded in the signed state AND set as a
-  // separate SameSite=Lax cookie scoped to the callback path. See header
-  // comment for why this defeats leaked-state replay.
+  // Browser-binding nonce — the RAW nonce goes ONLY into the Set-Cookie
+  // below (never into the state); the state carries sha256(nonce) instead.
+  // See header comment for why this defeats leaked-state replay.
   const nonce = randomId('agn');
-  const state = await buildAgendaState(env.PORTAL_SESSION_SECRET, user.customer_id, order.id, nonce);
+  const nonceHash = await sha256Hex(nonce);
+  const state = await buildAgendaState(env.PORTAL_SESSION_SECRET, user.customer_id, order.id, nonceHash);
   const redirect = new URL(GOOGLE_AUTH_URL);
   redirect.searchParams.set('client_id', env.GOOGLE_CLIENT_ID);
   redirect.searchParams.set('redirect_uri', `${SITE}${CALLBACK_PATH}`);
@@ -186,11 +204,12 @@ export async function handleAgendaInitiate(env, user, url) {
 // expired (proves the (customerId, orderId) pair was minted by a session-
 // gated, order-ownership-checked initiate call within the last 15 minutes),
 // and (2) the agenda_oauth_bind cookie (SameSite=Lax, so it DOES survive this
-// cross-site redirect) matches the nonce embedded in that state (proves this
-// request comes from the same browser that started the flow, defeating
-// replay of a leaked state by a different browser/attacker). customerId/
-// orderId used below come exclusively from the verified state, never from a
-// session.
+// cross-site redirect), once hashed, matches the nonceHash embedded in that
+// state (proves this request comes from the same browser that started the
+// flow, defeating replay of a leaked state by a different browser/attacker —
+// the state alone only reveals the hash, never the raw cookie value).
+// customerId/orderId used below come exclusively from the verified state,
+// never from a session.
 export async function handleAgendaCallback(env, url, request) {
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
@@ -208,9 +227,14 @@ export async function handleAgendaCallback(env, url, request) {
   if (!verified) return errorResponse('Ongeldige of verlopen state', 400);
 
   // Browser-binding check — must happen before any token-exchange. See
-  // header + handler comment.
+  // header + handler comment. The cookie carries the RAW nonce; the state
+  // carries only its hash, so we re-hash the cookie value before comparing —
+  // a leaked state alone (which only reveals the hash) is not enough to
+  // forge a matching cookie.
   const boundNonce = readCookie(request, BIND_COOKIE);
-  if (!boundNonce || !constantTimeEqual(boundNonce, verified.nonce)) {
+  if (!boundNonce) return errorResponse('Ongeldige of verlopen state', 400);
+  const boundHash = await sha256Hex(boundNonce);
+  if (!constantTimeEqual(boundHash, verified.nonceHash)) {
     return errorResponse('Ongeldige of verlopen state', 400);
   }
 

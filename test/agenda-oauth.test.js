@@ -5,7 +5,9 @@ import {
   describe, it, expect, afterEach,
 } from 'vitest';
 import { handlePortalApi } from '../src/lib/portal-routes.js';
-import { createSession, sessionCookie, SESSION_COOKIE } from '../src/lib/auth.js';
+import {
+  createSession, sessionCookie, SESSION_COOKIE, sha256Hex,
+} from '../src/lib/auth.js';
 import { buildAgendaState, verifyAgendaState } from '../src/lib/agenda-oauth.js';
 
 // Eén secret voor beide doelen — precies zoals in productie: PORTAL_SESSION_SECRET
@@ -86,14 +88,16 @@ function mockTokenExchangeFetch({ access_token = 'access-xyz', refresh_token = '
 const FIFTEEN_MIN_MS = 15 * 60 * 1000;
 
 describe('buildAgendaState / verifyAgendaState', () => {
-  it('rond-trip: geldige state → { customerId, orderId, nonce }', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_abc123');
+  it('rond-trip: geldige state → { customerId, orderId, nonceHash }', async () => {
+    const nonceHash = await sha256Hex('agn_abc123');
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', nonceHash);
     const result = await verifyAgendaState(STATE_SECRET, state);
-    expect(result).toEqual({ customerId: 'cus_1', orderId: 'ord_1', nonce: 'agn_abc123' });
+    expect(result).toEqual({ customerId: 'cus_1', orderId: 'ord_1', nonceHash });
   });
 
   it('één gewijzigd teken in de HMAC-hex → null', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_abc123');
+    const nonceHash = await sha256Hex('agn_abc123');
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', nonceHash);
     const [body, sigHex] = state.split('.');
     const flippedChar = sigHex[0] === '0' ? '1' : '0';
     const tampered = `${body}.${flippedChar}${sigHex.slice(1)}`;
@@ -101,13 +105,15 @@ describe('buildAgendaState / verifyAgendaState', () => {
   });
 
   it('gewijzigde payload (andere customerId) → null', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_abc123');
+    const nonceHash = await sha256Hex('agn_abc123');
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', nonceHash);
     const forged = await buildAgendaStateWithMismatchedSig(state);
     expect(await verifyAgendaState(STATE_SECRET, forged)).toBeNull();
   });
 
   it('verkeerd secret → null', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_abc123');
+    const nonceHash = await sha256Hex('agn_abc123');
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', nonceHash);
     expect(await verifyAgendaState('ander-secret', state)).toBeNull();
   });
 
@@ -121,13 +127,15 @@ describe('buildAgendaState / verifyAgendaState', () => {
   });
 
   it('verlopen state (ts > 15 min geleden) → null', async () => {
-    const state = await buildStateWithTimestamp('cus_1', 'ord_1', 'agn_abc123', Date.now() - FIFTEEN_MIN_MS - 1000);
+    const nonceHash = await sha256Hex('agn_abc123');
+    const state = await buildStateWithTimestamp('cus_1', 'ord_1', nonceHash, Date.now() - FIFTEEN_MIN_MS - 1000);
     expect(await verifyAgendaState(STATE_SECRET, state)).toBeNull();
   });
 
   it('state net binnen de 15 minuten → geldig', async () => {
-    const state = await buildStateWithTimestamp('cus_1', 'ord_1', 'agn_abc123', Date.now() - FIFTEEN_MIN_MS + 1000);
-    expect(await verifyAgendaState(STATE_SECRET, state)).toEqual({ customerId: 'cus_1', orderId: 'ord_1', nonce: 'agn_abc123' });
+    const nonceHash = await sha256Hex('agn_abc123');
+    const state = await buildStateWithTimestamp('cus_1', 'ord_1', nonceHash, Date.now() - FIFTEEN_MIN_MS + 1000);
+    expect(await verifyAgendaState(STATE_SECRET, state)).toEqual({ customerId: 'cus_1', orderId: 'ord_1', nonceHash });
   });
 
   it('ontbrekende/verkeerde prefix → null', async () => {
@@ -163,8 +171,8 @@ async function signRawPayload(payload) {
   const body = btoa(payload).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
   return `${body}.${sigHex}`;
 }
-async function buildStateWithTimestamp(customerId, orderId, nonce, ts) {
-  return signRawPayload(`agenda-state:v1|${customerId}.${orderId}.${nonce}.${ts}`);
+async function buildStateWithTimestamp(customerId, orderId, nonceHash, ts) {
+  return signRawPayload(`agenda-state:v1|${customerId}.${orderId}.${nonceHash}.${ts}`);
 }
 async function buildStateWithRawPayload(payload) {
   return signRawPayload(payload);
@@ -201,7 +209,7 @@ describe('GET /api/portal/onboarding/agenda/initiate', () => {
     const state = location.searchParams.get('state');
     const verified = await verifyAgendaState(STATE_SECRET, state);
     expect(verified).toMatchObject({ customerId: 'cus_1', orderId: 'ord_1' });
-    expect(verified.nonce).toBeTruthy();
+    expect(verified.nonceHash).toBeTruthy();
 
     const setCookie = res.headers.get('Set-Cookie');
     expect(setCookie).toContain('agenda_oauth_bind=');
@@ -210,8 +218,15 @@ describe('GET /api/portal/onboarding/agenda/initiate', () => {
     expect(setCookie).toContain('HttpOnly');
     expect(setCookie).toContain('Secure');
     expect(setCookie).toContain('Path=/api/portal/onboarding/agenda/callback');
-    // De cookie-waarde is exact de nonce die in de state zit.
-    expect(setCookie).toContain(`agenda_oauth_bind=${verified.nonce};`);
+    // De state bevat NOOIT de rauwe nonce — alleen de hash. De cookie-waarde
+    // is de rauwe nonce; sha256(cookie-waarde) moet matchen met de hash in de
+    // state (bewijst dat het gat uit de MEDIUM-fix gesloten is: een gelekte
+    // state onthult alleen de hash, niet de rauwe nonce zelf).
+    const cookieMatch = setCookie.match(/agenda_oauth_bind=([^;]+);/);
+    expect(cookieMatch).toBeTruthy();
+    const rawNonceFromCookie = cookieMatch[1];
+    expect(rawNonceFromCookie).not.toBe(verified.nonceHash);
+    expect(await sha256Hex(rawNonceFromCookie)).toBe(verified.nonceHash);
   });
 });
 
@@ -230,19 +245,25 @@ describe('GET /api/portal/onboarding/agenda/callback', () => {
     expect(res.status).toBe(400);
   });
 
-  it('geldige state + MATCHENDE agenda_oauth_bind-cookie (zonder sessiecookie): wisselt code in, slaat token op onder oauth:google:cust:<customerId uit state>, redirect naar /portal/onboarding', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_nonce1');
+  it('geldige state + MATCHENDE agenda_oauth_bind-cookie (rauwe nonce in cookie, hash in state, zonder sessiecookie): wisselt code in, slaat token op onder oauth:google:cust:<customerId uit state>, redirect naar /portal/onboarding', async () => {
+    const rawNonce = 'agn_nonce1';
+    const nonceHash = await sha256Hex(rawNonce);
+    // De state bevat de HASH, nooit de rauwe nonce — bewijst dat de match op
+    // sha256(rauwe nonce uit cookie) === nonceHash-in-state werkt, niet op
+    // een directe string-vergelijking met de state-inhoud.
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', nonceHash);
     const env = baseEnv({});
     mockTokenExchangeFetch({ access_token: 'access-123', refresh_token: 'refresh-123', expires_in: 3600 });
 
     const before = Date.now();
     // makeRequest zonder userId → geen sessiecookie, exact het echte-browser-scenario;
-    // WEL de bind-cookie (SameSite=Lax overleeft de cross-site redirect van Google).
+    // WEL de bind-cookie (SameSite=Lax overleeft de cross-site redirect van Google)
+    // met de RAUWE nonce — nooit de hash.
     const res = await handlePortalApi(
       await makeRequest(
         `/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`,
         null,
-        'agn_nonce1',
+        rawNonce,
       ),
       env,
     );
@@ -258,8 +279,34 @@ describe('GET /api/portal/onboarding/agenda/callback', () => {
     expect(env.GOOGLE_TOKENS.store['oauth:google:admin']).toBeUndefined();
   });
 
+  it('aanvaller zet de nonceHash zelf (uit de state) als cookie-waarde → 400: bewijst dat de state-inhoud niet volstaat om de cookie te vervalsen', async () => {
+    const rawNonce = 'agn_nonce1';
+    const nonceHash = await sha256Hex(rawNonce);
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', nonceHash);
+    const env = baseEnv({});
+    let fetchCalled = false;
+    globalThis.fetch = async () => { fetchCalled = true; return { ok: true, json: async () => ({}) }; };
+
+    // Aanvaller leest de (gelekte) state, decodeert de payload, en zet de
+    // daaruit gehaalde nonceHash zelf als cookie — hij kent de rauwe nonce
+    // niet. sha256(nonceHash) !== nonceHash, dus de match faalt.
+    const res = await handlePortalApi(
+      await makeRequest(
+        `/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`,
+        null,
+        nonceHash,
+      ),
+      env,
+    );
+
+    expect(res.status).toBe(400);
+    expect(fetchCalled).toBe(false);
+    expect(env.GOOGLE_TOKENS.store['oauth:google:cust:cus_1']).toBeUndefined();
+  });
+
   it('geldige state ZONDER agenda_oauth_bind-cookie → 400, geen token-exchange, geen KV-put', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_nonce1');
+    const nonceHash = await sha256Hex('agn_nonce1');
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', nonceHash);
     const env = baseEnv({});
     let fetchCalled = false;
     globalThis.fetch = async () => { fetchCalled = true; return { ok: true, json: async () => ({}) }; };
@@ -275,7 +322,8 @@ describe('GET /api/portal/onboarding/agenda/callback', () => {
   });
 
   it('geldige state met VERKEERDE agenda_oauth_bind-cookie → 400, geen token-exchange, geen KV-put', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_nonce1');
+    const nonceHash = await sha256Hex('agn_nonce1');
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', nonceHash);
     const env = baseEnv({});
     let fetchCalled = false;
     globalThis.fetch = async () => { fetchCalled = true; return { ok: true, json: async () => ({}) }; };
@@ -295,8 +343,9 @@ describe('GET /api/portal/onboarding/agenda/callback', () => {
   });
 
   it('verlopen state (ouder dan 15 min) mét matchende cookie → 400, geen token-exchange', async () => {
-    const nonce = 'agn_nonce1';
-    const payload = `agenda-state:v1|cus_1.ord_1.${nonce}.${Date.now() - FIFTEEN_MIN_MS - 1000}`;
+    const rawNonce = 'agn_nonce1';
+    const nonceHash = await sha256Hex(rawNonce);
+    const payload = `agenda-state:v1|cus_1.ord_1.${nonceHash}.${Date.now() - FIFTEEN_MIN_MS - 1000}`;
     const state = await signRawPayload(payload);
     const env = baseEnv({});
     let fetchCalled = false;
@@ -306,7 +355,7 @@ describe('GET /api/portal/onboarding/agenda/callback', () => {
       await makeRequest(
         `/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`,
         null,
-        nonce,
+        rawNonce,
       ),
       env,
     );
@@ -316,7 +365,9 @@ describe('GET /api/portal/onboarding/agenda/callback', () => {
   });
 
   it('Google levert geen refresh_token → 502, niets opgeslagen (ook zonder sessiecookie)', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_nonce1');
+    const rawNonce = 'agn_nonce1';
+    const nonceHash = await sha256Hex(rawNonce);
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', nonceHash);
     const env = baseEnv({});
     globalThis.fetch = async () => ({ ok: true, json: async () => ({ access_token: 'access-123', expires_in: 3600 }) });
 
@@ -324,7 +375,7 @@ describe('GET /api/portal/onboarding/agenda/callback', () => {
       await makeRequest(
         `/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`,
         null,
-        'agn_nonce1',
+        rawNonce,
       ),
       env,
     );
@@ -333,7 +384,9 @@ describe('GET /api/portal/onboarding/agenda/callback', () => {
   });
 
   it('token-response zonder geldige expires_in → 502, niets opgeslagen', async () => {
-    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', 'agn_nonce1');
+    const rawNonce = 'agn_nonce1';
+    const nonceHash = await sha256Hex(rawNonce);
+    const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1', nonceHash);
     const env = baseEnv({});
     globalThis.fetch = async () => ({
       ok: true,
@@ -344,7 +397,7 @@ describe('GET /api/portal/onboarding/agenda/callback', () => {
       await makeRequest(
         `/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`,
         null,
-        'agn_nonce1',
+        rawNonce,
       ),
       env,
     );
