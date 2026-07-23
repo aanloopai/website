@@ -51,6 +51,12 @@ function makeDb({ servicesSeed = null } = {}) {
                 if (svc) svc.provisioning_json = provisioningJson;
                 return { meta: { changes: svc ? 1 : 0 } };
               }
+              if (sql.startsWith("UPDATE services SET status = 'actief'")) {
+                const [svcId] = args;
+                const svc = state.services.find((s) => s.id === svcId);
+                if (svc) svc.status = 'actief';
+                return { meta: { changes: svc ? 1 : 0 } };
+              }
               if (sql.startsWith("UPDATE service_orders SET status = 'actief'")) {
                 state.orderStatusUpdates.push({ status: 'actief', orderId: args[0] });
                 return { meta: { changes: 1 } };

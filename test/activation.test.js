@@ -97,6 +97,12 @@ function makeDb({ servicesSeed = null, initialOrderStatus = 'ingediend' } = {}) 
                 if (svc) svc.provisioning_json = provisioningJson;
                 return { meta: { changes: svc ? 1 : 0 } };
               }
+              if (sql.startsWith("UPDATE services SET status = 'actief'")) {
+                const [svcId] = args;
+                const svc = state.services.find((s) => s.id === svcId);
+                if (svc) svc.status = 'actief';
+                return { meta: { changes: svc ? 1 : 0 } };
+              }
               if (sql.startsWith("UPDATE service_orders SET status = 'actief'")) {
                 state.orderStatusUpdates.push({ status: 'actief', orderId: args[0] });
                 state.orderStatus = 'actief';
@@ -169,6 +175,12 @@ describe('activateOrder — provision() is de enige poort, voorstel_id maakt nie
     expect(result.provisioned).toBe(true);
     expect(db.state.orderStatusUpdates).toEqual([{ status: 'actief', orderId: order.id }]);
 
+    // Task 14: services.status moet MEE naar 'actief' — anders blijft de
+    // dienst in het portaal-overzicht op 'onboarding' staan terwijl het
+    // "Uw dienst is live"-scherm al toont dat de agent bestaat.
+    const svc = db.state.services.find((s) => s.order_id === order.id);
+    expect(svc.status).toBe('actief');
+
     // Geen enkel seintje — een geslaagde activatie is geen storing.
     expect(fetchStub.alertCalls).toEqual([]);
   });
@@ -216,6 +228,7 @@ describe('activateOrder — provision() is de enige poort, voorstel_id maakt nie
       servicesSeed: {
         id: 'svc_1', customer_id: 'cust_1', product_key: 'emma-telefoon', order_id: 'ord_funnel_1',
         provisioning_json: JSON.stringify({ status: 'agent_aangemaakt', agent_id: 'agent_1' }),
+        status: 'onboarding', // nog niet meegezet vóór de Task 14-fix — dat is precies de bug
       },
     });
     const fetchStub = makeFetchStub();
@@ -235,6 +248,13 @@ describe('activateOrder — provision() is de enige poort, voorstel_id maakt nie
     expect(result.status).toBe('actief');
     expect(db.state.orderStatusUpdates).toEqual([{ status: 'actief', orderId: 'ord_funnel_1' }]);
     expect(fetchStub.alertCalls).toEqual([]);
+
+    // Task 14: ook op het replay-pad (provisioning al eerder geslaagd) moet
+    // services.status alsnog naar 'actief' — de replay-guard is er om
+    // ElevenLabs niet opnieuw aan te roepen, niet om de portal-weergave stuk
+    // te laten staan.
+    const svc = db.state.services.find((s) => s.order_id === 'ord_funnel_1');
+    expect(svc.status).toBe('actief');
   });
 
   it('replay (al eerder succesvol geprovisioned): portal-order gedraagt zich exact als vandaag — actief, geen tweede provisioning-call', async () => {
@@ -286,5 +306,34 @@ describe('activateOrder — provision() is de enige poort, voorstel_id maakt nie
 
     expect(result.status).toBe('actief');
     expect(db.state.orderStatusUpdates).toEqual([{ status: 'actief', orderId: 'ord_funnel_1' }]);
+  });
+});
+
+// Task 14: services.status volgt nu service_orders.status naar 'actief' op
+// het klaar-pad (zowel de replay- als de verse-provision-tak hierboven), maar
+// mag dat NIET doen op het wacht_op_klant-pad — daar is de dienst nog niet
+// live en 'onboarding' is nog de juiste waarde voor het portaal-overzicht.
+describe('activateOrder — services.status blijft onboarding op wacht_op_klant', () => {
+  it('provisioner geeft wacht_op_klant (onvolledige intake): services.status blijft onboarding, geen UPDATE services SET status', async () => {
+    const db = makeDb();
+    globalThis.fetch = makeFetchStub();
+    const onvolledigeIntake = JSON.stringify({
+      bedrijf: { bedrijfsnaam: 'Test BV', branche: 'tandartspraktijk' },
+      bereikbaarheid: {
+        huidig_nummer: '010-1234567', openingstijden: 'Ma-Vr 09:00-17:00', buiten_tijden: 'Voicemail buiten openingstijden',
+      },
+      afhandeling: { taken: ['Een bericht aannemen'] },
+      // kennis.toon ontbreekt bewust — dat is het laatste verplichte veld.
+    });
+    const env = { PORTAL_DB: db, ELEVENLABS_API_KEY: 'test_key' };
+
+    const order = funnelOrder({ intake_json: onvolledigeIntake });
+    const result = await activateOrder(env, order);
+
+    expect(result.status).toBe('wacht_op_klant');
+    expect(db.state.orderStatusUpdates).toEqual([{ status: 'in_uitvoering', orderId: order.id }]);
+
+    const svc = db.state.services.find((s) => s.order_id === order.id);
+    expect(svc.status).toBe('onboarding');
   });
 });

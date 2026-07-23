@@ -135,7 +135,16 @@ export async function activateOrder(env, order, { manual = false } = {}) {
     // successful run (this branch) means the order is genuinely live, funnel
     // order or not — the wacht_op_klant wait is provision()'s own decision
     // (see the 'wacht_op_klant' branch below), not a re-check done here.
+    //
+    // Task 14: services.status must move to 'actief' alongside
+    // service_orders.status, or the portal shows a live agent ("Uw dienst is
+    // live") while the dashboard still counts 0 active services and the
+    // "Eerste dienst actief" milestone never ticks — services.status stayed
+    // on 'onboarding' forever. Both UPDATEs run every replay; each is a plain
+    // idempotent overwrite (no CAS guard needed like park()/wachtOpKlant(),
+    // since 'actief' never has to be protected from being re-set to itself).
     await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
+    await db.prepare("UPDATE services SET status = 'actief' WHERE id = ?").bind(svcId).run();
     return { status: 'actief', serviceId: svcId, provisioned: true };
   }
 
@@ -209,7 +218,11 @@ export async function activateOrder(env, order, { manual = false } = {}) {
 
     // provision() returned 'klaar': the intake is complete and the agent is
     // live. That is the only gate — go actief regardless of voorstel_id/manual.
+    // Same Task 14 fix as the replay branch above: services.status has to
+    // follow service_orders.status here too, or the portal overview/badge/
+    // milestone disagree with the live-screen the customer just saw.
     await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
+    await db.prepare("UPDATE services SET status = 'actief' WHERE id = ?").bind(svcId).run();
     return { status: 'actief', serviceId: svcId, provisioned: true };
   }
 

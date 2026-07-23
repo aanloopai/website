@@ -73,6 +73,15 @@ function makeDbStub({ users = [], order = null }) {
         },
       };
     }
+    if (sql.startsWith("UPDATE services SET status = 'actief'")) {
+      return {
+        run: async () => {
+          const [svcId] = args;
+          if (state.service && state.service.id === svcId) state.service.status = 'actief';
+          return { meta: { changes: 1 } };
+        },
+      };
+    }
     if (sql.startsWith("UPDATE service_orders SET status = 'actief'")) {
       return {
         run: async () => {
