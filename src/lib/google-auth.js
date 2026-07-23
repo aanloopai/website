@@ -1,15 +1,17 @@
 // Shared OAuth token-refresh helper for Google Calendar API.
-// Single-tenant: admin's tokens stored in KV under key 'oauth:google:admin'.
+// Multi-tenant: tokens stored in KV under a caller-supplied key, e.g.
+// 'oauth:google:admin' (default, single-tenant admin path) or
+// 'oauth:google:cust:<customerId>' (per-klant agenda-koppeling, Task 11).
 
-const KV_KEY = 'oauth:google:admin';
+const ADMIN_KV_KEY = 'oauth:google:admin';
 const TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const EXPIRY_BUFFER_MS = 60_000;
 
-export async function getAccessToken(env) {
+export async function getAccessToken(env, kvKey = ADMIN_KV_KEY) {
   if (!env.GOOGLE_TOKENS) {
     throw new Error('KV namespace GOOGLE_TOKENS not bound. Configure in Cloudflare Worker settings.');
   }
-  const stored = await env.GOOGLE_TOKENS.get(KV_KEY, 'json');
+  const stored = await env.GOOGLE_TOKENS.get(kvKey, 'json');
   if (!stored) {
     throw new Error('No admin tokens. Visit /api/google/initiate?key=<GOOGLE_OAUTH_INIT_KEY> to authorize.');
   }
@@ -36,7 +38,7 @@ export async function getAccessToken(env) {
     access_token: fresh.access_token,
     expires_at: Date.now() + fresh.expires_in * 1000,
   };
-  await env.GOOGLE_TOKENS.put(KV_KEY, JSON.stringify(updated));
+  await env.GOOGLE_TOKENS.put(kvKey, JSON.stringify(updated));
   return updated.access_token;
 }
 
