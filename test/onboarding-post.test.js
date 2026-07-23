@@ -149,7 +149,14 @@ async function makeRequest(path, { userId, method = 'POST', body, origin = SITE_
 const USERS = [{ id: 'usr_1', customer_id: 'cus_1', email: 'a@test.nl', naam: 'A', role: 'eigenaar' }];
 
 describe('POST /api/portal/onboarding', () => {
-  it('vult de laatste ontbrekende verplichte velden in → activateOrder levert actief, deep-merge bewaart eerdere stappen', async () => {
+  // Task 7 (correctness-fix): dit MOET een ECHTE funnel-order zijn
+  // (voorstel_id gezet) — vóór de fix bevatte activation.js een kortsluiting
+  // die zo'n order voor eeuwig op wacht_op_klant liet staan, zelfs nadat deze
+  // POST de intake volledig had gemaakt en provision() 'klaar' teruggaf. Dit
+  // is de kern van Plak C: postOnboarding (portal-routes.js) roept
+  // activateOrder() aan zonder {manual:true} — als de order hier niet op
+  // actief belandt, werkt de hele self-serve funnel niet.
+  it('funnel-order (voorstel_id gezet): vult de laatste ontbrekende verplichte velden in → activateOrder levert actief ZONDER manual, deep-merge bewaart eerdere stappen', async () => {
     const bijnaCompleet = {
       bedrijf: { bedrijfsnaam: 'Testbedrijf', branche: 'tandarts' },
       bereikbaarheid: { huidig_nummer: '+31 6 123', openingstijden: 'Ma-Vr 9-17', buiten_tijden: 'Voicemail buiten openingstijden' },
@@ -159,7 +166,7 @@ describe('POST /api/portal/onboarding', () => {
     };
     const order = {
       id: 'ord_1', customer_id: 'cus_1', product_key: 'emma-telefoon', tier: 'Starter',
-      intake_json: JSON.stringify(bijnaCompleet), status: 'ingediend', voorstel_id: null,
+      intake_json: JSON.stringify(bijnaCompleet), status: 'ingediend', voorstel_id: 'vst_1',
     };
     const db = makeDbStub({ users: USERS, order });
     globalThis.fetch = makeFetchStub();
@@ -184,6 +191,34 @@ describe('POST /api/portal/onboarding', () => {
     expect(savedIntake.afhandeling).toEqual(bijnaCompleet.afhandeling);
     expect(savedIntake.integraties).toEqual(bijnaCompleet.integraties);
     expect(savedIntake.kennis).toEqual({ toon: 'Zakelijk en warm' });
+    expect(db.state.order.status).toBe('actief');
+  });
+
+  it('portal-order (voorstel_id null) gedraagt zich identiek: laatste veld erbij → actief', async () => {
+    const bijnaCompleet = {
+      bedrijf: { bedrijfsnaam: 'Testbedrijf', branche: 'tandarts' },
+      bereikbaarheid: { huidig_nummer: '+31 6 123', openingstijden: 'Ma-Vr 9-17', buiten_tijden: 'Voicemail buiten openingstijden' },
+      afhandeling: { taken: ['Afspraken inplannen'] },
+      integraties: { agenda: 'Geen / weet ik nog niet' },
+    };
+    const order = {
+      id: 'ord_1b', customer_id: 'cus_1', product_key: 'emma-telefoon', tier: 'Starter',
+      intake_json: JSON.stringify(bijnaCompleet), status: 'ingediend', voorstel_id: null,
+    };
+    const db = makeDbStub({ users: USERS, order });
+    globalThis.fetch = makeFetchStub();
+    const env = {
+      PORTAL_DB: db, PORTAL_SESSION_SECRET: SECRET, GOOGLE_TOKENS: makeKvStub(), ELEVENLABS_API_KEY: 'test_key',
+    };
+
+    const res = await handlePortalApi(await makeRequest('/api/portal/onboarding', {
+      userId: 'usr_1',
+      body: { order_id: 'ord_1b', answers: { kennis: { toon: 'Zakelijk en warm' } } },
+    }), env);
+
+    expect(res.status).toBe(200);
+    const body = await res.json();
+    expect(body).toEqual({ ok: true, actief: true });
     expect(db.state.order.status).toBe('actief');
   });
 

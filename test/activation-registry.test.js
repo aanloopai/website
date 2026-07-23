@@ -76,7 +76,7 @@ function makeDb({ servicesSeed = null } = {}) {
 }
 
 describe('activateOrder — gebruikt de provisioner-registry', () => {
-  it('provisioned een emma-telefoon order via de registry (manual:true, funnel-order): status actief', async () => {
+  it('provisioned een emma-telefoon funnel-order (voorstel_id gezet) via de registry: status actief, ZONDER manual', async () => {
     const db = makeDb();
     const env = { PORTAL_DB: db, ELEVENLABS_API_KEY: 'test_key' };
     const order = {
@@ -84,7 +84,9 @@ describe('activateOrder — gebruikt de provisioner-registry', () => {
       status: 'ingediend', intake_json: '{}', voorstel_id: 'vst_1',
     };
 
-    const result = await activateOrder(env, order, { manual: true });
+    // Geen { manual: true } — provision()'s 'klaar'-uitkomst (de registry-mock
+    // hierboven) is de enige poort, voorstel_id is irrelevant (Task 7).
+    const result = await activateOrder(env, order);
 
     expect(result.status).toBe('actief');
     expect(result.provisioned).toBe(true);

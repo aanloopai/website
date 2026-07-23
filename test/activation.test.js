@@ -1,15 +1,20 @@
-// Legt de derde provisioning-uitkomst vast (spec §5, "wacht_op_klant"): een
-// order die uit de self-serve funnel komt (service_orders.voorstel_id gezet)
-// heeft alleen de ondiepe wizard-intake. Een geslaagde ElevenLabs-provisioning
-// mag zo'n order NOOIT op 'actief' zetten — de diepe intake ontbreekt nog.
+// Legt vast dat de derde provisioning-uitkomst (spec §5, "wacht_op_klant") en
+// de 'actief'-uitkomst UITSLUITEND door provision()'s eigen oordeel
+// (missingForLive tegen de intake) worden bepaald — niet door of de order uit
+// de self-serve funnel komt (service_orders.voorstel_id gezet) of niet.
 //
-// Task 3 (2026-07-23): het interim-seintje dat hier ooit bij hoorde (zie git-
-// historie van activation.js voor de volledige uitleg) is verwijderd —
-// wacht_op_klant alert NOOIT meer. De klant wordt voortaan via
-// /portal/onboarding + de nudge-cron benaderd (spec plak C, Task 8/13), niet
-// via een staff-alert. Een order zonder voorstel_id (het bestaande
-// portaalpad) moet zich exact blijven gedragen als vandaag: succesvolle
-// provisioning -> 'actief', geen enkele wijziging aan die tak.
+// Task 7 (2026-07-23, correctness-fix): vóór deze fix bevatte activation.js
+// een interim-kortsluiting die ELKE funnel-order (voorstel_id gezet) voor
+// altijd op wacht_op_klant liet staan, ook nadat de klant de volledige
+// (diepe) onboarding-intake via /portal/onboarding had ingevuld en
+// provision() daarop 'klaar' teruggaf — de kern van Plak C werkte daardoor
+// niet. Die kortsluiting is verwijderd: een funnel-order met een COMPLETE
+// intake gaat nu — precies als een portal-order — direct op 'actief', zonder
+// {manual:true}. Een funnel-order met een ONVOLLEDIGE intake blijft, exact
+// zoals vandaag, op wacht_op_klant staan (dat is provision()'s eigen
+// wacht_op_klant-oordeel, zie provisioners/voice.test.js voor de
+// veldcompleetheids-logica zelf) — dat dekt dit bestand niet opnieuw af, wel
+// activation-statemachine.test.js.
 import { describe, it, expect, afterEach } from 'vitest';
 import { activateOrder } from '../src/lib/activation.js';
 
@@ -150,8 +155,8 @@ function portalOrder(overrides = {}) {
   };
 }
 
-describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', () => {
-  it('funnel-order (voorstel_id gezet): geslaagde provisioning zet NOOIT op actief, wel op in_uitvoering, en alert NIET (Task 3: interim-seintje verwijderd)', async () => {
+describe('activateOrder — provision() is de enige poort, voorstel_id maakt niets uit', () => {
+  it('funnel-order (voorstel_id gezet) met COMPLETE intake: geslaagde provisioning zet direct op actief, ZONDER manual, en alert NIET', async () => {
     const db = makeDb();
     const fetchStub = makeFetchStub();
     globalThis.fetch = fetchStub;
@@ -160,12 +165,11 @@ describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', (
     const order = funnelOrder();
     const result = await activateOrder(env, order);
 
-    expect(result.status).toBe('wacht_op_klant');
+    expect(result.status).toBe('actief');
     expect(result.provisioned).toBe(true);
-    expect(db.state.orderStatusUpdates).toEqual([{ status: 'in_uitvoering', orderId: order.id }]);
-    expect(db.state.orderStatusUpdates.some((u) => u.status === 'actief')).toBe(false);
+    expect(db.state.orderStatusUpdates).toEqual([{ status: 'actief', orderId: order.id }]);
 
-    // Geen enkel seintje meer — noch storingsalert, noch het oude interim-seintje.
+    // Geen enkel seintje — een geslaagde activatie is geen storing.
     expect(fetchStub.alertCalls).toEqual([]);
   });
 
@@ -183,7 +187,7 @@ describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', (
     expect(fetchStub.alertCalls).toEqual([]);
   });
 
-  it('replay via dezelfde D1-rij (webhook gevolgd door reconcile-cron): geen tweede transitie, en er gaat sowieso geen seintje uit', async () => {
+  it('replay via dezelfde D1-rij (webhook gevolgd door reconcile-cron): funnel-order blijft actief, geen tweede ElevenLabs-call, geen seintje', async () => {
     const db = makeDb();
     const fetchStub = makeFetchStub();
     globalThis.fetch = fetchStub;
@@ -191,22 +195,24 @@ describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', (
 
     const order = funnelOrder();
     const first = await activateOrder(env, order);
-    expect(first.status).toBe('wacht_op_klant');
+    expect(first.status).toBe('actief');
     expect(fetchStub.alertCalls).toEqual([]);
 
-    // Zelfde db (dus dezelfde D1-rij, nu al 'in_uitvoering') — simuleert de
+    // Zelfde db (dus dezelfde D1-rij, nu al 'actief') — simuleert de
     // 15-minuten reconcile-cron of een tweede webhook-delivery die dezelfde
     // order opnieuw activeert. ElevenLabs wordt hier niet opnieuw geraakt
-    // (provisioning_json staat al op geslaagd), dus dezelfde fetchStub volstaat.
+    // (provisioning_json staat al op geslaagd, dus dit is het replay-pad) —
+    // een fetch-aanroep zou een throw geven, dus de afwezigheid daarvan is de
+    // garantie zelf.
+    globalThis.fetch = async (url) => { throw new Error(`mag niet worden aangeroepen bij een replay: ${url}`); };
     const second = await activateOrder(env, order);
-    expect(second.status).toBe('wacht_op_klant');
-    expect(db.state.orderStatusUpdates).toEqual([{ status: 'in_uitvoering', orderId: order.id }]); // geen tweede transitie
+    expect(second.status).toBe('actief');
     expect(fetchStub.alertCalls).toEqual([]); // nog steeds geen seintje
   });
 
-  it('replay (al eerder succesvol geprovisioned én al in_uitvoering): funnel-order blijft wacht_op_klant, geen tweede provisioning-call, geen seintje', async () => {
+  it('replay (al eerder succesvol geprovisioned én al in_uitvoering): funnel-order gaat alsnog actief, geen tweede provisioning-call, geen seintje', async () => {
     const db = makeDb({
-      initialOrderStatus: 'in_uitvoering', // de eerdere activatie zette dit al
+      initialOrderStatus: 'in_uitvoering', // bv. gezet terwijl de klant nog aan de onboarding zat
       servicesSeed: {
         id: 'svc_1', customer_id: 'cust_1', product_key: 'emma-telefoon', order_id: 'ord_funnel_1',
         provisioning_json: JSON.stringify({ status: 'agent_aangemaakt', agent_id: 'agent_1' }),
@@ -226,8 +232,8 @@ describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', (
     const env = { PORTAL_DB: db, ELEVENLABS_API_KEY: 'test_key', BREVO_API_KEY: 'brevo_key' };
     const result = await activateOrder(env, funnelOrder());
 
-    expect(result.status).toBe('wacht_op_klant');
-    expect(db.state.orderStatusUpdates).toEqual([]); // geen enkele transitie — was al in_uitvoering
+    expect(result.status).toBe('actief');
+    expect(db.state.orderStatusUpdates).toEqual([{ status: 'actief', orderId: 'ord_funnel_1' }]);
     expect(fetchStub.alertCalls).toEqual([]);
   });
 
@@ -248,15 +254,14 @@ describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', (
     expect(db.state.orderStatusUpdates).toEqual([{ status: 'actief', orderId: 'ord_portal_1' }]);
   });
 
-  // ── Punt D (eindreview #2): manual:true MOET een funnel-order kunnen
-  // afsluiten. Vóór deze fix negeerde de wacht_op_klant-guard `manual`
-  // volledig — daardoor kon een mens de wachttoestand nooit doorbreken, ook
-  // niet nadat hij de diepe intake zelf handmatig had afgerond (openingstijden,
-  // doorschakelnummer, nummer koppelen — buiten dit systeem om). De
-  // automatische paden (webhook, cron — geen manual:true) moeten de
-  // wachttoestand wél blijven respecteren; dat dekken de tests hierboven
-  // (zonder { manual: true }) al af en blijven ongewijzigd.
-  it('een handmatige admin-klik (manual:true) op een AL GEPROVISIONEDE funnel-order sluit de order alsnog af op actief', async () => {
+  // manual is (Task 7) GEEN escape hatch meer voor auto-provisionable
+  // producten — het wordt simpelweg genegeerd op dit pad (de enige plek waar
+  // manual nog iets doet, is het niet-auto-provisionable pad onderaan
+  // activateOrder, gedekt door de "handmatige inrichting"-tests elders). Deze
+  // twee tests bewijzen dat een admin-klik met manual:true op een
+  // auto-provisionable funnel-order hetzelfde resultaat geeft als zonder —
+  // geen speciale behandeling, geen regressie.
+  it('manual:true op een AL GEPROVISIONEDE funnel-order verandert niets — was al actief-waardig zonder manual', async () => {
     const db = makeDb({
       servicesSeed: {
         id: 'svc_3', customer_id: 'cust_1', product_key: 'emma-telefoon', order_id: 'ord_funnel_1',
@@ -272,7 +277,7 @@ describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', (
     expect(db.state.orderStatusUpdates).toEqual([{ status: 'actief', orderId: 'ord_funnel_1' }]);
   });
 
-  it('een handmatige admin-klik (manual:true) op een funnel-order die NU voor het eerst succesvol provisiont, sluit ook af op actief', async () => {
+  it('manual:true op een funnel-order die NU voor het eerst succesvol provisiont: verandert niets — was al actief-waardig zonder manual', async () => {
     const db = makeDb();
     globalThis.fetch = makeFetchStub();
 

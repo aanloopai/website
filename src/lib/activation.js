@@ -12,27 +12,31 @@
 //   ingediend → in_uitvoering  (service row materialised, setup running)
 //   in_uitvoering → actief     (the thing the customer paid for actually exists)
 //
-// An order only reaches 'actief' when its service is really live:
-//   * auto-provisionable product (ElevenLabs)  → 'actief' requires a successful
-//     provisioning run. Missing key stops at 'in_uitvoering' and alerts staff
-//     immediately (config error, not expected to self-heal). A failed run
-//     also stops at 'in_uitvoering', but only alerts once 3 consecutive
-//     attempts have failed (provisioning_json.attempts, Task 3) — the first
-//     two retries are silent, since most failures are transient and the
-//     webhook/cron replay retries automatically.
-//   * human-delivered product                  → only a staff member can call it
-//     done ({manual:true}); the webhook parks it on 'in_uitvoering' and alerts.
-//   * self-serve funnel order (voorstel_id set) → a successful provisioning
-//     run still stops at 'in_uitvoering' ("wacht_op_klant", spec §5): the
-//     order only carries the shallow wizard intake, never the deep portal
-//     intake. This is a normal, expected state — NOT a failure — so it never
-//     alerts staff (Task 3: it used to alert once as an interim measure; the
-//     customer is now nudged through /portal/onboarding instead, spec plak C).
-//     Automatic callers (webhook, cron) always respect this wait state. A
-//     staff member's explicit {manual:true} click IS allowed to close it out
-//     — e.g. after completing the deep configuration by hand outside this
-//     system (opening hours, call forwarding, number linking) — since that
-//     click is itself the confirmation that the service is genuinely ready.
+// An order only reaches 'actief' when its service is really live. For
+// auto-provisionable products (ElevenLabs, canProvision()===true) the
+// provisioner's own provision() outcome is the ONLY gate — voorstel_id
+// (self-serve funnel order) and manual are irrelevant to it:
+//   * auto-provisionable product → 'klaar'         → 'actief'. Applies
+//     identically to funnel orders and portal orders: once the intake
+//     provision() was given is complete enough to go live, the order goes
+//     live. A funnel order's shallow wizard intake reaching 'klaar' means
+//     the provisioner judged it sufficient — that is not this file's call
+//     to second-guess.
+//   * auto-provisionable product → 'wacht_op_klant' → stays 'in_uitvoering'
+//     (Task 8/13: the customer is nudged through /portal/onboarding; Task 3:
+//     this never alerts staff, it is a normal, expected wait — not a
+//     failure). Completing the onboarding intake re-runs provisioning,
+//     which then re-evaluates to 'klaar' or still 'wacht_op_klant'.
+//   * auto-provisionable product → 'fout'           → stays 'in_uitvoering',
+//     alerting only once 3 consecutive attempts have failed
+//     (provisioning_json.attempts, Task 3) — the first two retries are
+//     silent, since most failures are transient and the webhook/cron replay
+//     retries automatically. Missing key is a config error, not a product
+//     decision, and alerts staff immediately.
+//   * human-delivered product (no provisioner exists) → only a staff member
+//     can call it done ({manual:true}); the webhook parks it on
+//     'in_uitvoering' and alerts. This is the ONLY place `manual` acts as an
+//     escape hatch — there is no provision() outcome to defer to here.
 //
 // Every step is idempotent and safe to replay: the Mollie webhook, the 15-minute
 // reconcile cron and an admin click can all race, and the unique index on
@@ -54,36 +58,26 @@ function needsProvisioning(prov) {
   return !prov || prov.status === 'fout';
 }
 
-// An order minted by the self-serve funnel (voorstel-verify.js) carries
-// voorstel_id — the only intake it has is the shallow wizard mapping from
-// funnel-intake.js, never the full portal/intake.astro schema. The existing
-// portal path (admin-created orders, /portal/intake.astro) never sets this
-// column, so it stays null there and this check is a no-op for it.
-function isFunnelOrder(order) {
-  return Boolean(order.voorstel_id);
-}
-
-// Third provisioning outcome (spec §5, "wacht_op_klant"): a funnel order whose
-// agent provisioned successfully still isn't genuinely live — the deep intake
-// hasn't happened yet. This is a normal, expected state, NOT a failure — it
-// does not go through park()'s "something broke" alert, and (as of Task 3,
-// 2026-07-23) it does not page staff at all. The order sits on
-// 'in_uitvoering' (never downgrading an order that is somehow already
-// 'actief') until the customer completes the deep intake through
+// Third provisioning outcome (spec §5, "wacht_op_klant"): provision() itself
+// decided the intake it was given isn't complete enough to go live yet
+// (missing fields per missingForLive, regardless of whether the order is a
+// self-serve funnel order or a portal order). This is a normal, expected
+// state, NOT a failure — it does not go through park()'s "something broke"
+// alert, and (as of Task 3, 2026-07-23) it does not page staff at all. The
+// order sits on 'in_uitvoering' (never downgrading an order that is somehow
+// already 'actief') until the customer completes the intake through
 // /portal/onboarding — nudged there by the onboarding-nudge cron (spec plak
-// C, Task 8/13) — and that re-runs provisioning, OR until a staff member
-// confirms by hand that it is done and closes it out with an explicit
-// {manual:true} activation (the two call sites above skip this function
-// entirely when manual is set).
+// C, Task 8/13) — and that re-runs provisioning, which may then return
+// 'klaar' and go actief.
 //
 // Fires-once guard: the UPDATE's WHERE excludes 'in_uitvoering' as well as
 // 'actief', so it only actually changes a row (changes === 1) on the ONE call
 // that transitions the order INTO the wait state. Every replay after that —
-// webhook retry, the reconcile cron, or an admin click without manual:true —
-// finds the order already sitting on 'in_uitvoering' and the UPDATE matches
-// zero rows. That guard is kept (rather than deleted along with the alert)
-// because it is still the only signal that distinguishes a fresh transition
-// from a no-op replay, which other callers may come to rely on.
+// webhook retry, the reconcile cron, or an admin click — finds the order
+// already sitting on 'in_uitvoering' and the UPDATE matches zero rows. That
+// guard is kept (rather than deleted along with the alert) because it is
+// still the only signal that distinguishes a fresh transition from a no-op
+// replay, which other callers may come to rely on.
 async function wachtOpKlant(db, order, svcId) {
   await db.prepare(
     "UPDATE service_orders SET status = 'in_uitvoering' WHERE id = ? AND status NOT IN ('in_uitvoering', 'actief')",
@@ -97,11 +91,12 @@ async function wachtOpKlant(db, order, svcId) {
  * @param {object} env    Worker env (PORTAL_DB, ELEVENLABS_API_KEY, alert creds)
  * @param {object} order  Full service_orders row.
  * @param {{manual?: boolean}} opts
- *        manual — a staff member clicked "actief" in /admin/aanvragen. Lets a
- *        human-delivered product be marked done, AND lets a self-serve funnel
- *        order (voorstel_id set) skip its wacht_op_klant wait state. It does
- *        NOT let anyone mark an auto-provisionable product live without a
- *        successful provisioning run — a failed/missing run still parks.
+ *        manual — a staff member clicked "actief" in /admin/aanvragen. Only
+ *        relevant for a human-delivered product (no provisioner exists): it
+ *        marks the order done. It has NO effect on an auto-provisionable
+ *        product (canProvision(order.product_key)===true, funnel order or
+ *        not) — that path's only gate is provision()'s own outcome
+ *        ('klaar'/'wacht_op_klant'/'fout'), never `manual`.
  * @returns {Promise<{status: string, serviceId: string|null, provisioned: boolean, blocked?: boolean}>}
  */
 export async function activateOrder(env, order, { manual = false } = {}) {
@@ -136,13 +131,10 @@ export async function activateOrder(env, order, { manual = false } = {}) {
     // bill for) a second agent — just make sure the order reflects reality.
     // This is the replay / double-click / cron-rerun path, and it is checked
     // FIRST so that a live service stays live even if the key was rotated out.
-    // H-eind-D: `manual` is the escape hatch — a staff member clicking
-    // "actief" is an explicit human confirmation that the deep intake really
-    // did happen (possibly outside this system entirely), so it may close
-    // out a funnel order that would otherwise sit on wacht_op_klant forever.
-    // Automatic callers (webhook, cron) never pass manual:true and keep
-    // respecting the wait state.
-    if (isFunnelOrder(order) && !manual) return wachtOpKlant(db, order, svcId);
+    // provision() is the only gate for auto-provisionable products: a
+    // successful run (this branch) means the order is genuinely live, funnel
+    // order or not — the wacht_op_klant wait is provision()'s own decision
+    // (see the 'wacht_op_klant' branch below), not a re-check done here.
     await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
     return { status: 'actief', serviceId: svcId, provisioned: true };
   }
@@ -172,10 +164,10 @@ export async function activateOrder(env, order, { manual = false } = {}) {
 
     // The provisioner itself decided the intake isn't complete enough to go
     // live (spec §5, "wacht_op_klant") — this is a normal wait state, not a
-    // failure, so it reuses the same non-alerting wait path as the
-    // funnel-specific wait below rather than park()'s "something broke" alert.
-    // Nothing was provisioned, so provisioning_json is left untouched — the
-    // next replay simply re-checks the (possibly by-then-updated) intake.
+    // failure, so it goes through the non-alerting wachtOpKlant() path rather
+    // than park()'s "something broke" alert. Nothing was provisioned, so
+    // provisioning_json is left untouched — the next replay simply re-checks
+    // the (possibly by-then-updated) intake.
     if (result.status === 'wacht_op_klant') return wachtOpKlant(db, order, svcId);
 
     if (result.status === 'fout') {
@@ -215,9 +207,8 @@ export async function activateOrder(env, order, { manual = false } = {}) {
     await db.prepare('UPDATE services SET provisioning_json = ? WHERE id = ?')
       .bind(JSON.stringify(result.provisioning), svcId).run();
 
-    // Same manual-escape-hatch reasoning as above: only a human's explicit
-    // click may skip straight to 'actief' for a funnel order.
-    if (isFunnelOrder(order) && !manual) return wachtOpKlant(db, order, svcId);
+    // provision() returned 'klaar': the intake is complete and the agent is
+    // live. That is the only gate — go actief regardless of voorstel_id/manual.
     await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
     return { status: 'actief', serviceId: svcId, provisioned: true };
   }

@@ -1,7 +1,7 @@
 // Task 3 (provisioning-state-machine): legt twee gedragingen vast die
 // activation.js nu regelt zonder de bestaande garanties (registry-gebruik,
-// wacht_op_klant, manual-escape-hatch, replay-idempotentie — zie
-// activation.test.js / activation-registry.test.js) te breken:
+// wacht_op_klant, replay-idempotentie — zie activation.test.js /
+// activation-registry.test.js) te breken:
 //
 //   1. Een mislukte provisioning-poging alert NIET meer meteen — attempts
 //      wordt bijgehouden in provisioning_json en pas de 3e opeenvolgende
@@ -9,7 +9,10 @@
 //   2. wacht_op_klant (spec §5) alert NOOIT — noch bij het interim-seintje
 //      dat Task 3 heeft verwijderd, noch anderszins. De klant wordt voortaan
 //      via /portal/onboarding + de nudge-cron benaderd (Task 8/13), niet via
-//      een staff-alert.
+//      een staff-alert. wacht_op_klant is UITSLUITEND provision()'s eigen
+//      oordeel (missingForLive) — het is geen apart funnel-vs-portal-gedrag
+//      en `manual` heeft er (Task 7) geen invloed meer op: een funnel-order
+//      waarvoor provision() 'klaar' teruggeeft, gaat altijd meteen actief.
 //
 // De provisioner-registry (resolve/canProvision) EN notify.js (alertStaff)
 // zijn hier gemockt: dit bestand dekt de state-machine in activation.js
@@ -171,9 +174,10 @@ describe('activateOrder — attempts-teller op het fout-pad', () => {
     const env = { PORTAL_DB: db, ELEVENLABS_API_KEY: 'test_key' };
     provisionMock.mockResolvedValueOnce({ status: 'klaar', provisioning: { status: 'agent_aangemaakt', agent_id: 'ag_1' } });
 
-    // Portal-order (geen voorstel_id) zodat een geslaagde run direct 'actief' wordt
-    // en we het geschreven provisioning_json rechtstreeks kunnen inspecteren.
-    const result = await activateOrder(env, funnelOrder({ voorstel_id: null }));
+    // funnelOrder() default heeft voorstel_id gezet — maakt niet uit: een
+    // geslaagde run gaat sowieso direct naar 'actief', en we kunnen het
+    // geschreven provisioning_json rechtstreeks inspecteren.
+    const result = await activateOrder(env, funnelOrder());
 
     expect(result.status).toBe('actief');
     const svc = db.state.services.find((s) => s.order_id === 'ord_1');
@@ -194,17 +198,10 @@ describe('activateOrder — wacht_op_klant alert NOOIT', () => {
     expect(db.state.orderStatusUpdates).toEqual([{ status: 'in_uitvoering', orderId: 'ord_1' }]);
   });
 
-  it('funnel-order met geslaagde provisioning: wacht_op_klant, alertStaff NIET aangeroepen (interim-seintje is verwijderd)', async () => {
-    const db = makeDb();
-    const env = { PORTAL_DB: db, ELEVENLABS_API_KEY: 'test_key' };
-    provisionMock.mockResolvedValueOnce({ status: 'klaar', provisioning: { status: 'agent_aangemaakt', agent_id: 'ag_1' } });
-
-    const result = await activateOrder(env, funnelOrder());
-
-    expect(result.status).toBe('wacht_op_klant');
-    expect(alertStaffMock).not.toHaveBeenCalled();
-    expect(db.state.orderStatusUpdates).toEqual([{ status: 'in_uitvoering', orderId: 'ord_1' }]);
-  });
+  // Was ooit "funnel-order met geslaagde provisioning: wacht_op_klant" — dat was
+  // precies de bug die Task 7 fixt: provision()'s 'klaar'-uitkomst is de ENIGE
+  // poort, ongeacht voorstel_id. Zie de 'actief zodra provision() klaar' tests
+  // hieronder in de 'geslaagde provisioning wordt nooit herhaald'-describe.
 
   it('manual:true op een order met ONVOLLEDIGE intake: provisioner geeft wacht_op_klant, order gaat NIET naar actief', async () => {
     const db = makeDb();
@@ -224,7 +221,7 @@ describe('activateOrder — wacht_op_klant alert NOOIT', () => {
 });
 
 describe('activateOrder — geslaagde provisioning wordt nooit herhaald', () => {
-  it('provisioning_json.status is al niet-fout: provisioner wordt niet opnieuw aangeroepen', async () => {
+  it('provisioning_json.status is al niet-fout: provisioner wordt niet opnieuw aangeroepen (voorstel_id is irrelevant)', async () => {
     const db = makeDb({
       servicesSeed: {
         id: 'svc_1', customer_id: 'cust_1', product_key: 'emma-telefoon', order_id: 'ord_1',
@@ -233,15 +230,29 @@ describe('activateOrder — geslaagde provisioning wordt nooit herhaald', () => 
     });
     const env = { PORTAL_DB: db, ELEVENLABS_API_KEY: 'test_key' };
 
-    // portal-order (voorstel_id null): geslaagde provisioning gaat direct naar actief
-    const result = await activateOrder(env, funnelOrder({ voorstel_id: null }));
+    // funnel-order (voorstel_id gezet): een al-geslaagde provisioning gaat
+    // direct naar actief, zonder manual — het replay-pad checkt provision()'s
+    // eerdere uitkomst, niet voorstel_id.
+    const result = await activateOrder(env, funnelOrder());
 
     expect(result.status).toBe('actief');
     expect(provisionMock).not.toHaveBeenCalled();
     expect(alertStaffMock).not.toHaveBeenCalled();
   });
 
-  it('manual:true op een reeds-geprovisionede funnel-order: sluit af op actief, geen tweede provision-call', async () => {
+  it('een funnel-order (voorstel_id gezet) waarvan provision() NU voor het eerst \'klaar\' teruggeeft: direct actief, ZONDER manual', async () => {
+    const db = makeDb();
+    const env = { PORTAL_DB: db, ELEVENLABS_API_KEY: 'test_key' };
+    provisionMock.mockResolvedValueOnce({ status: 'klaar', provisioning: { status: 'agent_aangemaakt', agent_id: 'ag_1' } });
+
+    const result = await activateOrder(env, funnelOrder());
+
+    expect(result.status).toBe('actief');
+    expect(db.state.orderStatusUpdates).toEqual([{ status: 'actief', orderId: 'ord_1' }]);
+    expect(alertStaffMock).not.toHaveBeenCalled();
+  });
+
+  it('een reeds-geprovisionede funnel-order sluit ook af op actief als een admin nog manual:true meestuurt (geen regressie, manual is nu een no-op hier)', async () => {
     const db = makeDb({
       servicesSeed: {
         id: 'svc_1', customer_id: 'cust_1', product_key: 'emma-telefoon', order_id: 'ord_1',
