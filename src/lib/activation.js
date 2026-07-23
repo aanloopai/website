@@ -14,20 +14,25 @@
 //
 // An order only reaches 'actief' when its service is really live:
 //   * auto-provisionable product (ElevenLabs)  → 'actief' requires a successful
-//     provisioning run. No key, or a failed run, stops at 'in_uitvoering' and
-//     alerts staff — it never claims to be live.
+//     provisioning run. Missing key stops at 'in_uitvoering' and alerts staff
+//     immediately (config error, not expected to self-heal). A failed run
+//     also stops at 'in_uitvoering', but only alerts once 3 consecutive
+//     attempts have failed (provisioning_json.attempts, Task 3) — the first
+//     two retries are silent, since most failures are transient and the
+//     webhook/cron replay retries automatically.
 //   * human-delivered product                  → only a staff member can call it
 //     done ({manual:true}); the webhook parks it on 'in_uitvoering' and alerts.
 //   * self-serve funnel order (voorstel_id set) → a successful provisioning
 //     run still stops at 'in_uitvoering' ("wacht_op_klant", spec §5): the
 //     order only carries the shallow wizard intake, never the deep portal
 //     intake. This is a normal, expected state — NOT a failure — so it never
-//     alerts staff. Automatic callers (webhook, cron) always respect this
-//     wait state. A staff member's explicit {manual:true} click IS allowed
-//     to close it out — e.g. after completing the deep configuration by hand
-//     outside this system (opening hours, call forwarding, number linking) —
-//     since that click is itself the confirmation that the service is
-//     genuinely ready.
+//     alerts staff (Task 3: it used to alert once as an interim measure; the
+//     customer is now nudged through /portal/onboarding instead, spec plak C).
+//     Automatic callers (webhook, cron) always respect this wait state. A
+//     staff member's explicit {manual:true} click IS allowed to close it out
+//     — e.g. after completing the deep configuration by hand outside this
+//     system (opening hours, call forwarding, number linking) — since that
+//     click is itself the confirmation that the service is genuinely ready.
 //
 // Every step is idempotent and safe to replay: the Mollie webhook, the 15-minute
 // reconcile cron and an admin click can all race, and the unique index on
@@ -61,51 +66,28 @@ function isFunnelOrder(order) {
 // Third provisioning outcome (spec §5, "wacht_op_klant"): a funnel order whose
 // agent provisioned successfully still isn't genuinely live — the deep intake
 // hasn't happened yet. This is a normal, expected state, NOT a failure — it
-// does not go through park()'s "something broke" alert. The order sits on
+// does not go through park()'s "something broke" alert, and (as of Task 3,
+// 2026-07-23) it does not page staff at all. The order sits on
 // 'in_uitvoering' (never downgrading an order that is somehow already
-// 'actief') until a later stage (portal onboarding, spec plak C) completes
-// the deep intake and re-runs provisioning — OR until a staff member confirms
-// by hand that it is done and closes it out with an explicit {manual:true}
-// activation (the two call sites above skip this function entirely when
-// manual is set).
-//
-// TIJDELIJK (owner-decided, 2026-07-22): plak C (the onboarding phase,
-// docs/superpowers/specs/2026-07-22-selfserve-funnel-design.md §9) does not
-// exist yet, so a customer landing here has paid for a service nobody is
-// looking at until a human happens to check /admin/aanvragen. For this
-// interim period the owner wants a heads-up — NOT a failure alert, a signal —
-// so this fires alertStaff() once per order, worded as "normal, go finish the
-// setup by hand". DELETE this alertStaff() call (and this comment) once plak
-// C ships: at that point wacht_op_klant nudges the CUSTOMER through
-// /portal/onboarding instead of paging staff, per §9.
-//
-// Verwijder dit alert NOOIT los: de bevestigingsmail aan de klant
-// (sendOrderConfirmationMail in mollie.js) zegt in dit geval "u hoeft zelf
-// niets te doen" — dat is alleen waar zolang dit seintje een mens naar de
-// order stuurt. Zodra plak C live is moet die zin mee veranderen, want dan
-// moet de klant juist wél zelf de diepe intake invullen. Beide plekken
-// horen in dezelfde wijziging.
+// 'actief') until the customer completes the deep intake through
+// /portal/onboarding — nudged there by the onboarding-nudge cron (spec plak
+// C, Task 8/13) — and that re-runs provisioning, OR until a staff member
+// confirms by hand that it is done and closes it out with an explicit
+// {manual:true} activation (the two call sites above skip this function
+// entirely when manual is set).
 //
 // Fires-once guard: the UPDATE's WHERE excludes 'in_uitvoering' as well as
 // 'actief', so it only actually changes a row (changes === 1) on the ONE call
 // that transitions the order INTO the wait state. Every replay after that —
 // webhook retry, the reconcile cron, or an admin click without manual:true —
 // finds the order already sitting on 'in_uitvoering' and the UPDATE matches
-// zero rows, so the alert is skipped. A failed alert never blocks activation:
-// alertStaff() already never throws (see notify.js).
-async function wachtOpKlant(env, db, order, svcId) {
-  const r = await db.prepare(
+// zero rows. That guard is kept (rather than deleted along with the alert)
+// because it is still the only signal that distinguishes a fresh transition
+// from a no-op replay, which other callers may come to rely on.
+async function wachtOpKlant(db, order, svcId) {
+  await db.prepare(
     "UPDATE service_orders SET status = 'in_uitvoering' WHERE id = ? AND status NOT IN ('in_uitvoering', 'actief')",
   ).bind(order.id).run();
-  if (r.meta?.changes === 1) {
-    await alertStaff(env,
-      `Nieuwe self-serve klant — handmatige afronding nodig (order ${order.id})`,
-      `Product: ${order.product_key}${order.tier ? ` (${order.tier})` : ''}\nKlant: ${order.customer_id}\nOrder: ${order.id}\n\n`
-      + 'Dit is geen storing — de agent is automatisch ingericht. De diepe intake (openingstijden, '
-      + 'doorschakelnummer, FAQ) bestaat echter nog niet als aparte stap, dus deze self-serve order '
-      + 'wacht op een mens: rond de inrichting handmatig af en zet de order op "actief" in /admin/aanvragen.\n\n'
-      + '(Tijdelijk seintje — verdwijnt zodra de onboardingfase live is.)');
-  }
   return { status: 'wacht_op_klant', serviceId: svcId, provisioned: true };
 }
 
@@ -160,7 +142,7 @@ export async function activateOrder(env, order, { manual = false } = {}) {
     // out a funnel order that would otherwise sit on wacht_op_klant forever.
     // Automatic callers (webhook, cron) never pass manual:true and keep
     // respecting the wait state.
-    if (isFunnelOrder(order) && !manual) return wachtOpKlant(env, db, order, svcId);
+    if (isFunnelOrder(order) && !manual) return wachtOpKlant(db, order, svcId);
     await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
     return { status: 'actief', serviceId: svcId, provisioned: true };
   }
@@ -194,15 +176,7 @@ export async function activateOrder(env, order, { manual = false } = {}) {
     // funnel-specific wait below rather than park()'s "something broke" alert.
     // Nothing was provisioned, so provisioning_json is left untouched — the
     // next replay simply re-checks the (possibly by-then-updated) intake.
-    if (result.status === 'wacht_op_klant') return wachtOpKlant(env, db, order, svcId);
-
-    // Persist what actually happened. For 'klaar' this stores the underlying
-    // provisioning metadata (agent_id/kb_id/...) — the same shape provisioning
-    // used to write directly — so a future needsProvisioning() replay check
-    // still sees a non-'fout' status and skips re-provisioning.
-    const toPersist = result.status === 'klaar' ? result.provisioning : result;
-    await db.prepare('UPDATE services SET provisioning_json = ? WHERE id = ?')
-      .bind(JSON.stringify(toPersist), svcId).run();
+    if (result.status === 'wacht_op_klant') return wachtOpKlant(db, order, svcId);
 
     if (result.status === 'fout') {
       // Previously this was written into provisioning_json and never mentioned
@@ -210,15 +184,40 @@ export async function activateOrder(env, order, { manual = false } = {}) {
       // never came up. The failed row is left in place on purpose — the next
       // call (admin retry, cron, webhook replay) sees status 'fout' and tries
       // again.
-      return park(env, db, order, svcId,
-        `Provisioning MISLUKT voor order ${order.id}`,
-        `Product: ${order.product_key}${order.tier ? ` (${order.tier})` : ''}\nKlant: ${order.customer_id}\nService: ${svcId}\n`
-        + `Fout: ${result.error}\n\nDe klant heeft betaald. Los dit op en klik "actief" in /admin/aanvragen om opnieuw te proberen.`);
+      //
+      // Task 3 (2026-07-23): a single failure no longer pages staff — a
+      // transient ElevenLabs blip would otherwise alert on every retry. Track
+      // how many consecutive failures this service has had in
+      // provisioning_json.attempts (reset only by a successful run, which
+      // overwrites this object entirely — see the 'klaar' branch below) and
+      // only escalate to park()'s alert once three attempts have failed.
+      // Below that threshold the order sits quietly on 'in_uitvoering' via
+      // stilFout() so the next replay retries automatically.
+      const attempts = (prov?.attempts || 0) + 1;
+      await db.prepare('UPDATE services SET provisioning_json = ? WHERE id = ?')
+        .bind(JSON.stringify({ ...result, attempts }), svcId).run();
+
+      if (attempts >= 3) {
+        return park(env, db, order, svcId,
+          `Provisioning MISLUKT voor order ${order.id} (${attempts}e poging)`,
+          `Product: ${order.product_key}${order.tier ? ` (${order.tier})` : ''}\nKlant: ${order.customer_id}\nService: ${svcId}\n`
+          + `Fout: ${result.error}\n\nDe klant heeft betaald. Dit is de ${attempts}e mislukte poging — los dit op en klik `
+          + '"actief" in /admin/aanvragen om opnieuw te proberen.');
+      }
+      return stilFout(db, order, svcId);
     }
+
+    // Persist what actually happened. This stores the underlying provisioning
+    // metadata (agent_id/kb_id/...) — the same shape provisioning used to
+    // write directly — so a future needsProvisioning() replay check sees a
+    // non-'fout' status and skips re-provisioning. Overwriting the whole
+    // object also drops any stale `attempts` count from earlier failures.
+    await db.prepare('UPDATE services SET provisioning_json = ? WHERE id = ?')
+      .bind(JSON.stringify(result.provisioning), svcId).run();
 
     // Same manual-escape-hatch reasoning as above: only a human's explicit
     // click may skip straight to 'actief' for a funnel order.
-    if (isFunnelOrder(order) && !manual) return wachtOpKlant(env, db, order, svcId);
+    if (isFunnelOrder(order) && !manual) return wachtOpKlant(db, order, svcId);
     await db.prepare("UPDATE service_orders SET status = 'actief' WHERE id = ?").bind(order.id).run();
     return { status: 'actief', serviceId: svcId, provisioned: true };
   }
@@ -242,5 +241,14 @@ async function park(env, db, order, svcId, subject, body) {
   await db.prepare("UPDATE service_orders SET status = 'in_uitvoering' WHERE id = ? AND status != 'actief'")
     .bind(order.id).run();
   await alertStaff(env, subject, body);
+  return { status: 'in_uitvoering', serviceId: svcId, provisioned: false };
+}
+
+// Same status transition as park(), minus the alert: a provisioning failure
+// below the attempts threshold (see the 'fout' branch above) is expected to
+// resolve itself on the next automatic retry, so it stays quiet.
+async function stilFout(db, order, svcId) {
+  await db.prepare("UPDATE service_orders SET status = 'in_uitvoering' WHERE id = ? AND status != 'actief'")
+    .bind(order.id).run();
   return { status: 'in_uitvoering', serviceId: svcId, provisioned: false };
 }

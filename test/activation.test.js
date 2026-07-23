@@ -3,13 +3,13 @@
 // heeft alleen de ondiepe wizard-intake. Een geslaagde ElevenLabs-provisioning
 // mag zo'n order NOOIT op 'actief' zetten — de diepe intake ontbreekt nog.
 //
-// Punt 1 (livegang-toevoeging, 2026-07-22, TIJDELIJK — zie activation.js voor
-// de volledige uitleg + verwijderdatum): zolang de onboardingfase (plak C) er
-// niet is, stuurt deze wachttoestand wél één seintje naar het team — géén
-// storingsalert zoals park() die gebruikt, maar een normale "nieuwe klant
-// wacht op handmatige afronding"-melding. Een order zonder voorstel_id (het
-// bestaande portaalpad) moet zich exact blijven gedragen als vandaag:
-// succesvolle provisioning -> 'actief', geen enkele wijziging aan die tak.
+// Task 3 (2026-07-23): het interim-seintje dat hier ooit bij hoorde (zie git-
+// historie van activation.js voor de volledige uitleg) is verwijderd —
+// wacht_op_klant alert NOOIT meer. De klant wordt voortaan via
+// /portal/onboarding + de nudge-cron benaderd (spec plak C, Task 8/13), niet
+// via een staff-alert. Een order zonder voorstel_id (het bestaande
+// portaalpad) moet zich exact blijven gedragen als vandaag: succesvolle
+// provisioning -> 'actief', geen enkele wijziging aan die tak.
 import { describe, it, expect, afterEach } from 'vitest';
 import { activateOrder } from '../src/lib/activation.js';
 
@@ -151,7 +151,7 @@ function portalOrder(overrides = {}) {
 }
 
 describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', () => {
-  it('funnel-order (voorstel_id gezet): geslaagde provisioning zet NOOIT op actief, wel op in_uitvoering, en stuurt precies één tijdelijk seintje', async () => {
+  it('funnel-order (voorstel_id gezet): geslaagde provisioning zet NOOIT op actief, wel op in_uitvoering, en alert NIET (Task 3: interim-seintje verwijderd)', async () => {
     const db = makeDb();
     const fetchStub = makeFetchStub();
     globalThis.fetch = fetchStub;
@@ -165,20 +165,8 @@ describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', (
     expect(db.state.orderStatusUpdates).toEqual([{ status: 'in_uitvoering', orderId: order.id }]);
     expect(db.state.orderStatusUpdates.some((u) => u.status === 'actief')).toBe(false);
 
-    // Precies één seintje (Brevo-kant; Telegram niet geconfigureerd in deze env).
-    expect(fetchStub.alertCalls).toHaveLength(1);
-    const body = fetchStub.alertBodies[0];
-    expect(body.subject).toContain(order.id);
-    expect(body.subject.toLowerCase()).toContain('self-serve');
-    // Seintje-toon, geen storingstoon: bevat expliciet dat dit geen storing is,
-    // en de concrete instructie (welke klant/order/product + handmatig afronden).
-    expect(body.textContent).toContain('geen storing');
-    expect(body.textContent).toContain(order.product_key);
-    expect(body.textContent).toContain(order.tier);
-    expect(body.textContent).toContain(order.customer_id);
-    expect(body.textContent).toContain(order.id);
-    expect(body.textContent.toLowerCase()).toContain('handmatig');
-    expect(body.textContent.toLowerCase()).toContain('actief');
+    // Geen enkel seintje meer — noch storingsalert, noch het oude interim-seintje.
+    expect(fetchStub.alertCalls).toEqual([]);
   });
 
   it('portal-order (voorstel_id null): geslaagde provisioning gedraagt zich exact als vandaag — actief, geen enkel seintje', async () => {
@@ -195,7 +183,7 @@ describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', (
     expect(fetchStub.alertCalls).toEqual([]);
   });
 
-  it('replay via dezelfde D1-rij (webhook gevolgd door reconcile-cron): het seintje gaat maar één keer uit', async () => {
+  it('replay via dezelfde D1-rij (webhook gevolgd door reconcile-cron): geen tweede transitie, en er gaat sowieso geen seintje uit', async () => {
     const db = makeDb();
     const fetchStub = makeFetchStub();
     globalThis.fetch = fetchStub;
@@ -204,7 +192,7 @@ describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', (
     const order = funnelOrder();
     const first = await activateOrder(env, order);
     expect(first.status).toBe('wacht_op_klant');
-    expect(fetchStub.alertCalls).toHaveLength(1);
+    expect(fetchStub.alertCalls).toEqual([]);
 
     // Zelfde db (dus dezelfde D1-rij, nu al 'in_uitvoering') — simuleert de
     // 15-minuten reconcile-cron of een tweede webhook-delivery die dezelfde
@@ -213,7 +201,7 @@ describe('activateOrder — derde uitkomst wacht_op_klant voor funnel-orders', (
     const second = await activateOrder(env, order);
     expect(second.status).toBe('wacht_op_klant');
     expect(db.state.orderStatusUpdates).toEqual([{ status: 'in_uitvoering', orderId: order.id }]); // geen tweede transitie
-    expect(fetchStub.alertCalls).toHaveLength(1); // GEEN tweede seintje
+    expect(fetchStub.alertCalls).toEqual([]); // nog steeds geen seintje
   });
 
   it('replay (al eerder succesvol geprovisioned én al in_uitvoering): funnel-order blijft wacht_op_klant, geen tweede provisioning-call, geen seintje', async () => {
