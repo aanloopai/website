@@ -121,16 +121,32 @@ function makeDb({ servicesSeed = null, initialOrderStatus = 'ingediend' } = {}) 
   };
 }
 
+// Sinds de provisioner-registry (voice.js) beoordeelt of de intake compleet
+// genoeg is om live te gaan (missingForLive tegen het emma-telefoon-schema,
+// src/data/intake-schemas.ts) moet de intake hier alle verplichte velden
+// bevatten — anders levert de provisioner ZELF al 'wacht_op_klant' op (ontbrekende
+// gegevens) vóórdat de funnel/manual-logica in activation.js aan de beurt komt.
+// Deze tests dekken die funnel/manual-logica, niet de veldcompleetheid, dus de
+// intake hieronder is bewust volledig.
+const COMPLETE_INTAKE = JSON.stringify({
+  bedrijf: { bedrijfsnaam: 'Test BV', branche: 'tandartspraktijk' },
+  bereikbaarheid: {
+    huidig_nummer: '010-1234567', openingstijden: 'Ma-Vr 09:00-17:00', buiten_tijden: 'Voicemail buiten openingstijden',
+  },
+  afhandeling: { taken: ['Een bericht aannemen'] },
+  kennis: { toon: 'Zakelijk en warm' },
+});
+
 function funnelOrder(overrides = {}) {
   return {
     id: 'ord_funnel_1', customer_id: 'cust_1', product_key: 'emma-telefoon', tier: 'Starter',
-    status: 'ingediend', intake_json: '{}', voorstel_id: 'vst_1', ...overrides,
+    status: 'ingediend', intake_json: COMPLETE_INTAKE, voorstel_id: 'vst_1', ...overrides,
   };
 }
 function portalOrder(overrides = {}) {
   return {
     id: 'ord_portal_1', customer_id: 'cust_2', product_key: 'emma-telefoon', tier: 'Starter',
-    status: 'ingediend', intake_json: '{}', voorstel_id: null, ...overrides,
+    status: 'ingediend', intake_json: COMPLETE_INTAKE, voorstel_id: null, ...overrides,
   };
 }
 

@@ -35,7 +35,7 @@
 // Provisioning is never run twice for a service that already provisioned
 // successfully — that would create (and bill for) a second ElevenLabs agent.
 import { randomId } from './auth.js';
-import { provisionAgent, canProvision } from './elevenlabs.js';
+import { resolve, canProvision } from './provisioners/index.js';
 import { alertStaff } from './notify.js';
 
 function safeParseJson(s) {
@@ -176,16 +176,33 @@ export async function activateOrder(env, order, { manual = false } = {}) {
   if (autoProduct) {
     // First run, or a retry after a failure. Both go through the same call —
     // a previously *successful* provisioning is never re-run (see below).
+    const provisioner = resolve(order.product_key);
     let result;
     try {
-      result = await provisionAgent(env.ELEVENLABS_API_KEY, order.product_key, order.product_key, safeParseJson(order.intake_json));
+      result = await provisioner.provision(env, {
+        service, order, intake: safeParseJson(order.intake_json), customerId: order.customer_id,
+      });
     } catch (err) {
       const message = String(err?.message || err).slice(0, 400);
       console.error('[activation] provisioning failed:', message);
-      result = { status: 'fout', error: message, provisioned_at: new Date().toISOString() };
+      result = { status: 'fout', error: message };
     }
+
+    // The provisioner itself decided the intake isn't complete enough to go
+    // live (spec §5, "wacht_op_klant") — this is a normal wait state, not a
+    // failure, so it reuses the same non-alerting wait path as the
+    // funnel-specific wait below rather than park()'s "something broke" alert.
+    // Nothing was provisioned, so provisioning_json is left untouched — the
+    // next replay simply re-checks the (possibly by-then-updated) intake.
+    if (result.status === 'wacht_op_klant') return wachtOpKlant(env, db, order, svcId);
+
+    // Persist what actually happened. For 'klaar' this stores the underlying
+    // provisioning metadata (agent_id/kb_id/...) — the same shape provisioning
+    // used to write directly — so a future needsProvisioning() replay check
+    // still sees a non-'fout' status and skips re-provisioning.
+    const toPersist = result.status === 'klaar' ? result.provisioning : result;
     await db.prepare('UPDATE services SET provisioning_json = ? WHERE id = ?')
-      .bind(JSON.stringify(result), svcId).run();
+      .bind(JSON.stringify(toPersist), svcId).run();
 
     if (result.status === 'fout') {
       // Previously this was written into provisioning_json and never mentioned
