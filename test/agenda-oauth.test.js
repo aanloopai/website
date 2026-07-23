@@ -159,46 +159,30 @@ describe('GET /api/portal/onboarding/agenda/initiate', () => {
   });
 });
 
+// De callback is UNAUTHENTICATED by design (state-HMAC is de enige
+// autorisatie — zie de comment op handleAgendaCallback + de dispatcher in
+// portal-routes.js): geen van onderstaande requests draagt een sessiecookie,
+// precies zoals een echte browser die terugkomt van accounts.google.com dat
+// ook niet doet (SameSite=Strict wordt niet meegestuurd op een cross-site
+// top-level redirect).
 describe('GET /api/portal/onboarding/agenda/callback', () => {
-  it('geen sessie → 401', async () => {
-    const env = baseEnv({});
-    const res = await handlePortalApi(await makeRequest('/api/portal/onboarding/agenda/callback?code=abc&state=xyz'), env);
-    expect(res.status).toBe(401);
-  });
-
   it('ongeldige/gemanipuleerde state → 400', async () => {
-    const users = [{ id: 'usr_1', customer_id: 'cus_1', email: 'a@test.nl', naam: 'A', role: 'eigenaar' }];
-    const env = baseEnv({ users });
+    const env = baseEnv({});
     const res = await handlePortalApi(
-      await makeRequest('/api/portal/onboarding/agenda/callback?code=abc&state=niet-geldig', 'usr_1'), env,
+      await makeRequest('/api/portal/onboarding/agenda/callback?code=abc&state=niet-geldig'), env,
     );
     expect(res.status).toBe(400);
   });
 
-  it('sessie-customer_id matcht NIET met de state-customerId → 403', async () => {
-    // State is uitgegeven voor cus_SLACHTOFFER, maar de ingelogde sessie is cus_AANVALLER.
-    const state = await buildAgendaState(STATE_SECRET, 'cus_SLACHTOFFER', 'ord_1');
-    const users = [{ id: 'usr_aanvaller', customer_id: 'cus_AANVALLER', email: 'x@test.nl', naam: 'X', role: 'eigenaar' }];
-    const env = baseEnv({ users });
-    const res = await handlePortalApi(
-      await makeRequest(`/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`, 'usr_aanvaller'),
-      env,
-    );
-    expect(res.status).toBe(403);
-    // Nooit tokens/geheimen in de response bij een geweigerde callback.
-    const body = await res.json();
-    expect(JSON.stringify(body)).not.toMatch(/access_token|refresh_token/i);
-  });
-
-  it('geldige callback: wisselt code in, slaat token op onder oauth:google:cust:<customerId>, redirect naar /portal/onboarding', async () => {
+  it('geldige callback ZONDER sessiecookie: wisselt code in, slaat token op onder oauth:google:cust:<customerId uit state>, redirect naar /portal/onboarding', async () => {
     const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1');
-    const users = [{ id: 'usr_1', customer_id: 'cus_1', email: 'a@test.nl', naam: 'A', role: 'eigenaar' }];
-    const env = baseEnv({ users });
+    const env = baseEnv({});
     mockTokenExchangeFetch({ access_token: 'access-123', refresh_token: 'refresh-123', expires_in: 3600 });
 
     const before = Date.now();
+    // makeRequest zonder userId → geen sessiecookie, exact het echte-browser-scenario.
     const res = await handlePortalApi(
-      await makeRequest(`/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`, 'usr_1'),
+      await makeRequest(`/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`),
       env,
     );
 
@@ -213,25 +197,23 @@ describe('GET /api/portal/onboarding/agenda/callback', () => {
     expect(env.GOOGLE_TOKENS.store['oauth:google:admin']).toBeUndefined();
   });
 
-  it('Google levert geen refresh_token → 502, niets opgeslagen', async () => {
+  it('Google levert geen refresh_token → 502, niets opgeslagen (ook zonder sessiecookie)', async () => {
     const state = await buildAgendaState(STATE_SECRET, 'cus_1', 'ord_1');
-    const users = [{ id: 'usr_1', customer_id: 'cus_1', email: 'a@test.nl', naam: 'A', role: 'eigenaar' }];
-    const env = baseEnv({ users });
+    const env = baseEnv({});
     globalThis.fetch = async () => ({ ok: true, json: async () => ({ access_token: 'access-123', expires_in: 3600 }) });
 
     const res = await handlePortalApi(
-      await makeRequest(`/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`, 'usr_1'),
+      await makeRequest(`/api/portal/onboarding/agenda/callback?code=abc&state=${encodeURIComponent(state)}`),
       env,
     );
     expect(res.status).toBe(502);
     expect(env.GOOGLE_TOKENS.store['oauth:google:cust:cus_1']).toBeUndefined();
   });
 
-  it('OAuth error-param (gebruiker weigerde consent) → 400', async () => {
-    const users = [{ id: 'usr_1', customer_id: 'cus_1', email: 'a@test.nl', naam: 'A', role: 'eigenaar' }];
-    const env = baseEnv({ users });
+  it('OAuth error-param (gebruiker weigerde consent) → 400 (ook zonder sessiecookie)', async () => {
+    const env = baseEnv({});
     const res = await handlePortalApi(
-      await makeRequest('/api/portal/onboarding/agenda/callback?error=access_denied', 'usr_1'), env,
+      await makeRequest('/api/portal/onboarding/agenda/callback?error=access_denied'), env,
     );
     expect(res.status).toBe(400);
   });

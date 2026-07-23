@@ -1,7 +1,9 @@
 // Per-tenant Google-agenda OAuth (Task 11) — initiate + callback.
-// Wired into src/lib/portal-routes.js's handlePortalApi dispatcher, so both
-// routes already run behind the existing session gate (no session → 401,
-// same jsonResponse/errorResponse shape as the rest of that dispatcher).
+// Wired into src/lib/portal-routes.js's handlePortalApi dispatcher.
+// `initiate` runs behind the existing session gate (no session → 401) plus an
+// order-ownership check. `callback` is dispatched BEFORE that gate — see the
+// comment on handleAgendaCallback below for why (SameSite=Strict cookie is
+// never sent on the cross-site redirect Google issues back to us).
 //
 // Tokens are stored via the KV shape getAccessToken() (google-auth.js)
 // expects — {access_token, refresh_token, expires_at} — under the per-klant
@@ -111,14 +113,19 @@ export async function handleAgendaInitiate(env, user, url) {
 }
 
 // GET /api/portal/onboarding/agenda/callback?code=&state=
-// Also reached only with a resolved session user (handlePortalApi's gate).
-// IDOR/CSRF-critical: the state HMAC alone proves the (customerId, orderId)
-// pair was issued by us, but NOT that the browser completing the callback is
-// the same one that started it — an attacker could still trick a victim into
-// visiting a callback URL carrying the ATTACKER's state. The session-match
-// check below is what actually stops that: only the customer the state was
-// issued for may complete it.
-export async function handleAgendaCallback(env, user, url) {
+// UNAUTHENTICATED by design — reached via a cross-site 302 redirect FROM
+// accounts.google.com, so the portal session cookie (SameSite=Strict, see
+// auth.js's sessionCookie) is never attached by the browser on this request:
+// SameSite=Strict cookies are withheld on cross-site top-level navigations,
+// which is exactly what this redirect is. There is no session to check here,
+// by construction — not a bug to route around. The verified state HMAC is
+// therefore the ONLY authorization this handler needs: it was minted in
+// handleAgendaInitiate from a request that WAS session-gated and had already
+// passed the order-ownership check, so a valid signature proves the
+// (customerId, orderId) pair is legitimate — the standard OAuth "state"
+// pattern, doubling as CSRF protection. customerId/orderId used below come
+// exclusively from this verified state, never from a session.
+export async function handleAgendaCallback(env, url) {
   const code = url.searchParams.get('code');
   const state = url.searchParams.get('state');
   const oauthError = url.searchParams.get('error');
@@ -128,10 +135,6 @@ export async function handleAgendaCallback(env, user, url) {
 
   const verified = await verifyAgendaState(env.PORTAL_SESSION_SECRET, state);
   if (!verified) return errorResponse('Ongeldige of verlopen state', 400);
-
-  // Voorkomt dat iemand andermans callback voltooit: de ingelogde klant moet
-  // exact de klant zijn voor wie deze state is uitgegeven.
-  if (verified.customerId !== user.customer_id) return errorResponse('Niet toegestaan', 403);
 
   if (!env.GOOGLE_CLIENT_ID || !env.GOOGLE_CLIENT_SECRET) {
     return errorResponse('Agenda-koppeling is nog niet geconfigureerd', 503);

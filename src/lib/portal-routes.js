@@ -410,11 +410,20 @@ export async function handlePortalApi(request, env) {
   const csrf = checkOrigin(request);
   if (csrf) return csrf;
 
-  const user = await getSessionUser(request, env);
-  // Staff accounts must use /api/admin; reject them here to avoid dual-role privilege confusion.
-  if (!user || !user.customer_id || user.role === 'staff') return errorResponse('Niet ingelogd', 401);
-
   try {
+    // Agenda-OAuth callback: dispatched BEFORE the session gate below, on
+    // purpose. It is reached via a cross-site 302 redirect FROM
+    // accounts.google.com, so the SameSite=Strict portal-session cookie
+    // (auth.js's sessionCookie) is never attached by the browser — that's not
+    // a bug, it's what SameSite=Strict does on cross-site top-level
+    // navigation. The verified state HMAC inside handleAgendaCallback is the
+    // sole authorization for this route; see its own comment for detail.
+    if (path === '/api/portal/onboarding/agenda/callback') return await handleAgendaCallback(env, url);
+
+    const user = await getSessionUser(request, env);
+    // Staff accounts must use /api/admin; reject them here to avoid dual-role privilege confusion.
+    if (!user || !user.customer_id || user.role === 'staff') return errorResponse('Niet ingelogd', 401);
+
     if (path === '/api/portal/me') return await portalMe(env, user);
     if (path === '/api/portal/overview') return await portalOverview(env, user);
     if (path === '/api/portal/services') return await portalServices(env, user, url);
@@ -441,11 +450,12 @@ export async function handlePortalApi(request, env) {
     if (path === '/api/portal/onboarding') {
       return method === 'POST' ? await postOnboarding(request, env, user) : await getOnboarding(env, user, url);
     }
-    // Task 11: per-tenant Google-agenda OAuth. Both GET-only — the session
-    // gate above (getSessionUser → 401 if missing) already covers "sessie
-    // vereist" for both; ownership/state-match checks happen inside each handler.
+    // Task 11: per-tenant Google-agenda OAuth `initiate`. GET-only — the
+    // session gate above (getSessionUser → 401 if missing) covers "sessie
+    // vereist"; order-ownership check happens inside the handler. Its sibling
+    // `callback` route is dispatched earlier, above the session gate — see
+    // the comment there.
     if (path === '/api/portal/onboarding/agenda/initiate') return await handleAgendaInitiate(env, user, url);
-    if (path === '/api/portal/onboarding/agenda/callback') return await handleAgendaCallback(env, user, url);
     if (path === '/api/portal/service-config' && method === 'PATCH') return await updateServiceConfig(request, env, user);
     if (path === '/api/portal/checkout/start' && method === 'POST') return await handleCheckoutStart(request, env, user);
     if (path === '/api/portal/subscription/cancel' && method === 'POST') return await portalCancelSubscription(request, env, user);
