@@ -77,6 +77,9 @@ describe('GET /api/portal/onboarding', () => {
     expect(body).toMatchObject({ ok: true, productKey: 'emma-telefoon', klaar: true, progressPct: 100, missing: [] });
     expect(body.schema).toBeTruthy();
     expect(Array.isArray(body.schema.steps)).toBe(true);
+    // MEDIUM-1: bestaande intake-waarden komen mee terug zodat de wizard
+    // reeds-ingevulde velden kan voorvullen i.p.v. leeg te tonen.
+    expect(body.answers).toEqual(compleetIntake);
   });
 
   it('order van een ANDERE klant → 404, geen state gelekt', async () => {
@@ -93,6 +96,7 @@ describe('GET /api/portal/onboarding', () => {
     expect(body.productKey).toBeUndefined();
     expect(body.missing).toBeUndefined();
     expect(body.schema).toBeUndefined();
+    expect(body.answers).toBeUndefined();
   });
 
   it('onbekende order-id → 404, identiek aan een order van een andere klant', async () => {

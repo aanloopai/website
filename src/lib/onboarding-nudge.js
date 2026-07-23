@@ -18,10 +18,17 @@
 // ÉÉN alertStaff() in plaats van een klant-mail, en daarna niets meer voor
 // deze order — de aantal<3-guard hieronder sluit alle latere ticks uit.
 //
+// Een niet-provisionable (human-delivered, canProvision()===false) product
+// wordt door activateOrder() ook op service_orders.status='in_uitvoering' +
+// services.status='onboarding' geparkeerd, maar dat is staff-werk (geen
+// wacht_op_klant/'fout' — provisioning_json blijft daar null): die orders
+// worden hier expliciet uitgesloten, vóór elke mail/teller-actie.
+//
 // Best-effort per order (zelfde stijl als retryFailedProvisions()): een fout
 // bij één order stopt de rest van de batch niet.
 import { sendMail } from './portal-routes.js';
 import { alertStaff } from './notify.js';
+import { canProvision } from './provisioners/index.js';
 
 const SITE = 'https://aanloopai.nl';
 const DAG_MS = 24 * 60 * 60 * 1000;
@@ -49,6 +56,7 @@ export async function nudgeOnboarding(env) {
 
   const rows = (await db.prepare(
     `SELECT so.id AS order_id, so.customer_id AS customer_id, so.created_at AS order_created_at,
+            so.product_key AS product_key,
             s.provisioning_json AS provisioning_json,
             n.aantal AS nudge_aantal, n.laatst_genudged AS nudge_laatst, n.created_at AS nudge_created_at
      FROM service_orders so
@@ -61,6 +69,12 @@ export async function nudgeOnboarding(env) {
 
   for (const row of rows) {
     try {
+      // Niet-provisionable (human-delivered) producten parkeert activateOrder()
+      // ook op in_uitvoering/onboarding, maar dat is staff-werk — geen
+      // wacht_op_klant. Zonder deze guard krijgt zo'n klant onterecht
+      // onboarding-mails en na 3 nudges een valse staff-escalatie.
+      if (!canProvision(row.product_key)) continue;
+
       // fout-orders (zie fileheader) worden hier uitgesloten — die zijn geen
       // wacht_op_klant en horen niet genudged te worden.
       const prov = safeParseJson(row.provisioning_json);

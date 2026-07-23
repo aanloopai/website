@@ -88,7 +88,7 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
       let progressPct = 0;
       let openSteps = [];
       let stepIdx = 0;
-      const answers = {};
+      let answers = {};
 
       function agendaOpenstaand() { return missing.indexOf('agenda_koppeling') > -1; }
 
@@ -102,6 +102,10 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
         schema = d.schema;
         missing = d.missing || [];
         progressPct = d.progressPct || 0;
+        // Bestaande intake-waarden (bv. uit de funnel) prefillen de nog
+        // openstaande stappen — zelfde genest-per-stap-vorm als hierboven
+        // gepost, identiek aan hoe intake.astro `o.intake` gebruikt.
+        answers = d.answers || {};
         computeOpenSteps();
       }
 

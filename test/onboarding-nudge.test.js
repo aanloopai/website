@@ -93,6 +93,7 @@ function makeDb({
                   order_id: o.id,
                   customer_id: o.customer_id,
                   order_created_at: o.created_at,
+                  product_key: o.product_key,
                   provisioning_json: svc.provisioning_json,
                   nudge_aantal: nudge?.aantal,
                   nudge_laatst: nudge?.laatst_genudged,
@@ -111,7 +112,7 @@ function makeDb({
 
 function order(overrides = {}) {
   return {
-    id: 'ord_1', customer_id: 'cust_1', status: 'in_uitvoering', created_at: Date.now() - 2 * DAG_MS, ...overrides,
+    id: 'ord_1', customer_id: 'cust_1', status: 'in_uitvoering', product_key: 'emma-telefoon', created_at: Date.now() - 2 * DAG_MS, ...overrides,
   };
 }
 function service(overrides = {}) {
@@ -238,6 +239,22 @@ describe('nudgeOnboarding — kandidaat-selectie en nudge-drempel', () => {
     expect(sendMailMock).not.toHaveBeenCalled();
     expect(alertStaffMock).not.toHaveBeenCalled();
     expect(db.state.nudges.find((x) => x.order_id === 'ord_fout')).toBeUndefined();
+  });
+
+  it('een niet-provisionable (human-delivered) product wordt NIET genudged, ook al staat het >24u op in_uitvoering/onboarding', async () => {
+    const db = makeDb({
+      orders: [order({ id: 'ord_seo', product_key: 'seo-maatwerk' })],
+      services: [service({ order_id: 'ord_seo' })],
+      nudges: [],
+      users: [owner()],
+    });
+    const env = { PORTAL_DB: db };
+
+    await nudgeOnboarding(env);
+
+    expect(sendMailMock).not.toHaveBeenCalled();
+    expect(alertStaffMock).not.toHaveBeenCalled();
+    expect(db.state.nudges.find((x) => x.order_id === 'ord_seo')).toBeUndefined();
   });
 
   it('een order met status actief/services buiten onboarding wordt niet als kandidaat gezien', async () => {

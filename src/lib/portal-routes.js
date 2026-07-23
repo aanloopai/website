@@ -785,7 +785,13 @@ async function getOnboarding(env, user, url) {
     ? (await env.GOOGLE_TOKENS.get(`oauth:google:cust:${user.customer_id}`)) != null
     : false;
   const state = onboardingState(order, agendaGekoppeld);
-  return jsonResponse({ ok: true, ...state, schema: getIntakeSchema(state.productKey) });
+  // Bestaande intake-waarden (bv. bedrijfsnaam uit de funnel) horen bij deze
+  // order en dus bij deze ingelogde klant (order is hierboven al gescoped op
+  // id=? AND customer_id=?) — geen leak. De wizard gebruikt dit om
+  // reeds-ingevulde velden voor te vullen i.p.v. leeg te tonen.
+  return jsonResponse({
+    ok: true, ...state, answers: safeParse(order.intake_json) || {}, schema: getIntakeSchema(state.productKey),
+  });
 }
 
 // Keys that would reach the object prototype via bracket assignment
@@ -816,7 +822,16 @@ function mergeIntakeAnswers(existing, answers) {
     // attacker sending `answers.tier = 'Enterprise'`) is silently ignored
     // rather than written into intake_json under a bogus key.
     if (!incoming || typeof incoming !== 'object' || Array.isArray(incoming)) continue;
-    merged[stepKey] = { ...(existing?.[stepKey] || {}), ...incoming };
+    const existingStep = existing?.[stepKey] || {};
+    const mergedStep = { ...existingStep };
+    for (const field of Object.keys(incoming)) {
+      // Defense-in-depth: an accidental/empty submit must never blank out a
+      // value the customer already filled in — skip empty strings so the
+      // pre-filled existing value survives.
+      if (incoming[field] === '') continue;
+      mergedStep[field] = incoming[field];
+    }
+    merged[stepKey] = mergedStep;
   }
   return merged;
 }
@@ -858,7 +873,9 @@ async function postOnboarding(request, env, user) {
     ? (await env.GOOGLE_TOKENS.get(`oauth:google:cust:${user.customer_id}`)) != null
     : false;
   const state = onboardingState({ ...order, intake_json: mergedJson }, agendaGekoppeld);
-  return jsonResponse({ ok: true, ...state, schema: getIntakeSchema(state.productKey) });
+  return jsonResponse({
+    ok: true, ...state, answers: merged, schema: getIntakeSchema(state.productKey),
+  });
 }
 
 async function saveOrder(request, env, user) {

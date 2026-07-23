@@ -68,6 +68,10 @@ describe('portal/onboarding.astro — post-pay onboardingwizard', () => {
     expect(pageSrc).not.toMatch(/function fieldHtml/);
   });
 
+  it('MEDIUM-1: prefillt openstaande stappen met bestaande intake-waarden uit de GET-response', () => {
+    expect(pageSrc).toMatch(/answers\s*=\s*d\.answers\s*\|\|\s*\{\}/);
+  });
+
   it('redirect naar /portal/login bij 401 tijdens submitStep (POST /api/portal/onboarding)', () => {
     const submitStepMatch = pageSrc.match(/function submitStep\(stepAnswers\) \{[\s\S]*?\n {6}\}\n/);
     expect(submitStepMatch).not.toBeNull();

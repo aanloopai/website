@@ -253,6 +253,31 @@ describe('POST /api/portal/onboarding', () => {
     expect(savedIntake.bereikbaarheid).toEqual({ huidig_nummer: '+31 6 1' });
   });
 
+  it('MEDIUM-1: een lege-string-waarde in answers overschrijft een bestaande waarde NIET (defense-in-depth)', async () => {
+    const order = {
+      id: 'ord_4', customer_id: 'cus_1', product_key: 'emma-telefoon', tier: 'Starter',
+      intake_json: JSON.stringify({ bedrijf: { bedrijfsnaam: 'Testbedrijf', branche: 'tandarts' } }),
+      status: 'ingediend', voorstel_id: null,
+    };
+    const db = makeDbStub({ users: USERS, order });
+    globalThis.fetch = async (url) => { throw new Error(`mag niet worden aangeroepen bij onvolledige intake: ${url}`); };
+    const env = {
+      PORTAL_DB: db, PORTAL_SESSION_SECRET: SECRET, GOOGLE_TOKENS: makeKvStub(), ELEVENLABS_API_KEY: 'test_key',
+    };
+
+    // Een lege submit voor bedrijfsnaam (bv. een prefill-bug in de client die
+    // een leeg veld terugstuurt) mag de al opgeslagen waarde niet wissen.
+    const res = await handlePortalApi(await makeRequest('/api/portal/onboarding', {
+      userId: 'usr_1',
+      body: { order_id: 'ord_4', answers: { bedrijf: { bedrijfsnaam: '', branche: 'kapper' } } },
+    }), env);
+
+    expect(res.status).toBe(200);
+    const savedIntake = JSON.parse(db.state.order.intake_json);
+    expect(savedIntake.bedrijf.bedrijfsnaam).toBe('Testbedrijf');
+    expect(savedIntake.bedrijf.branche).toBe('kapper');
+  });
+
   it('onbekende order-id → 404', async () => {
     const db = makeDbStub({ users: USERS, order: null });
     const env = { PORTAL_DB: db, PORTAL_SESSION_SECRET: SECRET, GOOGLE_TOKENS: makeKvStub() };
