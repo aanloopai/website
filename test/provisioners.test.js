@@ -18,17 +18,43 @@ describe('provisioner-registry', () => {
 });
 
 describe('voice.missingForLive', () => {
-  const compleet = { openingstijden: 'Ma-Vr 9-17', buiten_tijden: 'Voicemail buiten openingstijden', taken: ['Afspraken inplannen'], toon: 'Zakelijk en warm', agenda: 'Geen / weet ik nog niet' };
+  // Geneste intake-structuur — exact zoals de intake-wizard opslaat
+  // (answers[step.key] = vals) en buildConfig() leest (i.bedrijf.bedrijfsnaam, ...).
+  const compleet = {
+    _productKey: 'emma-telefoon',
+    bedrijf: { bedrijfsnaam: 'Testbedrijf', branche: 'tandarts' },
+    bereikbaarheid: { huidig_nummer: '+31 6 1', openingstijden: 'Ma-Vr 9-17', buiten_tijden: 'Voicemail buiten openingstijden' },
+    afhandeling: { taken: ['Afspraken inplannen'] },
+    kennis: { toon: 'Zakelijk en warm' },
+    integraties: { agenda: 'Geen / weet ik nog niet' },
+  };
+
   it('geeft [] wanneer alle verplichte velden ingevuld zijn en geen agenda gekozen', () => {
     expect(voice.missingForLive(compleet)).toEqual([]);
   });
-  it('noemt ontbrekende verplichte velden', () => {
-    expect(voice.missingForLive({ ...compleet, openingstijden: '' })).toContain('openingstijden');
+
+  it('noemt een ontbrekend genest verplicht veld', () => {
+    const intake = { ...compleet, bereikbaarheid: { ...compleet.bereikbaarheid, openingstijden: '' } };
+    expect(voice.missingForLive(intake)).toContain('openingstijden');
   });
+
+  it('noemt ontbrekende verplichte velden uit meerdere stappen', () => {
+    const intake = {
+      ...compleet,
+      bedrijf: { bedrijfsnaam: 'Testbedrijf', branche: '' },
+      afhandeling: { taken: [] },
+    };
+    const missing = voice.missingForLive(intake);
+    expect(missing).toContain('branche');
+    expect(missing).toContain('taken');
+  });
+
   it('eist agenda_koppeling alleen als Google Agenda is gekozen én geen token', () => {
-    expect(voice.missingForLive({ ...compleet, agenda: 'Google Agenda', agendaGekoppeld: false })).toContain('agenda_koppeling');
-    expect(voice.missingForLive({ ...compleet, agenda: 'Google Agenda', agendaGekoppeld: true })).not.toContain('agenda_koppeling');
-    expect(voice.missingForLive({ ...compleet, agenda: 'Geen / weet ik nog niet' })).not.toContain('agenda_koppeling');
+    const metGoogleAgenda = { ...compleet, integraties: { agenda: 'Google Agenda' }, agendaGekoppeld: false };
+    const metGoogleAgendaGekoppeld = { ...compleet, integraties: { agenda: 'Google Agenda' }, agendaGekoppeld: true };
+    expect(voice.missingForLive(metGoogleAgenda)).toContain('agenda_koppeling');
+    expect(voice.missingForLive(metGoogleAgendaGekoppeld)).not.toContain('agenda_koppeling');
+    expect(voice.missingForLive(compleet)).not.toContain('agenda_koppeling');
   });
 });
 
@@ -36,11 +62,19 @@ describe('voice.provision', () => {
   it('geeft wacht_op_klant zonder externe call als er velden ontbreken', async () => {
     let called = false;
     globalThis.fetch = async () => { called = true; return { ok: true, status: 200, text: async () => '{}' }; };
-    const r = await voice.provision({ ELEVENLABS_API_KEY: 'k' }, { service: { id: 's1' }, order: { product_key: 'emma-telefoon' }, intake: { openingstijden: '' }, customerId: 'c1' });
+    const intake = {
+      bedrijf: { bedrijfsnaam: 'Testbedrijf', branche: 'tandarts' },
+      bereikbaarheid: { huidig_nummer: '+31 6 1', openingstijden: '', buiten_tijden: 'Voicemail buiten openingstijden' },
+      afhandeling: { taken: ['Afspraken inplannen'] },
+      kennis: { toon: 'Zakelijk en warm' },
+      integraties: { agenda: 'Geen / weet ik nog niet' },
+    };
+    const r = await voice.provision({ ELEVENLABS_API_KEY: 'k' }, { service: { id: 's1' }, order: { product_key: 'emma-telefoon' }, intake, customerId: 'c1' });
     expect(r.status).toBe('wacht_op_klant');
     expect(r.wachtOp).toContain('openingstijden');
     expect(called).toBe(false);
   });
+
   it('bouwt de agent en geeft klaar als niets ontbreekt', async () => {
     globalThis.fetch = async (url) => {
       const u = String(url);
@@ -48,7 +82,13 @@ describe('voice.provision', () => {
       if (u.includes('/convai/agents/create')) return { ok: true, status: 200, text: async () => JSON.stringify({ agent_id: 'ag_1' }) };
       throw new Error(`onverwacht: ${u}`);
     };
-    const intake = { openingstijden: 'Ma-Vr 9-17', buiten_tijden: 'Voicemail buiten openingstijden', taken: ['Afspraken inplannen'], toon: 'Zakelijk en warm', agenda: 'Geen / weet ik nog niet' };
+    const intake = {
+      bedrijf: { bedrijfsnaam: 'Testbedrijf', branche: 'tandarts' },
+      bereikbaarheid: { huidig_nummer: '+31 6 1', openingstijden: 'Ma-Vr 9-17', buiten_tijden: 'Voicemail buiten openingstijden' },
+      afhandeling: { taken: ['Afspraken inplannen'] },
+      kennis: { toon: 'Zakelijk en warm' },
+      integraties: { agenda: 'Geen / weet ik nog niet' },
+    };
     const r = await voice.provision({ ELEVENLABS_API_KEY: 'k' }, { service: { id: 's1' }, order: { product_key: 'emma-telefoon' }, intake, customerId: 'c1' });
     expect(r.status).toBe('klaar');
     expect(r.provisioning?.agent_id).toBe('ag_1');

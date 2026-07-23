@@ -12,27 +12,6 @@ export function canProvision(productKey) {
   return productKeys.includes(productKey);
 }
 
-// De 'bedrijf'-stap (bedrijfsnaam, branche, ...) is bedrijfsidentiteit die al
-// vóór de diepe intake bekend is (checkout/order/klantprofiel) — geen
-// live-blokkerend veld. 'huidig_nummer' is puur input voor het (nog
-// handmatige) nummerbehoud-proces en wordt door buildConfig() niet gebruikt
-// om de agent-prompt te bouwen, dus ontbreken ervan hoeft provisioning niet
-// tegen te houden.
-const IDENTITY_STEP_KEY = 'bedrijf';
-const LIVE_EXEMPT_FIELDS = new Set(['huidig_nummer']);
-
-// Verplichte velden om een service "live" te mogen zetten: alle `required:true`
-// velden uit het intake-schema, min de bedrijfsidentiteit-stap en de
-// hierboven genoemde uitzondering.
-function requiredFieldNames(productKey) {
-  const schema = getIntakeSchema(productKey);
-  return schema.steps
-    .filter((step) => step.key !== IDENTITY_STEP_KEY)
-    .flatMap((step) => step.fields
-      .filter((field) => field.required && !LIVE_EXEMPT_FIELDS.has(field.name))
-      .map((field) => field.name));
-}
-
 function isEmpty(value) {
   if (value == null) return true;
   if (typeof value === 'string') return value.trim() === '';
@@ -40,14 +19,25 @@ function isEmpty(value) {
   return false;
 }
 
+// De intake_json is GENEST als `intake[step.key][field.name]` — exact zoals
+// de intake-wizard opslaat (`answers[step.key] = vals`,
+// src/pages/portal/intake.astro) en buildConfig() leest (elevenlabs.js, bv.
+// `i.bedrijf.bedrijfsnaam`, `i.bereikbaarheid.openingstijden`).
+//
 // `intake` mag een `_productKey` meegeven (provision() zet 'm vanuit
 // order.product_key); zonder dat valt terug op 'emma-telefoon'.
 export function missingForLive(intake) {
   const i = intake || {};
   const productKey = i._productKey || 'emma-telefoon';
-  const required = requiredFieldNames(productKey);
-  const missing = required.filter((name) => isEmpty(i[name]));
-  if (i.agenda === 'Google Agenda' && !i.agendaGekoppeld) missing.push('agenda_koppeling');
+  const schema = getIntakeSchema(productKey);
+  const missing = [];
+  for (const step of schema.steps) {
+    for (const field of step.fields) {
+      if (!field.required) continue;
+      if (isEmpty(i?.[step.key]?.[field.name])) missing.push(field.name);
+    }
+  }
+  if (i?.integraties?.agenda === 'Google Agenda' && !i?.agendaGekoppeld) missing.push('agenda_koppeling');
   return missing;
 }
 
