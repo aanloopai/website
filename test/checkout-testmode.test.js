@@ -76,6 +76,13 @@ function makeDb({
               if (sql.startsWith('SELECT id, status FROM subscriptions WHERE order_id = ?')) {
                 return state.subscriptions.find((s) => s.order_id === args[0]) || null;
               }
+              if (sql.startsWith("SELECT id FROM subscriptions WHERE customer_id = ? AND product_key = ? AND tier = ? AND status IN ('pending_payment', 'active')")) {
+                const [customerId, productKey, tierNaam] = args;
+                const match = state.subscriptions.find((s) => s.customer_id === customerId
+                  && s.product_key === productKey && s.tier === tierNaam
+                  && (s.status === 'pending_payment' || s.status === 'active'));
+                return match ? { id: match.id } : null;
+              }
               if (sql.startsWith('SELECT * FROM subscriptions WHERE id = ?')) {
                 return state.subscriptions.find((s) => s.id === args[0]) || null;
               }
@@ -255,5 +262,75 @@ describe('handleCheckoutStart — TEST-MODUS (PAYMENTS_BYPASS)', () => {
     expect(res.status).toBe(409);
     expect(db.state.payments).toHaveLength(0);
     expect(activateOrderMock).not.toHaveBeenCalled();
+  });
+
+  it('ongeldige/onbekende tier: 400, geen TypeError, geen payments-rij, geen onPaid', async () => {
+    const bogusTierOrder = {
+      id: 'ord_bogus', customer_id: 'cust_1', product_key: 'emma-telefoon', tier: 'NietBestaandeTier', status: 'concept',
+    };
+    const db = makeDb({ serviceOrders: [bogusTierOrder], users: [owner] });
+    const env = { PORTAL_DB: db, PAYMENTS_BYPASS: '1' };
+    globalThis.fetch = throwingFetch();
+
+    const res = await handleCheckoutStart(makeRequest('ord_bogus'), env, user);
+
+    expect(res.status).toBe(400);
+    expect(db.state.subscriptions).toHaveLength(0);
+    expect(db.state.payments).toHaveLength(0);
+    expect(activateOrderMock).not.toHaveBeenCalled();
+    expect(dealWonVoorOrderMock).not.toHaveBeenCalled();
+  });
+
+  it('cross-order dubbel-abonnement: order A via test-modus actief, order B (zelfde klant/product/tier) daarna 409 — geen tweede subscription/activateOrder/deal', async () => {
+    // Order A: geen bestaande subscriptions — gaat gewoon actief via test-modus.
+    const orderA = {
+      id: 'ord_a', customer_id: 'cust_1', product_key: 'emma-telefoon', tier: 'Starter', status: 'concept',
+    };
+    const dbA = makeDb({ serviceOrders: [orderA], users: [owner] });
+    const envA = { PORTAL_DB: dbA, PAYMENTS_BYPASS: '1' };
+    globalThis.fetch = throwingFetch();
+
+    const resA = await handleCheckoutStart(makeRequest('ord_a'), envA, user);
+    expect(resA.status).toBe(200);
+    expect(dbA.state.subscriptions).toHaveLength(1);
+    expect(dbA.state.subscriptions[0].status).toBe('active');
+    expect(activateOrderMock).toHaveBeenCalledTimes(1);
+    expect(dealWonVoorOrderMock).toHaveBeenCalledTimes(1);
+
+    activateOrderMock.mockClear();
+    dealWonVoorOrderMock.mockClear();
+    sendMailMock.mockClear();
+
+    // Order B: andere order, zelfde klant/product/tier. De cross-order-query
+    // (customer_id + product_key + tier, status pending_payment/active) moet
+    // het active abonnement van order A vinden en 409'en, VOORDAT er iets voor
+    // order B wordt aangemaakt.
+    const orderB = {
+      id: 'ord_b', customer_id: 'cust_1', product_key: 'emma-telefoon', tier: 'Starter', status: 'concept',
+    };
+    // makeDb's cross-order-query-stub matcht op customer_id + product_key +
+    // tier + status pending_payment/active — order A's active-rij (hierboven
+    // in dbA aangemaakt) simuleren we hier als bestaande subscriptions-rij op
+    // dbB, zodat de nieuwe cross-order-guard hem voor order B moet vinden.
+    const dbB = makeDb({
+      serviceOrders: [orderB],
+      subscriptions: [{
+        id: 'sub_a', order_id: 'ord_a', customer_id: 'cust_1', product_key: 'emma-telefoon', tier: 'Starter', status: 'active',
+      }],
+      users: [owner],
+    });
+    const envB = { PORTAL_DB: dbB, PAYMENTS_BYPASS: '1' };
+    globalThis.fetch = throwingFetch();
+
+    const resB = await handleCheckoutStart(makeRequest('ord_b'), envB, user);
+
+    expect(resB.status).toBe(409);
+    // Geen tweede subscription voor order B aangemaakt.
+    expect(dbB.state.subscriptions).toHaveLength(1);
+    expect(dbB.state.subscriptions[0].order_id).toBe('ord_a');
+    expect(dbB.state.payments).toHaveLength(0);
+    expect(activateOrderMock).not.toHaveBeenCalled();
+    expect(dealWonVoorOrderMock).not.toHaveBeenCalled();
+    expect(sendMailMock).not.toHaveBeenCalled();
   });
 });

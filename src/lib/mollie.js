@@ -830,7 +830,13 @@ async function handleTestModeCheckout(request, env, user) {
   if (!order) return errorResponse('Aanvraag niet gevonden', 404);
   if (order.status !== 'concept') return errorResponse('Deze aanvraag is al ingediend', 409);
 
+  // Zelfde tier-geldigheidscheck als de echte flow (handleCheckoutStart) —
+  // zonder deze guard gooit berekenEersteBetaling() een ongevangen TypeError
+  // op een ongeldige/niet-betaalbare tier in plaats van een nette 400.
   const tier = getCatalogTier(order.product_key, order.tier);
+  if (!tier || tier.betaling === 'aanvraag' || !tier.prijsCent) {
+    return errorResponse('Voor dit pakket is geen online betaling beschikbaar.', 400);
+  }
   const { maandInclCent, totaalInclCent } = berekenEersteBetaling(tier);
   const maandelijks = tier.betaling === 'maandelijks';
 
@@ -842,6 +848,19 @@ async function handleTestModeCheckout(request, env, user) {
     .bind(order.id).first();
   if (existingSub && (existingSub.status === 'active' || existingSub.status === 'completed')) {
     return errorResponse('Deze aanvraag heeft al een actief abonnement', 409);
+  }
+
+  // Zelfde cross-order dubbel-abonnement-guard als de echte flow (H2/H-eind-C):
+  // de check hierboven is per order_id en ziet dus niets wanneer een ANDERE
+  // order van dezelfde klant, voor hetzelfde product + tier, al een
+  // pending/actief abonnement heeft — zonder deze guard zou de test-modus
+  // dezelfde klant twee keer hetzelfde product kunnen laten activeren
+  // (dubbele dienst/CRM-deal/factuur).
+  const dubbelAbonnement = await env.PORTAL_DB
+    .prepare("SELECT id FROM subscriptions WHERE customer_id = ? AND product_key = ? AND tier = ? AND status IN ('pending_payment', 'active') LIMIT 1")
+    .bind(order.customer_id, order.product_key, order.tier).first();
+  if (dubbelAbonnement) {
+    return errorResponse('Er loopt al een abonnement (of een openstaande betaling) voor dit product op uw account.', 409);
   }
 
   try {
