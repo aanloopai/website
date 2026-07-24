@@ -4,6 +4,8 @@ import { jsonResponse, errorResponse } from './google-auth.js';
 import { randomId, getSessionUser } from './auth.js';
 import { escapeHtml } from './escape.js';
 import { activateOrder } from './activation.js';
+import { teardownProvisioning } from './elevenlabs.js';
+import { canProvision } from './provisioners/index.js';
 import {
   outreachProspects, outreachMailDetail, outreachImport,
   outreachGenerateMail, outreachEvaluateMail, outreachUpdateMail,
@@ -262,12 +264,44 @@ async function createService(request, env) {
   return jsonResponse({ ok: true, message: 'Dienst toegevoegd' });
 }
 
-async function updateService(request, env) {
+export async function updateService(request, env) {
   const b = await request.json().catch(() => null);
   if (!b?.id) return errorResponse('Dienst-id ontbreekt', 400);
-  const current = await env.PORTAL_DB.prepare('SELECT status, tier, naam, config_json, started_at FROM services WHERE id = ?').bind(b.id).first();
+  const current = await env.PORTAL_DB.prepare(
+    'SELECT status, tier, naam, config_json, started_at, provisioning_json, order_id, product_key FROM services WHERE id = ?',
+  ).bind(b.id).first();
   if (!current) return errorResponse('Dienst niet gevonden', 404);
   const status = ['actief', 'onboarding', 'gepauzeerd'].includes(b.status) ? b.status : current.status;
+
+  // Pauzeren: de agent+kennisbank echt opruimen (nooit een spookdienst laten
+  // doorpraten) en provisioning_json wissen, zodat een latere hervatting
+  // hieronder ziet dat er opnieuw geprovisioned moet worden.
+  if (status === 'gepauzeerd' && current.status !== 'gepauzeerd') {
+    await teardownProvisioning(env, safeParseJson(current.provisioning_json));
+    await env.PORTAL_DB.prepare(
+      'UPDATE services SET naam = ?, tier = ?, status = ?, config_json = ?, started_at = ?, provisioning_json = NULL WHERE id = ?',
+    ).bind((b.naam ?? current.naam).slice(0, 120), b.tier ?? current.tier, status,
+      b.config !== undefined ? JSON.stringify(b.config) : current.config_json, current.started_at, b.id).run();
+    return jsonResponse({ ok: true, message: 'Dienst gepauzeerd' });
+  }
+
+  // Hervatten: als er geen geldige provisioning meer is (nooit gedraaid, of
+  // eerder mislukt) en dit product zichzelf kan (her)inrichten, laat
+  // activateOrder de re-provisioning + de service/order-status zelf bepalen
+  // — niet hier overschrijven met een losse UPDATE.
+  if (status === 'actief') {
+    const prov = safeParseJson(current.provisioning_json);
+    const provisioningLeeg = !current.provisioning_json || prov.status === 'fout';
+    if (provisioningLeeg && canProvision(current.product_key) && current.order_id) {
+      const order = await env.PORTAL_DB.prepare('SELECT * FROM service_orders WHERE id = ?').bind(current.order_id).first();
+      if (order) {
+        await activateOrder(env, order);
+        return jsonResponse({ ok: true, message: 'Dienst hervat' });
+      }
+    }
+  }
+
+  // Anders: naam/tier/config/status bijwerken zonder teardown of re-provisioning.
   // Stamp started_at the first time a service becomes actief.
   const startedAt = (status === 'actief' && !current.started_at) ? today() : current.started_at;
   await env.PORTAL_DB.prepare(
