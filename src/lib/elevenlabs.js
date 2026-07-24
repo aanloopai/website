@@ -148,3 +148,40 @@ export async function provisionAgent(apiKey, productKey, serviceNaam, intake) {
 export function canProvision(productKey) {
   return productKey === 'emma-telefoon' || productKey === 'emma';
 }
+
+// DELETE /v1/convai/agents/{agent_id} — cleanup helper mirroring deleteKbDoc.
+// 404 means the agent is already gone; treat that as success.
+export async function deleteAgent(apiKey, agentId) {
+  const res = await fetch(`${API}/convai/agents/${agentId}`, {
+    method: 'DELETE',
+    headers: { 'xi-api-key': apiKey },
+  });
+  if (res.status === 404) return;
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`ElevenLabs agent delete HTTP ${res.status}: ${text.slice(0, 300)}`);
+  }
+}
+
+// Best-effort teardown of a previously provisioned agent + KB doc. Used when
+// a service is cancelled/deactivated. Never throws — each deletion is
+// independent so a failure on one does not block the other, and a failure
+// here must never block the caller's own flow (e.g. deactivation).
+export async function teardownProvisioning(env, provisioning) {
+  if (!env.ELEVENLABS_API_KEY || !provisioning) return;
+  const apiKey = env.ELEVENLABS_API_KEY;
+  if (provisioning.agent_id) {
+    try {
+      await deleteAgent(apiKey, provisioning.agent_id);
+    } catch (err) {
+      console.error(`ElevenLabs agent teardown failed for ${provisioning.agent_id}:`, err);
+    }
+  }
+  if (provisioning.kb_id) {
+    try {
+      await deleteKbDoc(apiKey, provisioning.kb_id);
+    } catch (err) {
+      console.error(`ElevenLabs KB teardown failed for ${provisioning.kb_id}:`, err);
+    }
+  }
+}
