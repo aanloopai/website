@@ -86,6 +86,18 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
         <span id="i-msg" class="mt-2 block text-sm"></span>
       </div>
     </section>
+
+    <section class="pcard">
+      <div class="pcard-h">Gevaarlijke acties</div>
+      <div class="pcard-b">
+        <label class="plabel">Typ de bedrijfsnaam ter bevestiging</label>
+        <div class="mt-2 flex flex-col gap-2 sm:flex-row">
+          <input id="del-confirm" class="pinput flex-1" placeholder="Typ de bedrijfsnaam ter bevestiging" />
+          <button id="k-delete" class="pbtn" style="color:#b3093c;border-color:#b3093c">Klant verwijderen</button>
+        </div>
+        <span id="del-msg" class="mt-2 block text-sm"></span>
+      </div>
+    </section>
   </div>
 
   <script is:inline>
@@ -152,7 +164,7 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
       function renderServices(list) {
         document.getElementById('k-services').innerHTML = list.length
           ? list.map(function (s) {
-              return '<div class="rounded-md border p-3" style="border-color:var(--p-border)" data-sid="' + esc(s.id) + '">' +
+              return '<div class="rounded-md border p-3" style="border-color:var(--p-border)" data-sid="' + esc(s.id) + '" data-status="' + esc(s.status) + '">' +
                 '<div class="flex items-center justify-between"><span class="primary" style="color:var(--p-ink);font-weight:500">' + esc(s.naam) + '</span>' +
                 '<span class="pbadge ' + (STATUS[s.status] || 'pbadge--gray') + '">' + esc(s.status) + '</span></div>' +
                 '<div class="mt-2 flex flex-wrap items-center gap-2">' +
@@ -161,7 +173,10 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
                 ['actief', 'onboarding', 'gepauzeerd'].map(function (st) {
                   return '<option value="' + st + '"' + (st === s.status ? ' selected' : '') + '>' + st + '</option>';
                 }).join('') + '</select>' +
-                '<button class="s-upd pbtn pbtn--primary pbtn--sm">Opslaan</button></div>' + provHtml(s) + '</div>';
+                '<button class="s-upd pbtn pbtn--primary pbtn--sm">Opslaan</button>' +
+                '<button class="s-toggle pbtn pbtn--subtle pbtn--sm">' + (s.status === 'gepauzeerd' ? 'Hervatten' : 'Pauzeren') + '</button>' +
+                '<button class="s-del pbtn pbtn--sm" style="color:#b3093c">Verwijderen</button>' +
+                '</div>' + provHtml(s) + '</div>';
             }).join('')
           : '<p class="text-sm p-muted">Nog geen diensten.</p>';
         document.querySelectorAll('#k-services .s-upd').forEach(function (b) {
@@ -172,6 +187,32 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
               tier: box.querySelector('.s-tier').value.trim(),
               status: box.querySelector('.s-stat').value,
             }, document.getElementById('s-msg'));
+          });
+        });
+        document.querySelectorAll('#k-services .s-toggle').forEach(function (b) {
+          b.addEventListener('click', function () {
+            var box = b.closest('[data-sid]');
+            var current = box.getAttribute('data-status');
+            var next = current === 'gepauzeerd' ? 'actief' : 'gepauzeerd';
+            post('/api/admin/service', 'PATCH', {
+              id: box.getAttribute('data-sid'),
+              status: next,
+            }, document.getElementById('s-msg'));
+          });
+        });
+        document.querySelectorAll('#k-services .s-del').forEach(function (b) {
+          b.addEventListener('click', function () {
+            if (!confirm('Dienst verwijderen? De AI-agent wordt gestopt en verwijderd.')) return;
+            var box = b.closest('[data-sid]');
+            var sid = box.getAttribute('data-sid');
+            var msgEl = document.getElementById('s-msg');
+            fetch('/api/admin/service?id=' + encodeURIComponent(sid), { method: 'DELETE', credentials: 'same-origin' })
+              .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+              .then(function (res) {
+                flash(msgEl, res.ok ? (res.j.message || 'Verwijderd') : (res.j.error || 'Fout'), res.ok);
+                if (res.ok) load();
+              })
+              .catch(function () { flash(msgEl, 'Netwerkfout', false); });
           });
         });
       }
@@ -239,6 +280,26 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
           status: document.getElementById('i-status').value,
           pdf_url: document.getElementById('i-pdf').value.trim(),
         }, document.getElementById('i-msg'));
+      });
+      document.getElementById('k-delete').addEventListener('click', function () {
+        var msgEl = document.getElementById('del-msg');
+        var typed = document.getElementById('del-confirm').value.trim();
+        var bedrijf = document.getElementById('k-bedrijf').value.trim();
+        if (!typed || typed !== bedrijf) {
+          flash(msgEl, 'Bedrijfsnaam komt niet overeen', false);
+          return;
+        }
+        fetch('/api/admin/customer?id=' + encodeURIComponent(cid), {
+          method: 'DELETE', credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ confirm: typed }),
+        })
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (res) {
+            if (res.ok) { location.href = '/admin/klanten'; return; }
+            flash(msgEl, res.j.error || 'Fout', false);
+          })
+          .catch(function () { flash(msgEl, 'Netwerkfout', false); });
       });
 
       load();
