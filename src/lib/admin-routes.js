@@ -67,7 +67,9 @@ export async function handleAdminApi(request, env) {
       return method === 'POST' ? await createCustomer(request, env) : await listCustomers(env);
     }
     if (path === '/api/admin/customer') {
-      return method === 'PATCH' ? await updateCustomer(request, env) : await customerDetail(env, url);
+      if (method === 'PATCH') return await updateCustomer(request, env);
+      if (method === 'DELETE') return await deleteCustomer(request, env);
+      return await customerDetail(env, url);
     }
     if (path === '/api/admin/user' && method === 'POST') return await createUser(request, env);
     if (path === '/api/admin/service' && method === 'POST') return await createService(request, env);
@@ -239,6 +241,68 @@ async function customerDetail(env, url) {
   const services = (await db.prepare('SELECT id, product_key, naam, tier, status, config_json, provisioning_json, started_at, created_at FROM services WHERE customer_id = ? ORDER BY created_at').bind(id).all()).results || [];
   const invoices = (await db.prepare('SELECT id, periode, bedrag_cent, status, pdf_url, created_at FROM invoices WHERE customer_id = ? ORDER BY created_at DESC').bind(id).all()).results || [];
   return jsonResponse({ ok: true, customer, users, services, invoices });
+}
+
+// Verwijdert een klant volledig (cascade): per dienst eerst de agent+kennisbank
+// opruimen (teardownProvisioning, gooit nooit — zelfde garantie als deleteService),
+// dan alle klant-gebonden rijen weg in kind→ouder-volgorde, en tot slot de
+// customers-rij zelf. Dit is de meest destructieve admin-actie: vereist een
+// EXACTE bedrijfsnaam-bevestiging in de body — bij een mismatch wordt er geen
+// enkele rij aangeraakt (geen teardown, geen delete).
+//
+// voorstellen/voorstel_claims hebben geen directe customer_id-kolom — die
+// koppeling loopt via service_orders.voorstel_id (migratie 0015). Vandaar
+// eerst de voorstelIds verzamelen, en alleen als die lijst niet leeg is de
+// bijbehorende IN (...)-deletes draaien (nooit een kale `IN ()`).
+export async function deleteCustomer(request, env) {
+  const url = new URL(request.url);
+  const id = url.searchParams.get('id');
+  if (!id) return errorResponse('Klant-id ontbreekt', 400);
+
+  const db = env.PORTAL_DB;
+  const customer = await db.prepare('SELECT id, bedrijf FROM customers WHERE id = ?').bind(id).first();
+  if (!customer) return errorResponse('Klant niet gevonden', 404);
+
+  const b = await request.json().catch(() => null);
+  const confirm = (b?.confirm || '').toString().trim();
+  if (confirm !== customer.bedrijf) {
+    return errorResponse('Bevestiging komt niet overeen met de bedrijfsnaam', 400);
+  }
+
+  const services = (await db.prepare('SELECT id, provisioning_json FROM services WHERE customer_id = ?').bind(id).all()).results || [];
+  for (const s of services) {
+    await teardownProvisioning(env, safeParseJson(s.provisioning_json));
+  }
+
+  const voorstelIds = ((await db.prepare(
+    'SELECT voorstel_id FROM service_orders WHERE customer_id = ? AND voorstel_id IS NOT NULL',
+  ).bind(id).all()).results || []).map((r) => r.voorstel_id);
+
+  await db.prepare('DELETE FROM invoices WHERE customer_id = ?').bind(id).run();
+  await db.prepare('DELETE FROM payments WHERE customer_id = ?').bind(id).run();
+
+  if (voorstelIds.length) {
+    const ph = voorstelIds.map(() => '?').join(',');
+    await db.prepare(`DELETE FROM voorstel_claims WHERE voorstel_id IN (${ph})`).bind(...voorstelIds).run();
+  }
+
+  await db.prepare('DELETE FROM subscriptions WHERE customer_id = ?').bind(id).run();
+  await db.prepare('DELETE FROM services WHERE customer_id = ?').bind(id).run();
+  await db.prepare('DELETE FROM service_orders WHERE customer_id = ?').bind(id).run();
+
+  if (voorstelIds.length) {
+    const ph = voorstelIds.map(() => '?').join(',');
+    await db.prepare(
+      `DELETE FROM intake_requests WHERE id IN (SELECT intake_id FROM voorstellen WHERE id IN (${ph}))`,
+    ).bind(...voorstelIds).run();
+    await db.prepare(`DELETE FROM voorstellen WHERE id IN (${ph})`).bind(...voorstelIds).run();
+  }
+
+  await db.prepare('DELETE FROM magic_links WHERE user_id IN (SELECT id FROM users WHERE customer_id = ?)').bind(id).run();
+  await db.prepare('DELETE FROM users WHERE customer_id = ?').bind(id).run();
+  await db.prepare('DELETE FROM customers WHERE id = ?').bind(id).run();
+
+  return jsonResponse({ ok: true, message: 'Klant verwijderd' });
 }
 
 async function createUser(request, env) {
