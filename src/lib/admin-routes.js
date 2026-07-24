@@ -300,6 +300,14 @@ export async function deleteCustomer(request, env) {
 
   await db.prepare('DELETE FROM magic_links WHERE user_id IN (SELECT id FROM users WHERE customer_id = ?)').bind(id).run();
   await db.prepare('DELETE FROM users WHERE customer_id = ?').bind(id).run();
+
+  // AVG: klant-gebonden leaf-tabellen zonder eigen child-rijen — direct
+  // customer_id-gescopt weg, anders blijven er wees-rijen met klant-PII staan.
+  await db.prepare('DELETE FROM documents WHERE customer_id = ?').bind(id).run();
+  await db.prepare('DELETE FROM service_requests WHERE customer_id = ?').bind(id).run();
+  await db.prepare('DELETE FROM support_tickets WHERE customer_id = ?').bind(id).run();
+  await db.prepare('DELETE FROM team_invites WHERE customer_id = ?').bind(id).run();
+
   await db.prepare('DELETE FROM customers WHERE id = ?').bind(id).run();
 
   return jsonResponse({ ok: true, message: 'Klant verwijderd' });

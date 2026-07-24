@@ -3,7 +3,9 @@
 // er GEEN enkele rij aangeraakt (geen teardown, geen delete). Bij een match:
 // per dienst teardownProvisioning (gemockt — eigen elevenlabs.test.js), dan
 // de volledige cascade-DELETE in kind→ouder-volgorde, elk gescoped op de
-// klant (nooit een kale WHERE-loze of lege `IN ()` delete).
+// klant (nooit een kale WHERE-loze of lege `IN ()` delete). Inclusief de
+// AVG-leaf-tabellen documents/service_requests/support_tickets/team_invites
+// (customer_id-gescoped, geen eigen child-tabellen).
 import {
   describe, it, expect, vi, beforeEach,
 } from 'vitest';
@@ -155,6 +157,10 @@ describe('deleteCustomer', () => {
       expect.stringMatching(/^DELETE FROM voorstellen WHERE id IN \(\?,\?\)$/),
       expect.stringMatching(/^DELETE FROM magic_links WHERE user_id IN \(SELECT id FROM users WHERE customer_id = \?\)$/),
       expect.stringMatching(/^DELETE FROM users WHERE customer_id = \?$/),
+      expect.stringMatching(/^DELETE FROM documents WHERE customer_id = \?$/),
+      expect.stringMatching(/^DELETE FROM service_requests WHERE customer_id = \?$/),
+      expect.stringMatching(/^DELETE FROM support_tickets WHERE customer_id = \?$/),
+      expect.stringMatching(/^DELETE FROM team_invites WHERE customer_id = \?$/),
       expect.stringMatching(/^DELETE FROM customers WHERE id = \?$/),
     ]);
 
@@ -170,7 +176,11 @@ describe('deleteCustomer', () => {
     expect(runCalls[7].args).toEqual(['vst_1', 'vst_2']); // voorstellen
     expect(runCalls[8].args).toEqual(['cust_1']); // magic_links
     expect(runCalls[9].args).toEqual(['cust_1']); // users
-    expect(runCalls[10].args).toEqual(['cust_1']); // customers — laatste
+    expect(runCalls[10].args).toEqual(['cust_1']); // documents
+    expect(runCalls[11].args).toEqual(['cust_1']); // service_requests
+    expect(runCalls[12].args).toEqual(['cust_1']); // support_tickets
+    expect(runCalls[13].args).toEqual(['cust_1']); // team_invites
+    expect(runCalls[14].args).toEqual(['cust_1']); // customers — laatste
 
     // Nooit een WHERE-loze delete.
     for (const call of runCalls) {
@@ -204,10 +214,18 @@ describe('deleteCustomer', () => {
       expect.stringMatching(/^DELETE FROM service_orders WHERE customer_id = \?$/),
       expect.stringMatching(/^DELETE FROM magic_links WHERE user_id IN \(SELECT id FROM users WHERE customer_id = \?\)$/),
       expect.stringMatching(/^DELETE FROM users WHERE customer_id = \?$/),
+      expect.stringMatching(/^DELETE FROM documents WHERE customer_id = \?$/),
+      expect.stringMatching(/^DELETE FROM service_requests WHERE customer_id = \?$/),
+      expect.stringMatching(/^DELETE FROM support_tickets WHERE customer_id = \?$/),
+      expect.stringMatching(/^DELETE FROM team_invites WHERE customer_id = \?$/),
       expect.stringMatching(/^DELETE FROM customers WHERE id = \?$/),
     ]);
     expect(tables.some((s) => s.includes('voorstel'))).toBe(false);
     expect(tables.some((s) => s.includes('intake_requests'))).toBe(false);
+    expect(runCalls[7].args).toEqual(['cust_2']); // documents
+    expect(runCalls[8].args).toEqual(['cust_2']); // service_requests
+    expect(runCalls[9].args).toEqual(['cust_2']); // support_tickets
+    expect(runCalls[10].args).toEqual(['cust_2']); // team_invites
   });
 
   it('confirm met omringende whitespace wordt getrimd voor vergelijking', async () => {
