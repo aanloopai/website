@@ -289,14 +289,20 @@ export async function updateService(request, env) {
   // eerder mislukt) en dit product zichzelf kan (her)inrichten, laat
   // activateOrder de re-provisioning + de service/order-status zelf bepalen
   // — niet hier overschrijven met een losse UPDATE.
-  if (status === 'actief') {
+  if (status === 'actief' && current.status !== 'actief') {
     const prov = safeParseJson(current.provisioning_json);
     const provisioningLeeg = !current.provisioning_json || prov.status === 'fout';
     if (provisioningLeeg && canProvision(current.product_key) && current.order_id) {
       const order = await env.PORTAL_DB.prepare('SELECT * FROM service_orders WHERE id = ?').bind(current.order_id).first();
       if (order) {
-        await activateOrder(env, order);
-        return jsonResponse({ ok: true, message: 'Dienst hervat' });
+        const result = await activateOrder(env, order);
+        if (result.status === 'actief') {
+          return jsonResponse({ ok: true, message: 'Dienst hervat en actief' });
+        }
+        if (result.status === 'wacht_op_klant') {
+          return jsonResponse({ ok: true, message: 'Dienst wordt heringericht — de klant moet de onboarding afronden' });
+        }
+        return jsonResponse({ ok: true, message: 'Herinrichting gestart, nog niet actief — controleer later' });
       }
     }
   }

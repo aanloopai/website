@@ -115,6 +115,7 @@ describe('updateService — hervatten (re-provisioning)', () => {
     // Geen losse UPDATE services SET ... die activateOrder's eigen status-zet zou overschrijven.
     expect(updateCalls).toHaveLength(0);
     expect(body.ok).toBe(true);
+    expect(body.message).toBe('Dienst hervat en actief');
   });
 
   it('gepauzeerde dienst met eerder mislukte provisioning (status fout) → ook hervat via activateOrder', async () => {
@@ -132,6 +133,26 @@ describe('updateService — hervatten (re-provisioning)', () => {
 
     expect(activateOrderMock).toHaveBeenCalledWith(env, order);
     expect(updateCalls).toHaveLength(0);
+  });
+
+  it('hervatten waarbij activateOrder wacht_op_klant teruggeeft → boodschap weerspiegelt dat, niet als actief gemeld', async () => {
+    const order = { id: 'ord_4', product_key: 'emma-telefoon', customer_id: 'cus_4', status: 'in_uitvoering' };
+    const service = {
+      status: 'gepauzeerd', tier: 'basis', naam: 'Emma — Klant BV', config_json: null, started_at: '2026-01-01',
+      provisioning_json: null, order_id: 'ord_4', product_key: 'emma-telefoon',
+    };
+    const updateCalls = [];
+    const env = { PORTAL_DB: makeDb({ service, order, updateCalls }) };
+    activateOrderMock.mockResolvedValue({ status: 'wacht_op_klant', serviceId: 'svc_4' });
+
+    const res = await updateService(makeRequest({ id: 'svc_4', status: 'actief' }), env);
+    const body = await res.json();
+
+    expect(activateOrderMock).toHaveBeenCalledWith(env, order);
+    expect(body.ok).toBe(true);
+    expect(body.message).not.toBe('Dienst hervat');
+    expect(body.message).not.toContain('hervat en actief');
+    expect(body.message).toBe('Dienst wordt heringericht — de klant moet de onboarding afronden');
   });
 
   it('niet-provisionbaar product met lege provisioning → geen activateOrder, bestaande UPDATE draait', async () => {
@@ -167,6 +188,26 @@ describe('updateService — naam/tier-wijziging zonder statusverandering', () =>
 
     expect(teardownProvisioningMock).not.toHaveBeenCalled();
     expect(activateOrderMock).not.toHaveBeenCalled();
+    expect(updateCalls).toHaveLength(1);
+    expect(updateCalls[0].args[0]).toBe('Nieuwe naam');
+    expect(updateCalls[0].args[1]).toBe('pro');
+    expect(updateCalls[0].args[2]).toBe('actief');
+    expect(body.message).toBe('Dienst bijgewerkt');
+  });
+
+  it('actief→actief naam/tier-edit met (gesimuleerd) lege provisioning → guard voorkomt re-provisioning, gewone UPDATE draait', async () => {
+    const service = {
+      status: 'actief', tier: 'basis', naam: 'Oude naam', config_json: null, started_at: '2026-01-01',
+      provisioning_json: null, order_id: 'ord_10', product_key: 'emma-telefoon',
+    };
+    const updateCalls = [];
+    const env = { PORTAL_DB: makeDb({ service, order: null, updateCalls }) };
+
+    const res = await updateService(makeRequest({ id: 'svc_10', status: 'actief', naam: 'Nieuwe naam', tier: 'pro' }), env);
+    const body = await res.json();
+
+    expect(activateOrderMock).not.toHaveBeenCalled();
+    expect(teardownProvisioningMock).not.toHaveBeenCalled();
     expect(updateCalls).toHaveLength(1);
     expect(updateCalls[0].args[0]).toBe('Nieuwe naam');
     expect(updateCalls[0].args[1]).toBe('pro');
