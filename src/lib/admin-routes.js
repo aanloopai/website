@@ -72,6 +72,7 @@ export async function handleAdminApi(request, env) {
     if (path === '/api/admin/user' && method === 'POST') return await createUser(request, env);
     if (path === '/api/admin/service' && method === 'POST') return await createService(request, env);
     if (path === '/api/admin/service' && method === 'PATCH') return await updateService(request, env);
+    if (path === '/api/admin/service' && method === 'DELETE') return await deleteService(request, env);
     if (path === '/api/admin/requests') return await listRequests(env, url);
     if (path === '/api/admin/request' && method === 'PATCH') return await fulfillRequest(request, env);
     if (path === '/api/admin/tickets') return await listTickets(env, url);
@@ -315,6 +316,39 @@ export async function updateService(request, env) {
   ).bind((b.naam ?? current.naam).slice(0, 120), b.tier ?? current.tier, status,
     b.config !== undefined ? JSON.stringify(b.config) : current.config_json, startedAt, b.id).run();
   return jsonResponse({ ok: true, message: 'Dienst bijgewerkt' });
+}
+
+// Verwijdert een dienst volledig: agent+kennisbank opruimen (teardownProvisioning,
+// gooit nooit), bijbehorend abonnement annuleren (billing stopt), de order op
+// 'geannuleerd' zetten (uit de actieve telling) en tot slot de service-rij weg.
+// order_id kan ontbreken (handmatig aangemaakte dienst zonder order) — dan
+// slaan we de subscription/order-stappen over in plaats van met een lege bind
+// te draaien.
+export async function deleteService(request, env) {
+  const url = new URL(request.url);
+  let id = url.searchParams.get('id');
+  if (!id) {
+    const b = await request.json().catch(() => null);
+    id = b?.id || null;
+  }
+  if (!id) return errorResponse('Dienst-id ontbreekt', 400);
+
+  const svc = await env.PORTAL_DB.prepare(
+    'SELECT id, customer_id, order_id, provisioning_json FROM services WHERE id = ?',
+  ).bind(id).first();
+  if (!svc) return errorResponse('Dienst niet gevonden', 404);
+
+  await teardownProvisioning(env, safeParseJson(svc.provisioning_json));
+
+  if (svc.order_id) {
+    await env.PORTAL_DB.prepare('UPDATE subscriptions SET status = ? WHERE order_id = ?')
+      .bind('canceled', svc.order_id).run();
+    await env.PORTAL_DB.prepare('UPDATE service_orders SET status = ? WHERE id = ?')
+      .bind('geannuleerd', svc.order_id).run();
+  }
+  await env.PORTAL_DB.prepare('DELETE FROM services WHERE id = ?').bind(id).run();
+
+  return jsonResponse({ ok: true, message: 'Dienst verwijderd' });
 }
 
 async function listRequests(env, url) {
