@@ -120,6 +120,35 @@ describe('deleteCustomer', () => {
     expect(runCalls).toHaveLength(0);
   });
 
+  it('L2: klant zonder bedrijfsnaam (leeg) → 400, geen teardown, geen delete', async () => {
+    const customer = { id: 'cust_leeg', bedrijf: '' };
+    const runCalls = [];
+    const env = { PORTAL_DB: makeDb({ customer, runCalls }) };
+
+    const req = makeRequest('https://aanloopai.nl/api/admin/customer?id=cust_leeg', { confirm: '' });
+    const res = await deleteCustomer(req, env);
+    const body = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(body.ok).toBe(false);
+    expect(teardownProvisioningMock).not.toHaveBeenCalled();
+    expect(runCalls).toHaveLength(0);
+  });
+
+  it('L2: klant zonder bedrijfsnaam (null) → 400, geen delete', async () => {
+    const customer = { id: 'cust_null', bedrijf: null };
+    const runCalls = [];
+    const env = { PORTAL_DB: makeDb({ customer, runCalls }) };
+
+    const req = makeRequest('https://aanloopai.nl/api/admin/customer?id=cust_null', { confirm: 'wat dan ook' });
+    const res = await deleteCustomer(req, env);
+    const body = await res.json();
+
+    expect(res.status).toBe(400);
+    expect(body.ok).toBe(false);
+    expect(runCalls).toHaveLength(0);
+  });
+
   it('correcte confirm, klant MET voorstellen → teardown per service + volledige cascade in juiste volgorde en scope, customers als laatste', async () => {
     const customer = { id: 'cust_1', bedrijf: 'Acme B.V.' };
     const services = [
@@ -161,6 +190,7 @@ describe('deleteCustomer', () => {
       expect.stringMatching(/^DELETE FROM service_requests WHERE customer_id = \?$/),
       expect.stringMatching(/^DELETE FROM support_tickets WHERE customer_id = \?$/),
       expect.stringMatching(/^DELETE FROM team_invites WHERE customer_id = \?$/),
+      expect.stringMatching(/^DELETE FROM onboarding_nudges WHERE customer_id = \?$/),
       expect.stringMatching(/^DELETE FROM customers WHERE id = \?$/),
     ]);
 
@@ -180,7 +210,8 @@ describe('deleteCustomer', () => {
     expect(runCalls[11].args).toEqual(['cust_1']); // service_requests
     expect(runCalls[12].args).toEqual(['cust_1']); // support_tickets
     expect(runCalls[13].args).toEqual(['cust_1']); // team_invites
-    expect(runCalls[14].args).toEqual(['cust_1']); // customers — laatste
+    expect(runCalls[14].args).toEqual(['cust_1']); // onboarding_nudges
+    expect(runCalls[15].args).toEqual(['cust_1']); // customers — laatste
 
     // Nooit een WHERE-loze delete.
     for (const call of runCalls) {
@@ -218,6 +249,7 @@ describe('deleteCustomer', () => {
       expect.stringMatching(/^DELETE FROM service_requests WHERE customer_id = \?$/),
       expect.stringMatching(/^DELETE FROM support_tickets WHERE customer_id = \?$/),
       expect.stringMatching(/^DELETE FROM team_invites WHERE customer_id = \?$/),
+      expect.stringMatching(/^DELETE FROM onboarding_nudges WHERE customer_id = \?$/),
       expect.stringMatching(/^DELETE FROM customers WHERE id = \?$/),
     ]);
     expect(tables.some((s) => s.includes('voorstel'))).toBe(false);
@@ -226,6 +258,7 @@ describe('deleteCustomer', () => {
     expect(runCalls[8].args).toEqual(['cust_2']); // service_requests
     expect(runCalls[9].args).toEqual(['cust_2']); // support_tickets
     expect(runCalls[10].args).toEqual(['cust_2']); // team_invites
+    expect(runCalls[11].args).toEqual(['cust_2']); // onboarding_nudges
   });
 
   it('confirm met omringende whitespace wordt getrimd voor vergelijking', async () => {

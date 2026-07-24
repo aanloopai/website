@@ -167,14 +167,22 @@ export async function deleteAgent(apiKey, agentId) {
 // a service is cancelled/deactivated. Never throws — each deletion is
 // independent so a failure on one does not block the other, and a failure
 // here must never block the caller's own flow (e.g. deactivation).
+//
+// Returns { ok: boolean }. ok=false only when the AGENT delete itself threw —
+// that is the resource that keeps running (and keeps talking) if we lose
+// track of its id, so the caller needs to know specifically about that
+// failure to decide whether it's safe to forget agent_id. A failed KB-doc
+// delete does not affect ok: the KB doc is inert once orphaned.
 export async function teardownProvisioning(env, provisioning) {
-  if (!env.ELEVENLABS_API_KEY || !provisioning) return;
+  if (!env.ELEVENLABS_API_KEY || !provisioning) return { ok: true };
   const apiKey = env.ELEVENLABS_API_KEY;
+  let ok = true;
   if (provisioning.agent_id) {
     try {
       await deleteAgent(apiKey, provisioning.agent_id);
     } catch (err) {
       console.error(`ElevenLabs agent teardown failed for ${provisioning.agent_id}:`, err);
+      ok = false;
     }
   }
   if (provisioning.kb_id) {
@@ -184,4 +192,5 @@ export async function teardownProvisioning(env, provisioning) {
       console.error(`ElevenLabs KB teardown failed for ${provisioning.kb_id}:`, err);
     }
   }
+  return { ok };
 }

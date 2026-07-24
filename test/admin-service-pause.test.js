@@ -20,6 +20,11 @@ vi.mock('../src/lib/activation.js', () => ({
   activateOrder: (...args) => activateOrderMock(...args),
 }));
 
+const alertStaffMock = vi.fn();
+vi.mock('../src/lib/notify.js', () => ({
+  alertStaff: (...args) => alertStaffMock(...args),
+}));
+
 const { updateService } = await import('../src/lib/admin-routes.js');
 
 const SERVICE_SELECT = 'SELECT status, tier, naam, config_json, started_at, provisioning_json, order_id, product_key FROM services WHERE id = ?';
@@ -54,7 +59,9 @@ function makeRequest(body) {
 
 beforeEach(() => {
   teardownProvisioningMock.mockReset();
+  teardownProvisioningMock.mockResolvedValue({ ok: true });
   activateOrderMock.mockReset();
+  alertStaffMock.mockReset();
 });
 
 describe('updateService — pauzeren (agent-teardown)', () => {
@@ -93,6 +100,52 @@ describe('updateService — pauzeren (agent-teardown)', () => {
     expect(teardownProvisioningMock).not.toHaveBeenCalled();
     expect(updateCalls).toHaveLength(1);
     expect(updateCalls[0].sql).not.toContain('provisioning_json = NULL');
+  });
+
+  it('M1: gefaalde teardown (agent-delete gooide) → provisioning_json NIET op NULL, alertStaff aangeroepen, status toch gepauzeerd', async () => {
+    teardownProvisioningMock.mockResolvedValue({ ok: false });
+    const service = {
+      status: 'actief', tier: 'basis', naam: 'Emma — Klant BV', config_json: null, started_at: '2026-01-01',
+      provisioning_json: JSON.stringify({ status: 'agent_aangemaakt', agent_id: 'ag_1', kb_id: 'kb_1' }),
+      order_id: 'ord_1', product_key: 'emma-telefoon',
+    };
+    const updateCalls = [];
+    const env = { PORTAL_DB: makeDb({ service, order: null, updateCalls }) };
+
+    const res = await updateService(makeRequest({ id: 'svc_1', status: 'gepauzeerd' }), env);
+    const body = await res.json();
+
+    expect(teardownProvisioningMock).toHaveBeenCalledWith(env, { status: 'agent_aangemaakt', agent_id: 'ag_1', kb_id: 'kb_1' });
+    expect(alertStaffMock).toHaveBeenCalledTimes(1);
+    expect(alertStaffMock.mock.calls[0][0]).toBe(env);
+    expect(alertStaffMock.mock.calls[0][2]).toContain('ag_1');
+
+    expect(updateCalls).toHaveLength(1);
+    expect(updateCalls[0].sql).not.toContain('provisioning_json = NULL');
+    // bind order zonder provisioning_json: naam, tier, status, config_json, started_at, id
+    expect(updateCalls[0].args[2]).toBe('gepauzeerd');
+    expect(updateCalls[0].args[5]).toBe('svc_1');
+    expect(body.ok).toBe(true);
+    expect(body.message).toBe('Dienst gepauzeerd');
+  });
+
+  it('M1: geslaagde teardown ({ok:true}) → provisioning_json wel op NULL, geen alertStaff', async () => {
+    teardownProvisioningMock.mockResolvedValue({ ok: true });
+    const service = {
+      status: 'actief', tier: 'basis', naam: 'Emma — Klant BV', config_json: null, started_at: '2026-01-01',
+      provisioning_json: JSON.stringify({ status: 'agent_aangemaakt', agent_id: 'ag_2', kb_id: 'kb_2' }),
+      order_id: 'ord_1', product_key: 'emma-telefoon',
+    };
+    const updateCalls = [];
+    const env = { PORTAL_DB: makeDb({ service, order: null, updateCalls }) };
+
+    const res = await updateService(makeRequest({ id: 'svc_1', status: 'gepauzeerd' }), env);
+    const body = await res.json();
+
+    expect(alertStaffMock).not.toHaveBeenCalled();
+    expect(updateCalls).toHaveLength(1);
+    expect(updateCalls[0].sql).toContain('provisioning_json = NULL');
+    expect(body.ok).toBe(true);
   });
 });
 

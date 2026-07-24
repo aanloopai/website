@@ -23,22 +23,39 @@ describe('deleteAgent', () => {
 });
 
 describe('teardownProvisioning', () => {
-  it('verwijdert agent én KB, gooit nooit ook al faalt de agent-delete', async () => {
+  it('verwijdert agent én KB, geeft {ok:true} terug bij succes', async () => {
+    const calls = [];
+    globalThis.fetch = async (url, opts) => {
+      calls.push(`${opts.method} ${String(url)}`);
+      return { ok: true, status: 200, text: async () => '' };
+    };
+    await expect(teardownProvisioning({ ELEVENLABS_API_KEY: 'k' }, { agent_id: 'ag_1', kb_id: 'kb_1' })).resolves.toEqual({ ok: true });
+    expect(calls.some((c) => c.includes('/convai/agents/ag_1'))).toBe(true);
+    expect(calls.some((c) => c.includes('/convai/knowledge-base/kb_1'))).toBe(true);
+  });
+  it('gooit nooit ook al faalt de agent-delete, maar geeft {ok:false} terug (agent niet verwijderd)', async () => {
     const calls = [];
     globalThis.fetch = async (url, opts) => {
       calls.push(`${opts.method} ${String(url)}`);
       if (String(url).includes('/convai/agents/')) return { ok: false, status: 500, text: async () => 'boom' };
       return { ok: true, status: 200, text: async () => '' };
     };
-    await expect(teardownProvisioning({ ELEVENLABS_API_KEY: 'k' }, { agent_id: 'ag_1', kb_id: 'kb_1' })).resolves.toBeUndefined();
+    await expect(teardownProvisioning({ ELEVENLABS_API_KEY: 'k' }, { agent_id: 'ag_1', kb_id: 'kb_1' })).resolves.toEqual({ ok: false });
     expect(calls.some((c) => c.includes('/convai/agents/ag_1'))).toBe(true);
     expect(calls.some((c) => c.includes('/convai/knowledge-base/kb_1'))).toBe(true);
   });
-  it('no-op zonder key of zonder ids', async () => {
+  it('een falende KB-delete alleen zet ok niet op false (agent is wel weg)', async () => {
+    globalThis.fetch = async (url) => {
+      if (String(url).includes('/convai/knowledge-base/')) return { ok: false, status: 500, text: async () => 'boom' };
+      return { ok: true, status: 200, text: async () => '' };
+    };
+    await expect(teardownProvisioning({ ELEVENLABS_API_KEY: 'k' }, { agent_id: 'ag_1', kb_id: 'kb_1' })).resolves.toEqual({ ok: true });
+  });
+  it('no-op zonder key of zonder ids → {ok:true}, geen fetch', async () => {
     let called = false;
     globalThis.fetch = async () => { called = true; return { ok: true, status: 200, text: async () => '' }; };
-    await teardownProvisioning({}, { agent_id: 'ag_1' });
-    await teardownProvisioning({ ELEVENLABS_API_KEY: 'k' }, null);
+    await expect(teardownProvisioning({}, { agent_id: 'ag_1' })).resolves.toEqual({ ok: true });
+    await expect(teardownProvisioning({ ELEVENLABS_API_KEY: 'k' }, null)).resolves.toEqual({ ok: true });
     expect(called).toBe(false);
   });
 });

@@ -6,6 +6,7 @@ import { escapeHtml } from './escape.js';
 import { activateOrder } from './activation.js';
 import { teardownProvisioning } from './elevenlabs.js';
 import { canProvision } from './provisioners/index.js';
+import { alertStaff } from './notify.js';
 import {
   outreachProspects, outreachMailDetail, outreachImport,
   outreachGenerateMail, outreachEvaluateMail, outreachUpdateMail,
@@ -262,6 +263,11 @@ export async function deleteCustomer(request, env) {
   const db = env.PORTAL_DB;
   const customer = await db.prepare('SELECT id, bedrijf FROM customers WHERE id = ?').bind(id).first();
   if (!customer) return errorResponse('Klant niet gevonden', 404);
+  // Zonder bedrijfsnaam kan een confirm-check nooit betrouwbaar zijn — een
+  // lege/ontbrekende body-confirm zou dan een lege bedrijfsnaam matchen.
+  if (!customer.bedrijf) {
+    return errorResponse('Deze klant heeft geen bedrijfsnaam om ter bevestiging te typen; verwijder handmatig.', 400);
+  }
 
   const b = await request.json().catch(() => null);
   const confirm = (b?.confirm || '').toString().trim();
@@ -307,6 +313,7 @@ export async function deleteCustomer(request, env) {
   await db.prepare('DELETE FROM service_requests WHERE customer_id = ?').bind(id).run();
   await db.prepare('DELETE FROM support_tickets WHERE customer_id = ?').bind(id).run();
   await db.prepare('DELETE FROM team_invites WHERE customer_id = ?').bind(id).run();
+  await db.prepare('DELETE FROM onboarding_nudges WHERE customer_id = ?').bind(id).run();
 
   await db.prepare('DELETE FROM customers WHERE id = ?').bind(id).run();
 
@@ -349,12 +356,31 @@ export async function updateService(request, env) {
   // Pauzeren: de agent+kennisbank echt opruimen (nooit een spookdienst laten
   // doorpraten) en provisioning_json wissen, zodat een latere hervatting
   // hieronder ziet dat er opnieuw geprovisioned moet worden.
+  //
+  // Als de agent-delete zelf faalt (transiente 500 bij ElevenLabs) blijft die
+  // agent draaien én doorpraten — dan MAG provisioning_json niet weg, anders
+  // is agent_id voorgoed kwijt en kan niemand hem nog handmatig opruimen.
+  // Status gaat wel op gepauzeerd (dat klopt: hij is in de portal gepauzeerd),
+  // maar staff wordt gealarmeerd om de wees-agent handmatig te verwijderen.
   if (status === 'gepauzeerd' && current.status !== 'gepauzeerd') {
-    await teardownProvisioning(env, safeParseJson(current.provisioning_json));
-    await env.PORTAL_DB.prepare(
-      'UPDATE services SET naam = ?, tier = ?, status = ?, config_json = ?, started_at = ?, provisioning_json = NULL WHERE id = ?',
-    ).bind((b.naam ?? current.naam).slice(0, 120), b.tier ?? current.tier, status,
-      b.config !== undefined ? JSON.stringify(b.config) : current.config_json, current.started_at, b.id).run();
+    const prov = safeParseJson(current.provisioning_json);
+    const teardown = await teardownProvisioning(env, prov);
+    if (teardown.ok) {
+      await env.PORTAL_DB.prepare(
+        'UPDATE services SET naam = ?, tier = ?, status = ?, config_json = ?, started_at = ?, provisioning_json = NULL WHERE id = ?',
+      ).bind((b.naam ?? current.naam).slice(0, 120), b.tier ?? current.tier, status,
+        b.config !== undefined ? JSON.stringify(b.config) : current.config_json, current.started_at, b.id).run();
+    } else {
+      await alertStaff(
+        env,
+        'Agent-teardown mislukt bij pauzeren',
+        `Dienst ${b.id} is op gepauzeerd gezet maar de ElevenLabs-agent kon niet worden verwijderd — verwijder deze handmatig: agent_id ${prov.agent_id}`,
+      );
+      await env.PORTAL_DB.prepare(
+        'UPDATE services SET naam = ?, tier = ?, status = ?, config_json = ?, started_at = ? WHERE id = ?',
+      ).bind((b.naam ?? current.naam).slice(0, 120), b.tier ?? current.tier, status,
+        b.config !== undefined ? JSON.stringify(b.config) : current.config_json, current.started_at, b.id).run();
+    }
     return jsonResponse({ ok: true, message: 'Dienst gepauzeerd' });
   }
 
