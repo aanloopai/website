@@ -132,6 +132,8 @@ export function berekenEersteBetaling(tier) {
 
 // ── checkout: POST /api/portal/checkout/start  { order_id } ─────────────────
 export async function handleCheckoutStart(request, env, user) {
+  // ── TIJDELIJKE TEST-MODUS (verwijderen zodra Mollie-methoden live zijn) ──
+  if (env.PAYMENTS_BYPASS === '1') return handleTestModeCheckout(request, env, user);
   if (!env.MOLLIE_API_KEY) return errorResponse('Betalingen zijn nog niet geconfigureerd', 503);
   if (user.role === 'kijker') return errorResponse('Geen rechten', 403);
 
@@ -802,5 +804,90 @@ export async function reconcilePayments(env) {
     } catch (err) {
       console.error('[mollie] reconcile error:', err.message || err);
     }
+  }
+}
+
+// ── TIJDELIJKE TEST-MODUS (verwijderen zodra Mollie-methoden live zijn) ────
+// Zolang de Mollie-betaalmethoden nog niet zijn geactiveerd in het
+// dashboard kan een echte betaling niet slagen. Deze functie zet de checkout
+// toch om in een "betaalde" order — ZONDER Mollie-call — door de bestaande
+// post-betaal-afhandeling (onPaid, hierboven) te hergebruiken met een
+// synthetisch betaalobject. Alleen actief achter PAYMENTS_BYPASS='1'
+// (handleCheckoutStart hierboven), standaard UIT.
+//
+// Verwijderen zodra Mollie live is: haal de PAYMENTS_BYPASS-regel bovenaan
+// handleCheckoutStart weg en verwijder deze functie — verder raakt niets in
+// dit bestand deze code aan.
+async function handleTestModeCheckout(request, env, user) {
+  if (user.role === 'kijker') return errorResponse('Geen rechten', 403);
+
+  const body = await request.json().catch(() => null);
+  if (!body?.order_id) return errorResponse('Aanvraag-id ontbreekt', 400);
+
+  const order = await env.PORTAL_DB
+    .prepare('SELECT id, customer_id, product_key, tier, status FROM service_orders WHERE id = ? AND customer_id = ?')
+    .bind(body.order_id, user.customer_id).first();
+  if (!order) return errorResponse('Aanvraag niet gevonden', 404);
+  if (order.status !== 'concept') return errorResponse('Deze aanvraag is al ingediend', 409);
+
+  const tier = getCatalogTier(order.product_key, order.tier);
+  const { maandInclCent, totaalInclCent } = berekenEersteBetaling(tier);
+  const maandelijks = tier.betaling === 'maandelijks';
+
+  // Zelfde dubbel-abonnement-bescherming als de echte flow (H5): een reeds
+  // active/completed abonnement voor deze order mag nooit een tweede keer
+  // "betaald" worden.
+  const existingSub = await env.PORTAL_DB
+    .prepare('SELECT id, status FROM subscriptions WHERE order_id = ?')
+    .bind(order.id).first();
+  if (existingSub && (existingSub.status === 'active' || existingSub.status === 'completed')) {
+    return errorResponse('Deze aanvraag heeft al een actief abonnement', 409);
+  }
+
+  try {
+    let subId;
+    if (existingSub) {
+      // Bestaande canceled/pending_payment-rij hergebruiken (geen tweede rij
+      // op de UNIQUE(order_id)-index) — bedrag altijd vers uit de catalogus.
+      subId = existingSub.id;
+      await env.PORTAL_DB.prepare(
+        "UPDATE subscriptions SET bedrag_cent = ?, betaling = ?, status = 'pending_payment' WHERE id = ?",
+      ).bind(maandInclCent, tier.betaling, subId).run();
+    } else {
+      subId = randomId('sub');
+      await env.PORTAL_DB.prepare(
+        'INSERT INTO subscriptions (id, customer_id, order_id, product_key, tier, bedrag_cent, betaling, status, mollie_customer_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+      ).bind(subId, user.customer_id, order.id, order.product_key, order.tier, maandInclCent,
+        tier.betaling, 'pending_payment', null, Date.now()).run();
+    }
+
+    // Payments-rij die de betaling meteen als voldaan markeert — er komt geen
+    // webhook die dit later alsnog zou doen.
+    const testPaymentId = `test_${randomId('pay')}`;
+    const now = Date.now();
+    await env.PORTAL_DB.prepare(
+      'INSERT INTO payments (id, customer_id, subscription_id, order_id, bedrag_cent, status, sequence_type, paid_at, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+    ).bind(testPaymentId, user.customer_id, subId, order.id, totaalInclCent,
+      'paid', maandelijks ? 'eerste' : 'eenmalig', new Date(now).toISOString(), now).run();
+
+    // Synthetisch Mollie-betaalobject — onPaid() leest alleen id/amount/status
+    // en weet niet dat dit geen echte Mollie-respons is.
+    const payment = {
+      id: testPaymentId,
+      amount: { value: euros(totaalInclCent), currency: 'EUR' },
+      status: 'paid',
+      method: 'test',
+    };
+
+    // Hergebruikt de VOLLEDIGE bestaande post-betaal-afhandeling: subscription
+    // -> active/completed, order -> activateOrder (onboarding), bevestigingsmail,
+    // factuur, CRM-deal-won. Identiek aan het echte betaalpad, alleen zonder Mollie.
+    await onPaid(env, payment, subId, order.id);
+
+    console.log(`[TEST-MODE] order ${order.id} doorgezet zonder Mollie`);
+    return jsonResponse({ ok: true, checkoutUrl: `/portal/onboarding?order=${order.id}` });
+  } catch (err) {
+    console.error('[mollie][TEST-MODE] checkout mislukt:', err.message || err);
+    return errorResponse('De test-checkout kon niet worden verwerkt.', 502);
   }
 }
