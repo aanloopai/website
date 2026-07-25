@@ -500,9 +500,10 @@ const allSchemas = [
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://www.google-analytics.com" />
-    <link rel="dns-prefetch" href="https://api.web3forms.com" />
 
-    <!-- LCP image preload — logo is in the header above the fold -->
+    <!-- Header-logo staat boven de vouw en is klein genoeg om te preloaden.
+         Dit is niet de LCP: dat is op desktop de hero-afbeelding (die draagt
+         nu fetchpriority="high" in Hero.astro) en op mobiel de h1-tekst. -->
     <link rel="preload" as="image" href="/brand/logo-horizontal-light.svg" fetchpriority="high" />
 
     <!-- Microsoft Clarity stond hier als niet-geconfigureerde stub (projectId

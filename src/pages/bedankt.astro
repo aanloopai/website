@@ -1,15 +1,28 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 
-const type = Astro.url.searchParams.get('type') || 'aanvraag';
+// Deze pagina is statisch (astro.config.mjs: output 'static'), dus
+// Astro.url.searchParams is bij de build altijd leeg. De variant werd hier
+// server-side gekozen en viel dus voor iedereen terug op 'aanvraag': wie een
+// simpele vraag stelde las "Uw accountmanager neemt contact op voor de
+// onboarding-planning". De keuze gebeurt nu client-side op location.search;
+// de 'aanvraag'-variant blijft de server-side default zodat er zonder JS
+// (en zonder parameter) nog steeds een kloppende pagina staat.
+const TELEFOON = '+31 6 24 74 15 97';
 
-const messages: Record<string, { title: string; sub: string; next: { href: string; label: string }[] }> = {
+const messages = {
   aanvraag: {
     title: 'Aanvraag ontvangen!',
     sub: 'Uw aanvraag is succesvol ingediend. Uw accountmanager neemt binnen 1 werkdag contact op voor de onboarding-planning.',
     next: [
       { href: '/werkwijze/', label: 'Lees hoe onboarding werkt' },
       { href: '/', label: 'Terug naar de homepage' },
+    ],
+    steps: [
+      'U ontvangt een bevestigingsmail binnen enkele minuten.',
+      'Onze accountmanager neemt binnen 1 werkdag telefonisch contact op.',
+      'We plannen samen het onboarding-gesprek en de demo in.',
+      'Live binnen 7 werkdagen na akkoord.',
     ],
   },
   demo: {
@@ -19,18 +32,29 @@ const messages: Record<string, { title: string; sub: string; next: { href: strin
       { href: '/cases/', label: 'Lees alvast onze klantcases' },
       { href: '/diensten/', label: 'Bekijk alle diensten' },
     ],
+    steps: [
+      'U ontvangt een bevestigingsmail met de afspraakdetails.',
+      'We bellen kort vooraf om uw situatie door te nemen.',
+      'Tijdens de demo ziet u de AI live werken op uw eigen use-case.',
+      'Daarna krijgt u een offerte op maat — zonder verplichting.',
+    ],
   },
   contact: {
     title: 'Bericht verzonden!',
-    sub: 'Bedankt voor uw bericht. We reageren binnen 1 werkdag. Heeft u een urgent verzoek? Bel ons direct op 010 — 000 0000.',
+    sub: `Bedankt voor uw bericht. We reageren binnen 1 werkdag. Heeft u een urgent verzoek? Bel ons direct op ${TELEFOON}.`,
     next: [
       { href: '/', label: 'Terug naar de homepage' },
       { href: '/diensten/', label: 'Bekijk onze diensten' },
     ],
+    steps: [
+      'U ontvangt een bevestigingsmail binnen enkele minuten.',
+      'We lezen uw vraag en zoeken zo nodig iets uit.',
+      'U krijgt binnen 1 werkdag antwoord per e-mail of telefoon.',
+    ],
   },
 };
 
-const msg = messages[type] ?? messages.contact;
+const msg = messages.aanvraag;
 ---
 
 <BaseLayout
@@ -51,15 +75,15 @@ const msg = messages[type] ?? messages.contact;
 
         <div class="accent-band mx-auto mb-6"><span></span><span></span><span></span><span></span></div>
 
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tightest text-navy text-balance mb-4">
+        <h1 id="bedankt-title" class="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tightest text-navy text-balance mb-4">
           {msg.title}
         </h1>
-        <p class="text-lg text-slate-600 leading-relaxed mb-10 max-w-lg mx-auto">
+        <p id="bedankt-sub" class="text-lg text-slate-600 leading-relaxed mb-10 max-w-lg mx-auto">
           {msg.sub}
         </p>
 
         <!-- Next steps -->
-        <div class="flex flex-col sm:flex-row gap-3 justify-center mb-16">
+        <div id="bedankt-next" class="flex flex-col sm:flex-row gap-3 justify-center mb-16">
           {msg.next.map((n, i) => (
             <a href={n.href} class:list={[i === 0 ? 'btn-primary' : 'btn-outline', 'text-base px-6 py-3']}>
               {n.label}
@@ -70,16 +94,11 @@ const msg = messages[type] ?? messages.contact;
         <!-- What happens next -->
         <div class="card bg-slate-50 border-slate-200 text-left max-w-lg mx-auto">
           <p class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-400 mb-4">Wat nu?</p>
-          <ol class="space-y-4">
-            {[
-              { n: '1', text: 'U ontvangt een bevestigingsmail binnen enkele minuten.' },
-              { n: '2', text: 'Onze accountmanager neemt binnen 1 werkdag telefonisch contact op.' },
-              { n: '3', text: 'We plannen samen het onboarding-gesprek en de demo in.' },
-              { n: '4', text: 'Live binnen 7 werkdagen na akkoord.' },
-            ].map(step => (
+          <ol id="bedankt-steps" class="space-y-4">
+            {msg.steps.map((text, i) => (
               <li class="flex gap-4 items-start">
-                <span class="w-6 h-6 rounded-full bg-navy text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{step.n}</span>
-                <span class="text-sm text-slate-700">{step.text}</span>
+                <span class="w-6 h-6 rounded-full bg-navy text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
+                <span class="text-sm text-slate-700">{text}</span>
               </li>
             ))}
           </ol>
@@ -89,6 +108,50 @@ const msg = messages[type] ?? messages.contact;
     </div>
   </section>
 </BaseLayout>
+
+<script is:inline define:vars={{ messages }}>
+  (function () {
+    var type = new URLSearchParams(location.search).get('type');
+    var msg = messages[type];
+    if (!msg || type === 'aanvraag') return;
+
+    var title = document.getElementById('bedankt-title');
+    var sub = document.getElementById('bedankt-sub');
+    var next = document.getElementById('bedankt-next');
+    var steps = document.getElementById('bedankt-steps');
+
+    if (title) title.textContent = msg.title;
+    if (sub) sub.textContent = msg.sub;
+
+    if (next) {
+      next.textContent = '';
+      msg.next.forEach(function (n, i) {
+        var a = document.createElement('a');
+        a.href = n.href;
+        a.className = (i === 0 ? 'btn-primary' : 'btn-outline') + ' text-base px-6 py-3';
+        a.textContent = n.label;
+        next.appendChild(a);
+      });
+    }
+
+    if (steps) {
+      steps.textContent = '';
+      msg.steps.forEach(function (text, i) {
+        var li = document.createElement('li');
+        li.className = 'flex gap-4 items-start';
+        var num = document.createElement('span');
+        num.className = 'w-6 h-6 rounded-full bg-navy text-white text-[11px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5';
+        num.textContent = String(i + 1);
+        var txt = document.createElement('span');
+        txt.className = 'text-sm text-slate-700';
+        txt.textContent = text;
+        li.appendChild(num);
+        li.appendChild(txt);
+        steps.appendChild(li);
+      });
+    }
+  })();
+</script>
 
 <style>
   .success-circle {

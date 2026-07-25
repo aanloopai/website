@@ -25,9 +25,13 @@ const schema = {
   mainEntityOfPage: url, articleSection: 'AI-vindbaarheid',
 };
 const faqSchema = sector.faq.map((f) => ({ question: f.q, answer: f.a }));
+// Titel was `${sector.titel} — gevonden worden in ChatGPT | AI-vindbaarheid`.
+// Met de langere sectortitels ("GEO voor reisbureaus & touroperators") liep dat
+// op tot 89 tekens en kapte Google hem af. De variant hieronder blijft onder de
+// 60 en houdt de zoekterm intact.
 ---
 <BaseLayout
-  title={`${sector.titel} — gevonden worden in ChatGPT | AI-vindbaarheid`}
+  title={`${sector.titel} in ChatGPT & Gemini`}
   description={`AI-vindbaarheid (GEO) voor de ${sector.naam}: word gevonden en aanbevolen in ChatGPT, Gemini en Claude. Doe de gratis GEO Quick Scan.`}
   schema={[schema]}
   faqSchema={faqSchema}

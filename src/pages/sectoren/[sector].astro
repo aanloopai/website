@@ -10,11 +10,14 @@ export async function getStaticPaths() {
 }
 
 const { sector } = Astro.props;
+// Staart van de meta-description ingekort ("Live binnen 7 werkdagen" ->
+// "Live in 7 werkdagen"): bij de twee langste sectorbeschrijvingen liep de
+// description over de 165 tekens en kapte Google hem af.
 ---
 
 <BaseLayout
   title={`AI voor ${sector.title} NL — AI MKB`}
-  description={`${sector.shortDescription} AI receptionist, WhatsApp en workflow automatisering. Live binnen 7 werkdagen.`}
+  description={`${sector.shortDescription} AI receptionist, WhatsApp en workflow-automatisering. Live in 7 werkdagen.`}
 >
   <!-- Hero -->
   <section class="border-b border-slate-200">

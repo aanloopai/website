@@ -158,7 +158,7 @@ const PORTAL_CORS_HEADERS = {
 // Security headers — applied to all asset responses.
 // Mirrors public/_headers, which Cloudflare Workers-with-Assets does not honor for HTML routes.
 // Source-of-truth lives here in the Worker; _headers is kept for Pages-style fallback only.
-const CSP_POLICY = "default-src 'self' blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com https://cdn.jsdelivr.net https://elevenlabs.io https://*.elevenlabs.io https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://api.web3forms.com https://*.elevenlabs.io wss://*.elevenlabs.io https://*.livekit.cloud wss://*.livekit.cloud https://www.clarity.ms; media-src 'self' blob: data: https://*.elevenlabs.io; worker-src 'self' blob: https://unpkg.com https://*.elevenlabs.io; child-src 'self' blob: https://*.elevenlabs.io; frame-ancestors 'none'; frame-src https://*.elevenlabs.io;";
+const CSP_POLICY = "default-src 'self' blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com https://cdn.jsdelivr.net https://elevenlabs.io https://*.elevenlabs.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com https://analytics.google.com https://*.elevenlabs.io wss://*.elevenlabs.io https://*.livekit.cloud wss://*.livekit.cloud; media-src 'self' blob: data: https://*.elevenlabs.io; worker-src 'self' blob: https://unpkg.com https://*.elevenlabs.io; child-src 'self' blob: https://*.elevenlabs.io; frame-ancestors 'none'; frame-src https://*.elevenlabs.io;";
 
 const SECURITY_HEADERS = {
   'strict-transport-security': 'max-age=63072000; includeSubDomains; preload',
@@ -683,7 +683,21 @@ async function handleSubmit(request, env) {
   const fullName = (fields.voornaam ? `${fields.voornaam} ${fields.achternaam || ''}`.trim() : (fields.naam || fields.name || userEmail)) || userEmail;
 
   if (!isValidEmail(userEmail)) {
-    return jsonResponse({ success: false, message: 'Invalid email address' }, 400);
+    return jsonResponse({ success: false, message: 'Ongeldig e-mailadres.' }, 400);
+  }
+
+  // Alleen het e-mailadres werd gecontroleerd, dus een POST met uitsluitend een
+  // geldig adres leverde een lege lead in D1 plus een notificatie- en
+  // autoresponder-mail op. Het contactformulier is het enige type waarvan we
+  // zeker weten dat naam én bericht verplichte velden zijn; andere types
+  // (newsletter, roi_calculator, ai_readiness_scan, …) kennen die velden niet
+  // en blijven hier ongemoeid.
+  if (formType === 'contact') {
+    const name = (fields.name || fields.naam || '').toString().trim();
+    const message = (fields.message || fields.bericht || '').toString().trim();
+    if (!name || !message) {
+      return jsonResponse({ success: false, message: 'Vul uw naam en bericht in.' }, 400);
+    }
   }
 
   const subject = (fields.subject || `Nieuw ${formType} via aanloopai.nl — ${fields.bedrijf || fullName}`).toString();

@@ -7,6 +7,11 @@ compatibility_flags = ["nodejs_compat"]
 [assets]
 directory = "./dist"
 binding = "ASSETS"
+# Zonder deze regel beantwoordt Workers Assets een onbekend pad met een kale
+# 404 zonder body: de bezoeker kreeg de browserfoutmelding te zien terwijl
+# dist/404.html gewoon gebouwd werd. Nu wordt die pagina geserveerd, mét
+# navigatie, en nog steeds met statuscode 404.
+not_found_handling = "404-page"
 
 # Google Calendar booking token store (/demo-inplannen/).
 # Also reused by the customer portal for magic-link rate limiting (portal:rl:* keys).

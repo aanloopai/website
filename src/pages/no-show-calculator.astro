@@ -130,7 +130,13 @@ const calculatorSchema = {
   const btn = document.getElementById('calc-button');
   const resultsBox = document.getElementById('results');
 
-  btn?.addEventListener('click', () => {
+  // De uitkomst werd alleen bij een klik op de knop berekend. Wie daarna een
+  // invoerveld aanpaste, hield de oude bedragen in beeld zonder dat iets
+  // aangaf dat ze niet meer klopten. Nu herrekent elke wijziging zodra de
+  // resultaten zichtbaar zijn; de knop blijft de eerste onthulling.
+  let resultsVisible = false;
+
+  function recalculate(reveal: boolean) {
     const apptsPerWeek = parseFloat($('appointments').value || '0');
     const value = parseFloat($('value').value || '0');
     const noShowPct = parseFloat($('rate').value || '15');
@@ -161,6 +167,15 @@ const calculatorSchema = {
       `Investering Emma 197 euro per maand = 2.364 euro per jaar. Uw potentiele ROI: ${roiMultiple.toFixed(1)}x op alleen no-show besparingen.`;
 
     resultsBox?.classList.remove('hidden');
-    resultsBox?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    resultsVisible = true;
+    if (reveal) resultsBox?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  btn?.addEventListener('click', () => recalculate(true));
+
+  ['appointments', 'value', 'rate'].forEach((id) => {
+    const el = $(id);
+    el?.addEventListener('input', () => { if (resultsVisible) recalculate(false); });
+    el?.addEventListener('change', () => { if (resultsVisible) recalculate(false); });
   });
 </script>

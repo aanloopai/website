@@ -64,8 +64,9 @@ const type = url.searchParams.get('type') || 'contact';
               <div>
                 <label for="name" class="block text-sm font-medium text-navy mb-2">Naam *</label>
                 <input type="text" id="name" name="name" required autocomplete="name"
-                  aria-required="true"
+                  aria-required="true" aria-describedby="err-name"
                   class="form-input" placeholder="Jan de Boer" />
+                <p id="err-name" class="hidden mt-1 text-xs text-brand-rose">Vul uw naam in.</p>
               </div>
               <div>
                 <label for="company" class="block text-sm font-medium text-navy mb-2">Bedrijfsnaam <span class="text-slate-500 font-normal">(optioneel)</span></label>
@@ -79,8 +80,9 @@ const type = url.searchParams.get('type') || 'contact';
               <div>
                 <label for="email" class="block text-sm font-medium text-navy mb-2">E-mailadres *</label>
                 <input type="email" id="email" name="email" required autocomplete="email"
-                  aria-required="true" aria-describedby="email-hint"
+                  aria-required="true" aria-describedby="email-hint err-email"
                   class="form-input" placeholder="jan@deboerbv.nl" />
+                <p id="err-email" class="hidden mt-1 text-xs text-brand-rose">Vul een geldig e-mailadres in.</p>
                 <p id="email-hint" class="mt-1 text-xs text-slate-500">We sturen een bevestiging binnen enkele minuten.</p>
               </div>
               <div>
@@ -110,9 +112,10 @@ const type = url.searchParams.get('type') || 'contact';
             <div>
               <label for="message" class="block text-sm font-medium text-navy mb-2">Uw bericht *</label>
               <textarea id="message" name="message" rows="5" required
-                aria-required="true" aria-describedby="message-hint"
+                aria-required="true" aria-describedby="message-hint err-message"
                 class="form-input resize-none"
                 placeholder="Bijv: 'Wij zijn een tandartspraktijk in Utrecht en zoeken een AI-receptionist die afspraken inplant.'"></textarea>
+              <p id="err-message" class="hidden mt-1 text-xs text-brand-rose">Schrijf kort waar we u mee kunnen helpen.</p>
               <p id="message-hint" class="mt-1 text-xs text-slate-500">Een korte zin is genoeg — we bellen u terug voor de details.</p>
             </div>
 
@@ -124,7 +127,16 @@ const type = url.searchParams.get('type') || 'contact';
               <label for="privacy" class="text-sm text-slate-600">
                 Ik ga akkoord met de <a href="/privacy/" class="underline hover:text-navy">privacyverklaring</a>
                 en geef toestemming voor het verwerken van mijn gegevens.
+                <span id="err-privacy" class="hidden block mt-1 text-xs text-brand-rose">Zet dit vinkje om door te gaan.</span>
               </label>
+            </div>
+
+            <!-- Honeypot: onzichtbaar voor mensen, ingevuld door bots. De worker
+                 antwoordt op een gevulde botcheck met success zonder op te slaan.
+                 Stond wel op de vijf andere publieke formulieren, hier niet. -->
+            <div class="absolute w-px h-px overflow-hidden -m-px p-0 border-0" style="clip:rect(0 0 0 0)" aria-hidden="true">
+              <label for="botcheck">Laat dit veld leeg</label>
+              <input type="text" id="botcheck" name="botcheck" tabindex="-1" autocomplete="off" />
             </div>
 
             <button type="submit" id="submit-btn" class="btn-primary text-base px-8 py-3.5 w-full sm:w-auto">
@@ -155,7 +167,7 @@ const type = url.searchParams.get('type') || 'contact';
               ✓ Bedankt! We nemen binnen 1 werkdag contact op.
             </div>
             <!-- Error message -->
-            <div id="form-error" class="hidden p-4 rounded-xl bg-brand-rose/10 border border-brand-rose/20 text-brand-rose text-sm">
+            <div id="form-error" role="alert" aria-live="assertive" class="hidden p-4 rounded-xl bg-brand-rose/10 border border-brand-rose/20 text-brand-rose text-sm">
               ✗ Er is iets misgegaan. Probeer het opnieuw of mail naar <a href="mailto:hello@aanloopai.nl" class="underline">hello@aanloopai.nl</a>.
             </div>
           </form>
@@ -240,12 +252,74 @@ const type = url.searchParams.get('type') || 'contact';
 <script>
   const form = document.getElementById('contact-form') as HTMLFormElement;
 
+  // Het formulier draagt novalidate en had geen enkele controle: een leeg
+  // formulier ging als POST naar /api/submit, kwam terug met 400 en toonde
+  // "Er is iets misgegaan" — de bezoeker las dus dat de site stuk was in
+  // plaats van welk veld ontbrak. Zelfde opzet als demo-aanvragen.astro:
+  // foutmelding per veld, aria-invalid, focus naar het eerste probleem.
+  const FIELDS = [
+    { input: 'name', error: 'err-name', valid: (v: string) => v.trim().length > 0 },
+    { input: 'email', error: 'err-email', valid: (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) },
+    { input: 'message', error: 'err-message', valid: (v: string) => v.trim().length > 0 },
+  ];
+
+  function validate(): boolean {
+    let firstInvalid: HTMLElement | null = null;
+
+    for (const f of FIELDS) {
+      const input = document.getElementById(f.input) as HTMLInputElement | HTMLTextAreaElement | null;
+      const error = document.getElementById(f.error);
+      if (!input || !error) continue;
+      const ok = f.valid(input.value);
+      error.classList.toggle('hidden', ok);
+      input.setAttribute('aria-invalid', ok ? 'false' : 'true');
+      if (!ok && !firstInvalid) firstInvalid = input;
+    }
+
+    const privacy = document.getElementById('privacy') as HTMLInputElement | null;
+    const privacyError = document.getElementById('err-privacy');
+    if (privacy && privacyError) {
+      const ok = privacy.checked;
+      privacyError.classList.toggle('hidden', ok);
+      privacy.setAttribute('aria-invalid', ok ? 'false' : 'true');
+      if (!ok && !firstInvalid) firstInvalid = privacy;
+    }
+
+    if (firstInvalid) {
+      firstInvalid.focus();
+      firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return false;
+    }
+    return true;
+  }
+
+  // Fout weghalen zodra de bezoeker het veld corrigeert — niet pas bij de
+  // volgende submit.
+  for (const f of FIELDS) {
+    document.getElementById(f.input)?.addEventListener('input', (ev) => {
+      const el = ev.target as HTMLInputElement;
+      if (!f.valid(el.value)) return;
+      document.getElementById(f.error)?.classList.add('hidden');
+      el.setAttribute('aria-invalid', 'false');
+    });
+  }
+  document.getElementById('privacy')?.addEventListener('change', (ev) => {
+    if (!(ev.target as HTMLInputElement).checked) return;
+    document.getElementById('err-privacy')?.classList.add('hidden');
+    (ev.target as HTMLInputElement).setAttribute('aria-invalid', 'false');
+  });
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const btn = document.getElementById('submit-btn') as HTMLButtonElement;
     const label = document.getElementById('submit-label') as HTMLElement;
     const successMsg = document.getElementById('form-success') as HTMLElement;
     const errorMsg = document.getElementById('form-error') as HTMLElement;
+
+    if (!validate()) {
+      errorMsg?.classList.add('hidden');
+      return;
+    }
 
     const data = new FormData(form);
     const requestType = data.get('type') as string || 'contact';
@@ -285,7 +359,12 @@ const type = url.searchParams.get('type') || 'contact';
           window.location.href = '/bedankt/?type=contact';
         }, 1500);
       } else {
-        throw new Error(json.message || `HTTP ${res.status}`);
+        const err = new Error(json.message || `HTTP ${res.status}`);
+        // 400 = de invoer klopt niet, 429 = rate limit. In beide gevallen kan de
+        // bezoeker het zelf oplossen, dus dan tonen we de servertekst in plaats
+        // van "er is iets misgegaan".
+        (err as any).actionable = (res.status === 400 || res.status === 429) && !!json.message;
+        throw err;
       }
     } catch (err: any) {
       clearTimeout(tid);
@@ -293,7 +372,9 @@ const type = url.searchParams.get('type') || 'contact';
       if (errorMsg) {
         errorMsg.textContent = isTimeout
           ? '⏱ Het versturen duurt langer dan verwacht. Probeer opnieuw of mail naar hello@aanloopai.nl.'
-          : '✗ Er is iets misgegaan. Probeer opnieuw of mail naar hello@aanloopai.nl.';
+          : err?.actionable
+            ? `✗ ${err.message}`
+            : '✗ Er is iets misgegaan. Probeer opnieuw of mail naar hello@aanloopai.nl.';
         errorMsg.classList.remove('hidden');
       }
       console.error('Form error:', err);
