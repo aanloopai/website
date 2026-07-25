@@ -348,8 +348,19 @@ const featuredPillars = [
   const COOKIE_KEY = 'aanloop_cookie_consent';
   let lastFocused: HTMLElement | null = null;
 
+  // De banner staat altijd in de DOM (uit beeld geschoven via CSS-transform).
+  // Zonder deze toggle blijft hij als aria-modal dialog in de a11y-boom hangen
+  // voor bezoekers die al een keuze hebben gemaakt.
+  function setBannerInert(inert: boolean) {
+    if (!banner) return;
+    banner.setAttribute('aria-hidden', inert ? 'true' : 'false');
+    if (inert) banner.setAttribute('inert', '');
+    else banner.removeAttribute('inert');
+  }
+
   function showBanner() {
     setTimeout(() => {
+      setBannerInert(false);
       banner?.classList.add('show');
       lastFocused = document.activeElement as HTMLElement;
       (document.getElementById('cookie-accept') as HTMLElement)?.focus();
@@ -357,10 +368,18 @@ const featuredPillars = [
   }
   function hideBanner(value: string) {
     banner?.classList.remove('show');
-    localStorage.setItem(COOKIE_KEY, value);
+    setBannerInert(true);
+    // Schrijft de keuze weg én laat bij 'all' de gtag-consent-update plus alle
+    // wachtende derde-partij-loaders (GA4, pixels, Emma-widget) direct vuren —
+    // die hingen eerder aan {once:true}-listeners en kwamen pas op de volgende
+    // paginaweergave op gang. Zie __aanloopConsent in BaseLayout.astro.
+    const consent = (window as any).__aanloopConsent;
+    if (consent) consent.set(value);
+    else localStorage.setItem(COOKIE_KEY, value);
     lastFocused?.focus();
   }
 
+  setBannerInert(true);
   if (!localStorage.getItem(COOKIE_KEY)) {
     showBanner();
   }

@@ -328,17 +328,55 @@ const allSchemas = [
         security_storage: 'granted',
         wait_for_update: 200,
       });
-      // Honour existing consent on subsequent page loads
-      try {
-        if (localStorage.getItem('aanloop_cookie_consent') === 'all') {
-          gtag('consent', 'update', {
-            ad_storage: 'granted',
-            ad_user_data: 'granted',
-            ad_personalization: 'granted',
-            analytics_storage: 'granted',
-          });
+      // Eén bron van waarheid voor cookietoestemming. Alle derde-partij-loaders
+      // (GA4, Clarity, Meta/LinkedIn, ElevenLabs) hangen hieronder via onGrant,
+      // zodat geen enkele daarvan zelf localStorage hoeft te lezen — dat was
+      // eerder per loader gekopieerd en bij GA4 vergeten, waardoor gtag.js ook
+      // bij "alleen noodzakelijk" werd opgehaald.
+      // onGrant vuurt óók als de bezoeker pas ná het laden accepteert; de
+      // loaders draaiden voorheen op {once:true}-listeners en kwamen dan pas
+      // op de vólgende paginaweergave op gang.
+      window.__aanloopConsent = (function () {
+        var KEY = 'aanloop_cookie_consent';
+        var subs = [];
+        function read() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+        function granted() { return read() === 'all'; }
+        function flush() {
+          var pending = subs.splice(0, subs.length);
+          for (var i = 0; i < pending.length; i++) {
+            try { pending[i](); } catch (e) {}
+          }
         }
-      } catch (e) {}
+        return {
+          KEY: KEY,
+          read: read,
+          granted: granted,
+          // fn draait direct als er al toestemming is, anders zodra die er komt.
+          onGrant: function (fn) { if (granted()) { try { fn(); } catch (e) {} } else { subs.push(fn); } },
+          set: function (value) {
+            try { localStorage.setItem(KEY, value); } catch (e) {}
+            if (value === 'all') {
+              gtag('consent', 'update', {
+                ad_storage: 'granted',
+                ad_user_data: 'granted',
+                ad_personalization: 'granted',
+                analytics_storage: 'granted',
+              });
+              flush();
+            }
+          },
+        };
+      })();
+
+      // Honour existing consent on subsequent page loads
+      if (window.__aanloopConsent.granted()) {
+        gtag('consent', 'update', {
+          ad_storage: 'granted',
+          ad_user_data: 'granted',
+          ad_personalization: 'granted',
+          analytics_storage: 'granted',
+        });
+      }
       gtag('js', new Date());
       // page_location expliciet zonder het "t"-queryparam: dat draagt op
       // /start/voorstel/?t=<token> een 14-dagen-geldige capability (voorstel
@@ -373,25 +411,33 @@ const allSchemas = [
       });
     </script>
     <!-- GTM script lazy-loaded after first interaction or idle (matches ElevenLabs widget pattern).
-         Cuts TBT ~1500ms on desktop while keeping consent + analytics intact. -->
+         Cuts TBT ~1500ms on desktop while keeping consent + analytics intact.
+         De consent-gate zit in __aanloopConsent.onGrant: zonder "alles accepteren"
+         wordt gtag.js nooit opgehaald, dus vertrekt er ook geen verzoek naar Google. -->
     <script is:inline>
       (function(){
         var loaded = false;
-        function loadGTM(){
+        function injectGTM(){
           if (loaded) return; loaded = true;
           var s = document.createElement('script');
           s.src = 'https://www.googletagmanager.com/gtag/js?id=G-VS8SZZ6W45';
           s.async = true;
           document.head.appendChild(s);
         }
-        ['scroll','mousemove','touchstart','keydown','click'].forEach(function(ev){
-          window.addEventListener(ev, loadGTM, { once: true, passive: true });
+        // Pas ophalen na toestemming én na eerste interactie/idle, zodat de
+        // TBT-winst behouden blijft voor bezoekers die wél accepteren.
+        window.__aanloopConsent.onGrant(function(){
+          var fired = false;
+          function loadGTM(){ if (fired) return; fired = true; injectGTM(); }
+          ['scroll','mousemove','touchstart','keydown','click'].forEach(function(ev){
+            window.addEventListener(ev, loadGTM, { once: true, passive: true });
+          });
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(function(){ setTimeout(loadGTM, 3000); });
+          } else {
+            setTimeout(loadGTM, 4000);
+          }
         });
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(function(){ setTimeout(loadGTM, 3000); });
-        } else {
-          setTimeout(loadGTM, 4000);
-        }
       })();
     </script>
 
@@ -459,39 +505,10 @@ const allSchemas = [
     <!-- LCP image preload — logo is in the header above the fold -->
     <link rel="preload" as="image" href="/brand/logo-horizontal-light.svg" fetchpriority="high" />
 
-    <!-- Microsoft Clarity: Heatmap + Session Recording (AVG-compliant, consent-gated, lazy-loaded) -->
-    <!-- TODO: Replace 'XXXXXXXX' with actual Clarity project ID from clarity.microsoft.com -->
-    <script is:inline>
-      (function() {
-        // Only load Clarity if user accepted analytics cookies
-        var clarityProjectId = 'XXXXXXXX';
-        function loadClarity() {
-          // Not configured yet — skip to avoid a broken https://clarity.ms/tag/XXXXXXXX request.
-          if (!clarityProjectId || clarityProjectId === 'XXXXXXXX') return;
-          try {
-            if (localStorage.getItem('aanloop_cookie_consent') !== 'all') return;
-          } catch (e) { return; }
-
-          var c = window.clarity = window.clarity || function() {
-            (c.q = c.q || []).push(arguments);
-          };
-          var script = document.createElement('script');
-          script.async = true;
-          script.src = 'https://www.clarity.ms/tag/' + clarityProjectId;
-          document.head.appendChild(script);
-        }
-
-        // Load on first interaction or idle callback
-        ['scroll', 'mousemove', 'touchstart', 'keydown', 'click'].forEach(function(ev) {
-          window.addEventListener(ev, loadClarity, { once: true, passive: true });
-        });
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(function() { setTimeout(loadClarity, 3000); });
-        } else {
-          setTimeout(loadClarity, 4000);
-        }
-      })();
-    </script>
+    <!-- Microsoft Clarity stond hier als niet-geconfigureerde stub (projectId
+         'XXXXXXXX') en kon dus nooit laden — 30 regels dode inline-JS op elke
+         pagina. Weer toevoegen zodra er een echt project-ID is, en dan via
+         __aanloopConsent.onGrant net als de pixels hieronder. -->
 
     <!-- Meta Pixel + LinkedIn Insight Tag — consent-gated, lazy-loaded, skip if not configured.
          TODO: vervang 'META_PIXEL_ID' (business.facebook.com → Events Manager) en
@@ -500,10 +517,9 @@ const allSchemas = [
       (function() {
         var META_PIXEL_ID = 'META_PIXEL_ID';
         var LINKEDIN_PARTNER_ID = 'LI_PARTNER_ID';
-        function consented() { try { return localStorage.getItem('aanloop_cookie_consent') === 'all'; } catch (e) { return false; } }
         var loaded = false;
         function loadPixels() {
-          if (loaded || !consented()) return; loaded = true;
+          if (loaded) return; loaded = true;
           if (META_PIXEL_ID && META_PIXEL_ID !== 'META_PIXEL_ID') {
             !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
             window.fbq('init', META_PIXEL_ID); window.fbq('track', 'PageView');
@@ -529,8 +545,10 @@ const allSchemas = [
             }
           } catch (e) {}
         };
-        ['scroll','mousemove','touchstart','keydown','click'].forEach(function(ev){ window.addEventListener(ev, loadPixels, { once: true, passive: true }); });
-        if ('requestIdleCallback' in window) { requestIdleCallback(function(){ setTimeout(loadPixels, 3000); }); } else { setTimeout(loadPixels, 4000); }
+        window.__aanloopConsent.onGrant(function(){
+          ['scroll','mousemove','touchstart','keydown','click'].forEach(function(ev){ window.addEventListener(ev, loadPixels, { once: true, passive: true }); });
+          if ('requestIdleCallback' in window) { requestIdleCallback(function(){ setTimeout(loadPixels, 3000); }); } else { setTimeout(loadPixels, 4000); }
+        });
       })();
     </script>
 
@@ -674,68 +692,12 @@ const allSchemas = [
 
     <ExitIntentModal />
 
-    <!-- Cookie consent banner (AVG/GDPR) -->
-    <div
-      id="cookie-banner"
-      role="dialog"
-      aria-labelledby="cookie-banner-title"
-      class="fixed bottom-0 left-0 right-0 z-50 hidden bg-navy text-pearl border-t border-slate-700 shadow-2xl"
-    >
-      <div class="container-page py-4 lg:py-5">
-        <div class="flex flex-col lg:flex-row lg:items-center gap-4">
-          <div class="flex-1 text-sm leading-relaxed">
-            <p id="cookie-banner-title" class="font-semibold mb-1">Wij gebruiken cookies</p>
-            <p class="text-slate-300 text-xs lg:text-sm">
-              Functionele cookies zijn altijd actief. Voor analyse vragen we uw toestemming. Lees meer in onze <a href="/cookies/" class="underline hover:text-white">cookieverklaring</a>.
-            </p>
-          </div>
-          <div class="flex gap-2 shrink-0">
-            <button
-              id="cookie-decline"
-              type="button"
-              class="px-4 py-2 rounded-xl text-sm font-medium border border-slate-600 text-slate-300 hover:bg-slate-800 hover:text-white transition-colors"
-              aria-label="Alleen functionele cookies accepteren"
-            >
-              Alleen functioneel
-            </button>
-            <button
-              id="cookie-accept"
-              type="button"
-              class="px-4 py-2 rounded-xl text-sm font-semibold bg-pearl text-navy hover:bg-white transition-colors"
-              aria-label="Alle cookies accepteren"
-            >
-              Alle cookies
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <script is:inline>
-      (function () {
-        var KEY = 'aanloop_cookie_consent';
-        try {
-          if (localStorage.getItem(KEY)) return;
-        } catch (e) { return; }
-        var banner = document.getElementById('cookie-banner');
-        if (!banner) return;
-        banner.classList.remove('hidden');
-        function setConsent(value) {
-          try { localStorage.setItem(KEY, value); } catch (e) {}
-          if (window.gtag && value === 'all') {
-            window.gtag('consent', 'update', {
-              ad_storage: 'granted',
-              ad_user_data: 'granted',
-              ad_personalization: 'granted',
-              analytics_storage: 'granted',
-            });
-          }
-          banner.classList.add('hidden');
-        }
-        document.getElementById('cookie-accept').addEventListener('click', function () { setConsent('all'); });
-        document.getElementById('cookie-decline').addEventListener('click', function () { setConsent('functional'); });
-      })();
-    </script>
+    <!-- Cookie consent banner: staat in Footer.astro. Hier stond een tweede
+         implementatie met dezelfde id's (cookie-banner / cookie-banner-title /
+         cookie-accept), waardoor elke pagina drie dubbele DOM-id's had en
+         document.getElementById altijd de Footer-versie teruggaf: deze banner
+         werd nooit getoond en zijn "Alleen functioneel"-knop was onbereikbaar.
+         De gtag-consent-update is verhuisd naar __aanloopConsent.set(). -->
 
     <!-- Smooth scroll (Lenis) — reduced-motion aware, no visual change -->
     <script>
@@ -814,29 +776,82 @@ const allSchemas = [
           var banner = document.getElementById('cookie-banner');
           if (!bar || !banner) return;
           function sync() {
-            var bannerVisible = !banner.classList.contains('hidden');
-            bar.style.display = bannerVisible ? 'none' : '';
+            // De banner in Footer.astro schuift in beeld via de class "show" en
+            // draagt nooit "hidden". Deze check keek naar "hidden" en concludeerde
+            // dus altijd "banner zichtbaar" — waardoor de mobiele sticky CTA-balk
+            // op elke pagina op display:none stond.
+            bar.style.display = banner.classList.contains('show') ? 'none' : '';
           }
           sync();
-          // Reageer op tonen/verbergen (cookie-banner toggelt 'hidden' class)
           new MutationObserver(sync).observe(banner, { attributes: true, attributeFilter: ['class'] });
         })();
       </script>
     )}
 
-    <!-- EU AI Act Art. 50(1) — interaction-point disclosure for the Emma voice/chat widget -->
-    <div class="emma-ai-disclosure" role="note">Emma is een AI-assistent</div>
+    <!-- EU AI Act Art. 50(1) — interaction-point disclosure for the Emma voice/chat widget.
+         Verborgen tot de widget daadwerkelijk geladen is; anders zweeft de melding
+         los in beeld terwijl er geen assistent staat. -->
+    <div class="emma-ai-disclosure" role="note" hidden>Emma is een AI-assistent</div>
+
+    <!-- Eigen launcher voor de Emma-widget.
+         De ElevenLabs-bundel schrijft elevenlabs_convai_user_id naar localStorage —
+         een persistente identifier, dus toestemmingsplichtig. Daarom wordt de
+         bundel pas opgehaald na "alles accepteren" óf na een expliciete klik op
+         deze knop (dan is het gesprek zelf de door de bezoeker gevraagde dienst).
+         Zo houden bezoekers die alleen noodzakelijke cookies kiezen wél toegang
+         tot support, zonder dat er vooraf iets van hen wordt vastgelegd. -->
+    <button type="button" id="emma-launcher" class="emma-launcher" aria-label="Chat starten met Emma, de AI-assistent">
+      <svg class="emma-launcher-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h8M8 14h5M21 12a8 8 0 01-8 8H7l-4 3v-6.5A8 8 0 1121 12z" />
+      </svg>
+      <span>Hulp nodig?</span>
+    </button>
+
     <style>
       .emma-ai-disclosure{position:fixed;right:1rem;bottom:5.75rem;z-index:35;pointer-events:none;
         font-size:.7rem;line-height:1;color:#475569;background:rgba(255,255,255,.94);
         border:1px solid #e2e8f0;padding:.3rem .6rem;border-radius:999px;
         box-shadow:0 1px 4px rgba(15,23,42,.1);font-family:system-ui,-apple-system,sans-serif}
       @media (max-width:640px){.emma-ai-disclosure{bottom:5.25rem;right:.75rem;font-size:.66rem}}
+      .emma-launcher{position:fixed;right:1rem;bottom:1.25rem;z-index:36;display:inline-flex;align-items:center;
+        gap:.5rem;padding:.7rem 1.1rem;border-radius:999px;border:1px solid #e2e8f0;background:#fff;
+        color:#0f172a;font-family:system-ui,-apple-system,sans-serif;font-size:.85rem;font-weight:600;
+        box-shadow:0 6px 20px rgba(15,23,42,.14);cursor:pointer;transition:transform .15s ease,box-shadow .15s ease}
+      .emma-launcher:hover{transform:translateY(-1px);box-shadow:0 10px 26px rgba(15,23,42,.18)}
+      .emma-launcher:focus-visible{outline:2px solid #4f46e5;outline-offset:2px}
+      .emma-launcher-icon{width:1.15rem;height:1.15rem;color:#4f46e5}
+      .emma-launcher[hidden]{display:none}
+      @media (max-width:1023px){.emma-launcher{bottom:5.25rem;right:.75rem}}
     </style>
 
-    <!-- ElevenLabs ConvAI Widget -->
-    <elevenlabs-convai agent-id="agent_9701kqeqntncevw9dwe3fyc8ddpr"></elevenlabs-convai>
-    <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+    <!-- ElevenLabs ConvAI Widget — versie gepind (unpkg zonder pin serveert
+         altijd de nieuwste build, die dan ongezien in productie draait). -->
+    <script is:inline>
+      (function () {
+        var AGENT_ID = 'agent_9701kqeqntncevw9dwe3fyc8ddpr';
+        var SRC = 'https://unpkg.com/@elevenlabs/convai-widget-embed@0.14.12/dist/index.js';
+        var launcher = document.getElementById('emma-launcher');
+        var disclosure = document.querySelector('.emma-ai-disclosure');
+        var loaded = false;
+
+        function loadWidget() {
+          if (loaded) return; loaded = true;
+          if (launcher) launcher.hidden = true;
+          if (disclosure) disclosure.hidden = false;
+          var el = document.createElement('elevenlabs-convai');
+          el.setAttribute('agent-id', AGENT_ID);
+          document.body.appendChild(el);
+          var s = document.createElement('script');
+          s.src = SRC;
+          s.async = true;
+          s.type = 'text/javascript';
+          document.body.appendChild(s);
+        }
+
+        if (launcher) launcher.addEventListener('click', loadWidget);
+        window.__aanloopConsent.onGrant(loadWidget);
+      })();
+    </script>
 
     <!-- Branding hidden via attachShadow intercept above -->
   </body>
