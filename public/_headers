@@ -5,6 +5,7 @@
   Permissions-Policy: camera=(), microphone=(self "https://elevenlabs.io" "https://*.elevenlabs.io"), geolocation=(self)
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   Content-Security-Policy: default-src 'self' blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com https://cdn.jsdelivr.net https://elevenlabs.io https://*.elevenlabs.io https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com https://www.google-analytics.com https://analytics.google.com https://api.web3forms.com https://*.elevenlabs.io wss://*.elevenlabs.io https://*.livekit.cloud wss://*.livekit.cloud https://www.clarity.ms; media-src 'self' blob: data: https://*.elevenlabs.io; worker-src 'self' blob: https://unpkg.com https://*.elevenlabs.io; child-src 'self' blob: https://*.elevenlabs.io; frame-ancestors 'none'; frame-src https://*.elevenlabs.io;
+  ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
 
 /brand/*
@@ -14,6 +15,7 @@
   Permissions-Policy: camera=(), microphone=(self "https://elevenlabs.io" "https://*.elevenlabs.io"), geolocation=(self)
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   Content-Security-Policy: default-src 'self' blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com https://cdn.jsdelivr.net https://elevenlabs.io https://*.elevenlabs.io https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com https://www.google-analytics.com https://analytics.google.com https://api.web3forms.com https://*.elevenlabs.io wss://*.elevenlabs.io https://*.livekit.cloud wss://*.livekit.cloud https://www.clarity.ms; media-src 'self' blob: data: https://*.elevenlabs.io; worker-src 'self' blob: https://unpkg.com https://*.elevenlabs.io; child-src 'self' blob: https://*.elevenlabs.io; frame-ancestors 'none'; frame-src https://*.elevenlabs.io;
+  ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
 
 /fonts/*
@@ -23,6 +25,7 @@
   Permissions-Policy: camera=(), microphone=(self "https://elevenlabs.io" "https://*.elevenlabs.io"), geolocation=(self)
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   Content-Security-Policy: default-src 'self' blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com https://cdn.jsdelivr.net https://elevenlabs.io https://*.elevenlabs.io https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com https://www.google-analytics.com https://analytics.google.com https://api.web3forms.com https://*.elevenlabs.io wss://*.elevenlabs.io https://*.livekit.cloud wss://*.livekit.cloud https://www.clarity.ms; media-src 'self' blob: data: https://*.elevenlabs.io; worker-src 'self' blob: https://unpkg.com https://*.elevenlabs.io; child-src 'self' blob: https://*.elevenlabs.io; frame-ancestors 'none'; frame-src https://*.elevenlabs.io;
+  ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
 
 /*.html
@@ -32,22 +35,42 @@
   Permissions-Policy: camera=(), microphone=(self "https://elevenlabs.io" "https://*.elevenlabs.io"), geolocation=(self)
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   Content-Security-Policy: default-src 'self' blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com https://cdn.jsdelivr.net https://elevenlabs.io https://*.elevenlabs.io https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com https://www.google-analytics.com https://analytics.google.com https://api.web3forms.com https://*.elevenlabs.io wss://*.elevenlabs.io https://*.livekit.cloud wss://*.livekit.cloud https://www.clarity.ms; media-src 'self' blob: data: https://*.elevenlabs.io; worker-src 'self' blob: https://unpkg.com https://*.elevenlabs.io; child-src 'self' blob: https://*.elevenlabs.io; frame-ancestors 'none'; frame-src https://*.elevenlabs.io;
+  ! Cache-Control
   Cache-Control: public, max-age=300, s-maxage=86400, stale-while-revalidate=604800
 
 # SEO/AI-crawler files: short cache for fast updates
 /sitemap.xml
+  ! Cache-Control
   Cache-Control: public, max-age=300, s-maxage=3600
 /image-sitemap.xml
+  ! Cache-Control
   Cache-Control: public, max-age=300, s-maxage=3600
 /robots.txt
+  ! Cache-Control
   Cache-Control: public, max-age=3600, s-maxage=86400
 /llms.txt
+  ! Cache-Control
   Cache-Control: public, max-age=300, s-maxage=3600
 /llms-full.txt
+  ! Cache-Control
   Cache-Control: public, max-age=300, s-maxage=3600
 /humans.txt
+  ! Cache-Control
   Cache-Control: public, max-age=86400
 
+# Catch-all: de HTML-default. Dit blok matcht ALLES, ook de assets hierboven —
+# Cloudflare past elke matchende regel toe en plakt gelijknamige headers met een
+# komma aan elkaar. Zonder tegenmaatregel gaf `/_astro/app.css` dus
+# "public, max-age=300, s-maxage=86400, stale-while-revalidate=604800,
+# public, max-age=31536000, immutable": de max-age=300 stond vooraan en maakte
+# de immutable-cache waardeloos. Daarom begint élk specifiek blok hierboven met
+# `! Cache-Control`, dat de waarde van dit blok weer weghaalt.
+#
+# Deze regel NIET verwijderen: statische bestanden worden door de asset-laag
+# geserveerd zonder de Worker aan te roepen, dus cacheControlFor() in
+# src/worker.js draait hier niet. Zonder deze regel valt alle HTML terug op de
+# asset-default "public, max-age=0, must-revalidate" (live gemeten 2026-07-27)
+# en verdwijnt de edge-cache van 24 uur.
 /*
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff

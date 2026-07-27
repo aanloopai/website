@@ -169,6 +169,10 @@ const SECURITY_HEADERS = {
   'content-security-policy': CSP_POLICY,
 };
 
+// LET OP: voor bestanden die uit de asset-laag komen wint public/_headers van
+// wat hier gezet wordt — de asset-laag past dat bestand ná deze Worker toe.
+// Wijzig caching dus in public/_headers; deze functie geldt alleen als vangnet
+// voor responses die de Worker zelf opbouwt.
 function cacheControlFor(pathname) {
   if (pathname.startsWith('/_astro/') || pathname.startsWith('/brand/') || pathname.startsWith('/fonts/')) {
     return 'public, max-age=31536000, immutable';
