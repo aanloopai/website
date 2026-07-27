@@ -7,7 +7,7 @@ import ExitIntentModal from '../components/ExitIntentModal.astro';
 import RelatedLinks from '../components/RelatedLinks.astro';
 import { PRICE_RANGE } from '../data/pricing';
 import { getImage } from 'astro:assets';
-import heroAiAgent from '../assets/images/hero-ai-agent.png';
+import { HERO_IMAGE, HERO_IMAGE_OPTIONS, HERO_MEDIA } from '../data/hero-image';
 
 export interface Props {
   title: string;
@@ -34,19 +34,11 @@ const {
   preloadHero = false,
 } = Astro.props;
 
-// LCP-preload van de hero-afbeelding. De waarden hieronder MOETEN gelijk blijven
-// aan het <Image>-blok in src/components/Hero.astro, anders levert de preload een
-// tweede download op in plaats van een snellere eerste. De hero staat op
-// `hidden lg:block`, vandaar de media-conditie: onder 1024px is de LCP de h1 en
-// mag er niets extra's opgehaald worden.
+// LCP-preload van de hero-afbeelding. Opties komen uit data/hero-image.ts, net
+// als het <picture>-blok in components/Hero.astro — één bron, zodat de preload
+// gegarandeerd dezelfde srcset oplevert en er geen tweede download ontstaat.
 const heroPreload = preloadHero
-  ? await getImage({
-      src: heroAiAgent,
-      widths: [400, 600, 900, 1200, 1400],
-      sizes: '(min-width: 1024px) 40vw, 100vw',
-      format: 'webp',
-      quality: 88,
-    })
+  ? await getImage({ src: HERO_IMAGE, ...HERO_IMAGE_OPTIONS })
   : null;
 
 const canonical = canonicalOverride ?? new URL(Astro.url.pathname, 'https://aanloopai.nl').toString();
@@ -530,8 +522,8 @@ const allSchemas = [
         rel="preload"
         as="image"
         imagesrcset={heroPreload.srcSet.attribute}
-        imagesizes="(min-width: 1024px) 40vw, 100vw"
-        media="(min-width: 1024px)"
+        imagesizes={HERO_IMAGE_OPTIONS.sizes}
+        media={HERO_MEDIA}
         fetchpriority="high"
       />
     )}

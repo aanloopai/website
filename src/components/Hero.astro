@@ -1,7 +1,12 @@
 ---
 // Hero — premium animated hero section
-import { Image } from 'astro:assets';
-import heroAiAgent from '../assets/images/hero-ai-agent.png';
+import { getImage } from 'astro:assets';
+import { HERO_IMAGE, HERO_IMAGE_OPTIONS, HERO_MEDIA, HERO_PLACEHOLDER } from '../data/hero-image';
+
+// Handmatige <picture> in plaats van <Image>: met één <img> haalde ook mobiel de
+// hero op (sizes viel daar terug op 100vw) terwijl het blok op `hidden lg:block`
+// staat en daar dus nooit zichtbaar is. Nu matcht de bron pas vanaf 1024px.
+const heroImage = await getImage({ src: HERO_IMAGE, ...HERO_IMAGE_OPTIONS });
 ---
 
 <section class="relative overflow-hidden hero-gradient min-h-[90vh] flex items-center">
@@ -103,18 +108,24 @@ import heroAiAgent from '../assets/images/hero-ai-agent.png';
         <!-- Floating decorative ring -->
         <div class="absolute -top-6 -right-6 w-24 h-24 rounded-full border border-brand-indigo/15 hidden xl:block"></div>
         <div class="relative rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/20 ring-1 ring-slate-200/50">
-          <Image
-            src={heroAiAgent}
-            alt="Aanloop AI — AI-receptionist en spraakassistent voor Nederlandse MKB-bedrijven, 24/7 beschikbaar"
-            class="w-full h-auto"
-            loading="eager"
-            decoding="async"
-            fetchpriority="high"
-            widths={[400, 600, 900, 1200, 1400]}
-            sizes="(min-width: 1024px) 40vw, 100vw"
-            format="webp"
-            quality={88}
-          />
+          <picture>
+            <source
+              media={HERO_MEDIA}
+              type="image/webp"
+              srcset={heroImage.srcSet.attribute}
+              sizes={HERO_IMAGE_OPTIONS.sizes}
+            />
+            <img
+              src={HERO_PLACEHOLDER}
+              alt="Aanloop AI — AI-receptionist en spraakassistent voor Nederlandse MKB-bedrijven, 24/7 beschikbaar"
+              class="w-full h-auto"
+              width={HERO_IMAGE.width}
+              height={HERO_IMAGE.height}
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+            />
+          </picture>
         </div>
         <!-- Floating "live" stat-card (premium SaaS feel) -->
         <div class="absolute -bottom-5 -left-6 bg-white rounded-2xl shadow-xl border border-slate-100 p-4 hidden xl:flex items-center gap-3 max-w-[220px]">
