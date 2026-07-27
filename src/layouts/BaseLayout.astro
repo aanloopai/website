@@ -6,6 +6,8 @@ import Footer from '../components/Footer.astro';
 import ExitIntentModal from '../components/ExitIntentModal.astro';
 import RelatedLinks from '../components/RelatedLinks.astro';
 import { PRICE_RANGE } from '../data/pricing';
+import { getImage } from 'astro:assets';
+import heroAiAgent from '../assets/images/hero-ai-agent.png';
 
 export interface Props {
   title: string;
@@ -16,6 +18,8 @@ export interface Props {
   faqSchema?: { question: string; answer: string }[];
   videoSchema?: { name: string; description: string; thumbnailUrl: string; uploadDate: string; contentUrl?: string; embedUrl?: string; duration?: string };
   canonicalOverride?: string;
+  /** Zet dit op de pagina waar Hero.astro boven de vouw staat (nu alleen /). */
+  preloadHero?: boolean;
 }
 
 const {
@@ -27,7 +31,23 @@ const {
   faqSchema,
   videoSchema,
   canonicalOverride,
+  preloadHero = false,
 } = Astro.props;
+
+// LCP-preload van de hero-afbeelding. De waarden hieronder MOETEN gelijk blijven
+// aan het <Image>-blok in src/components/Hero.astro, anders levert de preload een
+// tweede download op in plaats van een snellere eerste. De hero staat op
+// `hidden lg:block`, vandaar de media-conditie: onder 1024px is de LCP de h1 en
+// mag er niets extra's opgehaald worden.
+const heroPreload = preloadHero
+  ? await getImage({
+      src: heroAiAgent,
+      widths: [400, 600, 900, 1200, 1400],
+      sizes: '(min-width: 1024px) 40vw, 100vw',
+      format: 'webp',
+      quality: 88,
+    })
+  : null;
 
 const canonical = canonicalOverride ?? new URL(Astro.url.pathname, 'https://aanloopai.nl').toString();
 // Smart suffix: only append " · Aanloop AI" when total stays <=60 chars
@@ -501,10 +521,20 @@ const allSchemas = [
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="dns-prefetch" href="https://www.google-analytics.com" />
 
-    <!-- Header-logo staat boven de vouw en is klein genoeg om te preloaden.
-         Dit is niet de LCP: dat is op desktop de hero-afbeelding (die draagt
-         nu fetchpriority="high" in Hero.astro) en op mobiel de h1-tekst. -->
-    <link rel="preload" as="image" href="/brand/logo-horizontal-light.svg" fetchpriority="high" />
+    <!-- Header-logo staat boven de vouw, maar is NIET de LCP — daarom preloaden
+         zonder fetchpriority, zodat het de echte LCP niet voor de voeten loopt. -->
+    <link rel="preload" as="image" href="/brand/logo-horizontal-light.svg" />
+
+    {heroPreload && (
+      <link
+        rel="preload"
+        as="image"
+        imagesrcset={heroPreload.srcSet.attribute}
+        imagesizes="(min-width: 1024px) 40vw, 100vw"
+        media="(min-width: 1024px)"
+        fetchpriority="high"
+      />
+    )}
 
     <!-- Microsoft Clarity stond hier als niet-geconfigureerde stub (projectId
          'XXXXXXXX') en kon dus nooit laden — 30 regels dode inline-JS op elke
