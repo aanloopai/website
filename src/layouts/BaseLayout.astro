@@ -341,7 +341,7 @@ const allSchemas = [
         wait_for_update: 200,
       });
       // Eén bron van waarheid voor cookietoestemming. Alle derde-partij-loaders
-      // (GA4, Clarity, Meta/LinkedIn, ElevenLabs) hangen hieronder via onGrant,
+      // (nu GA4 en ElevenLabs) hangen hieronder via onGrant,
       // zodat geen enkele daarvan zelf localStorage hoeft te lezen — dat was
       // eerder per loader gekopieerd en bij GA4 vergeten, waardoor gtag.js ook
       // bij "alleen noodzakelijk" werd opgehaald.
@@ -528,52 +528,25 @@ const allSchemas = [
       />
     )}
 
-    <!-- Microsoft Clarity stond hier als niet-geconfigureerde stub (projectId
-         'XXXXXXXX') en kon dus nooit laden — 30 regels dode inline-JS op elke
-         pagina. Weer toevoegen zodra er een echt project-ID is, en dan via
-         __aanloopConsent.onGrant net als de pixels hieronder. -->
+    {/*
+      Hier stonden drie niet-geconfigureerde analytics-stubs. Astro-commentaar,
+      geen HTML-commentaar: dit hoort in de broncode thuis en niet op 231
+      pagina's mee te reizen.
 
-    <!-- Meta Pixel + LinkedIn Insight Tag — consent-gated, lazy-loaded, skip if not configured.
-         TODO: vervang 'META_PIXEL_ID' (business.facebook.com → Events Manager) en
-         'LI_PARTNER_ID' (linkedin.com/campaignmanager → Insight Tag) door echte ID's. -->
-    <script is:inline>
-      (function() {
-        var META_PIXEL_ID = 'META_PIXEL_ID';
-        var LINKEDIN_PARTNER_ID = 'LI_PARTNER_ID';
-        var loaded = false;
-        function loadPixels() {
-          if (loaded) return; loaded = true;
-          if (META_PIXEL_ID && META_PIXEL_ID !== 'META_PIXEL_ID') {
-            !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
-            window.fbq('init', META_PIXEL_ID); window.fbq('track', 'PageView');
-          }
-          if (LINKEDIN_PARTNER_ID && LINKEDIN_PARTNER_ID !== 'LI_PARTNER_ID') {
-            window._linkedin_partner_id = LINKEDIN_PARTNER_ID;
-            window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
-            window._linkedin_data_partner_ids.push(LINKEDIN_PARTNER_ID);
-            (function(l){if(!l){window.lintrk=function(a,b){window.lintrk.q.push([a,b])};window.lintrk.q=[]}var s=document.getElementsByTagName('script')[0];var b=document.createElement('script');b.type='text/javascript';b.async=true;b.src='https://snap.licdn.com/li.lms-analytics/insight.min.js';s.parentNode.insertBefore(b,s)})(window.lintrk);
-          }
-        }
-        // Forward conversion-events van _track naar de pixels (GA4-pad blijft intact)
-        var _origTrack = window._track;
-        window._track = function(name, params) {
-          try { if (_origTrack) _origTrack(name, params); } catch (e) {}
-          try {
-            if (name === 'generate_lead' || name === 'book_demo') {
-              if (window.fbq) window.fbq('track', 'Lead', { value: (params && params.value) || 0, currency: 'EUR' });
-              if (window.lintrk) window.lintrk('track', {});
-            } else if (name === 'purchase') {
-              if (window.fbq) window.fbq('track', 'Purchase', { value: (params && params.value) || 0, currency: 'EUR' });
-              if (window.lintrk) window.lintrk('track', {});
-            }
-          } catch (e) {}
-        };
-        window.__aanloopConsent.onGrant(function(){
-          ['scroll','mousemove','touchstart','keydown','click'].forEach(function(ev){ window.addEventListener(ev, loadPixels, { once: true, passive: true }); });
-          if ('requestIdleCallback' in window) { requestIdleCallback(function(){ setTimeout(loadPixels, 3000); }); } else { setTimeout(loadPixels, 4000); }
-        });
-      })();
-    </script>
+      - Microsoft Clarity (projectId 'XXXXXXXX') — kon nooit laden, ~30 regels
+        dode inline-JS per pagina.
+      - Meta Pixel + LinkedIn Insight Tag ('META_PIXEL_ID' / 'LI_PARTNER_ID') —
+        de ID-check sloeg het laden altijd over, en connect.facebook.net en
+        snap.licdn.com staan bovendien niet in de CSP in public/_headers. Wat
+        overbleef was ~35 regels inline-JS plus een wrapper om window._track die
+        alleen naar window.fbq/window.lintrk schreef: twee objecten die nooit
+        bestonden. Het GA4-pad van _track staat los (zie ~regel 408) en is
+        ongemoeid gebleven.
+
+      Bij terugzetten: echte ID's invullen, de betreffende hosts aan script-src
+      in public/_headers toevoegen, en laden via __aanloopConsent.onGrant, net
+      zoals GTM hierboven.
+    */}
 
     <!-- Schema.org JSON-LD -->
     {allSchemas.map(s => (
