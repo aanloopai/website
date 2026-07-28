@@ -553,26 +553,32 @@ const allSchemas = [
       <script type="application/ld+json" set:html={JSON.stringify(s)} />
     ))}
 
-    <!-- Intercept shadow root creation to inject branding-hide CSS before widget renders -->
+    <!-- Verbergt de "Powered by ElevenAgents"-badge in de ConvAI-widget.
+         Of dit mag staat open bij ElevenLabs — zie docs/elevenlabs-branding-vraag.md.
+
+         attachShadow wordt gepatcht omdat de widget zijn shadow root zelf aanmaakt
+         en we de CSS erin moeten hebben vóór hij rendert. De patch doet alleen iets
+         voor de <elevenlabs-convai>-host: eerder kreeg élke shadow root op de pagina
+         de CSS plus een eigen MutationObserver, waardoor een willekeurig later
+         toegevoegd web component ongemerkt elementen kon kwijtraken. -->
     <script is:inline>
       (function () {
+        var WIDGET_HOST = 'ELEVENLABS-CONVAI';
         var _origAttachShadow = Element.prototype.attachShadow;
         Element.prototype.attachShadow = function (init) {
           var root = _origAttachShadow.call(this, init);
+          if (this.tagName !== WIDGET_HOST) return root;
           var style = document.createElement('style');
           style.setAttribute('data-hide-pb', '1');
-          style.textContent = [
-            'a[href*="elevenlabs.io"] { display:none!important; }',
-            '[class*="powered"] { display:none!important; }',
-            '[class*="branding"] { display:none!important; }',
-            /* Hide the container holding "Powered by" + link together */
-            'a[href*="elevenlabs.io"] ~ *, a[href*="elevenlabs.io"] + * { display:none!important; }'
-          ].join('');
+          /* De badge is <p>Powered by ElevenAgents<a href="…elevenlabs.io…"></a></p>.
+             Alleen de <a> verbergen laat "Powered by" staan, dus de <p> eromheen gaat
+             weg — niet de overlay-container erboven, want daar zit de rest van de
+             widget in. */
+          style.textContent = 'p:has(> a[href*="elevenlabs.io"]) { display:none!important; }';
           root.appendChild(style);
-          /* Also watch for late-rendered content inside this shadow root */
+          /* Vangnet voor late render en voor browsers zonder :has(). */
           new MutationObserver(function () {
             root.querySelectorAll('a[href*="elevenlabs.io"]').forEach(function (link) {
-              link.style.setProperty('display', 'none', 'important');
               if (link.parentElement) link.parentElement.style.setProperty('display', 'none', 'important');
             });
           }).observe(root, { childList: true, subtree: true });
