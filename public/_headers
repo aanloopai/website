@@ -58,6 +58,15 @@
   ! Cache-Control
   Cache-Control: public, max-age=86400
 
+# /js/boot.js draagt geen content-hash, dus hier bewust een korte edge-TTL.
+# Tweede reden: bij de deploy van 28-07 serveerde één edge-node de nieuwe HTML
+# al terwijl het bestand daar nog niet stond. Die 404 werd met de standaard
+# s-maxage van 86400 een dag lang vastgehouden. Met een uur is de schade
+# beperkt — de token heeft geen Cache Purge-recht om zoiets weg te halen.
+/js/*
+  ! Cache-Control
+  Cache-Control: public, max-age=300, s-maxage=3600
+
 # Catch-all: de HTML-default. Dit blok matcht ALLES, ook de assets hierboven —
 # Cloudflare past elke matchende regel toe en plakt gelijknamige headers met een
 # komma aan elkaar. Zonder tegenmaatregel gaf `/_astro/app.css` dus

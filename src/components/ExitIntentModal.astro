@@ -26,39 +26,5 @@
   </div>
 </div>
 
-<script is:inline>
-  (function () {
-    var KEY = 'aanloop_exit_shown';
-    // Naast conversie- en portal-pagina's ook overslaan op prijs- en juridische
-    // pagina's: daar dekte de modal de prijstabel respectievelijk de voorwaarden
-    // af terwijl de bezoeker aan het lezen was.
-    var SKIP = /\/(aanvragen|demo-inplannen|demo-aanvragen|demo-bevestigd|demo-herplannen|bedankt|demo-bedankt|portal|admin|contact|gratis-ai-scan|start|tarieven|privacy|cookies|voorwaarden|disclaimer)/;
-    if (SKIP.test(location.pathname)) return;
-    // Alleen op apparaten met een muis: op touch bestaat "cursor verlaat het
-    // venster" niet, dus daar zou alleen een timer overblijven — en dat is
-    // precies het intrusive-interstitial-patroon dat Google op mobiel afstraft.
-    try {
-      if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-    } catch (e) { return; }
-    try { if (localStorage.getItem(KEY)) return; } catch (e) {}
-    var modal = document.getElementById('exit-modal');
-    if (!modal) return;
-    var shown = false;
-    function show() {
-      if (shown) return; shown = true;
-      try { localStorage.setItem(KEY, '1'); } catch (e) {}
-      modal.classList.remove('hidden'); modal.classList.add('flex');
-      if (window._track) window._track('exit_intent_shown', {});
-    }
-    function hide() { modal.classList.add('hidden'); modal.classList.remove('flex'); }
-    document.addEventListener('mouseout', function (e) { if (!e.relatedTarget && e.clientY <= 0) show(); });
-    // Hier stond een timer van 30 seconden die show() aanriep. Dat maakte er
-    // een tijdgestuurde interstitial van, die ook opdook terwijl de bezoeker
-    // gewoon zat te lezen — op /tarieven/ boven op de prijstabel.
-    document.getElementById('exit-modal-close').addEventListener('click', hide);
-    document.getElementById('exit-modal-dismiss').addEventListener('click', hide);
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hide(); });
-    modal.addEventListener('click', function (e) { if (e.target === modal) hide(); });
-    document.getElementById('exit-modal-cta').addEventListener('click', function () { if (window._track) window._track('exit_intent_cta_click', {}); });
-  })();
-</script>
+{/* Gedrag (tonen, sluiten, tracking) staat in public/js/boot.js — daar staat
+   ook waarom er geen timer meer is. */}

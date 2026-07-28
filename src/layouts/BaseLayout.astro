@@ -404,54 +404,26 @@ const allSchemas = [
         _gaPageLocation = _gaUrl.toString();
       } catch (e) {}
       gtag('config', 'G-VS8SZZ6W45', { anonymize_ip: true, transport_type: 'beacon', page_location: _gaPageLocation });
-      // Global fail-safe event helper
       window._track = function(name, params) {
         try {
           if (window.gtag) window.gtag('event', name, params || {});
           if (Array.isArray(window.dataLayer)) window.dataLayer.push(Object.assign({ event: name }, params || {}));
         } catch(e) {}
       };
-      // Phone-click delegation (werkt ook na lazy DOM-injectie van ElevenLabs widget)
-      document.addEventListener('click', function(e) {
-        var a = e.target && e.target.closest ? e.target.closest('a[href^="tel:"]') : null;
-        if (a) window._track('phone_click', { link_url: a.href, link_text: (a.textContent || '').trim() });
-      });
-      // WhatsApp-click delegation
-      document.addEventListener('click', function(e) {
-        var a = e.target && e.target.closest ? e.target.closest('a[href*="wa.me"]') : null;
-        if (a) window._track('whatsapp_click', { link_url: a.href });
-      });
     </script>
-    <!-- GTM script lazy-loaded after first interaction or idle (matches ElevenLabs widget pattern).
-         Cuts TBT ~1500ms on desktop while keeping consent + analytics intact.
-         De consent-gate zit in __aanloopConsent.onGrant: zonder "alles accepteren"
-         wordt gtag.js nooit opgehaald, dus vertrekt er ook geen verzoek naar Google. -->
-    <script is:inline>
-      (function(){
-        var loaded = false;
-        function injectGTM(){
-          if (loaded) return; loaded = true;
-          var s = document.createElement('script');
-          s.src = 'https://www.googletagmanager.com/gtag/js?id=G-VS8SZZ6W45';
-          s.async = true;
-          document.head.appendChild(s);
-        }
-        // Pas ophalen na toestemming én na eerste interactie/idle, zodat de
-        // TBT-winst behouden blijft voor bezoekers die wél accepteren.
-        window.__aanloopConsent.onGrant(function(){
-          var fired = false;
-          function loadGTM(){ if (fired) return; fired = true; injectGTM(); }
-          ['scroll','mousemove','touchstart','keydown','click'].forEach(function(ev){
-            window.addEventListener(ev, loadGTM, { once: true, passive: true });
-          });
-          if ('requestIdleCallback' in window) {
-            requestIdleCallback(function(){ setTimeout(loadGTM, 3000); });
-          } else {
-            setTimeout(loadGTM, 4000);
-          }
-        });
-      })();
-    </script>
+
+    {/*
+      De rest van de gedeelde front-end logica staat in public/js/boot.js: de
+      GA4-loader, de widget-bootstrap, de exit-intent-modal, de sticky CTA-sync
+      en de click-tracking op tel:/wa.me. Dat scheelde ~10 KB ruw (~4 KB gzip)
+      per pagina, op 253 pagina's, en de browser cachet het bestand sitebreed.
+
+      Wat hierboven inline blijft is bewust de API-laag: gtag(),
+      window.__aanloopConsent en window._track. Inline page-scripts kunnen die
+      tijdens het parsen al aanroepen, en een defer-script draait daar te laat
+      voor. Alles in boot.js start zichzelf en wordt door niets aangeroepen.
+    */}
+    <script src="/js/boot.js" defer is:inline></script>
 
     <!-- Canonical & Hreflang (NL-only site: one language tag + x-default) -->
     <link rel="canonical" href={canonical} />
@@ -553,39 +525,6 @@ const allSchemas = [
       <script type="application/ld+json" set:html={JSON.stringify(s)} />
     ))}
 
-    <!-- Verbergt de "Powered by ElevenAgents"-badge in de ConvAI-widget.
-         Of dit mag staat open bij ElevenLabs — zie docs/elevenlabs-branding-vraag.md.
-
-         attachShadow wordt gepatcht omdat de widget zijn shadow root zelf aanmaakt
-         en we de CSS erin moeten hebben vóór hij rendert. De patch doet alleen iets
-         voor de <elevenlabs-convai>-host: eerder kreeg élke shadow root op de pagina
-         de CSS plus een eigen MutationObserver, waardoor een willekeurig later
-         toegevoegd web component ongemerkt elementen kon kwijtraken. -->
-    <script is:inline>
-      (function () {
-        var WIDGET_HOST = 'ELEVENLABS-CONVAI';
-        var _origAttachShadow = Element.prototype.attachShadow;
-        Element.prototype.attachShadow = function (init) {
-          var root = _origAttachShadow.call(this, init);
-          if (this.tagName !== WIDGET_HOST) return root;
-          var style = document.createElement('style');
-          style.setAttribute('data-hide-pb', '1');
-          /* De badge is <p>Powered by ElevenAgents<a href="…elevenlabs.io…"></a></p>.
-             Alleen de <a> verbergen laat "Powered by" staan, dus de <p> eromheen gaat
-             weg — niet de overlay-container erboven, want daar zit de rest van de
-             widget in. */
-          style.textContent = 'p:has(> a[href*="elevenlabs.io"]) { display:none!important; }';
-          root.appendChild(style);
-          /* Vangnet voor late render en voor browsers zonder :has(). */
-          new MutationObserver(function () {
-            root.querySelectorAll('a[href*="elevenlabs.io"]').forEach(function (link) {
-              if (link.parentElement) link.parentElement.style.setProperty('display', 'none', 'important');
-            });
-          }).observe(root, { childList: true, subtree: true });
-          return root;
-        };
-      })();
-    </script>
   </head>
   <body>
     <!-- Skip to main content — accessibility -->
@@ -771,23 +710,6 @@ const allSchemas = [
           Gratis demo
         </a>
       </div>
-      <script is:inline>
-        // Verberg sticky CTA wanneer cookie-banner zichtbaar is (anders overlap onderaan).
-        (function () {
-          var bar = document.getElementById('sticky-cta-bar');
-          var banner = document.getElementById('cookie-banner');
-          if (!bar || !banner) return;
-          function sync() {
-            // De banner in Footer.astro schuift in beeld via de class "show" en
-            // draagt nooit "hidden". Deze check keek naar "hidden" en concludeerde
-            // dus altijd "banner zichtbaar" — waardoor de mobiele sticky CTA-balk
-            // op elke pagina op display:none stond.
-            bar.style.display = banner.classList.contains('show') ? 'none' : '';
-          }
-          sync();
-          new MutationObserver(sync).observe(banner, { attributes: true, attributeFilter: ['class'] });
-        })();
-      </script>
     )}
 
     <!-- EU AI Act Art. 50(1) — interaction-point disclosure for the Emma voice/chat widget.
@@ -826,34 +748,6 @@ const allSchemas = [
       @media (max-width:1023px){.emma-launcher{bottom:5.25rem;right:.75rem}}
     </style>
 
-    <!-- ElevenLabs ConvAI Widget — versie gepind (unpkg zonder pin serveert
-         altijd de nieuwste build, die dan ongezien in productie draait). -->
-    <script is:inline>
-      (function () {
-        var AGENT_ID = 'agent_9701kqeqntncevw9dwe3fyc8ddpr';
-        var SRC = 'https://unpkg.com/@elevenlabs/convai-widget-embed@0.14.12/dist/index.js';
-        var launcher = document.getElementById('emma-launcher');
-        var disclosure = document.querySelector('.emma-ai-disclosure');
-        var loaded = false;
-
-        function loadWidget() {
-          if (loaded) return; loaded = true;
-          if (launcher) launcher.hidden = true;
-          if (disclosure) disclosure.hidden = false;
-          var el = document.createElement('elevenlabs-convai');
-          el.setAttribute('agent-id', AGENT_ID);
-          document.body.appendChild(el);
-          var s = document.createElement('script');
-          s.src = SRC;
-          s.async = true;
-          s.type = 'text/javascript';
-          document.body.appendChild(s);
-        }
-
-        if (launcher) launcher.addEventListener('click', loadWidget);
-        window.__aanloopConsent.onGrant(loadWidget);
-      })();
-    </script>
 
     <!-- Branding hidden via attachShadow intercept above -->
   </body>

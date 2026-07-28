@@ -9,7 +9,7 @@
     "tunnel": "\"C:\\Program Files (x86)\\cloudflared\\cloudflared.exe\" tunnel --url https://localhost:4321 --no-tls-verify",
     "prebuild": "node scripts/build-sitemap.cjs",
     "build": "astro build",
-    "postbuild": "node scripts/indexnow-ping.cjs",
+    "postbuild": "node scripts/strip-html-comments.cjs && node scripts/indexnow-ping.cjs",
     "preview": "astro preview",
     "astro": "astro",
     "indexnow": "node scripts/indexnow-ping.cjs",
