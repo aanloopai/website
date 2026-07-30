@@ -37,12 +37,19 @@ jobs:
           META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
         run: |
           set -euo pipefail
-          if [ -z "${META_PAGE_ACCESS_TOKEN}" ]; then
+          # Secrets die via de web-UI zijn geplakt bevatten geregeld een newline of
+          # spaties -> curl weigert de URL ("Malformed input"). Altijd strippen.
+          tok=$(printf '%s' "${META_PAGE_ACCESS_TOKEN}" | tr -d '[:space:]')
+          if [ -z "${tok}" ]; then
             echo "status=missing" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          resp=$(curl -sS --max-time 30 \
-            "https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=${META_PAGE_ACCESS_TOKEN}") || {
+          resp=$(curl -sS --max-time 30 -G \
+            "https://graph.instagram.com/refresh_access_token" \
+            --data-urlencode "grant_type=ig_refresh_token" \
+            --data-urlencode "access_token=${tok}") || {
+            rc=$?
+            echo "curl exit ${rc} — netwerk- of URL-fout; zie stap-log."
             echo "status=network_error" >> "$GITHUB_OUTPUT"; exit 0; }
 
           if echo "$resp" | jq -e '.error' > /dev/null 2>&1; then
