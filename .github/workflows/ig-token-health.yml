@@ -1,0 +1,152 @@
+name: IG Token Health
+
+# Houdt IG_PAGE_ACCESS_TOKEN levend. Instagram-Login long-lived tokens (IGAA/IGAF)
+# verlopen na ~60 dagen; dit refresht wekelijks via graph.instagram.com zodat de
+# publish-pijplijn niet meer stilvalt op OAuth 190 (gebeurde 2026-07-16 en 2026-07-24).
+#
+# Twee modi:
+#   1. Secret GH_PAT aanwezig (PAT met repo-scope): vernieuwd token wordt automatisch
+#      teruggeschreven naar het IG_PAGE_ACCESS_TOKEN repo-secret -> geen owner-actie meer.
+#   2. Geen GH_PAT: refresh verlengt niets blijvends; workflow waarschuwt via issue
+#      zodra het token < 14 dagen geldig is, zodat de owner tijdig kan roteren.
+#
+# Bij een dood token (code 190) wordt het bestaande issue-mechanisme gebruikt
+# (label ig-token-dead) met rotatie-instructies.
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # wekelijks ma 06:00 UTC
+  workflow_dispatch: {}
+
+concurrency:
+  group: ig-token-health
+  cancel-in-progress: false
+
+permissions:
+  issues: write
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Refresh long-lived IG token
+        id: refresh
+        env:
+          IG_PAGE_ACCESS_TOKEN: ${{ secrets.IG_PAGE_ACCESS_TOKEN }}
+        run: |
+          set -euo pipefail
+          if [ -z "${IG_PAGE_ACCESS_TOKEN}" ]; then
+            echo "status=missing" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          resp=$(curl -sS --max-time 30 \
+            "https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=${IG_PAGE_ACCESS_TOKEN}") || {
+            echo "status=network_error" >> "$GITHUB_OUTPUT"; exit 0; }
+
+          if echo "$resp" | jq -e '.error' > /dev/null 2>&1; then
+            code=$(echo "$resp" | jq -r '.error.code // "unknown"')
+            msg=$(echo "$resp" | jq -r '.error.message // "unknown"' | head -c 300)
+            echo "Refresh failed (code ${code}): ${msg}"
+            echo "status=dead" >> "$GITHUB_OUTPUT"
+            echo "error_code=${code}" >> "$GITHUB_OUTPUT"
+            {
+              echo "error_msg<<EOF"
+              echo "${msg}"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          new_token=$(echo "$resp" | jq -r '.access_token // empty')
+          expires_in=$(echo "$resp" | jq -r '.expires_in // 0')
+          if [ -z "$new_token" ]; then
+            echo "Unexpected response shape (no access_token, no error)."
+            echo "status=network_error" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "::add-mask::${new_token}"
+          days=$(( expires_in / 86400 ))
+          echo "Token refreshed; new token valid ~${days} days."
+          echo "status=ok" >> "$GITHUB_OUTPUT"
+          echo "days=${days}" >> "$GITHUB_OUTPUT"
+          echo "new_token=${new_token}" >> "$GITHUB_OUTPUT"
+
+      - name: Persist refreshed token to repo secret (needs GH_PAT)
+        if: steps.refresh.outputs.status == 'ok'
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+          NEW_TOKEN: ${{ steps.refresh.outputs.new_token }}
+        run: |
+          set -euo pipefail
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "GH_PAT secret ontbreekt -> vernieuwd token kan niet worden opgeslagen."
+            echo "Huidige token blijft geldig (~${{ steps.refresh.outputs.days }} dagen)."
+            echo "Voeg een fine-grained PAT (secrets: read/write op deze repo) toe als GH_PAT om dit te automatiseren."
+            exit 0
+          fi
+          printf '%s' "${NEW_TOKEN}" | gh secret set IG_PAGE_ACCESS_TOKEN --repo "${GITHUB_REPOSITORY}"
+          echo "IG_PAGE_ACCESS_TOKEN secret bijgewerkt (geldig ~${{ steps.refresh.outputs.days }} dagen)."
+
+      - name: Alert on dead/missing token or expiry risk
+        if: steps.refresh.outputs.status == 'dead' || steps.refresh.outputs.status == 'missing' || (steps.refresh.outputs.status == 'ok' && fromJSON(steps.refresh.outputs.days) < 14)
+        uses: actions/github-script@v7
+        env:
+          STATUS: ${{ steps.refresh.outputs.status }}
+          DAYS: ${{ steps.refresh.outputs.days }}
+          ERROR_CODE: ${{ steps.refresh.outputs.error_code }}
+          ERROR_MSG: ${{ steps.refresh.outputs.error_msg }}
+        with:
+          script: |
+            const { STATUS, DAYS, ERROR_CODE, ERROR_MSG } = process.env;
+            const label = 'ig-token-dead';
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            let title, body;
+            if (STATUS === 'dead') {
+              title = 'IG_PAGE_ACCESS_TOKEN ongeldig — rotatie nodig (owner)';
+              body = [
+                `Wekelijkse token-refresh faalde (code ${ERROR_CODE}): ${ERROR_MSG}`,
+                '',
+                'Alle IG publish-workflows (feed/reels/stories) falen hierop tot het token is geroteerd.',
+                '',
+                '**Rotatie-stappen (owner):**',
+                '1. Meta Developer Console -> app -> Instagram API met Instagram Login.',
+                '2. Genereer een NIEUW long-lived token voor het @aanloop.ai business-account (60 dagen). Let op: geen kortlopend sessie-token kopieren — het token van juli 2026 stierf al na ~5 dagen.',
+                '3. Repo Settings -> Secrets and variables -> Actions -> update `IG_PAGE_ACCESS_TOKEN`.',
+                '4. Optioneel maar aangeraden: voeg `GH_PAT` toe (fine-grained PAT, secrets read/write op deze repo) zodat deze workflow het token voortaan zelf ververst en dit issue nooit meer terugkomt.',
+                '',
+                `Run: ${runUrl}`,
+              ].join('\n');
+            } else if (STATUS === 'missing') {
+              title = 'IG_PAGE_ACCESS_TOKEN secret ontbreekt';
+              body = `Het secret is leeg of verwijderd. Publish-pijplijn ligt stil. Run: ${runUrl}`;
+            } else {
+              title = `IG_PAGE_ACCESS_TOKEN verloopt over ~${DAYS} dagen`;
+              body = [
+                `Refresh lukte, maar zonder \`GH_PAT\` secret kan het vernieuwde token niet worden opgeslagen.`,
+                `Huidige token verloopt over ~${DAYS} dagen.`,
+                '',
+                'Voeg `GH_PAT` toe (fine-grained PAT, secrets read/write) of roteer het token handmatig voor het verloopt.',
+                '',
+                `Run: ${runUrl}`,
+              ].join('\n');
+            }
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              labels: label, state: 'open',
+            });
+            if (existing.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.data[0].number,
+                body: `${title}\n\n${body}`,
+              });
+              core.info(`Commented on existing issue #${existing.data[0].number}`);
+            } else {
+              const issue = await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, body, labels: [label],
+              });
+              core.info(`Opened issue #${issue.data.number}`);
+            }

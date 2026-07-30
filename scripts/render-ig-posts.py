@@ -826,6 +826,136 @@ def post_wave8_06_cta() -> None:
     img.save(OUT_DIR / "wave8-06-cta-gratis-scan.png", "PNG", optimize=True)
 
 
+def post_wave9_02_gemiste_oproepen() -> None:
+    """Wave 9.2 — Hook: ochtendpiek, drie gemiste oproepen voor 9 uur."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AI-TELEFONIE  ·  OCHTENDPIEK", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 112)
+    lines = ["3 gemiste", "oproepen.", "Voor 9 uur."]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 8
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 36
+    y = draw_line(d, y, 200, ROSE, 6)
+    y += 46
+    draw_centered(d, "Marco neemt ze alle drie tegelijk aan.", y, font(FONT_LIGHT, 36), PEARL)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave9-02-gemiste-oproepen.png", "PNG", optimize=True)
+
+
+def post_wave9_04_avond_piek() -> None:
+    """Wave 9.4 — Hook: avonduren zijn piekmoment voor klantvragen."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AI-KLANTENSERVICE  ·  AVONDUREN", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 100)
+    lines = ["17:03.", "Jij sluit af.", "Klant begint net."]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 8
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 36
+    y = draw_line(d, y, 200, AMBER, 6)
+    y += 46
+    draw_centered(d, "Emma blijft online. Ook nu.", y, font(FONT_LIGHT, 38), PEARL)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave9-04-avond-piek.png", "PNG", optimize=True)
+
+
+def post_wave9_06_founder_pov() -> None:
+    """Wave 9.6 — Founder-POV: transparantie, geen magie."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AANLOOP AI  ·  EERLIJK VERHAAL", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 104)
+    lines = ["Geen magie.", "Wel minder", "repetitief werk."]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 8
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 36
+    y = draw_line(d, y, 200, INDIGO, 6)
+    y += 46
+    draw_centered(d, "Transparante tarieven. Geen kleine lettertjes.", y, font(FONT_LIGHT, 34), PEARL)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave9-06-founder-pov.png", "PNG", optimize=True)
+
+
+def post_wave9_08_horeca_vrijdag() -> None:
+    """Wave 9.8 — Sector deep: horeca vrijdagavond, Marco neemt reservering aan."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "MARCO  ·  HORECA VRIJDAGAVOND", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 100)
+    lines = ["Vrijdag 19:30.", "Volle zaak.", "Telefoon weer."]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 8
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 36
+    y = draw_line(d, y, 200, EMERALD, 6)
+    y += 46
+    draw_centered(d, "Marco neemt de reservering aan.", y, font(FONT_LIGHT, 38), PEARL)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave9-08-horeca-vrijdag.png", "PNG", optimize=True)
+
+
+def post_wave9_10_wrap_cta() -> None:
+    """Wave 9.10 — Wrap + CTA: twee weken lieten we het zien, nu jij."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AANLOOP AI  ·  JOUW BEURT", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 100)
+    lines = ["Twee weken", "lieten we het", "zien. Nu jij."]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 8
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 36
+    y = draw_line(d, y, 200, ROSE, 6)
+    y += 46
+    draw_centered(d, "DM 'AI' voor je gratis AI-scan", y, font(FONT_LIGHT, 34), PEARL)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave9-10-wrap-cta.png", "PNG", optimize=True)
+
+
 def main() -> None:
     post_01()
     post_02()
@@ -852,9 +982,16 @@ def main() -> None:
     post_wave8_04_whatsapp_bot()
     post_wave8_05_ai_scan()
     post_wave8_06_cta()
+    post_wave9_02_gemiste_oproepen()
+    post_wave9_04_avond_piek()
+    post_wave9_06_founder_pov()
+    post_wave9_08_horeca_vrijdag()
+    post_wave9_10_wrap_cta()
     for p in sorted(OUT_DIR.glob("post-*.png")):
         print(f"{p.name}\t{p.stat().st_size} bytes")
     for p in sorted(OUT_DIR.glob("wave8-*.png")):
+        print(f"{p.name}\t{p.stat().st_size} bytes")
+    for p in sorted(OUT_DIR.glob("wave9-*.png")):
         print(f"{p.name}\t{p.stat().st_size} bytes")
 
 
