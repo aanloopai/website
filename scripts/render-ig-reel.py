@@ -575,6 +575,33 @@ def load_schedule(p: Path) -> dict:
         return json.load(f)
 
 
+def resolve_schedule_path() -> Path:
+    """Mirrors resolveSchedulePath() in ig-publish-reel.mjs: pick the highest
+    wave (then week) that still has pending slots, so render and publish always
+    target the same schedule file. A hardcoded default broke on 2026-07-30 when
+    wave-3 was archived (FileNotFoundError in CI)."""
+    import os
+    import re
+
+    if os.environ.get("SCHEDULE_PATH"):
+        return Path(os.environ["SCHEDULE_PATH"]).resolve()
+    schedule_dir = REPO / "marketing" / "instagram"
+    pat = re.compile(r"^wave-(\d+)(?:-week(\d+))?-reels-schedule\.json$")
+    waves = []
+    for f in schedule_dir.iterdir():
+        m = pat.match(f.name)
+        if m:
+            waves.append((int(m.group(1)), int(m.group(2) or 1), f))
+    if not waves:
+        raise SystemExit(f"No wave-N-reels-schedule.json in {schedule_dir}")
+    waves.sort()
+    for _, _, f in reversed(waves):
+        sched = json.loads(f.read_text(encoding="utf-8"))
+        if any(p.get("posted_at") is None for p in sched.get("posts", [])):
+            return f
+    return waves[-1][2]
+
+
 def find_due(sched: dict) -> dict | None:
     """First unpublished slot whose slot_iso is in the past — mirrors the
     publisher's findDuePost so render and publish always target the same slot."""
@@ -591,13 +618,14 @@ def find_due(sched: dict) -> dict | None:
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--schedule", default=str(REPO / "marketing" / "instagram" / "wave-3-reels-schedule.json"))
+    ap.add_argument("--schedule", default=None, help="Schedule JSON; default: auto-resolve highest wave with pending slots")
     ap.add_argument("--slot", help="Render a single slot by id")
     ap.add_argument("--due", action="store_true", help="Render only the next due unpublished slot")
     ap.add_argument("--all", action="store_true", help="Render every unpublished slot")
     args = ap.parse_args()
 
-    sched_path = Path(args.schedule)
+    sched_path = Path(args.schedule) if args.schedule else resolve_schedule_path()
+    print(f"schedule: {sched_path.name}", file=sys.stderr)
     sched = load_schedule(sched_path)
 
     targets: list[dict] = []
