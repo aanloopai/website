@@ -958,6 +958,136 @@ def post_wave9_10_wrap_cta() -> None:
     img.save(OUT_DIR / "wave9-10-wrap-cta.png", "PNG", optimize=True)
 
 
+def post_wave10_01_zomer_bezetting() -> None:
+    """Wave 10.1 — Hook: vakantieperiode/zomerbezetting, krappe bemensing in augustus."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AI-AGENTS  ·  ZOMERBEZETTING", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 108)
+    lines = ["Halve bezetting.", "Volle inbox.", "Augustus."]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 8
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 36
+    y = draw_line(d, y, 200, INDIGO, 6)
+    y += 46
+    draw_centered(d, "Marco en Emma vangen het gat op.", y, font(FONT_LIGHT, 36), PEARL)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave10-01-zomer-bezetting.png", "PNG", optimize=True)
+
+
+def post_wave10_03_appen_niet_bellen() -> None:
+    """Wave 10.3 — Feature/diferansiyel: generatieshift van bellen naar WhatsApp."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "EMMA  ·  WHATSAPP", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 108)
+    lines = ["Hij belt niet.", "Hij appt.", "20:41."]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 8
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 36
+    y = draw_line(d, y, 200, ROSE, 6)
+    y += 46
+    draw_centered(d, "Emma reageert net zo snel als aan de telefoon.", y, font(FONT_LIGHT, 34), PEARL)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave10-03-appen-niet-bellen.png", "PNG", optimize=True)
+
+
+def post_wave10_05_bouwplaats_marco() -> None:
+    """Wave 10.5 — Sector deep: bouw/vakman, opnemen kan niet op de bouwplaats."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "MARCO  ·  BOUW & VAKMAN", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 100)
+    lines = ["Stof, lawaai,", "telefoon in", "je broekzak."]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 8
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 36
+    y = draw_line(d, y, 200, AMBER, 6)
+    y += 46
+    draw_centered(d, "Marco neemt de oproep en noteert de klus.", y, font(FONT_LIGHT, 36), PEARL)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave10-05-bouwplaats-marco.png", "PNG", optimize=True)
+
+
+def post_wave10_07_review_moment() -> None:
+    """Wave 10.7 — Diferansiyel: klantbeleving, snel antwoord voorkomt een slechte review."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "EMMA  ·  KLANTBELEVING", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 100)
+    lines = ["Bijna een", "1-ster review.", "21:47."]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 8
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 36
+    y = draw_line(d, y, 200, EMERALD, 6)
+    y += 46
+    draw_centered(d, "Snel antwoord voordat frustratie een review wordt.", y, font(FONT_LIGHT, 32), PEARL)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave10-07-review-moment.png", "PNG", optimize=True)
+
+
+def post_wave10_09_personeelstekort() -> None:
+    """Wave 10.9 — Probleem: personeelstekort, klantenservice loopt als eerste vast."""
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+
+    draw_centered(d, "AI-AGENTS  ·  PERSONEELSTEKORT", 250, font(FONT_REG, 26), PEARL_DIM)
+
+    f_big = font(FONT_BLACK, 100)
+    lines = ["Twee man ziek.", "De rest", "redt het niet."]
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 8
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 36
+    y = draw_line(d, y, 200, INDIGO, 6)
+    y += 46
+    draw_centered(d, "Emma vangt het repetitieve werk op.", y, font(FONT_LIGHT, 36), PEARL)
+
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / "wave10-09-personeelstekort.png", "PNG", optimize=True)
+
+
 def main() -> None:
     post_01()
     post_02()
@@ -989,11 +1119,18 @@ def main() -> None:
     post_wave9_06_founder_pov()
     post_wave9_08_horeca_vrijdag()
     post_wave9_10_wrap_cta()
+    post_wave10_01_zomer_bezetting()
+    post_wave10_03_appen_niet_bellen()
+    post_wave10_05_bouwplaats_marco()
+    post_wave10_07_review_moment()
+    post_wave10_09_personeelstekort()
     for p in sorted(OUT_DIR.glob("post-*.png")):
         print(f"{p.name}\t{p.stat().st_size} bytes")
     for p in sorted(OUT_DIR.glob("wave8-*.png")):
         print(f"{p.name}\t{p.stat().st_size} bytes")
     for p in sorted(OUT_DIR.glob("wave9-*.png")):
+        print(f"{p.name}\t{p.stat().st_size} bytes")
+    for p in sorted(OUT_DIR.glob("wave10-*.png")):
         print(f"{p.name}\t{p.stat().st_size} bytes")
 
 
