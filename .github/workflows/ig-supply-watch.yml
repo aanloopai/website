@@ -1,0 +1,99 @@
+name: IG Supply Watch
+
+# Waarschuwt VOORDAT de contentvoorraad leeg is (feed + reels), zodat
+# "CONTENT SUPPLY EMPTY" (21 juli 2026: wave-8 op, dagen rode runs) niet
+# nog eens stilletjes gebeurt. Alleen signaleren — publiceren en genereren
+# gebeurt elders.
+
+on:
+  schedule:
+    - cron: "30 6 * * *" # dagelijks 06:30 UTC
+  workflow_dispatch: {}
+
+concurrency:
+  group: ig-supply-watch
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Check supply
+        id: supply
+        run: |
+          out=$(node scripts/check-ig-supply.mjs)
+          echo "$out"
+          echo "report=$out" >> "$GITHUB_OUTPUT"
+          echo "low=$(echo "$out" | node -e 'let d="";process.stdin.on("data",c=>d+=c).on("end",()=>console.log(JSON.parse(d).low))')" >> "$GITHUB_OUTPUT"
+
+      - name: Open/update warning issue when supply low
+        if: steps.supply.outputs.low == 'true'
+        uses: actions/github-script@v7
+        env:
+          REPORT: ${{ steps.supply.outputs.report }}
+        with:
+          script: |
+            const r = JSON.parse(process.env.REPORT);
+            const label = 'ig-supply-low';
+            const fmt = (name, c) =>
+              `- **${name}**: ${c.pending} pending slot(s), laatste slot ${c.lastSlot ?? '—'} (${c.runwayDays ?? 0} dagen runway)`;
+            const title = 'IG contentvoorraad raakt op — nieuwe wave nodig';
+            const body = [
+              `Drempel: ${r.thresholdDays} dagen runway.`,
+              '',
+              fmt('Feed', r.feed),
+              fmt('Reels', r.reels),
+              '',
+              'Actie: genereer de volgende wave (schedule-JSON + renders) vóór de laatste slotdatum.',
+              'Zie marketing/instagram/wave-9-schedule.json als referentie-formaat.',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            ].join('\n');
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              labels: label, state: 'open',
+            });
+            if (existing.data.length > 0) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: existing.data[0].number, body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, body, labels: [label],
+              });
+            }
+
+      - name: Close warning issue when supply healthy again
+        if: steps.supply.outputs.low != 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const label = 'ig-supply-low';
+            const existing = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              labels: label, state: 'open',
+            });
+            for (const issue of existing.data) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number,
+                body: 'Voorraad weer op peil — automatisch gesloten door supply-watch.',
+              });
+              await github.rest.issues.update({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: issue.number, state: 'closed',
+              });
+            }
