@@ -1,6 +1,7 @@
 """Render aanloop Instagram photo posts with brand-perfect typography (Pillow)."""
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFont
@@ -18,9 +19,10 @@ AMBER = "#D97706"
 EMERALD = "#047857"
 BRAND_ACCENTS = (INDIGO, ROSE, AMBER, EMERALD)
 
-FONT_REG = r"C:\Windows\Fonts\segoeuib.ttf"
-FONT_BLACK = r"C:\Windows\Fonts\seguibl.ttf"
-FONT_LIGHT = r"C:\Windows\Fonts\segoeui.ttf"
+# Env-overridable zodat rendering ook op Linux/CI werkt (zoals render-ig-carousel.py).
+FONT_REG = os.environ.get("POSTS_FONT_REG", r"C:\Windows\Fonts\segoeuib.ttf")
+FONT_BLACK = os.environ.get("POSTS_FONT_BLACK", r"C:\Windows\Fonts\seguibl.ttf")
+FONT_LIGHT = os.environ.get("POSTS_FONT_LIGHT", r"C:\Windows\Fonts\segoeui.ttf")
 
 
 def font(path: str, size: int) -> ImageFont.FreeTypeFont:
