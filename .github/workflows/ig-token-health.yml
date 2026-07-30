@@ -1,12 +1,12 @@
 name: IG Token Health
 
-# Houdt IG_PAGE_ACCESS_TOKEN levend. Instagram-Login long-lived tokens (IGAA/IGAF)
+# Houdt META_PAGE_ACCESS_TOKEN levend. Instagram-Login long-lived tokens (IGAA/IGAF)
 # verlopen na ~60 dagen; dit refresht wekelijks via graph.instagram.com zodat de
 # publish-pijplijn niet meer stilvalt op OAuth 190 (gebeurde 2026-07-16 en 2026-07-24).
 #
 # Twee modi:
 #   1. Secret GH_PAT aanwezig (PAT met repo-scope): vernieuwd token wordt automatisch
-#      teruggeschreven naar het IG_PAGE_ACCESS_TOKEN repo-secret -> geen owner-actie meer.
+#      teruggeschreven naar het META_PAGE_ACCESS_TOKEN repo-secret -> geen owner-actie meer.
 #   2. Geen GH_PAT: refresh verlengt niets blijvends; workflow waarschuwt via issue
 #      zodra het token < 14 dagen geldig is, zodat de owner tijdig kan roteren.
 #
@@ -34,15 +34,15 @@ jobs:
       - name: Refresh long-lived IG token
         id: refresh
         env:
-          IG_PAGE_ACCESS_TOKEN: ${{ secrets.IG_PAGE_ACCESS_TOKEN }}
+          META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
         run: |
           set -euo pipefail
-          if [ -z "${IG_PAGE_ACCESS_TOKEN}" ]; then
+          if [ -z "${META_PAGE_ACCESS_TOKEN}" ]; then
             echo "status=missing" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           resp=$(curl -sS --max-time 30 \
-            "https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=${IG_PAGE_ACCESS_TOKEN}") || {
+            "https://graph.instagram.com/refresh_access_token?grant_type=ig_refresh_token&access_token=${META_PAGE_ACCESS_TOKEN}") || {
             echo "status=network_error" >> "$GITHUB_OUTPUT"; exit 0; }
 
           if echo "$resp" | jq -e '.error' > /dev/null 2>&1; then
@@ -86,8 +86,8 @@ jobs:
             echo "Voeg een fine-grained PAT (secrets: read/write op deze repo) toe als GH_PAT om dit te automatiseren."
             exit 0
           fi
-          printf '%s' "${NEW_TOKEN}" | gh secret set IG_PAGE_ACCESS_TOKEN --repo "${GITHUB_REPOSITORY}"
-          echo "IG_PAGE_ACCESS_TOKEN secret bijgewerkt (geldig ~${{ steps.refresh.outputs.days }} dagen)."
+          printf '%s' "${NEW_TOKEN}" | gh secret set META_PAGE_ACCESS_TOKEN --repo "${GITHUB_REPOSITORY}"
+          echo "META_PAGE_ACCESS_TOKEN secret bijgewerkt (geldig ~${{ steps.refresh.outputs.days }} dagen)."
 
       - name: Alert on dead/missing token or expiry risk
         if: steps.refresh.outputs.status == 'dead' || steps.refresh.outputs.status == 'missing' || (steps.refresh.outputs.status == 'ok' && fromJSON(steps.refresh.outputs.days) < 14)
@@ -104,7 +104,7 @@ jobs:
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
             let title, body;
             if (STATUS === 'dead') {
-              title = 'IG_PAGE_ACCESS_TOKEN ongeldig — rotatie nodig (owner)';
+              title = 'META_PAGE_ACCESS_TOKEN ongeldig — rotatie nodig (owner)';
               body = [
                 `Wekelijkse token-refresh faalde (code ${ERROR_CODE}): ${ERROR_MSG}`,
                 '',
@@ -113,16 +113,16 @@ jobs:
                 '**Rotatie-stappen (owner):**',
                 '1. Meta Developer Console -> app -> Instagram API met Instagram Login.',
                 '2. Genereer een NIEUW long-lived token voor het @aanloop.ai business-account (60 dagen). Let op: geen kortlopend sessie-token kopieren — het token van juli 2026 stierf al na ~5 dagen.',
-                '3. Repo Settings -> Secrets and variables -> Actions -> update `IG_PAGE_ACCESS_TOKEN`.',
+                '3. Repo Settings -> Secrets and variables -> Actions -> update `META_PAGE_ACCESS_TOKEN`.',
                 '4. Optioneel maar aangeraden: voeg `GH_PAT` toe (fine-grained PAT, secrets read/write op deze repo) zodat deze workflow het token voortaan zelf ververst en dit issue nooit meer terugkomt.',
                 '',
                 `Run: ${runUrl}`,
               ].join('\n');
             } else if (STATUS === 'missing') {
-              title = 'IG_PAGE_ACCESS_TOKEN secret ontbreekt';
+              title = 'META_PAGE_ACCESS_TOKEN secret ontbreekt';
               body = `Het secret is leeg of verwijderd. Publish-pijplijn ligt stil. Run: ${runUrl}`;
             } else {
-              title = `IG_PAGE_ACCESS_TOKEN verloopt over ~${DAYS} dagen`;
+              title = `META_PAGE_ACCESS_TOKEN verloopt over ~${DAYS} dagen`;
               body = [
                 `Refresh lukte, maar zonder \`GH_PAT\` secret kan het vernieuwde token niet worden opgeslagen.`,
                 `Huidige token verloopt over ~${DAYS} dagen.`,
