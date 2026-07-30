@@ -12,7 +12,10 @@ const terms = [
     term: 'AI receptionist',
     slug: 'ai-receptionist',
     definition: 'Een AI receptionist is een spraak-AI die telefoongesprekken aanneemt en autonoom afhandelt: intake voeren, afspraken plannen, klantvragen beantwoorden of escaleren naar een mens. Werkt 24/7 zonder personeelskosten en is geintegreerd met agenda- en CRM-systemen.',
+    // Generieke term -> wijst naar de pillar-pagina (niet de kennisbank-subgids)
+    // om cannibalisatie op de hoofd-intent "ai receptionist" te voorkomen.
     related: 'ai-telefoonassistent-bedrijven',
+    relatedHref: '/ai-receptionist-nederland/',
   },
   {
     term: 'Voicebot',
@@ -538,7 +541,7 @@ const speakableSchema = {
           <div id={t.slug} class="card p-6 bg-white scroll-mt-24">
             <h2 class="text-xl font-bold text-navy mb-3">{t.term}</h2>
             <p class="definition text-slate-600 leading-relaxed mb-4">{t.definition}</p>
-            <a href={`/kennisbank/${t.related}/`} class="text-sm text-brand-indigo hover:underline font-medium">
+            <a href={t.relatedHref ?? `/kennisbank/${t.related}/`} class="text-sm text-brand-indigo hover:underline font-medium">
               Lees verder: gids over {t.term} →
             </a>
           </div>
