@@ -59,63 +59,13 @@ const feiten = [
 const faqSchema = [
   { question: 'Waar is Aanloop AI gevestigd?', answer: 'Aanloop AI is gevestigd in Rotterdam, Nederland. KvK-nummer: 88606902. Alle data wordt verwerkt binnen de EU.' },
   { question: 'Is Aanloop AI een echt bedrijf met een KvK-inschrijving?', answer: 'Ja. Aanloop AI staat ingeschreven bij de Kamer van Koophandel onder nummer 88606902. U kunt dit zelf verifiëren op kvk.nl.' },
-  { question: 'Wie is de oprichter van Aanloop AI?', answer: 'Mustafa Agah Dogan richtte Aanloop AI op in 2023. Hij heeft bijna 20 jaar ervaring in technologie en processautomatisering en begeleidt Nederlandse MKB-bedrijven.' },
+  { question: 'Wie is de oprichter van Aanloop AI?', answer: 'Aanloop AI is opgericht in 2023 door een oprichter met bijna 20 jaar ervaring in technologie en processautomatisering, die Nederlandse MKB-bedrijven begeleidt.' },
   { question: 'Is Aanloop AI AVG-compliant?', answer: 'Ja. Aanloop AI is volledig AVG-compliant. Alle data wordt verwerkt binnen de EU en elke klant ontvangt een Data Processing Agreement (DPA).' },
   { question: 'Wat zijn de adviesgrenzen van Aanloop AI op financieel gebied?', answer: 'Aanloop AI is een AI-implementatiebureau en geen gecertificeerd financieel adviseur. Voor gereguleerd financieel advies verwijzen wij altijd door naar een Wft-gecertificeerde partij.' },
 ];
 
 // ── Schema ─────────────────────────────────────────────────────────
-const personSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'Person',
-  '@id': 'https://aanloopai.nl/over-ons/#mustafa-agah-dogan',
-  name: 'Mustafa Agah Dogan',
-  givenName: 'Mustafa',
-  additionalName: 'Agah',
-  familyName: 'Dogan',
-  jobTitle: 'Oprichter & AI-strateeg',
-  description: 'Oprichter en AI-strateeg bij Aanloop AI Specialiseert zich in AI-implementatie voor het Nederlandse MKB: voice AI, WhatsApp Business, n8n workflow automatisering, ElevenLabs voice AI en custom AI agents. BSc Computer Engineering (2012), 20+ jaar IT-ervaring, voormalig AI-lead Big 4-consultancy.',
-  url: 'https://aanloopai.nl/over-ons/',
-  image: {
-    '@type': 'ImageObject',
-    // TODO: vervang door echte profielfoto-URL zodra beschikbaar
-    url: 'https://aanloopai.nl/brand/magahdogan.jpg',
-    width: 400,
-    height: 400,
-  },
-  alumniOf: {
-    '@type': 'EducationalOrganization',
-    name: 'BSc Computer Engineering 2012',
-  },
-  worksFor: {
-    '@type': 'Organization',
-    '@id': 'https://aanloopai.nl/#organization',
-    name: 'Aanloop AI',
-    url: 'https://aanloopai.nl',
-  },
-  knowsAbout: [
-    'AI agents',
-    'AI chatbots',
-    'AVG compliance',
-    'EU AI Act',
-    'MKB digitalisering',
-    'Cloudflare Workers',
-    'Schema.org structured data',
-    'Voice AI met ElevenLabs',
-    'WhatsApp Business AI',
-    'n8n workflow automatisering',
-    'LLM integratie',
-    'Custom AI workflows',
-    'NEN 7510 voor zorgsector',
-    'Self-hosted AI-infrastructuur',
-  ],
-  knowsLanguage: ['nl', 'en', 'tr'],
-  nationality: { '@type': 'Country', name: 'Netherlands' },
-  sameAs: [
-    'https://www.linkedin.com/in/doganm/',
-    'https://aanloopai.nl/over-ons/',
-  ],
-};
+const personSchema = { '@id': 'https://aanloopai.nl/#organization' };
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -129,7 +79,7 @@ const breadcrumbSchema = {
 
 <BaseLayout
   title="Over Aanloop AI — Oprichtersverhaal, Missie & Bedrijfsfeiten"
-  description="Aanloop AI opgericht door Mustafa Agah Dogan in Rotterdam (KvK: 88606902). Lees het oprichtersverhaal, onze missie en waarom wij MKB-AI anders aanpakken."
+  description="Aanloop AI, opgericht in Rotterdam (KvK: 88606902). Lees het oprichtersverhaal, onze missie en waarom wij MKB-AI anders aanpakken."
   schema={[personSchema, breadcrumbSchema]}
   faqSchema={faqSchema}
 >
@@ -157,10 +107,10 @@ const breadcrumbSchema = {
         </h1>
         <div class="mt-8 space-y-5 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty max-w-2xl reveal reveal-delay-2">
           <p>
-            In 2023 zag Mustafa Agah Dogan hoe een bevriende MKB-ondernemer — een fysiotherapeut in Rotterdam — elke maand duizenden euro's misliep door gemiste telefoontjes buiten kantoortijden. Hij belde drie AI-bureaus. Twee vroegen om een budget van €50.000+. Eén beloofde een werkende demo en leverde een PowerPoint.
+            In 2023 zag onze oprichter hoe een bevriende MKB-ondernemer — een fysiotherapeut in Rotterdam — elke maand duizenden euro's misliep door gemiste telefoontjes buiten kantoortijden. Hij belde drie AI-bureaus. Twee vroegen om een budget van €50.000+. Eén beloofde een werkende demo en leverde een PowerPoint.
           </p>
           <p>
-            Mustafa bouwde de oplossing zelf. Drie maanden later beantwoordde een AI-assistent elke oproep. Dat was het moment waarop hij besefte: de technologie bestaat al, maar toegankelijkheid voor het MKB niet. Aanloop AI is gebouwd om dat gat te sluiten.
+            Dus bouwde hij de oplossing zelf. Drie maanden later beantwoordde een AI-assistent elke oproep. Dat was het moment waarop hij besefte: de technologie bestaat al, maar toegankelijkheid voor het MKB niet. Aanloop AI is gebouwd om dat gat te sluiten.
           </p>
         </div>
         <div class="mt-10 flex flex-col sm:flex-row gap-4 reveal reveal-delay-3">
@@ -227,7 +177,7 @@ const breadcrumbSchema = {
         <div class="reveal reveal-delay-2">
           <Image
             src={officeRotterdam}
-            alt="Aanloop AI kantoor Rotterdam — Mustafa Agah Dogan aan het werk"
+            alt="Aanloop AI kantoor Rotterdam — het team aan het werk"
             class="w-full rounded-2xl shadow-xl object-cover"
             loading="lazy"
             decoding="async"
@@ -247,7 +197,7 @@ const breadcrumbSchema = {
       <div class="max-w-4xl mx-auto">
         <div class="text-center mb-12 reveal">
           <span class="eyebrow mb-3">Oprichter</span>
-          <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy mt-2">Mustafa Agah Dogan</h2>
+          <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy mt-2">Onze oprichter</h2>
           <p class="mt-3 text-slate-500 text-sm">Founder &amp; CEO · Aanloop AI</p>
         </div>
 
@@ -255,8 +205,8 @@ const breadcrumbSchema = {
           <!-- Foto + contactinfo -->
           <div class="text-center lg:text-left">
             <div class="aspect-square w-48 mx-auto lg:mx-0 bg-gradient-to-br from-navy to-brand-emerald rounded-2xl overflow-hidden ring-2 ring-slate-200 flex items-center justify-center mb-6">
-              <!-- TODO: vervang door echte profielfoto src (400×400 webp). Bijv.: <Image src={import('../assets/images/magahdogan.jpg')} alt="Mustafa Agah Dogan, oprichter Aanloop AI" ... /> -->
-              <span class="text-5xl font-bold text-white tracking-tight" aria-label="Profielfoto Mustafa Agah Dogan (placeholder)">MA</span>
+              <!-- TODO: vervang door echte profielfoto src (400×400 webp). Bijv.: <Image src={import('../assets/images/oprichter.jpg')} alt="Oprichter Aanloop AI" ... /> -->
+              <span class="text-5xl font-bold text-white tracking-tight" aria-label="Profielfoto oprichter (placeholder)">AI</span>
             </div>
             <div class="space-y-3">
               <a
@@ -270,13 +220,13 @@ const breadcrumbSchema = {
                 </svg>
                 LinkedIn profiel
               </a>
-              <a href="mailto:magahdogan@aanloopai.nl" class="flex items-center justify-center lg:justify-start gap-2 text-sm text-slate-600 hover:text-brand-indigo transition-colors">
+              <a href="mailto:hello@aanloopai.nl" class="flex items-center justify-center lg:justify-start gap-2 text-sm text-slate-600 hover:text-brand-indigo transition-colors">
                 <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                 </svg>
-                magahdogan@aanloopai.nl
+                hello@aanloopai.nl
               </a>
-              <a href="/team/magahdogan/" class="flex items-center justify-center lg:justify-start gap-2 text-sm font-semibold text-navy hover:text-brand-indigo transition-colors">
+              <a href="/team/" class="flex items-center justify-center lg:justify-start gap-2 text-sm font-semibold text-navy hover:text-brand-indigo transition-colors">
                 Volledig profiel →
               </a>
             </div>
@@ -285,13 +235,13 @@ const breadcrumbSchema = {
           <!-- Bio -->
           <div class="lg:col-span-2 space-y-5 text-slate-600 leading-relaxed">
             <p>
-              Mustafa Agah Dogan richtte Aanloop AI op in 2023 na bijna 20 jaar ervaring in technologie en processautomatisering. Hij werkte met Nederlandse MKB-bedrijven in de zorg, advocatuur, accountancy, bouw en horeca, en zag steeds dezelfde kloof: enterprise-grade AI-technologie was beschikbaar, maar onbetaalbaar en ontoegankelijk voor bedrijven zonder interne IT-capaciteit.
+              Aanloop AI is in 2023 opgericht, na bijna 20 jaar ervaring in technologie en processautomatisering. Hij werkte met Nederlandse MKB-bedrijven in de zorg, advocatuur, accountancy, bouw en horeca, en zag steeds dezelfde kloof: enterprise-grade AI-technologie was beschikbaar, maar onbetaalbaar en ontoegankelijk voor bedrijven zonder interne IT-capaciteit.
             </p>
             <p>
               Zijn praktische expertise omvat voice AI met ElevenLabs, WhatsApp Business-integraties, n8n self-hosted workflow automatisering en op maat gebouwde AI agents. Hij is goed thuis in de Wft-adviesgrenzen voor financiële AI-toepassingen, AVG-compliance, NEN 7510 voor de zorgsector en de verplichtingen onder de EU AI Act voor hoog-risico toepassingen.
             </p>
             <p>
-              Mustafa publiceert regelmatig over AI-implementatie voor het Nederlandse MKB via de kennisbank op aanloopai.nl — artikelen gebaseerd op implementatiepraktijk en sectorkennis, niet op theoretische frameworks.
+              We publiceren regelmatig over AI-implementatie voor het Nederlandse MKB via de kennisbank op aanloopai.nl — artikelen gebaseerd op implementatiepraktijk en sectorkennis, niet op theoretische frameworks.
             </p>
 
             <div class="flex flex-wrap gap-2 pt-2">
@@ -482,7 +432,7 @@ const breadcrumbSchema = {
         </div>
         <div class="rounded-2xl border border-slate-200 bg-slate-50 p-8 text-center reveal">
           <p class="text-slate-600 text-sm leading-relaxed font-medium">Pers- en media-vragen:</p>
-          <a href="mailto:magahdogan@aanloopai.nl" class="text-brand-indigo hover:underline text-sm mt-2 inline-block">magahdogan@aanloopai.nl</a>
+          <a href="mailto:hello@aanloopai.nl" class="text-brand-indigo hover:underline text-sm mt-2 inline-block">hello@aanloopai.nl</a>
         </div>
       </div>
     </div>
@@ -510,7 +460,7 @@ const breadcrumbSchema = {
       <div class="max-w-3xl mx-auto text-center">
         <h2 class="text-3xl lg:text-4xl font-bold text-navy mb-4">Klaar om kennis te maken?</h2>
         <p class="text-slate-600 mb-4">
-          Boek een gratis demo van 30 minuten. Mustafa laat u live zien wat AI concreet voor uw branche kan doen — geen verkooppraatje.
+          Boek een gratis demo van 30 minuten. Wij laten u live zien wat AI concreet voor uw branche kan doen — geen verkooppraatje.
         </p>
         <p class="text-sm text-slate-500 mb-8">Bekijk de <a href="/tarieven/" class="text-brand-indigo hover:underline font-medium">tarieven</a> — vanaf €497/mnd.</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">

@@ -14,12 +14,7 @@ const articleSchema = {
   '@type': 'Article',
   headline: 'Aanloop AI vs Voicelabs: welke past bij uw MKB?',
   description: 'Eerlijke vergelijking tussen Aanloop AI (managed AI-bureau NL, vanaf 497 euro per maand) en Voicelabs Robin (zelf-instelbaar voice+WhatsApp platform) voor Nederlandse MKB-bedrijven. Prijs, datalocatie, website-bundel, sector-compliance en integraties vergeleken op publieke gegevens per mei 2026.',
-  author: {
-    '@type': 'Person',
-    name: 'Mustafa Agah Dogan',
-    '@id': 'https://aanloopai.nl/team/magahdogan/#person',
-    url: 'https://aanloopai.nl/team/magahdogan/',
-  },
+  author: { '@id': 'https://aanloopai.nl/#organization' },
   publisher: {
     '@type': 'Organization',
     '@id': 'https://aanloopai.nl/#organization',
@@ -97,7 +92,7 @@ const faqSchema = {
       name: 'Kan ik later overstappen van Voicelabs naar Aanloop AI?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Ja. Voicelabs Robin Zelf Starten is maandelijks opzegbaar (controleer actuele voorwaarden op voicelabs.nl). Aanloop AI ondersteunt migratie van andere voice-platformen als onderdeel van de eenmalige setup-fee. De migratie bestaat doorgaans uit het overhevelen van uw knowledge base, flows en telefoonlijn naar de Aanloop AI-infrastructuur, wat ons team binnen de standaard 7 werkdagen onboarding verwerkt.',
+        text: 'Ja. Aanloop AI ondersteunt migratie van andere voice-platformen als onderdeel van de eenmalige setup-fee. De migratie bestaat doorgaans uit het overhevelen van uw knowledge base, flows en telefoonlijn naar de Aanloop AI-infrastructuur, wat ons team binnen de standaard 7 werkdagen onboarding verwerkt.',
       },
     },
   ],
@@ -122,11 +117,10 @@ const comparison = [
   { feature: 'Sector-specifieke compliance',    aanloop: 'Wft, AVG-strict zorg/juridisch, EU AI Act (67 artikelen)', voicelabs: 'Industrie-pages; specifieke compliance niet publiek vermeld' },
   { feature: 'llms.txt (AI-vindbaarheid)',       aanloop: 'Aanwezig — aanloopai.nl/llms.txt',                    voicelabs: 'Niet aanwezig per mei 2026 (audit)' },
   { feature: 'FAQPage-schema (SEO/GEO)',        aanloop: 'Aanwezig op elke relevante pagina',                    voicelabs: 'Niet aanwezig per mei 2026 (audit)' },
-  { feature: 'Auteur / founder transparantie', aanloop: 'Mustafa Agah Dogan — publiek profiel + Person-schema',     voicelabs: 'Voicelabs als merk; geen prominent founder-profiel' },
+  { feature: 'Auteur / founder transparantie', aanloop: 'Transparant team, KvK-geregistreerd, Organization-schema',     voicelabs: 'Voicelabs als merk; geen prominent founder-profiel' },
   { feature: 'Case studies (publiek)',          aanloop: 'Sector-scenario\'s per branche (illustratief)',        voicelabs: 'Klantnamen op homepage (Fraai Tandartsen, Frankys)' },
   { feature: 'YouTube / video-content',         aanloop: 'Productie gestart (mei 2026)',                         voicelabs: 'Geen YouTube-kanaal aangetroffen (mei 2026)' },
   { feature: 'KvK / NL-aansprakelijkheid',      aanloop: 'KVK 88606902, Rotterdam',                             voicelabs: 'Voicelabs B.V., Nederland' },
-  { feature: 'Maandelijks opzegbaar',           aanloop: 'Ja, 1 maand opzegtermijn',                            voicelabs: 'Controleer actuele voorwaarden op voicelabs.nl' },
   { feature: 'Doelgroep best fit',              aanloop: 'MKB zonder eigen AI-team, AVG-strict, wil website+AI', voicelabs: 'MKB met technische capaciteit, budget-bewust, DIY-voorkeur' },
 ];
 
@@ -250,9 +244,9 @@ const whenVoicelabs = [
             href: '/vergelijk/aanloop-vs-voicelabs/',
           },
           {
-            title: 'Named author / founder',
-            desc: 'Mustafa Agah Dogan als publiek aanspreekpunt met Person-schema. Verhoogt vertrouwen bij sectoren met compliance-eisen.',
-            href: '/team/magahdogan/',
+            title: 'Transparant team',
+            desc: 'Aanloop AI met publiek KvK-nummer en Organization-schema. Verhoogt vertrouwen bij sectoren met compliance-eisen.',
+            href: '/team/',
           },
         ].map(item => (
           <a href={item.href} class="card hover:border-brand-emerald/40 hover:shadow-md transition-all group reveal">

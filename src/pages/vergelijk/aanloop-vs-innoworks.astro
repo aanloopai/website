@@ -12,12 +12,7 @@ const articleSchema = {
   '@type': 'Article',
   headline: 'Aanloop AI vs Innoworks: welke past bij uw MKB?',
   description: 'Eerlijke vergelijking tussen Aanloop AI (productized AI-receptionist Emma + WhatsApp-agent Emma + €1.950 audit) en Innoworks (custom AI build-agency met €2.250 audit) voor Nederlandse MKB-bedrijven. Prijs, doorlooptijd, type service, datalocatie en compliance vergeleken op publieke gegevens per mei 2026.',
-  author: {
-    '@type': 'Person',
-    name: 'Mustafa Agah Dogan',
-    '@id': 'https://aanloopai.nl/team/magahdogan/#person',
-    url: 'https://aanloopai.nl/team/magahdogan/',
-  },
+  author: { '@id': 'https://aanloopai.nl/#organization' },
   publisher: {
     '@type': 'Organization',
     '@id': 'https://aanloopai.nl/#organization',
@@ -79,7 +74,7 @@ const faqSchema = {
       name: 'Kan ik later van Aanloop AI naar custom build (zoals Innoworks) overstappen, of andersom?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Ja. Aanloop AI hanteert maandelijkse opzegbaarheid (1 maand opzegtermijn) en levert volledige data-export bij contract-einde — uw kennisbank, gespreksdata en escalatie-logica kunt u meenemen naar een custom build elders. Andersom: veel Innoworks-klanten kiezen na een custom traject voor een productized vervolg-aanbod waarbij Aanloop AI Emma / Emma de standaard-componenten leveren en custom-stukken uit het Innoworks-traject aanvullend blijven draaien. Beide modellen zijn niet wederzijds uitsluitend.',
+        text: 'Ja. Aanloop AI levert volledige data-export bij contract-einde — uw kennisbank, gespreksdata en escalatie-logica kunt u meenemen naar een custom build elders. Andersom: veel Innoworks-klanten kiezen na een custom traject voor een productized vervolg-aanbod waarbij Aanloop AI Emma / Emma de standaard-componenten leveren en custom-stukken uit het Innoworks-traject aanvullend blijven draaien. Beide modellen zijn niet wederzijds uitsluitend.',
       },
     },
   ],
@@ -101,9 +96,8 @@ const comparison = [
   { feature: 'Datalocatie',                      aanloop: 'EU-only (Frankfurt, Amsterdam) expliciet vermeld',     innoworks: 'Niet expliciet publiek vermeld' },
   { feature: 'AVG-verwerkers­overeenkomst',     aanloop: 'Standaard inbegrepen, NEN 7510 op aanvraag',           innoworks: 'Op aanvraag tijdens audit' },
   { feature: 'Sectoren-specifieke content',      aanloop: '11 sectorpages + 67 kennisbank-artikelen',             innoworks: 'Niet sector-georganiseerd op website' },
-  { feature: 'Persoonlijke author / founder',    aanloop: 'Mustafa Agah Dogan (publiek profiel + Person schema)',      innoworks: 'Innoworks als merk; founder minder prominent' },
+  { feature: 'Transparantie',    aanloop: 'Transparant team, KvK-geregistreerd, Organization-schema',      innoworks: 'Innoworks als merk; founder minder prominent' },
   { feature: 'Customer cases publiek',           aanloop: 'Illustratieve sector-scenarios (geen echte logos)',     innoworks: 'Heeft case studies op website' },
-  { feature: 'Maandelijks opzegbaar',            aanloop: 'Ja, 1 maand opzegtermijn',                             innoworks: 'Custom contract per traject' },
   { feature: 'Doelgroep best fit',               aanloop: 'MKB die snel productized AI willen + AVG-strict (zorg, juridisch, overheid)', innoworks: 'MKB met unieke proces-uitdaging die custom build vereist' },
 ];
 
@@ -113,7 +107,6 @@ const whenAanloop = [
   'AVG-conformiteit is wettelijk vereist (zorg, juridisch, overheid, financieel) — onze EU-only is expliciet',
   'U wilt binnen 7 werkdagen live, niet 4-12 weken custom traject',
   'Sector-specifieke kennis (11 sectoren, 67 kennisbank-artikelen) past bij uw branche',
-  'U waardeert maandelijkse opzegbaarheid boven custom contracten',
 ];
 
 const whenInnoworks = [

@@ -226,7 +226,7 @@ export async function handleBook(request, env) {
               meetLink ? `<p><strong>Google Meet link:</strong><br><a href="${meetLink}">${meetLink}</a></p>` : '',
               `<p>De Google Calendar uitnodiging is ook naar ${escapeHtml(email)} gestuurd, met daarin de Meet-link.</p>`,
               `<p>Bericht ontvangen:<br><em>${escapeHtml(message || '(geen bericht)')}</em></p>`,
-              `<p style="margin-top:2rem">Tot dan,<br>Mustafa Agah Dogan<br>Aanloop AI<br><a href="https://aanloopai.nl">aanloopai.nl</a></p>`,
+              `<p style="margin-top:2rem">Tot dan,<br>Aanloop AI<br><a href="https://aanloopai.nl">aanloopai.nl</a></p>`,
             ].join(''),
           }),
         });

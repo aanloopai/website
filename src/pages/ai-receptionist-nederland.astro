@@ -10,14 +10,7 @@ const articleSchema = {
   '@type': 'Article',
   headline: 'AI Receptionist Nederland — Volledige Gids voor MKB 2026',
   description: 'Wat is een AI receptionist, hoe werkt het, wat kost het en welke past bij uw Nederlandse MKB-bedrijf? Pillar-gids met sector-voorbeelden, vergelijking met mens/callcenter en 6-step implementatie.',
-  author: {
-    '@type': 'Person',
-    name: 'Mustafa Agah Dogan',
-    '@id': 'https://aanloopai.nl/team/magahdogan/#person',
-    url: 'https://aanloopai.nl/team/magahdogan/',
-    jobTitle: 'Oprichter & CEO Aanloop AI',
-    worksFor: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
-  },
+  author: { '@id': 'https://aanloopai.nl/#organization' },
   publisher: {
     '@type': 'Organization',
     '@id': 'https://aanloopai.nl/#organization',
@@ -47,13 +40,12 @@ const comparison = [
   { row: 'Talen standaard', mens: 'Variabel', callcenter: 'NL', ai: 'NL + EN (uitbreidbaar)' },
   { row: 'CRM-integratie', mens: 'Handmatig', callcenter: 'Op aanvraag', ai: 'Native (HubSpot, Pipedrive, AFAS)' },
   { row: 'Consistentie', mens: 'Variabel', callcenter: 'Variabel', ai: '100 procent' },
-  { row: 'Opzegtermijn', mens: '1-2 maanden', callcenter: '6-12 maanden', ai: 'Maandelijks' },
 ];
 
 const faqItems = [
   { question: 'Wat is een AI receptionist precies?', answer: 'Een AI receptionist is een spraak-AI die telefoongesprekken aanneemt en autonoom afhandelt: intake voeren, afspraken plannen, klantvragen beantwoorden of escaleren naar een mens. Werkt 24/7 zonder personeelskosten en is geintegreerd met agenda- en CRM-systemen.' },
   { question: 'Klinkt een AI receptionist net als een echte mens?', answer: 'Moderne AI-stemmen (zoals ElevenLabs) zijn bijzonder naturel. In blindtests merkt 60-80 procent van de bellers niet dat ze met AI spreken, zolang het gesprek binnen het getrainde domein blijft. Bij complexe of emotionele gesprekken verbindt de agent door naar een mens.' },
-  { question: 'Hoeveel kost een AI receptionist in Nederland?', answer: `Aanloop AI hanteert sinds mei 2026 drie vaste pakketten. Emma ${EMMA_LABEL} per maand bevat Emma AI-telefoniste tot 150 gesprekken per maand. Groei ${GROEI_LABEL} per maand (meest gekozen) bevat Emma met onbeperkte gesprekken plus Emma WhatsApp AI. Partner is op maat geprijsd. Eenmalige setup ${EMMA_SETUP_LABEL} Emma, ${GROEI_SETUP_LABEL} Groei. Bij jaarbetaling circa 16% korting. Maandelijks opzegbaar.` },
+  { question: 'Hoeveel kost een AI receptionist in Nederland?', answer: `Aanloop AI hanteert sinds mei 2026 drie vaste pakketten. Emma ${EMMA_LABEL} per maand bevat Emma AI-telefoniste tot 150 gesprekken per maand. Groei ${GROEI_LABEL} per maand (meest gekozen) bevat Emma met onbeperkte gesprekken plus Emma WhatsApp AI. Partner is op maat geprijsd. Eenmalige setup ${EMMA_SETUP_LABEL} Emma, ${GROEI_SETUP_LABEL} Groei. Bij jaarbetaling circa 16% korting.` },
   { question: 'Wat zijn de nadelen van een AI receptionist?', answer: 'AI presteert minder goed bij: zeer complexe of onverwachte vragen, sterk dialect of slechte audiokwaliteit, emotioneel geladen crisis-gesprekken. Daarom bouwt Aanloop AI altijd een escalatiepad naar menselijke medewerkers in.' },
   { question: 'Hoe lang duurt implementatie van een AI receptionist?', answer: 'Standaard 7 werkdagen voor Emma-pakketten. Onboarding-vragenlijst, training op uw kennisbank en bedrijfstoon, integratie met agenda en CRM, testronde met echte scenarios. Custom enterprise 3-6 weken.' },
   { question: 'Is een AI receptionist AVG-compliant?', answer: 'Ja, mits correct geconfigureerd. Aanloop AI verwerkt uitsluitend binnen EU (Frankfurt of Amsterdam), met expliciete sub-verwerkers-DPA voor LLM- en voice-providers (Anthropic, OpenAI, ElevenLabs). Bewaartermijn instelbaar 30-180 dagen. Zie ook de actuele richtlijnen van de Autoriteit Persoonsgegevens (autoriteitpersoonsgegevens.nl/themas/algoritmes-ai) en de toezichtkaders van de Rijksinspectie Digitale Infrastructuur (rdi.nl).' },
