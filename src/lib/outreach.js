@@ -101,7 +101,7 @@ Stijl: Nederlands, u-vorm, 120-180 woorden, korte alinea's, 1 duidelijke call-to
 
 Ondertekening EXACT dit blok, ongewijzigd:
 "Met vriendelijke groet,
-Mustafa
+Het team van Keuken in Beeld
 Keuken in Beeld · onderdeel van Alfa Reclame · KvK 88606902
 info@keukeninbeeld.nl · keukeninbeeld.nl"
 `.trim();
@@ -210,7 +210,7 @@ Stijl: Nederlands, u-vorm, korte alinea's, 1 duidelijke call-to-action vraag, pr
 
 Ondertekening EXACT dit blok, ongewijzigd:
 "Met vriendelijke groet,
-Mustafa
+Het team van Keuken in Beeld
 Keuken in Beeld · onderdeel van Alfa Reclame · KvK 88606902
 info@keukeninbeeld.nl · keukeninbeeld.nl"
 `.trim();
@@ -253,7 +253,7 @@ Taken:
 4. Stel een voorgestelde_status voor: "geinteresseerd", "afgewezen" of "followup".
 5. Schrijf een professioneel Nederlands antwoord-concept, ondertekend met exact:
 "Met vriendelijke groet,
-Mustafa
+Het team van Keuken in Beeld
 Keuken in Beeld · onderdeel van Alfa Reclame · KvK 88606902
 info@keukeninbeeld.nl · keukeninbeeld.nl"
 
@@ -639,7 +639,7 @@ async function sendOutreachMailViaBrevo(env, prospect, mail) {
       accept: 'application/json',
     },
     body: JSON.stringify({
-      sender: { name: 'Mustafa | Keuken in Beeld', email: 'info@keukeninbeeld.nl' },
+      sender: { name: 'Keuken in Beeld', email: 'info@keukeninbeeld.nl' },
       to: [{ email: prospect.email, name: prospect.bedrijfsnaam || prospect.email }],
       bcc: [{ email: INTERN_BCC }],
       replyTo: { email: 'info@keukeninbeeld.nl' },

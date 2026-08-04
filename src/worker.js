@@ -89,7 +89,7 @@ const AUTORESPONSE_TEMPLATES = {
   survey_ai_adoption: {
     subject: 'Bedankt voor uw deelname — AI-adoptie onderzoek MKB Nederland 2026',
     intro: 'Bedankt voor uw deelname aan ons AI-adoptie onderzoek 2026.',
-    body: 'Uw antwoorden zijn goed ontvangen. Binnen 2 werkdagen ontvangt u een persoonlijke benchmark-score van uw AI-volwassenheid versus uw sector. Het volledige onderzoeksrapport publiceren we in september 2026 — u ontvangt automatisch de pre-publicatie versie. Mocht u een gratis 30-min strategiegesprek hebben aangevinkt, dan plant onze CEO Mustafa Agah Dogan dit binnen 1 werkweek met u in.',
+    body: 'Uw antwoorden zijn goed ontvangen. Binnen 2 werkdagen ontvangt u een persoonlijke benchmark-score van uw AI-volwassenheid versus uw sector. Het volledige onderzoeksrapport publiceren we in september 2026 — u ontvangt automatisch de pre-publicatie versie. Mocht u een gratis 30-min strategiegesprek hebben aangevinkt, dan plant het team van Aanloop AI dit binnen 1 werkweek met u in.',
   },
 };
 

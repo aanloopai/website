@@ -47,7 +47,7 @@ export async function GET() {
       <guid isPermaLink="true">${SITE}/kennisbank/${a.slug}/</guid>
       <pubDate>${new Date(a.date).toUTCString()}</pubDate>
       <description><![CDATA[${a.description}]]></description>
-      <author>hello@aanloopai.nl (Mustafa Agah Dogan)</author>
+      <author>hello@aanloopai.nl (Aanloop AI)</author>
       <category>AI</category>
     </item>`
     )
@@ -61,8 +61,8 @@ export async function GET() {
     <description>Praktische AI-gidsen voor het Nederlandse MKB: AI agents, voicebots, WhatsApp AI, workflow automation, AVG-compliance, sector-specifiek advies.</description>
     <language>nl-NL</language>
     <copyright>Aanloop AI</copyright>
-    <managingEditor>hello@aanloopai.nl (Mustafa Agah Dogan)</managingEditor>
-    <webMaster>hello@aanloopai.nl (Mustafa Agah Dogan)</webMaster>
+    <managingEditor>hello@aanloopai.nl (Aanloop AI)</managingEditor>
+    <webMaster>hello@aanloopai.nl (Aanloop AI)</webMaster>
     <pubDate>${buildDate}</pubDate>
     <lastBuildDate>${buildDate}</lastBuildDate>
     <atom:link href="${SITE}/rss.xml" rel="self" type="application/rss+xml" />
