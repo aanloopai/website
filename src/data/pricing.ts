@@ -110,4 +110,9 @@ export const SEO_GEO_BUNDEL = 1195;
 // Nu: setup gelijk aan de website alleen (Emma-setup + integratie zijn het
 // setup-voordeel, €1.995), maandbedrag €45 onder de som van de losse
 // abonnementen (€694). Een pakketkorting die klopt, geen verkooptruc.
+// Marketing-tekst framet die €45/mnd als "€540 per jaar" — het kale bedrag €45
+// las op de homepage als een (veel te lage) prijs i.p.v. een korting.
+// Website Starter is per 2026-08-04 €3.450 setup + €129/mnd (was €2.950 + €97;
+// NL-benchmark: specialist-bureaus starten rond €3.400-€3.600). Groei en de
+// bundel-wiskunde hierboven zijn ongewijzigd.
 export const WEBSITE_BUNDEL = { setup: 5950, maand: 649 } as const;
