@@ -215,6 +215,9 @@ const breadcrumbSchema = {
             <p>
               Onze focus: het MKB in Nederland. Niet de Fortune 500, niet de overheid, niet de startup-markt. Eén doelgroep, diep begrepen, goed bediend.
             </p>
+            <p>
+              Naast Aanloop AI ontwikkelen we ook <a href="https://www.fleettrackholland.nl/" target="_blank" rel="noopener" class="text-brand-indigo hover:underline font-medium">FleetTrack Holland</a>, een GPS-fleettracking-platform voor het Nederlandse MKB, en <a href="https://keukeninbeeld.nl/" target="_blank" rel="noopener" class="text-brand-indigo hover:underline font-medium">keukeninbeeld.nl</a> — een AI-gestuurd leadplatform voor keukenspecialisten, ontwikkeld door ons team.
+            </p>
             <p class="font-semibold text-navy">
               Aanloop — de stap voorwaarts. Elke dag, voor elke ondernemer die AI wil inzetten zonder onnodig risico of kosten.
             </p>
@@ -322,6 +325,35 @@ const breadcrumbSchema = {
             <div class="text-2xl mb-3" aria-hidden="true">{w.icon}</div>
             <h3 class="font-bold text-navy mb-2">{w.title}</h3>
             <p class="text-sm text-slate-600 leading-relaxed">{w.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Onze merken & cases -->
+  <section class="section">
+    <div class="container-page">
+      <div class="text-center mb-14 reveal">
+        <span class="eyebrow mb-3">Onze merken &amp; cases</span>
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy mt-2">Wat we zelf bouwen en runnen.</h2>
+        <p class="mt-4 text-slate-600 max-w-xl mx-auto">
+          Dezelfde ondernemersgroep, vier merken — elk een bewijs van wat AI-automatisering het MKB oplevert.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {[
+          { name: 'FleetTrack Holland', desc: 'GPS-fleettracking voor het MKB, 27+ voertuigen live.', href: 'https://www.fleettrackholland.nl/' },
+          { name: 'keukeninbeeld.nl', desc: 'AI-leadplatform voor keukenspecialisten.', href: 'https://keukeninbeeld.nl/' },
+          { name: 'Alfa Reclame', desc: 'Signing & digitale diensten, sinds 2023.', href: 'https://alfareclame.nl/' },
+          { name: 'websitemakenpro.nl', desc: 'Websites met AI-automatisering.', href: 'https://websitemakenpro.nl/' },
+        ].map((m, i) => (
+          <div class={`card hover:shadow-lg transition-all reveal reveal-delay-${(i % 4) + 1}`}>
+            <h3 class="font-bold text-navy mb-2">{m.name}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed mb-3">{m.desc}</p>
+            <a href={m.href} target="_blank" rel="noopener" class="text-sm font-semibold text-brand-indigo hover:underline">
+              Bekijk {m.name} &rarr;
+            </a>
           </div>
         ))}
       </div>
