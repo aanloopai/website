@@ -3,6 +3,71 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import pageImage from '../assets/images/pages/cases.jpg';
 
+// Echte projecten: live, verifieerbare systemen die wij zelf hebben gebouwd.
+// Geen klant-testimonials, geen fake quotes — elke case linkt naar het live project.
+// Vendor-namen bewust weggelaten (white-label-beleid).
+const projecten = [
+  {
+    naam: 'Keuken in Beeld',
+    subtitel: 'AI-leadplatform voor een keukenspecialist',
+    labels: ['AI-platform', 'Leadgeneratie', 'E-commerce'],
+    url: 'https://keukeninbeeld.nl',
+    linkLabel: 'keukeninbeeld.nl',
+    accent: 'bg-brand-indigo',
+    uitdaging: 'Een keukenspecialist wilde meer aanvragen, maar adverteren in de keukenbranche is duur en de concurrentie (grote ketens) domineert Google. Er was een manier nodig om bezoekers iets te bieden dat ketens niet hebben.',
+    bouwden: 'Een compleet AI-platform: bezoekers uploaden een foto van hun huidige keuken of kiezen een stijl, en de AI genereert direct een visualisatie van hun droomkeuken — met vrijblijvende prijsindicatie. Elke aanvraag komt binnen als gekwalificeerde lead, automatisch afgeleverd via een chatbot-koppeling bij de specialist.',
+    punten: [
+      'AI-beeldgeneratie voor keukenvisualisaties',
+      'Automatische leadafhandeling en -kwalificatie (budget, termijn, koop/huur)',
+      '95 SEO-geoptimaliseerde pagina\'s incl. regiopagina\'s en keukengids',
+      'AI-vindbaarheid (GEO): het platform is ook leesbaar voor ChatGPT, Gemini en Claude',
+      'B2B-partnerpagina voor keukenzaken die leads willen afnemen',
+    ],
+    status: 'Live. Volledig geautomatiseerd: van foto-upload tot lead-notificatie zonder menselijke tussenkomst.',
+  },
+  {
+    naam: 'FleetTrack Holland',
+    subtitel: 'Eigen SaaS met AI-verkoopagent',
+    labels: ['SaaS', 'Voice AI', 'Webshop'],
+    url: 'https://fleettrackholland.nl',
+    linkLabel: 'fleettrackholland.nl',
+    accent: 'bg-brand-emerald',
+    uitdaging: 'Niet een klantproject, maar ons eigen bedrijf: GPS-tracking en Belastingdienst-proof ritregistratie voor het Nederlandse MKB. Een compleet commercieel systeem — hardware, abonnementen, support — gerund door een klein team. Dat kan alleen met vergaande automatisering.',
+    bouwden: '',
+    punten: [
+      'Trackingplatform met live voertuigdata, rapportages en ritregistratie',
+      'Webshop voor hardware en abonnementen (vanaf €9,95 p/vtg/mnd)',
+      'Lars, een AI-voice-agent op de website die bezoekersvragen beantwoordt en elke lead direct doorstuurt — 24/7, zonder telefoniste',
+      'Offerte- en klantadministratie gekoppeld aan de verkoopflow',
+    ],
+    status: 'Live en commercieel actief, met tientallen voertuigen onder beheer. Dit is het bewijs dat wij niet alleen adviseren over AI-systemen — wij draaien er zelf een bedrijf op.',
+  },
+  {
+    naam: 'Emma',
+    subtitel: 'AI-persona als merkgezicht',
+    labels: ['AI Influencer', 'Voice & WhatsApp', 'EU AI Act-compliant'],
+    url: 'https://aanloopai.nl',
+    linkLabel: 'aanloopai.nl',
+    accent: 'bg-brand-rose',
+    uitdaging: 'Kan een merk een consistent, herkenbaar digitaal gezicht hebben dat telefoneert, appt én content maakt — zonder acteur, fotograaf of studiodagen?',
+    bouwden: 'Emma: één AI-persona met een eigen stem (telefonie), eigen tone-of-voice (WhatsApp en chat) en een eigen visuele identiteit voor social content. Transparant gelabeld als AI conform de EU AI Act — geen nep-mens, maar een eerlijk digitaal merkgezicht.',
+    punten: [],
+    status: 'Live als het gezicht van Aanloop AI. Hetzelfde systeem bouwen wij als AI-influencer voor merken die hun producten consistent en schaalbaar willen presenteren.',
+  },
+  {
+    naam: 'Pasfoto Rotterdam Zuid',
+    subtitel: 'Lokale vindbaarheid',
+    labels: ['Lokale SEO', 'Website'],
+    url: 'https://pasfotorotterdamzuid.nl',
+    linkLabel: 'pasfotorotterdamzuid.nl',
+    accent: 'bg-brand-amber',
+    uitdaging: 'Een lokale dienstverlener zichtbaar maken in een stad waar grote platforms de zoekresultaten domineren.',
+    bouwden: 'Een snelle, conversie­gerichte website volledig ingericht op lokale zoekopdrachten ("pasfoto Rotterdam Zuid"), met heldere propositie: biometrische pasfoto\'s, klaar in 5 minuten, 100% goedgekeurd.',
+    punten: [],
+    status: 'Live en opgeleverd. Compact project, maar exemplarisch voor onze aanpak: elke pagina heeft één doel.',
+  },
+];
+
 // Illustratieve voorbeeld-scenario's per sector — geen specifieke klanttestimonials.
 // Aanloop AI is een nieuw bureau (KVK 88606902, Rotterdam); we tonen geen
 // fake namen of fake quotes. De cijfers zijn gebaseerd op publieke
@@ -88,25 +153,35 @@ const pageSchema = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   '@id': 'https://aanloopai.nl/cases/#page',
-  name: 'Voorbeeld-scenario\'s — AI Automatisering MKB',
-  description: 'Illustratieve voorbeeld-scenario\'s per sector op basis van branche-benchmarks. Geen specifieke klanttestimonials.',
+  name: 'Cases — Echte projecten & voorbeeld-scenario\'s',
+  description: 'Echte, live projecten gebouwd door Aanloop AI — verifieerbaar via een link — plus illustratieve voorbeeld-scenario\'s per sector.',
   url: 'https://aanloopai.nl/cases/',
   isPartOf: { '@type': 'WebSite', '@id': 'https://aanloopai.nl/#website' },
   about: { '@type': 'Service', name: 'AI agent implementatie voor Nederlandse MKB', provider: { '@id': 'https://aanloopai.nl/#organization' } },
-  mainEntity: scenarios.map(s => ({
-    '@type': 'TechArticle',
-    headline: `${s.sector} — ${s.product}`,
-    about: s.sector,
-    articleSection: s.role,
-    datePublished: '2026-05-01',
-    author: { '@id': 'https://aanloopai.nl/#organization' },
-  })),
+  mainEntity: [
+    ...projecten.map(p => ({
+      '@type': 'CreativeWork',
+      name: `${p.naam} — ${p.subtitel}`,
+      description: p.uitdaging,
+      url: p.url,
+      creator: { '@id': 'https://aanloopai.nl/#organization' },
+      keywords: p.labels.join(', '),
+    })),
+    ...scenarios.map(s => ({
+      '@type': 'TechArticle',
+      headline: `${s.sector} — ${s.product}`,
+      about: s.sector,
+      articleSection: s.role,
+      datePublished: '2026-05-01',
+      author: { '@id': 'https://aanloopai.nl/#organization' },
+    })),
+  ],
 };
 ---
 
 <BaseLayout
-  title="Voorbeeld-scenario's per sector — AI MKB"
-  description="Illustratieve AI-scenario's per MKB-sector: installatie, logistiek, vastgoed en meer. Branche-benchmarks, geen fake klanttestimonials."
+  title="Cases — Echte projecten & voorbeeld-scenario's"
+  description="Echte, live projecten van Aanloop AI — klik en controleer. Plus illustratieve AI-scenario's per MKB-sector. Geen fake klanttestimonials."
   schema={pageSchema}
 >
   <section class="border-b border-slate-200 hero-gradient">
@@ -115,20 +190,15 @@ const pageSchema = {
       <div class="max-w-3xl">
         <div class="flex items-center gap-4 mb-6">
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
-          <span class="eyebrow">Voorbeeld-scenario's</span>
+          <span class="eyebrow">Echte projecten</span>
         </div>
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
-          Hoe ziet AI er <em class="not-italic text-brand-indigo">typisch</em> uit in uw sector?
+          Geen verhalen. <em class="not-italic text-brand-indigo">Klik en controleer.</em>
         </h1>
         <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl">
-          Hieronder vindt u illustratieve scenario's per sector — gebaseerd op branche-benchmarks en typische MKB-implementaties. Wij tonen <strong>geen fake klant­testimonials</strong>: Aanloop AI is een nieuw bureau (Rotterdam, KVK 88606902) en publieke case studies volgen zodra onze eerste klanten ze willen delen.
+          Geen stockfoto's, geen verzonnen testimonials. Dit zijn systemen die wij zelf hebben gebouwd en die vandaag live staan — klik en controleer. Klant-testimonials volgen zodra onze klanten die willen delen; tot die tijd laten we liever gewoon ons werk zien.
         </p>
 
-        <!-- Honesty disclaimer -->
-        <div class="mt-8 p-4 bg-amber-50/50 border border-amber-200 rounded-xl text-sm text-slate-700">
-          <p class="font-semibold text-amber-900 mb-1">Transparantie</p>
-          <p>De cijfers in deze scenario's zijn <strong>branche-benchmarks</strong>, geen beloofde resultaten. Uw eigen ROI hangt af van bedrijfsgrootte, scripts, integraties en sector. Plan een <a href="/gratis-ai-scan/" class="underline hover:text-amber-900">gratis AI scan</a> voor een schatting op uw situatie.</p>
-        </div>
       </div>
       <div class="reveal reveal-delay-2">
         <Image src={pageImage} alt="Zakelijke teampresentatie in vergaderzaal — voorbeeld-scenario's voor AI-implementatie per sector" class="w-full rounded-2xl shadow-xl object-cover aspect-[4/3]" loading="eager" decoding="async" fetchpriority="high" widths={[480, 800, 1200, 1400]} sizes="(min-width: 1024px) 600px, 100vw" format="webp" quality={82} />
@@ -137,8 +207,96 @@ const pageSchema = {
     </div>
   </section>
 
+  <!-- Echte projecten -->
   <section class="section">
     <div class="container-page space-y-16">
+      {projecten.map((p, i) => (
+        <article class={`card reveal ${i % 2 === 1 ? 'bg-slate-50/60' : ''}`}>
+          <div class="grid lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-1">
+              <div class={`w-1 h-16 ${p.accent} rounded-full mb-6`}></div>
+              <div class="space-y-1">
+                <p class="font-bold text-navy text-lg">{p.naam}</p>
+                <p class="text-sm text-slate-500">{p.subtitel}</p>
+                <div class="flex flex-wrap gap-1.5 mt-2">
+                  {p.labels.map(l => (
+                    <span class="inline-flex items-center px-2 py-0.5 text-[11px] font-medium tracking-wide uppercase text-slate-600 bg-slate-100 rounded">
+                      {l}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <a href={p.url} target="_blank" rel="noopener" class="inline-flex items-center gap-1.5 mt-6 text-sm font-semibold text-brand-indigo hover:underline underline-offset-2">
+                {p.linkLabel}
+                <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+              </a>
+            </div>
+
+            <div class="lg:col-span-2 space-y-6">
+              <div>
+                <p class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-400 mb-2">Uitdaging</p>
+                <p class="text-sm text-slate-700 leading-relaxed">{p.uitdaging}</p>
+              </div>
+              <div>
+                <p class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-400 mb-2">Wat we bouwden</p>
+                {p.bouwden && <p class="text-sm text-slate-700 leading-relaxed">{p.bouwden}</p>}
+                {p.punten.length > 0 && (
+                  <div class="mt-3 space-y-2">
+                    {p.punten.map(r => (
+                      <div class="flex items-start gap-2 text-sm text-slate-700">
+                        <svg class="w-3.5 h-3.5 mt-1 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                        {r}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div>
+                <p class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-400 mb-2">Status</p>
+                <p class="text-sm text-slate-700 leading-relaxed">{p.status}</p>
+              </div>
+            </div>
+          </div>
+        </article>
+      ))}
+
+      <!-- Afsluiter: herkomst + CTA -->
+      <div class="card reveal bg-slate-50/60">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <p class="text-sm text-slate-700 leading-relaxed max-w-2xl">
+            <strong>Daarnaast:</strong> Aanloop AI komt voort uit Alfa Reclame, ons Rotterdamse reclamebureau voor gevel- en lichtreclame (sinds 2023). Wij kennen fysieke retail van binnenuit — van de winkelgevel tot de webshop erachter.
+          </p>
+          <a href="/gratis-ai-scan/" class="btn btn-primary whitespace-nowrap self-start sm:self-center">
+            Plan een gratis AI-scan
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Voorbeeld-scenario's per sector -->
+  <section class="section bg-slate-50/40 border-t border-slate-200">
+    <div class="container-page space-y-16">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Voorbeeld-scenario's</span>
+        </div>
+        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy text-balance">
+          Voorbeeld-scenario's per sector
+        </h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">
+          Naast bovenstaande echte projecten tonen we hieronder illustratieve scenario's per sector, gebaseerd op branche-benchmarks. De cijfers zijn geen beloofde resultaten — uw ROI hangt af van bedrijfsgrootte, scripts en integraties.
+        </p>
+
+        <!-- Honesty disclaimer -->
+        <div class="mt-6 p-4 bg-amber-50/50 border border-amber-200 rounded-xl text-sm text-slate-700">
+          <p class="font-semibold text-amber-900 mb-1">Transparantie</p>
+          <p>De cijfers in deze scenario's zijn <strong>branche-benchmarks</strong>, geen beloofde resultaten. Uw eigen ROI hangt af van bedrijfsgrootte, scripts, integraties en sector. Plan een <a href="/gratis-ai-scan/" class="underline hover:text-amber-900">gratis AI scan</a> voor een schatting op uw situatie.</p>
+        </div>
+      </div>
+
       {scenarios.map((s, i) => (
         <article class={`card reveal ${i % 2 === 1 ? 'bg-slate-50/60' : ''}`}>
           <div class="grid lg:grid-cols-3 gap-8">
