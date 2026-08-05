@@ -1,0 +1,200 @@
+---
+// Discovery Hub — müşteri keşif görüşmeleri: müşteri listesi + dokümanlar.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Discovery" active="discovery">
+  <div class="flex items-center justify-between gap-4">
+    <div>
+      <h1 class="page-title">Discovery Hub</h1>
+      <p class="page-sub">Müşteri keşif/intake görüşmeleri — sorular, cevaplar ve erişim envanteri.</p>
+    </div>
+    <button id="d-new" class="pbtn pbtn--primary">+ Yeni müşteri</button>
+  </div>
+
+  <div class="mt-4 flex items-center gap-3">
+    <input id="d-search" type="search" placeholder="Müşteri ara..." class="pinput" style="max-width:22rem" />
+    <label class="flex items-center gap-1.5 text-sm" style="color:var(--p-ink-3)">
+      <input id="d-archived" type="checkbox" /> Arşivlenenleri göster
+    </label>
+  </div>
+
+  <div id="d-list" class="mt-4 space-y-3"></div>
+  <div class="pcard-b" id="d-skel">
+    <div class="pskel h-16 w-full"></div>
+    <div class="pskel mt-2 h-16 w-full"></div>
+    <div class="pskel mt-2 h-16 w-full"></div>
+  </div>
+
+  <div id="d-modal" class="pmodal-backdrop">
+    <div class="pmodal">
+      <h3 class="page-title" style="font-size:17px">Yeni müşteri</h3>
+      <div class="mt-4 space-y-3">
+        <input id="m-name" placeholder="Müşteri adı *" class="pinput" />
+        <input id="m-contact" placeholder="İletişim kişisi" class="pinput" />
+        <textarea id="m-notes" placeholder="Notlar" class="pinput" rows="2"></textarea>
+      </div>
+      <p id="m-msg" class="palert mt-3 hidden"></p>
+      <div class="mt-4 flex justify-end gap-2">
+        <button id="m-cancel" class="pbtn pbtn--subtle pbtn--sm">Vazgeç</button>
+        <button id="m-save" class="pbtn pbtn--primary pbtn--sm">Oluştur</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="t-modal" class="pmodal-backdrop">
+    <div class="pmodal">
+      <h3 class="page-title" style="font-size:17px">Yeni doküman</h3>
+      <p class="page-sub" id="t-client-name"></p>
+      <div class="mt-4 space-y-3">
+        <select id="t-template" class="pinput"></select>
+        <input id="t-title" placeholder="Doküman başlığı (boşsa şablon adı)" class="pinput" />
+      </div>
+      <p id="t-msg" class="palert mt-3 hidden"></p>
+      <div class="mt-4 flex justify-end gap-2">
+        <button id="t-cancel" class="pbtn pbtn--subtle pbtn--sm">Vazgeç</button>
+        <button id="t-save" class="pbtn pbtn--primary pbtn--sm">Oluştur</button>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      var all = [];
+      var templates = [];
+      var docClientId = null;
+
+      function pct(d) { return d.total ? Math.round((d.answered / d.total) * 100) : 0; }
+
+      function render() {
+        var q = document.getElementById('d-search').value.trim().toLowerCase();
+        var showArchived = document.getElementById('d-archived').checked;
+        var list = all.filter(function (c) {
+          if (!showArchived && c.archived) return false;
+          return !q || (c.name || '').toLowerCase().indexOf(q) > -1;
+        });
+        var host = document.getElementById('d-list');
+        if (!list.length) {
+          host.innerHTML = '<div class="empty"><p class="empty-title">Müşteri yok</p><p class="empty-text">Yeni müşteri ekleyin.</p></div>';
+          return;
+        }
+        host.innerHTML = list.map(function (c) {
+          var docs = (c.docs || []).map(function (d) {
+            var p = pct(d);
+            return '<a class="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-black/5" style="text-decoration:none" href="/admin/discovery-doc?id=' + d.id + '">' +
+              '<span class="text-sm" style="color:var(--p-ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(d.title) + '</span>' +
+              '<span class="ml-auto flex items-center gap-2 shrink-0">' +
+                '<span style="width:90px;height:6px;border-radius:99px;background:var(--p-border);overflow:hidden;display:inline-block">' +
+                  '<span style="display:block;height:100%;width:' + p + '%;background:var(--p-accent,#2563eb)"></span></span>' +
+                '<span class="text-xs" style="color:var(--p-ink-3);width:2.6rem;text-align:right">' + p + '%</span>' +
+                '<span class="text-xs" style="color:var(--p-ink-4)">' + d.answered + '/' + d.total + '</span>' +
+              '</span></a>';
+          }).join('');
+          return '<section class="pcard"><div class="pcard-b">' +
+            '<div class="flex items-center gap-3">' +
+              '<span class="primary text-sm font-semibold" style="color:var(--p-ink)">' + esc(c.name) + '</span>' +
+              (c.archived ? '<span class="pbadge">arşiv</span>' : '') +
+              (c.contact ? '<span class="text-xs" style="color:var(--p-ink-4)">' + esc(c.contact) + '</span>' : '') +
+              '<span class="ml-auto flex gap-2">' +
+                '<button class="pbtn pbtn--subtle pbtn--sm" data-newdoc="' + c.id + '" data-name="' + esc(c.name) + '">+ Doküman</button>' +
+                '<button class="pbtn pbtn--subtle pbtn--sm" data-arch="' + c.id + '" data-to="' + (c.archived ? 0 : 1) + '">' + (c.archived ? 'Geri al' : 'Arşivle') + '</button>' +
+              '</span>' +
+            '</div>' +
+            (docs ? '<div class="mt-2 space-y-1">' + docs + '</div>'
+                  : '<p class="mt-2 text-xs" style="color:var(--p-ink-4)">Henüz doküman yok — görüşme öncesi "+ Doküman" ile şablondan oluştur.</p>') +
+          '</div></section>';
+        }).join('');
+
+        host.querySelectorAll('[data-newdoc]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            docClientId = parseInt(b.getAttribute('data-newdoc'), 10);
+            document.getElementById('t-client-name').textContent = b.getAttribute('data-name');
+            document.getElementById('t-template').innerHTML = templates.map(function (t) {
+              return '<option value="' + t.id + '">' + esc(t.name) + '</option>';
+            }).join('');
+            document.getElementById('t-modal').classList.add('open');
+          });
+        });
+        host.querySelectorAll('[data-arch]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            fetch('/api/admin/discovery/client', {
+              method: 'PATCH', credentials: 'same-origin',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: parseInt(b.getAttribute('data-arch'), 10), archived: parseInt(b.getAttribute('data-to'), 10) }),
+            }).then(load);
+          });
+        });
+      }
+
+      function load() {
+        fetch('/api/admin/discovery/overview', { credentials: 'same-origin' })
+          .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (d) {
+            document.getElementById('d-skel').classList.add('hidden');
+            all = d.clients || [];
+            render();
+          })
+          .catch(function () {});
+        fetch('/api/admin/discovery/templates', { credentials: 'same-origin' })
+          .then(function (r) { return r.json(); })
+          .then(function (d) { templates = d.templates || []; })
+          .catch(function () {});
+      }
+
+      document.getElementById('d-search').addEventListener('input', render);
+      document.getElementById('d-archived').addEventListener('change', render);
+
+      document.getElementById('d-new').addEventListener('click', function () { document.getElementById('d-modal').classList.add('open'); });
+      document.getElementById('m-cancel').addEventListener('click', function () { document.getElementById('d-modal').classList.remove('open'); });
+      document.getElementById('m-save').addEventListener('click', function () {
+        var btn = this; btn.disabled = true;
+        var msg = document.getElementById('m-msg');
+        fetch('/api/admin/discovery/client', {
+          method: 'POST', credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: document.getElementById('m-name').value.trim(),
+            contact: document.getElementById('m-contact').value.trim(),
+            notes: document.getElementById('m-notes').value.trim(),
+          }),
+        })
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (res) {
+            if (res.ok) { document.getElementById('d-modal').classList.remove('open'); document.getElementById('m-name').value = ''; load(); }
+            else { msg.className = 'palert palert--warn mt-3'; msg.textContent = res.j.error || 'Bir şeyler ters gitti.'; }
+          })
+          .catch(function () {})
+          .finally(function () { btn.disabled = false; });
+      });
+
+      document.getElementById('t-cancel').addEventListener('click', function () { document.getElementById('t-modal').classList.remove('open'); });
+      document.getElementById('t-save').addEventListener('click', function () {
+        var btn = this; btn.disabled = true;
+        var msg = document.getElementById('t-msg');
+        fetch('/api/admin/discovery/doc', {
+          method: 'POST', credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            client_id: docClientId,
+            template_id: parseInt(document.getElementById('t-template').value, 10),
+            title: document.getElementById('t-title').value.trim(),
+          }),
+        })
+          .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+          .then(function (res) {
+            if (res.ok) { location.href = '/admin/discovery-doc?id=' + res.j.doc_id; }
+            else { msg.className = 'palert palert--warn mt-3'; msg.textContent = res.j.error || 'Bir şeyler ters gitti.'; }
+          })
+          .catch(function () {})
+          .finally(function () { btn.disabled = false; });
+      });
+
+      load();
+    })();
+  </script>
+</AdminLayout>

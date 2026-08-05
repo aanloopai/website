@@ -17,6 +17,11 @@ import {
   crmActivities, crmDeals, crmTimeline, crmPipelineData, crmSearch, logCrmActivity,
 } from './crm.js';
 import { aiFields, aiOnderzoek, aiUsage } from './ai-crm.js';
+import {
+  discoveryOverview, discoveryTemplates, discoveryCreateClient,
+  discoveryUpdateClient, discoveryCreateDoc, discoveryDocDetail,
+  discoverySaveAnswer,
+} from './discovery.js';
 
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
 const AANLOOP_EMAIL = 'hello@aanloopai.nl';
@@ -110,6 +115,16 @@ export async function handleAdminApi(request, env) {
     if (path === '/api/admin/ai/fields') return await aiFields(request, env);
     if (path === '/api/admin/ai/onderzoek' && method === 'POST') return await aiOnderzoek(request, env);
     if (path === '/api/admin/ai/usage') return await aiUsage(env);
+    if (path === '/api/admin/discovery/overview') return await discoveryOverview(env);
+    if (path === '/api/admin/discovery/templates') return await discoveryTemplates(env);
+    if (path === '/api/admin/discovery/client') {
+      if (method === 'POST') return await discoveryCreateClient(request, env);
+      if (method === 'PATCH') return await discoveryUpdateClient(request, env);
+    }
+    if (path === '/api/admin/discovery/doc') {
+      return method === 'POST' ? await discoveryCreateDoc(request, env) : await discoveryDocDetail(env, url);
+    }
+    if (path === '/api/admin/discovery/answer' && method === 'POST') return await discoverySaveAnswer(request, env);
     return errorResponse('Niet gevonden', 404);
   } catch (err) {
     console.error('[admin] API error:', err.message || err);
