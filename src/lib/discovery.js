@@ -74,7 +74,7 @@ async function ensureSchemaAndSeed(db) {
   if (!cl.n) await seedClients(db);
   const ver = parseInt((await getMeta(db, 'seed_version')) || '1', 10);
   if (ver < SEED_VERSION) {
-    await upgradeSeed(db);
+    await upgradeSeed(db, ver);
     await setMeta(db, 'seed_version', SEED_VERSION);
   }
 }
@@ -100,11 +100,13 @@ async function insertTemplateContent(db, templateId) {
   }
 }
 
-// Seed şablonunu yeni SEED_VERSION içeriğiyle değiştirir. Doküman = snapshot
-// olduğundan mevcut dokümanlara dokunmak ayrı karar: hiç cevap girilmemiş
-// dokümanlar yeni sorularla YENİDEN oluşturulur; cevap girilmiş dokümanlar
-// aynen korunur ve yanlarına yeni sorularla ikinci doküman açılır.
-async function upgradeSeed(db) {
+// Seed şablonunu yeni SEED_VERSION içeriğiyle değiştirir. Doküman = snapshot:
+// cevap girilmiş dokümanlara DOKUNULMAZ (kopya da açılmaz — eski sürümlerin
+// '(güncel sorular)' kopyası çoğaltma hatası üretiyordu); hiç cevap girilmemiş
+// dokümanlar yeni sorularla yeniden oluşturulur. fromVer < 5 ise tek seferlik
+// temizlik: müşteri başına seed-şablonu dokümanı TEKE düşürülür (öncelik
+// güncel soru setli olan; eşitse en yeni).
+async function upgradeSeed(db, fromVer) {
   const tpl = await db.prepare('SELECT id FROM disc_templates WHERE name = ?').bind(SEED_TEMPLATE.name).first();
   if (!tpl) {
     await seedTemplate(db);
@@ -117,20 +119,51 @@ async function upgradeSeed(db) {
   await db.prepare('DELETE FROM disc_template_sections WHERE template_id = ?').bind(tpl.id).run();
   await insertTemplateContent(db, tpl.id);
 
+  // Güncel şablonun doküman-soru sayısı (bölüm notları dahil) — "güncel soru
+  // setli mi" kontrolü bu sayıyla yapılır.
+  const tq = await db.prepare(
+    'SELECT COUNT(*) AS n FROM disc_template_questions q JOIN disc_template_sections s ON q.section_id = s.id WHERE s.template_id = ?',
+  ).bind(tpl.id).first();
+  const ts = await db.prepare('SELECT COUNT(*) AS n FROM disc_template_sections WHERE template_id = ?').bind(tpl.id).first();
+  const expectedQ = tq.n + ts.n;
+
   const docs = (await db.prepare('SELECT id, client_id, title FROM disc_docs WHERE template_id = ?').bind(tpl.id).all()).results || [];
   for (const doc of docs) {
-    const filled = await db.prepare(
+    doc.answered = (await db.prepare(
       `SELECT COUNT(*) AS n FROM disc_answers a
        JOIN disc_doc_questions q ON a.doc_question_id = q.id
        JOIN disc_doc_sections s ON q.doc_section_id = s.id
        WHERE s.doc_id = ? AND a.answered = 1`,
-    ).bind(doc.id).first();
-    if (filled.n === 0) {
-      await deleteDoc(db, doc.id);
-      await instantiateDoc(db, doc.client_id, tpl.id, doc.title);
-    } else {
-      await instantiateDoc(db, doc.client_id, tpl.id, doc.title + ' (güncel sorular)');
+    ).bind(doc.id).first()).n;
+    doc.qcount = (await db.prepare(
+      'SELECT COUNT(*) AS n FROM disc_doc_questions q JOIN disc_doc_sections s ON q.doc_section_id = s.id WHERE s.doc_id = ?',
+    ).bind(doc.id).first()).n;
+  }
+
+  let survivors = docs;
+  if (fromVer < 5) {
+    survivors = [];
+    const byClient = {};
+    for (const d of docs) (byClient[d.client_id] = byClient[d.client_id] || []).push(d);
+    for (const clientId of Object.keys(byClient)) {
+      const list = byClient[clientId].sort((a, b) =>
+        ((b.qcount === expectedQ) - (a.qcount === expectedQ)) || (b.answered - a.answered) || (b.id - a.id));
+      const keeper = list[0];
+      for (const d of list.slice(1)) await deleteDoc(db, d.id);
+      if (keeper.title !== SEED_TEMPLATE.name) {
+        await db.prepare('UPDATE disc_docs SET title = ? WHERE id = ?').bind(SEED_TEMPLATE.name, keeper.id).run();
+      }
+      survivors.push(keeper);
     }
+  }
+
+  for (const doc of survivors) {
+    if (doc.answered === 0) {
+      const clientId = doc.client_id;
+      await deleteDoc(db, doc.id);
+      await instantiateDoc(db, clientId, tpl.id, SEED_TEMPLATE.name);
+    }
+    // cevaplı doküman: snapshot ilkesi — olduğu gibi kalır
   }
 }
 
