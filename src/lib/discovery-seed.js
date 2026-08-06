@@ -10,8 +10,13 @@
 // (başka firmanın ticari anlaşması bizi ilgilendirmez); IT-firması soruları
 // denetçi değil devralan-partner tonunda; müşteri soruları (B1) hedef ve
 // işleyiş odaklı sohbet sorularına dönüştürüldü.
+// v4 (2026-08-06): teklif kapsamına hizalandı (Nulmeting AAI-26915 + 12 aylık
+// Growth Partner). Sosyal medya yönetimini AanloopAI devralıyor → "kim
+// yönetecek" yerine hesap devri + onay akışı + AI influencer/marka dili
+// tercihleri; mevcut TikTok/IG performans sorusu geri geldi (kanaal-analizi
+// kapsamda); tedarikçi (feed/katalog) kontak sorusu eklendi.
 
-export const SEED_VERSION = 3;
+export const SEED_VERSION = 4;
 
 export const SEED_TEMPLATE = {
   name: 'Teknik Devir & Keşif Görüşmesi',
@@ -71,21 +76,23 @@ export const SEED_TEMPLATE = {
       questions: [
         { type: 'textarea', label: '25. Webshoptan beklentiniz ne — 6-12 ay sonra neresi "başarı" olur?', sub_items: ['Öncelik hangisi: online satış, bilinirlik, mağazaya müşteri çekmek?', 'Aklınızda somut bir hedef var mı (aylık sipariş, ciro)?'], guidance: 'Hedef, tüm önceliklendirmenin pusulası — rakam veremezlerse yön tarifi de yeterli.' },
         { type: 'textarea', label: '26. Müşterileriniz kimler, size en çok nereden ulaşıyorlar?', sub_items: ['Mağaza / Instagram DM / WhatsApp / telefon — dağılım nasıl?', 'Webshop dışındaki satışlar bir yere kaydediliyor mu?'], guidance: 'Kayıt dışı kanallar raporda "görünmeyen ciro" olarak yer alır — yargılamadan not et.' },
-        { type: 'textarea', label: '27. Hangi ürünler ve kategoriler sizin için öncelikli?', sub_items: ['En çok satan ve en çok sorulan ürünler?', "Online'da özellikle öne çıkarmak istedikleriniz?"], guidance: 'İçerik ve SEO önceliklendirmesi bu cevaba göre yapılacak.' },
-        { type: 'textarea', label: '28. Sosyal medyayı bundan sonra birlikte nasıl yürütelim?', sub_items: ['Hesaplar şu an kimde, kim paylaşım yapıyor?', 'İçerik onayını kim verecek, ne kadar hızlı dönebilirsiniz?'], guidance: 'AI içerik sistemi için onay akışını tanımamız gerekiyor — dar boğaz genelde onay hızıdır.' },
-        { type: 'textarea', label: '29. Elinizde hangi görsel malzemeler var?', sub_items: ['Ürün fotoğraflarını kim çekiyor? Profesyonel çekim var mı?', 'Tedarikçilerden hazır görsel/katalog alınabiliyor mu?', 'Mağazada çekim yapmamıza açık mısınız?'], guidance: 'İçerik üretiminin ham maddesi — ne varsa listele, eksiği çekim planıyla kapatırız.' },
-        { type: 'textarea', label: '30. Kampanya ve fiyat düzeniniz nasıl işliyor?', sub_items: ['İndirim/kampanya kararını kim veriyor, ne sıklıkla?', 'Mağaza ve web fiyatları aynı mı olacak?'], guidance: 'Otomasyon kuralları buna göre tasarlanacak.' },
+        { type: 'textarea', label: '27. Hangi ürünler ve kategoriler sizin için öncelikli?', sub_items: ['En çok satan ve en çok sorulan ürünler?', "Online'da özellikle öne çıkarmak istedikleriniz?", 'Hangi markaların bayisisiniz — tedarikçiden ürün verisi (feed/katalog) isteyebileceğimiz bir kontak var mı?'], guidance: 'İçerik ve SEO önceliklendirmesi bu cevaba göre. Tedarikçi kontağı, ürün-verisi araştırması (nulmeting kapsamı) için gerekli.' },
+        { type: 'textarea', label: '28. Sosyal medyada bugüne kadar ne işe yaradı?', sub_items: ['En çok izlenen/etkileşim alan içerikler hangileriydi (özellikle TikTok)?', 'Oradan gelen ilgi satışa dönüyor mu — DM, mağaza ziyareti?'], guidance: 'TikTok zaten potansiyel göstermiş; kanal analizinin kıyas noktası için mevcut rakamları ve tutan içerik türünü not et.' },
+        { type: 'textarea', label: '29. Sosyal medya yönetimini devralıyoruz — devri ve onay akışını nasıl kuralım?', sub_items: ['Hesap erişimlerini ne zaman devralabiliriz (kişi + tarih)?', 'İçerikler yayına girmeden onayınızdan geçsin mi, yoksa plan onayı yeterli mi?', 'Onayı kim verir, ne kadar hızlı dönebilirsiniz?'], guidance: 'Yönetim bizde olacak — dar boğaz genelde onay hızıdır; akışı en baştan hafif kur.' },
+        { type: 'textarea', label: '30. AI influencer ve marka dili için tercihleriniz neler?', sub_items: ['Markanızı temsil edecek dijital karakter nasıl olmalı — tarz, yaş, dil (NL/TR)?', 'İçeriklerde kaçınmamız gerekenler var mı (fiyat paylaşımı, belirli ürünler, rakipler)?'], guidance: 'AI influencer paket kapsamında — tercihleri şimdi almak konsept turunu kısaltır. Vaat verme, seçenekleri sonra sun.' },
+        { type: 'textarea', label: '31. Elinizde hangi görsel malzemeler var?', sub_items: ['Ürün fotoğraflarını kim çekiyor? Profesyonel çekim var mı?', 'Tedarikçilerden hazır görsel/katalog alınabiliyor mu?', 'Mağazada çekim yapmamıza açık mısınız?'], guidance: 'İçerik üretiminin ham maddesi — ne varsa listele, eksiği çekim planıyla kapatırız.' },
+        { type: 'textarea', label: '32. Kampanya ve fiyat düzeniniz nasıl işliyor?', sub_items: ['İndirim/kampanya kararını kim veriyor, ne sıklıkla?', 'Mağaza ve web fiyatları aynı mı olacak?'], guidance: 'Otomasyon kuralları buna göre tasarlanacak.' },
       ],
     },
     {
       title: 'B2. Hesaplar & Erişim Envanteri',
       guidance: 'Şifre alma/kaydetme YOK. Meta Business Suite ve TikTok Business üzerinden partner/yönetici daveti iste.',
       questions: [
-        { type: 'textarea', label: '31. Sosyal medya hesaplarının durumu', sub_items: ['Instagram: kullanıcı adı? Business hesap mı? FB sayfasına bağlı mı?', 'TikTok: kullanıcı adı? Business mi? Kime kayıtlı?', 'Facebook sayfası / Meta Business Suite yöneticisi kim?'], guidance: "Kişisel hesapsa business'a geçiş ilk adım olacak." },
-        { type: 'textarea', label: '32. Google tarafında neler mevcut?', sub_items: ['Google Business Profile var mı, yöneticisi kim?', 'Analytics / Search Console hiç bağlandı mı?'], guidance: 'Yoksa başlangıç ölçümü (nulmeting) sırasında kurulacak.' },
-        { type: 'textarea', label: '33. E-posta ve iletişim altyapısı', sub_items: ['Kurumsal e-posta adresi var mı, kim okuyor?', 'WhatsApp Business kullanılıyor mu, hangi numarayla?'], guidance: 'Müşteri iletişim otomasyonunun başlangıç noktası.' },
+        { type: 'textarea', label: '33. Sosyal medya hesaplarının durumu', sub_items: ['Instagram: kullanıcı adı? Business hesap mı? FB sayfasına bağlı mı?', 'TikTok: kullanıcı adı? Business mi? Kime kayıtlı?', 'Facebook sayfası / Meta Business Suite yöneticisi kim?', 'Devir şekli: tam yönetici mi, partner erişimi mi?'], guidance: "Kişisel hesapsa business'a geçiş ilk adım — yönetimi devralacağımız için yönetici seviyesi erişim gerekli." },
+        { type: 'textarea', label: '34. Google tarafında neler mevcut?', sub_items: ['Google Business Profile var mı, yöneticisi kim?', 'Analytics / Search Console hiç bağlandı mı?'], guidance: 'Yoksa başlangıç ölçümü (nulmeting) sırasında kurulacak.' },
+        { type: 'textarea', label: '35. E-posta ve iletişim altyapısı', sub_items: ['Kurumsal e-posta adresi var mı, kim okuyor?', 'WhatsApp Business kullanılıyor mu, hangi numarayla?'], guidance: 'Müşteri iletişim otomasyonunun başlangıç noktası.' },
         {
-          type: 'table', label: '34. Erişim Takip Tablosu', sub_items: [],
+          type: 'table', label: '36. Erişim Takip Tablosu', sub_items: [],
           guidance: 'Her satır için: kim açacak + hangi tarihe kadar. Şifre kaydetmeyin.',
           config: {
             access_table: true,
@@ -117,7 +124,7 @@ export const SEED_TEMPLATE = {
       title: 'Görüşme Sonrası Kontrol Listesi',
       guidance: 'Görüşme bittikten sonra doldur.',
       questions: [
-        { type: 'checklist', label: 'Kontrol listesi', sub_items: ['Teslimat kapsamı ve açık kalemler (sorumlu + tarih) netleşti', 'Kapsam dışı özelleştirmelerin listesi ve dokümantasyon durumu alındı', 'Destek/garanti süreci ve IT firmasının devir sonrası rolü netleşti', 'AK IT ile gelecek işbirliği için somut bir sonraki adım konuşuldu', 'Kasa–webshop entegrasyonunun fiili durumu tespit edildi (çalışıyor / kısmen / aktif değil)', 'Ekran görüntüleri toplandı (modüller, senkronizasyon, kullanıcılar)', 'Hosting, alan adı ve lisansların sahiplik haritası çıkarıldı', 'Erişim davetleri için kişi + tarih belirlendi', 'Müşterinin hedefi ve öncelikli ürünleri not edildi'], guidance: '' },
+        { type: 'checklist', label: 'Kontrol listesi', sub_items: ['Teslimat kapsamı ve açık kalemler (sorumlu + tarih) netleşti', 'Kapsam dışı özelleştirmelerin listesi ve dokümantasyon durumu alındı', 'Destek/garanti süreci ve IT firmasının devir sonrası rolü netleşti', 'AK IT ile gelecek işbirliği için somut bir sonraki adım konuşuldu', 'Kasa–webshop entegrasyonunun fiili durumu tespit edildi (çalışıyor / kısmen / aktif değil)', 'Ekran görüntüleri toplandı (modüller, senkronizasyon, kullanıcılar)', 'Hosting, alan adı ve lisansların sahiplik haritası çıkarıldı', 'Erişim davetleri için kişi + tarih belirlendi (sosyal medya devri dahil)', 'İçerik onay akışı ve marka dili tercihleri not edildi', 'Tedarikçi (feed/katalog) kontak bilgileri alındı', 'Müşterinin hedefi ve öncelikli ürünleri not edildi', 'Nulmeting raporu sunumu için tarih planlandı'], guidance: '' },
       ],
     },
   ],
