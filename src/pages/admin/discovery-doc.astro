@@ -1,0 +1,351 @@
+---
+// Discovery Hub — doküman ekranı: sorular, canlı cevap girişi, otomatik kayıt.
+// Mobil öncelikli: görüşme sırasında telefondan doldurulur.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Discovery doküman" active="discovery">
+  <div id="doc-topbar" class="doc-topbar no-print">
+    <div class="min-w-0">
+      <a href="/admin/discovery" class="text-xs" style="color:var(--p-ink-4);text-decoration:none">← Discovery</a>
+      <h1 class="page-title truncate" id="h-title" style="font-size:16px">Yükleniyor…</h1>
+      <p class="page-sub truncate" id="h-client"></p>
+    </div>
+    <div class="ml-auto flex shrink-0 items-center gap-3">
+      <span id="h-progress" class="text-sm font-semibold" style="color:var(--p-ink)"></span>
+      <span id="h-save" class="text-xs" style="color:var(--p-ink-4)"></span>
+      <button id="h-print" class="pbtn pbtn--subtle pbtn--sm">Yazdır</button>
+    </div>
+  </div>
+
+  <nav id="sec-nav" class="sec-nav no-print"></nav>
+
+  <div id="doc-print-head" class="print-only"></div>
+
+  <div id="doc-body" class="mt-4 space-y-3"></div>
+  <div class="pcard-b" id="doc-skel">
+    <div class="pskel h-24 w-full"></div>
+    <div class="pskel mt-2 h-24 w-full"></div>
+  </div>
+  <p id="doc-err" class="palert palert--warn mt-4 hidden"></p>
+
+  <style is:inline>
+    .doc-topbar { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 12px;
+      padding: 10px 0; background: var(--p-bg, #fff); border-bottom: 1px solid var(--p-border); }
+    .sec-nav { position: sticky; top: 64px; z-index: 29; display: flex; gap: 6px; overflow-x: auto;
+      padding: 8px 0; background: var(--p-bg, #fff); -webkit-overflow-scrolling: touch; }
+    .sec-nav a { flex: 0 0 auto; font-size: 12px; padding: 6px 10px; border-radius: 99px;
+      border: 1px solid var(--p-border); color: var(--p-ink-3); text-decoration: none; white-space: nowrap; }
+    .q-block { padding: 14px 0; border-top: 1px solid var(--p-border); }
+    .q-label { font-size: 14px; font-weight: 600; color: var(--p-ink); }
+    .q-subs { margin: 6px 0 8px 14px; font-size: 12.5px; color: var(--p-ink-3); }
+    .q-subs li { margin-top: 2px; list-style: disc; }
+    .q-guide { font-size: 12px; color: var(--p-ink-4); background: var(--p-accent-fill, #f1f5f9);
+      border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; }
+    .q-guide-btn { font-size: 11px; color: var(--p-ink-4); background: none; border: 1px solid var(--p-border);
+      border-radius: 99px; padding: 2px 8px; margin-left: 6px; cursor: pointer; }
+    .q-input { width: 100%; font-size: 15px; }
+    textarea.q-input { resize: none; overflow: hidden; min-height: 44px; }
+    .chk-row { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; font-size: 14px; color: var(--p-ink); }
+    .chk-row input { width: 20px; height: 20px; margin-top: 1px; flex-shrink: 0; }
+    .d-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .d-table th { text-align: left; font-size: 11px; color: var(--p-ink-4); padding: 4px 6px; }
+    .d-table td { padding: 2px 4px; border-top: 1px solid var(--p-border); }
+    .d-table input[type="text"] { width: 100%; border: none; background: transparent; font-size: 13px;
+      padding: 8px 2px; color: var(--p-ink); outline: none; }
+    .d-table input[type="checkbox"] { width: 18px; height: 18px; }
+    .tbl-wrap { overflow-x: auto; }
+    .access-warn { font-size: 12px; font-weight: 600; color: #b45309; background: #fef3c7;
+      border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; }
+    .sec-head { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+    .sec-count { margin-left: auto; font-size: 12px; color: var(--p-ink-4); flex-shrink: 0; }
+    .print-only { display: none; }
+    @media print {
+      .no-print, aside, nav, .pbtn, .q-guide-btn, .tbl-add, .tbl-del { display: none !important; }
+      .print-only { display: block; margin-bottom: 12px; }
+      .sec-body { display: block !important; }
+      .pcard { border: none !important; box-shadow: none !important; page-break-inside: avoid; }
+      textarea.q-input { border: none; padding: 0; }
+      body { background: #fff !important; }
+    }
+  </style>
+
+  <script is:inline>
+    (function () {
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      var docId = parseInt(new URLSearchParams(location.search).get('id') || '0', 10);
+      var state = { sections: [], q: {} }; // q: id → {type, config, updated_at, answered, timer}
+      var pendingSaves = 0;
+
+      function setStatus(kind, qid) {
+        var el = document.getElementById('h-save');
+        if (kind === 'saving') { el.textContent = 'Kaydediliyor…'; el.style.color = 'var(--p-ink-4)'; el.onclick = null; }
+        else if (kind === 'saved') { el.textContent = 'Kaydedildi ✓'; el.style.color = '#16a34a'; el.onclick = null; }
+        else if (kind === 'error') {
+          el.textContent = 'Kayıt hatası — tekrar dene';
+          el.style.color = '#dc2626'; el.style.cursor = 'pointer';
+          el.onclick = function () { if (qid) save(qid); };
+        } else if (kind === 'conflict') {
+          el.textContent = 'Başka cihazda güncellendi — sayfayı yenile';
+          el.style.color = '#dc2626'; el.style.cursor = 'pointer';
+          el.onclick = function () { location.reload(); };
+        }
+      }
+
+      function computeAnswered(type, value) {
+        if (value == null) return 0;
+        if (type === 'text' || type === 'textarea') return String(value).trim() ? 1 : 0;
+        if (type === 'checkbox') return value === true ? 1 : 0;
+        if (type === 'checklist') return Array.isArray(value) && value.some(function (v) { return v === true; }) ? 1 : 0;
+        if (type === 'table') {
+          return Array.isArray(value) && value.some(function (row) {
+            return Array.isArray(row) && row.some(function (c) { return c === true || (typeof c === 'string' && c.trim() !== ''); });
+          }) ? 1 : 0;
+        }
+        return 0;
+      }
+
+      function readValue(qid) {
+        var meta = state.q[qid];
+        if (meta.type === 'text' || meta.type === 'textarea') {
+          return document.getElementById('inp-' + qid).value;
+        }
+        if (meta.type === 'checkbox') {
+          return document.getElementById('inp-' + qid).checked;
+        }
+        if (meta.type === 'checklist') {
+          return Array.prototype.map.call(document.querySelectorAll('[data-chk="' + qid + '"]'), function (el) { return el.checked; });
+        }
+        if (meta.type === 'table') {
+          var rows = [];
+          document.querySelectorAll('#tbl-' + qid + ' tbody tr').forEach(function (tr) {
+            var row = [];
+            tr.querySelectorAll('[data-cell]').forEach(function (el) {
+              row.push(el.type === 'checkbox' ? el.checked : el.value);
+            });
+            rows.push(row);
+          });
+          return rows;
+        }
+        return null;
+      }
+
+      function updateProgress() {
+        var total = 0; var answered = 0;
+        state.sections.forEach(function (sec) {
+          var st = 0; var sa = 0;
+          sec.questions.forEach(function (q) { st++; if (state.q[q.id].answered) sa++; });
+          total += st; answered += sa;
+          var el = document.getElementById('seccount-' + sec.id);
+          if (el) el.textContent = sa + '/' + st;
+        });
+        document.getElementById('h-progress').textContent = (total ? Math.round((answered / total) * 100) : 0) + '%';
+      }
+
+      function save(qid) {
+        var meta = state.q[qid];
+        // Aynı soru için eşzamanlı iki istek sahte 409 üretir — kuyrukla.
+        if (meta.saving) { meta.dirty = true; return; }
+        meta.saving = true;
+        var value = readValue(qid);
+        pendingSaves++;
+        setStatus('saving');
+        fetch('/api/admin/discovery/answer', {
+          method: 'POST', credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question_id: qid, value: value, base_updated_at: meta.updated_at }),
+        })
+          .then(function (r) { return r.json().then(function (j) { return { status: r.status, j: j }; }); })
+          .then(function (res) {
+            pendingSaves--;
+            meta.saving = false;
+            if (res.status === 200) {
+              meta.updated_at = res.j.updated_at;
+              meta.answered = res.j.answered;
+              if (!pendingSaves) setStatus('saved');
+              updateProgress();
+              if (meta.dirty) { meta.dirty = false; save(qid); }
+            } else if (res.status === 409) {
+              setStatus('conflict');
+            } else {
+              setStatus('error', qid);
+            }
+          })
+          .catch(function () { pendingSaves--; meta.saving = false; setStatus('error', qid); });
+      }
+
+      function queueSave(qid) {
+        var meta = state.q[qid];
+        if (meta.timer) clearTimeout(meta.timer);
+        meta.timer = setTimeout(function () { meta.timer = null; save(qid); }, 800);
+      }
+
+      function autoGrow(el) { el.style.height = 'auto'; el.style.height = (el.scrollHeight + 2) + 'px'; }
+
+      function questionHtml(q) {
+        var subs = (q.sub_items || []).length
+          ? '<ul class="q-subs">' + q.sub_items.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>' : '';
+        var guide = q.guidance
+          ? '<button class="q-guide-btn no-print" data-guide="' + q.id + '">neden?</button>' +
+            '<div class="q-guide hidden" id="guide-' + q.id + '">' + esc(q.guidance) + '</div>' : '';
+        var input = '';
+        if (q.type === 'text') {
+          input = '<input id="inp-' + q.id + '" class="pinput q-input" type="text" value="' + esc(q.value || '') + '" />';
+        } else if (q.type === 'textarea') {
+          input = '<textarea id="inp-' + q.id + '" class="pinput q-input" rows="2">' + esc(q.value || '') + '</textarea>';
+        } else if (q.type === 'checkbox') {
+          input = '<label class="chk-row"><input id="inp-' + q.id + '" type="checkbox"' + (q.value === true ? ' checked' : '') + ' /> ' + esc(q.label) + '</label>';
+        } else if (q.type === 'checklist') {
+          var vals = Array.isArray(q.value) ? q.value : [];
+          input = (q.sub_items || []).map(function (item, i) {
+            return '<label class="chk-row"><input type="checkbox" data-chk="' + q.id + '" data-i="' + i + '"' + (vals[i] === true ? ' checked' : '') + ' /> <span>' + esc(item) + '</span></label>';
+          }).join('');
+          subs = ''; // checklist'te sub_items zaten tik satırları
+        } else if (q.type === 'table') {
+          var cols = (q.config && q.config.columns) || [];
+          var rows = Array.isArray(q.value) && q.value.length ? q.value
+            : ((q.config && q.config.initial_rows) || []);
+          var warn = q.config && q.config.access_table
+            ? '<div class="access-warn">Şifre kaydetmeyin — erişimler platform üzerinden davet/yetkilendirme ile alınır.</div>' : '';
+          input = warn + '<div class="tbl-wrap"><table class="d-table" id="tbl-' + q.id + '"><thead><tr>' +
+            cols.map(function (c) { return '<th>' + esc(c.label) + '</th>'; }).join('') + '<th class="no-print"></th></tr></thead><tbody>' +
+            rows.map(function (row) { return tableRowHtml(q, row); }).join('') +
+            '</tbody></table></div>' +
+            '<button class="pbtn pbtn--subtle pbtn--sm tbl-add mt-2" data-addrow="' + q.id + '">+ Satır</button>';
+        }
+        var labelHtml = q.type === 'checkbox' ? '' : '<div class="q-label">' + esc(q.label) + guide + '</div>';
+        return '<div class="q-block" id="q-' + q.id + '">' + labelHtml +
+          (q.type === 'checkbox' ? guide : '') + subs + input + '</div>';
+      }
+
+      function tableRowHtml(q, row) {
+        var cols = (q.config && q.config.columns) || [];
+        return '<tr>' + cols.map(function (c, i) {
+          var v = row && row[i] != null ? row[i] : (c.type === 'check' ? false : '');
+          if (c.type === 'check') {
+            return '<td><input type="checkbox" data-cell data-tbl="' + q.id + '"' + (v === true ? ' checked' : '') + ' /></td>';
+          }
+          return '<td><input type="text" data-cell data-tbl="' + q.id + '" value="' + esc(v) + '" /></td>';
+        }).join('') + '<td class="no-print"><button class="tbl-del" data-delrow="' + q.id + '" title="Satırı sil" style="border:none;background:none;color:var(--p-ink-4);cursor:pointer">×</button></td></tr>';
+      }
+
+      function bindQuestion(q) {
+        var meta = state.q[q.id];
+        if (q.type === 'text' || q.type === 'textarea') {
+          var el = document.getElementById('inp-' + q.id);
+          if (q.type === 'textarea') { autoGrow(el); el.addEventListener('input', function () { autoGrow(el); }); }
+          el.addEventListener('input', function () { queueSave(q.id); });
+        } else if (q.type === 'checkbox') {
+          document.getElementById('inp-' + q.id).addEventListener('change', function () { save(q.id); });
+        } else if (q.type === 'checklist') {
+          document.querySelectorAll('[data-chk="' + q.id + '"]').forEach(function (el) {
+            el.addEventListener('change', function () { save(q.id); });
+          });
+        } else if (q.type === 'table') {
+          bindTable(q.id);
+          document.querySelector('[data-addrow="' + q.id + '"]').addEventListener('click', function () {
+            var qq = findQ(q.id);
+            var tbody = document.querySelector('#tbl-' + q.id + ' tbody');
+            tbody.insertAdjacentHTML('beforeend', tableRowHtml(qq, null));
+            bindTable(q.id);
+            save(q.id);
+          });
+        }
+        // İlk yüklemede cevaplılık durumu (tablo başlangıç satırları dahil değil:
+        // yalnız kayıtlı cevap answered=1 getirir).
+        meta.answered = q.answered;
+      }
+
+      function findQ(qid) {
+        for (var i = 0; i < state.sections.length; i++) {
+          var qs = state.sections[i].questions;
+          for (var j = 0; j < qs.length; j++) if (qs[j].id === qid) return qs[j];
+        }
+        return null;
+      }
+
+      function bindTable(qid) {
+        document.querySelectorAll('#tbl-' + qid + ' [data-cell]').forEach(function (el) {
+          if (el._bound) return; el._bound = true;
+          el.addEventListener(el.type === 'checkbox' ? 'change' : 'input', function () {
+            el.type === 'checkbox' ? save(qid) : queueSave(qid);
+          });
+        });
+        document.querySelectorAll('[data-delrow="' + qid + '"]').forEach(function (btn) {
+          if (btn._bound) return; btn._bound = true;
+          btn.addEventListener('click', function () {
+            btn.closest('tr').remove();
+            save(qid);
+          });
+        });
+      }
+
+      function render(data) {
+        state.sections = data.sections;
+        document.getElementById('h-title').textContent = data.doc.title;
+        document.getElementById('h-client').textContent = data.doc.client_name;
+        document.title = data.doc.client_name + ' — ' + data.doc.title;
+        document.getElementById('doc-print-head').innerHTML =
+          '<h1 style="font-size:20px;font-weight:700">' + esc(data.doc.client_name) + ' — ' + esc(data.doc.title) + '</h1>' +
+          '<p style="font-size:12px;color:#64748b">Aanloop AI · Discovery · ' + esc((data.doc.created_at || '').slice(0, 10)) + '</p>';
+
+        document.getElementById('sec-nav').innerHTML = data.sections.map(function (sec) {
+          var short = sec.title.indexOf('.') > 0 && sec.title.indexOf('.') <= 3 ? sec.title.split('.')[0] : sec.title;
+          return '<a href="#sec-' + sec.id + '">' + esc(short) + '</a>';
+        }).join('');
+
+        document.getElementById('doc-body').innerHTML = data.sections.map(function (sec) {
+          sec.questions.forEach(function (q) {
+            state.q[q.id] = { type: q.type, config: q.config, updated_at: q.updated_at, answered: q.answered, timer: null };
+          });
+          return '<section class="pcard" id="sec-' + sec.id + '" style="scroll-margin-top:110px"><div class="pcard-b">' +
+            '<div class="sec-head" data-sec="' + sec.id + '">' +
+              '<h2 class="text-sm font-bold" style="color:var(--p-ink)">' + esc(sec.title) + '</h2>' +
+              '<span class="sec-count" id="seccount-' + sec.id + '"></span>' +
+            '</div>' +
+            (sec.guidance ? '<p class="text-xs mt-1" style="color:var(--p-ink-4)">' + esc(sec.guidance) + '</p>' : '') +
+            '<div class="sec-body mt-1" id="secbody-' + sec.id + '">' +
+              sec.questions.map(questionHtml).join('') +
+            '</div>' +
+          '</div></section>';
+        }).join('');
+
+        data.sections.forEach(function (sec) { sec.questions.forEach(bindQuestion); });
+
+        document.querySelectorAll('.sec-head').forEach(function (h) {
+          h.addEventListener('click', function () {
+            document.getElementById('secbody-' + h.getAttribute('data-sec')).classList.toggle('hidden');
+          });
+        });
+        document.querySelectorAll('[data-guide]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            document.getElementById('guide-' + b.getAttribute('data-guide')).classList.toggle('hidden');
+          });
+        });
+
+        setStatus('saved');
+        updateProgress();
+      }
+
+      document.getElementById('h-print').addEventListener('click', function () { window.print(); });
+
+      fetch('/api/admin/discovery/doc?id=' + docId, { credentials: 'same-origin' })
+        .then(function (r) { if (r.status === 403) { location.href = '/portal/login'; throw 0; } return r.json(); })
+        .then(function (d) {
+          document.getElementById('doc-skel').classList.add('hidden');
+          if (!d.ok) {
+            var err = document.getElementById('doc-err');
+            err.textContent = d.error || 'Doküman yüklenemedi.';
+            err.classList.remove('hidden');
+            return;
+          }
+          render(d);
+        })
+        .catch(function () {});
+    })();
+  </script>
+</AdminLayout>
