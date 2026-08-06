@@ -16,7 +16,11 @@
 // tercihleri; mevcut TikTok/IG performans sorusu geri geldi (kanaal-analizi
 // kapsamda); tedarikçi (feed/katalog) kontak sorusu eklendi.
 
-export const SEED_VERSION = 4;
+// v5 (2026-08-06): soru içeriği v4 ile aynı; sürüm artışı tek seferlik
+// doküman temizliği için — müşteri başına seed-şablonu dokümanı teke düşer
+// (çoğaltma hatası düzeltmesi, discovery.js upgradeSeed).
+
+export const SEED_VERSION = 5;
 
 export const SEED_TEMPLATE = {
   name: 'Teknik Devir & Keşif Görüşmesi',
