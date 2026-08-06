@@ -79,3 +79,9 @@ CREATE TABLE IF NOT EXISTS disc_answers (
   answered        INTEGER NOT NULL DEFAULT 0,  -- ilerleme sayacı için önhesap
   updated_at      TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- seed_version vb. — seed içeriği güncellemeleri (upgradeSeed) bu sayaçla koşar.
+CREATE TABLE IF NOT EXISTS disc_meta (
+  key   TEXT PRIMARY KEY,
+  value TEXT NOT NULL
+);

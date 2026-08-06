@@ -5,7 +5,7 @@
 // Güvenlik: bu araç asla müşteri şifresi saklamaz — erişim tablosu davet/yetki
 // takibi içindir.
 import { jsonResponse, errorResponse } from './google-auth.js';
-import { SEED_TEMPLATE, SEED_CLIENTS } from './discovery-seed.js';
+import { SEED_TEMPLATE, SEED_CLIENTS, SEED_VERSION } from './discovery-seed.js';
 
 const SECTION_NOTES_LABEL = 'Bölüm notları';
 
@@ -44,9 +44,21 @@ const SCHEMA = [
     id INTEGER PRIMARY KEY AUTOINCREMENT, doc_question_id INTEGER NOT NULL UNIQUE,
     value TEXT, answered INTEGER NOT NULL DEFAULT 0,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)`,
+  `CREATE TABLE IF NOT EXISTS disc_meta (
+    key TEXT PRIMARY KEY, value TEXT NOT NULL)`,
 ];
 
 let schemaReady = false;
+
+async function getMeta(db, key) {
+  const row = await db.prepare('SELECT value FROM disc_meta WHERE key = ?').bind(key).first();
+  return row ? row.value : null;
+}
+
+async function setMeta(db, key, value) {
+  await db.prepare('INSERT INTO disc_meta (key, value) VALUES (?, ?) ON CONFLICT(key) DO UPDATE SET value = excluded.value')
+    .bind(key, String(value)).run();
+}
 
 async function ensureSchemaAndSeed(db) {
   if (!schemaReady) {
@@ -54,15 +66,28 @@ async function ensureSchemaAndSeed(db) {
     schemaReady = true;
   }
   const tpl = await db.prepare('SELECT COUNT(*) AS n FROM disc_templates').first();
-  if (!tpl.n) await seedTemplate(db);
+  if (!tpl.n) {
+    await seedTemplate(db);
+    await setMeta(db, 'seed_version', SEED_VERSION);
+  }
   const cl = await db.prepare('SELECT COUNT(*) AS n FROM disc_clients').first();
   if (!cl.n) await seedClients(db);
+  const ver = parseInt((await getMeta(db, 'seed_version')) || '1', 10);
+  if (ver < SEED_VERSION) {
+    await upgradeSeed(db);
+    await setMeta(db, 'seed_version', SEED_VERSION);
+  }
 }
 
 async function seedTemplate(db) {
   const t = await db.prepare('INSERT INTO disc_templates (name, description) VALUES (?, ?)')
     .bind(SEED_TEMPLATE.name, SEED_TEMPLATE.description).run();
   const templateId = t.meta.last_row_id;
+  await insertTemplateContent(db, templateId);
+  return templateId;
+}
+
+async function insertTemplateContent(db, templateId) {
   for (let si = 0; si < SEED_TEMPLATE.sections.length; si++) {
     const sec = SEED_TEMPLATE.sections[si];
     const s = await db.prepare('INSERT INTO disc_template_sections (template_id, title, guidance, sort) VALUES (?, ?, ?, ?)')
@@ -73,7 +98,50 @@ async function seedTemplate(db) {
         .bind(sectionId, qi, q.type, q.label, JSON.stringify(q.sub_items || []), q.guidance || '', q.config ? JSON.stringify(q.config) : null));
     if (stmts.length) await db.batch(stmts);
   }
-  return templateId;
+}
+
+// Seed şablonunu yeni SEED_VERSION içeriğiyle değiştirir. Doküman = snapshot
+// olduğundan mevcut dokümanlara dokunmak ayrı karar: hiç cevap girilmemiş
+// dokümanlar yeni sorularla YENİDEN oluşturulur; cevap girilmiş dokümanlar
+// aynen korunur ve yanlarına yeni sorularla ikinci doküman açılır.
+async function upgradeSeed(db) {
+  const tpl = await db.prepare('SELECT id FROM disc_templates WHERE name = ?').bind(SEED_TEMPLATE.name).first();
+  if (!tpl) {
+    await seedTemplate(db);
+    return;
+  }
+  await db.prepare('UPDATE disc_templates SET description = ? WHERE id = ?').bind(SEED_TEMPLATE.description, tpl.id).run();
+  await db.prepare(
+    'DELETE FROM disc_template_questions WHERE section_id IN (SELECT id FROM disc_template_sections WHERE template_id = ?)',
+  ).bind(tpl.id).run();
+  await db.prepare('DELETE FROM disc_template_sections WHERE template_id = ?').bind(tpl.id).run();
+  await insertTemplateContent(db, tpl.id);
+
+  const docs = (await db.prepare('SELECT id, client_id, title FROM disc_docs WHERE template_id = ?').bind(tpl.id).all()).results || [];
+  for (const doc of docs) {
+    const filled = await db.prepare(
+      `SELECT COUNT(*) AS n FROM disc_answers a
+       JOIN disc_doc_questions q ON a.doc_question_id = q.id
+       JOIN disc_doc_sections s ON q.doc_section_id = s.id
+       WHERE s.doc_id = ? AND a.answered = 1`,
+    ).bind(doc.id).first();
+    if (filled.n === 0) {
+      await deleteDoc(db, doc.id);
+      await instantiateDoc(db, doc.client_id, tpl.id, doc.title);
+    } else {
+      await instantiateDoc(db, doc.client_id, tpl.id, doc.title + ' (güncel sorular)');
+    }
+  }
+}
+
+async function deleteDoc(db, docId) {
+  await db.prepare(
+    `DELETE FROM disc_answers WHERE doc_question_id IN (
+       SELECT q.id FROM disc_doc_questions q JOIN disc_doc_sections s ON q.doc_section_id = s.id WHERE s.doc_id = ?)`,
+  ).bind(docId).run();
+  await db.prepare('DELETE FROM disc_doc_questions WHERE doc_section_id IN (SELECT id FROM disc_doc_sections WHERE doc_id = ?)').bind(docId).run();
+  await db.prepare('DELETE FROM disc_doc_sections WHERE doc_id = ?').bind(docId).run();
+  await db.prepare('DELETE FROM disc_docs WHERE id = ?').bind(docId).run();
 }
 
 async function seedClients(db) {
