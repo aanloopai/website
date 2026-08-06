@@ -40,6 +40,9 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     .q-label { font-size: 14px; font-weight: 600; color: var(--p-ink); }
     .q-subs { margin: 6px 0 8px 14px; font-size: 12.5px; color: var(--p-ink-3); }
     .q-subs li { margin-top: 2px; list-style: disc; }
+    .sub-q { margin: 8px 0 0 10px; padding-left: 10px; border-left: 2px solid var(--p-border); }
+    .sub-q-label { font-size: 12.5px; color: var(--p-ink-3); margin-bottom: 3px; }
+    .sub-q textarea { min-height: 38px; }
     .q-guide { font-size: 12px; color: var(--p-ink-4); background: var(--p-accent-fill, #f1f5f9);
       border-radius: 8px; padding: 8px 10px; margin-bottom: 8px; }
     .q-guide-btn { font-size: 11px; color: var(--p-ink-4); background: none; border: 1px solid var(--p-border);
@@ -98,7 +101,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       function computeAnswered(type, value) {
         if (value == null) return 0;
-        if (type === 'text' || type === 'textarea') return String(value).trim() ? 1 : 0;
+        if (type === 'text' || type === 'textarea') {
+          if (typeof value === 'object' && !Array.isArray(value)) {
+            if (String(value.main || '').trim()) return 1;
+            return Array.isArray(value.subs) && value.subs.some(function (s) { return String(s || '').trim(); }) ? 1 : 0;
+          }
+          return String(value).trim() ? 1 : 0;
+        }
         if (type === 'checkbox') return value === true ? 1 : 0;
         if (type === 'checklist') return Array.isArray(value) && value.some(function (v) { return v === true; }) ? 1 : 0;
         if (type === 'table') {
@@ -112,6 +121,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       function readValue(qid) {
         var meta = state.q[qid];
         if (meta.type === 'text' || meta.type === 'textarea') {
+          var subEls = document.querySelectorAll('[data-sub="' + qid + '"]');
+          if (subEls.length) {
+            return {
+              main: document.getElementById('inp-' + qid).value,
+              subs: Array.prototype.map.call(subEls, function (el) { return el.value; }),
+            };
+          }
           return document.getElementById('inp-' + qid).value;
         }
         if (meta.type === 'checkbox') {
@@ -193,10 +209,30 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           ? '<button class="q-guide-btn no-print" data-guide="' + q.id + '">neden?</button>' +
             '<div class="q-guide hidden" id="guide-' + q.id + '">' + esc(q.guidance) + '</div>' : '';
         var input = '';
-        if (q.type === 'text') {
-          input = '<input id="inp-' + q.id + '" class="pinput q-input" type="text" value="' + esc(q.value || '') + '" />';
-        } else if (q.type === 'textarea') {
-          input = '<textarea id="inp-' + q.id + '" class="pinput q-input" rows="2">' + esc(q.value || '') + '</textarea>';
+        if (q.type === 'text' || q.type === 'textarea') {
+          // Cevap: eski düz string veya v2 {main, subs[]} — alt sorulu
+          // sorularda her alt soru kendi kutucuğunu alır.
+          var mainVal = q.value;
+          var subVals = [];
+          if (mainVal && typeof mainVal === 'object' && !Array.isArray(mainVal)) {
+            subVals = Array.isArray(mainVal.subs) ? mainVal.subs : [];
+            mainVal = mainVal.main || '';
+          }
+          mainVal = mainVal || '';
+          var hasSubs = (q.sub_items || []).length > 0;
+          if (hasSubs) {
+            input = q.sub_items.map(function (item, i) {
+              return '<div class="sub-q"><div class="sub-q-label">' + esc(item) + '</div>' +
+                '<textarea data-sub="' + q.id + '" data-si="' + i + '" class="pinput q-input" rows="1">' + esc(subVals[i] || '') + '</textarea></div>';
+            }).join('') +
+            '<div class="sub-q"><div class="sub-q-label" style="color:var(--p-ink-4)">Genel not / özet</div>' +
+              '<textarea id="inp-' + q.id + '" class="pinput q-input" rows="1">' + esc(mainVal) + '</textarea></div>';
+            subs = ''; // alt sorular artık kutucuk olarak listede
+          } else if (q.type === 'text') {
+            input = '<input id="inp-' + q.id + '" class="pinput q-input" type="text" value="' + esc(mainVal) + '" />';
+          } else {
+            input = '<textarea id="inp-' + q.id + '" class="pinput q-input" rows="2">' + esc(mainVal) + '</textarea>';
+          }
         } else if (q.type === 'checkbox') {
           input = '<label class="chk-row"><input id="inp-' + q.id + '" type="checkbox"' + (q.value === true ? ' checked' : '') + ' /> ' + esc(q.label) + '</label>';
         } else if (q.type === 'checklist') {
@@ -237,8 +273,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         var meta = state.q[q.id];
         if (q.type === 'text' || q.type === 'textarea') {
           var el = document.getElementById('inp-' + q.id);
-          if (q.type === 'textarea') { autoGrow(el); el.addEventListener('input', function () { autoGrow(el); }); }
+          if (el.tagName === 'TEXTAREA') { autoGrow(el); el.addEventListener('input', function () { autoGrow(el); }); }
           el.addEventListener('input', function () { queueSave(q.id); });
+          document.querySelectorAll('[data-sub="' + q.id + '"]').forEach(function (sel) {
+            autoGrow(sel);
+            sel.addEventListener('input', function () { autoGrow(sel); queueSave(q.id); });
+          });
         } else if (q.type === 'checkbox') {
           document.getElementById('inp-' + q.id).addEventListener('change', function () { save(q.id); });
         } else if (q.type === 'checklist') {

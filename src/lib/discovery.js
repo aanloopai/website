@@ -179,7 +179,15 @@ async function instantiateDoc(db, clientId, templateId, title) {
 // üzerinden hesaplanır. Boş metin / hiç tik yok / tüm hücreler boş = 0.
 function computeAnswered(type, value) {
   if (value == null) return 0;
-  if (type === 'text' || type === 'textarea') return String(value).trim() ? 1 : 0;
+  if (type === 'text' || type === 'textarea') {
+    // v2 biçimi: {main, subs:[]} — alt sorular ayrı kutucuklarda. Eski düz
+    // string cevaplar da geçerli kalır.
+    if (typeof value === 'object' && !Array.isArray(value)) {
+      if (String(value.main || '').trim()) return 1;
+      return Array.isArray(value.subs) && value.subs.some((s) => String(s || '').trim()) ? 1 : 0;
+    }
+    return String(value).trim() ? 1 : 0;
+  }
   if (type === 'checkbox') return value === true ? 1 : 0;
   if (type === 'checklist') return Array.isArray(value) && value.some((v) => v === true) ? 1 : 0;
   if (type === 'table') {
