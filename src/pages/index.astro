@@ -228,6 +228,27 @@ const homeSchema = [
       <div class="grid lg:grid-cols-2 gap-12 items-start reveal reveal-delay-1">
         <div class="card">
           <div class="space-y-8">
+            <!-- Package toggle -->
+            <div>
+              <div class="flex justify-between items-center mb-3">
+                <label class="text-sm font-medium text-navy">AI-pakket</label>
+              </div>
+              <div class="flex items-center gap-3">
+                <span id="roi-pkg-label-emma" class="text-sm font-medium text-navy">Emma €497</span>
+                <button
+                  type="button"
+                  id="roi-package-toggle"
+                  role="switch"
+                  aria-checked="false"
+                  aria-label="Wissel tussen Emma AI-receptie (€497/mnd) en Groei (€997/mnd)"
+                  class="relative w-12 h-6 rounded-full bg-slate-200 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-brand-indigo focus:ring-offset-2 flex-shrink-0"
+                >
+                  <span class="absolute left-1 top-1 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200" id="roi-package-knob"></span>
+                </button>
+                <span id="roi-pkg-label-groei" class="text-sm font-medium text-slate-500">Groei €997</span>
+              </div>
+              <p class="text-xs text-slate-400 mt-1">Inclusief eenmalige setup, verrekend in maand 1</p>
+            </div>
             <!-- Slider 1 -->
             <div>
               <div class="flex justify-between items-center mb-3">
@@ -292,7 +313,7 @@ const homeSchema = [
                 <div class="flex items-center gap-3">
                   <div class="w-3 h-3 rounded-full bg-brand-indigo flex-shrink-0"></div>
                   <span class="text-sm text-slate-600">AI-assistent (jaarkosten)</span>
-                  <span class="ml-auto text-sm font-bold text-navy">€11.964</span>
+                  <span id="chart-ai-cost" class="ml-auto text-sm font-bold text-navy">€5.964</span>
                 </div>
                 <div class="flex items-center gap-3">
                   <div class="w-3 h-3 rounded-full bg-brand-rose flex-shrink-0"></div>
@@ -594,40 +615,90 @@ const homeSchema = [
   }
 
   // ─── ROI Calculator ───
+  // Single source of truth for AI cost: PACKAGES. Every displayed number
+  // (jaarkosten, besparing, ROI maand 1, donut chart) derives from the
+  // selected package here — never a second hardcoded constant.
   const callsEl = document.getElementById('roi-calls') as HTMLInputElement;
   const hourlyEl = document.getElementById('roi-hourly') as HTMLInputElement;
   const minutesEl = document.getElementById('roi-minutes') as HTMLInputElement;
-  const AI_YEARLY = 5964; // €497 * 12
+  const packageToggleEl = document.getElementById('roi-package-toggle') as HTMLButtonElement;
+  const packageKnobEl = document.getElementById('roi-package-knob') as HTMLElement;
+  const pkgLabelEmmaEl = document.getElementById('roi-pkg-label-emma') as HTMLElement;
+  const pkgLabelGroeiEl = document.getElementById('roi-pkg-label-groei') as HTMLElement;
+
+  // Prices match /tarieven/ exactly — do not change without updating both places.
+  const PACKAGES: Record<'emma' | 'groei', { monthly: number; setup: number }> = {
+    emma: { monthly: 497, setup: 495 },
+    groei: { monthly: 997, setup: 795 },
+  };
+  let selectedPkg: 'emma' | 'groei' = 'emma';
+
+  function fmtEuro(n: number): string {
+    const r = Math.round(n);
+    return `${r < 0 ? '-' : ''}€${Math.abs(r).toLocaleString('nl-NL')}`;
+  }
+  function fmtEuroSigned(n: number): string {
+    const r = Math.round(n);
+    if (r > 0) return `+€${r.toLocaleString('nl-NL')}`;
+    if (r < 0) return `-€${Math.abs(r).toLocaleString('nl-NL')}`;
+    return '€0';
+  }
 
   function updateROI() {
     const calls = parseInt(callsEl?.value || '20');
     const hourly = parseInt(hourlyEl?.value || '18');
     const minutes = parseInt(minutesEl?.value || '4');
+    const pkg = PACKAGES[selectedPkg];
 
     const hoursPerYear = (calls * minutes / 60) * 250;
     const humanCost = Math.round(hoursPerYear * hourly);
-    const saving = humanCost - AI_YEARLY;
-    const month1 = Math.round(saving / 12 - 997);
+    const aiYearly = pkg.monthly * 12;
+    const saving = humanCost - aiYearly;
+    // Month 1 includes the one-time setup fee (not amortized) — a business's
+    // real first-month cash position, which is often negative.
+    const month1 = Math.round((humanCost / 12) - pkg.monthly - pkg.setup);
     const savingPct = humanCost > 0 ? Math.round((saving / humanCost) * 100) : 0;
+    const savingPctClamped = Math.max(-100, Math.min(100, savingPct));
 
     (document.getElementById('roi-calls-val') as HTMLElement).textContent = String(calls);
     (document.getElementById('roi-hourly-val') as HTMLElement).textContent = `€${hourly}`;
     (document.getElementById('roi-minutes-val') as HTMLElement).textContent = `${minutes} min`;
-    (document.getElementById('roi-saving') as HTMLElement).textContent = `€${Math.max(saving, 0).toLocaleString('nl-NL')}`;
     (document.getElementById('roi-hours') as HTMLElement).textContent = `${Math.round(hoursPerYear)} u`;
-    (document.getElementById('roi-month') as HTMLElement).textContent = month1 > 0 ? `+€${month1.toLocaleString('nl-NL')}` : `€${month1.toLocaleString('nl-NL')}`;
 
-    // Update chart labels
+    // Jaarlijkse besparing (dark card) — red when negative, never fake-green.
+    const savingEl = document.getElementById('roi-saving') as HTMLElement;
+    savingEl.textContent = fmtEuro(saving);
+    savingEl.classList.toggle('text-pearl', saving >= 0);
+    savingEl.classList.toggle('text-brand-rose', saving < 0);
+
+    // ROI in maand 1 — red when negative.
+    const monthEl = document.getElementById('roi-month') as HTMLElement;
+    monthEl.textContent = fmtEuroSigned(month1);
+    monthEl.classList.toggle('text-brand-emerald', month1 >= 0);
+    monthEl.classList.toggle('text-brand-rose', month1 < 0);
+
+    // Update chart labels — all derived from aiYearly/humanCost/saving above.
+    const aiCostEl = document.getElementById('chart-ai-cost');
     const humanCostEl = document.getElementById('chart-human-cost');
     const savingDisplayEl = document.getElementById('chart-saving-display');
     const chartPctEl = document.getElementById('roi-chart-pct');
-    if (humanCostEl) humanCostEl.textContent = `€${humanCost.toLocaleString('nl-NL')}`;
-    if (savingDisplayEl) savingDisplayEl.textContent = `€${Math.max(saving, 0).toLocaleString('nl-NL')}`;
-    if (chartPctEl) chartPctEl.textContent = `${Math.max(savingPct, 0)}%`;
+    if (aiCostEl) aiCostEl.textContent = fmtEuro(aiYearly);
+    if (humanCostEl) humanCostEl.textContent = fmtEuro(humanCost);
+    if (savingDisplayEl) {
+      savingDisplayEl.textContent = fmtEuro(saving);
+      savingDisplayEl.classList.toggle('text-brand-emerald', saving >= 0);
+      savingDisplayEl.classList.toggle('text-brand-rose', saving < 0);
+    }
+    if (chartPctEl) {
+      chartPctEl.textContent = `${savingPctClamped}%`;
+      chartPctEl.classList.toggle('text-brand-emerald', savingPct >= 0);
+      chartPctEl.classList.toggle('text-brand-rose', savingPct < 0);
+    }
 
-    // Update donut chart
+    // Update donut chart with real (unclamped) magnitudes — when AI costs
+    // more than the human alternative, the AI slice honestly grows larger.
     if (roiChart) {
-      roiChart.data.datasets[0].data = [AI_YEARLY, Math.max(humanCost, AI_YEARLY + 1)];
+      roiChart.data.datasets[0].data = [aiYearly, Math.max(humanCost, 1)];
       roiChart.update();
     }
 
@@ -638,6 +709,20 @@ const homeSchema = [
       el.style.setProperty('--slider-pct', `${pct}%`);
     });
   }
+
+  packageToggleEl?.addEventListener('click', () => {
+    selectedPkg = selectedPkg === 'emma' ? 'groei' : 'emma';
+    const isGroei = selectedPkg === 'groei';
+    packageToggleEl.setAttribute('aria-checked', String(isGroei));
+    packageToggleEl.classList.toggle('bg-brand-indigo', isGroei);
+    packageToggleEl.classList.toggle('bg-slate-200', !isGroei);
+    if (packageKnobEl) packageKnobEl.style.transform = isGroei ? 'translateX(24px)' : 'translateX(0)';
+    pkgLabelEmmaEl?.classList.toggle('text-navy', !isGroei);
+    pkgLabelEmmaEl?.classList.toggle('text-slate-500', isGroei);
+    pkgLabelGroeiEl?.classList.toggle('text-navy', isGroei);
+    pkgLabelGroeiEl?.classList.toggle('text-slate-500', !isGroei);
+    updateROI();
+  });
 
   [callsEl, hourlyEl, minutesEl].forEach(el => el?.addEventListener('input', updateROI));
   updateROI();

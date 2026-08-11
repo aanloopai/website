@@ -3,7 +3,7 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import pageImage from '../assets/images/pages/cases.jpg';
 
-// Echte projecten: live, verifieerbare systemen die wij zelf hebben gebouwd.
+// Voorbeeldscenario's op basis van live, verifieerbare systemen die wij zelf hebben gebouwd.
 // Geen klant-testimonials, geen fake quotes — elke case linkt naar het live project.
 // Vendor-namen bewust weggelaten (white-label-beleid).
 const projecten = [
@@ -165,8 +165,8 @@ const pageSchema = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   '@id': 'https://aanloopai.nl/cases/#page',
-  name: 'Cases — Echte projecten & voorbeeld-scenario\'s',
-  description: 'Echte, live projecten gebouwd door Aanloop AI — verifieerbaar via een link — plus illustratieve voorbeeld-scenario\'s per sector.',
+  name: 'Cases — Voorbeeldscenario\'s',
+  description: 'Voorbeelden van door Aanloop AI gebouwde systemen — verifieerbaar via een link — plus illustratieve voorbeeld-scenario\'s per sector, gebaseerd op branche-benchmarks.',
   url: 'https://aanloopai.nl/cases/',
   isPartOf: { '@type': 'WebSite', '@id': 'https://aanloopai.nl/#website' },
   about: { '@type': 'Service', name: 'AI agent implementatie voor Nederlandse MKB', provider: { '@id': 'https://aanloopai.nl/#organization' } },
@@ -192,8 +192,8 @@ const pageSchema = {
 ---
 
 <BaseLayout
-  title="Cases — Echte projecten & voorbeeld-scenario's"
-  description="Echte, live projecten van Aanloop AI — klik en controleer. Plus illustratieve AI-scenario's per MKB-sector. Geen fake klanttestimonials."
+  title="Cases — Voorbeeldscenario's"
+  description="Voorbeelden van door Aanloop AI gebouwde systemen — klik en controleer. Plus illustratieve AI-scenario's per MKB-sector, gebaseerd op branche-benchmarks. Geen fake klanttestimonials."
   schema={pageSchema}
 >
   <section class="border-b border-slate-200 hero-gradient">
@@ -202,7 +202,7 @@ const pageSchema = {
       <div class="max-w-3xl">
         <div class="flex items-center gap-4 mb-6">
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
-          <span class="eyebrow">Echte projecten</span>
+          <span class="eyebrow">Voorbeeldscenario's</span>
         </div>
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
           Geen verhalen. <em class="not-italic text-brand-indigo">Klik en controleer.</em>
@@ -219,7 +219,7 @@ const pageSchema = {
     </div>
   </section>
 
-  <!-- Echte projecten -->
+  <!-- Voorbeeldscenario's: eigen gebouwde systemen (echte, live links) -->
   <section class="section">
     <div class="container-page space-y-16">
       {projecten.map((p, i) => (
