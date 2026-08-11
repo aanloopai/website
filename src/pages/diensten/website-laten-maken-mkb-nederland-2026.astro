@@ -15,9 +15,9 @@ const features = [
 ];
 
 const pakketten = [
-  { naam: 'Starter', setup: '€3.450', mnd: '€129', desc: 'Perfect voor ZZP/MKB tot 10 paginas. Modern design, Astro/Hugo static-site, contactformulier, NL/EN, hosting + SSL inbegrepen.', items: ['Tot 10 paginas', 'Mobile-first responsive', 'Schema.org SEO basis', 'Cloudflare Pages hosting', 'Maandelijks security-update'] },
-  { naam: 'Groei', setup: '€5.950', mnd: '€197', desc: 'Voor groeiende MKB. CMS, blog/kennisbank, lead-formulieren, GA4, A/B-test ready, AI-chatbot-widget plug-in slot.', items: ['Tot 30 paginas + CMS', 'Blog + kennisbank-engine', 'Emma chat-widget slot', 'GA4 + GrowthBook setup', 'Multilingual NL/EN/DE'], featured: true },
-  { naam: 'Pro', setup: 'Vanaf €11.500', mnd: '€397', desc: 'Voor schaal-MKB. Headless CMS, custom componenten, API-integraties (CRM/ERP), advanced analytics + conversie-tracking.', items: ['Onbeperkte paginas', 'Headless Sanity/Strapi', 'CRM/ERP API-koppeling', 'Conversion-rate optimization', 'Dedicated DevOps SLA'] },
+  { naam: 'Starter', setup: 'op aanvraag', mnd: '€129', desc: 'Perfect voor ZZP/MKB tot 10 paginas. Modern design, Astro/Hugo static-site, contactformulier, NL/EN, hosting + SSL inbegrepen.', items: ['Tot 10 paginas', 'Mobile-first responsive', 'Schema.org SEO basis', 'Cloudflare Pages hosting', 'Maandelijks security-update'] },
+  { naam: 'Groei', setup: 'op aanvraag', mnd: '€197', desc: 'Voor groeiende MKB. CMS, blog/kennisbank, lead-formulieren, GA4, A/B-test ready, AI-chatbot-widget plug-in slot.', items: ['Tot 30 paginas + CMS', 'Blog + kennisbank-engine', 'Emma chat-widget slot', 'GA4 + GrowthBook setup', 'Multilingual NL/EN/DE'], featured: true },
+  { naam: 'Pro', setup: 'op aanvraag', mnd: '€397', desc: 'Voor schaal-MKB. Headless CMS, custom componenten, API-integraties (CRM/ERP), advanced analytics + conversie-tracking.', items: ['Onbeperkte paginas', 'Headless Sanity/Strapi', 'CRM/ERP API-koppeling', 'Conversion-rate optimization', 'Dedicated DevOps SLA'] },
 ];
 
 const stack = {
@@ -56,7 +56,7 @@ const faqItems = [
   { question: 'Krijg ik een nieuwe domeinnaam of behoud ik de oude?', answer: 'U behoudt uw bestaande domein. Wij regelen DNS-cutover op launch-dag (5-10 min downtime). 301-redirects van alle oude URLs naar nieuwe URLs zorgen dat uw Google-rankings behouden blijven en backlinks geldig.' },
   { question: 'Wat zit er in het maandelijkse onderhoud?', answer: 'Security-updates van framework + dependencies, uptime-monitoring (24/7 ping), back-ups (dagelijks), SSL-renewal, performance-monitoring (Core Web Vitals), 1-2 uur content/design-aanpassingen per maand, prioriteit support binnen 4 uur op werkdagen.' },
   { question: 'Bouwen jullie ook webshops?', answer: 'Ja, daarvoor hebben wij een aparte service: Webshop laten maken (Shopify/WooCommerce/Lightspeed). Voor combinaties content-website + webshop-onderdeel bouwen we een hybride setup. Vraag in uw discovery-gesprek naar de webshop-bundel.' },
-  { question: 'Wat kost een website met AI volledig geïntegreerd?', answer: 'Onze AI-Website Bundel combineert website (Groei pakket) + Emma AI-receptionist + Emma WhatsApp in 1 pakket: vanaf €5.950 setup + €649/maand all-in. De Emma-setup en het integratiewerk vervallen (samen €1.995), en u betaalt €540 per jaar minder dan bij twee losse abonnementen. Zie /diensten/ai-website-bundel-mkb-nederland/ voor details.' },
+  { question: 'Wat kost een website met AI volledig geïntegreerd?', answer: 'Onze AI-Website Bundel combineert website (Groei pakket) + Emma AI-receptionist + Emma WhatsApp in 1 pakket: vanaf €649/maand all-in, setup op aanvraag. De Emma-setup en het integratiewerk vervallen, en u betaalt minder per maand dan bij twee losse abonnementen. Zie /diensten/ai-website-bundel-mkb-nederland/ voor details.' },
 ];
 
 const serviceSchema = {
@@ -65,7 +65,7 @@ const serviceSchema = {
   '@id': 'https://aanloopai.nl/diensten/website-laten-maken-mkb-nederland-2026/#service',
   name: 'Website laten maken MKB Nederland — AI-ready Webdesign',
   serviceType: 'Web Design & Development',
-  description: 'AI-ready website laten maken voor Nederlandse MKB. Modern design, Astro/Next.js/WordPress, Schema.org + Speakable, Core Web Vitals groen, AVG-compliant, WCAG 2.2 AA. Vanaf €3.450 setup.',
+  description: 'AI-ready website laten maken voor Nederlandse MKB. Modern design, Astro/Next.js/WordPress, Schema.org + Speakable, Core Web Vitals groen, AVG-compliant, WCAG 2.2 AA. Vanaf €129/maand, setup op aanvraag.',
   url: 'https://aanloopai.nl/diensten/website-laten-maken-mkb-nederland-2026/',
   provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
   areaServed: { '@type': 'Country', name: 'Nederland' },
@@ -73,8 +73,8 @@ const serviceSchema = {
   offers: {
     '@type': 'AggregateOffer',
     priceCurrency: 'EUR',
-    lowPrice: '3450',
-    highPrice: '11500',
+    lowPrice: '129',
+    highPrice: '397',
     offerCount: '3',
     availability: 'https://schema.org/InStock',
   },
@@ -106,7 +106,7 @@ const speakableSchema = {
           Website laten maken die AI-ready is — niet later, vanaf dag 1.
         </h1>
         <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
-          De meeste webbureaus leveren in 2026 nog steeds websites zonder AI-architectuur, zonder Speakable schema voor AI Overviews en zonder plug-in-slots voor chatbot of voice-assistent. Aanloop AI bouwt websites die per direct koppelbaar zijn aan Emma (AI-telefonist), Emma (WhatsApp) en chatbot-widgets — én die door ChatGPT, Gemini en Google AI Overviews worden geciteerd. Vanaf €3.450 setup, live binnen 4-8 weken.
+          De meeste webbureaus leveren in 2026 nog steeds websites zonder AI-architectuur, zonder Speakable schema voor AI Overviews en zonder plug-in-slots voor chatbot of voice-assistent. Aanloop AI bouwt websites die per direct koppelbaar zijn aan Emma (AI-telefonist), Emma (WhatsApp) en chatbot-widgets — én die door ChatGPT, Gemini en Google AI Overviews worden geciteerd. Vanaf €129/maand, live binnen 4-8 weken. Setup op aanvraag.
         </p>
         <div class="mt-8 flex gap-3 flex-wrap reveal reveal-delay-3">
           <a href="/demo-aanvragen/" class="btn-primary text-base px-6 py-3.5">Gratis discovery-gesprek <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
@@ -120,7 +120,7 @@ const speakableSchema = {
     <div class="container-page">
       <p class="text-xs text-slate-400 text-center mb-4">Indicatieve cijfers · resultaten verschillen per situatie</p>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-        {[{v:'4-8 wk',l:'live na briefing'},{v:'95+',l:'Lighthouse score'},{v:'100%',l:'eigendom code'},{v:'€3.450',l:'vanaf setup'}].map(s=>(
+        {[{v:'4-8 wk',l:'live na briefing'},{v:'95+',l:'Lighthouse score'},{v:'100%',l:'eigendom code'},{v:'€129',l:'vanaf/mnd'}].map(s=>(
           <div class="reveal"><p class="text-2xl font-bold text-navy">{s.v}</p><p class="text-xs text-slate-500 mt-1">{s.l}</p></div>
         ))}
       </div>
@@ -149,7 +149,7 @@ const speakableSchema = {
     <div class="container-page">
       <div class="max-w-3xl mb-12 reveal">
         <p class="eyebrow mb-3">Pakketten</p>
-        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Transparante prijzen, eenmalige setup + maandelijks onderhoud.</h2>
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-navy text-balance">Transparante maandprijzen — eenmalige setup bespreken we in het gesprek.</h2>
         <p class="mt-4 text-slate-600 leading-relaxed">Geen verborgen kosten, geen meerwerk-rekeningen achteraf. Alle pakketten inclusief AVG-compliance, schema.org markup en Core Web Vitals optimalisatie.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
@@ -157,8 +157,8 @@ const speakableSchema = {
           <div class:list={['card relative', p.featured && 'border-2 border-navy']}>
             {p.featured && <span class="absolute -top-3 left-5 px-2.5 py-0.5 bg-navy text-white text-[11px] font-medium tracking-wide uppercase rounded">Populair</span>}
             <h3 class="text-lg font-bold text-navy">{p.naam}</h3>
-            <div class="mt-3 flex items-baseline gap-2"><span class="text-3xl font-bold text-navy">{p.setup}</span><span class="text-sm text-slate-500">setup</span></div>
-            <p class="text-xs text-slate-500 mt-1">+ {p.mnd}/maand onderhoud</p>
+            <div class="mt-3 flex items-baseline gap-2"><span class="text-3xl font-bold text-navy">{p.mnd}</span><span class="text-sm text-slate-500">/maand onderhoud</span></div>
+            <p class="text-xs text-slate-500 mt-1">Eenmalige setup: {p.setup}</p>
             <p class="text-sm text-slate-600 mt-3 leading-relaxed">{p.desc}</p>
             <ul class="mt-4 space-y-2">
               {p.items.map(i => (

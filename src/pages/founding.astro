@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { EMMA, GROEI, EMMA_LABEL, GROEI_LABEL, EMMA_MND, GROEI_MND, EMMA_SETUP_LABEL, GROEI_SETUP_LABEL } from '../data/pricing';
+import { EMMA, GROEI, EMMA_LABEL, GROEI_LABEL, EMMA_MND, GROEI_MND } from '../data/pricing';
 
 // Founding-korting = 50% van de normale maandprijs, eerste 3 maanden.
 const foundingEmma = Math.round(EMMA.monthly / 2);
@@ -8,7 +8,7 @@ const foundingGroei = Math.round(GROEI.monthly / 2);
 
 const give = [
   { icon: '50%', label: '3 maanden 50% korting', desc: `Emma €${foundingEmma}/mnd of Groei €${foundingGroei}/mnd de eerste 3 maanden (i.p.v. ${EMMA_LABEL} / ${GROEI_LABEL}).` },
-  { icon: '€0', label: 'Gratis setup', desc: `Geen eenmalige setup-kosten — t.w.v. ${EMMA_SETUP_LABEL} (Emma) tot ${GROEI_SETUP_LABEL} (Groei).` },
+  { icon: '€0', label: 'Gratis setup', desc: 'Geen eenmalige setup-kosten — de normale setup-fee (Emma of Groei) vervalt volledig voor founding-klanten.' },
   { icon: '⚡', label: 'Voorrang onboarding', desc: 'Live binnen 7 werkdagen, directe lijn met de oprichter tijdens de pilot.' },
 ];
 

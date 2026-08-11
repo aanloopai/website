@@ -28,7 +28,7 @@ const faqItems = [
   },
   {
     question: 'Wat als ik meerdere AI-agents wil?',
-    answer: 'U kunt beginnen met één agent (bijvoorbeeld Emma voor telefoon) en later uitbreiden met Emma (WhatsApp) of aanvullende modules. De AI-Website Bundel combineert website, Emma in één contract vanaf €5.950 setup + €649/mnd — voordeliger dan losse afname. Voor multi-vestiging of enterprise-vraagstukken biedt het Partner-pakket op maat geprijsde oplossingen met dedicated account manager en SLA.',
+    answer: 'U kunt beginnen met één agent (bijvoorbeeld Emma voor telefoon) en later uitbreiden met Emma (WhatsApp) of aanvullende modules. De AI-Website Bundel combineert website, Emma in één contract vanaf €649/mnd (setup op aanvraag) — voordeliger dan losse afname. Voor multi-vestiging of enterprise-vraagstukken biedt het Partner-pakket op maat geprijsde oplossingen met dedicated account manager en SLA.',
   },
   {
     question: 'Hoe meet ik de ROI van een AI-agent?',
@@ -80,15 +80,15 @@ const articleSchema = {
     name: 'AI-agent kostenoverzicht MKB Nederland 2026',
     description: 'Prijsoverzicht per AI-agent type bij Aanloop AI',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Emma — AI Telefoon-assistent', item: { '@type': 'Thing', name: 'Emma — AI Telefoon-assistent' }, description: 'Emma €497/mnd (eenmalige setup €495), Groei €997/mnd (eenmalige setup €795). WhatsApp standaard inbegrepen.' },
+      { '@type': 'ListItem', position: 1, name: 'Emma — AI Telefoon-assistent', item: { '@type': 'Thing', name: 'Emma — AI Telefoon-assistent' }, description: 'Emma €497/mnd, Groei €997/mnd. Eenmalige setup op aanvraag. WhatsApp standaard inbegrepen.' },
       { '@type': 'ListItem', position: 2, name: 'AI Chatbot voor Website', item: { '@type': 'Thing', name: 'AI Chatbot voor Website' }, description: 'Starter €800/mnd, Growth €2.000/mnd.' },
       { '@type': 'ListItem', position: 3, name: 'AI Klantenservice Omnichannel', item: { '@type': 'Thing', name: 'AI Klantenservice Omnichannel' }, description: 'Starter €2.000/mnd, Growth €4.500/mnd.' },
       { '@type': 'ListItem', position: 4, name: 'AI E-mail Assistent', item: { '@type': 'Thing', name: 'AI E-mail Assistent' }, description: 'Starter €600/mnd, Growth €1.800/mnd.' },
       { '@type': 'ListItem', position: 5, name: 'AI Lead Qualification', item: { '@type': 'Thing', name: 'AI Lead Qualification' }, description: 'Starter €1.100/mnd, Growth €2.800/mnd.' },
       { '@type': 'ListItem', position: 6, name: 'AI Document Processing', item: { '@type': 'Thing', name: 'AI Document Processing' }, description: 'Starter €1.200/mnd, Growth €3.000/mnd.' },
       { '@type': 'ListItem', position: 7, name: 'AI HR Recruitment Assistent', item: { '@type': 'Thing', name: 'AI HR Recruitment Assistent' }, description: 'Starter €1.500/mnd, Growth €3.500/mnd.' },
-      { '@type': 'ListItem', position: 8, name: 'AI Audit', item: { '@type': 'Thing', name: 'AI Audit' }, description: 'Quick scan €0. Basis Audit €1.950 eenmalig.' },
-      { '@type': 'ListItem', position: 9, name: 'AI-Website Bundel', item: { '@type': 'Thing', name: 'AI-Website Bundel' }, description: '€5.950 setup + €649/mnd. Inclusief website + Emma.' },
+      { '@type': 'ListItem', position: 8, name: 'AI Audit', item: { '@type': 'Thing', name: 'AI Audit' }, description: 'Quick scan €0. Basis Audit op aanvraag (eenmalig).' },
+      { '@type': 'ListItem', position: 9, name: 'AI-Website Bundel', item: { '@type': 'Thing', name: 'AI-Website Bundel' }, description: '€649/mnd, eenmalige setup op aanvraag. Inclusief website + Emma.' },
     ],
   },
 };
@@ -99,8 +99,8 @@ const agentTypes = [
     link: '/diensten/emma/#telefoon',
     starterMnd: '€497',
     growthMnd: '€997',
-    setupStarter: '€495',
-    setupGrowth: '€795',
+    setupStarter: 'Op aanvraag',
+    setupGrowth: 'Op aanvraag',
     notes: 'Onbeperkte gesprekken vanaf Groei. WhatsApp standaard inbegrepen — geen los abonnement. WhatsApp-conversatiekosten Meta (gem. €0,03–0,08/24u-venster) worden apart afgerekend bij Meta.',
   },
   {
@@ -161,7 +161,7 @@ const agentTypes = [
     naam: 'AI Audit',
     link: '/diensten/audit/',
     starterMnd: '€0 (Quick Scan)',
-    growthMnd: '€1.950 (Basis, eenmalig)',
+    growthMnd: 'Op aanvraag (Basis, eenmalig)',
     setupStarter: '—',
     setupGrowth: '—',
     notes: 'Quick Scan: gratis 45-min adviesgesprek. Basis Audit: procesanalyse + ROI-matrix + roadmap, 14 werkdagen.',
@@ -171,9 +171,9 @@ const agentTypes = [
     link: '/diensten/ai-website-bundel-mkb-nederland/',
     starterMnd: '€649/mnd',
     growthMnd: 'Op aanvraag (Bundel Pro)',
-    setupStarter: '€5.950',
-    setupGrowth: 'Vanaf €11.500',
-    notes: 'Website + Emma in 1 contract. Bespaart ~€9.133 jaar 1 t.o.v. losse afname.',
+    setupStarter: 'Op aanvraag',
+    setupGrowth: 'Op aanvraag',
+    notes: 'Website + Emma in 1 contract. Voordeliger dan losse afname — setup en integratie vervallen.',
   },
 ];
 ---
@@ -216,7 +216,7 @@ const agentTypes = [
       <div class="tl-dr-block bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
         <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-3">TL;DR — Direct antwoord</p>
         <p class="text-sm text-slate-700 mb-4 speakable-summary">
-          Een AI-agent voor het Nederlandse MKB kost in 2026 <strong>€497–€4.500 per maand</strong> afhankelijk van het type. De Emma-pakketten (telefoon + WhatsApp inbegrepen) kennen een eenmalige setup van <strong>€495 (Emma) of €795 (Groei)</strong>. Er bestaat geen los WhatsApp-abonnement meer — de meest gevraagde combinatie, onbeperkte telefonie + WhatsApp, kost <strong>€997/mnd all-in</strong> in het Groei-pakket (eenmalige setup €795). Alle prijzen zijn exclusief 21% BTW, zonder extra kosten per gesprek of bericht.
+          Een AI-agent voor het Nederlandse MKB kost in 2026 <strong>€497–€4.500 per maand</strong> afhankelijk van het type. De Emma-pakketten (telefoon + WhatsApp inbegrepen) kennen een eenmalige setup <strong>op aanvraag</strong> — bedrag bespreken we in het gesprek. Er bestaat geen los WhatsApp-abonnement meer — de meest gevraagde combinatie, onbeperkte telefonie + WhatsApp, kost <strong>€997/mnd all-in</strong> in het Groei-pakket. Alle prijzen zijn exclusief 21% BTW, zonder extra kosten per gesprek of bericht.
         </p>
         <div class="overflow-x-auto">
           <table class="w-full text-xs border-collapse">
@@ -229,15 +229,15 @@ const agentTypes = [
               </tr>
             </thead>
             <tbody>
-              <tr class="border-b border-slate-200"><td class="p-2 text-slate-700">Emma (telefoon + WhatsApp)</td><td class="p-2">€495 / €795</td><td class="p-2 font-semibold">€497</td><td class="p-2 font-semibold">€997</td></tr>
+              <tr class="border-b border-slate-200"><td class="p-2 text-slate-700">Emma (telefoon + WhatsApp)</td><td class="p-2">Op aanvraag</td><td class="p-2 font-semibold">€497</td><td class="p-2 font-semibold">€997</td></tr>
               <tr class="border-b border-slate-200 bg-slate-50"><td class="p-2 text-slate-700">AI Chatbot website</td><td class="p-2">Op aanvraag</td><td class="p-2 font-semibold">€800</td><td class="p-2 font-semibold">€2.000</td></tr>
               <tr class="border-b border-slate-200"><td class="p-2 text-slate-700">Omnichannel klantenservice</td><td class="p-2">Op aanvraag</td><td class="p-2 font-semibold">€2.000</td><td class="p-2 font-semibold">€4.500</td></tr>
               <tr class="border-b border-slate-200 bg-slate-50"><td class="p-2 text-slate-700">E-mail assistent</td><td class="p-2">Op aanvraag</td><td class="p-2 font-semibold">€600</td><td class="p-2 font-semibold">€1.800</td></tr>
               <tr class="border-b border-slate-200"><td class="p-2 text-slate-700">Lead Qualification</td><td class="p-2">Op aanvraag</td><td class="p-2 font-semibold">€1.100</td><td class="p-2 font-semibold">€2.800</td></tr>
               <tr class="border-b border-slate-200 bg-slate-50"><td class="p-2 text-slate-700">Document Processing</td><td class="p-2">Op aanvraag</td><td class="p-2 font-semibold">€1.200</td><td class="p-2 font-semibold">€3.000</td></tr>
               <tr class="border-b border-slate-200"><td class="p-2 text-slate-700">HR Recruitment</td><td class="p-2">Op aanvraag</td><td class="p-2 font-semibold">€1.500</td><td class="p-2 font-semibold">€3.500</td></tr>
-              <tr class="border-b border-slate-200 bg-slate-50"><td class="p-2 text-slate-700">AI Audit (eenmalig)</td><td class="p-2">—</td><td class="p-2 font-semibold">€0 (scan)</td><td class="p-2 font-semibold">€1.950</td></tr>
-              <tr class="bg-brand-indigo/5"><td class="p-2 font-bold text-navy">AI-Website Bundel</td><td class="p-2 font-bold">€5.950</td><td class="p-2 font-semibold" colspan="2">€649/mnd (incl. website + Emma)</td></tr>
+              <tr class="border-b border-slate-200 bg-slate-50"><td class="p-2 text-slate-700">AI Audit (eenmalig)</td><td class="p-2">—</td><td class="p-2 font-semibold">€0 (scan)</td><td class="p-2 font-semibold">Op aanvraag</td></tr>
+              <tr class="bg-brand-indigo/5"><td class="p-2 font-bold text-navy">AI-Website Bundel</td><td class="p-2 font-bold">Op aanvraag</td><td class="p-2 font-semibold" colspan="2">€649/mnd (incl. website + Emma)</td></tr>
             </tbody>
           </table>
         </div>
@@ -336,7 +336,7 @@ const agentTypes = [
             <li class="flex gap-2"><span class="text-brand-indigo mt-0.5">&#8226;</span>CRM- en agenda-koppeling inrichten</li>
             <li class="flex gap-2"><span class="text-brand-indigo mt-0.5">&#8226;</span>Onboarding-training voor uw team (2 uur)</li>
           </ul>
-          <p class="text-xs text-slate-500 mt-4">Emma (telefoon + WhatsApp) kent een eenmalige setup van €495, Groei €795. AI-Website Bundel €5.950 eenmalig. Op aanvraag voor overige diensten.</p>
+          <p class="text-xs text-slate-500 mt-4">Emma, Groei en de AI-Website Bundel kennen elk een eenmalige setup op aanvraag — bedrag bespreken we in het gesprek. Op aanvraag voor overige diensten.</p>
         </div>
         <div class="bg-white border border-slate-200 rounded-xl p-5">
           <p class="font-bold text-navy mb-3">Maandelijkse abonnementskosten</p>
@@ -378,7 +378,7 @@ const agentTypes = [
               ['Onderhoud (engineer x 8 uur/mnd x €85/u)', '€680/mnd', 'Inbegrepen'],
               ['AVG-compliance (DPIA, DPA-template)', '€1.500–€3.000 eenmalig', 'Inbegrepen'],
               ['Monitoring & uptime-garantie', 'Eigen SRE of €200–€500/mnd', 'Inbegrepen'],
-              ['Totaal jaar 1', '€18.400–€27.800', '€495 setup + (12 x €497) = €6.459'],
+              ['Totaal jaar 1', '€18.400–€27.800', '12 x €497 = €5.964 (excl. eenmalige setup, op aanvraag)'],
             ].map(([post, inhouse, aanloop], i) => (
               <tr class:list={['border-b border-slate-200', i % 2 === 1 ? 'bg-slate-50' : 'bg-white', i === 7 ? 'font-bold' : '']}>
                 <td class="p-3 text-slate-700">{post}</td>
@@ -425,7 +425,7 @@ const agentTypes = [
       <p class="text-slate-700 leading-relaxed mb-4">
         Totale eigendomskosten (TCO) over 5 jaar voor een typisch middelgroot MKB-bedrijf (20–50 medewerkers, 150–300 inkomende telefoongesprekken per maand) dat kiest voor Emma Groei-pakket.
       </p>
-      <p class="text-xs text-slate-500 mb-6">Aannames: Groei-pakket €997/mnd (excl. BTW) + eenmalige setup €795 in jaar 1. In-house-alternatief: 0,5 FTE receptionist/telefonist a €36.000/jaar bruto + werkgeverslasten 32% = €47.520/jaar.</p>
+      <p class="text-xs text-slate-500 mb-6">Aannames: Groei-pakket €997/mnd (excl. BTW), excl. eenmalige setup (op aanvraag, apart in het gesprek). In-house-alternatief: 0,5 FTE receptionist/telefonist a €36.000/jaar bruto + werkgeverslasten 32% = €47.520/jaar.</p>
       <div class="overflow-x-auto mb-6">
         <table class="w-full text-sm border-collapse">
           <thead>
@@ -438,12 +438,12 @@ const agentTypes = [
           </thead>
           <tbody>
             {[
-              ['Jaar 1', '€12.759', '€47.520', '€34.761'],
+              ['Jaar 1', '€11.964', '€47.520', '€35.556'],
               ['Jaar 2', '€11.964', '€47.520', '€35.556'],
               ['Jaar 3', '€11.964', '€47.520', '€35.556'],
               ['Jaar 4', '€11.964', '€47.520', '€35.556'],
               ['Jaar 5', '€11.964', '€47.520', '€35.556'],
-              ['Totaal 5 jaar', '€60.615', '€237.600', '€176.985'],
+              ['Totaal 5 jaar', '€59.820', '€237.600', '€177.780'],
             ].map(([jaar, ai, inhouse, besparing], i) => (
               <tr class:list={['border-b border-slate-200', i % 2 === 1 ? 'bg-slate-50' : 'bg-white', i === 5 ? 'font-bold bg-brand-indigo/5' : '']}>
                 <td class="p-3 text-slate-700">{jaar}</td>
@@ -455,7 +455,7 @@ const agentTypes = [
           </tbody>
         </table>
       </div>
-      <p class="text-xs text-slate-500 mb-10">Exclusief ROI-opwaartse effecten (meer leads door 24/7 bereikbaarheid, geen gemiste gesprekken buiten kantooruren). In-house-berekening excl. wervingskosten en ziekteverzuim. Aanloop AI-prijs excl. 21% BTW.</p>
+      <p class="text-xs text-slate-500 mb-10">Exclusief ROI-opwaartse effecten (meer leads door 24/7 bereikbaarheid, geen gemiste gesprekken buiten kantooruren) en exclusief de eenmalige setup (op aanvraag). In-house-berekening excl. wervingskosten en ziekteverzuim. Aanloop AI-prijs excl. 21% BTW.</p>
 
       <!-- Section 7: ROI breakeven -->
       <h2 class="text-2xl font-bold text-navy mt-12 mb-6">ROI-breakeven berekening — wanneer betaalt het zich terug?</h2>
@@ -472,7 +472,7 @@ const agentTypes = [
               ['Kosten Emma', '-€497/mnd'],
               ['Netto maandwinst', '~€2.363/mnd'],
             ],
-            breakeven: 'Minder dan 1 maand (incl. eenmalige setup €495)',
+            breakeven: 'Minder dan 1 maand (excl. eenmalige setup, op aanvraag)',
           },
           {
             label: 'Scenario B — Accountantskantoor, Emma (€497/mnd, WhatsApp inbegrepen)',
@@ -482,7 +482,7 @@ const agentTypes = [
               ['Kosten Emma', '-€497/mnd'],
               ['Netto maandwinst', '~€503/mnd'],
             ],
-            breakeven: 'Minder dan 1 maand (incl. eenmalige setup €495)',
+            breakeven: 'Minder dan 1 maand (excl. eenmalige setup, op aanvraag)',
           },
           {
             label: 'Scenario C — Webshop, AI Chatbot Growth (€2.000/mnd)',
@@ -541,9 +541,9 @@ const agentTypes = [
       <!-- USP Bundel highlight -->
       <div class="bg-navy rounded-2xl p-6 mb-10 text-pearl">
         <p class="eyebrow text-slate-400 mb-2">Meest voordelig voor starters</p>
-        <h3 class="text-xl font-bold text-pearl mb-3">AI-Website Bundel — €5.950 setup + €649/mnd</h3>
+        <h3 class="text-xl font-bold text-pearl mb-3">AI-Website Bundel — vanaf €649/mnd, setup op aanvraag</h3>
         <p class="text-slate-300 text-sm leading-relaxed mb-4">
-          De AI-Website Bundel combineert een volledige website (tot 30 paginas, Schema.org, WCAG 2.2 AA), Emma AI-receptionist en Emma WhatsApp-agent in een enkel contract. Losse afname van dezelfde componenten kost jaar 1 circa <strong class="text-pearl">€18.847</strong>. De bundel kost jaar 1 <strong class="text-pearl">€9.714</strong> — een besparing van <strong class="text-brand-emerald">circa €9.133</strong>.
+          De AI-Website Bundel combineert een volledige website (tot 30 paginas, Schema.org, WCAG 2.2 AA), Emma AI-receptionist en Emma WhatsApp-agent in een enkel contract, vanaf <strong class="text-pearl">€649/maand all-in</strong>. Losse afname van dezelfde componenten kost maandelijks meer én kent aparte setup-kosten per onderdeel — in de bundel vervalt de Emma-setup en het integratiewerk. Eenmalige kosten bespreken we in het gesprek.
         </p>
         <a href="/diensten/ai-website-bundel-mkb-nederland/" class="inline-flex items-center gap-2 bg-pearl text-navy font-semibold text-sm px-4 py-2 rounded-lg hover:bg-white transition-colors">
           Bekijk AI-Website Bundel
@@ -557,7 +557,7 @@ const agentTypes = [
         <ul class="space-y-2">
           <li><a href="/diensten/emma/#telefoon" class="text-sm text-brand-indigo hover:underline">Emma — AI Telefoon-assistent: volledige specificaties en prijzen</a></li>
           <li><a href="/diensten/emma/#whatsapp" class="text-sm text-brand-indigo hover:underline">Emma — AI WhatsApp Bot: volledige specificaties en prijzen</a></li>
-          <li><a href="/diensten/audit/" class="text-sm text-brand-indigo hover:underline">AI Audit voor MKB — Basis €1.950: wat u krijgt</a></li>
+          <li><a href="/diensten/audit/" class="text-sm text-brand-indigo hover:underline">AI Audit voor MKB — Basis Audit: wat u krijgt</a></li>
           <li><a href="/kennisbank/ai-agent-kosten-mkb/" class="text-sm text-brand-indigo hover:underline">AI Agent Kosten MKB — Starter vs Growth vs Enterprise vergelijking</a></li>
           <li><a href="/ai-roi-calculator/" class="text-sm text-brand-indigo hover:underline">Gratis AI ROI Calculator — bereken uw terugverdientijd</a></li>
           <li><a href="/tarieven/" class="text-sm text-brand-indigo hover:underline">Alle tarieven en pakketten — volledig overzicht</a></li>
