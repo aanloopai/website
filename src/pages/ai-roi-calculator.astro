@@ -121,10 +121,10 @@ const faqItems = [
 
             <div>
               <label for="calls-per-day" class="block text-sm font-semibold text-navy mb-2">Hoeveel inkomende telefoontjes ontvangt u per dag?</label>
-              <input type="range" id="calls-per-day" min="5" max="150" value="30" step="5"
+              <input type="range" id="calls-per-day" min="5" max="300" value="30" step="5"
                 class="w-full accent-blue-700" oninput="updateCalc()">
               <div class="flex justify-between text-xs text-slate-500 mt-1">
-                <span>5</span><span id="calls-display" class="font-bold text-navy">30 calls/dag</span><span>150+</span>
+                <span>5</span><span id="calls-display" class="font-bold text-navy">30 calls/dag</span><span>300+</span>
               </div>
             </div>
 
@@ -205,6 +205,14 @@ const faqItems = [
               <div class="mt-6 pt-6 border-t border-white/10">
                 <p class="text-xs text-slate-400 mb-3">Terugverdientijd bij <span id="result-tier-label">Emma-pakket (€497/mnd)</span></p>
                 <p id="result-payback" class="text-2xl font-bold text-brand-emerald">— maanden</p>
+                <a
+                  id="result-enterprise-cta"
+                  href="/contact/?type=offerte&plan=enterprise"
+                  class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-medium text-sm transition-all duration-200 bg-white text-navy hover:bg-slate-100 active:scale-[0.98] shadow-sm w-full mt-1"
+                  style="display:none"
+                >
+                  Offerte aanvragen →
+                </a>
               </div>
             </div>
           </div>
@@ -462,8 +470,9 @@ const faqItems = [
 
     const totalSaving = leadsValue + timeSavingPerYear;
 
-    // Aanbevolen pakket o.b.v. dagvolume — Emma (lt 50) / Groei (50-200) / Partner (gt 200)
-    let monthlyPrice: number;
+    // Aanbevolen pakket o.b.v. dagvolume — Emma (lt 50) / Groei (50-200) / Emma Enterprise (gt 200, prijs op aanvraag — zie /tarieven/)
+    const isEnterprise = calls > 200;
+    let monthlyPrice: number | null;
     let tierLabel: string;
     if (calls < 50) {
       monthlyPrice = 497;
@@ -472,13 +481,10 @@ const faqItems = [
       monthlyPrice = 997;
       tierLabel = 'Groei pakket (€997/mnd)';
     } else {
-      monthlyPrice = 1497; // Indicatie Partner-tier; finale prijs op aanvraag
-      tierLabel = 'Partner pakket (op aanvraag, indicatie €1.497+/mnd)';
+      monthlyPrice = null; // geen vaste prijs — Emma Enterprise is op aanvraag, geen fictieve indicatie tonen
+      tierLabel = 'Emma Enterprise (op aanvraag)';
     }
 
-    const annualCost = monthlyPrice * 12;
-    const netROI = totalSaving - annualCost;
-    const paybackMonths = annualCost / (totalSaving / 12);
     const extraAppointmentsPerMonth = (missedCallsPerDay * 30 * aiRecoveryRate * leadConversionRate);
 
     // FTE-equivalent: 1 FTE bruto + werkgeverslasten ≈ €4.000/mnd (NL CBS gemiddelde 2026)
@@ -486,16 +492,39 @@ const faqItems = [
     const fteEquivalent = (totalSaving / 12) / ftePerMonthCost;
     const fteFormatted = fteEquivalent.toFixed(1).replace('.', ',') + ' FTE/mnd';
 
-    // Update results
-    (document.getElementById('result-total') as HTMLElement).textContent = fmt(totalSaving);
-    (document.getElementById('result-leads') as HTMLElement).textContent = fmt(leadsValue) + '/jaar';
-    (document.getElementById('result-time') as HTMLElement).textContent = fmt(timeSavingPerYear) + '/jaar';
-    (document.getElementById('result-appointments') as HTMLElement).textContent = Math.round(extraAppointmentsPerMonth) + ' extra afspraken';
-    (document.getElementById('result-fte') as HTMLElement).textContent = fteFormatted;
-    (document.getElementById('result-roi') as HTMLElement).textContent = fmt(netROI);
+    const resultTotalEl = document.getElementById('result-total') as HTMLElement;
+    const resultPaybackEl = document.getElementById('result-payback') as HTMLElement;
+    const enterpriseCtaEl = document.getElementById('result-enterprise-cta') as HTMLElement;
+    let paybackMonths = 0;
+    let netROI = 0;
+
+    if (isEnterprise || monthlyPrice === null) {
+      // Emma Enterprise: prijs op aanvraag — geen fictief ROI/terugverdientijd tonen, wel CTA.
+      resultTotalEl.textContent = 'Prijs op maat';
+      (document.getElementById('result-leads') as HTMLElement).textContent = 'Op maat';
+      (document.getElementById('result-time') as HTMLElement).textContent = 'Op maat';
+      (document.getElementById('result-appointments') as HTMLElement).textContent = Math.round(extraAppointmentsPerMonth) + ' extra afspraken';
+      (document.getElementById('result-fte') as HTMLElement).textContent = fteFormatted;
+      (document.getElementById('result-roi') as HTMLElement).textContent = 'Op maat';
+      resultPaybackEl.textContent = 'Op aanvraag';
+      resultPaybackEl.style.display = 'none';
+      enterpriseCtaEl.style.display = 'inline-flex';
+    } else {
+      const annualCost = monthlyPrice * 12;
+      netROI = totalSaving - annualCost;
+      paybackMonths = annualCost / (totalSaving / 12);
+
+      resultTotalEl.textContent = fmt(totalSaving);
+      (document.getElementById('result-leads') as HTMLElement).textContent = fmt(leadsValue) + '/jaar';
+      (document.getElementById('result-time') as HTMLElement).textContent = fmt(timeSavingPerYear) + '/jaar';
+      (document.getElementById('result-appointments') as HTMLElement).textContent = Math.round(extraAppointmentsPerMonth) + ' extra afspraken';
+      (document.getElementById('result-fte') as HTMLElement).textContent = fteFormatted;
+      (document.getElementById('result-roi') as HTMLElement).textContent = fmt(netROI);
+      resultPaybackEl.style.display = '';
+      resultPaybackEl.textContent = paybackMonths < 1 ? '< 1 maand' : `${Math.round(paybackMonths)} maanden`;
+      enterpriseCtaEl.style.display = 'none';
+    }
     (document.getElementById('result-tier-label') as HTMLElement).textContent = tierLabel;
-    (document.getElementById('result-payback') as HTMLElement).textContent =
-      paybackMonths < 1 ? '< 1 maand' : `${Math.round(paybackMonths)} maanden`;
 
     // Track ROI calculator engagement
     if (!_roiStarted) {
@@ -506,9 +535,9 @@ const faqItems = [
     _roiTrackTimer = setTimeout(() => {
       const _sectorEl = document.getElementById('sector') as HTMLSelectElement;
       (window as any)._track?.('roi_calculator_result_viewed', {
-        roi_total: Math.round(totalSaving),
+        roi_total: isEnterprise ? null : Math.round(totalSaving),
         roi_tier: tierLabel,
-        roi_payback_months: Math.round(paybackMonths),
+        roi_payback_months: isEnterprise ? null : Math.round(paybackMonths),
         roi_sector: _sectorEl?.options[_sectorEl.selectedIndex]?.textContent || '',
       });
     }, 3000);
@@ -526,11 +555,11 @@ const faqItems = [
     setHidden('hf-cv', `€${clientValue.toLocaleString('nl-NL')}`);
     setHidden('hf-hours', `${manualHours} uur/week`);
     setHidden('hf-rate', `€${hourlyRate}/uur`);
-    setHidden('hf-saving', fmt(totalSaving) + '/jaar');
+    setHidden('hf-saving', isEnterprise ? 'Op maat' : fmt(totalSaving) + '/jaar');
     setHidden('hf-tier', tierLabel);
-    setHidden('hf-payback', paybackMonths < 1 ? '< 1 maand' : `${Math.round(paybackMonths)} maanden`);
+    setHidden('hf-payback', isEnterprise ? 'Op aanvraag' : (paybackMonths < 1 ? '< 1 maand' : `${Math.round(paybackMonths)} maanden`));
     setHidden('hf-fte', fteFormatted);
-    setHidden('hf-roi', fmt(netROI) + '/jaar');
+    setHidden('hf-roi', isEnterprise ? 'Op maat' : fmt(netROI) + '/jaar');
     setHidden('hf-apps', Math.round(extraAppointmentsPerMonth) + '/maand');
   }
 
