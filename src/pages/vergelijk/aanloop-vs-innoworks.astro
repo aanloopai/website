@@ -11,7 +11,7 @@ const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
   headline: 'Aanloop AI vs Innoworks: welke past bij uw MKB?',
-  description: 'Eerlijke vergelijking tussen Aanloop AI (productized AI-receptionist Emma + WhatsApp-agent Emma + €1.950 audit) en Innoworks (custom AI build-agency met €2.250 audit) voor Nederlandse MKB-bedrijven. Prijs, doorlooptijd, type service, datalocatie en compliance vergeleken op publieke gegevens per mei 2026.',
+  description: 'Eerlijke vergelijking tussen Aanloop AI (productized AI-receptionist Emma + WhatsApp-agent Emma + audit op aanvraag) en Innoworks (custom AI build-agency met €2.250 audit) voor Nederlandse MKB-bedrijven. Prijs, doorlooptijd, type service, datalocatie en compliance vergeleken op publieke gegevens per mei 2026.',
   author: { '@id': 'https://aanloopai.nl/#organization' },
   publisher: {
     '@type': 'Organization',
@@ -34,7 +34,7 @@ const faqSchema = {
       name: 'Wat is het belangrijkste verschil tussen Aanloop AI en Innoworks?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Innoworks is een custom build-agency: zij bouwen op maat AI-toepassingen voor uw bedrijf, met instapprijzen voor agents vanaf enkele duizenden euro en custom builds tussen 6.000 en 40.000 euro plus retainers. Aanloop AI is productized: wij leveren kant-en-klaar Emma AI-receptionist (vanaf 497 euro per maand) en Emma WhatsApp-agent (vanaf 997 euro per maand inclusief CRM), plus een productized AI-audit van 1.950 euro in 14 dagen. Beide hebben een AI-audit (Innoworks 2.250 euro / 14 dagen, Aanloop 1.950 euro / 14 dagen) — daarna divergeren de modellen.',
+        text: 'Innoworks is een custom build-agency: zij bouwen op maat AI-toepassingen voor uw bedrijf, met instapprijzen voor agents vanaf enkele duizenden euro en custom builds tussen 6.000 en 40.000 euro plus retainers. Aanloop AI is productized: wij leveren kant-en-klaar Emma AI-receptionist (vanaf 497 euro per maand) en Emma WhatsApp-agent (vanaf 997 euro per maand inclusief CRM), plus een productized AI-audit (vaste prijs, op aanvraag) in 14 dagen. Beide hebben een AI-audit (Innoworks 2.250 euro / 14 dagen, Aanloop op aanvraag / 14 dagen) — daarna divergeren de modellen.',
       },
     },
     {
@@ -50,7 +50,7 @@ const faqSchema = {
       name: 'Beide hebben een AI-audit van rond de 2.000 euro — wat is het verschil?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Innoworks AI-audit (2.250 euro, 14 dagen) richt zich op een AI-roadmap en custom build-aanbevelingen. Aanloop AI-audit (1.950 euro, 14 dagen) richt zich op concrete implementatie van Emma / Emma binnen onze productized stack — dus uw audit-investering wordt verrekend met de eerste maandfactuur als u doorgaat (1.000 euro doorgangs-korting). Beide audits zijn vergelijkbaar in scope en doorlooptijd; het verschil zit in wat erna komt: Innoworks bouwt custom, Aanloop integreert Emma / Emma.',
+        text: 'Innoworks AI-audit (2.250 euro, 14 dagen) richt zich op een AI-roadmap en custom build-aanbevelingen. Aanloop AI-audit (vaste prijs op aanvraag, 14 dagen) richt zich op concrete implementatie van Emma / Emma binnen onze productized stack — dus uw audit-investering wordt deels verrekend met de eerste maandfactuur als u doorgaat (doorgangs-korting). Beide audits zijn vergelijkbaar in scope en doorlooptijd; het verschil zit in wat erna komt: Innoworks bouwt custom, Aanloop integreert Emma / Emma.',
       },
     },
     {
@@ -88,8 +88,8 @@ const comparison = [
   { feature: 'Hoofdproduct',                     aanloop: 'Emma AI-receptionist + Emma WhatsApp-agent',          innoworks: 'AI Operating System (custom op maat)' },
   { feature: 'Instapprijs (recurring)',          aanloop: '€497/mnd Emma (150 gesprekken)',             innoworks: 'Agents vanaf enkele duizenden euro (eenmalig)' },
   { feature: 'Bundel prijs',                     aanloop: '€997/mnd Groei (Emma + CRM, onbeperkt)',     innoworks: 'Custom builds €6.000-€40.000 + retainer' },
-  { feature: 'AI-audit prijs',                   aanloop: '€1.950 / 14 dagen (productized)',                      innoworks: '€2.250 / 14 dagen' },
-  { feature: 'Audit verrekening bij vervolg',    aanloop: '€1.000 doorgangs-korting bij implementatie',           innoworks: 'Niet expliciet vermeld' },
+  { feature: 'AI-audit prijs',                   aanloop: 'Op aanvraag / 14 dagen (productized)',                      innoworks: '€2.250 / 14 dagen' },
+  { feature: 'Audit verrekening bij vervolg',    aanloop: 'Doorgangs-korting bij implementatie',           innoworks: 'Niet expliciet vermeld' },
   { feature: 'Doorlooptijd live-gang',           aanloop: '7 werkdagen voor Emma',                            innoworks: '2-4 weken voor agent / 4-12 weken custom build' },
   { feature: 'AI-receptionist productnaam',      aanloop: 'Emma (branded, named entity)',                        innoworks: 'Geen named receptionist-product (custom per klant)' },
   { feature: 'WhatsApp-agent',                   aanloop: 'Emma (branded, named entity)',                         innoworks: 'Custom build mogelijk, geen branded product' },
@@ -120,7 +120,7 @@ const whenInnoworks = [
 
 <BaseLayout
   title="Aanloop AI vs Innoworks (mei 2026) — Eerlijke Vergelijking"
-  description="Vergelijking Aanloop AI (productized Emma + €1.950 audit) versus Innoworks (custom AI build-agency + €2.250 audit) voor MKB Nederland: prijs"
+  description="Vergelijking Aanloop AI (productized Emma + audit op aanvraag) versus Innoworks (custom AI build-agency + €2.250 audit) voor MKB Nederland: prijs"
   schema={articleSchema}
   faqSchema={faqSchema.mainEntity.map(q => ({ question: q.name, answer: q.acceptedAnswer.text }))}
 >
@@ -244,7 +244,7 @@ const whenInnoworks = [
           Eerst zien hoe productized AI werkt voor uw bedrijf?
         </h2>
         <p class="mt-4 text-slate-300 leading-relaxed">
-          Boek een gratis 30-minuten AI-scan of bekijk onze €1.950 productized AI-audit (14 dagen, met €1.000 doorgangs-korting bij implementatie). Geen creditcard, geen verplichting.
+          Boek een gratis 30-minuten AI-scan of bekijk onze productized AI-audit (vaste prijs, op aanvraag; 14 dagen, met doorgangs-korting bij implementatie). Geen creditcard, geen verplichting.
         </p>
         <div class="mt-6 flex flex-col sm:flex-row gap-3">
           <a href="/diensten/audit/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">

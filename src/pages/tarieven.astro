@@ -15,7 +15,7 @@ import {
 // Owner-besluit 2026-08-11: de standalone WhatsApp-only productlijn (Lite €49,
 // Standard €197) is geschrapt. Emma is weer één product: telefoon + WhatsApp
 // (WhatsApp is INBEGREPEN, nooit los bijtellen): Emma €497/mnd, Groei €997/mnd.
-// Enterprise op aanvraag. Setup: €495 (Emma) / €795 (Groei).
+// Enterprise op aanvraag. Setup: op aanvraag (Emma/Groei) — owner-besluit 2026-08-11.
 // Gebruik SETUP_ZIN / EMMA_SETUP_LABEL / GROEI_SETUP_LABEL, nooit hardcoded €0.
 
 const plans = [
@@ -96,23 +96,23 @@ const seoGeoPlans = [
     id: 'seo-audit',
     name: 'SEO Audit',
     type: 'Eenmalig',
-    price: '€495',
-    unit: 'eenmalig',
+    price: 'Op aanvraag',
+    unit: 'offerte in het gesprek',
     desc: 'Volledige technische audit van uw website: Core Web Vitals, schema-markup, indexability, interne linking. Levert prioriteit-actieplan + 30-dagen implementatie-roadmap.',
     features: ['Core Web Vitals analyse (LCP/INP/CLS)', 'Schema.org gap-analyse', 'Indexability + crawlability check', 'Interne link-structuur audit', 'Concurrentie SERP-analyse top 10 keywords', 'Prioriteit-actieplan (Q1/Q2)'],
-    cta: 'SEO Audit aanvragen',
-    href: '/aanvragen/?dienst=seo-audit',
+    cta: 'SEO Audit — offerte aanvragen',
+    href: '/contact/?type=offerte&dienst=seo-audit',
   },
   {
     id: 'seo-setup',
     name: 'SEO Setup',
     type: 'Eenmalig',
-    price: '€1.950',
-    unit: 'eenmalig',
+    price: 'Op aanvraag',
+    unit: 'offerte in het gesprek',
     desc: 'Tech-SEO + 10 pagina\'s SEO-optimaal opgeleverd: meta + schema + interne linking + Core Web Vitals fix. Live binnen 4 weken.',
     features: ['Tech-SEO implementatie volledig', '10 pagina\'s zoekwoord-geoptimaliseerd', 'Schema.org markup per pagina', 'Core Web Vitals optimalisatie', 'Interne link-architectuur', 'GA4 + GSC setup + monitoring'],
-    cta: 'SEO Setup aanvragen',
-    href: '/aanvragen/?dienst=seo-setup',
+    cta: 'SEO Setup — offerte aanvragen',
+    href: '/contact/?type=offerte&dienst=seo-setup',
   },
   {
     id: 'seo-maand',
@@ -140,12 +140,12 @@ const seoGeoPlans = [
     id: 'geo-setup',
     name: 'GEO Setup',
     type: 'Eenmalig',
-    price: '€1.450',
-    unit: 'eenmalig',
+    price: 'Op aanvraag',
+    unit: 'offerte in het gesprek',
     desc: 'Volledige GEO-implementatie: schema + llms.txt + AI-bot config + Person/Author markup. Citaties in AI-platforms binnen 4-6 weken.',
     features: ['llms.txt + llms-full.txt generatie', 'Schema.org Author/Person/Organization', 'AI-crawler access (robots + headers)', 'Speakable + sameAs implementatie', 'AI-Overview triggering structuur', 'Composite GEO-score +20-40 punten'],
-    cta: 'GEO Setup aanvragen',
-    href: '/aanvragen/?dienst=geo-setup',
+    cta: 'GEO Setup — offerte aanvragen',
+    href: '/contact/?type=offerte&dienst=geo-setup',
   },
   {
     id: 'geo-maand',
@@ -179,9 +179,9 @@ const eenmaligSetup = [
 
 const faqs = [
   { q: 'Zijn de prijzen exclusief btw?', a: 'Ja, alle prijzen zijn exclusief 21% btw. Dit is standaard voor B2B-diensten in Nederland.' },
-  { q: 'Zijn er setup-kosten?', a: 'Ja: eenmalige setup van €495 (Emma) of €795 (Groei), voor intake, training op uw bedrijf, technische configuratie en go-live begeleiding. WhatsApp zit in beide al inbegrepen. Geen andere verborgen kosten.' },
+  { q: 'Zijn er setup-kosten?', a: 'Ja: een eenmalige setup is van toepassing (Emma en Groei), voor intake, training op uw bedrijf, technische configuratie en go-live begeleiding. De exacte kosten bespreken we in het gesprek. WhatsApp zit in beide al inbegrepen. Geen andere verborgen kosten.' },
   { q: 'Wat is inbegrepen in het maandabonnement?', a: 'Emma als omnichannel AI-agent: telefoon (AI-receptionist 24/7), WhatsApp (Business API — standaard inbegrepen, u betaalt hier nooit apart voor) en workflow-automatisering. Plus hosting, onderhoud, platform-updates, monitoring en support. U betaalt nooit extra per gesprek of bericht.' },
-  { q: 'Wat is het verschil tussen Emma en Groei?', a: 'Emma (€497/mnd, eenmalige setup €495) is de omnichannel AI-agent: AI-telefoniste 24/7 + WhatsApp + workflow-automatisering, agenda-integratie en tot 150 gesprekken per maand. Groei (€997/mnd, eenmalige setup €795) voegt onbeperkt gespreksvolume, CRM-integratie, multi-number en priority support toe. Enterprise is op aanvraag.' },
+  { q: 'Wat is het verschil tussen Emma en Groei?', a: 'Emma (€497/mnd) is de omnichannel AI-agent: AI-telefoniste 24/7 + WhatsApp + workflow-automatisering, agenda-integratie en tot 150 gesprekken per maand. Groei (€997/mnd) voegt onbeperkt gespreksvolume, CRM-integratie, multi-number en priority support toe. Een eenmalige setup is bij beide van toepassing — de exacte kosten bespreken we in het gesprek. Enterprise is op aanvraag.' },
   { q: 'Hoe werkt jaarlijkse betaling?', a: 'Bij jaarlijkse betaling bespaart u circa 16% (±2 maanden gratis). U betaalt het volledige jaarbedrag vooruit en ontvangt één factuur per jaar.' },
   { q: 'Hoe snel ben ik live?', a: 'Emma en Groei: 7 werkdagen. Enterprise: afhankelijk van de scope. Na ondertekening ontvangt u direct een onboarding-plan.' },
   { q: 'Kan ik upgraden van Emma naar Groei?', a: 'Ja, u kunt op elk moment upgraden van Emma naar Groei. U betaalt het verschil in maandabonnement; wat dit betekent voor de eenmalige setup bespreken we in het intake-gesprek.' },
@@ -213,7 +213,7 @@ const productOfferGraph = {
       '@type': 'Product',
       '@id': 'https://aanloopai.nl/tarieven/#emma',
       name: 'Aanloop AI — Emma',
-      description: 'Emma omnichannel AI-agent voor Nederlandse MKB: AI-telefoon 24/7 (NL-nummer, doorverbinden) + WhatsApp Business API (inbegrepen) + workflow-automatisering, agenda-integratie en dashboard. Eenmalige setup €495. Live binnen 7 werkdagen.',
+      description: 'Emma omnichannel AI-agent voor Nederlandse MKB: AI-telefoon 24/7 (NL-nummer, doorverbinden) + WhatsApp Business API (inbegrepen) + workflow-automatisering, agenda-integratie en dashboard. Live binnen 7 werkdagen.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       category: 'Omnichannel AI Agent',
       offers: {
@@ -238,7 +238,7 @@ const productOfferGraph = {
       '@type': 'Product',
       '@id': 'https://aanloopai.nl/tarieven/#groei',
       name: 'Aanloop AI — Groei',
-      description: 'Emma omnichannel AI-agent met onbeperkt volume voor Nederlandse MKB: alles uit Emma plus onbeperkt gespreksvolume, multi-number (meerdere NL-nummers), CRM-integratie (HubSpot/Pipedrive), geavanceerde workflow-automatisering en priority support. Eenmalige setup €795.',
+      description: 'Emma omnichannel AI-agent met onbeperkt volume voor Nederlandse MKB: alles uit Emma plus onbeperkt gespreksvolume, multi-number (meerdere NL-nummers), CRM-integratie (HubSpot/Pipedrive), geavanceerde workflow-automatisering en priority support.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       category: 'Omnichannel AI Agent',
       offers: {
@@ -268,7 +268,7 @@ const productOfferGraph = {
       provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
       areaServed: { '@type': 'Country', name: 'Nederland' },
       audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
-      offers: { '@type': 'Offer', price: '495', priceCurrency: 'EUR', availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/aanvragen/?dienst=seo-audit', priceValidUntil: '2026-12-31' },
+      offers: { '@type': 'Offer', priceSpecification: { '@type': 'PriceSpecification', priceCurrency: 'EUR', description: 'Op aanvraag — offerte in het gesprek' }, availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/contact/?type=offerte&dienst=seo-audit' },
     },
     {
       '@type': 'Service',
@@ -278,7 +278,7 @@ const productOfferGraph = {
       description: 'Tech-SEO + 10 pagina-optimalisatie + schema + Core Web Vitals + GA4/GSC setup. Live binnen 4 weken.',
       provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
       areaServed: { '@type': 'Country', name: 'Nederland' },
-      offers: { '@type': 'Offer', price: '1950', priceCurrency: 'EUR', availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/aanvragen/?dienst=seo-setup', priceValidUntil: '2026-12-31' },
+      offers: { '@type': 'Offer', priceSpecification: { '@type': 'PriceSpecification', priceCurrency: 'EUR', description: 'Op aanvraag — offerte in het gesprek' }, availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/contact/?type=offerte&dienst=seo-setup' },
     },
     {
       '@type': 'Service',
@@ -308,7 +308,7 @@ const productOfferGraph = {
       description: 'Volledige Generative Engine Optimization: schema.org Author/Person, llms.txt + llms-full.txt, AI-crawler access, Speakable, AI-Overview triggering. Citaties in AI-platforms binnen 4-6 weken.',
       provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
       areaServed: { '@type': 'Country', name: 'Nederland' },
-      offers: { '@type': 'Offer', price: '1450', priceCurrency: 'EUR', availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/aanvragen/?dienst=geo-setup', priceValidUntil: '2026-12-31' },
+      offers: { '@type': 'Offer', priceSpecification: { '@type': 'PriceSpecification', priceCurrency: 'EUR', description: 'Op aanvraag — offerte in het gesprek' }, availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/contact/?type=offerte&dienst=geo-setup' },
     },
     {
       '@type': 'Service',
@@ -371,23 +371,17 @@ const valueCompareRows = [
 const fmtEUR = (n: number) => '€' + Math.round(n).toLocaleString('nl-NL');
 const tcoDefaultFte = 0.5;
 const tcoDefaultSalary = 47520;
-const tcoAanloopTotal = EMMA.setup + EMMA.monthly * 60;
+// Owner-besluit 2026-08-11: eenmalige setup NIET meer in de publieke TCO-som —
+// alleen de maandelijkse 60x-optelsom (excl. setup, op aanvraag).
+const tcoAanloopTotal = EMMA.monthly * 60;
 const tcoFteTotal = tcoDefaultSalary * tcoDefaultFte * 5;
 const tcoSaving = tcoFteTotal - tcoAanloopTotal;
 const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 : 0;
-const tcoFtePerMonth = (tcoDefaultSalary * tcoDefaultFte) / 12;
-const tcoMonthlyDiff = tcoFtePerMonth - EMMA.monthly;
-const tcoPaybackMonths = tcoMonthlyDiff > 0 ? EMMA.setup / tcoMonthlyDiff : Infinity;
-const tcoPaybackLabel = !isFinite(tcoPaybackMonths)
-  ? (EMMA.setup === 0 ? 'Direct (geen setup)' : 'n.v.t.')
-  : tcoPaybackMonths < 1
-    ? '< 1 mnd'
-    : tcoPaybackMonths.toFixed(1).replace('.', ',') + ' mnd';
 ---
 
 <BaseLayout
   title="AI-Agent Prijs Nederland 2026 — Tarieven Aanloop AI"
-  description="Emma AI-agent vanaf €497/mnd (WhatsApp inbegrepen), Groei €997/mnd. Setup €495-€795."
+  description="Emma AI-agent vanaf €497/mnd (WhatsApp inbegrepen), Groei €997/mnd. Setup op aanvraag."
   schema={productOfferGraph}
   faqSchema={faqs.map(f => ({ question: f.q, answer: f.a }))}
 >
@@ -466,7 +460,7 @@ const tcoPaybackLabel = !isFinite(tcoPaybackMonths)
                     €{(plan.price.annual ?? 0) * 12}/jaar bij jaarlijkse betaling
                   </p>
                   <p class="text-xs text-slate-400 mt-1">
-                    excl. btw · {plan.price.setup ? `eenmalige setup €${plan.price.setup}` : 'geen setup-kosten'}
+                    excl. btw · {plan.price.setup ? 'eenmalige setup op aanvraag' : 'geen setup-kosten'}
                   </p>
                 </div>
               ) : (
@@ -607,16 +601,13 @@ const tcoPaybackLabel = !isFinite(tcoPaybackMonths)
         <div class="bg-white rounded-2xl border-2 border-brand-indigo/30 shadow-xl p-6 reveal reveal-delay-1">
           <p class="text-xs font-semibold uppercase tracking-wide text-slate-400 mb-2">Bundel prijs</p>
           <div class="flex items-baseline gap-2 mb-1">
-            <span class="text-4xl font-bold text-navy">€5.950</span>
-            <span class="text-sm text-slate-500">setup</span>
+            <span class="text-4xl font-bold text-navy">€649</span>
+            <span class="text-sm text-slate-500">/maand all-in</span>
           </div>
-          <div class="flex items-baseline gap-2 mb-4">
-            <span class="text-2xl font-bold text-brand-indigo">+ €649</span>
-            <span class="text-sm text-slate-500">/maand</span>
-          </div>
+          <p class="text-xs text-slate-500 mb-4">Eenmalige setup op aanvraag</p>
           <div class="pt-4 border-t border-slate-200">
             <p class="text-xs text-slate-500 mb-1">Vergelijk losse afname:</p>
-            <p class="text-sm text-slate-700">Los: €5.950 website-bouw + €495 Emma-setup + €1.500 integratie, daarna €197 onderhoud + €497 Emma per maand. In de bundel vervallen de Emma-setup en de integratie (<span class="font-bold text-brand-emerald">€1.995 lager</span>) en betaalt u <span class="font-bold text-brand-emerald">€540 per jaar minder</span>.</p>
+            <p class="text-sm text-slate-700">Los: website-bouw + Emma-setup + integratie eenmalig (op aanvraag), daarna €197 onderhoud + €497 Emma per maand. In de bundel vervallen de Emma-setup en de integratie — <span class="font-bold text-brand-emerald">voordeliger bij de start</span> — en betaalt u <span class="font-bold text-brand-emerald">€45 per maand minder</span>.</p>
           </div>
         </div>
       </div>
@@ -798,7 +789,7 @@ const tcoPaybackLabel = !isFinite(tcoPaybackMonths)
             <div>
               <p class="text-xs text-slate-500 uppercase tracking-wide mb-1">TCO Aanloop AI (5j)</p>
               <p id="tco-aanloop" class="text-2xl font-bold text-navy tabular-nums">{fmtEUR(tcoAanloopTotal)}</p>
-              <p id="tco-aanloop-detail" class="text-[11px] text-slate-500 mt-0.5">Setup {fmtEUR(EMMA.setup)} + {fmtEUR(EMMA.monthly)} × 60</p>
+              <p id="tco-aanloop-detail" class="text-[11px] text-slate-500 mt-0.5">{fmtEUR(EMMA.monthly)} × 60 mnd (excl. eenmalige setup, op aanvraag)</p>
             </div>
             <div>
               <p class="text-xs text-slate-500 uppercase tracking-wide mb-1">TCO Receptionist (5j)</p>
@@ -816,7 +807,7 @@ const tcoPaybackLabel = !isFinite(tcoPaybackMonths)
           <div class="grid grid-cols-2 gap-3 text-sm">
             <div class="bg-white border border-slate-200 rounded-lg p-3">
               <p class="text-[10px] text-slate-500 uppercase tracking-wide">Terugverdientijd</p>
-              <p id="tco-payback" class="text-lg font-bold text-navy">{tcoPaybackLabel}</p>
+              <p id="tco-payback" class="text-lg font-bold text-navy">Op aanvraag*</p>
             </div>
             <div class="bg-white border border-slate-200 rounded-lg p-3">
               <p class="text-[10px] text-slate-500 uppercase tracking-wide">Aanloop / maand</p>
@@ -824,7 +815,7 @@ const tcoPaybackLabel = !isFinite(tcoPaybackMonths)
             </div>
           </div>
 
-          <p class="text-[11px] text-slate-500 mt-4">Exclusief 21% btw. Salaris-aanname incl. werkgeverslasten + secundaire (CAO ProTie 2026). Aanloop-pakket houdt geen rekening met gecapte vs hoog-volume gesprekken — voor &gt;1500 calls/mnd is Emma Enterprise realistischer.</p>
+          <p class="text-[11px] text-slate-500 mt-4">Exclusief 21% btw. Salaris-aanname incl. werkgeverslasten + secundaire (CAO ProTie 2026). Aanloop-pakket houdt geen rekening met gecapte vs hoog-volume gesprekken — voor &gt;1500 calls/mnd is Emma Enterprise realistischer. *Terugverdientijd hangt af van de eenmalige setup — die bespreken we in het gesprek.</p>
         </div>
       </div>
 
@@ -835,7 +826,7 @@ const tcoPaybackLabel = !isFinite(tcoPaybackMonths)
       </div>
     </div>
 
-    <script is:inline define:vars={{ emmaMonthly: EMMA.monthly, emmaSetup: EMMA.setup }}>
+    <script is:inline define:vars={{ emmaMonthly: EMMA.monthly }}>
       (function() {
         const fmt = n => '€' + Math.round(n).toLocaleString('nl-NL');
         const tiers = document.querySelectorAll('.tco-tier-btn');
@@ -848,26 +839,23 @@ const tcoPaybackLabel = !isFinite(tcoPaybackMonths)
         const fteDetail = document.getElementById('tco-fte-detail');
         const saving = document.getElementById('tco-saving');
         const savingPct = document.getElementById('tco-saving-pct');
-        const payback = document.getElementById('tco-payback');
         const monthly = document.getElementById('tco-monthly');
 
+        // Eenmalige setup zit bewust NIET in deze som — owner-besluit
+        // 2026-08-11: setup op aanvraag, alleen maandprijzen publiek zichtbaar.
         let activeMonthly = emmaMonthly;
-        let activeSetup = emmaSetup;
 
         function recalc() {
           const fteVals = parseFloat(fte.value);
           const sal = parseFloat(salary.value) || 0;
-          const aanloopTco = activeSetup + activeMonthly * 60;
+          const aanloopTco = activeMonthly * 60;
           const fteTco = sal * fteVals * 5;
           const savingAbs = fteTco - aanloopTco;
           const savingPctVal = aanloopTco > 0 ? (savingAbs / aanloopTco) * 100 : 0;
-          const ftePerMonth = (sal * fteVals) / 12;
-          const monthlyDiff = ftePerMonth - activeMonthly;
-          const paybackMonths = monthlyDiff > 0 ? activeSetup / monthlyDiff : Infinity;
 
           fteVal.textContent = fteVals.toString().replace('.', ',') + ' FTE';
           aanloop.textContent = fmt(aanloopTco);
-          aanloopDetail.textContent = 'Setup ' + fmt(activeSetup) + ' + ' + fmt(activeMonthly) + ' × 60';
+          aanloopDetail.textContent = fmt(activeMonthly) + ' × 60 mnd (excl. eenmalige setup, op aanvraag)';
           fteTotal.textContent = fmt(fteTco);
           fteDetail.textContent = fmt(sal) + ' × ' + fteVals.toString().replace('.', ',') + ' × 5';
           monthly.textContent = fmt(activeMonthly) + '/mnd';
@@ -883,14 +871,6 @@ const tcoPaybackLabel = !isFinite(tcoPaybackMonths)
             saving.classList.remove('text-brand-emerald');
             savingPct.textContent = 'Aanloop kost meer dan een mens bij dit scenario — overweeg het Emma-pakket';
           }
-
-          if (isFinite(paybackMonths) && paybackMonths > 0) {
-            payback.textContent = paybackMonths < 1 ? '< 1 mnd' : paybackMonths.toFixed(1).replace('.', ',') + ' mnd';
-          } else if (activeSetup === 0) {
-            payback.textContent = 'Direct (geen setup)';
-          } else {
-            payback.textContent = 'n.v.t.';
-          }
         }
 
         tiers.forEach(btn => {
@@ -898,7 +878,6 @@ const tcoPaybackLabel = !isFinite(tcoPaybackMonths)
             tiers.forEach(b => b.setAttribute('aria-checked', 'false'));
             btn.setAttribute('aria-checked', 'true');
             activeMonthly = parseFloat(btn.dataset.monthly);
-            activeSetup = parseFloat(btn.dataset.setup);
             recalc();
           });
         });

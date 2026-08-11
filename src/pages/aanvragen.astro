@@ -32,15 +32,17 @@ const planDetails: Record<string, PlanEntry> = {
   },
 };
 
+// seo-audit / seo-setup / geo-setup zijn eenmalige diensten met setup-prijs op
+// aanvraag (owner-besluit 2026-08-11) — deze staan hier NIET meer in, ze
+// redirecten client-side naar /contact/?type=offerte (zie script hieronder).
 const dienstDetails: Record<string, PlanEntry> = {
-  'seo-audit': { name: 'SEO Audit', price: 495, annualPrice: 495, product: 'SEO Audit Nederland', features: ['Core Web Vitals + schema audit', 'Concurrentie SERP top 10', 'Prioriteit-actieplan', 'Geleverd binnen 5 werkdagen'], oneShot: true },
-  'seo-setup': { name: 'SEO Setup', price: 1950, annualPrice: 1950, product: 'SEO Setup Pakket', features: ['Tech-SEO + 10 pagina\'s', 'Schema.org markup', 'Core Web Vitals fix', 'GA4 + GSC setup', 'Live binnen 4 weken'], oneShot: true },
   'seo-maand': { name: 'SEO Maandelijks', price: 795, annualPrice: 795, product: 'SEO Maandelijks Service', features: ['3 nieuwe pagina\'s/maand', 'GSC ranking-rapportage', 'Schema-updates', 'Strategie-call 30min/mnd'] },
   'geo-quickscan': { name: 'GEO Quick Scan', price: 0, annualPrice: 0, product: 'GEO Quick Scan (Gratis)', features: ['ChatGPT/Claude/Perplexity citability', 'AI-bot access check', 'Composite GEO-score 0-100', 'Top-3 quick-wins', 'Geleverd binnen 20min'], oneShot: true },
-  'geo-setup': { name: 'GEO Setup', price: 1450, annualPrice: 1450, product: 'GEO Setup Pakket', features: ['llms.txt + llms-full.txt', 'Schema.org Author/Person', 'AI-crawler config', 'Speakable + sameAs', 'Live binnen 2-3 weken'], oneShot: true },
   'geo-maand': { name: 'GEO Maandelijks', price: 595, annualPrice: 595, product: 'GEO AI-Citation Tracking', features: ['5-platform tracking', 'Citation-frequency rapport', 'Content-updates', 'Strategie-call 30min/mnd'] },
   'seo-geo-bundel': { name: 'SEO + GEO Bundel', price: 1195, annualPrice: 1195, product: 'SEO + GEO Maandelijkse Bundel', features: ['Alles van SEO Maandelijks', 'Alles van GEO Maandelijks', 'Eén rapport (SERP + AI)', 'Bespaart EUR 195/mnd', 'Prioriteit support < 4 uur'] },
 };
+
+const QUOTE_ONLY_DIENSTEN = ['seo-audit', 'seo-setup', 'geo-setup'];
 
 const selected: PlanEntry = (dienst && dienstDetails[dienst])
   ? dienstDetails[dienst]
@@ -319,6 +321,15 @@ const steps = [
 </style>
 
 <script>
+  // Eenmalige diensten (setup op aanvraag, owner-besluit 2026-08-11) hebben
+  // geen vaste checkout-prijs — stuur door naar de offerte/gesprek-CTA i.p.v.
+  // een kapotte "0 euro" of verouderde prijs te tonen.
+  const _quoteOnlyDiensten = ['seo-audit', 'seo-setup', 'geo-setup'];
+  const _dienstParamNow = new URLSearchParams(window.location.search).get('dienst');
+  if (_dienstParamNow && _quoteOnlyDiensten.includes(_dienstParamNow)) {
+    window.location.replace('/contact/?type=offerte&dienst=' + encodeURIComponent(_dienstParamNow));
+  }
+
   // Track plan page view
   document.addEventListener('DOMContentLoaded', () => {
     const _plan = new URLSearchParams(window.location.search).get('plan') || 'groei';

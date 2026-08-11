@@ -54,16 +54,25 @@ export const EMMA_MND = '€497/mnd';
 export const GROEI_LABEL = '€997';
 export const GROEI_MND = '€997/mnd';
 export const VANAF = 'Vanaf €497/mnd';
-/** schema.org Organization priceRange */
-export const PRICE_RANGE = '€497-€5000';
+/** schema.org Organization priceRange — publieke maandprijzen Emma t/m Groei.
+ *  GEEN eenmalige/setup-bedragen hierin (owner-besluit 2026-08-11). */
+export const PRICE_RANGE = '€497-€997';
 
-// ── Setup-fees — gebruik deze i.p.v. hardcoded €495/€795/€500 ──
+// ── Setup-fees — interne bedragen (portal/Mollie/offerte-berekening). NIET
+//    tonen op publieke marketingpagina's — owner-besluit 2026-08-11: alle
+//    eenmalige bedragen site-breed verborgen, alleen maandprijzen zichtbaar.
+//    De fee zelf bestaat en mag genoemd worden ("eenmalige setup van
+//    toepassing"); het bedrag wordt pas in het gesprek besproken. Gebruik
+//    EMMA_SETUP_LABEL/GROEI_SETUP_LABEL/SETUP_DISPLAY voor alle publieke tekst
+//    i.p.v. hardcoded €495/€795/€500 — één bron, geen whack-a-mole. ──
 export const EMMA_SETUP = 495;
 export const GROEI_SETUP = 795;
-export const EMMA_SETUP_LABEL = '€495';
-export const GROEI_SETUP_LABEL = '€795';
+/** Publiek display-label — GEEN bedrag. Owner-besluit 2026-08-11. */
+export const SETUP_DISPLAY = 'op aanvraag';
+export const EMMA_SETUP_LABEL = SETUP_DISPLAY;
+export const GROEI_SETUP_LABEL = SETUP_DISPLAY;
 /** Standaardzin voor de setup-fee. Eén formulering, site-breed. */
-export const SETUP_ZIN = 'Eenmalige setup: €495 (Emma) of €795 (Groei).';
+export const SETUP_ZIN = 'Eenmalige setup van toepassing — bespreken we in het gesprek.';
 
 // ── Productlabel — Emma is weer ÉÉN product. WhatsApp is een inbegrepen kanaal,
 //    geen eigen product meer. Gebruik EMMA_TELEFOON_NAAM nooit kaal als "Emma"

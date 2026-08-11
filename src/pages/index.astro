@@ -92,21 +92,21 @@ const homeSchema = [
         Eén partner voor uw website <span class="text-brand-indigo">én</span> uw AI.
       </h2>
       <p class="mt-5 text-lg text-slate-600 leading-relaxed text-pretty max-w-3xl reveal reveal-delay-2">
-        De meeste MKB-bedrijven kopen hun website bij een lokaal bureau en sluiten apart een AI-leverancier aan. Resultaat: twee contracten, twee aanspreekpunten en integratie-gedoe. Bij Aanloop AI bouwen wij uw website AI-ready vanaf dag één — met Emma (telefoon-AI), Emma (WhatsApp-AI) en uw site in één traject. Eén partner, één factuur. In de bundel vervallen de Emma-setup en het integratiewerk (samen €1.995) en betaalt u €540 per jaar minder dan bij twee losse abonnementen.
+        De meeste MKB-bedrijven kopen hun website bij een lokaal bureau en sluiten apart een AI-leverancier aan. Resultaat: twee contracten, twee aanspreekpunten en integratie-gedoe. Bij Aanloop AI bouwen wij uw website AI-ready vanaf dag één — met Emma (telefoon-AI), Emma (WhatsApp-AI) en uw site in één traject. Eén partner, één factuur. In de bundel vervallen de Emma-setup en het integratiewerk, en betaalt u €45 per maand minder dan bij twee losse abonnementen.
       </p>
 
       <div class="grid md:grid-cols-3 gap-4 mt-10">
         <a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="card hover:border-brand-indigo transition-all reveal">
           <p class="eyebrow text-xs mb-2">1. Website</p>
           <h3 class="font-bold text-navy text-base mb-2">AI-ready website laten maken</h3>
-          <p class="text-sm text-slate-600 mb-3 leading-relaxed">Astro/Next/WordPress AI-ready vanaf €3.450 setup + €129/mnd. Schema.org + Speakable + WCAG 2.2 AA + AVG-checks.</p>
+          <p class="text-sm text-slate-600 mb-3 leading-relaxed">Astro/Next/WordPress AI-ready vanaf €129/mnd, setup op aanvraag. Schema.org + Speakable + WCAG 2.2 AA + AVG-checks.</p>
           <span class="text-sm text-brand-indigo font-medium">Bekijk pakketten →</span>
         </a>
         <a href="/diensten/ai-website-bundel-mkb-nederland/" class="card hover:border-brand-indigo transition-all relative reveal reveal-delay-1 ring-2 ring-brand-indigo/40">
           <span class="absolute -top-3 left-4 px-3 py-1 bg-brand-indigo text-white text-xs font-bold rounded-full">Meest gekozen</span>
           <p class="eyebrow text-xs mb-2">2. Bundel</p>
           <h3 class="font-bold text-navy text-base mb-2">AI-Website Bundel</h3>
-          <p class="text-sm text-slate-600 mb-3 leading-relaxed">Website + Emma (telefoon-AI) + Emma (WhatsApp-AI) in 1 pakket. €5.950 setup + €649/mnd. Eén factuur, één SLA.</p>
+          <p class="text-sm text-slate-600 mb-3 leading-relaxed">Website + Emma (telefoon-AI) + Emma (WhatsApp-AI) in 1 pakket. Vanaf €649/mnd all-in — setup op aanvraag. Eén factuur, één SLA.</p>
           <span class="text-sm text-brand-indigo font-medium">Bekijk bundel →</span>
         </a>
         <a href="/kennisbank/website-bouwer-vs-ai-ready-partner-mkb-nederland-2026/" class="card hover:border-brand-indigo transition-all reveal reveal-delay-2">
@@ -247,7 +247,7 @@ const homeSchema = [
                 </button>
                 <span id="roi-pkg-label-groei" class="text-sm font-medium text-slate-500">Groei €997</span>
               </div>
-              <p class="text-xs text-slate-400 mt-1">Inclusief eenmalige setup, verrekend in maand 1</p>
+              <p class="text-xs text-slate-400 mt-1">Exclusief eenmalige setup — op aanvraag, bespreken we in het gesprek</p>
             </div>
             <!-- Slider 1 -->
             <div>
@@ -291,7 +291,7 @@ const homeSchema = [
               <p id="roi-hours" class="text-2xl font-bold text-navy">1.040 u</p>
             </div>
             <div class="card text-center">
-              <p class="text-xs text-slate-500 mb-1">ROI in maand 1</p>
+              <p class="text-xs text-slate-500 mb-1">ROI in maand 1 (excl. eenmalige setup)</p>
               <p id="roi-month" class="text-2xl font-bold text-brand-emerald">+€1.263</p>
             </div>
           </div>
@@ -627,9 +627,11 @@ const homeSchema = [
   const pkgLabelGroeiEl = document.getElementById('roi-pkg-label-groei') as HTMLElement;
 
   // Prices match /tarieven/ exactly — do not change without updating both places.
-  const PACKAGES: Record<'emma' | 'groei', { monthly: number; setup: number }> = {
-    emma: { monthly: 497, setup: 495 },
-    groei: { monthly: 997, setup: 795 },
+  // Eenmalige setup is NIET meer in deze formule (owner-besluit 2026-08-11):
+  // setup op aanvraag, alleen maandprijzen publiek zichtbaar.
+  const PACKAGES: Record<'emma' | 'groei', { monthly: number }> = {
+    emma: { monthly: 497 },
+    groei: { monthly: 997 },
   };
   let selectedPkg: 'emma' | 'groei' = 'emma';
 
@@ -654,9 +656,9 @@ const homeSchema = [
     const humanCost = Math.round(hoursPerYear * hourly);
     const aiYearly = pkg.monthly * 12;
     const saving = humanCost - aiYearly;
-    // Month 1 includes the one-time setup fee (not amortized) — a business's
-    // real first-month cash position, which is often negative.
-    const month1 = Math.round((humanCost / 12) - pkg.monthly - pkg.setup);
+    // Month 1 = recurring cost only. Eenmalige setup is NIET amortized hierin
+    // (owner-besluit 2026-08-11: setup op aanvraag, niet publiek).
+    const month1 = Math.round((humanCost / 12) - pkg.monthly);
     const savingPct = humanCost > 0 ? Math.round((saving / humanCost) * 100) : 0;
     const savingPctClamped = Math.max(-100, Math.min(100, savingPct));
 
