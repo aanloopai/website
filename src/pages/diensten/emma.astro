@@ -5,8 +5,6 @@ import emmaWhatsapp from '../../assets/images/emma-whatsapp.png';
 import {
   EMMA_MND,
   GROEI_MND,
-  EMMA_LITE_MND,
-  EMMA_WHATSAPP_STANDARD_MND,
   EMMA_SETUP_LABEL,
   GROEI_SETUP_LABEL,
 } from '../../data/pricing';
@@ -36,11 +34,11 @@ const comparison = [
   { feature: 'Realtime productdata (voorraad, orders)', emma: true, livechat: 'Handmatig', chatgpt: false, email: false },
   { feature: 'Naadloze handover naar mens', emma: true, livechat: true, chatgpt: false, email: 'Manueel' },
   { feature: 'CRM-koppeling met conversatiehistorie', emma: true, livechat: 'Variabel', chatgpt: false, email: 'Variabel' },
-  { feature: 'Maandelijkse kosten (MKB-volume)', emma: `Vanaf ${EMMA_LITE_MND} (WhatsApp) / ${EMMA_MND} (telefoon + WhatsApp)`, livechat: '€500-2.000', chatgpt: '€20/user', email: 'Personeelskosten' },
+  { feature: 'Maandelijkse kosten (MKB-volume)', emma: `Vanaf ${EMMA_MND} (telefoon + WhatsApp inbegrepen)`, livechat: '€500-2.000', chatgpt: '€20/user', email: 'Personeelskosten' },
   { feature: 'AVG-bewust, EU-only data, DPA mogelijk', emma: true, livechat: 'Variabel', chatgpt: false, email: 'Variabel' },
 ];
 
-const kostenAnswer = `Emma is niet één pakket, maar twee productlijnen. WhatsApp-only (chat, geen telefonie), geen setup-kosten: Emma Lite ${EMMA_LITE_MND} (tot 1.000 conversaties) of Emma WhatsApp Standard ${EMMA_WHATSAPP_STANDARD_MND} (onbeperkte berichten + webshop-koppeling). Telefoon + WhatsApp samen — WhatsApp zit er al bij, u betaalt dit dan niet nog een keer los: Emma ${EMMA_MND} (AI-telefoniste + WhatsApp + workflow-automatisering, tot 150 gesprekken, eenmalige setup ${EMMA_SETUP_LABEL}) of Groei ${GROEI_MND} (onbeperkt volume + WhatsApp + CRM-koppeling + multi-number + priority support, eenmalige setup ${GROEI_SETUP_LABEL} — meest gekozen). Emma Enterprise op aanvraag (SLA, dedicated tenant, custom workflows). WhatsApp-conversatiekosten van Meta (gemiddeld €0,03-0,08 per uniek 24-uurs venster) zijn niet inbegrepen — die factureert Meta direct aan u; wij rekenen er geen marge op. Zie /tarieven voor de volledige opbouw.`;
+const kostenAnswer = `Emma is één pakket met WhatsApp altijd inbegrepen — geen los WhatsApp-abonnement. Emma ${EMMA_MND} (AI-telefoniste + WhatsApp + workflow-automatisering, tot 150 gesprekken, eenmalige setup ${EMMA_SETUP_LABEL}) of Groei ${GROEI_MND} (onbeperkt volume + WhatsApp + CRM-koppeling + multi-number + priority support, eenmalige setup ${GROEI_SETUP_LABEL} — meest gekozen). Emma Enterprise op aanvraag (SLA, dedicated tenant, custom workflows). WhatsApp-conversatiekosten van Meta (gemiddeld €0,03-0,08 per uniek 24-uurs venster) zijn niet inbegrepen — die factureert Meta direct aan u; wij rekenen er geen marge op. Zie /tarieven voor de volledige opbouw.`;
 
 const faqItems = [
   { question: 'Neemt Emma ook echt de telefoon aan?', answer: 'Ja. Emma is uw omnichannel AI-agent: ze neemt inkomende telefoongesprekken 24/7 zelf aan met een natuurlijke NL-stem (ElevenLabs), beantwoordt vragen, plant afspraken in uw agenda, verbindt door naar de juiste collega en levert van elk gesprek een transcript. Daarnaast handelt ze WhatsApp en webchat af en triggert ze workflows — telefoon, chat en automatisering in één agent, op één nummer, met één gespreksgeschiedenis.' },
@@ -71,9 +69,9 @@ const schema = {
   offers: {
     '@type': 'AggregateOffer',
     priceCurrency: 'EUR',
-    lowPrice: '49',
+    lowPrice: '497',
     highPrice: '997',
-    offerCount: '4',
+    offerCount: '2',
     availability: 'https://schema.org/InStock',
     seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
   },
@@ -95,9 +93,9 @@ const softwareSchema = {
   offers: {
     '@type': 'AggregateOffer',
     priceCurrency: 'EUR',
-    lowPrice: '49',
+    lowPrice: '497',
     highPrice: '997',
-    offerCount: '4',
+    offerCount: '2',
     availability: 'https://schema.org/InStock',
   },
   featureList: [
@@ -210,16 +208,15 @@ const softwareSchema = {
 
       <!-- WhatsApp -->
       <div id="whatsapp" class="scroll-mt-24 mb-12">
-        <h3 class="text-xl font-bold text-navy mb-1">WhatsApp — als los abonnement of inbegrepen bij telefonie</h3>
+        <h3 class="text-xl font-bold text-navy mb-1">WhatsApp — inbegrepen bij Emma, geen los abonnement</h3>
         <p class="text-sm text-slate-600 mb-5">
-          Los verkrijgbaar als WhatsApp-only abonnement (chat, geen telefonie), geen setup-kosten:
-          Emma Lite {EMMA_LITE_MND} of Emma WhatsApp Standard {EMMA_WHATSAPP_STANDARD_MND}. Kiest u voor
-          telefoon (hierboven), dan zit WhatsApp daar al bij — u betaalt dit dan niet nog een keer los.
+          WhatsApp is geen apart product: het zit standaard in Emma {EMMA_MND} of Groei {GROEI_MND}
+          (hierboven) — u betaalt hier dus nooit een tweede keer voor los bovenop de telefonie.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           {[
             'WhatsApp Business API — officieel geverifieerd',
-            'Onbeperkte berichten en webshop-koppeling (Standard)',
+            'Onbeperkte berichten en webshop-koppeling',
             'Afspraken plannen via WhatsApp (Google Calendar)',
             'Naadloze handover naar mens bij complexe vragen',
           ].map((f, i) => (
@@ -267,7 +264,7 @@ const softwareSchema = {
           Het resultaat is een productie-grade AI-agent die de telefoon aanneemt én via WhatsApp Business API werkt, workflows automatiseert, multilingual is (NL/EN/FR/DE standaard), AVG-compliant is met EU-only dataopslag, en zich via een handover-protocol naadloos overdraagt — doorverbinden aan de telefoon of doorzetten op WhatsApp — bij complexe situaties. Voor webshops koppelen we realtime voorraad- en orderstatus zodat de agent altijd actuele informatie geeft — iets wat een klassieke regel-gebaseerde chatbot nooit kan bieden.
         </p>
         <p class="text-slate-600 leading-relaxed mb-4">
-          Standaard levert Aanloop AI een volledig ingerichte omnichannel AI-agent binnen 7 werkdagen. De maandelijkse kosten zijn vast en voorspelbaar. Kiest u telefoon + WhatsApp, dan geldt eenmalig een setup-fee van {EMMA_SETUP_LABEL} (Emma) of {GROEI_SETUP_LABEL} (Groei) — WhatsApp-only pakketten (Lite, Standard) kennen geen setup-kosten. Wilt u weten wat Emma voor uw specifieke situatie kost?
+          Standaard levert Aanloop AI een volledig ingerichte omnichannel AI-agent binnen 7 werkdagen. De maandelijkse kosten zijn vast en voorspelbaar: eenmalig een setup-fee van {EMMA_SETUP_LABEL} (Emma) of {GROEI_SETUP_LABEL} (Groei), WhatsApp zit in beide al inbegrepen. Wilt u weten wat Emma voor uw specifieke situatie kost?
         </p>
         <a href="/kennisbank/hoeveel-kost-een-ai-agent/" class="inline-flex items-center gap-1.5 text-brand-indigo font-medium hover:underline text-sm">
           Lees: Wat kost een AI-agent of chatbot in Nederland? (volledig kostenoverzicht)

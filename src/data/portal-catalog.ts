@@ -55,18 +55,6 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
     ],
   },
   {
-    key: 'emma',
-    naam: 'Emma — WhatsApp-assistent',
-    categorie: 'Chat AI',
-    omschrijving:
-      'Beantwoordt WhatsApp- en chatvragen automatisch, 24/7. Getraind op uw FAQ en productcatalogus.',
-    meerInfoUrl: 'https://aanloopai.nl/diensten/emma/',
-    tiers: [
-      { naam: 'Lite', prijs: '€49/mnd', prijsCent: 4900, setupCent: 0, betaling: 'maandelijks', kenmerken: ['500 berichten/mnd', 'Standaard FAQ-training', 'WhatsApp Business API', 'NL/EN auto-detectie'] },
-      { naam: 'Standard', prijs: '€197/mnd', prijsCent: 19700, setupCent: 0, betaling: 'maandelijks', kenmerken: ['Onbeperkt berichten', 'Eigen FAQ + productcatalogus', 'Shopify/WooCommerce-koppeling', 'Meertalig NL/EN/FR/DE'] },
-    ],
-  },
-  {
     key: 'seo',
     naam: 'SEO — vindbaarheid in Google',
     categorie: 'Groei',
@@ -111,7 +99,7 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'Een nieuwe AI-ready website inclusief Emma — alles in één pakket opgezet.',
     meerInfoUrl: 'https://aanloopai.nl/diensten/ai-website-bundel-mkb-nederland/',
     tiers: [
-      { naam: 'Bundel', prijs: '€5.950 setup + €649/mnd', prijsCent: null, setupCent: 0, betaling: 'aanvraag', kenmerken: ['AI-ready website', 'Emma AI-receptionist', 'Emma WhatsApp-assistent', 'Eén vast maandbedrag'] },
+      { naam: 'Bundel', prijs: '€5.950 setup + €649/mnd', prijsCent: null, setupCent: 0, betaling: 'aanvraag', kenmerken: ['AI-ready website', 'Emma AI-receptionist (WhatsApp inbegrepen)', 'Eén vast maandbedrag'] },
     ],
   },
   {

@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { EMMA_LITE_MND, EMMA_MND, EMMA_TELEFOON_NAAM, EMMA_WHATSAPP_NAAM, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../../data/pricing';
+import { EMMA_MND, EMMA_TELEFOON_NAAM, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../../data/pricing';
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -22,9 +22,9 @@ const articleSchema = {
 
 const comparison = [
   { feature: 'Type oplossing', a: 'Full-service AI-bureau (build + run)', b: 'Self-service chatbot-platform' },
-  { feature: 'Kanalen', a: `${EMMA_TELEFOON_NAAM}, ${EMMA_WHATSAPP_NAAM}, web-chat, e-mail, SMS`, b: 'Web-chat, WhatsApp, Facebook, Instagram' },
+  { feature: 'Kanalen', a: `${EMMA_TELEFOON_NAAM} (WhatsApp inbegrepen), web-chat, e-mail, SMS`, b: 'Web-chat, WhatsApp, Facebook, Instagram' },
   { feature: 'Telefoon-AI (voice)', a: 'Ja - Emma met natuurlijk Nederlands accent', b: 'Nee (alleen tekst-kanalen)' },
-  { feature: 'Startprijs per maand', a: `${EMMA_LITE_MND} (${EMMA_WHATSAPP_NAAM}) · ${EMMA_MND} (${EMMA_TELEFOON_NAAM}, incl. WhatsApp)`, b: 'Vanaf circa 250 euro (Starter pakket)' },
+  { feature: 'Startprijs per maand', a: `${EMMA_MND} (${EMMA_TELEFOON_NAAM}, incl. WhatsApp — geen chat-only instap meer)`, b: 'Vanaf circa 250 euro (Starter pakket, chat-only)' },
   { feature: 'Doorlooptijd live-gang', a: '7 werkdagen, volledig opgezet', b: 'Self-service: snel; met expert-hulp 4-6 weken' },
   { feature: 'Nederlands NLU', a: 'Native NL-tuning per sector', b: 'NL-ondersteund, generiek getraind' },
   { feature: 'Custom workflows', a: 'Onbeperkt (n8n + Make.com onder de motorkap)', b: 'Beperkt tot platform-templates en flow-builder' },
@@ -58,7 +58,7 @@ const faqs = [
   },
   {
     q: 'Welke kost minder per maand?',
-    a: `${EMMA_WHATSAPP_NAAM} (Lite) start vanaf ${EMMA_LITE_MND} inclusief setup en training — chat-only, net als Watermelon. Voor telefoon-AI incl. WhatsApp is ${EMMA_TELEFOON_NAAM} vanaf ${EMMA_MND}. Watermelon Starter ligt rond 250 euro per maand exclusief implementatie-uren.`,
+    a: `Voor pure chat is Watermelon Starter (circa 250 euro/maand) goedkoper. Aanloop AI verkoopt WhatsApp niet meer als los, goedkoper instapabonnement — ${EMMA_TELEFOON_NAAM} start vanaf ${EMMA_MND} en levert daarvoor telefoon + WhatsApp samen. Heeft u alléén chat nodig, dan is Watermelon op prijs de logische keuze; wilt u ook de telefoon opgenomen, dan is Aanloop AI all-in goedkoper dan losse telefonie + chatbot naast elkaar.`,
   },
   {
     q: 'Welke is sneller live?',
@@ -163,7 +163,7 @@ const combinedSchema = [articleSchema, faqSchema];
       <p class="text-slate-700 leading-relaxed mb-4">In de praktijk: Watermelon dekt 60-70 procent van een MKB-klantcontact-flow goed. Aanloop AI dekt 95 procent inclusief telefoon, voice, en custom workflows.</p>
       <div class="mt-8 flex flex-wrap gap-3">
         <a href={EMMA_TELEFOON_URL} class="btn-secondary">Meer over Emma (telefoon-AI)</a>
-        <a href={EMMA_WHATSAPP_URL} class="btn-secondary">Meer over Emma (WhatsApp)</a>
+        <a href={EMMA_WHATSAPP_URL} class="btn-secondary">Meer over Emma (WhatsApp inbegrepen)</a>
         <a href="/aanvragen/" class="btn-primary">Adviesgesprek aanvragen</a>
       </div>
     </div>
@@ -187,7 +187,7 @@ const combinedSchema = [articleSchema, faqSchema];
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder vergelijken</h2>
       <ul class="space-y-3 text-slate-700">
-        <li><a href="/diensten/emma/" class="text-navy hover:underline">Emma — AI-receptie & WhatsApp Agent (productpagina)</a></li>
+        <li><a href="/diensten/emma/" class="text-navy hover:underline">Emma — AI-receptie & WhatsApp (productpagina)</a></li>
         <li><a href="/vergelijk/ai-receptionist-vs-callcenter/" class="text-navy hover:underline">AI-receptionist versus extern callcenter</a></li>
         <li><a href="/kennisbank/ai-voicebot-vs-chatbot-mkb-vergelijking/" class="text-navy hover:underline">AI-voicebot versus chatbot - kanaalkeuze MKB</a></li>
         <li><a href="/vergelijk/" class="text-navy hover:underline">Alle vergelijkingen</a></li>
