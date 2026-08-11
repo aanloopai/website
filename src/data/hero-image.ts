@@ -1,4 +1,4 @@
-import heroAiAgent from '../assets/images/hero-ai-agent.png';
+import emmaWhatsapp from '../assets/images/emma-whatsapp.png';
 
 // Single source of truth voor de hero-afbeelding op de homepage.
 //
@@ -7,7 +7,14 @@ import heroAiAgent from '../assets/images/hero-ai-agent.png';
 // hebben — wijken ze af, dan levert de preload een tweede download op in plaats
 // van een snellere eerste. Vandaar dat de opties hier staan en niet twee keer
 // los in de componenten.
-export const HERO_IMAGE = heroAiAgent;
+//
+// 2026-08-11 clarity redesign: was een abstracte "AI-golven op telefoon"
+// stockgrafiek — toonde het product niet, gaf bezoekers geen idee wat Emma
+// doet. Vervangen door dezelfde WhatsApp-gespreksmockup die al op
+// /diensten/emma/ staat: laat in één oogopslag zien dat Emma een echt gesprek
+// voert. Zelfde 1024×1024 bronformaat, dus geen aanpassing aan widths/sizes
+// nodig om layout shift te voorkomen.
+export const HERO_IMAGE = emmaWhatsapp;
 
 export const HERO_IMAGE_OPTIONS = {
   widths: [400, 600, 900, 1200, 1400],
