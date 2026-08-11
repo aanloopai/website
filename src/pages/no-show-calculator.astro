@@ -96,8 +96,8 @@ const calculatorSchema = {
           </div>
 
           <div class="card p-5 bg-slate-50">
-            <p class="text-xs uppercase tracking-wider text-slate-500 mb-2">Aanloop AI Emma WhatsApp-pakket</p>
-            <p class="text-sm font-semibold text-navy mb-1">Vanaf 197 euro per maand all-in</p>
+            <p class="text-xs uppercase tracking-wider text-slate-500 mb-2">Aanloop AI Emma — telefoon + WhatsApp</p>
+            <p class="text-sm font-semibold text-navy mb-1">Vanaf 497 euro per maand all-in</p>
             <p class="text-xs text-slate-500" id="roi-detail">-</p>
           </div>
 
@@ -116,7 +116,7 @@ const calculatorSchema = {
       <div class="space-y-4 text-slate-600 text-sm leading-relaxed">
         <p><strong class="text-navy">Formule:</strong> Jaarlijks verlies = (afspraken per week × 52) × (no-show percentage / 100) × afspraakwaarde.</p>
         <p><strong class="text-navy">Met AI:</strong> Wij rekenen met 5 procent residueel no-show — een realistische schatting op basis van sector-benchmarks voor WhatsApp-herinneringen met segmentatie. Werkelijke percentages verschillen per situatie.</p>
-        <p><strong class="text-navy">ROI-context:</strong> Emma WhatsApp-pakket vanaf 197 euro per maand (2.364 euro per jaar). Bij gemiddelde MKB-praktijk levert dit 4-15x ROI op no-show alleen — exclusief de extra winsten op klantcontact, vaccinatieherinneringen, agenda-vragen.</p>
+        <p><strong class="text-navy">ROI-context:</strong> Emma (telefoon + WhatsApp inbegrepen) vanaf 497 euro per maand (5.964 euro per jaar). Bij gemiddelde MKB-praktijk levert dit 2-6x ROI op no-show alleen — exclusief de extra winsten op klantcontact, vaccinatieherinneringen, agenda-vragen.</p>
         <p><strong class="text-navy">Onbekende waardes?</strong> Schat realistisch. Voor exacte cijfers per branche: zie onze sectorspecifieke <a href="/kennisbank/" class="text-brand-indigo underline">kennisbank-gidsen</a>.</p>
       </div>
     </div>
@@ -151,7 +151,7 @@ const calculatorSchema = {
     const aiLoss = aiNoShows * value;
 
     const saved = currentLoss - aiLoss;
-    const investment = 197 * 12;
+    const investment = 497 * 12;
     const roiMultiple = saved / investment;
 
     document.getElementById('current-loss')!.textContent = '€ ' + fmt(currentLoss);
@@ -164,7 +164,7 @@ const calculatorSchema = {
     document.getElementById('saved-detail')!.textContent = `${fmt(currentNoShows - aiNoShows)} extra ingevulde slots per jaar`;
 
     document.getElementById('roi-detail')!.textContent =
-      `Investering Emma 197 euro per maand = 2.364 euro per jaar. Uw potentiele ROI: ${roiMultiple.toFixed(1)}x op alleen no-show besparingen.`;
+      `Investering Emma 497 euro per maand = 5.964 euro per jaar. Uw potentiele ROI: ${roiMultiple.toFixed(1)}x op alleen no-show besparingen.`;
 
     resultsBox?.classList.remove('hidden');
     resultsVisible = true;

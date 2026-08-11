@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { EMMA_LITE_MND, EMMA_MND, EMMA_TELEFOON_NAAM, EMMA_WHATSAPP_NAAM, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../../data/pricing';
+import { EMMA_MND, EMMA_TELEFOON_NAAM, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../../data/pricing';
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -29,7 +29,7 @@ const faqSchema = {
       name: 'Wat is het verschil in scope tussen Aanloop AI en Belsimpel/Toing?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: `Belsimpel is van origine een telecom-aanbieder en biedt bots primair als bel- en chat-aanvulling op telefonie-abonnementen. Aanloop AI is een gespecialiseerd AI-bureau met drie productlijnen: ${EMMA_TELEFOON_NAAM}, ${EMMA_WHATSAPP_NAAM} en AI-document automation, los van een telecom-pakket.`,
+        text: `Belsimpel is van origine een telecom-aanbieder en biedt bots primair als bel- en chat-aanvulling op telefonie-abonnementen. Aanloop AI is een gespecialiseerd AI-bureau met ${EMMA_TELEFOON_NAAM} (telefoon + WhatsApp inbegrepen) en AI-document automation, los van een telecom-pakket.`,
       },
     },
     {
@@ -45,7 +45,7 @@ const faqSchema = {
       name: 'Wat zijn de prijsstructuren?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: `Aanloop AI: ${EMMA_WHATSAPP_NAAM} vanaf ${EMMA_LITE_MND} (chat-only), ${EMMA_TELEFOON_NAAM} vanaf ${EMMA_MND} all-in (WhatsApp inbegrepen). Telecom-bots zijn meestal een add-on bovenop een zakelijk telefonie-abonnement met variabele per-minuut kosten. Vergelijk altijd de all-in prijs over 12 maanden inclusief implementatie en onderhoud.`,
+        text: `Aanloop AI: ${EMMA_TELEFOON_NAAM} vanaf ${EMMA_MND} all-in — telefoon + WhatsApp in één abonnement, geen los WhatsApp-tarief. Telecom-bots zijn meestal een add-on bovenop een zakelijk telefonie-abonnement met variabele per-minuut kosten. Vergelijk altijd de all-in prijs over 12 maanden inclusief implementatie en onderhoud.`,
       },
     },
     {
@@ -61,7 +61,7 @@ const faqSchema = {
       name: 'Kan ik beide combineren?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: `Ja. Veel klanten houden hun telecom-pakket bij hun huidige aanbieder en koppelen ${EMMA_TELEFOON_NAAM} daaraan via SIP-trunks, of gebruiken ${EMMA_WHATSAPP_NAAM} via de WhatsApp Business API. Aanloop AI levert de AI-laag, niet de telefonielijn zelf.`,
+        text: `Ja. Veel klanten houden hun telecom-pakket bij hun huidige aanbieder en koppelen ${EMMA_TELEFOON_NAAM} daaraan via SIP-trunks — WhatsApp Business API is standaard inbegrepen. Aanloop AI levert de AI-laag, niet de telefonielijn zelf.`,
       },
     },
   ],
@@ -69,13 +69,13 @@ const faqSchema = {
 
 const comparison = [
   { feature: 'Type bedrijf', aanloop: 'AI-bureau (operator-as-a-service)', belsimpel: 'Telecom-aanbieder met bot add-on' },
-  { feature: 'Productpalet AI', aanloop: `${EMMA_TELEFOON_NAAM}, ${EMMA_WHATSAPP_NAAM}, AI-document`, belsimpel: 'Bel/chat-bot binnen telefonie-pakket' },
+  { feature: 'Productpalet AI', aanloop: `${EMMA_TELEFOON_NAAM} (WhatsApp inbegrepen), AI-document`, belsimpel: 'Bel/chat-bot binnen telefonie-pakket' },
   { feature: 'Onafhankelijk van telecom-aanbieder', aanloop: 'Ja — werkt met elke SIP/Provider', belsimpel: 'Doorgaans gekoppeld aan eigen pakket' },
   { feature: 'Datalokatie', aanloop: 'EU-only (Frankfurt/Amsterdam)', belsimpel: 'Afhankelijk van pakket — controleren in DPA' },
   { feature: 'AVG-DPA', aanloop: 'NL-DPA, signing in 1 dag', belsimpel: 'Onderdeel van bredere telecom-DPA' },
   { feature: 'NEN 7510 zorg-add-on', aanloop: 'Beschikbaar', belsimpel: 'Doorgaans niet als losse module' },
   { feature: 'Doorlooptijd live-gang', aanloop: '5-7 werkdagen', belsimpel: 'Variabel; afhankelijk van pakket-onboarding' },
-  { feature: 'Startprijs per maand', aanloop: `Vanaf ${EMMA_LITE_MND} (${EMMA_WHATSAPP_NAAM}) / ${EMMA_MND} (${EMMA_TELEFOON_NAAM}, incl. WhatsApp)`, belsimpel: 'Bot-add-on bovenop telecom-pakket' },
+  { feature: 'Startprijs per maand', aanloop: `Vanaf ${EMMA_MND} (${EMMA_TELEFOON_NAAM}, incl. WhatsApp)`, belsimpel: 'Bot-add-on bovenop telecom-pakket' },
   { feature: 'Eigenaarschap transcripts', aanloop: 'Klant', belsimpel: 'Variabel — controleer voorwaarden' },
   { feature: 'Native NL-spraak', aanloop: 'Ja', belsimpel: 'Ja' },
   { feature: 'CRM-integraties', aanloop: 'HubSpot, Salesforce, Pipedrive, AFAS native', belsimpel: 'Variabel per pakket' },
@@ -174,7 +174,7 @@ const useCases = [
       <p class="text-slate-700 leading-relaxed mb-4">Voor zorg, juridisch, vastgoed en andere AVG-zware sectoren, of bij groei boven 500 gesprekken per maand, levert een gespecialiseerde AI-laag (Aanloop AI) doorgaans betere prompt-kwaliteit, scherpere escalatieregels en transparante datalokatie.</p>
       <div class="mt-8 flex flex-wrap gap-3">
         <a href={EMMA_TELEFOON_URL} class="btn-secondary">Emma AI-receptie (telefoon)</a>
-        <a href={EMMA_WHATSAPP_URL} class="btn-secondary">Emma WhatsApp Agent (chat)</a>
+        <a href={EMMA_WHATSAPP_URL} class="btn-secondary">Emma — WhatsApp inbegrepen</a>
         <a href="/aanvragen/" class="btn-primary">Adviesgesprek aanvragen</a>
       </div>
     </div>
@@ -200,7 +200,7 @@ const useCases = [
       <ul class="space-y-3 text-slate-700">
         <li><a href="/vergelijk/aanloop-vs-watermelon/" class="text-navy hover:underline">Aanloop AI vs Watermelon</a></li>
         <li><a href="/vergelijk/aanloop-vs-chatlayer/" class="text-navy hover:underline">Aanloop AI vs Chatlayer</a></li>
-        <li><a href="/diensten/emma/" class="text-navy hover:underline">Emma — AI-receptie & WhatsApp Agent (productpagina)</a></li>
+        <li><a href="/diensten/emma/" class="text-navy hover:underline">Emma — AI-receptie & WhatsApp (productpagina)</a></li>
         <li><a href="/vergelijk/" class="text-navy hover:underline">Aanloop AI versus andere leveranciers</a></li>
       </ul>
     </div>

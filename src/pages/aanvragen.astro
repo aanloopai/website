@@ -30,20 +30,6 @@ const planDetails: Record<string, PlanEntry> = {
     product: 'Emma + Custom Workflows',
     features: ['Onbeperkt Emma', 'Custom n8n workflows', 'Multi-team routing', 'Dedicated account manager', 'Op offerte — binnen 24 uur'],
   },
-  'emma-lite': {
-    name: 'Emma Lite',
-    price: 49,
-    annualPrice: 49,
-    product: 'Emma — WhatsApp AI (Lite)',
-    features: ['Tot 500 berichten/maand', 'Standaard FAQ-training', 'WhatsApp Business API', 'NL/EN auto-detect', 'Geen setup-kosten'],
-  },
-  'emma-standard': {
-    name: 'Emma Standard',
-    price: 197,
-    annualPrice: 197,
-    product: 'Emma — WhatsApp AI (Standard)',
-    features: ['Onbeperkte berichten', 'Eigen FAQ + productcatalogus', 'Native Shopify/WooCommerce', 'CRM-koppeling HubSpot/Pipedrive', 'Multilingual NL/EN/FR/DE'],
-  },
 };
 
 const dienstDetails: Record<string, PlanEntry> = {
@@ -302,7 +288,7 @@ const steps = [
               ) : (
                 <>
                   <div class="flex justify-between text-slate-600"><span>Abonnement</span><span id="summary-sub">€{selected.price}/maand</span></div>
-                  <div class="flex justify-between text-slate-600"><span>Setup (eenmalig)</span><span>{selectedKey === 'lite' || selectedKey === 'emma-lite' ? 'Geen' : 'Op offerte'}</span></div>
+                  <div class="flex justify-between text-slate-600"><span>Setup (eenmalig)</span><span>Op offerte</span></div>
                   <div class="flex justify-between text-slate-600"><span>BTW (21%)</span><span>Niet inbegrepen</span></div>
                   <div class="border-t border-slate-200 pt-2 flex justify-between font-bold text-navy"><span>Totaal/maand</span><span id="summary-total">€{selected.price}</span></div>
                 </>
@@ -413,7 +399,6 @@ const steps = [
         const _dienstParam = _qs.get('dienst') || '';
         const _planValues: Record<string, number> = {
           emma: 497, groei: 997, partner: 0,
-          'emma-lite': 49, 'emma-standard': 197,
         };
         const _dienstValues: Record<string, number> = {
           'seo-audit': 495, 'seo-setup': 1950, 'seo-maand': 795,

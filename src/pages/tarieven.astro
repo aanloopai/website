@@ -3,8 +3,6 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import dashboardMockup from '../assets/images/dashboard-mockup.png';
 import {
-  EMMA_LITE,
-  EMMA_WHATSAPP_STANDARD,
   EMMA,
   GROEI,
   EMMA_SETUP_LABEL,
@@ -14,54 +12,13 @@ import {
 
 // ── Pricing logic ──────────────────────────────────────────────
 // Prijzen komen uit src/data/pricing.ts (single source of truth).
-// Emma is TWEE productlijnen onder één merk:
-//   • WhatsApp-only (chat): Emma Lite €49/mnd, Emma WhatsApp Standard €197/mnd. Geen telefonie, geen setup-fee.
-//   • Telefoon + WhatsApp (WhatsApp is INBEGREPEN, nooit los bijtellen): Emma €497/mnd, Groei €997/mnd.
-// Enterprise op aanvraag. Setup: €495 (Emma) / €795 (Groei) — WhatsApp-only pakketten kennen geen setup-fee.
-// Tot 2026-07-14 claimde deze pagina "geen setup-fee" als markt-differentiator; dat was fout (owner-bevestigd,
-// zie pricing.ts). Gecorrigeerd — gebruik SETUP_ZIN / EMMA_SETUP_LABEL / GROEI_SETUP_LABEL, nooit hardcoded €0.
+// Owner-besluit 2026-08-11: de standalone WhatsApp-only productlijn (Lite €49,
+// Standard €197) is geschrapt. Emma is weer één product: telefoon + WhatsApp
+// (WhatsApp is INBEGREPEN, nooit los bijtellen): Emma €497/mnd, Groei €997/mnd.
+// Enterprise op aanvraag. Setup: €495 (Emma) / €795 (Groei).
+// Gebruik SETUP_ZIN / EMMA_SETUP_LABEL / GROEI_SETUP_LABEL, nooit hardcoded €0.
 
 const plans = [
-  {
-    id: 'emma-lite',
-    name: 'Emma Lite',
-    tagline: 'WhatsApp-only AI-assistent — starter',
-    price: { monthly: EMMA_LITE.monthly, annual: EMMA_LITE.annual, setup: EMMA_LITE.setup },
-    badge: null,
-    highlight: false,
-    includes: 'Emma WhatsApp Agent (chat) — Lite',
-    features: [
-      { text: 'WhatsApp Business AI-assistent', included: true },
-      { text: 'Tot 1.000 conversaties/mnd', included: true },
-      { text: 'Eigen kennisbank (Dify)', included: true },
-      { text: 'AI-telefoniste (telefoon)', included: false },
-      { text: 'Workflow-automatisering', included: false },
-      { text: 'CRM-koppeling', included: false },
-      { text: 'SLA + dedicated accountmanager', included: false },
-    ],
-    cta: 'Start met Emma Lite',
-    ctaHref: '/aanvragen/?plan=emma-lite',
-  },
-  {
-    id: 'emma-standard',
-    name: 'Emma WhatsApp Standard',
-    tagline: 'WhatsApp-only AI-assistent — onbeperkt berichten',
-    price: { monthly: EMMA_WHATSAPP_STANDARD.monthly, annual: EMMA_WHATSAPP_STANDARD.annual, setup: EMMA_WHATSAPP_STANDARD.setup },
-    badge: null,
-    highlight: false,
-    includes: 'Emma WhatsApp Agent (chat) — Standard',
-    features: [
-      { text: 'WhatsApp Business AI-assistent', included: true },
-      { text: 'Onbeperkt conversaties/mnd', included: true },
-      { text: 'Eigen FAQ + productcatalogus', included: true },
-      { text: 'Webshop-koppeling (Shopify / WooCommerce)', included: true },
-      { text: 'Meertalig NL/EN/FR/DE', included: true },
-      { text: 'AI-telefoniste (telefoon)', included: false },
-      { text: 'CRM-koppeling', included: false },
-    ],
-    cta: 'Start met WhatsApp Standard',
-    ctaHref: '/aanvragen/?plan=emma-standard',
-  },
   {
     id: 'emma',
     name: 'Emma',
@@ -215,8 +172,6 @@ const seoGeoPlans = [
 ];
 
 const eenmaligSetup = [
-  { plan: 'Emma Lite', prijs: '€0', desc: 'WhatsApp-only — geen setup-fee, direct live' },
-  { plan: 'Emma WhatsApp Standard', prijs: '€0', desc: 'WhatsApp-only — geen setup-fee, direct live' },
   { plan: 'Emma', prijs: EMMA_SETUP_LABEL, desc: 'Eenmalige setup — intake, training, agenda-koppeling en go-live' },
   { plan: 'Groei', prijs: GROEI_SETUP_LABEL, desc: 'Eenmalige setup — intake, training, CRM-koppeling, multi-number config en testfase' },
   { plan: 'Emma Enterprise', prijs: 'Op maat', desc: 'Setup inbegrepen in het maatwerktraject' },
@@ -224,7 +179,7 @@ const eenmaligSetup = [
 
 const faqs = [
   { q: 'Zijn de prijzen exclusief btw?', a: 'Ja, alle prijzen zijn exclusief 21% btw. Dit is standaard voor B2B-diensten in Nederland.' },
-  { q: 'Zijn er setup-kosten?', a: 'Bij Emma en Groei wel: eenmalige setup van €495 (Emma) of €795 (Groei), voor intake, training op uw bedrijf, technische configuratie en go-live begeleiding. De WhatsApp-only pakketten Emma Lite (€49/mnd) en Emma WhatsApp Standard (€197/mnd) kennen geen setup-fee. Geen andere verborgen kosten.' },
+  { q: 'Zijn er setup-kosten?', a: 'Ja: eenmalige setup van €495 (Emma) of €795 (Groei), voor intake, training op uw bedrijf, technische configuratie en go-live begeleiding. WhatsApp zit in beide al inbegrepen. Geen andere verborgen kosten.' },
   { q: 'Wat is inbegrepen in het maandabonnement?', a: 'Emma als omnichannel AI-agent: telefoon (AI-receptionist 24/7), WhatsApp (Business API — standaard inbegrepen, u betaalt hier nooit apart voor) en workflow-automatisering. Plus hosting, onderhoud, platform-updates, monitoring en support. U betaalt nooit extra per gesprek of bericht.' },
   { q: 'Wat is het verschil tussen Emma en Groei?', a: 'Emma (€497/mnd, eenmalige setup €495) is de omnichannel AI-agent: AI-telefoniste 24/7 + WhatsApp + workflow-automatisering, agenda-integratie en tot 150 gesprekken per maand. Groei (€997/mnd, eenmalige setup €795) voegt onbeperkt gespreksvolume, CRM-integratie, multi-number en priority support toe. Enterprise is op aanvraag.' },
   { q: 'Hoe werkt jaarlijkse betaling?', a: 'Bij jaarlijkse betaling bespaart u circa 16% (±2 maanden gratis). U betaalt het volledige jaarbedrag vooruit en ontvangt één factuur per jaar.' },
@@ -432,7 +387,7 @@ const tcoPaybackLabel = !isFinite(tcoPaybackMonths)
 
 <BaseLayout
   title="AI-Agent Prijs Nederland 2026 — Tarieven Aanloop AI"
-  description="Emma Lite vanaf €49/mnd, Emma AI-agent vanaf €497/mnd, Groei €997. Setup €0-€795."
+  description="Emma AI-agent vanaf €497/mnd (WhatsApp inbegrepen), Groei €997/mnd. Setup €495-€795."
   schema={productOfferGraph}
   faqSchema={faqs.map(f => ({ question: f.q, answer: f.a }))}
 >
@@ -478,7 +433,7 @@ const tcoPaybackLabel = !isFinite(tcoPaybackMonths)
   <!-- Pricing cards -->
   <section class="section">
     <div class="container-page">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
         {plans.map((plan) => (
           <div class:list={[
             'relative rounded-2xl p-8 flex flex-col reveal',
@@ -560,7 +515,7 @@ const tcoPaybackLabel = !isFinite(tcoPaybackMonths)
         <div class="flex-1">
           <p class="text-xs font-semibold uppercase tracking-widest text-amber-700 mb-2">Transparantie</p>
           <h2 class="text-xl font-bold text-navy mb-2">Setup-kosten — helder per pakket</h2>
-          <p class="text-sm text-slate-600">WhatsApp-only (Lite en WhatsApp Standard) kent geen setup-fee. {SETUP_ZIN} Dat dekt intake, training op uw bedrijf, technische configuratie en go-live begeleiding. Geen andere verborgen kosten.</p>
+          <p class="text-sm text-slate-600">{SETUP_ZIN} Dat dekt intake, training op uw bedrijf, technische configuratie en go-live begeleiding. WhatsApp zit in beide al inbegrepen. Geen andere verborgen kosten.</p>
         </div>
         <div class="flex-1 space-y-3 w-full">
           {eenmaligSetup.map(s => (

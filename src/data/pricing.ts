@@ -1,21 +1,18 @@
 // Single source of truth for all Aanloop AI / Emma pricing.
 // Marketing pages AND portal-catalog.ts (Mollie checkout) derive from here.
 //
-// Emma is NIET één product. Het zijn twee productlijnen met dezelfde merknaam:
-//   • Emma WhatsApp Agent (chat-only) — Lite €49 · Standard €197. Géén telefonie.
-//   • Emma AI-receptie (telefoon)     — Emma €497 · Groei €997. Telefonie MET WhatsApp inbegrepen.
-// Let op: WhatsApp zit AL in €497 en €997. Tel een los WhatsApp-abonnement er dus nooit
-// bovenop in een kostenvergelijking — dat is dubbeltelling (deze fout stond tot 2026-07-14
-// in ai-website-bundel-mkb-nederland.astro en blies de "besparing" kunstmatig op).
-// Label beide lijnen OVERAL expliciet (kanaal tussen haakjes) — zonder dat label
-// leest het prijsverschil als willekeurig en denkt de klant dat hij dubbel betaalt.
+// Owner-besluit 2026-08-11: de standalone "Emma WhatsApp Agent" productlijn
+// (Lite €49 / Standard €197, chat-only, geen telefonie) is DEFINITIEF
+// geschrapt. Er bestaat geen prijs of pakket onder €497 meer op de site.
+// WhatsApp blijft bestaan — maar uitsluitend als ingebouwde functie van Emma
+// AI-receptie (telefoon), nooit meer als apart te kopen abonnement. Elke
+// vermelding van WhatsApp elders moet lezen als "WhatsApp zit inbegrepen bij
+// Emma (vanaf €497/mnd)" — nooit als eigen prijspunt.
 //
-// SETUP-FEE: die is er WEL (€495 Emma / €795 Groei). Dit bestand claimde tot 2026-07-14
-// "geen setup-fee — markt-differentiator" terwijl 9 andere pagina's + 2 JSON-LD Offers
-// wél €495/€795 publiceerden. Owner heeft bevestigd: de fee is echt, dit bestand was fout.
-// Benchmark (jun 2026): voice managed €199-299 · WhatsApp €99-199 · omnichannel mid €290-499.
-// Publieke ladder: Emma Lite €49 · Emma WhatsApp Standard €197 · Emma €497 · Groei €997 ·
-// Enterprise op aanvraag. Setup: €495 (Emma) / €795 (Groei).
+// Emma is dus weer één product met twee tiers: Emma €497 · Groei €997.
+// SETUP-FEE: €495 (Emma) / €795 (Groei). Owner heeft bevestigd: de fee is echt.
+// Benchmark (jun 2026): voice managed €199-299 · omnichannel mid €290-499.
+// Publieke ladder: Emma €497 · Groei €997 · Enterprise op aanvraag.
 
 export interface PricePoint {
   /** Maandprijs (excl. btw) in euro */
@@ -29,13 +26,6 @@ export interface PricePoint {
 }
 
 // ── PUBLIEKE MARKETING-LADDER (single source voor /tarieven + diensten/emma) ──
-/** Emma Lite — WhatsApp-only AI-assistent (instap). Chat, geen telefonie. Geen setup-fee. */
-export const EMMA_LITE: PricePoint = { monthly: 49, annual: 41, monthlyCent: 4900, setup: 0 };
-
-/** Emma WhatsApp Standard — WhatsApp-only, onbeperkt berichten + webshop-koppeling.
- *  Chat, geen telefonie. Geen setup-fee. Drijft de Mollie-tier 'Standard'. */
-export const EMMA_WHATSAPP_STANDARD: PricePoint = { monthly: 197, annual: 165, monthlyCent: 19700, setup: 0 };
-
 /** Emma AI-receptie (telefoon) — neemt de telefoon op. WhatsApp INBEGREPEN. Setup €495. */
 export const EMMA: PricePoint = { monthly: 497, annual: 416, monthlyCent: 49700, setup: 495 };
 
@@ -59,17 +49,13 @@ export const CORE_LABEL = '€249';
 export const CORE_MND = '€249/mnd';
 export const PRO_LABEL = '€497';
 export const PRO_MND = '€497/mnd';
-export const EMMA_LITE_LABEL = '€49';
-export const EMMA_LITE_MND = '€49/mnd';
-export const EMMA_WHATSAPP_STANDARD_LABEL = '€197';
-export const EMMA_WHATSAPP_STANDARD_MND = '€197/mnd';
 export const EMMA_LABEL = '€497';
 export const EMMA_MND = '€497/mnd';
 export const GROEI_LABEL = '€997';
 export const GROEI_MND = '€997/mnd';
-export const VANAF = 'Vanaf €49/mnd';
+export const VANAF = 'Vanaf €497/mnd';
 /** schema.org Organization priceRange */
-export const PRICE_RANGE = '€49-€5000';
+export const PRICE_RANGE = '€497-€5000';
 
 // ── Setup-fees — gebruik deze i.p.v. hardcoded €495/€795/€500 ──
 export const EMMA_SETUP = 495;
@@ -79,10 +65,13 @@ export const GROEI_SETUP_LABEL = '€795';
 /** Standaardzin voor de setup-fee. Eén formulering, site-breed. */
 export const SETUP_ZIN = 'Eenmalige setup: €495 (Emma) of €795 (Groei).';
 
-// ── Productlabels — Emma is twee producten. Gebruik deze, nooit kaal "Emma". ──
+// ── Productlabel — Emma is weer ÉÉN product. WhatsApp is een inbegrepen kanaal,
+//    geen eigen product meer. Gebruik EMMA_TELEFOON_NAAM nooit kaal als "Emma"
+//    wanneer je specifiek de telefonie-functie bedoelt. Voor WhatsApp: beschrijf
+//    het als kanaal ("WhatsApp inbegrepen bij Emma"), verzin geen productnaam. ──
 export const EMMA_TELEFOON_NAAM = 'Emma AI-receptie (telefoon)';
-export const EMMA_WHATSAPP_NAAM = 'Emma WhatsApp Agent (chat)';
-/** Anchors op /diensten/emma/ — link hiernaartoe i.p.v. twee keer naar de kale productpagina. */
+/** Anchors op /diensten/emma/ — telefoon- en WhatsApp-functionaliteit staan op
+ *  dezelfde productpagina, WhatsApp is geen apart product. */
 export const EMMA_TELEFOON_URL = '/diensten/emma/#telefoon';
 export const EMMA_WHATSAPP_URL = '/diensten/emma/#whatsapp';
 

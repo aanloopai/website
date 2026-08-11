@@ -44,18 +44,18 @@ export const FUNNEL_MAP: readonly FunnelEntry[] = [
     fallbackTekst: 'Afspraken worden direct in uw agenda gezet, zonder heen-en-weer gemail.',
   },
   {
-    // Catalogusproduct 'emma' is de WhatsApp/chat-assistent (portal-catalog.ts)
-    // — niet te verwarren met de gelijknamige buildConfig-variant in
-    // elevenlabs.js, die dezelfde key hergebruikt voor chat-provisioning.
-    // 'emma-whatsapp' bestond niet in de catalogus: sellable omzetten zou
-    // stil het oude bedankscherm hebben gegeven (spec §9).
+    // Owner-besluit 2026-08-11: het standalone catalogusproduct 'emma'
+    // (WhatsApp/chat-assistent, Lite/Standard) is geschrapt — WhatsApp is nu
+    // uitsluitend een inbegrepen kanaal van 'emma-telefoon'. Deze intake-entry
+    // wijst daarom naar diezelfde tier; een lead die WhatsApp-automatisering
+    // wil krijgt een voorstel op basis van Emma AI-receptie (vanaf €497/mnd).
     serviceId: 'whatsapp-bot',
-    productKey: 'emma',
-    tierNaam: 'Standard',
+    productKey: 'emma-telefoon',
+    tierNaam: 'Starter',
     sellable: false,
     roiInputs: ['gemiste_gesprekken_week', 'gemiddelde_klantwaarde'],
-    fallbackKop: 'Emma beantwoordt uw WhatsApp',
-    fallbackTekst: 'Klanten krijgen binnen seconden antwoord, ook buiten kantooruren.',
+    fallbackKop: 'WhatsApp zit inbegrepen bij Emma',
+    fallbackTekst: 'Emma (vanaf €497/mnd) beantwoordt uw WhatsApp-berichten binnen seconden, ook buiten kantooruren — als onderdeel van dezelfde AI-receptie die ook de telefoon opneemt.',
   },
   // ai-scan-consult heeft BEWUST geen entry: het verkoopt vandaag een
   // persoonlijk adviesgesprek (lead + intake, start.astro), geen

@@ -177,15 +177,16 @@ describe('handleCheckoutStart — subscriptions vs. Mollie/payments bedrag', () 
   });
 
   it('tier zonder setup-fee: totaal = maandbedrag, en subscriptions/payments krijgen hetzelfde bedrag', async () => {
-    // emma/Lite heeft setupCent 0 in de catalogus — een echte fee-loze tier, geen fixture.
-    const tier = getCatalogTier('emma', 'Lite');
+    // seo/Maandelijks heeft setupCent 0 in de catalogus — een echte fee-loze tier, geen fixture.
+    // (emma/Lite bestond hier eerder als voorbeeld — geschrapt als standalone product, owner-besluit 2026-08-11.)
+    const tier = getCatalogTier('seo', 'Maandelijks');
     expect(tier).toBeTruthy();
     expect(tier.setupCent).toBe(0);
 
     const { maandInclCent, totaalInclCent } = berekenEersteBetaling(tier);
     expect(totaalInclCent).toBe(maandInclCent);
 
-    const order = { id: 'ord_3', customer_id: 'cus_3', product_key: 'emma', tier: 'Lite', status: 'concept' };
+    const order = { id: 'ord_3', customer_id: 'cus_3', product_key: 'seo', tier: 'Maandelijks', status: 'concept' };
     const customer = { id: 'cus_3', bedrijf: 'Testbedrijf 3', factuur_email: 'test3@example.com', mollie_customer_id: 'cst_existing3' };
     const db = makeDbStub({ order, existingSub: null, customer });
     const user = { role: 'eigenaar', customer_id: 'cus_3', naam: 'Test User 3', email: 'test3@example.com' };
