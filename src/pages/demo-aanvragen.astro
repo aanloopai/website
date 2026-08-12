@@ -34,14 +34,13 @@ const sizes = ['1 persoon (ZZP)','2–10 medewerkers','11–50 medewerkers','51�
           <div class="flex items-center gap-3 mb-6"><div class="w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center text-xs font-bold">1</div><h2 class="text-lg font-bold text-navy">Uw contactgegevens</h2></div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label for="voornaam" class="block text-sm font-medium text-slate-700 mb-1.5">Voornaam *</label>
+              <label for="voornaam" class="block text-sm font-medium text-slate-700 mb-1.5">Naam *</label>
               <input type="text" id="voornaam" name="voornaam" required autocomplete="given-name" placeholder="Jan" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo transition-all" />
-              <p class="mt-1 text-xs text-red-500 hidden" id="err-voornaam">Voer uw voornaam in.</p>
+              <p class="mt-1 text-xs text-red-500 hidden" id="err-voornaam">Voer uw naam in.</p>
             </div>
             <div>
-              <label for="achternaam" class="block text-sm font-medium text-slate-700 mb-1.5">Achternaam *</label>
-              <input type="text" id="achternaam" name="achternaam" required autocomplete="family-name" placeholder="de Vries" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo transition-all" />
-              <p class="mt-1 text-xs text-red-500 hidden" id="err-achternaam">Voer uw achternaam in.</p>
+              <label for="achternaam" class="block text-sm font-medium text-slate-700 mb-1.5">Achternaam <span class="text-slate-400 font-normal">(optioneel)</span></label>
+              <input type="text" id="achternaam" name="achternaam" autocomplete="family-name" placeholder="de Vries" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo transition-all" />
             </div>
             <div>
               <label for="email" class="block text-sm font-medium text-slate-700 mb-1.5">Zakelijk e-mail *</label>
@@ -49,8 +48,9 @@ const sizes = ['1 persoon (ZZP)','2–10 medewerkers','11–50 medewerkers','51�
               <p class="mt-1 text-xs text-red-500 hidden" id="err-email">Voer een geldig e-mailadres in.</p>
             </div>
             <div>
-              <label for="telefoon" class="block text-sm font-medium text-slate-700 mb-1.5">Telefoonnummer</label>
-              <input type="tel" id="telefoon" name="telefoon" autocomplete="tel" placeholder="+31 6 12 34 56 78" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo transition-all" />
+              <label for="telefoon" class="block text-sm font-medium text-slate-700 mb-1.5">Telefoonnummer *</label>
+              <input type="tel" id="telefoon" name="telefoon" required autocomplete="tel" placeholder="+31 6 12 34 56 78" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo transition-all" />
+              <p class="mt-1 text-xs text-red-500 hidden" id="err-telefoon">Voer uw telefoonnummer in.</p>
             </div>
           </div>
           <div class="mt-6 flex justify-end">
@@ -64,25 +64,25 @@ const sizes = ['1 persoon (ZZP)','2–10 medewerkers','11–50 medewerkers','51�
           <div class="space-y-5">
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label for="bedrijfsnaam" class="block text-sm font-medium text-slate-700 mb-1.5">Bedrijfsnaam *</label>
-                <input type="text" id="bedrijfsnaam" name="bedrijfsnaam" required autocomplete="organization" placeholder="Mijn Bedrijf B.V." class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo transition-all" />
+                <label for="bedrijfsnaam" class="block text-sm font-medium text-slate-700 mb-1.5">Bedrijfsnaam <span class="text-slate-400 font-normal">(optioneel)</span></label>
+                <input type="text" id="bedrijfsnaam" name="bedrijfsnaam" autocomplete="organization" placeholder="Mijn Bedrijf B.V." class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo transition-all" />
               </div>
               <div>
-                <label for="functie" class="block text-sm font-medium text-slate-700 mb-1.5">Uw functie</label>
+                <label for="functie" class="block text-sm font-medium text-slate-700 mb-1.5">Uw functie <span class="text-slate-400 font-normal">(optioneel)</span></label>
                 <input type="text" id="functie" name="functie" placeholder="Eigenaar / Directeur" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo transition-all" />
               </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label for="sector" class="block text-sm font-medium text-slate-700 mb-1.5">Sector *</label>
-                <select id="sector" name="sector" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo transition-all bg-white">
+                <label for="sector" class="block text-sm font-medium text-slate-700 mb-1.5">Sector <span class="text-slate-400 font-normal">(optioneel)</span></label>
+                <select id="sector" name="sector" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo transition-all bg-white">
                   <option value="">Kies uw sector...</option>
                   {sectors.map(s => <option value={s}>{s}</option>)}
                 </select>
               </div>
               <div>
-                <label for="grootte" class="block text-sm font-medium text-slate-700 mb-1.5">Bedrijfsgrootte *</label>
-                <select id="grootte" name="bedrijfsgrootte" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo transition-all bg-white">
+                <label for="grootte" class="block text-sm font-medium text-slate-700 mb-1.5">Bedrijfsgrootte <span class="text-slate-400 font-normal">(optioneel)</span></label>
+                <select id="grootte" name="bedrijfsgrootte" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo transition-all bg-white">
                   <option value="">Kies grootte...</option>
                   {sizes.map(s => <option value={s}>{s}</option>)}
                 </select>
@@ -186,25 +186,19 @@ function toonStap(n: number) {
 function v1(): boolean {
   let ok = true;
   const vn = (document.getElementById('voornaam') as HTMLInputElement).value.trim();
-  const an = (document.getElementById('achternaam') as HTMLInputElement).value.trim();
   const em = (document.getElementById('email') as HTMLInputElement).value.trim();
-  const ev = document.getElementById('err-voornaam')!; const ea = document.getElementById('err-achternaam')!; const ee = document.getElementById('err-email')!;
-  ev.classList.add('hidden'); ea.classList.add('hidden'); ee.classList.add('hidden');
+  const tel = (document.getElementById('telefoon') as HTMLInputElement).value.trim();
+  const ev = document.getElementById('err-voornaam')!; const ee = document.getElementById('err-email')!; const et = document.getElementById('err-telefoon')!;
+  ev.classList.add('hidden'); ee.classList.add('hidden'); et.classList.add('hidden');
   if (!vn) { ev.classList.remove('hidden'); ok=false; }
-  if (!an) { ea.classList.remove('hidden'); ok=false; }
   if (!em||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) { ee.classList.remove('hidden'); ok=false; }
+  if (!tel) { et.classList.remove('hidden'); ok=false; }
   return ok;
 }
 
+// Stap 2 (bedrijf, sector, grootte) is volledig optioneel — alleen naam,
+// e-mail en telefoon (stap 1) zijn verplicht. Geen blokkerende validatie hier.
 function v2(): boolean {
-  const b = (document.getElementById('bedrijfsnaam') as HTMLInputElement).value.trim();
-  const s = (document.getElementById('sector') as HTMLSelectElement).value;
-  const g = (document.getElementById('grootte') as HTMLSelectElement).value;
-  if (!b||!s||!g) {
-    const errEl = document.getElementById('form-error') as HTMLElement|null;
-    if (errEl) { errEl.textContent = 'Vul alle verplichte velden in (Bedrijfsnaam, Sector en Grootte).'; errEl.classList.remove('hidden'); errEl.scrollIntoView({behavior:'smooth',block:'center'}); }
-    return false;
-  }
   const errEl2 = document.getElementById('form-error') as HTMLElement|null;
   if (errEl2) errEl2.classList.add('hidden');
   return true;

@@ -18,11 +18,11 @@
         Emma is onze AI-receptionist. Klik, stel een vraag zoals een echte beller, en hoor zelf hoe natuurlijk het klinkt. Geen account, geen verplichting.
       </p>
       <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-        <button id="emma-live-btn" type="button" class="btn bg-pearl text-navy hover:bg-white text-base px-7 py-3.5 font-semibold">
+        <button id="emma-live-btn" type="button" class="js-emma-live-trigger btn bg-pearl text-navy hover:bg-white text-base px-7 py-3.5 font-semibold">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-14 0m7 7v3m-3-12a3 3 0 016 0v4a3 3 0 01-6 0V6z"/></svg>
           Start gesprek met Emma
         </button>
-        <a href="/demo-aanvragen/" class="btn border border-slate-600 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Liever een persoonlijke demo</a>
+        <a href="/gratis-ai-scan/" class="btn border border-slate-600 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Liever eerst de gratis AI-scan doen</a>
       </div>
       <p id="emma-live-hint" class="mt-4 text-sm text-brand-emerald font-medium hidden">👉 Klik op de microfoon rechtsonder in beeld om het gesprek te starten.</p>
       <p class="mt-3 text-xs text-slate-400">AVG-compliant · EU-data · geen account nodig</p>
@@ -31,8 +31,13 @@
 
   <script is:inline>
     (function () {
-      var btn = document.getElementById('emma-live-btn');
-      if (!btn) return;
+      // Elke pagina die deze sectie rendert, plus eventuele extra entry-points
+      // elders op diezelfde pagina (bv. de compacte "Praat nú met Emma"-link in
+      // Hero.astro), delen dezelfde .js-emma-live-trigger class — één trigger-
+      // functie, geen tweede kopie van de widget-open-logica.
+      var btns = document.querySelectorAll('.js-emma-live-trigger');
+      if (!btns.length) return;
+      btns.forEach(function (btn) {
       btn.addEventListener('click', function () {
         if (window._track) window._track('emma_live_demo_click', {});
         function openEmma() {
@@ -67,6 +72,7 @@
         }
         var hint = document.getElementById('emma-live-hint');
         if (hint) hint.classList.remove('hidden');
+      });
       });
     })();
   </script>
