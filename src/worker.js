@@ -49,6 +49,8 @@ const SENDER_NAME = 'Aanloop AI';
 // Same value as SITE_ORIGIN in portal-routes.js — kept as a separate constant
 // here so worker.js stays self-contained (no cross-file import for a single string).
 const SITE_ORIGIN = 'https://aanloopai.nl';
+// Zakelijk WhatsApp-nummer achter de /whatsapp-doorstuurroute (zie fetch()).
+const WHATSAPP_NUMBER = '31624741597';
 
 const AUTORESPONSE_TEMPLATES = {
   demo: {
@@ -1124,6 +1126,28 @@ async function notifyOutreachFollowups(env) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    // WhatsApp-CTA loopt via deze eigen URL in plaats van rechtstreeks naar
+    // wa.me. Reden: wa.me rate-limit crawlers met HTTP 429, en omdat de knop in
+    // header, footer en sticky CTA staat, telde Semrush dat als 91 "broken
+    // external links" — één per pagina. Voor een bezoeker verandert er niets:
+    // 302 naar exact dezelfde chat. Bewust 302 en geen 301, zodat het nummer
+    // wijzigen kan zonder dat browsers de oude bestemming vasthouden.
+    if (url.pathname === '/whatsapp' || url.pathname === '/whatsapp/') {
+      const text = url.searchParams.get('text');
+      const target = new URL('https://api.whatsapp.com/send');
+      target.searchParams.set('phone', WHATSAPP_NUMBER);
+      if (text) target.searchParams.set('text', text);
+      return new Response(null, {
+        status: 302,
+        headers: {
+          Location: target.toString(),
+          'Cache-Control': 'public, max-age=3600',
+          // Crawlers hoeven deze doorstuurhop niet te indexeren.
+          'X-Robots-Tag': 'noindex, nofollow',
+        },
+      });
+    }
 
     // Diagnostic endpoint — lists which env vars ARE visible to the worker (no values, just presence)
     if (url.pathname === '/api/health') {

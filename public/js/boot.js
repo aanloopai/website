@@ -23,7 +23,10 @@
     if (a && window._track) window._track('phone_click', { link_url: a.href, link_text: (a.textContent || '').trim() });
   });
   document.addEventListener('click', function (e) {
-    var a = e.target && e.target.closest ? e.target.closest('a[href*="wa.me"]') : null;
+    /* De CTA's wijzen sinds 2026-08 naar /whatsapp (302 naar wa.me, zie
+     * src/worker.js). wa.me blijft in de selector staan voor links die nog
+     * rechtstreeks gaan, bijvoorbeeld in geïnjecteerde widget-DOM. */
+    var a = e.target && e.target.closest ? e.target.closest('a[href*="wa.me"], a[href^="/whatsapp"]') : null;
     if (a && window._track) window._track('whatsapp_click', { link_url: a.href });
   });
 
