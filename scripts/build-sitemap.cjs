@@ -162,3 +162,31 @@ console.log(`Wrote ${uniqueSorted.length} URLs to public/sitemap.xml`);
 console.log(`Skipped noindex (${skipped.noindex.length}): ${skipped.noindex.join(', ')}`);
 console.log(`Skipped dynamic (${skipped.dynamic.length}): ${skipped.dynamic.join(', ')}`);
 console.log(`Skipped excluded (${skipped.excluded.length}): ${skipped.excluded.join(', ')}`);
+
+// ── image-sitemap.xml synchroon houden ──────────────────────────────────────
+// Die file wordt met de hand bijgehouden en liep uit de pas: hij bevatte
+// /prijzen/ (301 naar /tarieven/), /aanvragen/ (noindex) en vijf kennisbank-
+// slugs die niet meer bestaan. Semrush meldde dat als "Non-canonical URL in
+// sitemap". Een sitemap hoort alleen canonieke 200-URL's te bevatten, dus
+// snoeit deze stap elk <url>-blok waarvan de loc niet in sitemap.xml staat.
+const IMAGE_SITEMAP = path.join(ROOT, 'public', 'image-sitemap.xml');
+if (fs.existsSync(IMAGE_SITEMAP)) {
+  const canonical = new Set(uniqueSorted.map((u) => SITE + u));
+  const xml = fs.readFileSync(IMAGE_SITEMAP, 'utf8');
+  const removed = [];
+  const pruned = xml.replace(/[ \t]*<url>[\s\S]*?<\/url>\n?/g, (block) => {
+    const loc = block.match(/<loc>([^<]+)<\/loc>/);
+    if (loc && !canonical.has(loc[1])) {
+      removed.push(loc[1]);
+      return '';
+    }
+    return block;
+  });
+  if (removed.length) {
+    fs.writeFileSync(IMAGE_SITEMAP, pruned);
+    console.log(`Pruned ${removed.length} niet-canonieke URL(s) uit image-sitemap.xml:`);
+    removed.forEach((u) => console.log(`  - ${u}`));
+  } else {
+    console.log('image-sitemap.xml: alle URLs canoniek.');
+  }
+}

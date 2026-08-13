@@ -45,18 +45,31 @@
 /image-sitemap.xml
   ! Cache-Control
   Cache-Control: public, max-age=300, s-maxage=3600
+# De .txt-bestanden worden als "text/plain" geserveerd zonder charset. Een
+# browser valt dan terug op windows-1252 en maakt van "€" een "â‚¬" en van
+# "—" een "â€”". De bestanden zelf zijn wel degelijk UTF-8 (geverifieerd met
+# `file`), dus alleen de header ontbrak. Zonder charset leest ook een
+# LLM-crawler de prijzen verkeerd, en juist daarvoor bestaat llms.txt.
 /robots.txt
   ! Cache-Control
   Cache-Control: public, max-age=3600, s-maxage=86400
+  ! Content-Type
+  Content-Type: text/plain; charset=utf-8
 /llms.txt
   ! Cache-Control
   Cache-Control: public, max-age=300, s-maxage=3600
+  ! Content-Type
+  Content-Type: text/plain; charset=utf-8
 /llms-full.txt
   ! Cache-Control
   Cache-Control: public, max-age=300, s-maxage=3600
+  ! Content-Type
+  Content-Type: text/plain; charset=utf-8
 /humans.txt
   ! Cache-Control
   Cache-Control: public, max-age=86400
+  ! Content-Type
+  Content-Type: text/plain; charset=utf-8
 
 # /js/boot.js draagt geen content-hash, dus hier bewust een korte edge-TTL.
 # Tweede reden: bij de deploy van 28-07 serveerde één edge-node de nieuwe HTML
