@@ -15,25 +15,28 @@ const howToSchema = {
   ],
 };
 
+// Bewust GEEN SoftwareApplication: Google eist voor die rich result
+// aggregateRating of review (developers.google.com/search/docs/appearance/
+// structured-data/software-app). Wij hebben geen geverifieerde beoordelingen
+// van deze calculator, en verzinnen die niet. Zonder rating is het type per
+// definitie een ongeldig item — Semrush telde dat als 2 invalid fields.
+// WebPage + about houdt dezelfde feiten leesbaar voor AI-zoekmachines.
 const toolSchema = {
   '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
+  '@type': 'WebPage',
+  '@id': 'https://aanloopai.nl/ai-roi-calculator/#tool',
   name: 'AI ROI Calculator — Bereken uw besparing met AI automatisering',
   description: 'Gratis online calculator om de ROI van AI automatisering voor uw MKB-bedrijf te berekenen. Bereken hoeveel tijd en geld u bespaart op basis van sector-benchmarks en MKB-praktijkcijfers.',
   url: 'https://aanloopai.nl/ai-roi-calculator/',
-  applicationCategory: 'BusinessApplication',
-  applicationSubCategory: 'ROI Calculator',
-  operatingSystem: 'All (browser-based)',
   inLanguage: 'nl-NL',
   isAccessibleForFree: true,
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
   creator: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
-  featureList: [
-    'Realtime ROI-berekening op 5 inputs',
-    'Aanbevolen Aanloop AI pakket op basis van dagvolume',
-    'Sector-specifieke multipliers voor 8 branches',
-    'FTE-equivalent en terugverdientijd in maanden',
-    'Methodologie en sector-benchmarks transparant',
+  about: [
+    { '@type': 'Thing', name: 'Realtime ROI-berekening op 5 inputs' },
+    { '@type': 'Thing', name: 'Aanbevolen Aanloop AI pakket op basis van dagvolume' },
+    { '@type': 'Thing', name: 'Sector-specifieke multipliers voor 8 branches' },
+    { '@type': 'Thing', name: 'FTE-equivalent en terugverdientijd in maanden' },
+    { '@type': 'Thing', name: 'Methodologie en sector-benchmarks transparant' },
   ],
   // Google Assistant + spraak-zoekassistenten kunnen deze elementen voorlezen
   speakable: {

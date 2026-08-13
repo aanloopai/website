@@ -46,12 +46,18 @@ const faqItems = [
 
 const schema = {
   '@context': 'https://schema.org',
-  '@type': 'Product',
+  // Service en geen Product: Product vraagt om image en merchant-velden die
+  // voor een abonnementsdienst niet bestaan (Semrush: "Product snippet").
+  '@type': 'Service',
+  '@id': 'https://aanloopai.nl/diensten/telefoon-assistent/#service',
   name: 'AI Telefoon Assistent voor MKB Nederland',
+  serviceType: 'AI Telefoon Assistent / Telefooncentrale',
   description: 'Volledig aanpasbare AI telefooncentrale voor het Nederlandse MKB met eigen NL-nummer, IVR-menu, multi-team routing en CRM-integratie. Live binnen 7-10 werkdagen.',
   brand: { '@type': 'Brand', name: 'Aanloop AI' },
   category: 'AI Telefoon Assistent / Telefooncentrale Software',
   url: 'https://aanloopai.nl/diensten/telefoon-assistent/',
+  provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  areaServed: { '@type': 'Country', name: 'Nederland' },
   audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
   offers: {
     '@type': 'AggregateOffer',

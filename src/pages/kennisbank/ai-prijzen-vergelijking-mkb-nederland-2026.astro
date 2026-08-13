@@ -57,16 +57,24 @@ const speakableSchema = {
   inLanguage: 'nl-NL',
 };
 
-// Offer schema voor canonieke Aanloop AI-producten
+// Offer schema voor de canonieke Aanloop AI-diensten.
+// Service en geen Product: met een prijs erin valideert Google een Product als
+// merchant listing en eist dan image + shippingDetails + hasMerchantReturnPolicy
+// — velden voor fysieke artikelen. De @id's zijn gelijk aan die op /tarieven/,
+// zodat beide pagina's naar dezelfde entiteit verwijzen in plaats van een
+// tweede, licht afwijkende kopie te introduceren.
 const offerGraph = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'Product',
-      '@id': 'https://aanloopai.nl/tarieven/#starter',
-      name: 'Aanloop AI Emma — Emma AI telefoniste',
+      '@type': 'Service',
+      '@id': 'https://aanloopai.nl/tarieven/#emma',
+      name: 'Aanloop AI — Emma',
+      serviceType: 'AI-telefoniste (omnichannel AI-agent)',
       description: 'AI telefoniste Emma voor Nederlands MKB. 150 gesprekken per maand, 1 callscript op maat, agenda-integratie en dashboard. Eenmalige setup op aanvraag.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
+      provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+      areaServed: { '@type': 'Country', name: 'Nederland' },
       offers: {
         '@type': 'Offer',
         price: '497',
@@ -78,11 +86,14 @@ const offerGraph = {
       },
     },
     {
-      '@type': 'Product',
+      '@type': 'Service',
       '@id': 'https://aanloopai.nl/tarieven/#groei',
-      name: 'Aanloop AI Groei — Emma',
+      name: 'Aanloop AI — Groei',
+      serviceType: 'AI-telefoniste (omnichannel AI-agent)',
       description: 'AI telefoniste Emma met WhatsApp inbegrepen. Onbeperkte gesprekken, CRM-koppeling, prioriteit support. Eenmalige setup op aanvraag.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
+      provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+      areaServed: { '@type': 'Country', name: 'Nederland' },
       offers: {
         '@type': 'Offer',
         price: '997',

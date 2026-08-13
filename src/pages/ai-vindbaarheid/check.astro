@@ -5,13 +5,15 @@ const sectoren = ['Horeca', 'Vastgoed & makelaars', 'Accountancy', 'Juridisch', 
 
 const schema = {
   '@context': 'https://schema.org',
-  '@type': 'WebApplication',
+  // WebApplication erft de Google-eis van aggregateRating/review (subtype van
+  // SoftwareApplication); zonder echte beoordelingen is dat een ongeldig item.
+  '@type': 'WebPage',
+  '@id': 'https://aanloopai.nl/ai-vindbaarheid/check/#tool',
   name: 'GEO Quick Scan — AI-vindbaarheid check',
-  applicationCategory: 'BusinessApplication',
-  operatingSystem: 'Web',
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
   description: 'Gratis check: hoe vindbaar is jouw website voor AI-assistenten zoals ChatGPT, Gemini en Claude? Direct een GEO-score met concrete verbeterpunten.',
   url: 'https://aanloopai.nl/ai-vindbaarheid/check/',
+  inLanguage: 'nl-NL',
+  isAccessibleForFree: true,
   provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
 };
 ---

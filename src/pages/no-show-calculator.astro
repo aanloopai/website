@@ -3,15 +3,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 const calculatorSchema = {
   '@context': 'https://schema.org',
-  '@type': ['WebPage', 'WebApplication'],
+  // WebApplication is een subtype van SoftwareApplication en erft dus de
+  // Google-eis van aggregateRating/review. Die beoordelingen bestaan niet voor
+  // deze calculator, dus blijft alleen WebPage over.
+  '@type': 'WebPage',
   '@id': 'https://aanloopai.nl/no-show-calculator/#calculator',
   name: 'No-show Calculator voor MKB Nederland',
   description: 'Bereken in 30 seconden hoeveel uw bedrijf jaarlijks verliest aan no-shows en wat u kunt besparen met AI-WhatsApp herinneringen. Vrij te gebruiken, geen registratie.',
   url: 'https://aanloopai.nl/no-show-calculator/',
-  applicationCategory: 'BusinessApplication',
-  operatingSystem: 'Any (web)',
   isAccessibleForFree: true,
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
   inLanguage: 'nl-NL',
   creator: { '@id': 'https://aanloopai.nl/#organization' },
 };

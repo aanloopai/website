@@ -47,13 +47,14 @@ const itemListSchema = {
     '@type': 'ListItem',
     position: i + 1,
     name: t.naam,
+    // WebApplication is een subtype van SoftwareApplication; Google eist daar
+    // aggregateRating of review, die er voor deze gratis tools niet zijn.
     item: {
-      '@type': 'WebApplication',
+      '@type': 'WebPage',
       name: t.naam,
-      applicationCategory: 'BusinessApplication',
-      operatingSystem: 'Web',
       url: `https://aanloopai.nl${t.href}`,
-      offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+      isAccessibleForFree: true,
+      inLanguage: 'nl-NL',
     },
   })),
 };

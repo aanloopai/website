@@ -205,14 +205,22 @@ const vergelijkRows = [
   ['Live binnen', '7 dgn', '7 dgn'],
 ];
 
-// Product + Offer schema per tier — AI Overview citation trigger (P1 audit fix)
+// Service + Offer schema per tier — AI Overview citation trigger (P1 audit fix).
+// Bewust Service en géén Product: een Product met prijs wordt door Google als
+// merchant listing gevalideerd en vraagt dan om image, shippingDetails en
+// hasMerchantReturnPolicy. Dat zijn velden voor fysieke webshopartikelen; een
+// maandabonnement op een AI-agent wordt er niet eerlijker van. Semrush telde
+// die tekorten als "Product snippet 1 + Merchant listing 5".
 const productOfferGraph = {
   '@context': 'https://schema.org',
   '@graph': [
     {
-      '@type': 'Product',
+      '@type': 'Service',
       '@id': 'https://aanloopai.nl/tarieven/#emma',
       name: 'Aanloop AI — Emma',
+      serviceType: 'Omnichannel AI Agent',
+      provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+      areaServed: { '@type': 'Country', name: 'Nederland' },
       description: 'Emma omnichannel AI-agent voor Nederlandse MKB: AI-telefoon 24/7 (NL-nummer, doorverbinden) + WhatsApp Business API (inbegrepen) + workflow-automatisering, agenda-integratie en dashboard. Live binnen 7 werkdagen.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       category: 'Omnichannel AI Agent',
@@ -235,9 +243,12 @@ const productOfferGraph = {
       },
     },
     {
-      '@type': 'Product',
+      '@type': 'Service',
       '@id': 'https://aanloopai.nl/tarieven/#groei',
       name: 'Aanloop AI — Groei',
+      serviceType: 'Omnichannel AI Agent',
+      provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+      areaServed: { '@type': 'Country', name: 'Nederland' },
       description: 'Emma omnichannel AI-agent met onbeperkt volume voor Nederlandse MKB: alles uit Emma plus onbeperkt gespreksvolume, multi-number (meerdere NL-nummers), CRM-integratie (HubSpot/Pipedrive), geavanceerde workflow-automatisering en priority support.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       category: 'Omnichannel AI Agent',
@@ -331,23 +342,22 @@ const productOfferGraph = {
       offers: { '@type': 'Offer', price: '1195', priceCurrency: 'EUR', priceSpecification: { '@type': 'UnitPriceSpecification', price: '1195', priceCurrency: 'EUR', unitText: 'maand' }, availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/aanvragen/?dienst=seo-geo-bundel', priceValidUntil: '2026-12-31' },
     },
     {
-      '@type': 'Product',
+      '@type': 'Service',
       '@id': 'https://aanloopai.nl/tarieven/#enterprise',
       name: 'Aanloop AI — Emma Enterprise',
+      serviceType: 'Enterprise AI Agent Suite',
+      provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+      areaServed: { '@type': 'Country', name: 'Nederland' },
       description: 'Emma omnichannel AI-agent op maat voor grotere organisaties: uptime-doel 99,9% (SLA op aanvraag), dedicated accountmanager, custom n8n workflows, white-label optie, on-premise/private cloud optie en maatwerk CRM/ERP-integraties.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       category: 'Enterprise AI Agent Suite',
-      offers: {
-        '@type': 'Offer',
-        priceSpecification: {
-          '@type': 'PriceSpecification',
-          priceCurrency: 'EUR',
-          description: 'Op maat — offerte binnen 24 uur',
-        },
-        availability: 'https://schema.org/InStock',
-        url: 'https://aanloopai.nl/contact/?type=offerte&plan=enterprise',
-        seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
-        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
+      // Enterprise heeft geen publieke prijs. Een Offer met alleen een lege
+      // PriceSpecification is ongeldig (priceCurrency zonder bedrag), dus staat
+      // hier bewust geen offers-blok maar een potentialAction naar de offerte.
+      potentialAction: {
+        '@type': 'RequestQuoteAction',
+        name: 'Offerte aanvragen — binnen 24 uur',
+        target: 'https://aanloopai.nl/contact/?type=offerte&plan=enterprise',
       },
     },
   ],

@@ -56,15 +56,27 @@ const faqItems = [
   { question: 'Wat als ik Emma wil opzeggen?', answer: 'Geen exit-fees. Uw telefoonnummer, WhatsApp-nummer en conversatie- en gesprekshistorie blijven uw eigendom — wij leveren een export in JSON of CSV. Bij jaarbetaling krijgt u 16% korting maar bij vroegtijdige opzegging is er geen restitutie.' },
 ];
 
+// Eén Service-node in plaats van het oude duo Product + SoftwareApplication.
+// Reden: Product vraagt om image + merchant-velden (shipping/return) die voor
+// een abonnement op een AI-agent nergens op slaan, en SoftwareApplication
+// vraagt bij Google om aggregateRating of review — beoordelingen die we niet
+// hebben. Beide leverden daardoor alleen ongeldige items op (Semrush 2026-08:
+// "Product snippet 1 + Software App 1"). Service kent die eisen niet en dekt
+// een maandelijks afgenomen dienst bovendien beter.
 const schema = {
   '@context': 'https://schema.org',
-  '@type': 'Product',
+  '@type': 'Service',
+  '@id': 'https://aanloopai.nl/diensten/emma/#service',
   name: 'Emma — Omnichannel AI-agent (telefoon + WhatsApp + workflow)',
   alternateName: ['AI-receptionist Nederland', 'AI-telefoniste MKB', 'AI WhatsApp agent', 'omnichannel AI-agent', 'AI klantenservice telefoon en WhatsApp Nederland'],
-  description: 'Omnichannel AI-agent voor het Nederlandse MKB: neemt 24/7 de telefoon aan (NL-stem, doorverbinden, afspraken inplannen), handelt WhatsApp af en automatiseert workflows — getraind op uw eigen kennisbank, met naadloze handover naar uw team.',
+  serviceType: 'Omnichannel AI-agent (telefoon + WhatsApp + workflow)',
+  description: 'Omnichannel AI-agent voor het Nederlandse MKB: neemt 24/7 de telefoon aan (NL-stem, doorverbinden, afspraken inplannen, transcripts), handelt WhatsApp af en automatiseert workflows — getraind op uw eigen kennisbank, native koppeling met Shopify/WooCommerce/HubSpot, multilingual auto-detect, EU-only data en naadloze handover naar uw team.',
   brand: { '@type': 'Brand', name: 'Aanloop AI' },
   category: 'Omnichannel AI-agent Software (telefoon + WhatsApp + workflow)',
   url: 'https://aanloopai.nl/diensten/emma/',
+  provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  areaServed: { '@type': 'Country', name: 'Nederland' },
+  availableLanguage: ['nl-NL', 'en', 'de', 'fr', 'es', 'it', 'pl'],
   audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
   offers: {
     '@type': 'AggregateOffer',
@@ -75,30 +87,7 @@ const schema = {
     availability: 'https://schema.org/InStock',
     seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
   },
-};
-
-const softwareSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'Emma — Omnichannel AI-agent (telefoon + WhatsApp + workflow)',
-  alternateName: ['AI-receptionist Nederland', 'AI-telefoniste MKB', 'AI WhatsApp agent', 'omnichannel AI-agent', 'AI klantenservice telefoon en WhatsApp'],
-  description: 'Cloud-gebaseerde omnichannel AI-agent voor MKB Nederland: neemt 24/7 de telefoon aan (NL-stem, doorverbinden, afspraken inplannen, transcripts), handelt WhatsApp af en automatiseert workflows. Getraind op eigen kennisbank, native koppeling met Shopify/WooCommerce/HubSpot, multilingual auto-detect, EU-only data.',
-  url: 'https://aanloopai.nl/diensten/emma/',
-  applicationCategory: 'BusinessApplication',
-  applicationSubCategory: 'Omnichannel AI-agent (telefoon + WhatsApp + workflow)',
-  operatingSystem: 'Cloud (inkomende telefonie + WhatsApp Business API + browser dashboard)',
-  inLanguage: ['nl-NL', 'en', 'de', 'fr', 'es', 'it', 'pl'],
-  isAccessibleForFree: false,
-  creator: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
-  offers: {
-    '@type': 'AggregateOffer',
-    priceCurrency: 'EUR',
-    lowPrice: '497',
-    highPrice: '997',
-    offerCount: '2',
-    availability: 'https://schema.org/InStock',
-  },
-  featureList: [
+  serviceOutput: [
     'Inkomende telefonie 24/7 aannemen met natuurlijke NL-stem (ElevenLabs)',
     'Doorverbinden naar het juiste teamlid + gesprekstranscripts',
     'Afspraken inplannen in uw agenda via telefoon én WhatsApp',
@@ -112,15 +101,14 @@ const softwareSchema = {
     'Naadloze handover naar uw team met conversatie- en gesprekshistorie',
     'AVG-bewust — EU datacenters, encryptie at-rest + in-transit, DPA mogelijk',
     'Conversatie-bewaartermijn configureerbaar (default 90 dagen)',
-  ],
-  audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
+  ].map((f) => ({ '@type': 'Thing', name: f })),
 };
 ---
 
 <BaseLayout
   title="Emma — omnichannel AI-agent (telefoon, WhatsApp, workflow)"
   description="Emma is uw omnichannel AI-agent: neemt 24/7 de telefoon aan, handelt WhatsApp af en automatiseert workflows. Live in 7 werkdagen, getraind op uw kennisbank."
-  schema={[schema, softwareSchema]}
+  schema={[schema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">
@@ -402,7 +390,7 @@ const softwareSchema = {
         ))}
       </div>
       <div class="mt-12 text-center reveal">
-        <p class="text-sm text-slate-600">Andere vragen? <a href="/contact/" class="text-brand-indigo font-medium hover:underline">Stuur ons een bericht</a> of <a href="https://wa.me/31624741597" class="text-brand-indigo font-medium hover:underline">WhatsApp ons direct</a>.</p>
+        <p class="text-sm text-slate-600">Andere vragen? <a href="/contact/" class="text-brand-indigo font-medium hover:underline">Stuur ons een bericht</a> of <a href="/whatsapp" target="_blank" rel="nofollow noopener" class="text-brand-indigo font-medium hover:underline">WhatsApp ons direct</a>.</p>
       </div>
     </div>
   </section>

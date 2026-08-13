@@ -9,13 +9,15 @@ const faq = [
 
 const schema = {
   '@context': 'https://schema.org',
-  '@type': 'WebApplication',
+  // WebApplication erft de Google-eis van aggregateRating/review (subtype van
+  // SoftwareApplication); zonder echte beoordelingen is dat een ongeldig item.
+  '@type': 'WebPage',
+  '@id': 'https://aanloopai.nl/gemiste-omzet-calculator/#calculator',
   name: 'Gemiste-omzet calculator',
-  applicationCategory: 'BusinessApplication',
-  operatingSystem: 'Web',
   description: 'Bereken hoeveel omzet uw bedrijf misloopt door gemiste telefoontjes — en wat een AI-receptionist oplevert.',
   url: 'https://aanloopai.nl/gemiste-omzet-calculator/',
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
+  inLanguage: 'nl-NL',
+  isAccessibleForFree: true,
   publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
 };
 ---

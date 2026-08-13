@@ -38,11 +38,12 @@ const services = [
 
 const toolSchema = {
   '@context': 'https://schema.org',
-  '@type': 'WebApplication',
+  // WebApplication erft de Google-eis van aggregateRating/review (subtype van
+  // SoftwareApplication); zonder echte beoordelingen is dat een ongeldig item.
+  '@type': 'WebPage',
+  '@id': 'https://aanloopai.nl/start/#wizard',
   name: 'Start direct — intake-wizard Aanloop AI',
   url: 'https://aanloopai.nl/start/',
-  applicationCategory: 'BusinessApplication',
-  operatingSystem: 'All (browser-based)',
   inLanguage: 'nl-NL',
   isAccessibleForFree: true,
   creator: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
@@ -237,7 +238,7 @@ const toolSchema = {
           <p class="text-xs text-slate-600 mb-4">Liever nu direct spreken? We zijn bereikbaar via telefoon of WhatsApp.</p>
           <div class="flex flex-wrap gap-3 justify-center">
             <a href="tel:+31624741597" class="btn-primary text-sm justify-center inline-flex">Bel +31 6 24 74 15 97</a>
-            <a href="https://wa.me/31624741597" class="btn border border-slate-200 text-navy hover:bg-slate-50 text-sm justify-center inline-flex">WhatsApp ons</a>
+            <a href="/whatsapp" target="_blank" rel="nofollow noopener" class="btn border border-slate-200 text-navy hover:bg-slate-50 text-sm justify-center inline-flex">WhatsApp ons</a>
           </div>
         </div>
       </div>

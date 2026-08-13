@@ -175,26 +175,25 @@ const howToSchema = {
   ],
 };
 
+// Zie ai-roi-calculator.astro: SoftwareApplication vraagt bij Google een
+// aggregateRating of review, en die hebben we voor deze scan niet.
 const toolSchema = {
   '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
+  '@type': 'WebPage',
+  '@id': 'https://aanloopai.nl/gratis-ai-scan/#tool',
   name: 'AI-Readiness Scan voor Nederlandse MKB — gratis interactieve scan',
   description: 'Gratis online AI-readiness scan voor Nederlandse MKB-bedrijven. 11 vragen, 3 minuten — krijg uw AI-volwassenheidsscore (0–100), tier-classificatie en sector-specifieke aanbevelingen op basis van sector-benchmarks en MKB-praktijk.',
   url: 'https://aanloopai.nl/gratis-ai-scan/',
-  applicationCategory: 'BusinessApplication',
-  applicationSubCategory: 'AI Readiness Assessment',
-  operatingSystem: 'All (browser-based)',
   inLanguage: 'nl-NL',
   isAccessibleForFree: true,
-  offers: { '@type': 'Offer', price: '0', priceCurrency: 'EUR' },
   creator: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
-  featureList: [
-    '11 gerichte vragen over uw bedrijfssituatie',
-    'Score 0–100 op AI-volwassenheid',
-    '3 tier-classificaties (Verkenner / Klaar / Vergevorderd)',
-    'Sector-specifieke quick-win aanbevelingen',
-    'Gratis rapport per e-mail',
-    'AVG- en EU AI Act-bewust scoring-model',
+  about: [
+    { '@type': 'Thing', name: '11 gerichte vragen over uw bedrijfssituatie' },
+    { '@type': 'Thing', name: 'Score 0–100 op AI-volwassenheid' },
+    { '@type': 'Thing', name: '3 tier-classificaties (Verkenner / Klaar / Vergevorderd)' },
+    { '@type': 'Thing', name: 'Sector-specifieke quick-win aanbevelingen' },
+    { '@type': 'Thing', name: 'Gratis rapport per e-mail' },
+    { '@type': 'Thing', name: 'AVG- en EU AI Act-bewust scoring-model' },
   ],
   speakable: {
     '@type': 'SpeakableSpecification',
@@ -534,7 +533,7 @@ const faqItems = [
           Start de scan
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </a>
-        <a href="https://wa.me/31624741597" class="btn border border-slate-600 text-slate-300 hover:bg-slate-800 text-base px-6 py-3.5">
+        <a href="/whatsapp" target="_blank" rel="nofollow noopener" class="btn border border-slate-600 text-slate-300 hover:bg-slate-800 text-base px-6 py-3.5">
           WhatsApp ons
         </a>
       </div>
