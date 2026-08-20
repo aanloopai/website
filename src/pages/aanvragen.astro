@@ -139,7 +139,7 @@ const steps = [
                 </div>
                 <div>
                   <label for="kvk" class="block text-xs font-medium text-navy mb-1.5">KvK-nummer</label>
-                  <input type="text" id="kvk" name="kvk" class="form-input" placeholder="12345678" maxlength="8" pattern="\d{8}" />
+                  <input type="text" id="kvk" name="kvk" class="form-input" placeholder="12345678" maxlength="8" inputmode="numeric" pattern="[0-9]{8}" title="KvK-nummer: precies 8 cijfers" />
                 </div>
               </div>
               <div class="mt-4">
@@ -219,13 +219,17 @@ const steps = [
             <div id="form-error" class="hidden p-4 rounded-xl bg-brand-rose/10 border border-brand-rose/20 text-brand-rose text-sm">
               Vul alle verplichte velden in en probeer het opnieuw.
             </div>
+
+            <input type="hidden" id="hidden-plan" name="plan" value={selectedKey} />
+            <input type="hidden" id="hidden-dienst" name="dienst" value={dienst ?? ''} />
+            <input type="hidden" id="hidden-facturering" name="facturering" value="maandelijks" />
           </form>
         </div>
 
         <!-- Order summary -->
         <div class="lg:col-span-2">
           <div class="card sticky top-24">
-            <h2 class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-500 mb-4">Uw bestelling</p>
+            <h2 class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-500 mb-4">Uw bestelling</h2>
 
             <div class="flex items-start justify-between mb-1">
               <div>
@@ -263,7 +267,7 @@ const steps = [
                   <span class="text-slate-600">Factureringsperiode</span>
                   <div class="flex items-center gap-2">
                     <span id="billing-monthly-label" class="text-navy font-medium text-xs">Maandelijks</span>
-                    <button id="order-billing-toggle" type="button" class="relative w-10 h-5 rounded-full bg-slate-200 transition-colors" aria-label="Schakel tussen maandelijkse en jaarlijkse facturering">
+                    <button id="order-billing-toggle" type="button" data-monthly={selected.price} data-annual={selected.annualPrice} class="relative w-10 h-5 rounded-full bg-slate-200 transition-colors" aria-label="Schakel tussen maandelijkse en jaarlijkse facturering">
                       <span class="absolute left-0.5 top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform" id="order-knob"></span>
                     </button>
                     <span id="billing-annual-label" class="text-slate-500 text-xs">Jaarlijks</span>
@@ -292,13 +296,11 @@ const steps = [
                   <div class="flex justify-between text-slate-600"><span>Abonnement</span><span id="summary-sub">€{selected.price}/maand</span></div>
                   <div class="flex justify-between text-slate-600"><span>Setup (eenmalig)</span><span>Op offerte</span></div>
                   <div class="flex justify-between text-slate-600"><span>BTW (21%)</span><span>Niet inbegrepen</span></div>
-                  <div class="border-t border-slate-200 pt-2 flex justify-between font-bold text-navy"><span>Totaal/maand</span><span id="summary-total">€{selected.price}</span></div>
+                  <div class="border-t border-slate-200 pt-2 flex justify-between font-bold text-navy"><span id="summary-total-label">Totaal/maand</span><span id="summary-total">€{selected.price}</span></div>
+                  <div id="summary-annual-note" class="hidden text-xs text-slate-500 pt-1">Jaarlijks vooruit gefactureerd — u bespaart €{(selected.price - selected.annualPrice) * 12} per jaar.</div>
                 </>
               )}
             </div>
-
-            <input type="hidden" id="hidden-plan" name="plan" value={selectedKey} />
-            <input type="hidden" id="hidden-dienst" name="dienst" value={dienst ?? ''} />
 
             <div class="mt-4 flex items-center gap-2 text-xs text-slate-400">
               <svg class="w-4 h-4 text-brand-emerald flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
@@ -345,19 +347,19 @@ const steps = [
     });
   });
 
-  // Billing toggle in summary
+  // Billing toggle in summary — prices come from the server-rendered plan data
   const oToggle = document.getElementById('order-billing-toggle') as HTMLButtonElement;
   const oKnob = document.getElementById('order-knob') as HTMLElement;
   const monthlyLabel = document.getElementById('billing-monthly-label') as HTMLElement;
   const annualLabel = document.getElementById('billing-annual-label') as HTMLElement;
-  const summaryPriceMonthly = parseInt((document.getElementById('order-price') as HTMLElement)?.textContent?.replace('€','') || '497');
-  const summaryPriceAnnual = Math.round(summaryPriceMonthly * 0.833);
+  const priceMonthly = parseInt(oToggle?.dataset.monthly || '0', 10);
+  const priceAnnualPerMonth = parseInt(oToggle?.dataset.annual || '0', 10);
+  const priceAnnualTotal = priceAnnualPerMonth * 12;
   let annualActive = false;
 
   oToggle?.addEventListener('click', () => {
     if (!oKnob || !monthlyLabel || !annualLabel) return;
     annualActive = !annualActive;
-    const price = annualActive ? summaryPriceAnnual : summaryPriceMonthly;
 
     oKnob.style.transform = annualActive ? 'translateX(20px)' : 'translateX(0)';
     oToggle.classList.toggle('bg-brand-indigo', annualActive);
@@ -371,9 +373,32 @@ const steps = [
     const opEl = document.getElementById('order-price');
     const ssEl = document.getElementById('summary-sub');
     const stEl = document.getElementById('summary-total');
-    if (opEl) opEl.textContent = `€${price}`;
-    if (ssEl) ssEl.textContent = `€${price}/maand`;
-    if (stEl) stEl.textContent = `€${price}`;
+    const stLabelEl = document.getElementById('summary-total-label');
+    const noteEl = document.getElementById('summary-annual-note');
+    const billingInput = document.getElementById('hidden-facturering') as HTMLInputElement | null;
+    const fmt = (n: number) => `€${n.toLocaleString('nl-NL')}`;
+
+    if (annualActive) {
+      if (opEl) opEl.textContent = fmt(priceAnnualPerMonth);
+      if (ssEl) ssEl.textContent = `${fmt(priceAnnualPerMonth)}/maand`;
+      if (stLabelEl) stLabelEl.textContent = 'Totaal/jaar';
+      if (stEl) stEl.textContent = fmt(priceAnnualTotal);
+      noteEl?.classList.remove('hidden');
+      if (billingInput) billingInput.value = 'jaarlijks';
+    } else {
+      if (opEl) opEl.textContent = fmt(priceMonthly);
+      if (ssEl) ssEl.textContent = `${fmt(priceMonthly)}/maand`;
+      if (stLabelEl) stLabelEl.textContent = 'Totaal/maand';
+      if (stEl) stEl.textContent = fmt(priceMonthly);
+      noteEl?.classList.add('hidden');
+      if (billingInput) billingInput.value = 'maandelijks';
+    }
+  });
+
+  // KvK: keep digits only so the pattern check can't fail on spaces or dots
+  const kvkInput = document.getElementById('kvk') as HTMLInputElement | null;
+  kvkInput?.addEventListener('input', () => {
+    kvkInput.value = kvkInput.value.replace(/\D/g, '').slice(0, 8);
   });
 
   // Form submit (Brevo via /api/submit — sends to hello@aanloopai.nl + autoresponse to user)
@@ -386,7 +411,9 @@ const steps = [
     const errorEl = document.getElementById('form-error') as HTMLElement;
 
     if (!form.checkValidity()) {
+      if (errorEl) errorEl.textContent = 'Vul alle verplichte velden in en probeer het opnieuw.';
       errorEl?.classList.remove('hidden');
+      form.reportValidity();
       return;
     }
     errorEl?.classList.add('hidden');
