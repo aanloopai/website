@@ -1157,16 +1157,19 @@ export default {
     // WhatsApp-CTA loopt via deze eigen URL in plaats van rechtstreeks naar
     // wa.me. Reden: wa.me rate-limit crawlers met HTTP 429, en omdat de knop in
     // header, footer en sticky CTA staat, telde Semrush dat als 91 "broken
-    // external links" — één per pagina. Voor een bezoeker verandert er niets:
-    // 302 naar exact dezelfde chat. Bewust 302 en geen 301, zodat het nummer
-    // wijzigen kan zonder dat browsers de oude bestemming vasthouden.
+    // external links" — één per pagina. Voor een bezoeker verandert er niets.
+    // 301 en geen 302 (Ahrefs 2026-08-24: 302 met 241 inlinks lekt equity):
+    // de bestemming is permanent zolang het nummer niet wijzigt, en de
+    // Cache-Control van één uur begrenst hoe lang browsers de 301 vasthouden
+    // — bij een nummerwissel is de oude bestemming dus binnen een uur weg.
+    // Alle interne links naar /whatsapp dragen rel="nofollow".
     if (url.pathname === '/whatsapp' || url.pathname === '/whatsapp/') {
       const text = url.searchParams.get('text');
       const target = new URL('https://api.whatsapp.com/send');
       target.searchParams.set('phone', WHATSAPP_NUMBER);
       if (text) target.searchParams.set('text', text);
       return new Response(null, {
-        status: 302,
+        status: 301,
         headers: {
           Location: target.toString(),
           'Cache-Control': 'public, max-age=3600',
