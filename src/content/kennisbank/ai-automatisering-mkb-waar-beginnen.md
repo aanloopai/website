@@ -1,6 +1,6 @@
 ---
-title: "AI-automatisering voor het MKB: waar begint u?"
-description: "Een praktisch afwegingskader voor Nederlandse MKB-ondernemers om te bepalen welk proces als eerste in aanmerking komt voor AI-automatisering."
+title: "Welk proces automatiseert u eerst? Kader voor het MKB"
+description: "Praktisch afwegingskader voor MKB-ondernemers: welk proces automatiseert u eerst? Met meetbare criteria en de valkuilen die trajecten vertragen."
 excerpt: "Niet elk proces is geschikt om als eerste te automatiseren. Dit artikel geeft een praktisch afwegingskader: welke processen wél, wat u vooraf meet, en welke valkuilen de meeste MKB-trajecten vertragen."
 published: 2026-07-09
 category: "AI-automatisering"
