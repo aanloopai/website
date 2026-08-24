@@ -15,6 +15,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # Volledige historie: scripts/build-sitemap.cjs leest de laatste
+          # commitdatum per bronbestand voor <lastmod>. Met de standaard
+          # depth=1 ziet git alleen de merge-commit en krijgt élke URL de
+          # deploydatum — precies wat we niet willen.
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
