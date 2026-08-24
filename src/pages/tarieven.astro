@@ -354,8 +354,11 @@ const productOfferGraph = {
       // Enterprise heeft geen publieke prijs. Een Offer met alleen een lege
       // PriceSpecification is ongeldig (priceCurrency zonder bedrag), dus staat
       // hier bewust geen offers-blok maar een potentialAction naar de offerte.
+      // QuoteAction en niet RequestQuoteAction: dat laatste type bestaat niet
+      // in het schema.org-vocabulaire (Ahrefs 2026-08-24: "Invalid schema.org
+      // type. Expected types for potentialAction: Action").
       potentialAction: {
-        '@type': 'RequestQuoteAction',
+        '@type': 'QuoteAction',
         name: 'Offerte aanvragen — binnen 24 uur',
         target: 'https://aanloopai.nl/contact/?type=offerte&plan=enterprise',
       },
@@ -391,7 +394,7 @@ const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 :
 
 <BaseLayout
   title="AI-Agent Prijs Nederland 2026 — Tarieven Aanloop AI"
-  description="Emma AI-agent vanaf €497/mnd (WhatsApp inbegrepen), Groei €997/mnd. Setup op aanvraag."
+  description="Emma AI-agent vanaf €497/mnd (WhatsApp inbegrepen), Groei €997/mnd. Setup op aanvraag. Transparante tarieven, geen exit-fees — live in 7 werkdagen."
   schema={productOfferGraph}
   faqSchema={faqs.map(f => ({ question: f.q, answer: f.a }))}
 >

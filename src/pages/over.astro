@@ -65,7 +65,9 @@ const faqSchema = [
 ];
 
 // ── Schema ─────────────────────────────────────────────────────────
-const personSchema = { '@id': 'https://aanloopai.nl/#organization' };
+// Geen los { '@id': ... }-blok meer: als zelfstandig ld+json-blok mist het
+// @context/@type (validate-schema.mjs) en BaseLayout levert de volledige
+// Organization-node met dit @id al op elke pagina.
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -80,7 +82,7 @@ const breadcrumbSchema = {
 <BaseLayout
   title="Over Aanloop AI — Oprichtersverhaal, Missie & Bedrijfsfeiten"
   description="Aanloop AI, opgericht in Rotterdam (KvK: 88606902). Lees het oprichtersverhaal, onze missie en waarom wij MKB-AI anders aanpakken."
-  schema={[personSchema, breadcrumbSchema]}
+  schema={[breadcrumbSchema]}
   faqSchema={faqSchema}
 >
 

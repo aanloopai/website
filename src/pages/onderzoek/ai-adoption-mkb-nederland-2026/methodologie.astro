@@ -33,8 +33,11 @@ const scholarlSchema = {
     { '@type': 'Thing', name: 'Research methodology' },
     { '@type': 'Thing', name: 'MKB Nederland' }
   ],
+  // WebPage en niet ResearchProject: isPartOf verwacht een CreativeWork, en
+  // ResearchProject is in schema.org een Organization-subtype — dat leverde
+  // de structured-data-fout op deze pagina op (Ahrefs 2026-08-24).
   isPartOf: {
-    '@type': 'ResearchProject',
+    '@type': 'WebPage',
     name: 'AI Adoption MKB Nederland 2026',
     url: 'https://aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/'
   },
