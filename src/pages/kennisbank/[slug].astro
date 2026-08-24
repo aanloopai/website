@@ -19,6 +19,18 @@ type Props = { post: CollectionEntry<'kennisbank'> };
 const { post } = Astro.props;
 const { Content } = await post.render();
 
+// Contextuele dienstlink per artikel (crawl-links.mjs: markdown-artikelen
+// hingen los van de diensten-silo). Slug-token bepaalt de best passende
+// dienstpagina; /diensten/ is het vangnet.
+const slugStr = post.slug;
+const dienstLink = slugStr.includes('automatisering')
+  ? { href: '/ai-automatisering/', label: 'AI-automatisering voor het MKB' }
+  : slugStr.includes('chatbot')
+  ? { href: '/diensten/ai-chatbot-website/', label: 'AI-chatbot voor uw website' }
+  : slugStr.includes('chatgpt') || slugStr.includes('geo') || slugStr.includes('vindbaar')
+  ? { href: '/ai-vindbaarheid/', label: 'AI-vindbaarheid (GEO)' }
+  : { href: '/diensten/', label: 'Bekijk onze diensten' };
+
 const dateFmt = (d: Date) => d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
 
 const pageUrl = new URL(`/kennisbank/${post.slug}/`, Astro.site).toString();
@@ -71,8 +83,10 @@ const articleSchema = {
       <article class="max-w-3xl mx-auto prose-blog">
         <Content />
       </article>
-      <div class="max-w-3xl mx-auto mt-12 pt-8 border-t border-slate-200">
+      <div class="max-w-3xl mx-auto mt-12 pt-8 border-t border-slate-200 flex flex-wrap items-center gap-x-6 gap-y-2">
         <a href="/kennisbank/" class="text-sm font-medium text-brand-indigo hover:underline">← Terug naar kennisbank</a>
+        <a href={dienstLink.href} class="text-sm font-medium text-brand-indigo hover:underline">{dienstLink.label}</a>
+        <a href="/tarieven/" class="text-sm font-medium text-brand-indigo hover:underline">Bekijk tarieven</a>
       </div>
     </div>
   </section>

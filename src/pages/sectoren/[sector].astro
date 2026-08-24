@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { sectors, serviceLabels } from '../../data/sectors';
+import { GEO_SECTORS } from '../../data/geo-sectors';
+import { KENNISBANK_ARTICLES } from '../../data/kennisbank-articles';
 
 export async function getStaticPaths() {
   return sectors.map((sector) => ({
@@ -10,14 +12,31 @@ export async function getStaticPaths() {
 }
 
 const { sector } = Astro.props;
-// Staart van de meta-description ingekort ("Live binnen 7 werkdagen" ->
-// "Live in 7 werkdagen"): bij de twee langste sectorbeschrijvingen liep de
-// description over de 165 tekens en kapte Google hem af.
+// De vaste staart wordt alleen toegevoegd zolang het totaal binnen de
+// 155 tekens blijft (Google kapt daarboven af — Ahrefs 2026-08-24 telde
+// /sectoren/schoonheid/ op 163 en /sectoren/installatie/ op 161). Past de
+// lange staart niet, dan de korte; past ook die niet, dan geen staart.
+// Contextuele interne links (crawl-links.mjs 2026-08-24: de 14
+// /ai-vindbaarheid/voor-*-pagina's hadden elk maar één inkomende link — de
+// hub). Elke sectorpagina linkt naar zijn GEO-tegenhanger als die bestaat,
+// plus naar 2-3 kennisbank-artikelen die op de sectorslug matchen.
+const geoTegenhanger = GEO_SECTORS.find((g) => g.slug === sector.slug) || null;
+const sectorArtikelen = KENNISBANK_ARTICLES
+  .filter((a) => a.slug.includes(sector.slug))
+  .slice(0, 3);
+
+const DESC_SUFFIX_LANG = ' AI receptionist, WhatsApp en workflow-automatisering. Live in 7 werkdagen.';
+const DESC_SUFFIX_KORT = ' Live in 7 werkdagen.';
+const descBase = sector.shortDescription.trim();
+const metaDescription =
+  (descBase + DESC_SUFFIX_LANG).length <= 155 ? descBase + DESC_SUFFIX_LANG
+  : (descBase + DESC_SUFFIX_KORT).length <= 155 ? descBase + DESC_SUFFIX_KORT
+  : descBase;
 ---
 
 <BaseLayout
   title={`AI voor ${sector.title} NL — AI MKB`}
-  description={`${sector.shortDescription} AI receptionist, WhatsApp en workflow-automatisering. Live in 7 werkdagen.`}
+  description={metaDescription}
 >
   <!-- Hero -->
   <section class="border-b border-slate-200">
@@ -200,6 +219,22 @@ const { sector } = Astro.props;
           </a>
         ))}
       </div>
+    </div>
+  </section>
+
+  <!-- Verder lezen: GEO-tegenhanger, kennisbank en tarieven -->
+  <section class="section-tight border-t border-slate-200">
+    <div class="container-page">
+      <p class="eyebrow mb-4">Verder lezen voor {sector.title.toLowerCase()}</p>
+      <ul class="flex flex-wrap gap-2">
+        {geoTegenhanger && (
+          <li><a href={`/ai-vindbaarheid/voor-${geoTegenhanger.slug}/`} class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-navy rounded-lg text-xs font-medium text-navy transition-all">AI-vindbaarheid voor {sector.title.toLowerCase()}</a></li>
+        )}
+        {sectorArtikelen.map((a) => (
+          <li><a href={`/kennisbank/${a.slug}/`} class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-navy rounded-lg text-xs font-medium text-navy transition-all">{a.title}</a></li>
+        ))}
+        <li><a href="/tarieven/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-navy rounded-lg text-xs font-medium text-navy transition-all">Bekijk tarieven</a></li>
+      </ul>
     </div>
   </section>
 
