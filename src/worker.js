@@ -193,10 +193,15 @@ function cacheControlFor(pathname) {
 
 function applySecurityHeaders(response, pathname) {
   const headers = new Headers(response.headers);
+  // Vangnet, geen override: sinds run_worker_first (wrangler.toml) draait de
+  // Worker vóór elk asset-antwoord en heeft de asset-laag public/_headers al
+  // toegepast. Die waarden zijn ruimer (o.a. microphone-permissie voor
+  // ElevenLabs, CSP met clarity.ms) — hier overschrijven zou de spraakdemo
+  // breken. Alleen zetten wat nog ontbreekt.
   for (const [k, v] of Object.entries(SECURITY_HEADERS)) {
-    headers.set(k, v);
+    if (!headers.has(k)) headers.set(k, v);
   }
-  headers.set('cache-control', cacheControlFor(pathname));
+  if (!headers.has('cache-control')) headers.set('cache-control', cacheControlFor(pathname));
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
@@ -1127,19 +1132,44 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
+    // Host/protocol-canonicalisatie: elke http://- en elke www.-variant krijgt
+    // één enkele 301 rechtstreeks naar https://aanloopai.nl/<pad>?<query> —
+    // geen keten via https://www. Vereist run_worker_first in wrangler.toml,
+    // anders serveert de asset-laag http-verzoeken met 200 (Ahrefs 2026-08-24:
+    // 241 pagina's "Canonical from HTTP to HTTPS"). Alleen productie-hosts;
+    // localhost/workers.dev-previews blijven ongemoeid.
+    if (
+      (url.protocol === 'http:' || url.hostname === 'www.aanloopai.nl') &&
+      (url.hostname === 'aanloopai.nl' || url.hostname === 'www.aanloopai.nl')
+    ) {
+      url.protocol = 'https:';
+      url.hostname = 'aanloopai.nl';
+      return new Response(null, {
+        status: 301,
+        headers: {
+          Location: url.toString(),
+          'Cache-Control': 'public, max-age=86400',
+          'Strict-Transport-Security': SECURITY_HEADERS['strict-transport-security'],
+        },
+      });
+    }
+
     // WhatsApp-CTA loopt via deze eigen URL in plaats van rechtstreeks naar
     // wa.me. Reden: wa.me rate-limit crawlers met HTTP 429, en omdat de knop in
     // header, footer en sticky CTA staat, telde Semrush dat als 91 "broken
-    // external links" — één per pagina. Voor een bezoeker verandert er niets:
-    // 302 naar exact dezelfde chat. Bewust 302 en geen 301, zodat het nummer
-    // wijzigen kan zonder dat browsers de oude bestemming vasthouden.
+    // external links" — één per pagina. Voor een bezoeker verandert er niets.
+    // 301 en geen 302 (Ahrefs 2026-08-24: 302 met 241 inlinks lekt equity):
+    // de bestemming is permanent zolang het nummer niet wijzigt, en de
+    // Cache-Control van één uur begrenst hoe lang browsers de 301 vasthouden
+    // — bij een nummerwissel is de oude bestemming dus binnen een uur weg.
+    // Alle interne links naar /whatsapp dragen rel="nofollow".
     if (url.pathname === '/whatsapp' || url.pathname === '/whatsapp/') {
       const text = url.searchParams.get('text');
       const target = new URL('https://api.whatsapp.com/send');
       target.searchParams.set('phone', WHATSAPP_NUMBER);
       if (text) target.searchParams.set('text', text);
       return new Response(null, {
-        status: 302,
+        status: 301,
         headers: {
           Location: target.toString(),
           'Cache-Control': 'public, max-age=3600',

@@ -9,6 +9,12 @@ export function getStaticPaths() {
 const { sector } = Astro.props;
 const url = `https://aanloopai.nl/ai-vindbaarheid/voor-${sector.slug}/`;
 
+// Ring-rotatie: elke pagina linkt de 4 vólgende sectoren (wrap-around), zodat
+// elke voor-*-pagina exact 4 inkomende zusterlinks krijgt — een vaste
+// slice(0, 4) zou alle links naar dezelfde vier sturen.
+const eigenIdx = GEO_SECTORS.findIndex((s) => s.slug === sector.slug);
+const zusterSectoren = Array.from({ length: 4 }, (_, i) => GEO_SECTORS[(eigenIdx + 1 + i) % GEO_SECTORS.length]);
+
 const factoren = [
   { titel: 'Consistentie', body: 'Naam, vakgebied en gegevens overal identiek — website, KvK, socials, directories.' },
   { titel: 'Vertrouwen', body: 'Reviews, vermeldingen op andere sites en een site die AI-crawlers kunnen lezen.' },
@@ -93,6 +99,19 @@ const faqSchema = sector.faq.map((f) => ({ question: f.q, answer: f.a }));
           <a href="/ai-vindbaarheid/check/" class="btn-primary text-base px-6 py-3">Gratis GEO Quick Scan</a>
           <a href="/kennisbank/wat-is-geo-ai-vindbaarheid-mkb-nederland/" class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/30 text-white font-semibold hover:bg-white/10 transition-colors text-base px-6 py-3">Wat is GEO?</a>
         </div>
+      </div>
+
+      <!-- Zusterpagina's: elke GEO-sectorpagina linkt naar 4 verwante
+           sectoren + de hub, zodat geen enkele voor-*-pagina een wees is
+           (crawl-links.mjs 2026-08-24: elk 1 inkomende link, alleen de hub). -->
+      <div class="mt-10">
+        <p class="eyebrow mb-4">AI-vindbaarheid per sector</p>
+        <ul class="flex flex-wrap gap-2">
+          {zusterSectoren.map((s) => (
+            <li><a href={`/ai-vindbaarheid/voor-${s.slug}/`} class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-navy rounded-lg text-xs font-medium text-navy transition-all">Voor {s.naam}</a></li>
+          ))}
+          <li><a href="/ai-vindbaarheid/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-navy rounded-lg text-xs font-medium text-navy transition-all">Alle sectoren</a></li>
+        </ul>
       </div>
     </div>
   </section>

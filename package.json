@@ -19,6 +19,11 @@
     "seo:links": "node scripts/seo-link-integrity.cjs --check-external",
     "seo:fix": "node scripts/seo-autofix.cjs",
     "seo:fix:apply": "node scripts/seo-autofix.cjs --apply",
+    "seo:schema": "node scripts/validate-schema.mjs",
+    "seo:meta": "node scripts/check-meta.mjs",
+    "seo:crawl": "node scripts/crawl-links.mjs --report",
+    "img:optimize": "node scripts/optimize-images.mjs",
+    "img:check": "node scripts/check-image-weight.mjs",
     "smoke": "node scripts/smoke.mjs",
     "e2e": "node test/e2e/koopweg.playwright.mjs",
     "test": "vitest run",
@@ -35,6 +40,7 @@
   "devDependencies": {
     "@vitejs/plugin-basic-ssl": "^2.3.0",
     "playwright": "^1.59.1",
+    "sharp": "^0.35.3",
     "vitest": "^3.2.7"
   }
 }

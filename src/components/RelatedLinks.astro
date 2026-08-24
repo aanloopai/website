@@ -3,8 +3,21 @@
 // Verdeelt link-equity over de ~81 artikelen (cruciaal bij lage DR) + houdt
 // bezoekers langer op de site. Gemount in BaseLayout; rendert alleen op
 // /kennisbank/<slug>/-pagina's. Zero per-artikel edits.
-import { KENNISBANK_ARTICLES as ARTICLES } from '../data/kennisbank-articles';
+import { KENNISBANK_ARTICLES } from '../data/kennisbank-articles';
 import { EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../data/pricing';
+import { getCollection } from 'astro:content';
+
+// Markdown-artikelen (src/content/kennisbank/) meenemen: die stonden niet in
+// KENNISBANK_ARTICLES en kregen daardoor nooit een "gerelateerd"-link —
+// crawl-links.mjs telde er 1 inkomende link (alleen de kennisbank-index).
+const mdEntries = await getCollection('kennisbank', ({ data }) => !data.draft);
+const knownSlugs = new Set(KENNISBANK_ARTICLES.map((a) => a.slug));
+const ARTICLES = [
+  ...KENNISBANK_ARTICLES,
+  ...mdEntries
+    .filter((e) => !knownSlugs.has(e.slug))
+    .map((e) => ({ slug: e.slug, title: e.data.title, category: e.data.category })),
+];
 
 const m = Astro.url.pathname.match(/^\/kennisbank\/([^/]+)\/?$/);
 let related = [];

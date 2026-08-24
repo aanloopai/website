@@ -8,8 +8,6 @@ readingMinutes: 7
 draft: false
 ---
 
-# AI-automatisering voor het MKB: waar begint u?
-
 AI-automatisering klinkt voor veel ondernemers in het Nederlandse MKB nog als iets voor grote techbedrijven met een eigen IT-afdeling. Toch is juist het midden- en kleinbedrijf de plek waar automatisering het snelst rendeert. Waar een klein team veel handmatig werk verzet, telt elke bespaarde minuut dubbel. Maar tussen het idee en een werkend proces zitten keuzes die bepalen of automatisering echt oplevert of alleen maar ruis toevoegt.
 
 Dit artikel geeft geen verkooppraatje, maar een nuchtere kijk op wat AI-automatisering voor een MKB-bedrijf betekent: wat het is, wanneer het loont, en hoe u verstandig begint.
