@@ -80,17 +80,27 @@ const today = new Date().toISOString().slice(0, 10);
 const { execSync } = require('child_process');
 const gitDateByFile = new Map();
 try {
+  // --no-merges: een merge-commit toont zonder -m geen bestandslijst, maar
+  // uitsluiten maakt dat expliciet. De datum wordt via Date() naar UTC
+  // genormaliseerd: %cI staat in de tijdzone van de committer, waardoor een
+  // commit van 00:30 +02:00 anders een dag te laat stempelt.
   const log = execSync(
-    'git log --format=COMMIT:%cI --name-only --no-renames -- src/pages src/content src/data',
+    'git log --no-merges --format=COMMIT:%cI --name-only --no-renames -- src/pages src/content src/data',
     { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 }
   );
   let current = null;
   for (const line of log.split('\n')) {
-    if (line.startsWith('COMMIT:')) current = line.slice('COMMIT:'.length, 'COMMIT:'.length + 10);
-    else if (line.trim() && current && !gitDateByFile.has(line.trim())) gitDateByFile.set(line.trim(), current);
+    if (line.startsWith('COMMIT:')) {
+      const iso = line.slice('COMMIT:'.length).trim();
+      const d = new Date(iso);
+      current = isNaN(d.getTime()) ? null : d.toISOString().slice(0, 10);
+    } else if (line.trim() && current && !gitDateByFile.has(line.trim())) {
+      gitDateByFile.set(line.trim(), current);
+    }
   }
-} catch {
+} catch (err) {
   // Geen git beschikbaar (bijv. kale tarball) — val terug op bestaand gedrag.
+  console.warn(`lastmod: git-historie niet leesbaar (${err.message?.split('\n')[0]}) — fallback op bestaande sitemapwaarden.`);
 }
 
 function lastmodForSource(absFile) {
@@ -193,6 +203,22 @@ xmlLines.push('');
 fs.writeFileSync(SITEMAP, xmlLines.join('\n'));
 
 console.log(`Wrote ${uniqueSorted.length} URLs to public/sitemap.xml`);
+// Histogram in de buildlog: één regel per lastmod-datum. Eén enkele datum
+// over alle URL's is vrijwel altijd een symptoom (shallow checkout,
+// tijdzone-drift, lege git-map) — zo is dat in CI direct zichtbaar.
+{
+  const hist = {};
+  for (const u of uniqueSorted) {
+    const src = sourceByUrl.get(u);
+    const d = (src && lastmodForSource(src)) || lastmodMap.get(u) || today;
+    hist[d] = (hist[d] || 0) + 1;
+  }
+  const dates = Object.keys(hist).sort();
+  console.log(`lastmod-histogram (git-map: ${gitDateByFile.size} bestanden): ` + dates.map((d) => `${d}×${hist[d]}`).join(' '));
+  if (dates.length === 1) {
+    console.warn('lastmod: alle URL\'s hebben dezelfde datum — controleer fetch-depth/git-historie in deze omgeving.');
+  }
+}
 console.log(`Skipped noindex (${skipped.noindex.length}): ${skipped.noindex.join(', ')}`);
 console.log(`Skipped dynamic (${skipped.dynamic.length}): ${skipped.dynamic.join(', ')}`);
 console.log(`Skipped excluded (${skipped.excluded.length}): ${skipped.excluded.join(', ')}`);
