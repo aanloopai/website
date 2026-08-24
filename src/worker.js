@@ -193,10 +193,15 @@ function cacheControlFor(pathname) {
 
 function applySecurityHeaders(response, pathname) {
   const headers = new Headers(response.headers);
+  // Vangnet, geen override: sinds run_worker_first (wrangler.toml) draait de
+  // Worker vóór elk asset-antwoord en heeft de asset-laag public/_headers al
+  // toegepast. Die waarden zijn ruimer (o.a. microphone-permissie voor
+  // ElevenLabs, CSP met clarity.ms) — hier overschrijven zou de spraakdemo
+  // breken. Alleen zetten wat nog ontbreekt.
   for (const [k, v] of Object.entries(SECURITY_HEADERS)) {
-    headers.set(k, v);
+    if (!headers.has(k)) headers.set(k, v);
   }
-  headers.set('cache-control', cacheControlFor(pathname));
+  if (!headers.has('cache-control')) headers.set('cache-control', cacheControlFor(pathname));
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
@@ -1126,6 +1131,28 @@ async function notifyOutreachFollowups(env) {
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
+
+    // Host/protocol-canonicalisatie: elke http://- en elke www.-variant krijgt
+    // één enkele 301 rechtstreeks naar https://aanloopai.nl/<pad>?<query> —
+    // geen keten via https://www. Vereist run_worker_first in wrangler.toml,
+    // anders serveert de asset-laag http-verzoeken met 200 (Ahrefs 2026-08-24:
+    // 241 pagina's "Canonical from HTTP to HTTPS"). Alleen productie-hosts;
+    // localhost/workers.dev-previews blijven ongemoeid.
+    if (
+      (url.protocol === 'http:' || url.hostname === 'www.aanloopai.nl') &&
+      (url.hostname === 'aanloopai.nl' || url.hostname === 'www.aanloopai.nl')
+    ) {
+      url.protocol = 'https:';
+      url.hostname = 'aanloopai.nl';
+      return new Response(null, {
+        status: 301,
+        headers: {
+          Location: url.toString(),
+          'Cache-Control': 'public, max-age=86400',
+          'Strict-Transport-Security': SECURITY_HEADERS['strict-transport-security'],
+        },
+      });
+    }
 
     // WhatsApp-CTA loopt via deze eigen URL in plaats van rechtstreeks naar
     // wa.me. Reden: wa.me rate-limit crawlers met HTTP 429, en omdat de knop in

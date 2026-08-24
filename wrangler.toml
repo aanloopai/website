@@ -7,6 +7,12 @@ compatibility_flags = ["nodejs_compat"]
 [assets]
 directory = "./dist"
 binding = "ASSETS"
+# Zonder run_worker_first serveert Workers Assets een statische pagina
+# rechtstreeks, vóór de Worker draait. Gevolg (Ahrefs-audit 2026-08-24):
+# http://aanloopai.nl/* gaf 200 OK i.p.v. een 301 naar https — de
+# host/protocol-canonicalisatie bovenin fetch() werd nooit bereikt. Met deze
+# regel draait de Worker op elk verzoek en is één 301 gegarandeerd.
+run_worker_first = true
 # Zonder deze regel beantwoordt Workers Assets een onbekend pad met een kale
 # 404 zonder body: de bezoeker kreeg de browserfoutmelding te zien terwijl
 # dist/404.html gewoon gebouwd werd. Nu wordt die pagina geserveerd, mét
