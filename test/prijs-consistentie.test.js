@@ -26,11 +26,18 @@ const pageFiles = [
   join(ROOT, 'public', 'llms-full.txt'),
 ];
 
-// [regex, uitleg]. Codecommentaar dat de geschrapte tier documenteert is
-// toegestaan — daarom checken we alleen regels die niet met // beginnen.
+// Rectificatie-pagina: mag als enige het geschrapte €49-bedrag noemen, omdat
+// hij het publiek corrigeert (schedulio.ai citeert het verouderde tarief).
+// Alle overige BANNED-patronen gelden daar wél; een aparte test hieronder
+// bewaakt dat de rectificatie-tekst intact blijft.
+const RECTIFICATIE_PAGINA = join(ROOT, 'src', 'pages', 'vergelijk', 'aanloop-vs-schedulio.astro');
+
+// [regex, uitleg, exemptRectificatie?]. Codecommentaar dat de geschrapte tier
+// documenteert is toegestaan — daarom checken we alleen regels die niet met //
+// beginnen.
 const BANNED = [
-  [/€\s?49(?![0-9.,])/u, 'geschrapte WhatsApp-Lite prijs €49 (owner-besluit 2026-08-11)'],
-  [/(vanaf|v\.a\.)\s+(€|EUR)\s?49(?![0-9.,])/iu, '"vanaf €49" — bestaat niet meer'],
+  [/€\s?49(?![0-9.,])/u, 'geschrapte WhatsApp-Lite prijs €49 (owner-besluit 2026-08-11)', true],
+  [/(vanaf|v\.a\.)\s+(€|EUR)\s?49(?![0-9.,])/iu, '"vanaf €49" — bestaat niet meer', true],
   [/1 callscript/u, 'Emma heeft tot 3 callscripts (kanon /tarieven), niet 1'],
   [/[Tt]ot 5 callscripts/u, 'Groei heeft onbeperkte callscripts, niet 5'],
   [/Growth-?\s?pakket/u, 'Emma-ladder tier heet "Groei", niet "Growth"'],
@@ -51,12 +58,23 @@ describe('prijs- en claim-consistentie', () => {
       lines.forEach((line, i) => {
         const code = line.trimStart();
         if (code.startsWith('//') || code.startsWith('*')) return;
-        for (const [re, why] of BANNED) {
+        for (const [re, why, exemptRectificatie] of BANNED) {
+          if (exemptRectificatie && file === RECTIFICATIE_PAGINA) continue;
           if (re.test(line)) hits.push(`${file.slice(ROOT.length + 1)}:${i + 1} — ${why}`);
         }
       });
     }
     expect(hits, hits.join('\n')).toEqual([]);
+  });
+
+  it('rectificatie-pagina (vs Schedulio) houdt de €49-correctie intact', () => {
+    const body = readFileSync(RECTIFICATIE_PAGINA, 'utf8');
+    // Zonder deze elementen verliest de €49-uitzondering hierboven zijn
+    // bestaansrecht: de pagina moet corrigeren, niet het oude tarief herhalen.
+    expect(body).toMatch(/bestaat niet meer/);
+    expect(body).toMatch(/11 augustus 2026/);
+    expect(body).toMatch(/€497/);
+    expect(body).toMatch(/Kost Aanloop AI €49 per maand\?/);
   });
 
   it('homepage-bundelclaim klopt met pricing.ts (€45/mnd voordeel)', async () => {
