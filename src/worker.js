@@ -1164,10 +1164,15 @@ export default {
     // — bij een nummerwissel is de oude bestemming dus binnen een uur weg.
     // Alle interne links naar /whatsapp dragen rel="nofollow".
     if (url.pathname === '/whatsapp' || url.pathname === '/whatsapp/') {
-      const text = url.searchParams.get('text');
+      // Standaardtekst identificeert de herkomst: hetzelfde nummer wordt ook
+      // voor andere bedrijven gebruikt, dus zonder deze tag is niet te zien
+      // dat een binnenkomend gesprek van aanloop.ai komt. Een expliciete
+      // ?text= op een specifieke pagina blijft voorgaan.
+      const text = url.searchParams.get('text')
+        || 'Hallo! Ik kom via aanloop.ai en heb een vraag.';
       const target = new URL('https://api.whatsapp.com/send');
       target.searchParams.set('phone', WHATSAPP_NUMBER);
-      if (text) target.searchParams.set('text', text);
+      target.searchParams.set('text', text);
       return new Response(null, {
         status: 301,
         headers: {
