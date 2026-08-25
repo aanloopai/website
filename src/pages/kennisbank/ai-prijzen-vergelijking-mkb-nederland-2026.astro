@@ -71,7 +71,7 @@ const offerGraph = {
       '@id': 'https://aanloopai.nl/tarieven/#emma',
       name: 'Aanloop AI — Emma',
       serviceType: 'AI-telefoniste (omnichannel AI-agent)',
-      description: 'AI telefoniste Emma voor Nederlands MKB. 150 gesprekken per maand, 1 callscript op maat, agenda-integratie en dashboard. Eenmalige setup op aanvraag.',
+      description: 'AI telefoniste Emma voor Nederlands MKB. 150 gesprekken per maand, tot 3 callscripts op maat, agenda-integratie en dashboard. Eenmalige setup op aanvraag.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
       areaServed: { '@type': 'Country', name: 'Nederland' },
@@ -110,7 +110,7 @@ const offerGraph = {
 const faqItems = [
   {
     question: 'Wat zijn de actuele Aanloop AI tarieven in 2026?',
-    answer: 'Aanloop AI hanteert drie vaste pakketten. Emma: 497 euro per maand. Inbegrepen: Emma AI telefoniste, 150 gesprekken per maand, 1 callscript op maat, agenda-integratie, dashboard en WhatsApp Business AI (geen los abonnement). Groei: 997 euro per maand. Inbegrepen: Emma onbeperkt plus WhatsApp, 3 callscripts, CRM-koppeling (HubSpot/Pipedrive), gespreksopnames en prioriteit support (reactie onder 4 uur). AI-Website Bundel: 649 euro per maand (website plus Emma als gecombineerd pakket). Een eenmalige setup is bij Emma, Groei en de Bundel van toepassing — op aanvraag, besproken in het gesprek. Partner op maat: op offerte. Alle prijzen zijn exclusief 21% btw.',
+    answer: 'Aanloop AI hanteert drie vaste pakketten. Emma: 497 euro per maand. Inbegrepen: Emma AI telefoniste, 150 gesprekken per maand, tot 3 callscripts op maat, agenda-integratie, dashboard en WhatsApp Business AI (geen los abonnement). Groei: 997 euro per maand. Inbegrepen: Emma onbeperkt plus WhatsApp, onbeperkte callscripts, CRM-koppeling (HubSpot/Pipedrive), gespreksopnames en prioriteit support (reactie onder 4 uur). AI-Website Bundel: 649 euro per maand (website plus Emma als gecombineerd pakket). Een eenmalige setup is bij Emma, Groei en de Bundel van toepassing — op aanvraag, besproken in het gesprek. Enterprise op maat: op offerte. Alle prijzen zijn exclusief 21% btw.',
   },
   {
     question: 'Welke verborgen kosten heeft AI voor MKB?',
@@ -198,10 +198,10 @@ const pricingModels = [
 ];
 
 const aanloopTiers = [
-  { tier: 'Emma', prijs: '497 euro/mnd', setup: 'Op aanvraag', inhoud: 'Emma AI telefoniste, 150 gesprekken/mnd, 1 callscript, agenda-integratie, e-mail lead-melding, dashboard, WhatsApp Business AI inbegrepen', liveTijd: '10 werkdagen', best: false },
+  { tier: 'Emma', prijs: '497 euro/mnd', setup: 'Op aanvraag', inhoud: 'Emma AI telefoniste, 150 gesprekken/mnd, tot 3 callscripts, agenda-integratie, e-mail lead-melding, dashboard, WhatsApp Business AI inbegrepen', liveTijd: '7 werkdagen', best: false },
   { tier: 'Groei', prijs: '997 euro/mnd', setup: 'Op aanvraag', inhoud: 'Emma onbeperkt + WhatsApp inbegrepen, 3 callscripts, CRM HubSpot/Pipedrive, Telegram lead-melding, gespreksopnames, prioriteit support', liveTijd: '7 werkdagen', best: true },
   { tier: 'AI-Website Bundel', prijs: '649 euro/mnd', setup: 'Op aanvraag', inhoud: 'AI-ready website + Emma als gecombineerd pakket, 1 leverancier, 1 contract, 1 aanspreekpunt', liveTijd: '21 werkdagen', best: false },
-  { tier: 'Partner op maat', prijs: 'Op offerte', setup: 'Op offerte', inhoud: 'Emma onbeperkt + custom n8n workflows, multi-team routing, dedicated account manager, uptime-doel 99,9% (SLA op aanvraag), maatwerk CRM/ERP', liveTijd: '14 werkdagen', best: false },
+  { tier: 'Enterprise op maat', prijs: 'Op offerte', setup: 'Op offerte', inhoud: 'Emma onbeperkt + custom n8n workflows, multi-team routing, dedicated account manager, uptime-doel 99,9% (SLA op aanvraag), maatwerk CRM/ERP', liveTijd: 'Afhankelijk van scope', best: false },
 ];
 
 const hiddenCosts = [
@@ -657,7 +657,7 @@ const sectorRoi = [
       <div class="grid sm:grid-cols-2 gap-4 text-sm">
         <a href="/tarieven/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
           <p class="font-semibold text-navy">Tarieven — source of truth</p>
-          <p class="text-slate-600 mt-1 text-xs">Canonieke Aanloop AI tariefpagina: Emma 497 euro/mnd, Groei 997 euro/mnd (WhatsApp inbegrepen), Partner op maat.</p>
+          <p class="text-slate-600 mt-1 text-xs">Canonieke Aanloop AI tariefpagina: Emma 497 euro/mnd, Groei 997 euro/mnd (WhatsApp inbegrepen), Enterprise op maat.</p>
         </a>
         <a href="/diensten/emma/#telefoon" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
           <p class="font-semibold text-navy">Emma — AI telefoniste</p>
