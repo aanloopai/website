@@ -1,0 +1,290 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { EMMA_MND, GROEI_MND, EMMA_SETUP_LABEL, VANAF } from '../../data/pricing';
+
+// Comparison page: Aanloop AI vs Schedulio — met feiten-check.
+// Aanleiding: schedulio.ai/compare/aanloop-ai-alternative rankt op ons merk en
+// citeert een Aanloop-prijsladder "gecontroleerd op 10 augustus 2026" — één dag
+// vóór de tariefwijziging van 11 augustus 2026 waarbij de losse WhatsApp-tiers
+// (€49 Lite / €197 Standard) zijn geschrapt en WhatsApp in Emma is opgenomen.
+// Deze pagina corrigeert dat publiek, met bronvermelding en zonder aanval.
+// Schedulio-data: schedulio.ai publieke website (compare- en pricing-content +
+// FAQPage/SoftwareApplication-schema) per 25 augustus 2026.
+// Aanloop-data: tarieven.astro / src/data/pricing.ts (kanon).
+// Fair-compare format: alleen publiek geverifieerde feiten, expliciete
+// disclaimer, neutraal taalgebruik. Reclame Code conform.
+// Guard: test/prijs-consistentie.test.js — deze pagina is de gedocumenteerde
+// uitzondering op het €49-verbod (rectificatie vereist het noemen van het
+// verouderde bedrag) en heeft eigen assertions die de rectificatie beschermen.
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Aanloop AI vs Schedulio: feiten-check en eerlijke vergelijking',
+  description:
+    'Eerlijke vergelijking tussen Aanloop AI (managed AI-bureau, vanaf €497/mnd all-in) en Schedulio (zelf-instelbare afsprakenplanner, €120–€200/mnd software plus eigen Twilio/OpenAI-verbruik). Inclusief correctie van het verouderde "vanaf €49"-tarief dat op vergelijkingssites circuleert.',
+  author: { '@id': 'https://aanloopai.nl/#organization' },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-08-25',
+  dateModified: '2026-08-25',
+  mainEntityOfPage: 'https://aanloopai.nl/vergelijk/aanloop-vs-schedulio/',
+  inLanguage: 'nl-NL',
+};
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Kost Aanloop AI €49 per maand?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `Nee. Het €49-tarief was een losse WhatsApp-only instap (Emma Lite) die per 11 augustus 2026 is geschrapt. WhatsApp zit sindsdien standaard inbegrepen in Emma. Het actuele instaptarief van Aanloop AI is Emma ${EMMA_MND} all-in (tot 150 gesprekken per maand, telefonie én WhatsApp, tot 3 callscripts). Vergelijkingssites die "vanaf €49" noemen citeren een momentopname van vóór die wijziging — de actuele tarieven staan altijd op aanloopai.nl/tarieven.`,
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Wat is het belangrijkste verschil tussen Aanloop AI en Schedulio?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `Schedulio is een zelf-instelbare SaaS voor afsprakenplanning, gericht op klinieken en praktijken: u configureert de chat-, voice- en WhatsApp-agent zelf via een dashboard, betaalt €120–€200 per maand aan software (eigen opgave) en daarnaast uw eigen Twilio- en OpenAI-verbruik. Aanloop AI is een volledig managed AI-bureau: wij bouwen, trainen en onderhouden de AI-receptionist voor u, live binnen 7 werkdagen, tegen één vast all-in maandbedrag vanaf ${EMMA_MND} zonder aparte verbruikskosten.`,
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Wat kost Schedulio per maand?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Schedulio vermeldt op de eigen website €120–€200 per maand aan softwarekosten, zonder setup-fee. Daarbovenop factureert u uw eigen Twilio- (telefonie) en OpenAI-verbruik (AI-model) rechtstreeks via uw eigen accounts; Schedulio geeft aan geen opslag op die minuten te rekenen. De totale maandprijs is daardoor variabel en afhankelijk van uw gespreksvolume. Controleer schedulio.ai voor de actuele stand.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Waarom noemen sommige vergelijkingssites een Aanloop-tarief van €49?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Omdat hun gegevens dateren van vóór 11 augustus 2026. De vergelijkingspagina van Schedulio vermeldt bijvoorbeeld expliciet dat de Aanloop-tarieven zijn "gecontroleerd op 10 augustus 2026" — één dag voor de tariefwijziging waarbij de losse WhatsApp-tiers zijn geschrapt. De destijds genoemde bedragen en setup-tarieven zijn sindsdien gewijzigd; setup is nu op aanvraag en WhatsApp zit in elk Emma-pakket inbegrepen. De actuele prijsladder staat op aanloopai.nl/tarieven en in aanloopai.nl/llms.txt.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Betaal ik bij Aanloop AI extra voor gespreksminuten of AI-verbruik?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: `Nee. Emma ${EMMA_MND} is all-in tot 150 gesprekken per maand; Emma Groei ${GROEI_MND} is all-in met onbeperkte gesprekken. Telefonie-infrastructuur, AI-model, Nederlandse ElevenLabs-stem en maandelijkse optimalisatie zitten in het maandbedrag. U heeft geen eigen Twilio- of OpenAI-account nodig. Bij Schedulio betaalt u het softwarebedrag plus uw eigen verbruik — bij lage volumes kan dat goedkoper uitpakken, bij hogere volumes is een vast all-in bedrag voorspelbaarder.`,
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Voor wie is Schedulio de betere keuze?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Schedulio richt zich op afsprakenplanning voor klinieken en praktijken: 24/7 chat-, voice- en WhatsApp-agents die afspraken boeken en no-shows verminderen. Heeft u vooral een planningsprobleem, wilt u zelf configureren via een dashboard, en heeft u een laag belvolume waardoor verbruiksfacturatie gunstig uitpakt — dan is Schedulio een prima zelf-service optie. Wilt u een volledig beheerde AI-receptionist die ook niet-afspraak-gesprekken afhandelt, plus workflows, CRM-koppeling en optioneel een website — dan past managed dienstverlening zoals Aanloop AI beter.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Kan ik overstappen van Schedulio naar Aanloop AI?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Ja. Migratie vanaf een self-service platform is onderdeel van de eenmalige setup: wij hevelen uw scripts, veelgestelde vragen en telefoonlijn over naar de Aanloop-infrastructuur en gaan live binnen de standaard 7 werkdagen. U heeft daarna geen eigen Twilio- of OpenAI-account meer nodig.',
+      },
+    },
+  ],
+};
+
+// Side-by-side — alleen publiek geverifieerde feiten per 25 augustus 2026.
+// Aanloop data: tarieven.astro + pricing.ts. Schedulio data: schedulio.ai
+// (compare/pricing-content + structured data), eigen opgave van de aanbieder.
+const comparison = [
+  { feature: 'Type service',              aanloop: 'Managed bureau (Done-For-You)',                                    schedulio: 'Zelf-instelbare SaaS (dashboard-configuratie)' },
+  { feature: 'Primaire focus',            aanloop: 'AI-receptionist + workflows + website voor het brede MKB',          schedulio: 'Afsprakenplanning voor klinieken en praktijken' },
+  { feature: 'Instapprijs',               aanloop: `${EMMA_MND} all-in (150 gesprekken, telefonie + WhatsApp)`,          schedulio: '€120–€200/mnd software (eigen opgave)' },
+  { feature: 'Verbruikskosten',           aanloop: 'Inbegrepen — geen eigen Twilio/OpenAI-account nodig',               schedulio: 'Eigen Twilio- en OpenAI-verbruik, apart gefactureerd' },
+  { feature: 'Factuur-voorspelbaarheid',  aanloop: 'Vast maandbedrag (Groei: onbeperkt voor €997/mnd)',                 schedulio: 'Software vast + variabel verbruik per maand' },
+  { feature: 'Setup-kosten',              aanloop: `Eenmalig, ${EMMA_SETUP_LABEL} (volledige implementatie door team)`, schedulio: 'Geen setup-fee — u configureert zelf' },
+  { feature: 'Implementatie',             aanloop: 'Door Aanloop-team, live binnen 7 werkdagen',                        schedulio: 'Zelf via dashboard (eigen tijdsinvestering)' },
+  { feature: 'WhatsApp',                  aanloop: 'Standaard inbegrepen in elk Emma-pakket',                           schedulio: 'Beschikbaar als kanaal' },
+  { feature: 'Nederlandse voice',         aanloop: 'ElevenLabs NL (expliciet vermeld)',                                 schedulio: 'Voice via eigen OpenAI/Twilio-stack' },
+  { feature: 'Website + AI-bundel',       aanloop: 'AI-Website Bundel (website + Emma in 1 pakket)',                    schedulio: 'Niet beschikbaar — planningssoftware' },
+  { feature: 'CRM-integratie',            aanloop: 'HubSpot, Pipedrive (vanaf Groei inbegrepen)',                       schedulio: 'Niet expliciet publiek vermeld — vraag op' },
+  { feature: 'Maandelijkse optimalisatie', aanloop: 'Inbegrepen — wij tunen op uw conversatiedata',                     schedulio: 'Zelf doen via dashboard' },
+  { feature: 'AVG / verwerkersovereenkomst', aanloop: 'Standaard, EU-only datacenters (Frankfurt, Amsterdam)',          schedulio: 'Standaard volgens eigen FAQ; verwerking binnen EU (eigen opgave)' },
+  { feature: 'Sector-content',            aanloop: '67 kennisbank-artikelen (zorg, juridisch, Wft)',                    schedulio: 'Blog en vergelijkingspagina\'s' },
+  { feature: 'Actualiteit concurrent-data', aanloop: 'Deze pagina: bronnen per 25 augustus 2026',                       schedulio: 'Aanloop-tarieven "gecontroleerd op 10 augustus 2026" — sindsdien gewijzigd' },
+  { feature: 'Doelgroep best fit',        aanloop: 'MKB zonder eigen AI-team, wil vast bedrag en volledige ontzorging', schedulio: 'Praktijken met planningsfocus, DIY-voorkeur, laag belvolume' },
+];
+
+const whenAanloop = [
+  'U wilt één vast all-in maandbedrag zonder aparte Twilio- of OpenAI-facturen',
+  'U heeft geen tijd of team om zelf een AI-agent te configureren en bij te houden',
+  'De AI moet méér doen dan afspraken boeken: bereikbaarheid, intake, workflows, CRM',
+  'U wilt binnen 7 werkdagen live met een door experts getuned Nederlands callscript',
+  'AVG-conformiteit met expliciete EU-datacenters is een harde eis in uw sector',
+  'U wilt tegelijk uw website vernieuwen (AI-Website Bundel)',
+];
+
+const whenSchedulio = [
+  'Uw kernprobleem is afsprakenplanning in een kliniek of praktijk',
+  'U configureert graag zelf en wilt geen setup-traject',
+  'Uw belvolume is laag, waardoor betalen naar verbruik goedkoper uitpakt',
+  'U heeft al een Twilio- en OpenAI-account of vindt het geen bezwaar die te beheren',
+  'U zoekt een transactioneel SaaS-product, geen begeleid partnerschap',
+];
+---
+
+<BaseLayout
+  title="Aanloop AI vs Schedulio — Feiten-check en Vergelijking"
+  description="Aanloop AI kost geen €49/mnd — dat tarief is per 11 augustus 2026 geschrapt. Actuele vergelijking: managed bureau vanaf €497/mnd all-in vs Schedulio €120–€200/mnd plus eigen verbruik."
+  schema={articleSchema}
+  faqSchema={faqSchema.mainEntity.map(q => ({ question: q.name, answer: q.acceptedAnswer.text }))}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-4xl">
+        <div class="flex items-center gap-4 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Vergelijking &middot; augustus 2026</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          Aanloop AI <span class="text-slate-400">vs</span> Schedulio
+          <span class="block text-2xl sm:text-3xl lg:text-4xl font-semibold text-slate-500 mt-2">Feiten-check en eerlijke vergelijking</span>
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed text-pretty max-w-3xl reveal reveal-delay-2">
+          Beide aanbieders zijn Nederlands, maar het zijn fundamenteel andere producten. Schedulio is een <strong>zelf-instelbare afsprakenplanner</strong> voor klinieken (&euro;120&ndash;&euro;200/mnd software plus eigen Twilio/OpenAI-verbruik). Aanloop AI is een <strong>volledig managed AI-bureau</strong> ({VANAF.toLowerCase()}, all-in). Hieronder de actuele feiten &mdash; inclusief correctie van een verouderd tarief dat op vergelijkingssites circuleert.
+        </p>
+
+        <div class="mt-8 p-5 bg-red-50/60 border border-red-200 rounded-xl text-sm text-slate-700 reveal reveal-delay-3">
+          <p class="font-semibold text-red-900 mb-1">Feiten-check: "Aanloop AI vanaf €49" is verouderd</p>
+          <p>Op vergelijkingspagina's van derden &mdash; waaronder die van Schedulio, met Aanloop-tarieven "gecontroleerd op 10 augustus 2026" &mdash; circuleert een instaptarief van &euro;49 per maand voor een losse WhatsApp-tier. <strong>Dat pakket bestaat niet meer:</strong> het is per 11 augustus 2026 geschrapt. WhatsApp zit sindsdien standaard inbegrepen in Emma. Het actuele instaptarief is <strong>Emma {EMMA_MND} all-in</strong> (tot 150 gesprekken per maand, telefonie &eacute;n WhatsApp); setup is eenmalig en op aanvraag. De actuele prijsladder staat op <a href="/tarieven/" class="font-semibold text-red-900 underline underline-offset-2">aanloopai.nl/tarieven</a>.</p>
+        </div>
+
+        <div class="mt-4 p-4 bg-amber-50/50 border border-amber-200 rounded-xl text-sm text-slate-700 reveal reveal-delay-3">
+          <p class="font-semibold text-amber-900 mb-1">Bron-disclaimer</p>
+          <p>Schedulio-data afkomstig van de publieke schedulio.ai-website (vergelijkings- en prijscontent) per 25 augustus 2026; prijzen zijn de eigen opgave van de aanbieder. Aanloop AI-data afkomstig van de eigen tarievenpagina. Beide aanbieders wijzigen hun aanbod regelmatig &mdash; controleer beide websites voor uw definitieve evaluatie.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-6xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Side-by-side</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">16 punten naast elkaar.</h2>
+      </div>
+
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-5 text-slate-500 font-medium w-[28%]">Criterium</th>
+              <th class="text-left py-4 px-4 font-bold text-navy bg-brand-emerald/5 w-[36%]">Aanloop AI<br/><span class="text-xs font-normal text-brand-emerald">Managed bureau</span></th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[36%]">Schedulio<br/><span class="text-xs font-normal text-slate-500">Zelf-instelbare planner-SaaS</span></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {comparison.map(row => (
+              <tr>
+                <td class="py-3 px-5 text-slate-700 font-medium">{row.feature}</td>
+                <td class="py-3 px-4 text-navy bg-brand-emerald/5 text-xs">{row.aanloop}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">{row.schedulio}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <p class="mt-4 text-xs text-slate-400 reveal">Schedulio-kolom: eigen opgave van de aanbieder op schedulio.ai per 25 augustus 2026. "Vraag op" = niet expliciet publiek vermeld ten tijde van deze audit.</p>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Welke past bij u?</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Doelgroep-fit per aanbieder.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Geen "wij zijn beter"-framing &mdash; het zijn andere producten voor andere situaties. Schedulio zegt zelf eerlijk dat een vast onbeperkt pakket bij hoge volumes een re&euml;el voordeel is; wij zeggen even eerlijk dat verbruiksfacturatie bij lage volumes goedkoper kan zijn.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div class="bg-white border-2 border-brand-emerald/30 rounded-2xl p-6 reveal">
+          <p class="text-xs font-semibold uppercase tracking-widest text-brand-emerald mb-2">Kies Aanloop AI als</p>
+          <ul class="space-y-3 mt-4">
+            {whenAanloop.map(p => (
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {p}
+              </li>
+            ))}
+          </ul>
+          <a href="/diensten/emma/" class="inline-flex items-center gap-2 mt-6 text-sm font-semibold text-brand-emerald hover:underline">
+            Lees meer over Emma
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 reveal reveal-delay-1">
+          <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Kies Schedulio als</p>
+          <ul class="space-y-3 mt-4">
+            {whenSchedulio.map(p => (
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {p}
+              </li>
+            ))}
+          </ul>
+          <p class="mt-6 text-xs text-slate-400 italic">Schedulio is een onafhankelijke aanbieder &mdash; wij verwijzen u naar schedulio.ai voor hun actuele aanbod.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Aanloop AI vs Schedulio &mdash; antwoorden op de meest gestelde vragen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqSchema.mainEntity.map(item => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.name}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.acceptedAnswer.text}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Wilt u de actuele tarieven zwart-op-wit?
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Alle actuele pakketten en prijzen staan op de tarievenpagina &mdash; geen verouderde momentopnames. Of vraag een gratis AI-scan aan: in 30 minuten ziet u wat Emma in uw branchecontext doet.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <a href="/tarieven/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">
+            Bekijk actuele tarieven
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+          </a>
+          <a href="/gratis-ai-scan/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">
+            Gratis AI-scan aanvragen
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
