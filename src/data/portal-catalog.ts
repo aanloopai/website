@@ -49,7 +49,7 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'Neemt inkomende telefoongesprekken 24/7 aan, plant afspraken in en legt leads vast. Nederlandse stem, klinkt natuurlijk.',
     meerInfoUrl: 'https://aanloopai.nl/diensten/emma/',
     tiers: [
-      { naam: 'Starter', prijs: CORE_MND, prijsCent: CORE.monthlyCent, setupCent: EMMA_PRICING.setup * 100, betaling: 'maandelijks', kenmerken: ['Max 150 gesprekken/mnd', 'Emma WhatsApp inbegrepen', 'Eigen belscript', 'Transcripties', 'Live in 10 dagen'] },
+      { naam: 'Starter', prijs: CORE_MND, prijsCent: CORE.monthlyCent, setupCent: EMMA_PRICING.setup * 100, betaling: 'maandelijks', kenmerken: ['Max 150 gesprekken/mnd', 'Emma WhatsApp inbegrepen', 'Eigen belscript', 'Transcripties', 'Live in 7 werkdagen'] },
       { naam: 'Groei', prijs: GROEI_MND, prijsCent: GROEI.monthlyCent, setupCent: GROEI_PRICING.setup * 100, betaling: 'maandelijks', kenmerken: ['Onbeperkt gesprekken', 'Emma WhatsApp inbegrepen', 'CRM-koppeling', 'Priority support <4u'] },
       { naam: 'Partner', prijs: 'Op aanvraag', prijsCent: null, setupCent: 0, betaling: 'aanvraag', kenmerken: ['Onbeperkt Emma', 'Custom workflows', 'Dedicated accountmanager', 'SLA 99,9%'] },
     ],

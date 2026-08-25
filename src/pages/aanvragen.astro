@@ -14,17 +14,17 @@ const planDetails: Record<string, PlanEntry> = {
     price: 497,
     annualPrice: 416,
     product: 'Emma — AI sekreter',
-    features: ['Tot 150 gesprekken/maand', '1 callscript op maat', 'Agenda + e-mail lead-notificatie', 'Dashboard + transcripts'],
+    features: ['Tot 150 gesprekken/maand', 'Tot 3 callscripts op maat', 'Agenda + e-mail lead-notificatie', 'Dashboard + transcripts'],
   },
   groei: {
     name: 'Groei',
     price: 997,
     annualPrice: 836,
     product: 'Emma — AI sekreter',
-    features: ['Onbeperkte gesprekken', 'Tot 3 callscripts', 'Emma WhatsApp + CRM-integratie', 'Prioriteit support < 4 uur'],
+    features: ['Onbeperkte gesprekken', 'Onbeperkte callscripts', 'Emma WhatsApp + CRM-integratie', 'Prioriteit support < 4 uur'],
   },
   partner: {
-    name: 'Partner',
+    name: 'Enterprise',
     price: 0,
     annualPrice: 0,
     product: 'Emma + Custom Workflows',
@@ -234,7 +234,7 @@ const steps = [
             <div class="flex items-start justify-between mb-1">
               <div>
                 <p class="font-bold text-navy">{selected.product}</p>
-                <p class="text-sm text-slate-500">{isOneShot ? 'Eenmalige dienst' : isPartner ? 'Partner-pakket op offerte' : `${selected.name}-plan`}</p>
+                <p class="text-sm text-slate-500">{isOneShot ? 'Eenmalige dienst' : isPartner ? 'Enterprise-pakket op offerte' : `${selected.name}-plan`}</p>
               </div>
               <div class="text-right">
                 {isPartner ? (

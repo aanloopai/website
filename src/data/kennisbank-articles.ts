@@ -590,7 +590,7 @@ export const KENNISBANK_ARTICLES = [
     category: 'Finance',
     categoryColor: 'bg-brand-amber/10 text-brand-amber',
     title: 'Hoeveel kost een AI Agent? Prijzen 2026 voor het Nederlandse MKB',
-    excerpt: 'Transparant overzicht van alle kosten voor AI agents in Nederland. Vergelijk Starter, Growth en Enterprise pakketten.',
+    excerpt: 'Transparant overzicht van alle kosten voor AI agents in Nederland. Vergelijk Emma, Groei en Enterprise pakketten.',
     readTime: '6 min',
     date: '25 april 2026',
   },
