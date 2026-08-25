@@ -1166,10 +1166,10 @@ export default {
     if (url.pathname === '/whatsapp' || url.pathname === '/whatsapp/') {
       // Standaardtekst identificeert de herkomst: hetzelfde nummer wordt ook
       // voor andere bedrijven gebruikt, dus zonder deze tag is niet te zien
-      // dat een binnenkomend gesprek van aanloop.ai komt. Een expliciete
+      // dat een binnenkomend gesprek van aanloopai.nl komt. Een expliciete
       // ?text= op een specifieke pagina blijft voorgaan.
       const text = url.searchParams.get('text')
-        || 'Hallo! Ik kom via aanloop.ai en heb een vraag.';
+        || 'Hallo! Ik kom via aanloopai.nl en heb een vraag.';
       const target = new URL('https://api.whatsapp.com/send');
       target.searchParams.set('phone', WHATSAPP_NUMBER);
       target.searchParams.set('text', text);
