@@ -79,7 +79,12 @@ jobs:
 
       - name: Commit rendered MP4(s)
         run: |
-          if git diff --quiet public/social-feed/reels/; then
+          # git diff ziet alleen getrackte bestanden. Een vers gerenderde MP4 is
+          # untracked, dus deze check sloeg altijd aan ("No new MP4s to commit")
+          # en de MP4 werd nooit gecommit — waardoor Instagram een 404 op de
+          # video_url kreeg (wave-6, sinds 17 aug). git status --porcelain ziet
+          # untracked bestanden wel.
+          if [ -z "$(git status --porcelain public/social-feed/reels/)" ]; then
             echo "No new MP4s to commit."
             exit 0
           fi
@@ -88,10 +93,6 @@ jobs:
           git add public/social-feed/reels/
           git commit -m "chore(reels): render Reel MP4(s) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push origin master
-
-      - name: Wait 90s for site rebuild (Cloudflare Pages / Vercel)
-        if: ${{ github.event.inputs.dry_run != 'true' && github.event.inputs.validate_only != 'true' }}
-        run: sleep 90
 
       - name: Run Reels publisher
         env:
@@ -129,7 +130,7 @@ jobs:
               ``,
               `Common causes:`,
               `- IG_PAGE_ACCESS_TOKEN expired (refresh long-lived token, 60d cycle)`,
-              `- video_url not reachable yet (site rebuild took >90s; rerun workflow)`,
+              `- video_url 404: the rendered MP4 was not committed/pushed (step 'Commit rendered MP4(s)')`,
               `- moviepy render OOM (Reel >15s + complex compositing)`,
               `- Graph API container status_code ERROR (check journal in step 'Run Reels publisher')`,
               ``,

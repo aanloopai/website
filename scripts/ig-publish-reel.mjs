@@ -109,17 +109,48 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms));
 }
 
-// Diagnostic-only: on container ERROR, re-query the container through the
-// Facebook Graph host (as opposed to graph.instagram.com, used for the normal
-// poll loop above). Some IG container failures only surface a useful reason
-// on this host/field combination; this call is best-effort and never masks
-// or replaces the original error — it only adds a log line before we throw.
+// Preflight: Instagram fetches video_url itself, so an unreachable URL surfaces
+// only as a generic container ERROR minutes later. Check it up front and fail
+// with a message that names the real cause. Retries because the raw CDN can lag
+// a few seconds behind the push that added the MP4.
+async function assertVideoReachable(url, { attempts = 6, intervalSec = 5 } = {}) {
+  let last = null;
+  for (let i = 1; i <= attempts; i += 1) {
+    try {
+      const res = await fetch(url, { method: "HEAD" });
+      last = `HTTP ${res.status}`;
+      if (res.ok) {
+        console.log(`  video URL bereikbaar (HTTP ${res.status})`);
+        return;
+      }
+    } catch (err) {
+      last = err.message;
+    }
+    if (i < attempts) {
+      console.log(`  video URL nog niet bereikbaar (${last}) — poging ${i}/${attempts - 1}, opnieuw over ${intervalSec}s`);
+      await sleep(intervalSec * 1000);
+    }
+  }
+  throw new Error(
+    `Video URL niet bereikbaar: ${url} (laatste: ${last}). ` +
+      "De MP4 is niet gecommit/gepusht, of de raw-CDN loopt achter. " +
+      "Instagram haalt deze URL zelf op — een container aanmaken zou alleen een generieke container ERROR opleveren.",
+  );
+}
+
+// Diagnostic-only: on container ERROR, re-query the container for a fuller
+// status. This used to call graph.facebook.com, but the Instagram-Login token
+// (IGAF…) this workflow uses cannot be parsed on that host: every failure logged
+// "code 190 — Invalid OAuth access token — Cannot parse access token", which
+// looked like a broken token and hid the actual cause (an unreachable video_url,
+// because the rendered MP4 was never committed). Use the same host as the normal
+// calls. Best-effort: it never masks or replaces the original error.
 async function logDiagnosticContainerStatus(containerId) {
   try {
-    const url = `https://graph.facebook.com/${GRAPH_VERSION}/${containerId}?fields=status_code,status&access_token=${TOKEN}`;
+    const url = `${GRAPH}/${containerId}?fields=status_code,status&access_token=${TOKEN}`;
     const res = await fetch(url);
     const text = await res.text();
-    console.error(`Diagnostic (graph.facebook.com) container status: HTTP ${res.status}: ${text.slice(0, 500)}`);
+    console.error(`Diagnostic (graph.instagram.com) container status: HTTP ${res.status}: ${text.slice(0, 500)}`);
   } catch (diagErr) {
     console.error(`Diagnostic container status fetch failed (non-fatal): ${diagErr.message}`);
   }
@@ -188,6 +219,9 @@ async function main() {
     console.log("DRY_RUN=1 — skipping Graph API calls.");
     return;
   }
+
+  console.log("Checking video URL before creating the container...");
+  await assertVideoReachable(videoUrl);
 
   console.log(`\nCreating REELS container...`);
   const createResp = await graphPost(`/${igUserId}/media`, {
