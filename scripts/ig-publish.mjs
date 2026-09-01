@@ -250,8 +250,13 @@ async function main() {
     // Every slot in the resolved schedule is already posted. resolveSchedulePath()
     // only falls back to a fully-posted wave when NO wave file (current or later)
     // has any pending slot left — so this is genuine content exhaustion, not a
-    // transient gap. Fail loudly instead of exiting 0, so the workflow's
-    // failure-issue step fires and someone notices before the pipeline goes dark.
+    // transient gap.
+    //
+    // Exit 0, not 1: an empty content pipeline is a planning gap, not a publisher
+    // fault. The signal already lives in the 'IG Supply Watch' workflow, which
+    // opens/updates the 'ig-supply-low' issue daily and closes it when supply
+    // recovers. Failing here painted this workflow red on every cron run, which
+    // buried genuine API/token failures in the same red. Those still exit 1/2.
     const waveNum = sched.wave;
     const entries = await fs.readdir(SCHEDULE_DIR);
     const hasLaterWaveFile = entries.some((f) => {
@@ -260,20 +265,26 @@ async function main() {
     });
 
     if (!hasLaterWaveFile) {
-      console.error(
+      console.warn(
         `\nCONTENT SUPPLY EMPTY: wave-${waveNum} exhausted, no wave-${waveNum + 1} (or later) schedule file found in ${path.relative(REPO_ROOT, SCHEDULE_DIR)}. ` +
           `Create marketing/instagram/wave-${waveNum + 1}-schedule.json to resume posting.`,
       );
-      process.exit(1);
+      console.warn(
+        "Exiting 0 — nothing to publish is not a failure. Track this via the 'ig-supply-low' issue (IG Supply Watch).",
+      );
+      process.exit(0);
     }
 
     // A later wave file exists but also has zero pending slots (unusual — likely
     // also exhausted or malformed). Still treat as content-supply-empty: there is
     // nothing left to post right now.
-    console.error(
+    console.warn(
       `\nCONTENT SUPPLY EMPTY: wave-${waveNum} exhausted. A later wave file exists in ${path.relative(REPO_ROOT, SCHEDULE_DIR)} but it has no pending slots either — check its content/dates.`,
     );
-    process.exit(1);
+    console.warn(
+      "Exiting 0 — nothing to publish is not a failure. Track this via the 'ig-supply-low' issue (IG Supply Watch).",
+    );
+    process.exit(0);
   }
 
   const baseUrl = sched.image_base_url.replace(/\/+$/, "");
