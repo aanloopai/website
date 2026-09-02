@@ -317,7 +317,11 @@ export async function outreachImport(request, env) {
 
   let data;
   try {
-    const upstream = await fetch(`${KEUKENINBEELD_PROSPECTS_URL}?token=${env.KEUKENINBEELD_TOKEN}`);
+    // Token in de header, niet in de URL: zie leadgenHeaders in
+    // admin-routes.js voor de reden.
+    const upstream = await fetch(KEUKENINBEELD_PROSPECTS_URL, {
+      headers: { Authorization: `Bearer ${env.KEUKENINBEELD_TOKEN}` },
+    });
     if (!upstream.ok) return errorResponse(`Leadgen-bron onbereikbaar (${upstream.status})`, 502);
     data = await upstream.json();
   } catch (err) {

@@ -673,10 +673,18 @@ async function createInvoice(request, env) {
 }
 
 // ── leadgen (keukeninbeeld.nl partner feed) ─────────────────────────────────
+// Het token gaat in de Authorization-header en niet in de querystring: een
+// token in de URL belandt in de toegangslogs van zowel Cloudflare als
+// keukeninbeeld.nl, en dit token geeft toegang tot leadgegevens (naam,
+// telefoon, e-mail). keukeninbeeld.nl accepteert de header sinds #51.
+function leadgenHeaders(env) {
+  return { Authorization: `Bearer ${env.KEUKENINBEELD_TOKEN}` };
+}
+
 async function leadgenLeads(env) {
   if (!env.KEUKENINBEELD_TOKEN) return errorResponse('Leadgen niet geconfigureerd', 503);
   try {
-    const upstream = await fetch(`https://keukeninbeeld.nl/api/leads?token=${env.KEUKENINBEELD_TOKEN}`);
+    const upstream = await fetch('https://keukeninbeeld.nl/api/leads', { headers: leadgenHeaders(env) });
     if (!upstream.ok) return errorResponse(`Leadgen-bron onbereikbaar (${upstream.status})`, 502);
     const data = await upstream.json();
     return jsonResponse(data);
@@ -689,7 +697,7 @@ async function leadgenLeads(env) {
 async function leadgenProspects(env) {
   if (!env.KEUKENINBEELD_TOKEN) return errorResponse('Leadgen niet geconfigureerd', 503);
   try {
-    const upstream = await fetch(`https://keukeninbeeld.nl/api/prospects?token=${env.KEUKENINBEELD_TOKEN}`);
+    const upstream = await fetch('https://keukeninbeeld.nl/api/prospects', { headers: leadgenHeaders(env) });
     if (!upstream.ok) return errorResponse(`Leadgen-bron onbereikbaar (${upstream.status})`, 502);
     const data = await upstream.json();
     return jsonResponse(data);
@@ -734,9 +742,9 @@ async function leadgenVerkoop(request, env) {
   if (alVerkocht) return errorResponse('Deze lead is al verkocht', 409);
 
   try {
-    const upstream = await fetch(`https://keukeninbeeld.nl/api/verkopen?token=${env.KEUKENINBEELD_TOKEN}`, {
+    const upstream = await fetch('https://keukeninbeeld.nl/api/verkopen', {
       method: 'POST',
-      headers: { 'content-type': 'application/json' },
+      headers: { 'content-type': 'application/json', ...leadgenHeaders(env) },
       body: JSON.stringify({
         lead_id: leadId, koper: koper.bedrijfsnaam, prijs_eur: prijsEur, exclusief: exclusief ? 1 : 0,
       }),
