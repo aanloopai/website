@@ -40,7 +40,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       function load() {
         var f = document.getElementById('t-filter').value;
         fetch('/api/admin/tickets' + (f ? '?status=' + f : ''), { credentials: 'same-origin' })
-          .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (r) { if (window.adminFout.http(r, 'Tickets')) { throw 0; } return r.json(); })
           .then(function (d) {
             var list = d.tickets || [];
             var box = document.getElementById('t-list');
