@@ -119,7 +119,7 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
 
       function load() {
         fetch('/api/admin/customer?id=' + encodeURIComponent(cid), { credentials: 'same-origin' })
-          .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (r) { if (window.adminFout.http(r, 'Customer')) { throw 0; } return r.json(); })
           .then(function (d) {
             document.getElementById('k-loading').classList.add('hidden');
             document.getElementById('k-content').classList.remove('hidden');

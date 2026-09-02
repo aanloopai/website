@@ -220,7 +220,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         document.getElementById('pl-skel').classList.remove('hidden');
         document.getElementById('pl-board').innerHTML = '';
         fetch('/api/admin/crm/pipeline?pipeline=' + encodeURIComponent(STATE.pipeline), { credentials: 'same-origin' })
-          .then(function (r) { if (r.status === 401 || r.status === 403) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (r) { if (window.adminFout.http(r, 'Pipeline')) { throw 0; } return r.json(); })
           .then(function (d) {
             document.getElementById('pl-skel').classList.add('hidden');
             STATE.columns = (d && d.columns) || [];

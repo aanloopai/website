@@ -175,7 +175,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       function loadProspect() {
         return fetch('/api/admin/outreach/prospects', { credentials: 'same-origin' })
-          .then(function (r) { if (r.status === 401 || r.status === 403) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (r) { if (window.adminFout.http(r, 'Prospects')) { throw 0; } return r.json(); })
           .then(function (d) {
             var list = (d && d.prospects) || [];
             prospect = list.filter(function (p) { return String(p.id) === String(id); })[0] || null;

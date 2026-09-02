@@ -374,7 +374,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       document.getElementById('h-print').addEventListener('click', function () { window.print(); });
 
       fetch('/api/admin/discovery/doc?id=' + docId, { credentials: 'same-origin' })
-        .then(function (r) { if (r.status === 403) { location.href = '/portal/login'; throw 0; } return r.json(); })
+        .then(function (r) { if (window.adminFout.http(r, 'Discovery')) { throw 0; } return r.json(); })
         .then(function (d) {
           document.getElementById('doc-skel').classList.add('hidden');
           if (!d.ok) {

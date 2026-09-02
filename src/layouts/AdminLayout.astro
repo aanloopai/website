@@ -30,6 +30,45 @@ const nav = [
     <meta name="robots" content="noindex, nofollow" />
     <title>{title} · Aanloop AI Admin</title>
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <script is:inline>
+      // Eén beslispunt voor HTTP-fouten in het adminpaneel.
+      // 401/403 = echt een sessie- of rechtenprobleem -> inlogscherm.
+      // Al het andere (500/502/503, netwerkfout) is GEEN auth-probleem: het
+      // inlogscherm lost het niet op en verbergt de echte oorzaak. Toon het.
+      (function () {
+        function box() { return document.getElementById('al-fout'); }
+        var admin = {
+          isAuthFout: function (response) { return response.status === 401 || response.status === 403; },
+          naarLogin: function () { location.href = '/portal/login'; },
+          toon: function (melding) {
+            var el = box();
+            if (!el) { return; }
+            el.textContent = melding;
+            el.classList.remove('hidden');
+          },
+          wis: function () {
+            var el = box();
+            if (!el) { return; }
+            el.classList.add('hidden');
+            el.textContent = '';
+          },
+          // true = er ging iets mis, de aanroeper moet stoppen.
+          http: function (response, context) {
+            if (response.status === 200) { return false; }
+            if (admin.isAuthFout(response)) { admin.naarLogin(); return true; }
+            var prefix = context ? context + ': ' : '';
+            response.clone().json()
+              .then(function (j) { admin.toon(prefix + ((j && j.error) || ('serverfout ' + response.status))); })
+              .catch(function () { admin.toon(prefix + 'serverfout ' + response.status); });
+            return true;
+          },
+          netwerk: function (context) {
+            admin.toon((context ? context + ': ' : '') + 'geen verbinding met de server.');
+          },
+        };
+        window.adminFout = admin;
+      })();
+    </script>
   </head>
   <body class="portal min-h-screen">
     <div class="mx-auto flex min-h-screen max-w-[1180px] flex-col lg:flex-row">
@@ -57,6 +96,7 @@ const nav = [
           </div>
         </header>
         <main class="flex-1 px-5 py-6 lg:px-8 lg:py-8">
+          <div id="al-fout" class="palert palert--warn hidden" role="alert" style="margin-bottom:16px"></div>
           <slot />
         </main>
       </div>
@@ -91,7 +131,7 @@ const nav = [
     <script is:inline>
       fetch('/api/admin/me', { credentials: 'same-origin' })
         .then(function (r) {
-          if (r.status !== 200) { location.href = '/portal/login'; throw new Error('no-access'); }
+          if (window.adminFout.http(r, 'Adminprofiel')) { throw new Error('no-access'); }
           return r.json();
         })
         .then(function (d) {

@@ -348,7 +348,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       function openMail(mailId) {
         fetch('/api/admin/outreach/mail?id=' + encodeURIComponent(mailId), { credentials: 'same-origin' })
-          .then(function (r) { if (r.status === 401 || r.status === 403) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (r) { if (window.adminFout.http(r, 'Mail')) { throw 0; } return r.json(); })
           .then(function (d) { if (d && d.ok && d.mail) openMailData(d.mail); })
           .catch(function () {});
       }
@@ -410,7 +410,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       function loadAll() {
         return fetch('/api/admin/outreach/prospects', { credentials: 'same-origin' })
-          .then(function (r) { if (r.status === 401 || r.status === 403) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (r) { if (window.adminFout.http(r, 'Prospects')) { throw 0; } return r.json(); })
           .then(function (d) {
             STATE.prospects = (d && d.prospects) || [];
             STATE.vandaag = (d && d.vandaag) || [];

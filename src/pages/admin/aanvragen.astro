@@ -56,7 +56,7 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
       // ── intake-aanvragen ──
       function loadOrders() {
         fetch('/api/admin/orders', { credentials: 'same-origin' })
-          .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (r) { if (window.adminFout.http(r, 'Orders')) { throw 0; } return r.json(); })
           .then(function (d) {
             var list = (d.orders || []).filter(function (o) { return o.status !== 'concept'; });
             var box = document.getElementById('o-list');
@@ -177,7 +177,7 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
       };
       function loadLeads() {
         fetch('/api/admin/leads', { credentials: 'same-origin' })
-          .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(function (r) { if (window.adminFout.http(r, 'Leads')) { throw 0; } return r.json(); })
           .then(function (d) {
             var list = (d.leads || []).filter(function (l) { return l.status !== 'gewonnen' && l.status !== 'verloren'; });
             var box = document.getElementById('l-list');

@@ -97,7 +97,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       function euro(cent) { return (Number(cent || 0) / 100).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' }); }
 
       fetch('/api/admin/overview', { credentials: 'same-origin' })
-        .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
+        .then(function (r) { if (window.adminFout.http(r, 'Overview')) { throw 0; } return r.json(); })
         .then(function (d) {
           var k = d.kpi || {};
           document.getElementById('k-klanten').textContent = k.klanten || 0;
