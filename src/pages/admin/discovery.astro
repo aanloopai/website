@@ -139,11 +139,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             all = d.clients || [];
             render();
           })
-          .catch(function () {});
+          .catch(function (err) { window.adminFout.vangRest(err, 'Overview'); });
         fetch('/api/admin/discovery/templates', { credentials: 'same-origin' })
           .then(function (r) { return r.json(); })
           .then(function (d) { templates = d.templates || []; })
-          .catch(function () {});
+          .catch(function (err) { window.adminFout.vangRest(err, 'Templates'); });
       }
 
       document.getElementById('d-search').addEventListener('input', render);
@@ -168,7 +168,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             if (res.ok) { document.getElementById('d-modal').classList.remove('open'); document.getElementById('m-name').value = ''; load(); }
             else { msg.className = 'palert palert--warn mt-3'; msg.textContent = res.j.error || 'Bir şeyler ters gitti.'; }
           })
-          .catch(function () {})
+          .catch(function (err) { window.adminFout.vangRest(err, 'Client'); })
           .finally(function () { btn.disabled = false; });
       });
 
@@ -190,7 +190,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             if (res.ok) { location.href = '/admin/discovery-doc?id=' + res.j.doc_id; }
             else { msg.className = 'palert palert--warn mt-3'; msg.textContent = res.j.error || 'Bir şeyler ters gitti.'; }
           })
-          .catch(function () {})
+          .catch(function (err) { window.adminFout.vangRest(err, 'Doc'); })
           .finally(function () { btn.disabled = false; });
       });
 

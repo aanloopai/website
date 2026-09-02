@@ -99,7 +99,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             if (!all.length) { document.getElementById('a-empty').classList.remove('hidden'); return; }
             render(all);
           })
-          .catch(function () {});
+          .catch(function (err) { window.adminFout.vangRest(err, 'Customers'); });
       }
 
       document.getElementById('a-search').addEventListener('input', function () {
@@ -132,7 +132,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             if (res.ok) { location.href = '/admin/klant?id=' + encodeURIComponent(res.j.customer_id); }
             else { msg.className = 'palert palert--warn mt-3'; msg.textContent = res.j.error || 'Er ging iets mis.'; }
           })
-          .catch(function () {})
+          .catch(function (err) { window.adminFout.vangRest(err, 'Customers'); })
           .finally(function () { btn.disabled = false; });
       });
 

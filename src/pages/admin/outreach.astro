@@ -350,7 +350,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         fetch('/api/admin/outreach/mail?id=' + encodeURIComponent(mailId), { credentials: 'same-origin' })
           .then(function (r) { if (window.adminFout.http(r, 'Mail')) { throw 0; } return r.json(); })
           .then(function (d) { if (d && d.ok && d.mail) openMailData(d.mail); })
-          .catch(function () {});
+          .catch(function (err) { window.adminFout.vangRest(err, 'Mail'); });
       }
 
       function openMailData(mail) {
@@ -432,7 +432,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               if (m) openMail(keepMailId);
             }
           }
-        }).catch(function () {});
+        }).catch(function (err) { window.adminFout.vangRest(err, 'Prospects'); });
       }
 
       // ---- Events ----
@@ -666,7 +666,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           .finally(function () { btn.disabled = false; btn.textContent = origText; });
       });
 
-      loadAll().catch(function () {});
+      loadAll().catch(function (err) { window.adminFout.vangRest(err, 'Reply'); });
     })();
   </script>
 </AdminLayout>

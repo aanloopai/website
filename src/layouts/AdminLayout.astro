@@ -65,6 +65,14 @@ const nav = [
           netwerk: function (context) {
             admin.toon((context ? context + ': ' : '') + 'geen verbinding met de server.');
           },
+          // Sluit een fetch-keten af. Al afgehandelde fouten (throw 0 of
+          // 'no-access' uit http()) blijven stil, want die hebben hun melding
+          // al gezet. Een echte netwerkfout werd tot nu toe stil geslikt en
+          // liet een leeg scherm achter zonder reden.
+          vangRest: function (err, context) {
+            if (err === 0 || (err && err.message === 'no-access')) { return; }
+            admin.netwerk(context);
+          },
         };
         window.adminFout = admin;
       })();

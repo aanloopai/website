@@ -222,9 +222,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             renderProspects(STATE.prospects);
             fillProspectSelect();
           })
-          .catch(function (err) {
-            if (!err || err.message !== 'no-access') { window.adminFout.netwerk('Leadgen'); }
-          });
+          .catch(function (err) { window.adminFout.vangRest(err, 'Leadgen'); });
       }
 
       // ── Verkoop registreren-modal ──────────────────────────────────────────

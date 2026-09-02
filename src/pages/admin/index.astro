@@ -129,7 +129,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             }).join('');
           }
         })
-        .catch(function () {});
+        .catch(function (err) { window.adminFout.vangRest(err, 'Overview'); });
 
       var FUNNEL_STAGES = [
         { stage: 'nieuw', label: 'Nieuw' },
@@ -188,7 +188,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               ' · 7 dagen: <b style="color:var(--p-ink)">' + (zevenByFeature[f] || 0) + '</b></span></div>';
           }).join('');
         })
-        .catch(function () {});
+        .catch(function (err) { window.adminFout.vangRest(err, 'Usage'); });
     })();
   </script>
 </AdminLayout>

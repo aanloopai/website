@@ -82,7 +82,7 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
             }).join('');
             wireOrders();
           })
-          .catch(function () {});
+          .catch(function (err) { window.adminFout.vangRest(err, 'Orders'); });
       }
       function wireOrders() {
         document.querySelectorAll('#o-list [data-id]').forEach(function (card) {
@@ -165,7 +165,7 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
               });
             });
           })
-          .catch(function () {});
+          .catch(function (err) { window.adminFout.vangRest(err, 'Request'); });
       }
 
       // ── inbound leads (publieke formulieren) ──
@@ -225,7 +225,7 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
               });
             });
           })
-          .catch(function () {});
+          .catch(function (err) { window.adminFout.vangRest(err, 'Lead'); });
       }
 
       loadLeads();
