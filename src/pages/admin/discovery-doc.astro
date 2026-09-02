@@ -385,7 +385,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           }
           render(d);
         })
-        .catch(function () {});
+        .catch(function (err) { window.adminFout.vangRest(err, 'Doc'); });
     })();
   </script>
 </AdminLayout>

@@ -136,7 +136,7 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
             renderServices(d.services || []);
             renderInvoices(d.invoices || []);
           })
-          .catch(function () {});
+          .catch(function (err) { window.adminFout.vangRest(err, 'Customer'); });
       }
 
       function renderUsers(list) {

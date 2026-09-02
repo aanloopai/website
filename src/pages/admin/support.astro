@@ -80,7 +80,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               });
             });
           })
-          .catch(function () {});
+          .catch(function (err) { window.adminFout.vangRest(err, 'Ticket'); });
       }
       document.getElementById('t-filter').addEventListener('change', load);
       load();

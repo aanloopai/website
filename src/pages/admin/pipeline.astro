@@ -231,7 +231,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             rottingEl.style.color = (totals.rotting_count || 0) > 0 ? '#b3093c' : '';
             render();
           })
-          .catch(function () {});
+          .catch(function (err) { window.adminFout.vangRest(err, 'Pipeline'); });
       }
 
       load();

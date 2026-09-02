@@ -220,7 +220,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               pinnedCard.style.display = 'none';
             }
           })
-          .catch(function () {});
+          .catch(function (err) { window.adminFout.vangRest(err, 'Timeline'); });
       }
 
       document.getElementById('pr-save').addEventListener('click', function () {
@@ -385,7 +385,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           .finally(function () { btn.disabled = false; });
       });
 
-      loadProspect().then(function () { if (prospect) { loadTimeline(); loadAiFields(); } }).catch(function () {});
+      loadProspect().then(function () { if (prospect) { loadTimeline(); loadAiFields(); } }).catch(function (err) { window.adminFout.vangRest(err, 'Activities'); });
     })();
   </script>
 </AdminLayout>
