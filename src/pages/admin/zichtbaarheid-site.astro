@@ -46,6 +46,20 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </section>
   </div>
 
+  <section class="pcard mt-6">
+    <div class="pcard-h"><span>Acties op de site</span><span class="p-muted text-xs" id="e-range"></span></div>
+    <div class="pcard-b">
+      <div id="e-connected" class="hidden overflow-x-auto">
+        <table class="ptable"><thead><tr><th>Wat</th><th class="num">28d</th><th class="num">vorige 28d</th></tr></thead><tbody id="e-rows"></tbody></table>
+      </div>
+      <div id="e-none" class="hidden">
+        <p class="p-muted text-sm">Nog geen acties geteld op deze site. Zet één regel in de <code>&lt;head&gt;</code> van de site:</p>
+        <pre class="mt-2 rounded-md border p-3 text-xs" style="border-color:var(--p-border);overflow:auto">&lt;script src="https://aanloopai.nl/v.js" defer&gt;&lt;/script&gt;</pre>
+        <p class="p-muted mt-2 text-xs">Telt klikken op tel:-, mailto:-, WhatsApp- en Maps-links en verzonden formulieren. Geen cookies, geen persoonsgegevens — alleen aantallen per dag.</p>
+      </div>
+    </div>
+  </section>
+
   <div class="mt-6 grid gap-6 lg:grid-cols-2">
     <section class="pcard">
       <div class="pcard-h"><span>Google Bedrijfsprofiel (Maps &amp; zoeken)</span><span class="p-muted text-xs" id="g-range"></span></div>
@@ -172,6 +186,17 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           }).catch(function () {});
         }
       }
+      function renderEvents() {
+        var e = data.events || {};
+        var con = document.getElementById('e-connected'), none = document.getElementById('e-none');
+        if (!e.connected) { con.classList.add('hidden'); none.classList.remove('hidden'); return; }
+        con.classList.remove('hidden'); none.classList.add('hidden');
+        document.getElementById('e-range').textContent = 't/m ' + e.end;
+        var order = ['tel', 'whatsapp', 'route', 'mail', 'form'];
+        document.getElementById('e-rows').innerHTML = order.map(function (k) {
+          return '<tr><td>' + esc((e.labels || {})[k] || k) + '</td><td class="num">' + n((e.current || {})[k]) + '</td><td class="num">' + n((e.previous || {})[k]) + '</td></tr>';
+        }).join('');
+      }
       function renderLinks() {
         var site = data.site;
         document.getElementById('l-type').value = site.eigenaar || 'eigen';
@@ -188,6 +213,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         renderWindow();
         rows(data.queries || [], 't-queries', 't-queries-empty');
         rows(data.pages || [], 't-pages', 't-pages-empty');
+        renderEvents();
         renderGbp();
         renderLinks();
       }

@@ -201,6 +201,60 @@ export function gbpResponseToRows(resp) {
   return out;
 }
 
+// Site-acties: click/submit events counted by the v.js beacon on each site.
+// Keys are what the beacon sends; labels are what the panel shows.
+export const EVENT_TYPES = {
+  tel: 'Bellen (tel-link)',
+  whatsapp: 'WhatsApp',
+  route: 'Route (Maps-link)',
+  mail: 'E-mail (mailto)',
+  form: 'Formulier verzonden',
+};
+
+const BOT_UA = /bot|crawl|spider|slurp|headless|lighthouse|pagespeed|preview|monitor|curl\/|wget|python-requests|facebookexternalhit/i;
+
+export function isBotUserAgent(ua) {
+  const s = String(ua || '');
+  return !s || BOT_UA.test(s);
+}
+
+// Parse the beacon body ({e, p}) → {event, path} or null. Never throws.
+export function parseEvent(raw) {
+  let b;
+  try { b = typeof raw === 'string' ? JSON.parse(raw) : raw; } catch { return null; }
+  if (!b || typeof b !== 'object') return null;
+  const event = String(b.e || b.event || '').toLowerCase();
+  if (!(event in EVENT_TYPES)) return null;
+  const path = String(b.p || b.path || '/').slice(0, 200);
+  return { event, path: path.startsWith('/') ? path : '/' };
+}
+
+// Host the event belongs to: Origin header first (always set on cross-origin
+// POST/sendBeacon), Referer as fallback. Bare host so www/no-www match.
+export function eventHost(originHeader, refererHeader) {
+  for (const h of [originHeader, refererHeader]) {
+    if (!h) continue;
+    try { return bareHost(new URL(h).host); } catch { /* not a URL */ }
+  }
+  return '';
+}
+
+// rows: [{datum, event, waarde}] for one site → 28d vs previous 28d per
+// event, anchored on today (events arrive live, no lag).
+export function summarizeEvents(rows, today, windowDays = 28) {
+  const end = today || new Date().toISOString().slice(0, 10);
+  const curFrom = addDays(end, -(windowDays - 1));
+  const prevTo = addDays(curFrom, -1);
+  const prevFrom = addDays(prevTo, -(windowDays - 1));
+  const current = {}, previous = {};
+  let total = 0;
+  for (const r of rows || []) {
+    if (r.datum >= curFrom && r.datum <= end) { current[r.event] = (current[r.event] || 0) + (r.waarde || 0); total += r.waarde || 0; }
+    else if (r.datum >= prevFrom && r.datum <= prevTo) previous[r.event] = (previous[r.event] || 0) + (r.waarde || 0);
+  }
+  return { end, current, previous, total };
+}
+
 // HMAC-SHA256 hex over the raw body — same contract as the /api/intake
 // forward to Hetzner (X-Intake-Signature: sha256=<hex>), reversed direction.
 export async function hmacHex(secret, message) {
