@@ -1,0 +1,183 @@
+---
+// Admin panel — Zichtbaarheid: wat Google per site laat zien.
+// Data: /api/admin/visibility (Search Console via fleetclaw-ingest +
+// Google Bedrijfsprofiel via eigen OAuth). Zelfde patroon als klanten.astro:
+// statische pagina, inline script haalt JSON op.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Zichtbaarheid" active="zichtbaarheid">
+  <div class="flex flex-wrap items-start justify-between gap-3">
+    <div>
+      <h1 class="page-title">Zichtbaarheid</h1>
+      <p class="page-sub">Wat Google van elke site laat zien: klikken en vertoningen (Search Console) en Maps-/zoekweergaven, telefoontjes en routes (Bedrijfsprofiel). Laatste 28 dagen versus de 28 dagen ervoor.</p>
+    </div>
+    <div class="flex items-center gap-2">
+      <a id="z-gbp-connect" href="/api/admin/visibility/gbp/initiate" class="pbtn pbtn--primary hidden">Google Bedrijfsprofiel koppelen</a>
+      <button id="z-gbp-sync" type="button" class="pbtn pbtn--subtle hidden">Bedrijfsprofiel nu synchroniseren</button>
+    </div>
+  </div>
+
+  <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+    <div class="kpi"><div class="kpi-label">Klikken uit Google (28d)</div><div class="kpi-value" id="k-clicks"><span class="pskel inline-block h-7 w-12"></span></div><div class="kpi-hint" id="k-clicks-d"></div></div>
+    <div class="kpi"><div class="kpi-label">Vertoningen (28d)</div><div class="kpi-value" id="k-impr"><span class="pskel inline-block h-7 w-12"></span></div><div class="kpi-hint" id="k-impr-d"></div></div>
+    <div class="kpi"><div class="kpi-label">Maps + zoeken weergaven</div><div class="kpi-value" id="k-views"><span class="pskel inline-block h-7 w-12"></span></div><div class="kpi-hint">Bedrijfsprofiel, 28d</div></div>
+    <div class="kpi"><div class="kpi-label">Telefoontjes via Google</div><div class="kpi-value" id="k-calls"><span class="pskel inline-block h-7 w-12"></span></div><div class="kpi-hint">Bedrijfsprofiel, 28d</div></div>
+    <div class="kpi"><div class="kpi-label">Routebeschrijvingen</div><div class="kpi-value" id="k-dir"><span class="pskel inline-block h-7 w-12"></span></div><div class="kpi-hint">Bedrijfsprofiel, 28d</div></div>
+  </div>
+
+  <div id="z-gbp-alert" class="palert palert--info mt-4 hidden">
+    <strong>Google Bedrijfsprofiel nog niet gekoppeld.</strong> Maps-weergaven, telefoontjes en routes verschijnen zodra je met het Google-account dat de bedrijfsprofielen beheert koppelt. Vereist: Business Profile API-toegang op het Google Cloud-project (aanvraag bij Google, eenmalig).
+  </div>
+  <div id="z-gsc-alert" class="palert palert--warn mt-4 hidden"></div>
+
+  <section class="pcard mt-6">
+    <div class="pcard-h">
+      <span>Per site</span>
+      <span class="p-muted text-xs" id="z-window"></span>
+    </div>
+    <div class="pcard-b">
+      <div id="z-skel" class="space-y-2"><div class="pskel h-10 w-full"></div><div class="pskel h-10 w-full"></div><div class="pskel h-10 w-full"></div></div>
+      <div id="z-tablewrap" class="hidden overflow-x-auto">
+        <table class="ptable">
+          <thead>
+            <tr>
+              <th>Site</th><th>Type</th>
+              <th class="num">Klikken</th><th class="num">Vertoningen</th><th class="num">CTR</th><th class="num">Positie</th>
+              <th>Trend 28d</th>
+              <th class="num">Maps/zoeken</th><th class="num">Bellen</th><th class="num">Routes</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="z-rows"></tbody>
+        </table>
+      </div>
+      <div id="z-empty" class="empty hidden">
+        <p class="empty-title">Nog geen data</p>
+        <p class="empty-text">De eerste Search Console-synchronisatie (dagelijks, vanuit AGA) is nog niet binnen.</p>
+      </div>
+    </div>
+  </section>
+
+  <p class="p-muted mt-4 text-xs">Search Console loopt 2–3 dagen achter; elk venster eindigt op de laatste dag waarvoor Google cijfers heeft. Δ = verschil met de 28 dagen daarvoor.</p>
+
+  <style>
+    .z-spark { width: 96px; height: 26px; display: block; }
+    .z-spark path { fill: none; stroke: var(--p-accent, #2563eb); stroke-width: 1.5; }
+    .z-spark rect { fill: var(--p-accent, #2563eb); opacity: .18; }
+    .z-delta { font-size: 11px; margin-left: 4px; }
+    .z-up { color: #15803d; } .z-down { color: #b91c1c; } .z-flat { color: var(--p-ink-4); }
+    .ptable td.num, .ptable th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  </style>
+
+  <script is:inline>
+    (function () {
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      function n(v) { return Number(v || 0).toLocaleString('nl-NL'); }
+      function pct(v) { return v == null ? '—' : (v * 100).toFixed(1).replace('.', ',') + '%'; }
+      function pos(v) { return v ? v.toFixed(1).replace('.', ',') : '—'; }
+      function delta(d) {
+        if (d == null) return '<span class="z-delta z-flat">nieuw</span>';
+        var p = Math.round(d * 100);
+        var cls = p > 0 ? 'z-up' : p < 0 ? 'z-down' : 'z-flat';
+        return '<span class="z-delta ' + cls + '">' + (p > 0 ? '+' : '') + p + '%</span>';
+      }
+      function spark(series) {
+        if (!series || !series.length) return '';
+        var w = 96, h = 26, max = 1;
+        series.forEach(function (p) { if (p.clicks > max) max = p.clicks; });
+        var step = w / Math.max(1, series.length - 1);
+        var d = series.map(function (p, i) {
+          var x = (i * step).toFixed(1), y = (h - 2 - (p.clicks / max) * (h - 4)).toFixed(1);
+          return (i ? 'L' : 'M') + x + ' ' + y;
+        }).join(' ');
+        return '<svg class="z-spark" viewBox="0 0 ' + w + ' ' + h + '" aria-hidden="true"><path d="' + d + '"/></svg>';
+      }
+      function typeBadge(e) {
+        return e === 'klant' ? '<span class="pbadge pbadge--blue">klant</span>'
+          : e === 'eigen' ? '<span class="pbadge pbadge--gray">eigen</span>'
+          : '<span class="pbadge pbadge--amber">onbekend</span>';
+      }
+      function status(s) {
+        var parts = [];
+        parts.push(s.gsc.connected ? '<span class="pbadge pbadge--green">GSC</span>' : '<span class="pbadge pbadge--red">GSC ontbreekt</span>');
+        parts.push(s.gbp.connected ? '<span class="pbadge pbadge--green">GBP</span>' : '<span class="pbadge pbadge--gray">GBP —</span>');
+        return parts.join(' ');
+      }
+
+      function render(d) {
+        var sites = d.sites || [];
+        var t = d.totals || {};
+        document.getElementById('k-clicks').textContent = n(t.clicks);
+        document.getElementById('k-clicks-d').innerHTML = 'vorige 28d: ' + n(t.prevClicks) + delta(t.prevClicks ? (t.clicks - t.prevClicks) / t.prevClicks : null);
+        document.getElementById('k-impr').textContent = n(t.impressions);
+        document.getElementById('k-impr-d').innerHTML = 'vorige 28d: ' + n(t.prevImpressions) + delta(t.prevImpressions ? (t.impressions - t.prevImpressions) / t.prevImpressions : null);
+        document.getElementById('k-views').textContent = n(t.mapsViews + t.searchViews);
+        document.getElementById('k-calls').textContent = n(t.calls);
+        document.getElementById('k-dir').textContent = n(t.directions);
+
+        document.getElementById('z-gbp-connect').classList.toggle('hidden', !!d.gbpConnected);
+        document.getElementById('z-gbp-sync').classList.toggle('hidden', !d.gbpConnected);
+        document.getElementById('z-gbp-alert').classList.toggle('hidden', !!d.gbpConnected);
+
+        var missing = sites.filter(function (s) { return !s.gsc.connected; });
+        var ga = document.getElementById('z-gsc-alert');
+        if (missing.length) {
+          ga.innerHTML = '<strong>Geen Search Console-toegang voor: ' + missing.map(function (s) { return esc(s.naam); }).join(', ') + '.</strong> ' +
+            'Voeg in Search Console (Instellingen → Gebruikers en rechten) <code>' + esc(d.gscServiceAccount) + '</code> toe als gebruiker met "Volledig". De volgende nachtelijke synchronisatie pikt de site dan automatisch op.';
+          ga.classList.remove('hidden');
+        } else ga.classList.add('hidden');
+
+        var ends = sites.map(function (s) { return s.gsc.end; }).filter(Boolean).sort();
+        document.getElementById('z-window').textContent = ends.length ? 'venster t/m ' + ends[ends.length - 1] : '';
+
+        document.getElementById('z-skel').classList.add('hidden');
+        var any = sites.some(function (s) { return s.gsc.end || s.gbp.end; });
+        document.getElementById('z-empty').classList.toggle('hidden', any);
+        document.getElementById('z-tablewrap').classList.toggle('hidden', !any);
+        var tbody = document.getElementById('z-rows');
+        tbody.innerHTML = sites.map(function (s) {
+          var g = s.gsc, b = s.gbp;
+          var naam = esc(s.naam) + (s.klant_bedrijf ? ' <span class="p-muted text-xs">· ' + esc(s.klant_bedrijf) + '</span>' : '');
+          return '<tr class="cursor-pointer" data-href="/admin/zichtbaarheid-site?key=' + encodeURIComponent(s.key) + '">' +
+            '<td class="primary">' + naam + '<div class="p-muted text-xs">' + esc(s.host) + '</div></td>' +
+            '<td>' + typeBadge(s.eigenaar) + '</td>' +
+            '<td class="num">' + n(g.current.clicks) + delta(g.delta.clicks) + '</td>' +
+            '<td class="num">' + n(g.current.impressions) + delta(g.delta.impressions) + '</td>' +
+            '<td class="num">' + pct(g.current.ctr) + '</td>' +
+            '<td class="num">' + pos(g.current.position) + '</td>' +
+            '<td>' + spark(g.spark) + '</td>' +
+            '<td class="num">' + (b.connected ? n(b.mapsViews + b.searchViews) : '—') + '</td>' +
+            '<td class="num">' + (b.connected ? n(b.current.CALL_CLICKS) : '—') + '</td>' +
+            '<td class="num">' + (b.connected ? n(b.current.BUSINESS_DIRECTION_REQUESTS) : '—') + '</td>' +
+            '<td>' + status(s) + '</td></tr>';
+        }).join('');
+        tbody.querySelectorAll('tr').forEach(function (tr) {
+          tr.addEventListener('click', function () { location.href = tr.getAttribute('data-href'); });
+        });
+      }
+
+      function load() {
+        fetch('/api/admin/visibility', { credentials: 'same-origin' })
+          .then(function (r) { if (r.status !== 200) { location.href = '/portal/login'; throw 0; } return r.json(); })
+          .then(render)
+          .catch(function () {});
+      }
+      document.getElementById('z-gbp-sync').addEventListener('click', function () {
+        var btn = this; btn.disabled = true; btn.textContent = 'Synchroniseren…';
+        fetch('/api/admin/visibility/gbp/sync', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: '{}' })
+          .then(function (r) { return r.json(); })
+          .then(function (d) {
+            var msg = d.ok ? 'Klaar: ' + (d.synced || []).length + ' site(s) bijgewerkt' + ((d.fouten || []).length ? ', ' + d.fouten.length + ' fout(en)' : '') : 'Mislukt: ' + (d.error || '');
+            btn.textContent = msg; setTimeout(function () { btn.disabled = false; btn.textContent = 'Bedrijfsprofiel nu synchroniseren'; load(); }, 2500);
+          })
+          .catch(function () { btn.disabled = false; btn.textContent = 'Bedrijfsprofiel nu synchroniseren'; });
+      });
+      load();
+    })();
+  </script>
+</AdminLayout>
