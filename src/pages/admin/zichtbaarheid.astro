@@ -18,9 +18,12 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
   </div>
 
-  <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+  <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
     <div class="kpi"><div class="kpi-label">Klikken uit Google (28d)</div><div class="kpi-value" id="k-clicks"><span class="pskel inline-block h-7 w-12"></span></div><div class="kpi-hint" id="k-clicks-d"></div></div>
     <div class="kpi"><div class="kpi-label">Vertoningen (28d)</div><div class="kpi-value" id="k-impr"><span class="pskel inline-block h-7 w-12"></span></div><div class="kpi-hint" id="k-impr-d"></div></div>
+    <div class="kpi"><div class="kpi-label">Acties op de sites (28d)</div><div class="kpi-value" id="k-acties"><span class="pskel inline-block h-7 w-12"></span></div><div class="kpi-hint" id="k-acties-d">bellen · WhatsApp · route · formulier</div></div>
+  </div>
+  <div class="mt-4 grid gap-4 sm:grid-cols-3">
     <div class="kpi"><div class="kpi-label">Maps + zoeken weergaven</div><div class="kpi-value" id="k-views"><span class="pskel inline-block h-7 w-12"></span></div><div class="kpi-hint">Bedrijfsprofiel, 28d</div></div>
     <div class="kpi"><div class="kpi-label">Telefoontjes via Google</div><div class="kpi-value" id="k-calls"><span class="pskel inline-block h-7 w-12"></span></div><div class="kpi-hint">Bedrijfsprofiel, 28d</div></div>
     <div class="kpi"><div class="kpi-label">Routebeschrijvingen</div><div class="kpi-value" id="k-dir"><span class="pskel inline-block h-7 w-12"></span></div><div class="kpi-hint">Bedrijfsprofiel, 28d</div></div>
@@ -30,6 +33,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     <strong>Google Bedrijfsprofiel nog niet gekoppeld.</strong> Maps-weergaven, telefoontjes en routes verschijnen zodra je met het Google-account dat de bedrijfsprofielen beheert koppelt. Vereist: Business Profile API-toegang op het Google Cloud-project (aanvraag bij Google, eenmalig).
   </div>
   <div id="z-gsc-alert" class="palert palert--warn mt-4 hidden"></div>
+  <div id="z-ev-alert" class="palert palert--info mt-4 hidden"></div>
 
   <section class="pcard mt-6">
     <div class="pcard-h">
@@ -45,6 +49,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
               <th>Site</th><th>Type</th>
               <th class="num">Klikken</th><th class="num">Vertoningen</th><th class="num">CTR</th><th class="num">Positie</th>
               <th>Trend 28d</th>
+              <th title="Acties op de site: bellen · WhatsApp · route · formulier">Site-acties</th>
               <th class="num">Maps/zoeken</th><th class="num">Bellen</th><th class="num">Routes</th>
               <th>Status</th>
             </tr>
@@ -59,7 +64,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
   </section>
 
-  <p class="p-muted mt-4 text-xs">Search Console loopt 2–3 dagen achter; elk venster eindigt op de laatste dag waarvoor Google cijfers heeft. Δ = verschil met de 28 dagen daarvoor.</p>
+  <p class="p-muted mt-4 text-xs">Search Console loopt 2–3 dagen achter; elk venster eindigt op de laatste dag waarvoor Google cijfers heeft. Δ = verschil met de 28 dagen daarvoor. Site-acties = klikken op tel-/WhatsApp-/route-/mail-links en verzonden formulieren, live geteld op de site zelf (28d t/m vandaag).</p>
 
   <style>
     .z-spark { width: 96px; height: 26px; display: block; }
@@ -106,7 +111,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         var parts = [];
         parts.push(s.gsc.connected ? '<span class="pbadge pbadge--green">GSC</span>' : '<span class="pbadge pbadge--red">GSC ontbreekt</span>');
         parts.push(s.gbp.connected ? '<span class="pbadge pbadge--green">GBP</span>' : '<span class="pbadge pbadge--gray">GBP —</span>');
+        parts.push(s.events && s.events.connected ? '<span class="pbadge pbadge--green">site</span>' : '<span class="pbadge pbadge--gray">site —</span>');
         return parts.join(' ');
+      }
+      function acties(e) {
+        if (!e || !e.connected) return '<span style="color:var(--p-ink-4)">—</span>';
+        var c = e.current || {};
+        return '<span title="bellen">☎ ' + n(c.tel) + '</span> · <span title="WhatsApp">💬 ' + n(c.whatsapp) + '</span> · <span title="route">🧭 ' + n(c.route) + '</span> · <span title="formulier">📝 ' + n(c.form) + '</span>';
       }
 
       function render(d) {
@@ -119,6 +130,16 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         document.getElementById('k-views').textContent = n(t.mapsViews + t.searchViews);
         document.getElementById('k-calls').textContent = n(t.calls);
         document.getElementById('k-dir').textContent = n(t.directions);
+        document.getElementById('k-acties').textContent = n(t.siteActies);
+        document.getElementById('k-acties-d').textContent = '☎ ' + n(t.siteTel) + ' · 💬 ' + n(t.siteWhatsapp) + ' · 🧭 ' + n(t.siteRoute) + ' · 📝 ' + n(t.siteForm);
+
+        var noBeacon = sites.filter(function (s) { return !(s.events && s.events.connected); });
+        var ea = document.getElementById('z-ev-alert');
+        if (noBeacon.length) {
+          ea.innerHTML = '<strong>Nog geen site-acties van: ' + noBeacon.map(function (s) { return esc(s.naam); }).join(', ') + '.</strong> ' +
+            'Zet op die site één regel in de &lt;head&gt;: <code>&lt;script src="https://aanloopai.nl/v.js" defer&gt;&lt;/script&gt;</code> — telt tel-/WhatsApp-/route-/mail-klikken en formulieren, zonder cookies. Zonder klikken blijft de badge grijs.';
+          ea.classList.remove('hidden');
+        } else ea.classList.add('hidden');
 
         document.getElementById('z-gbp-connect').classList.toggle('hidden', !!d.gbpConnected);
         document.getElementById('z-gbp-sync').classList.toggle('hidden', !d.gbpConnected);
@@ -151,6 +172,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             '<td class="num">' + pct(g.current.ctr) + '</td>' +
             '<td class="num">' + pos(g.current.position) + '</td>' +
             '<td>' + spark(g.spark) + '</td>' +
+            '<td class="whitespace-nowrap text-xs">' + acties(s.events) + '</td>' +
             '<td class="num">' + (b.connected ? n(b.mapsViews + b.searchViews) : '—') + '</td>' +
             '<td class="num">' + (b.connected ? n(b.current.CALL_CLICKS) : '—') + '</td>' +
             '<td class="num">' + (b.connected ? n(b.current.BUSINESS_DIRECTION_REQUESTS) : '—') + '</td>' +

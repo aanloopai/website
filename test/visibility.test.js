@@ -8,7 +8,9 @@ import { fileURLToPath } from 'node:url';
 import {
   validateIngest, summarizeDaily, summarizeGbp, gbpResponseToRows,
   verifySignature, hmacHex, matchGbpLocation, bareHost, addDays, SEED_SITES,
+  parseEvent, eventHost, isBotUserAgent, summarizeEvents, EVENT_TYPES,
 } from '../src/lib/visibility-core.js';
+import { BEACON_JS } from '../src/lib/visibility.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const read = (p) => fs.readFileSync(path.join(__dirname, '..', p), 'utf8');
@@ -158,6 +160,73 @@ describe('site/location matching', () => {
     const keys = SEED_SITES.map((s) => s.key);
     expect(new Set(keys).size).toBe(keys.length);
     for (const k of ['aanloop', 'alfa', 'fth', 'pasfoto', 'tripandtick', 'klaasendaams', 'keukeninbeeld']) expect(keys).toContain(k);
+  });
+});
+
+describe('site-acties beacon', () => {
+  it('parseEvent accepts only known event types and normalises the path', () => {
+    expect(parseEvent('{"e":"tel","p":"/contact"}')).toEqual({ event: 'tel', path: '/contact' });
+    expect(parseEvent('{"e":"TEL"}')).toEqual({ event: 'tel', path: '/' });
+    expect(parseEvent('{"e":"pageview"}')).toBeNull();
+    expect(parseEvent('not json')).toBeNull();
+    expect(parseEvent('{"e":"form","p":"javascript:alert(1)"}').path).toBe('/');
+    for (const k of ['tel', 'whatsapp', 'route', 'mail', 'form']) expect(EVENT_TYPES).toHaveProperty(k);
+  });
+
+  it('eventHost prefers Origin, falls back to Referer, strips www, ignores junk', () => {
+    expect(eventHost('https://www.alfareclame.nl', 'https://other.nl/x')).toBe('alfareclame.nl');
+    expect(eventHost(null, 'https://www.pasfotorotterdamzuid.nl/contact')).toBe('pasfotorotterdamzuid.nl');
+    expect(eventHost('null', '')).toBe('');
+    expect(eventHost('', '')).toBe('');
+  });
+
+  it('isBotUserAgent blocks crawlers/monitors and empty UAs, allows browsers', () => {
+    expect(isBotUserAgent('')).toBe(true);
+    expect(isBotUserAgent('Mozilla/5.0 (compatible; Googlebot/2.1)')).toBe(true);
+    expect(isBotUserAgent('Chrome-Lighthouse')).toBe(true);
+    expect(isBotUserAgent('curl/8.0')).toBe(true);
+    expect(isBotUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) Safari/604.1')).toBe(false);
+  });
+
+  it('summarizeEvents anchors on today and splits current/previous windows', () => {
+    const today = '2026-09-04';
+    const rows = [
+      { datum: '2026-09-04', event: 'tel', waarde: 3 },
+      { datum: '2026-08-10', event: 'tel', waarde: 2 },     // still inside 28d (from 08-08)
+      { datum: '2026-08-01', event: 'tel', waarde: 5 },     // previous window
+      { datum: '2026-09-01', event: 'form', waarde: 1 },
+    ];
+    const s = summarizeEvents(rows, today);
+    expect(s.end).toBe(today);
+    expect(s.current.tel).toBe(5);
+    expect(s.previous.tel).toBe(5);
+    expect(s.current.form).toBe(1);
+    expect(s.total).toBe(6);
+  });
+
+  it('beacon script classifies tel/mailto/WhatsApp/Maps links, honours data-vis, posts to the event endpoint', () => {
+    expect(BEACON_JS).toContain("'https://aanloopai.nl/api/visibility/event'");
+    expect(BEACON_JS).toMatch(/indexOf\('tel:'\)===0\)return'tel'/);
+    expect(BEACON_JS).toMatch(/indexOf\('mailto:'\)===0\)return'mail'/);
+    expect(BEACON_JS).toMatch(/wa\\\.me\|whatsapp/);
+    expect(BEACON_JS).toMatch(/maps\\\.apple\|waze\\\.com/);
+    expect(BEACON_JS).toMatch(/data-vis/);
+    expect(BEACON_JS).toMatch(/navigator\.sendBeacon/);
+    expect(BEACON_JS).toMatch(/addEventListener\('submit'/);
+    expect(BEACON_JS).not.toMatch(/document\.cookie|localStorage/);
+  });
+
+  it('worker serves /v.js and /api/visibility/event publicly; BaseLayout loads the beacon', () => {
+    const w = read('src/worker.js');
+    expect(w).toMatch(/url\.pathname === '\/v\.js'/);
+    expect(w).toMatch(/url\.pathname === '\/api\/visibility\/event'/);
+    expect(w.indexOf("'/api/visibility/event'")).toBeLessThan(w.indexOf("url.pathname.startsWith('/api/admin/')"));
+    expect(read('src/layouts/BaseLayout.astro')).toMatch(/<script src="\/v\.js" defer is:inline><\/script>/);
+    const v = read('src/lib/visibility.js');
+    // site resolved from headers, never from the body
+    expect(v).toMatch(/eventHost\(request\.headers\.get\('origin'\), request\.headers\.get\('referer'\)\)/);
+    expect(v).toMatch(/rl:visevent:/);
+    expect(read('migrations/0019_visibility.sql')).toContain('CREATE TABLE IF NOT EXISTS visibility_events_daily');
   });
 });
 

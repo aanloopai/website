@@ -50,3 +50,13 @@ CREATE TABLE IF NOT EXISTS visibility_gbp_daily (
   waarde   INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (site_key, datum, metric)
 );
+
+-- Site-acties: tel/WhatsApp/route/mail klikken + formulieren geteld door
+-- https://aanloopai.nl/v.js op elke site (POST /api/visibility/event).
+CREATE TABLE IF NOT EXISTS visibility_events_daily (
+  site_key TEXT NOT NULL,
+  datum    TEXT NOT NULL,
+  event    TEXT NOT NULL,                    -- tel | whatsapp | route | mail | form
+  waarde   INTEGER NOT NULL DEFAULT 0,
+  PRIMARY KEY (site_key, datum, event)
+);

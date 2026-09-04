@@ -42,7 +42,7 @@ import { aiSignalScan } from './lib/ai-crm.js';
 import { maakVoorstel, leesVoorstelViaToken } from './lib/voorstel-store.js';
 import { handleVoorstelClaim } from './lib/voorstel-claim.js';
 import { handleVoorstelVerify } from './lib/voorstel-verify.js';
-import { visibilityIngest, gbpSyncIfDue } from './lib/visibility.js';
+import { visibilityIngest, visibilityEvent, beaconScript, gbpSyncIfDue } from './lib/visibility.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -1290,6 +1290,13 @@ export default {
     // by the staff session, hence outside /api/admin/*.
     if (url.pathname === '/api/visibility/ingest') {
       return visibilityIngest(request, env);
+    }
+    // Site-acties beacon: public, cross-origin, no auth (counts only).
+    if (url.pathname === '/api/visibility/event') {
+      return visibilityEvent(request, env);
+    }
+    if (url.pathname === '/v.js') {
+      return beaconScript();
     }
 
     // Customer portal — passwordless magic-link auth
