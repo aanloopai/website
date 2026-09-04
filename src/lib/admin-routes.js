@@ -18,6 +18,10 @@ import {
 } from './crm.js';
 import { aiFields, aiOnderzoek, aiUsage } from './ai-crm.js';
 import {
+  visibilityOverview, visibilitySiteDetail, visibilitySiteUpdate,
+  gbpInitiate, gbpLocationsRoute, gbpSyncRoute,
+} from './visibility.js';
+import {
   discoveryOverview, discoveryTemplates, discoveryCreateClient,
   discoveryUpdateClient, discoveryCreateDoc, discoveryDocDetail,
   discoverySaveAnswer,
@@ -115,6 +119,14 @@ export async function handleAdminApi(request, env) {
     if (path === '/api/admin/ai/fields') return await aiFields(request, env);
     if (path === '/api/admin/ai/onderzoek' && method === 'POST') return await aiOnderzoek(request, env);
     if (path === '/api/admin/ai/usage') return await aiUsage(env);
+    // Zichtbaarheid (src/lib/visibility.js)
+    if (path === '/api/admin/visibility') return await visibilityOverview(env);
+    if (path === '/api/admin/visibility/site') {
+      return method === 'PATCH' ? await visibilitySiteUpdate(request, env) : await visibilitySiteDetail(env, url);
+    }
+    if (path === '/api/admin/visibility/gbp/initiate') return await gbpInitiate(request, env);
+    if (path === '/api/admin/visibility/gbp/locations') return await gbpLocationsRoute(env);
+    if (path === '/api/admin/visibility/gbp/sync' && method === 'POST') return await gbpSyncRoute(request, env);
     if (path === '/api/admin/discovery/overview') return await discoveryOverview(env);
     if (path === '/api/admin/discovery/templates') return await discoveryTemplates(env);
     if (path === '/api/admin/discovery/client') {

@@ -3,6 +3,7 @@
 // deploys as a Cloudflare Worker, so route logic must live in the Worker bundle.
 import { getAccessToken, jsonResponse, errorResponse } from './google-auth.js';
 import { escapeHtml } from './escape.js';
+import { storeGbpTokens } from './visibility.js';
 
 const TIMEZONE = 'Europe/Amsterdam';
 
@@ -323,6 +324,20 @@ export async function handleGoogleCallback(request, env) {
       'No refresh_token returned. Revoke prior consent at myaccount.google.com/permissions for this app and retry.',
       500,
     );
+  }
+  // Zichtbaarheid: consent started at /api/admin/visibility/gbp/initiate
+  // (state value 'gbp') stores under its own KV key — the Calendar token
+  // below must never be replaced by a business.manage-only token.
+  if (stateValid === 'gbp') {
+    await storeGbpTokens(env, tokens);
+    const gbpHtml = `<!DOCTYPE html><html lang="nl"><head><meta charset="utf-8"><title>Google Bedrijfsprofiel gekoppeld</title></head>
+<body style="font-family:system-ui,sans-serif;padding:2rem;max-width:640px;margin:0 auto;background:#0b1220;color:#e5e7eb">
+  <h1 style="color:#60a5fa">Google Bedrijfsprofiel gekoppeld</h1>
+  <p>Refresh-token opgeslagen. Vestigingen worden automatisch aan sites gekoppeld op basis van de website-URL; de eerste synchronisatie start vannacht of via "Nu synchroniseren".</p>
+  <p style="margin-top:1.5rem"><a style="color:#93c5fd" href="/admin/zichtbaarheid">Naar Zichtbaarheid &rarr;</a></p>
+  <p style="margin-top:2rem;color:#94a3b8;font-size:.875rem">Scope: ${escapeHtml(String(tokens.scope || ''))}</p>
+</body></html>`;
+    return new Response(gbpHtml, { status: 200, headers: { 'Content-Type': 'text/html; charset=utf-8' } });
   }
   await env.GOOGLE_TOKENS.put(
     KV_KEY,

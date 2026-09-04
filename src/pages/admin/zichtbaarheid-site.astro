@@ -1,0 +1,216 @@
+---
+// Admin panel — Zichtbaarheid per site (?key=alfa).
+// Data: /api/admin/visibility/site?key=…  Koppelingen: PATCH zelfde pad.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Zichtbaarheid site" active="zichtbaarheid">
+  <div class="flex flex-wrap items-start justify-between gap-3">
+    <div>
+      <a href="/admin/zichtbaarheid" class="p-link text-sm">← Zichtbaarheid</a>
+      <h1 class="page-title" id="s-naam"><span class="pskel inline-block h-7 w-40"></span></h1>
+      <p class="page-sub" id="s-host"></p>
+    </div>
+    <div class="flex items-center gap-2">
+      <button type="button" class="pbtn pbtn--subtle pbtn--sm" data-win="28">28 dagen</button>
+      <button type="button" class="pbtn pbtn--subtle pbtn--sm" data-win="90">90 dagen</button>
+    </div>
+  </div>
+
+  <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="kpi"><div class="kpi-label">Klikken</div><div class="kpi-value" id="k-clicks">—</div><div class="kpi-hint" id="k-clicks-d"></div></div>
+    <div class="kpi"><div class="kpi-label">Vertoningen</div><div class="kpi-value" id="k-impr">—</div><div class="kpi-hint" id="k-impr-d"></div></div>
+    <div class="kpi"><div class="kpi-label">CTR</div><div class="kpi-value" id="k-ctr">—</div><div class="kpi-hint" id="k-ctr-d"></div></div>
+    <div class="kpi"><div class="kpi-label">Gem. positie</div><div class="kpi-value" id="k-pos">—</div><div class="kpi-hint" id="k-pos-d"></div></div>
+  </div>
+
+  <section class="pcard mt-6">
+    <div class="pcard-h"><span>Klikken per dag</span><span class="p-muted text-xs" id="c-range"></span></div>
+    <div class="pcard-b"><div id="c-chart"><div class="pskel h-32 w-full"></div></div></div>
+  </section>
+
+  <div class="mt-6 grid gap-6 lg:grid-cols-2">
+    <section class="pcard">
+      <div class="pcard-h"><span>Zoekopdrachten (top, 28d)</span></div>
+      <div class="pcard-b overflow-x-auto">
+        <table class="ptable"><thead><tr><th>Zoekopdracht</th><th class="num">Klikken</th><th class="num">Vertoningen</th><th class="num">CTR</th><th class="num">Positie</th></tr></thead><tbody id="t-queries"></tbody></table>
+        <div id="t-queries-empty" class="empty hidden"><p class="empty-title">Nog geen zoekopdrachten</p></div>
+      </div>
+    </section>
+    <section class="pcard">
+      <div class="pcard-h"><span>Pagina's (top, 28d)</span></div>
+      <div class="pcard-b overflow-x-auto">
+        <table class="ptable"><thead><tr><th>Pagina</th><th class="num">Klikken</th><th class="num">Vertoningen</th><th class="num">CTR</th><th class="num">Positie</th></tr></thead><tbody id="t-pages"></tbody></table>
+        <div id="t-pages-empty" class="empty hidden"><p class="empty-title">Nog geen pagina's</p></div>
+      </div>
+    </section>
+  </div>
+
+  <div class="mt-6 grid gap-6 lg:grid-cols-2">
+    <section class="pcard">
+      <div class="pcard-h"><span>Google Bedrijfsprofiel (Maps &amp; zoeken)</span><span class="p-muted text-xs" id="g-range"></span></div>
+      <div class="pcard-b">
+        <div id="g-connected" class="hidden overflow-x-auto">
+          <table class="ptable"><thead><tr><th>Wat</th><th class="num">28d</th><th class="num">vorige 28d</th></tr></thead><tbody id="g-rows"></tbody></table>
+        </div>
+        <div id="g-none" class="hidden">
+          <p class="p-muted text-sm" id="g-none-text"></p>
+          <div class="mt-3 flex flex-wrap items-center gap-2" id="g-pick" hidden>
+            <select id="g-loc" class="pinput" style="min-width:260px"><option value="">Vestiging kiezen…</option></select>
+            <button type="button" id="g-loc-save" class="pbtn pbtn--primary pbtn--sm">Koppelen</button>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="pcard">
+      <div class="pcard-h"><span>Koppeling</span></div>
+      <div class="pcard-b space-y-3">
+        <div>
+          <label class="plabel" for="l-klant">Klant</label>
+          <select id="l-klant" class="pinput"><option value="">— geen klant —</option></select>
+        </div>
+        <div>
+          <label class="plabel" for="l-type">Type</label>
+          <select id="l-type" class="pinput"><option value="eigen">eigen site</option><option value="klant">klantsite</option><option value="onbekend">onbekend</option></select>
+        </div>
+        <div class="flex items-center gap-3">
+          <button type="button" id="l-save" class="pbtn pbtn--primary pbtn--sm">Opslaan</button>
+          <span id="l-msg" class="p-muted text-xs"></span>
+        </div>
+        <p class="p-muted text-xs" id="l-meta"></p>
+      </div>
+    </section>
+  </div>
+
+  <style>
+    .ptable td.num, .ptable th.num { text-align: right; font-variant-numeric: tabular-nums; }
+    .ptable td.key { max-width: 380px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .c-svg { width: 100%; height: 160px; display: block; }
+    .c-svg rect { fill: var(--p-accent, #2563eb); }
+    .c-svg rect:hover { opacity: .7; }
+    .c-svg .axis { stroke: var(--p-border); stroke-width: 1; }
+    .c-svg text { font-size: 10px; fill: var(--p-ink-4); }
+    .z-delta { font-size: 11px; margin-left: 4px; }
+    .z-up { color: #15803d; } .z-down { color: #b91c1c; } .z-flat { color: var(--p-ink-4); }
+  </style>
+
+  <script is:inline>
+    (function () {
+      var key = new URLSearchParams(location.search).get('key') || '';
+      var data = null, win = 28;
+      function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+      function n(v) { return Number(v || 0).toLocaleString('nl-NL'); }
+      function pct(v) { return v == null ? '—' : (v * 100).toFixed(1).replace('.', ',') + '%'; }
+      function pos(v) { return v ? v.toFixed(1).replace('.', ',') : '—'; }
+      function delta(d, invert, unit) {
+        if (d == null) return '<span class="z-delta z-flat">geen vergelijking</span>';
+        var val = unit === 'pp' ? (d * 100).toFixed(1).replace('.', ',') + ' pp' : unit === 'abs' ? d.toFixed(1).replace('.', ',') : Math.round(d * 100) + '%';
+        var good = invert ? d < 0 : d > 0;
+        var cls = d === 0 ? 'z-flat' : good ? 'z-up' : 'z-down';
+        return '<span class="z-delta ' + cls + '">' + (d > 0 ? '+' : '') + val + ' vs vorige</span>';
+      }
+      function post(path, method, body) {
+        return fetch(path, { method: method, credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }).then(function (r) { return r.json(); });
+      }
+      function chart(series) {
+        if (!series.length) return '<div class="empty"><p class="empty-title">Nog geen dagcijfers</p></div>';
+        var w = 720, h = 160, padL = 34, padB = 18, max = 1;
+        series.forEach(function (p) { if (p.clicks > max) max = p.clicks; });
+        var bw = (w - padL) / series.length;
+        var bars = series.map(function (p, i) {
+          var bh = (p.clicks / max) * (h - padB - 8);
+          return '<rect x="' + (padL + i * bw + 0.5).toFixed(1) + '" y="' + (h - padB - bh).toFixed(1) + '" width="' + Math.max(1, bw - 1).toFixed(1) + '" height="' + bh.toFixed(1) + '"><title>' + esc(p.datum) + ': ' + n(p.clicks) + ' klikken, ' + n(p.impressions) + ' vertoningen</title></rect>';
+        }).join('');
+        var labels = '';
+        var every = Math.max(1, Math.round(series.length / 6));
+        series.forEach(function (p, i) { if (i % every === 0) labels += '<text x="' + (padL + i * bw).toFixed(1) + '" y="' + (h - 4) + '">' + esc(p.datum.slice(5)) + '</text>'; });
+        return '<svg class="c-svg" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" role="img" aria-label="Klikken per dag">' +
+          '<line class="axis" x1="' + padL + '" y1="' + (h - padB) + '" x2="' + w + '" y2="' + (h - padB) + '"/>' +
+          '<text x="0" y="12">' + n(max) + '</text><text x="0" y="' + (h - padB) + '">0</text>' + bars + labels + '</svg>';
+      }
+      function rows(list, tbodyId, emptyId) {
+        var tb = document.getElementById(tbodyId);
+        document.getElementById(emptyId).classList.toggle('hidden', list.length > 0);
+        tb.innerHTML = list.map(function (r) {
+          var k = r.sleutel;
+          var label = r.dim === 'page' ? k.replace(/^https?:\/\/[^/]+/, '') || '/' : k;
+          return '<tr><td class="key" title="' + esc(k) + '">' + esc(label) + '</td><td class="num">' + n(r.clicks) + '</td><td class="num">' + n(r.impressions) + '</td><td class="num">' + (r.ctr != null ? r.ctr.toFixed(1).replace('.', ',') + '%' : '—') + '</td><td class="num">' + pos(r.position) + '</td></tr>';
+        }).join('');
+      }
+      function renderWindow() {
+        var s = win === 90 ? data.summary90 : data.summary28;
+        document.querySelectorAll('[data-win]').forEach(function (b) { b.classList.toggle('pbtn--primary', Number(b.getAttribute('data-win')) === win); b.classList.toggle('pbtn--subtle', Number(b.getAttribute('data-win')) !== win); });
+        document.getElementById('k-clicks').textContent = n(s.current.clicks);
+        document.getElementById('k-clicks-d').innerHTML = delta(s.delta.clicks);
+        document.getElementById('k-impr').textContent = n(s.current.impressions);
+        document.getElementById('k-impr-d').innerHTML = delta(s.delta.impressions);
+        document.getElementById('k-ctr').textContent = pct(s.current.ctr);
+        document.getElementById('k-ctr-d').innerHTML = delta(s.delta.ctr, false, 'pp');
+        document.getElementById('k-pos').textContent = pos(s.current.position);
+        document.getElementById('k-pos-d').innerHTML = delta(s.delta.position, true, 'abs');
+        document.getElementById('c-chart').innerHTML = chart(s.spark);
+        document.getElementById('c-range').textContent = s.end ? (s.spark[0] && s.spark[0].datum) + ' t/m ' + s.end : '';
+      }
+      function renderGbp() {
+        var site = data.site, g = data.gbp;
+        var con = document.getElementById('g-connected'), none = document.getElementById('g-none');
+        if (site.gbp_location) {
+          con.classList.remove('hidden'); none.classList.add('hidden');
+          document.getElementById('g-range').textContent = (site.gbp_titel ? site.gbp_titel + ' · ' : '') + (g.end ? 't/m ' + g.end : 'nog geen cijfers');
+          var order = ['BUSINESS_IMPRESSIONS_DESKTOP_MAPS', 'BUSINESS_IMPRESSIONS_MOBILE_MAPS', 'BUSINESS_IMPRESSIONS_DESKTOP_SEARCH', 'BUSINESS_IMPRESSIONS_MOBILE_SEARCH', 'CALL_CLICKS', 'BUSINESS_DIRECTION_REQUESTS', 'WEBSITE_CLICKS', 'BUSINESS_CONVERSATIONS', 'BUSINESS_BOOKINGS'];
+          document.getElementById('g-rows').innerHTML = order.map(function (m) {
+            return '<tr><td>' + esc(g.labels[m] || m) + '</td><td class="num">' + n(g.current[m]) + '</td><td class="num">' + n(g.previous[m]) + '</td></tr>';
+          }).join('');
+        } else {
+          con.classList.add('hidden'); none.classList.remove('hidden');
+          document.getElementById('g-none-text').textContent = 'Geen Bedrijfsprofiel-vestiging gekoppeld aan deze site. Na het koppelen van Google Bedrijfsprofiel (overzichtspagina) wordt een vestiging met dezelfde website-URL automatisch gekoppeld; anders kies je hier handmatig.';
+          fetch('/api/admin/visibility/gbp/locations', { credentials: 'same-origin' }).then(function (r) { return r.status === 200 ? r.json() : null; }).then(function (d) {
+            if (!d || !d.locations || !d.locations.length) return;
+            var sel = document.getElementById('g-loc');
+            sel.innerHTML = '<option value="">Vestiging kiezen…</option>' + d.locations.map(function (l) { return '<option value="' + esc(l.name) + '" data-title="' + esc(l.title) + '">' + esc(l.title) + (l.websiteUri ? ' · ' + esc(l.websiteUri) : '') + '</option>'; }).join('');
+            document.getElementById('g-pick').hidden = false;
+          }).catch(function () {});
+        }
+      }
+      function renderLinks() {
+        var site = data.site;
+        document.getElementById('l-type').value = site.eigenaar || 'eigen';
+        document.getElementById('l-meta').textContent = 'Search Console: ' + (site.gsc_property || 'niet gekoppeld') + (site.gsc_last_sync ? ' · laatst gesynchroniseerd ' + new Date(site.gsc_last_sync).toLocaleString('nl-NL') : '');
+        fetch('/api/admin/customers', { credentials: 'same-origin' }).then(function (r) { return r.json(); }).then(function (d) {
+          var sel = document.getElementById('l-klant');
+          sel.innerHTML = '<option value="">— geen klant —</option>' + (d.customers || []).map(function (c) { return '<option value="' + esc(c.id) + '">' + esc(c.bedrijf) + (c.stad ? ' · ' + esc(c.stad) : '') + '</option>'; }).join('');
+          sel.value = site.customer_id || '';
+        }).catch(function () {});
+      }
+      function render() {
+        document.getElementById('s-naam').textContent = data.site.naam;
+        document.getElementById('s-host').textContent = data.site.host + (data.site.klant_bedrijf ? ' · klant: ' + data.site.klant_bedrijf : '');
+        renderWindow();
+        rows(data.queries || [], 't-queries', 't-queries-empty');
+        rows(data.pages || [], 't-pages', 't-pages-empty');
+        renderGbp();
+        renderLinks();
+      }
+      function load() {
+        fetch('/api/admin/visibility/site?key=' + encodeURIComponent(key), { credentials: 'same-origin' })
+          .then(function (r) { if (r.status === 403) { location.href = '/portal/login'; throw 0; } if (r.status !== 200) { location.href = '/admin/zichtbaarheid'; throw 0; } return r.json(); })
+          .then(function (d) { data = d; render(); })
+          .catch(function () {});
+      }
+      document.querySelectorAll('[data-win]').forEach(function (b) { b.addEventListener('click', function () { win = Number(b.getAttribute('data-win')); if (data) renderWindow(); }); });
+      document.getElementById('l-save').addEventListener('click', function () {
+        var msg = document.getElementById('l-msg'); msg.textContent = 'Opslaan…';
+        post('/api/admin/visibility/site', 'PATCH', { key: key, customer_id: document.getElementById('l-klant').value || null, eigenaar: document.getElementById('l-type').value })
+          .then(function (d) { msg.textContent = d.ok ? 'Opgeslagen' : (d.error || 'Mislukt'); if (d.ok) load(); });
+      });
+      document.getElementById('g-loc-save').addEventListener('click', function () {
+        var sel = document.getElementById('g-loc'); if (!sel.value) return;
+        var title = sel.options[sel.selectedIndex].getAttribute('data-title') || '';
+        post('/api/admin/visibility/site', 'PATCH', { key: key, gbp_location: sel.value, gbp_titel: title })
+          .then(function (d) { if (d.ok) return post('/api/admin/visibility/gbp/sync', 'POST', { days: 90 }); })
+          .then(function () { load(); });
+      });
+      if (!key) location.href = '/admin/zichtbaarheid'; else load();
+    })();
+  </script>
+</AdminLayout>

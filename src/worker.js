@@ -42,6 +42,7 @@ import { aiSignalScan } from './lib/ai-crm.js';
 import { maakVoorstel, leesVoorstelViaToken } from './lib/voorstel-store.js';
 import { handleVoorstelClaim } from './lib/voorstel-claim.js';
 import { handleVoorstelVerify } from './lib/voorstel-verify.js';
+import { visibilityIngest, gbpSyncIfDue } from './lib/visibility.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -1284,6 +1285,12 @@ export default {
     if (url.pathname === '/api/google/callback') {
       return handleGoogleCallback(request, env);
     }
+    // Zichtbaarheid ingest — machine-to-machine from fleetclaw (Hetzner).
+    // Authenticated by X-Intake-Signature HMAC (INTAKE_WEBHOOK_SECRET), NOT
+    // by the staff session, hence outside /api/admin/*.
+    if (url.pathname === '/api/visibility/ingest') {
+      return visibilityIngest(request, env);
+    }
 
     // Customer portal — passwordless magic-link auth
     if (url.pathname === '/api/auth/request') {
@@ -1361,6 +1368,15 @@ export default {
         await nudgeOnboarding(env);
       } catch (err) {
         console.error('[scheduled] nudgeOnboarding mislukt:', err.message || err);
+      }
+    })());
+    // Zichtbaarheid: Google Bedrijfsprofiel-metrics, één keer per UTC-dag
+    // (na 05:00). No-op zolang GBP niet gekoppeld is. Eigen try/catch.
+    ctx.waitUntil((async () => {
+      try {
+        await gbpSyncIfDue(env);
+      } catch (err) {
+        console.error('[scheduled] gbpSyncIfDue mislukt:', err.message || err);
       }
     })());
   },
