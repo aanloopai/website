@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const schema = {
+  '@context': 'https://schema.org', '@type': 'WebPage',
+  name: 'Word partner van Aanloop AI',
+  description: 'Partnerprogramma voor boekhouders, accountants, VoIP-resellers en praktijk- en salonsoftwareleveranciers: white-label demo-nummer, vergoeding per partnercontract en volledige AVG-compliance.',
+  url: 'https://aanloopai.nl/partners/',
+  isPartOf: { '@type': 'WebSite', '@id': 'https://aanloopai.nl/#website' },
+  publisher: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization' },
+};
+
+const faqItems = [
+  { question: 'Wat krijg ik als partner?', answer: 'Een eigen white-label demo-nummer dat uw klanten kunnen bellen, een partner-onboardingkit met praatplaten en lead-links, een vast aanspreekpunt en maandelijkse terugkoppeling over de status van uw aangeleverde leads.' },
+  { question: 'Welke vergoeding geldt er?', answer: 'De exacte vergoeding spreken we persoonlijk met u af en leggen we vast in uw partnercontract. Er is geen generiek percentage op deze pagina — elke partner is maatwerk, ook qua vorm (vaste fee, lead-fee of terugkerende vergoeding). Wat er geldt, staat zwart-op-wit in uw contract.' },
+  { question: 'Ik ben NBA-geregistreerd accountant — mag ik een vergoeding accepteren?', answer: 'Dat hangt af van de VGBA-gedragscode en uw situatie. Veel accountants accepteren om die reden geen geld doorbelast aan klanten; zij laten de vergoeding volledig aan de klant terugvloeien (klantvoordeel) of kiezen voor een transparante lead-fee die openbaar in de offerte wordt vermeld. In uw partnercontract zetten we expliciet dat vergoedingen alleen worden uitbetaald aan partijen die ze wettelijk mogen ontvangen, en u bepaalt zelf of en hoe u een vergoeding inricht binnen de VGBA-regels.' },
+  { question: 'Wat is een white-label demo-nummer?', answer: 'Een eigen demo-telefoonnummer van Emma dat u onder uw eigen naam en huisstijl kunt laten bellen. Uw klanten ervaren live hoe Emma de telefoon opneemt — zonder dat de Aanloop AI-naam in de afnemeroplossing staat, tenzij u dat juist wel wilt tonen.' },
+  { question: 'Hoe werkt de lead-registratie?', answer: 'Elke partner krijgt een unieke demo-link en call-tracking. Aangeleverde leads zijn herleidbaar en u krijgt maandelijks een overzicht van de status: demo gepland, live gegaan, of niet doorgegaan — met reden.' },
+  { question: 'Zit ik ergens aan vast?', answer: 'Nee. Het partnercontract is maandelijks opzegbaar, er zijn geen inkoopverplichtingen en geen minimum aantallen leads. Het is een samenwerking, geen franchise.' },
+];
+
+const profiles = [
+  {
+    title: 'Boekhouders & accountants',
+    body: 'Uw klanten zijn ondernemers die elke gemiste oproep als gemiste omzet ervaren. U kent hun administratie en weet precies waar AI kan ontlasten. U introduceert Emma als klantvoordeel — wij regelen onboarding, AVG-verwerkersovereenkomst en support volledig zelf, zodat u er geen uren in stopt.',
+  },
+  {
+    title: 'VoIP-resellers & telecommunicatie-adviseurs',
+    body: 'U levert telefonieoplossingen en ziet dagelijks dat de binnendienst de lijn niet aankan. Emma is het perfecte vervolg op elk VoIP-traject: zij neemt op waar uw dienst ophoudt. White-label demo-nummer, direct in het portaal van de klant te tonen.',
+  },
+  {
+    title: 'Praktijk- & salonsoftwareleveranciers',
+    body: 'Uw klanten — fysiopraktijken, tandartsen, kappers, pedicures — verliezen wekelijks afspraken aan onbeantwoorde telefoontjes. Emma koppelt direct aan agenda-systemen en vult de lege plekken automatisch. Een aanwinst voor uw software, zonder extra ontwikkelwerk aan uw kant.',
+  },
+];
+---
+
+<BaseLayout
+  title="Word partner van Aanloop AI"
+  description="Partnerprogramma voor boekhouders, accountants, VoIP-resellers en praktijk- en salonsoftwareleveranciers. White-label demo-nummer, vergoeding per partnercontract en volledige AVG-compliance."
+  schema={schema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Partnerprogramma</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08]">Verdien aan Emma, zonder Emma zelf te bouwen</h1>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed">Kent u ondernemers die constant de telefoon missen? Wij bouwen Emma — de AI-receptie van het Nederlandse MKB. U introduceert haar, wij leveren en ondersteunen alles. Uw klant krijgt een white-label demo-nummer, u een vergoeding die in uw partnercontract vastligt.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="/contact/?type=offerte" class="btn-primary text-base px-6 py-3">Word partner — plan een gesprek</a>
+          <a href="#hoe" class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 text-navy font-semibold hover:border-navy transition-colors text-base px-6 py-3">Zo werkt het</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="voor-wie" class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-10">
+        <h2 class="text-2xl sm:text-3xl font-bold text-navy">Drie partnerprofielen</h2>
+        <p class="mt-3 text-slate-600 leading-relaxed">Wij werven de eerste tien partners handmatig en persoonlijk. Geen zelfservice-portaal, geen gegokte percentages — wel een gesprek, een demo en een contract dat bij uw situatie past.</p>
+      </div>
+      <div class="grid md:grid-cols-3 gap-5">
+        {profiles.map((p) => (
+          <div class="rounded-2xl border border-slate-200 p-6 bg-white shadow-sm">
+            <h3 class="font-bold text-navy text-lg">{p.title}</h3>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="hoe" class="section bg-slate-50 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-10">
+        <h2 class="text-2xl sm:text-3xl font-bold text-navy">Zo werkt de samenwerking</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {[
+          { n: '1', t: 'Kennismakingsgesprek', d: '30 minuten. We laten Emma live zien, bespreken uw klantenkring en de vorm van samenwerking die bij u past.' },
+          { n: '2', t: 'Eigen demo-nummer', d: 'U krijgt een white-label demo-nummer en een unieke lead-link. Direct bruikbaar in uw gesprekken, mailings en portaal.' },
+          { n: '3', t: 'Onboardingkit', d: 'Praatplaat, voorbeeldmail en demo-script, afgestemd op uw doelgroep. U hoeft geen verkoper te spelen — de kit doet het werk.' },
+          { n: '4', t: 'Contract en terugkoppeling', d: 'Vergoeding en voorwaarden vastgelegd in uw partnercontract. Maandelijks een transparant overzicht van uw leads en hun status.' },
+        ].map((s) => (
+          <div class="rounded-2xl border border-slate-200 p-6 bg-white">
+            <div class="w-9 h-9 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">{s.n}</div>
+            <h3 class="mt-4 font-bold text-navy">{s.t}</h3>
+            <p class="mt-2 text-sm text-slate-600 leading-relaxed">{s.d}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="transparantie" class="section">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-2xl sm:text-3xl font-bold text-navy">Transparant en AVG-proof</h2>
+        <p class="mt-3 text-slate-600 leading-relaxed">Een partnervergoeding moet wettelijk houdbaar zijn — voor u én voor uw klant. Daarom werken wij zo:</p>
+        <ul class="mt-5 space-y-3 text-slate-600">
+          <li class="flex gap-3"><span class="text-emerald-600 font-bold">—</span><span><strong class="text-navy">Vergoeding alleen per contract.</strong> Geen anonieme kickbacks. Wat u ontvangt, staat in uw partnercontract en wordt volgens de wettelijke vereisten verwerkt en gefactureerd.</span></li>
+          <li class="flex gap-3"><span class="text-emerald-600 font-bold">—</span><span><strong class="text-navy">VGBA-bewust voor accountants.</strong> Niet elke accountant mag een door te belasten vergoeding accepteren. Daarom bieden we ook structuren waarbij het voordeel volledig bij uw klant terechtkomt, of waarbij de vergoeding transparant in de offerte van de klant wordt vermeld.</span></li>
+          <li class="flex gap-3"><span class="text-emerald-600 font-bold">—</span><span><strong class="text-navy">Uw klant blijft uw klant.</strong> Wij communiceren uitsluitend met uw klant voor onboarding en support van Emma — nooit voor verkoop van andere diensten. Dat staat in het contract.</span></li>
+          <li class="flex gap-3"><span class="text-emerald-600 font-bold">—</span><span><strong class="text-navy">Geen data zonder grondslag.</strong> Leads worden uitsluitend gedeeld op basis van een geldige AVG-grondslag; bij elke samenwerking sluiten we waar nodig een verwerkersovereenkomst conform artikel 28 AVG.</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-navy text-white">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-2xl sm:text-3xl font-bold">Eén van de eerste tien partners?</h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">We bouwen het partnerprogramma bewust klein op: tien partners, persoonlijk begeleid, met volle aandacht voor uw klantenkring. Past uw bureau of software daar tussen?</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="/contact/?type=offerte" class="btn-primary text-base px-6 py-3">Plan het kennismakingsgesprek</a>
+          <a href="/diensten/emma/" class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/30 text-white font-semibold hover:bg-white/10 transition-colors text-base px-6 py-3">Bekijk Emma eerst</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-2xl sm:text-3xl font-bold text-navy">Veelgestelde vragen</h2>
+        <div class="mt-6 space-y-4">
+          {faqItems.map((f) => (
+            <details class="group rounded-xl border border-slate-200 bg-white px-5 py-4">
+              <summary class="cursor-pointer font-semibold text-navy list-none flex justify-between items-center">{f.question}<span class="text-slate-400 group-open:rotate-45 transition-transform text-xl leading-none">+</span></summary>
+              <p class="mt-3 text-sm text-slate-600 leading-relaxed">{f.answer}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
