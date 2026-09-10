@@ -35,7 +35,7 @@ import { nudgeOnboarding } from './lib/onboarding-nudge.js';
 import { handleMcp } from './lib/mcp.js';
 import { rateLimit } from './lib/rate-limit.js';
 import { escapeHtml } from './lib/escape.js';
-import { alertStaff } from './lib/notify.js';
+import { alertStaff, notifyTelegram, formatSubmitTelegram } from './lib/notify.js';
 import { countVandaagProspects, prospectsNeedingFollowupDraft, generateFollowupDraft, outreachImport } from './lib/outreach.js';
 import { isWerkdag } from './lib/crm.js';
 import { aiSignalScan } from './lib/ai-crm.js';
@@ -420,6 +420,16 @@ async function handleIntake(request, env) {
     return jsonResponse({ success: false, message: 'Opslaan van uw aanvraag is mislukt — probeer het opnieuw.' }, 500);
   }
 
+  // Telegram (owner-besluit 2026-09-10): elke intake-wizard-aanvraag meteen
+  // melden. Best-effort, vóór de webhook-forward.
+  await notifyTelegram(env, [
+    `🧭 Nieuwe intake (/start) via aanloopai.nl — ${serviceId}`,
+    `${name} <${email}>`,
+    company ? `Bedrijf: ${company}` : null,
+    phone ? `Tel: ${phone}` : null,
+    `→ aanloopai.nl/admin/aanvragen (intake ${id})`,
+  ].filter(Boolean).join('\n'));
+
   // Best-effort forward. Never blocks the success response below — the row is
   // already durable in D1 (forwarded=0 on any failure here, incl. missing env).
   if (env.INTAKE_WEBHOOK_URL && env.INTAKE_WEBHOOK_SECRET) {
@@ -732,6 +742,11 @@ async function handleSubmit(request, env) {
 
   // System of record first — everything below this line is best-effort delivery.
   const leadId = await storeInboundLead(env, { formType, fields, userEmail, fullName, clientIp });
+
+  // Owner-besluit 2026-09-10: élke inzending (contact, demo, aanvraag, scan,
+  // leads, newsletter, roi, readiness, survey) direct op Telegram — vóór de
+  // mail, zodat een Brevo-storing de melding niet tegenhoudt. Best-effort.
+  await notifyTelegram(env, formatSubmitTelegram({ formType, fields, userEmail, fullName, leadId }));
 
   if (!env.BREVO_API_KEY) {
     console.error('[/api/submit] BREVO_API_KEY not configured — lead stored, no mail sent');

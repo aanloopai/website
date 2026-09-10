@@ -7,7 +7,7 @@ import { randomId, sha256Hex } from './auth.js';
 import { getCatalogTier, getCatalogProduct } from '../data/portal-catalog.ts';
 import { dealWonVoorOrder } from './crm.js';
 import { activateOrder } from './activation.js';
-import { alertStaff } from './notify.js';
+import { alertStaff, notifyTelegram } from './notify.js';
 // Punt 2 (livegang-toevoeging): de klantbevestigingsmail na de EERSTE betaling
 // hergebruikt de huisstijl/KvK-voettekst-mailer van de portal in plaats van de
 // kale sendMail hieronder (die is en blijft alleen voor de bestaande interne/
@@ -526,6 +526,16 @@ async function sendOrderConfirmationMail(env, order, payment, isLive) {
 async function onPaid(env, payment, subId, orderId) {
   const db = env.PORTAL_DB;
   const sub = subId ? await db.prepare('SELECT * FROM subscriptions WHERE id = ?').bind(subId).first() : null;
+  // Telegram (owner-besluit 2026-09-10): elke ontvangen betaling melden.
+  // Best-effort; draait exact één keer per betaling (CAS in de aanroeper).
+  await notifyTelegram(env, [
+    `💶 Betaling ontvangen via aanloopai.nl`,
+    `Bedrag: ${payment?.amount?.value ? `€${payment.amount.value}` : '-'}`,
+    orderId ? `Order: ${orderId}` : null,
+    subId ? `Abonnement: ${subId}` : null,
+    payment?.id ? `Mollie: ${payment.id}` : null,
+    `→ aanloopai.nl/admin/klanten`,
+  ].filter(Boolean).join('\n'));
   // Captured BEFORE the transition below mutates the DB (not this local
   // object) — this is the same "first payment of the subscription" branch
   // the comment right below already distinguishes from a monthly renewal /

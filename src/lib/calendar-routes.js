@@ -4,6 +4,7 @@
 import { getAccessToken, jsonResponse, errorResponse } from './google-auth.js';
 import { escapeHtml } from './escape.js';
 import { storeGbpTokens } from './visibility.js';
+import { notifyTelegram } from './notify.js';
 
 const TIMEZONE = 'Europe/Amsterdam';
 
@@ -207,6 +208,15 @@ export async function handleBook(request, env) {
     }
     const event = await r.json();
     const meetLink = event.hangoutLink || event.conferenceData?.entryPoints?.find((e) => e.entryPointType === 'video')?.uri || null;
+
+    // Telegram (owner-besluit 2026-09-10): elk ingepland strategiegesprek melden.
+    await notifyTelegram(env, [
+      `📅 Strategiegesprek ingepland via aanloopai.nl`,
+      `${name} <${email}>`,
+      `Wanneer: ${new Intl.DateTimeFormat('nl-NL', { timeZone: TIMEZONE, dateStyle: 'full', timeStyle: 'short' }).format(slotStart)}`,
+      message ? `Bericht: ${String(message).slice(0, 300)}` : null,
+      meetLink ? `Meet: ${meetLink}` : null,
+    ].filter(Boolean).join('\n'));
 
     if (env.BREVO_API_KEY) {
       const formattedDate = new Intl.DateTimeFormat('nl-NL', {
