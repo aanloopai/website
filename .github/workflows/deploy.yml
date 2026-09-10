@@ -36,25 +36,22 @@ jobs:
 
       # Telegram-notificaties (owner-besluit 2026-09-10): elke inzending,
       # intake, betaling en demo landt op Telegram. De secrets leven in GitHub
-      # (repo → Settings → Secrets) en worden hier naar de Worker gezet, zodat
-      # een handmatige `wrangler secret put` nooit nodig is.
+      # (repo → Settings → Secrets) en worden hier naar de Worker gezet.
+      # Deze Worker draait in "versions"-modus (versions upload hieronder);
+      # een gewone `secret bulk` weigert dan (API-fout 10215, runs
+      # 34463019974 + 34463350824). `versions secret bulk` is de
+      # versions-bewuste variant: maakt een nieuwe versie met de secrets,
+      # waarna de `versions upload` hieronder ze overerft.
       - name: Push Worker secrets (Telegram)
-        uses: cloudflare/wrangler-action@v3
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # Zonder pin installeert de action wrangler 3.90 (repo heeft geen
-          # wrangler-devDependency) en faalt `secret bulk` op deze Worker
-          # (run 34463019974: "2 secrets failed to upload"). v4 werkt.
-          wranglerVersion: '4.130.0'
-          command: secret list
-          secrets: |
-            TELEGRAM_BOT_TOKEN
-            TELEGRAM_CHAT_ID
-          workingDirectory: '.'
         env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          node -e "require('fs').writeFileSync('.secrets.json', JSON.stringify({ TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID: process.env.TELEGRAM_CHAT_ID }))"
+          npx --yes wrangler@4.130.0 versions secret bulk .secrets.json --message "telegram secrets" --tag telegram
+          rm -f .secrets.json
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3

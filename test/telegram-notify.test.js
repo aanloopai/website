@@ -92,7 +92,9 @@ describe('bedrading: elk inbound pad roept notifyTelegram aan', () => {
   });
   it('deploy.yml zet TELEGRAM_BOT_TOKEN en TELEGRAM_CHAT_ID als Worker-secrets', () => {
     const yml = read('.github/workflows/deploy.yml');
-    expect(yml).toMatch(/secrets: \|\s*\n\s*TELEGRAM_BOT_TOKEN\s*\n\s*TELEGRAM_CHAT_ID/);
+    // Versions-modus Worker: alleen `versions secret bulk` werkt (API 10215).
+    expect(yml).toContain('versions secret bulk');
     expect(yml).toContain('TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}');
+    expect(yml).toContain('TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}');
   });
 });
