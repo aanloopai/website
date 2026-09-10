@@ -34,19 +34,11 @@ export const GROEI: PricePoint = { monthly: 997, annual: 836, monthlyCent: 99700
 
 // Emma Enterprise — op aanvraag (SLA, dedicated, custom workflows, white-label). Geen vast tarief.
 
-// ── DEPRECATED (oude €99/€249/€497 ladder — niet meer publiek gebruikt; bewaard voor referentie) ──
-/** @deprecated gebruik EMMA */
-export const START: PricePoint = { monthly: 99, annual: 83, monthlyCent: 9900, setup: 0 };
-/** @deprecated gebruik EMMA */
-export const CORE: PricePoint = { monthly: 249, annual: 209, monthlyCent: 24900, setup: 0 };
-/** @deprecated gebruik GROEI */
-export const PRO: PricePoint = { monthly: 497, annual: 416, monthlyCent: 49700, setup: 0 };
+// Oude €99/€249/€497-ladder (START/CORE/PRO) is per 2026-09-10 verwijderd:
+// owner-besluit "geen enkele prijs onder €497 op de site" — de constanten
+// bestonden alleen nog als herintroductie-risico. Portal gebruikt PORTAL_*.
 
 // ── Display-strings — gebruik deze overal i.p.v. hardcoded bedragen ──
-export const START_LABEL = '€99';
-export const START_MND = '€99/mnd';
-export const CORE_LABEL = '€249';
-export const CORE_MND = '€249/mnd';
 export const PRO_LABEL = '€497';
 export const PRO_MND = '€497/mnd';
 export const EMMA_LABEL = '€497';

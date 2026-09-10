@@ -7,9 +7,16 @@
 //
 // alertStaff never throws: an alert failing must not take down the request it
 // is reporting on. Both channels log their own failure.
+//
+// Owner-besluit 2026-09-10: ELKE inbound gebeurtenis (formulier, intake-
+// wizard, betaling, geplande demo) landt óók op Telegram — niet alleen
+// storingen. Daarvoor is notifyTelegram(): plain bericht, best-effort, nooit
+// blokkerend. Secrets TELEGRAM_BOT_TOKEN + TELEGRAM_CHAT_ID worden bij deploy
+// gezet door .github/workflows/deploy.yml (wrangler-action `secrets:`).
 
 const STAFF_EMAIL = 'hello@aanloopai.nl';
 const SENDER = { name: 'Aanloop AI Portaal', email: 'hello@aanloopai.nl' };
+const TELEGRAM_MAX = 3500; // Telegram-limiet is 4096; ruimte voor de kop.
 
 async function alertByMail(env, subject, body) {
   if (!env.BREVO_API_KEY) return false;
@@ -27,19 +34,23 @@ async function alertByMail(env, subject, body) {
   return true;
 }
 
-async function alertByTelegram(env, subject, body) {
+async function sendTelegramText(env, text) {
   if (!env.TELEGRAM_BOT_TOKEN || !env.TELEGRAM_CHAT_ID) return false;
   const res = await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
       chat_id: env.TELEGRAM_CHAT_ID,
-      text: `⚠️ ${subject}\n\n${body}`,
+      text: String(text).slice(0, TELEGRAM_MAX),
       disable_web_page_preview: true,
     }),
   });
-  if (!res.ok) throw new Error(`Telegram alert HTTP ${res.status}`);
+  if (!res.ok) throw new Error(`Telegram HTTP ${res.status}`);
   return true;
+}
+
+async function alertByTelegram(env, subject, body) {
+  return sendTelegramText(env, `⚠️ ${subject}\n\n${body}`);
 }
 
 /**
@@ -67,4 +78,47 @@ export async function alertStaff(env, subject, body) {
     console.error(`[alertStaff] NO CHANNEL REACHED — ${subject} :: ${body}`);
   }
   return out;
+}
+
+/**
+ * Plain Telegram notification for a normal inbound event (lead, intake,
+ * betaling, demo). Best-effort: returns false when not configured or when
+ * Telegram fails, logs the failure, never throws.
+ *
+ * @param {object} env
+ * @param {string} text  Plain text (no Markdown/HTML parsing — geen escaping-risico).
+ * @returns {Promise<boolean>}
+ */
+export async function notifyTelegram(env, text) {
+  try {
+    return await sendTelegramText(env, text);
+  } catch (err) {
+    console.error('[notifyTelegram] failed:', err?.message || err);
+    return false;
+  }
+}
+
+const FIELD_LABELS = [
+  ['bedrijf', 'Bedrijf'], ['bedrijfsnaam', 'Bedrijf'], ['company', 'Bedrijf'],
+  ['telefoon', 'Tel'], ['phone', 'Tel'],
+  ['sector', 'Branche'], ['regio', 'Regio'], ['volume', 'Volume'], ['exclusief', 'Exclusief'],
+  ['plan', 'Pakket'], ['dienst', 'Dienst'], ['type', 'Type'],
+  ['bericht', 'Bericht'], ['message', 'Bericht'], ['vraag', 'Vraag'],
+];
+
+/**
+ * Compact, scannable Telegram-tekst voor een /api/submit-inzending.
+ * Toont alleen bekende velden; vrije tekst afgekapt op 300 tekens.
+ */
+export function formatSubmitTelegram({ formType, fields = {}, userEmail, fullName, leadId }) {
+  const lines = [`📩 Nieuwe ${formType} via aanloopai.nl`, `${fullName || '-'} <${userEmail || '-'}>`];
+  const seen = new Set();
+  for (const [key, label] of FIELD_LABELS) {
+    const v = fields[key];
+    if (v == null || String(v).trim() === '' || seen.has(label)) continue;
+    seen.add(label);
+    lines.push(`${label}: ${String(v).trim().slice(0, 300)}`);
+  }
+  lines.push(`→ aanloopai.nl/admin/aanvragen${leadId ? ` (lead ${leadId})` : ''}`);
+  return lines.join('\n');
 }

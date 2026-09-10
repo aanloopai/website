@@ -34,6 +34,24 @@ jobs:
       - name: Build Astro site
         run: npm run build
 
+      # Telegram-notificaties (owner-besluit 2026-09-10): elke inzending,
+      # intake, betaling en demo landt op Telegram. De secrets leven in GitHub
+      # (repo → Settings → Secrets) en worden hier naar de Worker gezet, zodat
+      # een handmatige `wrangler secret put` nooit nodig is.
+      - name: Push Worker secrets (Telegram)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: secret list
+          secrets: |
+            TELEGRAM_BOT_TOKEN
+            TELEGRAM_CHAT_ID
+          workingDirectory: '.'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:

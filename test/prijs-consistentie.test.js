@@ -48,6 +48,15 @@ const BANNED = [
   [/&euro;\s?197(?![0-9.,])/u, '&euro;197 — geschrapt'],
   [/€\s?129(?![0-9.,])/u, 'website Starter €129/mnd — maandtarief is "op aanvraag"'],
   [/(vanaf|v\.a\.)\s+(€|EUR)\s?(129|197)(?![0-9.,])/iu, '"vanaf €129/€197" — maandtarief is op aanvraag'],
+  // Owner 2026-09-10 (2): géén eigen bedrag onder €497 zichtbaar — ook geen
+  // website-Pro/webshop-tier, founding-korting, setup-bedrag of maandbesparing.
+  [/€\s?397(?![0-9.,])/u, 'website Pro / webshop Groei Shop €397/mnd — maandtarief is op aanvraag'],
+  [/€\s?249(?![0-9.,])/u, 'founding/CORE €249 — geen eigen prijs onder €497'],
+  [/\b(495|795)\s?euro\b/iu, 'setup-bedrag (495/795) — publiek "op aanvraag"'],
+  [/setup\s+(495|795)\b/iu, 'setup-bedrag (495/795) — publiek "op aanvraag"'],
+  [/€\s?45 per maand/u, 'bundelvoordeel per maand (€45) — toon per jaar (€540)'],
+  [/€\s?195\/maand/u, 'SEO+GEO-besparing per maand (€195) — toon per jaar (€2.340)'],
+  [/€\s?397–€997/u, 'oude custom-range €397–€997 — ondergrens is €497'],
   [/1 callscript/u, 'Emma heeft tot 3 callscripts (kanon /tarieven), niet 1'],
   [/[Tt]ot 5 callscripts/u, 'Groei heeft onbeperkte callscripts, niet 5'],
   [/Growth-?\s?pakket/u, 'Emma-ladder tier heet "Groei", niet "Growth"'],
