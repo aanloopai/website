@@ -89,6 +89,11 @@ const AUTORESPONSE_TEMPLATES = {
     intro: 'Bedankt voor het invullen van onze AI-Readiness Scan.',
     body: 'Hieronder vindt u uw persoonlijke AI-Readiness rapport met score, tier-classificatie en concrete aanbevelingen. We nemen binnen 14 dagen vrijblijvend contact op om te kijken of een gratis 30-min strategiegesprek zinvol is voor uw situatie.',
   },
+  leads: {
+    subject: 'Bedankt voor uw aanmelding als leadpartner — Aanloop AI',
+    intro: 'Bedankt voor uw aanmelding als leadpartner bij Aanloop AI.',
+    body: 'We hebben uw branche, werkgebied en gewenste volume ontvangen. Binnen één werkdag bellen we u om de prijs per lead en de levering af te spreken. Geen abonnement, geen instapkosten: u betaalt pas per geleverde, geldige lead.',
+  },
   survey_ai_adoption: {
     subject: 'Bedankt voor uw deelname — AI-adoptie onderzoek MKB Nederland 2026',
     intro: 'Bedankt voor uw deelname aan ons AI-adoptie onderzoek 2026.',
@@ -709,6 +714,17 @@ async function handleSubmit(request, env) {
     const message = (fields.message || fields.bericht || '').toString().trim();
     if (!name || !message) {
       return jsonResponse({ success: false, message: 'Vul uw naam en bericht in.' }, 400);
+    }
+  }
+  // Leadpartner-aanmelding (/leads-kopen/aanmelden/): zonder bedrijf, branche
+  // en werkgebied kan sales niets met de aanvraag — dan liever een nette 400
+  // dan een lege lead in D1.
+  if (formType === 'leads') {
+    const bedrijf = (fields.bedrijf || '').toString().trim();
+    const sector = (fields.sector || '').toString().trim();
+    const regio = (fields.regio || '').toString().trim();
+    if (!bedrijf || !sector || !regio) {
+      return jsonResponse({ success: false, message: 'Vul uw bedrijfsnaam, branche en werkgebied in.' }, 400);
     }
   }
 

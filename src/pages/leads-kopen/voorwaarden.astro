@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { RECLAMATIE_TERMIJN } from '../../data/lead-content';
+
+const artikelen = [
+  { titel: '1. Definities', body: [
+    'Lead: een aanvraag van een consument of bedrijf (de aanvrager) die via een intakeformulier van Aanloop AI of een aan Aanloop AI verbonden website is ingediend en die aan de partner is toegewezen.',
+    'Partner: het bedrijf dat leads afneemt op basis van een partnerovereenkomst.',
+    'Geldige lead: een lead die voldoet aan artikel 3.',
+  ] },
+  { titel: '2. Exclusiviteit en toewijzing', body: [
+    'Tenzij schriftelijk anders overeengekomen wordt een lead exclusief aan één partner toegewezen en niet aan een andere partner geleverd.',
+    'Toewijzing gebeurt op basis van branche en de door de partner opgegeven postcodegebieden. Bedienen meerdere partners hetzelfde gebied met exclusiviteit, dan verdeelt Aanloop AI de aanvragen in volgorde van binnenkomst en transparant in het partneroverzicht.',
+    'Gedeelde levering (dezelfde lead aan meerdere partners) vindt alleen plaats als dit uitdrukkelijk is overeengekomen en wordt als zodanig gemarkeerd.',
+  ] },
+  { titel: '3. Geldigheid van een lead', body: [
+    'Een lead is geldig als: (a) de aanvrager bereikbaar is op het opgegeven e-mailadres of telefoonnummer; (b) de aanvraag afkomstig is uit een door de partner opgegeven postcodegebied; (c) de aanvraag past bij de branche van de partner; (d) de aanvraag niet binnen dertig dagen eerder aan dezelfde partner is geleverd; (e) de aanvrager toestemming heeft gegeven voor het doorgeven van zijn gegevens.',
+    'Dat een aanvrager uiteindelijk geen opdracht verstrekt, maakt een lead niet ongeldig.',
+  ] },
+  { titel: `4. Reclamatie (${RECLAMATIE_TERMIJN})`, body: [
+    `De partner kan een lead binnen ${RECLAMATIE_TERMIJN} na levering reclameren als deze niet aan artikel 3 voldoet, met vermelding van de reden. Aanloop AI beoordeelt de reclamatie binnen twee werkdagen.`,
+    'Een terecht gereclameerde lead wordt niet gefactureerd of wordt gecrediteerd. Na de reclamatietermijn geldt de lead als geaccepteerd.',
+    'Onbereikbaarheid moet blijken uit ten minste twee contactpogingen op verschillende dagdelen binnen de reclamatietermijn.',
+  ] },
+  { titel: '5. Prijs en facturatie', body: [
+    'De prijs per lead wordt per partner vastgelegd in de partnerovereenkomst. Er gelden geen abonnements-, instap- of minimumafnamekosten.',
+    'Aanloop AI factureert maandelijks achteraf het aantal geleverde, geldige leads. Betaling binnen veertien dagen na factuurdatum. Alle prijzen zijn exclusief btw.',
+    'Prijswijzigingen worden ten minste één maand vooraf aangekondigd en gelden niet voor reeds geleverde leads.',
+  ] },
+  { titel: '6. Gebruik van leadgegevens en AVG', body: [
+    'Aanloop AI verzamelt de gegevens van de aanvrager op basis van diens toestemming om te worden benaderd door één bedrijf voor een offerte of kennismaking, en legt die toestemming vast.',
+    'Na levering is de partner zelfstandig verwerkingsverantwoordelijke voor de verdere verwerking. De partner gebruikt de gegevens uitsluitend om de aanvrager te benaderen over zijn aanvraag, verkoopt of deelt ze niet met derden en verwijdert ze als de aanvrager daarom vraagt.',
+    'De partner benadert de aanvrager niet voor andere doeleinden (zoals nieuwsbrieven) zonder eigen, aparte toestemming van de aanvrager.',
+  ] },
+  { titel: '7. Looptijd en opzegging', body: [
+    'De partnerovereenkomst geldt voor onbepaalde tijd en is door beide partijen maandelijks opzegbaar, per e-mail. Reeds geleverde leads blijven verschuldigd.',
+    'Aanloop AI kan de levering opschorten bij betalingsachterstand of bij misbruik van leadgegevens.',
+  ] },
+  { titel: '8. Aansprakelijkheid', body: [
+    'Aanloop AI spant zich in om leads zorgvuldig te controleren, maar garandeert geen opdrachten, omzet of conversie. De aansprakelijkheid van Aanloop AI is beperkt tot het bedrag dat de partner in de betreffende maand voor leads heeft betaald.',
+    'Op de partnerovereenkomst zijn daarnaast de algemene voorwaarden van Aanloop AI B.V. (KvK 88606902) van toepassing. Bij strijdigheid gaan deze leadvoorwaarden voor.',
+  ] },
+];
+---
+<BaseLayout
+  title="Leadvoorwaarden — Aanloop AI"
+  description="Leadvoorwaarden van Aanloop AI: exclusiviteit, geldigheid van een lead, reclamatie binnen 48 uur, facturatie per lead, AVG-rolverdeling en opzegging."
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Leads kopen · voorwaarden</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08]">Leadvoorwaarden</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed">Wat u van ons mag verwachten en wat wij van u vragen. Kort, in gewoon Nederlands, en van toepassing op elke partnerovereenkomst voor leads.</p>
+        <p class="mt-3 text-sm text-slate-500">Versie september 2026 · Aanloop AI B.V. · KvK 88606902</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="space-y-8">
+        {artikelen.map((a) => (
+          <article class="rounded-2xl border border-slate-200 bg-white p-6">
+            <h2 class="text-lg font-bold text-navy">{a.titel}</h2>
+            <div class="mt-3 space-y-2">
+              {a.body.map((p) => <p class="text-sm text-slate-600 leading-relaxed">{p}</p>)}
+            </div>
+          </article>
+        ))}
+      </div>
+      <p class="mt-8 text-sm text-slate-500">Zie ook: <a href="/leads-kopen/hoe-het-werkt/" class="text-brand-indigo hover:underline">hoe het werkt</a> · <a href="/leads-kopen/prijzen/" class="text-brand-indigo hover:underline">prijs per lead</a> · <a href="/voorwaarden/" class="text-brand-indigo hover:underline">algemene voorwaarden</a> · <a href="/privacy/" class="text-brand-indigo hover:underline">privacyverklaring</a>.</p>
+      <div class="mt-10 rounded-2xl bg-navy text-white p-8 text-center">
+        <h2 class="text-xl font-bold">Akkoord met de voorwaarden?</h2>
+        <p class="mt-2 text-slate-300 text-sm">Meld u aan; de partnerovereenkomst met uw prijs per lead volgt na het eerste gesprek.</p>
+        <div class="mt-5"><a href="/leads-kopen/aanmelden/" class="btn-primary text-base px-6 py-3">Aanmelden</a></div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

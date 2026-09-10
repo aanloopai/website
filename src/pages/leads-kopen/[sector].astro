@@ -1,0 +1,162 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { LEAD_SECTORS } from '../../data/lead-sectors';
+import { LEAD_ZEKERHEDEN, LEAD_STAPPEN, LEAD_FAQ_ALGEMEEN } from '../../data/lead-content';
+
+export function getStaticPaths() {
+  return LEAD_SECTORS.map((s) => ({ params: { sector: s.slug }, props: { sector: s } }));
+}
+
+const { sector } = Astro.props;
+const url = `https://aanloopai.nl/leads-kopen/${sector.slug}/`;
+const actief = sector.status === 'actief';
+
+// Ring-rotatie (zelfde patroon als ai-vindbaarheid/voor-[sector]): elke pagina
+// linkt de 4 volgende sectoren, zodat geen sectorpagina een wees wordt.
+const eigenIdx = LEAD_SECTORS.findIndex((s) => s.slug === sector.slug);
+const zusterSectoren = Array.from({ length: 4 }, (_, i) => LEAD_SECTORS[(eigenIdx + 1 + i) % LEAD_SECTORS.length]);
+
+const typeLabel = sector.type === 'b2c' ? 'particuliere aanvragen' : sector.type === 'b2b' ? 'zakelijke aanvragen' : 'particuliere en zakelijke aanvragen';
+
+const schema = [
+  {
+    '@context': 'https://schema.org', '@type': 'Service',
+    name: sector.titel,
+    serviceType: 'Leadgeneratie per lead',
+    description: sector.intro.slice(0, 200),
+    provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI' },
+    areaServed: { '@type': 'Country', name: 'Nederland' },
+    audience: { '@type': 'BusinessAudience', audienceType: sector.doelgroep },
+    url,
+    // Geen prijs: per lead, op aanvraag. Beschikbaarheid eerlijk gemapt:
+    // actief = InStock, in opbouw = PreOrder (leadstroom start na aansluiting).
+    offers: { '@type': 'Offer', availability: actief ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder', priceCurrency: 'EUR', url: 'https://aanloopai.nl/leads-kopen/aanmelden/' },
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://aanloopai.nl/' },
+      { '@type': 'ListItem', position: 2, name: 'Leads kopen', item: 'https://aanloopai.nl/leads-kopen/' },
+      { '@type': 'ListItem', position: 3, name: sector.titel, item: url },
+    ],
+  },
+];
+const faqSchema = [...sector.faq, ...LEAD_FAQ_ALGEMEEN].map((f) => ({ question: f.q, answer: f.a }));
+// Meta description ≤155 tekens (check-meta.mjs): lange doelgroepen krijgen de korte variant.
+const descLang = `${sector.titel} voor ${sector.doelgroep}: exclusieve ${typeLabel}, betalen per lead, geen abonnement, reclamatie binnen 48 uur.`;
+const descKort = `${sector.titel} voor ${sector.doelgroep}: exclusief, per lead, geen abonnement, reclamatie binnen 48 uur.`;
+const description = descLang.length <= 155 ? descLang : descKort.length <= 155 ? descKort : `${sector.titel}: exclusieve aanvragen, per lead, geen abonnement, reclamatie binnen 48 uur.`;
+---
+<BaseLayout
+  title={`${sector.titel} — exclusief, per lead`}
+  description={description}
+  schema={schema}
+  faqSchema={faqSchema}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Leads kopen · {sector.groep}</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08]">{sector.emoji} {sector.titel}</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed">{sector.intro}</p>
+        <div class="mt-6 flex flex-wrap items-center gap-2 text-xs font-semibold">
+          {actief
+            ? <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>Actief — aanvragen lopen</span>
+            : <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 text-amber-800 border border-amber-200 px-3 py-1"><span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>In opbouw — start zodra de eerste partner aansluit</span>}
+          <span class="inline-flex items-center rounded-full bg-slate-100 text-slate-700 px-3 py-1">Exclusief per lead</span>
+          <span class="inline-flex items-center rounded-full bg-slate-100 text-slate-700 px-3 py-1 capitalize">{typeLabel}</span>
+        </div>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href={`/leads-kopen/aanmelden/?sector=${sector.slug}`} class="btn-primary text-base px-6 py-3.5">{actief ? 'Leads aanvragen' : 'Aanmelden als eerste partner'}</a>
+          <a href="/leads-kopen/hoe-het-werkt/" class="btn-outline text-base px-6 py-3.5">Hoe het werkt</a>
+        </div>
+        {!actief && <p class="mt-4 text-sm text-slate-500">In opbouw betekent: wij starten de aanvraagstroom voor {sector.naam} zodra de eerste partner in een regio aansluit. U betaalt niets vooraf en pas per geleverde lead.</p>}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl font-bold text-navy mb-4">Wat een lead voor {sector.naam} bevat</h2>
+      <p class="text-slate-600 mb-6">Elke aanvraag wordt gecontroleerd op bereikbaarheid en volledigheid voordat hij aan u wordt toegewezen. U ontvangt:</p>
+      <ul class="space-y-3 mb-12">
+        {sector.velden.map((v) => (
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4">
+            <svg class="w-5 h-5 text-brand-emerald flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+            <span class="text-navy font-medium">{v}</span>
+          </li>
+        ))}
+      </ul>
+
+      <h2 class="text-2xl font-bold text-navy mb-4">Zo ziet een aanvraag eruit</h2>
+      <p class="text-slate-600 mb-6">Illustratieve voorbeelden — geen echte aanvragers:</p>
+      <div class="space-y-3 mb-12">
+        {sector.voorbeelden.map((q) => (
+          <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4">
+            <span class="text-brand-indigo text-lg leading-none mt-0.5">"</span>
+            <p class="text-navy">{q}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-4">Waarom leads kopen als {sector.doelgroep.split(' en ')[0]}</h2>
+      <p class="text-slate-700 leading-relaxed mb-12">{sector.waarom}</p>
+
+      <h2 class="text-2xl font-bold text-navy mb-6">Onze zekerheden</h2>
+      <div class="grid sm:grid-cols-2 gap-5 mb-12">
+        {LEAD_ZEKERHEDEN.map((z) => (
+          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+            <h3 class="font-bold text-navy">{z.titel}</h3>
+            <p class="mt-2 text-sm text-slate-600 leading-relaxed">{z.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="rounded-2xl border border-brand-indigo/20 bg-brand-indigo/5 p-6 mb-12">
+        <h2 class="text-xl font-bold text-navy">Prijs per lead</h2>
+        <p class="mt-2 text-slate-700 leading-relaxed">De prijs per lead spreken we per partner af en hangt af van branche, regio, exclusiviteit en het verwachte volume. Geen abonnement, geen instapkosten: u betaalt per geleverde, geldige lead en wij factureren maandelijks achteraf. <a href="/leads-kopen/prijzen/" class="font-semibold text-brand-indigo hover:underline">Hoe de prijs tot stand komt →</a></p>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-6">Hoe het werkt</h2>
+      <ol class="grid sm:grid-cols-2 gap-4 mb-12">
+        {LEAD_STAPPEN.map((s, i) => (
+          <li class="rounded-2xl border border-slate-200 bg-white p-5">
+            <span class="eyebrow text-xs">Stap {i + 1}</span>
+            <h3 class="font-bold text-navy mt-1">{s.titel}</h3>
+            <p class="mt-1 text-sm text-slate-600 leading-relaxed">{s.body}</p>
+          </li>
+        ))}
+      </ol>
+
+      <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde vragen</h2>
+      <div class="space-y-4 mb-12">
+        {[...sector.faq, ...LEAD_FAQ_ALGEMEEN].map((item) => (
+          <details class="group bg-white rounded-2xl border border-slate-200 p-6">
+            <summary class="flex items-center justify-between cursor-pointer font-semibold text-navy list-none">{item.q}<span class="text-brand-indigo group-open:rotate-45 transition-transform text-2xl leading-none">+</span></summary>
+            <p class="mt-4 text-slate-600 leading-relaxed">{item.a}</p>
+          </details>
+        ))}
+      </div>
+
+      <div class="rounded-2xl bg-navy text-white p-8 text-center">
+        <h2 class="text-xl font-bold">{actief ? `Leads ontvangen als ${sector.doelgroep.split(' en ')[0]}?` : `Als eerste ${sector.doelgroep.split(' en ')[0]} in uw regio aansluiten?`}</h2>
+        <p class="mt-2 text-slate-300 text-sm">Meld u aan met uw regio en het volume dat u aankunt. Wij nemen binnen één werkdag contact op om de prijs per lead en de leveringsafspraken door te nemen.</p>
+        <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
+          <a href={`/leads-kopen/aanmelden/?sector=${sector.slug}`} class="btn-primary text-base px-6 py-3">Aanmelden</a>
+          <a href="/leads-kopen/voorwaarden/" class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/30 text-white font-semibold hover:bg-white/10 transition-colors text-base px-6 py-3">Leadvoorwaarden</a>
+        </div>
+      </div>
+
+      <div class="mt-10">
+        <p class="eyebrow mb-4">Leads kopen per branche</p>
+        <ul class="flex flex-wrap gap-2">
+          {zusterSectoren.map((s) => (
+            <li><a href={`/leads-kopen/${s.slug}/`} class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-navy rounded-lg text-xs font-medium text-navy transition-all">{s.emoji} {s.naam}</a></li>
+          ))}
+          <li><a href="/leads-kopen/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-navy rounded-lg text-xs font-medium text-navy transition-all">Alle branches</a></li>
+          <li><a href="/diensten/ai-lead-qualification/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-navy rounded-lg text-xs font-medium text-navy transition-all">Eigen leads laten kwalificeren</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

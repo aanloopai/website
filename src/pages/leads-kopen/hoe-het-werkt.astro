@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { LEAD_STAPPEN, RECLAMATIE_TERMIJN } from '../../data/lead-content';
+
+const detail = [
+  { titel: 'Aanmelding en intake', body: 'U meldt zich aan met branche, postcodegebieden, verwacht maandvolume en uw voorkeur voor exclusiviteit. In een kort gesprek stellen we samen het profiel vast: welke aanvragen passen bij u, welke niet, en hoe u geleverd wilt krijgen (e-mail, WhatsApp, CSV of CRM-koppeling).' },
+  { titel: 'Vraag opvangen', body: 'Aanvragers komen via onze eigen vergelijk- en informatiesites, via zoekmachines en via AI-assistenten bij een intakeformulier voor hun branche. Dat formulier vraagt alleen wat een verkoper nodig heeft: wens, budgetindicatie, regio, termijn en contactvoorkeur — plus expliciete toestemming om de gegevens aan één bedrijf door te geven.' },
+  { titel: 'Controle', body: 'Voor toewijzing controleren we bereikbaarheid (e-mailadres en telefoonnummer), volledigheid en regio, en filteren we dubbele en onserieuze aanvragen. Een aanvraag die de controle niet haalt, wordt niet geleverd en niet gefactureerd.' },
+  { titel: 'Toewijzing', body: 'Een goedgekeurde aanvraag wordt gematcht op branche en postcodegebied en exclusief toegewezen aan één partner. Bedient meer dan één partner hetzelfde gebied, dan verdelen we eerlijk en transparant; u ziet in uw overzicht welke aanvraag wanneer aan u is toegewezen.' },
+  { titel: 'Levering', body: 'U ontvangt de lead direct na toewijzing met alle velden en het tijdstip van de aanvraag. Snel opvolgen loont: de aanvrager heeft zojuist zijn wens ingevuld en verwacht contact.' },
+  { titel: `Reclamatie binnen ${RECLAMATIE_TERMIJN}`, body: `Is de aanvrager onbereikbaar, kloppen de gegevens niet, valt de aanvraag buiten uw regio of is hij dubbel? Meld dat binnen ${RECLAMATIE_TERMIJN} via uw overzicht of per e-mail. Een terechte reclamatie vervalt van de factuur; u hoeft niet te onderhandelen.` },
+  { titel: 'Facturatie', body: 'Maandelijks achteraf ontvangt u één factuur met het aantal geleverde, geldige leads tegen de afgesproken prijs per lead. Geen abonnement, geen minimumafname, maandelijks opzegbaar.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org', '@type': 'HowTo',
+  name: 'Zo werkt leads kopen bij Aanloop AI',
+  description: 'Van aanmelding tot factuur: hoe wij aanvragen opvangen, controleren, exclusief toewijzen en leveren.',
+  step: detail.map((d, i) => ({ '@type': 'HowToStep', position: i + 1, name: d.titel, text: d.body })),
+};
+---
+<BaseLayout
+  title="Hoe werkt leads kopen bij Aanloop AI"
+  description="Van aanmelding tot factuur: hoe wij aanvragen opvangen, controleren, exclusief toewijzen en per lead leveren. Reclamatie binnen 48 uur."
+  schema={[schema]}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Leads kopen · werkwijze</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08]">Zo werkt leads kopen bij Aanloop AI</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed">Van aanmelding tot factuur in zeven stappen. Geen verrassingen: u weet vooraf wat een lead bevat, wanneer hij geldig is en wat u betaalt.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <ol class="space-y-6">
+        {detail.map((d, i) => (
+          <li class="flex gap-5">
+            <div class="flex-shrink-0 w-10 h-10 rounded-full bg-navy text-white font-bold flex items-center justify-center">{i + 1}</div>
+            <div>
+              <h2 class="text-xl font-bold text-navy">{d.titel}</h2>
+              <p class="mt-2 text-slate-600 leading-relaxed">{d.body}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div class="mt-12 rounded-2xl bg-navy text-white p-8 text-center">
+        <h2 class="text-xl font-bold">Klaar om aan te sluiten?</h2>
+        <p class="mt-2 text-slate-300 text-sm">Kies uw branche of meld u direct aan. Wij bellen binnen één werkdag.</p>
+        <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
+          <a href="/leads-kopen/aanmelden/" class="btn-primary text-base px-6 py-3">Aanmelden</a>
+          <a href="/leads-kopen/" class="inline-flex items-center justify-center gap-2 rounded-lg border border-white/30 text-white font-semibold hover:bg-white/10 transition-colors text-base px-6 py-3">Alle branches</a>
+        </div>
+      </div>
+      <p class="mt-6 text-sm text-slate-500">Zie ook: <a href="/leads-kopen/prijzen/" class="text-brand-indigo hover:underline">prijs per lead</a> · <a href="/leads-kopen/voorwaarden/" class="text-brand-indigo hover:underline">leadvoorwaarden</a>. Samenvatting in vier stappen: {LEAD_STAPPEN.map((s) => s.titel).join(' → ')}.</p>
+    </div>
+  </section>
+</BaseLayout>
