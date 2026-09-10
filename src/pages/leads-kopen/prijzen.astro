@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { LEAD_FAQ_ALGEMEEN } from '../../data/lead-content';
+
+// Geen bedragen op deze pagina (owner-besluit 2026-09-10): de prijs per lead
+// wordt per partner afgesproken. De pagina legt uit wat de prijs bepaalt.
+const factoren = [
+  { titel: 'Branche', body: 'Hoe groter de opdracht die uit een aanvraag kan volgen, hoe meer een lead waard is. Een keukenaanvraag weegt anders dan een aanvraag voor een schilderklus.' },
+  { titel: 'Regio', body: 'In dichtbevolkte gebieden zijn meer aanvragen en meer partners; in dunbevolkte gebieden is een aanvraag schaarser. Beide werken door in de prijs.' },
+  { titel: 'Exclusiviteit', body: 'Standaard leveren wij exclusief: één aanvraag, één partner. Wie uitdrukkelijk gedeelde leads wil, krijgt een lager tarief per lead, maar concurreert om dezelfde aanvraag.' },
+  { titel: 'Volume', body: 'Een partner die structureel meer leads per maand afneemt, betaalt per lead minder dan een partner die er af en toe een paar wil.' },
+  { titel: 'Verrijking', body: 'Extra controle vooraf — zoals telefonische bevestiging van de aanvraag — verhoogt de kwaliteit en daarmee de prijs per lead.' },
+];
+
+const faq = [
+  ...LEAD_FAQ_ALGEMEEN,
+  { q: 'Waarom staat er geen prijs op de site?', a: 'Omdat één prijs voor alle branches en regio\'s niemand goed bedient. Wij noemen de prijs per lead in het eerste gesprek, nadat we uw branche, regio en volume kennen. U zit dan nergens aan vast.' },
+  { q: 'Zijn er kosten naast de prijs per lead?', a: 'Nee. Geen abonnement, geen instapkosten, geen minimumafname. Alleen geleverde, geldige leads staan op de factuur.' },
+  { q: 'Kan de prijs tussentijds veranderen?', a: 'Alleen in overleg en met een maand aankondiging. De afgesproken prijs staat in uw partnerovereenkomst.' },
+];
+---
+<BaseLayout
+  title="Prijs per lead — hoe de prijs tot stand komt"
+  description="Wat bepaalt de prijs van een lead bij Aanloop AI: branche, regio, exclusiviteit, volume en verrijking. Geen abonnement, alleen geldige leads op de factuur."
+  faqSchema={faq.map((f) => ({ question: f.q, answer: f.a }))}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Leads kopen · prijs</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08]">Wat bepaalt de prijs per lead</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed">U betaalt per geleverde, geldige lead — niets vooraf, geen abonnement. De prijs per lead spreken we per partner af. Hieronder ziet u waar die prijs van afhangt, zodat het gesprek kort en helder is.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="/leads-kopen/aanmelden/" class="btn-primary text-base px-6 py-3.5">Prijs per lead aanvragen</a>
+          <a href="/leads-kopen/" class="btn-outline text-base px-6 py-3.5">Alle branches</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl font-bold text-navy mb-6">Vijf factoren</h2>
+      <div class="space-y-4 mb-12">
+        {factoren.map((f, i) => (
+          <div class="flex gap-5 rounded-2xl border border-slate-200 bg-white p-6">
+            <div class="flex-shrink-0 w-9 h-9 rounded-full bg-brand-indigo/10 text-brand-indigo font-bold flex items-center justify-center">{i + 1}</div>
+            <div>
+              <h3 class="font-bold text-navy">{f.titel}</h3>
+              <p class="mt-1 text-sm text-slate-600 leading-relaxed">{f.body}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-4">Wat u nooit betaalt</h2>
+      <ul class="grid sm:grid-cols-2 gap-3 mb-12">
+        {['Abonnement of maandelijkse vaste kosten', 'Instap- of setupkosten', 'Minimumafname per maand', 'Leads die de controle niet halen', 'Terecht gereclameerde leads', 'Opzegkosten — maandelijks opzegbaar'].map((t) => (
+          <li class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4 text-sm text-navy font-medium">
+            <svg class="w-5 h-5 text-brand-emerald flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>{t}
+          </li>
+        ))}
+      </ul>
+
+      <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde vragen over de prijs</h2>
+      <div class="space-y-4 mb-12">
+        {faq.map((item) => (
+          <details class="group bg-white rounded-2xl border border-slate-200 p-6">
+            <summary class="flex items-center justify-between cursor-pointer font-semibold text-navy list-none">{item.q}<span class="text-brand-indigo group-open:rotate-45 transition-transform text-2xl leading-none">+</span></summary>
+            <p class="mt-4 text-slate-600 leading-relaxed">{item.a}</p>
+          </details>
+        ))}
+      </div>
+
+      <div class="rounded-2xl bg-navy text-white p-8 text-center">
+        <h2 class="text-xl font-bold">Prijs per lead voor uw branche en regio?</h2>
+        <p class="mt-2 text-slate-300 text-sm">Meld u aan; wij bellen binnen één werkdag met een concreet voorstel.</p>
+        <div class="mt-5"><a href="/leads-kopen/aanmelden/" class="btn-primary text-base px-6 py-3">Aanmelden</a></div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

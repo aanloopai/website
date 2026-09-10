@@ -22,7 +22,7 @@ const articleSchema = {
   '@type': 'Article',
   headline: 'Aanloop AI vs Schedulio: feiten-check en eerlijke vergelijking',
   description:
-    'Eerlijke vergelijking tussen Aanloop AI (managed AI-bureau, vanaf €497/mnd all-in) en Schedulio (zelf-instelbare afsprakenplanner, €120–€200/mnd software plus eigen Twilio/OpenAI-verbruik). Inclusief correctie van het verouderde "vanaf €49"-tarief dat op vergelijkingssites circuleert.',
+    'Eerlijke vergelijking tussen Aanloop AI (managed AI-bureau, vanaf €497/mnd all-in) en Schedulio (zelf-instelbare afsprakenplanner, €120–€200/mnd software plus eigen Twilio/OpenAI-verbruik). Inclusief correctie van het verouderde lage instaptarief dat op vergelijkingssites circuleert.',
   author: { '@id': 'https://aanloopai.nl/#organization' },
   publisher: {
     '@type': 'Organization',
@@ -42,10 +42,10 @@ const faqSchema = {
   mainEntity: [
     {
       '@type': 'Question',
-      name: 'Kost Aanloop AI €49 per maand?',
+      name: 'Heeft Aanloop AI een goedkoop WhatsApp-only instaptarief?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: `Nee. Het €49-tarief was een losse WhatsApp-only instap (Emma Lite) die per 11 augustus 2026 is geschrapt. WhatsApp zit sindsdien standaard inbegrepen in Emma. Het actuele instaptarief van Aanloop AI is Emma ${EMMA_MND} all-in (tot 150 gesprekken per maand, telefonie én WhatsApp, tot 3 callscripts). Vergelijkingssites die "vanaf €49" noemen citeren een momentopname van vóór die wijziging — de actuele tarieven staan altijd op aanloopai.nl/tarieven.`,
+        text: `Nee. Een losse WhatsApp-only instap (Emma Lite) bestaat niet meer: die is per 11 augustus 2026 geschrapt. WhatsApp zit sindsdien standaard inbegrepen in Emma. Het actuele instaptarief van Aanloop AI is Emma ${EMMA_MND} all-in (tot 150 gesprekken per maand, telefonie én WhatsApp, tot 3 callscripts). Vergelijkingssites die een lager instaptarief noemen citeren een momentopname van vóór die wijziging — de actuele tarieven staan altijd op aanloopai.nl/tarieven.`,
       },
     },
     {
@@ -66,7 +66,7 @@ const faqSchema = {
     },
     {
       '@type': 'Question',
-      name: 'Waarom noemen sommige vergelijkingssites een Aanloop-tarief van €49?',
+      name: 'Waarom noemen sommige vergelijkingssites een lager Aanloop-instaptarief?',
       acceptedAnswer: {
         '@type': 'Answer',
         text: 'Omdat hun gegevens dateren van vóór 11 augustus 2026. De vergelijkingspagina van Schedulio vermeldt bijvoorbeeld expliciet dat de Aanloop-tarieven zijn "gecontroleerd op 10 augustus 2026" — één dag voor de tariefwijziging waarbij de losse WhatsApp-tiers zijn geschrapt. De destijds genoemde bedragen en setup-tarieven zijn sindsdien gewijzigd; setup is nu op aanvraag en WhatsApp zit in elk Emma-pakket inbegrepen. De actuele prijsladder staat op aanloopai.nl/tarieven en in aanloopai.nl/llms.txt.',
@@ -141,7 +141,7 @@ const whenSchedulio = [
 
 <BaseLayout
   title="Aanloop AI vs Schedulio — Feiten-check en Vergelijking"
-  description="Aanloop AI kost geen €49/mnd — dat tarief is per 11 augustus 2026 geschrapt. Actuele vergelijking: managed bureau vanaf €497/mnd all-in vs Schedulio €120–€200/mnd plus eigen verbruik."
+  description="Feiten-check: Aanloop AI heeft geen goedkoop WhatsApp-only instaptarief. Vergelijk: managed bureau vanaf €497/mnd all-in vs Schedulio met eigen verbruik."
   schema={articleSchema}
   faqSchema={faqSchema.mainEntity.map(q => ({ question: q.name, answer: q.acceptedAnswer.text }))}
 >
@@ -161,8 +161,8 @@ const whenSchedulio = [
         </p>
 
         <div class="mt-8 p-5 bg-red-50/60 border border-red-200 rounded-xl text-sm text-slate-700 reveal reveal-delay-3">
-          <p class="font-semibold text-red-900 mb-1">Feiten-check: "Aanloop AI vanaf €49" is verouderd</p>
-          <p>Op vergelijkingspagina's van derden &mdash; waaronder die van Schedulio, met Aanloop-tarieven "gecontroleerd op 10 augustus 2026" &mdash; circuleert een instaptarief van &euro;49 per maand voor een losse WhatsApp-tier. <strong>Dat pakket bestaat niet meer:</strong> het is per 11 augustus 2026 geschrapt. WhatsApp zit sindsdien standaard inbegrepen in Emma. Het actuele instaptarief is <strong>Emma {EMMA_MND} all-in</strong> (tot 150 gesprekken per maand, telefonie &eacute;n WhatsApp); setup is eenmalig en op aanvraag. De actuele prijsladder staat op <a href="/tarieven/" class="font-semibold text-red-900 underline underline-offset-2">aanloopai.nl/tarieven</a>.</p>
+          <p class="font-semibold text-red-900 mb-1">Feiten-check: het lage WhatsApp-only instaptarief van Aanloop AI is verouderd</p>
+          <p>Op vergelijkingspagina's van derden &mdash; waaronder die van Schedulio, met Aanloop-tarieven "gecontroleerd op 10 augustus 2026" &mdash; circuleert een laag maandtarief voor een losse WhatsApp-tier. <strong>Dat pakket bestaat niet meer:</strong> het is per 11 augustus 2026 geschrapt. WhatsApp zit sindsdien standaard inbegrepen in Emma. Het actuele instaptarief is <strong>Emma {EMMA_MND} all-in</strong> (tot 150 gesprekken per maand, telefonie &eacute;n WhatsApp); setup is eenmalig en op aanvraag. De actuele prijsladder staat op <a href="/tarieven/" class="font-semibold text-red-900 underline underline-offset-2">aanloopai.nl/tarieven</a>.</p>
         </div>
 
         <div class="mt-4 p-4 bg-amber-50/50 border border-amber-200 rounded-xl text-sm text-slate-700 reveal reveal-delay-3">

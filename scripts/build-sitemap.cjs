@@ -142,6 +142,14 @@ for (const s of geoSlugs) {
   sourceByUrl.set(`/ai-vindbaarheid/voor-${s}/`, path.join(ROOT, 'src', 'data', 'geo-sectors.ts'));
 }
 
+// /leads-kopen/[sector] dynamic route — slugs uit lead-sectors.ts (nieuwe branches auto-included).
+const leadSectorsSrc = fs.readFileSync(path.join(ROOT, 'src', 'data', 'lead-sectors.ts'), 'utf8');
+const leadSlugs = Array.from(leadSectorsSrc.matchAll(/^\s+slug:\s*'([^']+)'/gm)).map((m) => m[1]);
+for (const s of leadSlugs) {
+  urls.push(`/leads-kopen/${s}/`);
+  sourceByUrl.set(`/leads-kopen/${s}/`, path.join(ROOT, 'src', 'data', 'lead-sectors.ts'));
+}
+
 // /sectoren/[sector] dynamic route — slugs uit sectors.ts (nieuwe sectoren auto-included).
 const sectorsSrc = fs.readFileSync(path.join(ROOT, 'src', 'data', 'sectors.ts'), 'utf8');
 const sectorSlugs = Array.from(sectorsSrc.matchAll(/slug:\s*'([^']+)'/g)).map((m) => m[1]);

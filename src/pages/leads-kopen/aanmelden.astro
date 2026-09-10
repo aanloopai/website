@@ -1,0 +1,209 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { LEAD_SECTORS } from '../../data/lead-sectors';
+import { LEAD_ZEKERHEDEN } from '../../data/lead-content';
+
+// Partner-intake voor leads. POST → /api/submit (form_type=leads): D1
+// inbound_leads (system of record) + Brevo notificatie + autoresponse.
+// ?sector=<slug> vult de branche vooraf in (vanaf de sectorpagina's).
+const volumes = ['Tot 5 leads per maand', '5 tot 20 leads per maand', '20 tot 50 leads per maand', 'Meer dan 50 leads per maand', 'Weet ik nog niet'];
+---
+<BaseLayout
+  title="Aanmelden als leadpartner — Aanloop AI"
+  description="Meld uw bedrijf aan om leads te ontvangen: branche, regio en volume. Wij bellen binnen één werkdag met de prijs per lead. Geen abonnement."
+  noindex={false}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-12 lg:py-16">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Leads kopen · aanmelden</span></div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08]">Aanmelden als leadpartner</h1>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed">Vertel ons uw branche, regio en het volume dat u aankunt. Wij bellen binnen één werkdag om de prijs per lead en de levering af te spreken. U zit nergens aan vast.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page grid lg:grid-cols-[1fr_340px] gap-10">
+      <form id="leads-form" class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 space-y-5" novalidate>
+        <input type="hidden" name="form_type" value="leads" />
+        <input type="text" name="botcheck" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
+
+        <div class="grid sm:grid-cols-2 gap-5">
+          <div>
+            <label for="bedrijf" class="block text-sm font-semibold text-navy mb-1">Bedrijfsnaam <span class="text-brand-rose">*</span></label>
+            <input id="bedrijf" name="bedrijf" type="text" required autocomplete="organization" class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-navy focus:ring-1 focus:ring-navy" />
+            <p id="err-bedrijf" class="hidden mt-1 text-xs text-brand-rose">Vul uw bedrijfsnaam in.</p>
+          </div>
+          <div>
+            <label for="naam" class="block text-sm font-semibold text-navy mb-1">Uw naam <span class="text-brand-rose">*</span></label>
+            <input id="naam" name="naam" type="text" required autocomplete="name" class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-navy focus:ring-1 focus:ring-navy" />
+            <p id="err-naam" class="hidden mt-1 text-xs text-brand-rose">Vul uw naam in.</p>
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-semibold text-navy mb-1">E-mailadres <span class="text-brand-rose">*</span></label>
+            <input id="email" name="email" type="email" required autocomplete="email" class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-navy focus:ring-1 focus:ring-navy" />
+            <p id="err-email" class="hidden mt-1 text-xs text-brand-rose">Vul een geldig e-mailadres in.</p>
+          </div>
+          <div>
+            <label for="telefoon" class="block text-sm font-semibold text-navy mb-1">Telefoonnummer <span class="text-brand-rose">*</span></label>
+            <input id="telefoon" name="telefoon" type="tel" required autocomplete="tel" class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-navy focus:ring-1 focus:ring-navy" />
+            <p id="err-telefoon" class="hidden mt-1 text-xs text-brand-rose">Vul een telefoonnummer in — wij bellen u.</p>
+          </div>
+        </div>
+
+        <div class="grid sm:grid-cols-2 gap-5">
+          <div>
+            <label for="sector" class="block text-sm font-semibold text-navy mb-1">Branche <span class="text-brand-rose">*</span></label>
+            <select id="sector" name="sector" required class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm bg-white focus:border-navy focus:ring-1 focus:ring-navy">
+              <option value="">Kies uw branche</option>
+              {LEAD_SECTORS.map((s) => <option value={s.slug}>{s.emoji} {s.naam} ({s.groep})</option>)}
+              <option value="anders">Andere branche (licht toe bij opmerkingen)</option>
+            </select>
+            <p id="err-sector" class="hidden mt-1 text-xs text-brand-rose">Kies een branche.</p>
+          </div>
+          <div>
+            <label for="regio" class="block text-sm font-semibold text-navy mb-1">Werkgebied <span class="text-brand-rose">*</span></label>
+            <input id="regio" name="regio" type="text" required placeholder="Bijv. Rotterdam en omstreken, of postcodes 30xx–32xx" class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-navy focus:ring-1 focus:ring-navy" />
+            <p id="err-regio" class="hidden mt-1 text-xs text-brand-rose">Geef uw werkgebied op.</p>
+          </div>
+          <div>
+            <label for="volume" class="block text-sm font-semibold text-navy mb-1">Gewenst volume</label>
+            <select id="volume" name="volume" class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm bg-white focus:border-navy focus:ring-1 focus:ring-navy">
+              {volumes.map((v) => <option value={v}>{v}</option>)}
+            </select>
+          </div>
+          <fieldset>
+            <legend class="block text-sm font-semibold text-navy mb-1">Exclusiviteit</legend>
+            <div class="flex gap-4 mt-2 text-sm text-slate-700">
+              <label class="inline-flex items-center gap-2"><input type="radio" name="exclusief" value="ja" checked class="text-navy" /> Exclusief (aanbevolen)</label>
+              <label class="inline-flex items-center gap-2"><input type="radio" name="exclusief" value="nee" class="text-navy" /> Gedeeld mag ook</label>
+            </div>
+          </fieldset>
+        </div>
+
+        <div>
+          <label for="bericht" class="block text-sm font-semibold text-navy mb-1">Opmerkingen</label>
+          <textarea id="bericht" name="bericht" rows="4" placeholder="Bijv. welke aanvragen wél en niet passen, gewenste leveringswijze (e-mail, WhatsApp, CRM), of uw branche als die niet in de lijst staat." class="w-full rounded-lg border border-slate-300 px-3.5 py-2.5 text-sm focus:border-navy focus:ring-1 focus:ring-navy"></textarea>
+        </div>
+
+        <div>
+          <label class="flex items-start gap-3 text-sm text-slate-700">
+            <input id="akkoord" name="akkoord" type="checkbox" value="ja" required class="mt-0.5 rounded border-slate-300 text-navy" />
+            <span>Ik ga akkoord met de <a href="/leads-kopen/voorwaarden/" class="text-brand-indigo hover:underline" target="_blank" rel="noopener">leadvoorwaarden</a> en de <a href="/privacy/" class="text-brand-indigo hover:underline" target="_blank" rel="noopener">privacyverklaring</a>. <span class="text-brand-rose">*</span></span>
+          </label>
+          <p id="err-akkoord" class="hidden mt-1 text-xs text-brand-rose">Ga akkoord met de voorwaarden om verder te gaan.</p>
+        </div>
+
+        <div>
+          <button id="submit-btn" type="submit" class="btn-primary text-base px-6 py-3 w-full sm:w-auto"><span id="submit-label">Aanmelden — wij bellen binnen één werkdag</span></button>
+          <p id="form-success" class="hidden mt-3 text-sm font-semibold text-brand-emerald">Bedankt, uw aanmelding is ontvangen. Wij bellen u binnen één werkdag.</p>
+          <p id="form-error" class="hidden mt-3 text-sm font-semibold text-brand-rose" role="alert"></p>
+          <p class="mt-3 text-xs text-slate-500">Geen abonnement, geen instapkosten. De prijs per lead spreken we telefonisch af; daarna ontvangt u de partnerovereenkomst per e-mail.</p>
+        </div>
+      </form>
+
+      <aside class="space-y-4">
+        {LEAD_ZEKERHEDEN.map((z) => (
+          <div class="rounded-2xl border border-slate-200 bg-white p-5">
+            <h2 class="font-bold text-navy text-sm">{z.titel}</h2>
+            <p class="mt-1 text-xs text-slate-600 leading-relaxed">{z.body}</p>
+          </div>
+        ))}
+        <p class="text-xs text-slate-500">Liever eerst lezen? <a href="/leads-kopen/hoe-het-werkt/" class="text-brand-indigo hover:underline">Hoe het werkt</a> · <a href="/leads-kopen/prijzen/" class="text-brand-indigo hover:underline">prijs per lead</a>.</p>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('leads-form') as HTMLFormElement | null;
+  const emailOk = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
+  const FIELDS: { input: string; error: string; valid: (v: string) => boolean }[] = [
+    { input: 'bedrijf', error: 'err-bedrijf', valid: (v) => v.trim().length > 1 },
+    { input: 'naam', error: 'err-naam', valid: (v) => v.trim().length > 1 },
+    { input: 'email', error: 'err-email', valid: emailOk },
+    { input: 'telefoon', error: 'err-telefoon', valid: (v) => v.replace(/\D/g, '').length >= 8 },
+    { input: 'sector', error: 'err-sector', valid: (v) => v.trim().length > 0 },
+    { input: 'regio', error: 'err-regio', valid: (v) => v.trim().length > 1 },
+  ];
+
+  // ?sector=<slug> vanaf de sectorpagina's → select vooraf gevuld.
+  try {
+    const pre = new URLSearchParams(location.search).get('sector');
+    const sel = document.getElementById('sector') as HTMLSelectElement | null;
+    if (pre && sel && Array.from(sel.options).some((o) => o.value === pre)) sel.value = pre;
+  } catch { /* geen prefill */ }
+
+  function validate(): boolean {
+    let ok = true;
+    for (const f of FIELDS) {
+      const el = document.getElementById(f.input) as HTMLInputElement | HTMLSelectElement | null;
+      const err = document.getElementById(f.error);
+      const valid = !!el && f.valid(el.value);
+      err?.classList.toggle('hidden', valid);
+      el?.setAttribute('aria-invalid', valid ? 'false' : 'true');
+      if (!valid) ok = false;
+    }
+    const akkoord = document.getElementById('akkoord') as HTMLInputElement | null;
+    const akkoordOk = !!akkoord?.checked;
+    document.getElementById('err-akkoord')?.classList.toggle('hidden', akkoordOk);
+    if (!akkoordOk) ok = false;
+    return ok;
+  }
+
+  for (const f of FIELDS) {
+    document.getElementById(f.input)?.addEventListener('input', (ev) => {
+      const el = ev.target as HTMLInputElement;
+      if (!f.valid(el.value)) return;
+      document.getElementById(f.error)?.classList.add('hidden');
+      el.setAttribute('aria-invalid', 'false');
+    });
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+    const label = document.getElementById('submit-label') as HTMLElement;
+    const successMsg = document.getElementById('form-success') as HTMLElement;
+    const errorMsg = document.getElementById('form-error') as HTMLElement;
+    if (!validate()) { errorMsg?.classList.add('hidden'); return; }
+
+    const data = new FormData(form);
+    const sector = (data.get('sector') as string) || 'onbekend';
+    data.append('subject', `Nieuwe leadpartner-aanmelding via aanloopai.nl — ${sector} — ${data.get('bedrijf') || ''}`);
+
+    btn.disabled = true;
+    label.textContent = 'Versturen…';
+    errorMsg?.classList.add('hidden');
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 30000);
+    try {
+      const res = await fetch('/api/submit', { method: 'POST', body: data, signal: ctrl.signal });
+      clearTimeout(tid);
+      const json = await res.json().catch(() => ({ success: false, message: 'Ongeldig antwoord' }));
+      if (res.ok && json.success) {
+        (window as any)._track?.('generate_lead', { form_name: 'leads_partner_form', sector, currency: 'EUR', value: 300 });
+        successMsg?.classList.remove('hidden');
+        form.reset();
+        setTimeout(() => { window.location.href = '/bedankt/?type=leads'; }, 1500);
+      } else {
+        const err = new Error(json.message || `HTTP ${res.status}`);
+        (err as any).actionable = (res.status === 400 || res.status === 429) && !!json.message;
+        throw err;
+      }
+    } catch (err: any) {
+      clearTimeout(tid);
+      const isTimeout = err?.name === 'AbortError';
+      if (errorMsg) {
+        errorMsg.textContent = isTimeout
+          ? 'Het versturen duurt langer dan verwacht. Probeer opnieuw of mail naar hello@aanloopai.nl.'
+          : err?.actionable ? err.message : 'Er ging iets mis bij het versturen. Probeer opnieuw of mail naar hello@aanloopai.nl.';
+        errorMsg.classList.remove('hidden');
+      }
+    } finally {
+      btn.disabled = false;
+      label.textContent = 'Aanmelden — wij bellen binnen één werkdag';
+    }
+  });
+</script>

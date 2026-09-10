@@ -26,7 +26,7 @@ const setupPosten = [
   { item: 'Integratie tussen website, telefonie en WhatsApp', toelichting: 'Bij losse leveranciers doet niemand dit voor u', los: 'Op aanvraag', bundel: 'Inbegrepen' },
 ];
 const maandPosten = [
-  { item: 'Website-onderhoud', toelichting: 'Hosting, updates, security, monitoring', los: `${euro(WEBSITE_ONDERHOUD_MND)}/mnd`, bundel: 'Inbegrepen' },
+  { item: 'Website-onderhoud', toelichting: 'Hosting, updates, security, monitoring', los: 'Maandtarief op aanvraag', bundel: 'Inbegrepen' },
   { item: 'Emma AI-receptie', toelichting: 'Neemt 24/7 uw telefoon op, plant de afspraak, stuurt de lead naar uw CRM. WhatsApp-agent inbegrepen', los: `${euro(EMMA.monthly)}/mnd`, bundel: `${euro(WEBSITE_BUNDEL.maand)}/mnd all-in` },
 ];
 
@@ -63,7 +63,7 @@ const proces = [
 
 const faqItems = [
   { question: 'Wat zit er precies in de bundel?', answer: 'Website (Groei pakket: tot 30 paginas, CMS, multilingual NL/EN/DE) + Emma AI-receptionist (24/7 NL-telefoon, agenda, CRM-koppeling, WhatsApp inbegrepen) + alle koppelingen tussen de 2 systemen + ROI-calc/AI-scan widgets op uw site + GA4/GrowthBook setup + maandelijks onderhoud op alles. Eén factuur, één contract, één aanspreekpunt.' },
-  { question: 'Wat scheelt de bundel tegenover losse afname?', answer: `Eenmalig: de setup-fee van Emma en het integratiewerk vervallen in de bundel — de website-bouw kost hetzelfde als los. De exacte eenmalige bedragen bespreken we in het gesprek. Maandelijks: los is dat ${euro(WEBSITE_ONDERHOUD_MND)} website-onderhoud + ${euro(EMMA.monthly)} Emma = ${euro(losseMaandlast)} bij twee contracten; in de bundel ${euro(bundelPrijs.mnd)} all-in, dus ${euro(maandVoordeel)} per maand lager. We tellen die posten bewust niet op tot één jaarbedrag: wie los inkoopt, koopt niet alles op dezelfde dag, en zo'n optelsom laat de korting groter lijken dan hij is.` },
+  { question: 'Wat scheelt de bundel tegenover losse afname?', answer: `Eenmalig: de setup-fee van Emma en het integratiewerk vervallen in de bundel — de website-bouw kost hetzelfde als los. De exacte eenmalige bedragen bespreken we in het gesprek. Maandelijks: los betaalt u website-onderhoud (tarief op aanvraag) plus ${euro(EMMA.monthly)} Emma bij twee contracten; in de bundel ${euro(bundelPrijs.mnd)} all-in, dus ${euro(maandVoordeel)} per maand lager. We tellen die posten bewust niet op tot één jaarbedrag: wie los inkoopt, koopt niet alles op dezelfde dag, en zo'n optelsom laat de korting groter lijken dan hij is.` },
   { question: 'Zit WhatsApp bij Emma inbegrepen, of betaal ik daar apart voor?', answer: 'Inbegrepen — er bestaat geen los WhatsApp-abonnement meer. Emma AI-receptie (vanaf €497/mnd) neemt écht uw telefoon op (gesprek in het Nederlands, afspraak in de agenda, lead in het CRM) én beantwoordt WhatsApp-berichten — FAQ, offerte-aanvragen, lead-capture — in hetzelfde abonnement. U betaalt dus nooit twee keer voor hetzelfde kanaal. In deze bundel zit de volledige Emma AI-receptie, dus telefoon én WhatsApp.' },
   { question: 'Kan ik bestaande website behouden en alleen Emma toevoegen?', answer: 'Ja, dat kan via een los Emma-abonnement (zie /diensten/emma/ — telefoon en WhatsApp zitten daar in één pakket). De bundel is voordeliger als u sowieso een nieuwe of vernieuwde site wilt. Als uw huidige site jonger dan 2 jaar is en al schema.org markup heeft, adviseren we losse AI-modules ipv bundel.' },
   { question: 'Wat als ik later wil opzeggen?', answer: 'De setup-fee is eenmalig. Bij opzegging behoudt u: uw website-code (in eigen GitHub), uw domeinnaam, alle CRM-data van Emma. Emma stoppen we met doorschakelen, maar de transcripts/lead-data exporteren we naar u toe.' },
@@ -71,7 +71,7 @@ const faqItems = [
   { question: 'Krijg ik training om zelf updates te doen?', answer: 'Ja. Bij oplevering 2u Loom-video training over: CMS-bewerking (paginas/blogs aanpassen), Emma script-aanpassingen, Emma FAQ-uitbreiden, dashboard-rapporten lezen. Daarna 1u/maand telefonische support voor vragen over zelfbeheer. Wij doen de technische updates, u doet de content-updates.' },
   { question: 'Is dit AVG- en NEN 7510-compliant?', answer: 'Ja. Standaard AVG/UAVG-conform: cookie-banner, DPA-template, EU-only hosting (Frankfurt/Amsterdam), encryptie at-rest en in-transit. Voor zorg/juridische klanten leveren we NEN 7510-compatibele opzet (DPIA-template, pseudonimiseringsbeleid, audit-logs). Aanloop AI is een Nederlandse eenmanszaak (KvK 88606902).' },
   { question: 'Kan ik later upgraden naar Pro?', answer: 'Ja. Bundel Groei → Bundel Pro upgrade (vanaf €797/mnd, setup op aanvraag) voegt toe: Pro website-features (headless CMS, custom componenten, ERP-integratie), Emma AI-receptie zonder gespreks-cap (onbeperkt bellen), WhatsApp bij Emma uitgebreid naar meer kanalen (Instagram DM + Facebook Messenger + Telegram), dedicated DevOps SLA. Geen nieuwe setup-fee voor reeds gebouwde delen.' },
-  { question: 'Wat als ik alleen een webshop nodig heb (geen content-website)?', answer: 'Dan is de webshop-bouw service (vanaf €197/mnd, setup op aanvraag) plus Emma AI-receptie (vanaf €497/mnd, WhatsApp inbegrepen) een betere fit. De AI-Website Bundel is bedoeld voor content-websites met telefoon-intake en chat-support. Voor pure webshop-scenarios met cart-recovery is een aparte bundel logischer — vraag tijdens discovery.' },
+  { question: 'Wat als ik alleen een webshop nodig heb (geen content-website)?', answer: 'Dan is de webshop-bouw service (maandtarief en setup op aanvraag) plus Emma AI-receptie (vanaf €497/mnd, WhatsApp inbegrepen) een betere fit. De AI-Website Bundel is bedoeld voor content-websites met telefoon-intake en chat-support. Voor pure webshop-scenarios met cart-recovery is een aparte bundel logischer — vraag tijdens discovery.' },
 ];
 
 const serviceSchema = {
@@ -225,7 +225,7 @@ const speakableSchema = {
           </div>
           <div class="p-4 rounded-lg bg-brand-emerald/10">
             <p class="text-sm font-bold text-brand-emerald">{euro(maandVoordeel)} per maand lager</p>
-            <p class="mt-1 text-xs text-slate-600 leading-relaxed">{euro(bundelPrijs.mnd)} all-in in plaats van {euro(WEBSITE_ONDERHOUD_MND)} onderhoud + {euro(EMMA.monthly)} Emma bij twee losse contracten.</p>
+            <p class="mt-1 text-xs text-slate-600 leading-relaxed">{euro(bundelPrijs.mnd)} all-in in plaats van website-onderhoud + {euro(EMMA.monthly)} Emma bij twee losse contracten — {euro(maandVoordeel)} per maand minder.</p>
           </div>
         </div>
       </div>
