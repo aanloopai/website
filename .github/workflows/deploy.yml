@@ -43,6 +43,10 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # Zonder pin installeert de action wrangler 3.90 (repo heeft geen
+          # wrangler-devDependency) en faalt `secret bulk` op deze Worker
+          # (run 34463019974: "2 secrets failed to upload"). v4 werkt.
+          wranglerVersion: '4.130.0'
           command: secret list
           secrets: |
             TELEGRAM_BOT_TOKEN
