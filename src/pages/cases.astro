@@ -9,21 +9,21 @@ import pageImage from '../assets/images/pages/cases.jpg';
 const projecten = [
   {
     naam: 'Keuken in Beeld',
-    subtitel: 'AI-leadplatform voor een keukenspecialist',
-    labels: ['AI-platform', 'Leadgeneratie', 'E-commerce'],
+    subtitel: 'AI-offertecheck en proactieve chat voor een keukenplatform',
+    labels: ['AI-platform', 'Offerte-analyse', 'Klantcontact'],
     url: 'https://keukeninbeeld.nl',
     linkLabel: 'keukeninbeeld.nl',
     accent: 'bg-brand-indigo',
-    uitdaging: 'Een keukenspecialist wilde meer aanvragen, maar adverteren in de keukenbranche is duur en de concurrentie (grote ketens) domineert Google. Er was een manier nodig om bezoekers iets te bieden dat ketens niet hebben.',
-    bouwden: 'Een compleet AI-platform: bezoekers uploaden een foto van hun huidige keuken of kiezen een stijl, en de AI genereert direct een visualisatie van hun droomkeuken — met vrijblijvende prijsindicatie. Elke aanvraag komt binnen als gekwalificeerde lead, automatisch afgeleverd via een chatbot-koppeling bij de specialist.',
+    uitdaging: 'Bezoekers van een keukenplatform ontvangen vaak een offerte van een keukenzaak en willen die kunnen beoordelen, zonder dat het platform zelf een prijsoordeel opdringt. Daarnaast moesten bezoekers die nog oriënteren proactief aangesproken kunnen worden, zonder een gesprek te forceren.',
+    bouwdenHtml: 'Een <a href="https://keukeninbeeld.nl/offertecheck" target="_blank" rel="noopener" class="text-brand-indigo hover:underline underline-offset-2">offertecheck</a> die een geüploade keukenofferte (pdf of foto) met het AI-model Gemini 2.5 Flash uitleest volgens een strikt JSON-schema. De instructie aan het model is expliciet: uitsluitend letterlijke bedragen overnemen, niets bijschatten en zelf geen prijsoordeel geven. Het oordeel &mdash; onder, binnen of boven de richtprijsband &mdash; wordt vervolgens clientside berekend tegen de <a href="https://keukeninbeeld.nl/keukenprijs-index" target="_blank" rel="noopener" class="text-brand-indigo hover:underline underline-offset-2">keukenprijs-index</a>, een open dataset (CC BY 4.0) die ook als versiebeheerde kopie op GitHub staat. Daarnaast &ldquo;Kim&rdquo;: een proactieve chatopener die na verstreken tijd of voldoende scroll op de pagina verschijnt, maximaal één keer per 24 uur, en een aparte <a href="https://keukeninbeeld.nl/second-opinion-keukenofferte" target="_blank" rel="noopener" class="text-brand-indigo hover:underline underline-offset-2">second-opinion-dienst</a> voor wie een offerte extra wil laten beoordelen.',
     punten: [
-      'AI-beeldgeneratie voor keukenvisualisaties',
-      'Automatische leadafhandeling en -kwalificatie (budget, termijn, koop/huur)',
-      '95 SEO-geoptimaliseerde pagina\'s incl. regiopagina\'s en keukengids',
-      'AI-vindbaarheid (GEO): het platform is ook leesbaar voor ChatGPT, Gemini en Claude',
-      'B2B-partnerpagina voor keukenzaken die leads willen afnemen',
+      '221 gegenereerde pagina\'s, grotendeels via een data-driven generator die per JSON-databron content en hub-pagina\'s opbouwt',
+      'Offertecheck op basis van Gemini 2.5 Flash met een strikt JSON-schema — het model geeft zelf geen prijsoordeel',
+      'Keukenprijs-index als open dataset (CC BY 4.0), machineleesbaar en met een versiebeheerde kopie op GitHub',
+      '"Kim": een proactieve chatopener die zich expliciet als AI-assistent voorstelt',
+      'Multi-step wizard-intake op de homepage',
     ],
-    status: 'Live. Volledig geautomatiseerd: van foto-upload tot lead-notificatie zonder menselijke tussenkomst.',
+    status: 'Live. De offertecheck, de keukenprijs-index, de wizard-intake en de chatopener staan vandaag op keukeninbeeld.nl.',
   },
   {
     naam: 'FleetTrack Holland',
@@ -252,6 +252,7 @@ const pageSchema = {
               <div>
                 <p class="text-xs font-semibold tracking-[0.12em] uppercase text-slate-400 mb-2">Wat we bouwden</p>
                 {p.bouwden && <p class="text-sm text-slate-700 leading-relaxed">{p.bouwden}</p>}
+                {p.bouwdenHtml && <p class="text-sm text-slate-700 leading-relaxed" set:html={p.bouwdenHtml} />}
                 {p.punten.length > 0 && (
                   <div class="mt-3 space-y-2">
                     {p.punten.map(r => (
