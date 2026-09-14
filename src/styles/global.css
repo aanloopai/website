@@ -233,6 +233,50 @@
       #ffffff;
   }
 
+  /* ─── Cinematisch paginabeeld achter de hero (BaseLayout zet --page-visual) ───
+     Desktop: foto rechts, links vloeiend naar wit zodat de navy tekst leesbaar blijft.
+     Mobiel: foto als strook onder de tekst. */
+  main.has-visual > section.hero-gradient:first-of-type {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-bottom: 12rem;
+  }
+  main.has-visual > section.hero-gradient:first-of-type > * {
+    position: relative;
+    z-index: 1;
+  }
+  main.has-visual > section.hero-gradient:first-of-type::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background:
+      linear-gradient(180deg, #ffffff 0, #ffffff calc(100% - 13rem), rgba(255, 255, 255, 0) calc(100% - 9rem)),
+      var(--page-visual) center bottom / 100% auto no-repeat;
+  }
+  @media (min-width: 768px) {
+    main.has-visual > section.hero-gradient:first-of-type {
+      padding-bottom: 0;
+      min-height: 32rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    main.has-visual > section.hero-gradient:first-of-type::before {
+      background:
+        linear-gradient(90deg, #ffffff 0%, #ffffff 54%, rgba(255, 255, 255, 0.94) 66%, rgba(255, 255, 255, 0.72) 80%, rgba(255, 255, 255, 0.3) 92%, rgba(255, 255, 255, 0) 100%),
+        var(--page-visual) right center / cover no-repeat;
+    }
+  }
+  @media (min-width: 1536px) {
+    main.has-visual > section.hero-gradient:first-of-type::before {
+      background:
+        linear-gradient(90deg, #ffffff 0%, #ffffff 46%, rgba(255, 255, 255, 0.9) 58%, rgba(255, 255, 255, 0.35) 72%, rgba(255, 255, 255, 0) 88%),
+        var(--page-visual) right center / cover no-repeat;
+    }
+  }
+
   /* ─── Dot grid ─── */
   .dot-grid {
     background-image: radial-gradient(circle at 1px 1px, #0F172A 1px, transparent 0);
