@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { START, GROEI, COMPLEET } from '../data/pricing';
 
 const url = Astro.url;
 const plan = url.searchParams.get('plan') || 'groei';
@@ -9,19 +10,26 @@ const product = url.searchParams.get('product') || 'emma-telefoon';
 type PlanEntry = { name: string; price: number; annualPrice: number; product: string; features: string[]; oneShot?: boolean };
 
 const planDetails: Record<string, PlanEntry> = {
-  emma: {
-    name: 'Emma',
-    price: 497,
-    annualPrice: 416,
-    product: 'Emma — AI sekreter',
-    features: ['Tot 150 gesprekken/maand', 'Tot 3 callscripts op maat', 'Agenda + e-mail lead-notificatie', 'Dashboard + transcripts'],
+  start: {
+    name: 'Start',
+    price: START.monthly,
+    annualPrice: START.annual,
+    product: 'Emma Start — AI-telefoniste',
+    features: ['24/7 AI-telefoniste', '300 belminuten/maand', 'Afspraken in agenda + lead-melding e-mail/Telegram', 'Self-serve onboarding — geen setup', '14 dagen niet goed, geld terug'],
   },
   groei: {
     name: 'Groei',
-    price: 997,
-    annualPrice: 836,
-    product: 'Emma — AI sekreter',
-    features: ['Onbeperkte gesprekken', 'Onbeperkte callscripts', 'Emma WhatsApp + CRM-integratie', 'Prioriteit support < 4 uur'],
+    price: GROEI.monthly,
+    annualPrice: GROEI.annual,
+    product: 'Emma Groei — AI-telefoniste + WhatsApp',
+    features: ['1.000 belminuten/maand', 'Telefoon + WhatsApp inbegrepen', 'CRM-koppeling (HubSpot/Pipedrive)', 'Tot 3 callscripts op maat', '14 dagen niet goed, geld terug'],
+  },
+  compleet: {
+    name: 'Compleet',
+    price: COMPLEET.monthly,
+    annualPrice: COMPLEET.annual,
+    product: 'Emma Compleet — onbeperkt + workflows',
+    features: ['Onbeperkt volume + onbeperkte WhatsApp', 'Multi-number + n8n-workflows op maat', 'Onbeperkte callscripts + gespreksopnames', 'Priority support (< 1 uur)', '14 dagen niet goed, geld terug'],
   },
   partner: {
     name: 'Enterprise',
@@ -436,7 +444,7 @@ const steps = [
         const _planParam = _qs.get('plan') || 'groei';
         const _dienstParam = _qs.get('dienst') || '';
         const _planValues: Record<string, number> = {
-          emma: 497, groei: 997, partner: 0,
+          start: 149, groei: 299, compleet: 497, partner: 0,
         };
         const _dienstValues: Record<string, number> = {
           'seo-audit': 495, 'seo-setup': 1950, 'seo-maand': 795,
@@ -444,7 +452,7 @@ const steps = [
           'seo-geo-bundel': 1195,
         };
         const _itemKey = _dienstParam || _planParam;
-        const _value = _dienstParam ? (_dienstValues[_dienstParam] ?? 0) : (_planValues[_planParam] ?? 497);
+        const _value = _dienstParam ? (_dienstValues[_dienstParam] ?? 0) : (_planValues[_planParam] ?? 299);
         (window as any)._track?.('generate_lead', { form_name: 'aanvraag', item: _itemKey, currency: 'EUR', value: _value });
         (window as any)._track?.('purchase', {
           transaction_id: 'aanvraag_' + Date.now(),

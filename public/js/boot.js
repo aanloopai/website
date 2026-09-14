@@ -118,6 +118,34 @@
 
     if (launcher) launcher.addEventListener('click', loadWidget);
     window.__aanloopConsent.onGrant(loadWidget);
+
+    /* Site-brede "Bel Emma nu"-knoppen (.js-emma-live-trigger): laad de widget
+     * als dat nog niet gebeurd is en start dan het gesprek. Zonder dit deden de
+     * knoppen niets voor bezoekers die alleen noodzakelijke cookies kozen. */
+    function startCall() {
+      var w = document.querySelector('elevenlabs-convai');
+      if (!w) return false;
+      try { if (typeof w.startConversation === 'function') { w.startConversation(); return true; } } catch (e) {}
+      try {
+        var sr = w.shadowRoot;
+        var b = sr && (sr.querySelector('button[aria-label="Start a call"]')
+          || sr.querySelector('button[aria-label*="call" i], button[aria-label*="gesprek" i]')
+          || sr.querySelector('button'));
+        if (b) { b.click(); return true; }
+      } catch (e) {}
+      return false;
+    }
+    document.addEventListener('click', function (ev) {
+      var t = ev.target && ev.target.closest ? ev.target.closest('.js-emma-live-trigger') : null;
+      if (!t) return;
+      if (window._track) window._track('emma_live_demo_click', { page: location.pathname });
+      loadWidget();
+      var tries = 0;
+      (function attempt() {
+        if (startCall() || ++tries > 12) return;
+        setTimeout(attempt, 500);
+      })();
+    });
   })();
 
   /* ---- Exit-intent modal -------------------------------------------------

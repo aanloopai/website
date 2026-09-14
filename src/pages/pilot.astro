@@ -1,0 +1,254 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { GROEI_MND, GARANTIE } from '../data/pricing';
+
+// Pilotprogramma: 5 afspraak-gedreven dienstverleners draaien 60 dagen Emma Groei
+// tegen kostprijs, in ruil voor een met naam genoemde klantcase, een review en een
+// logo. Doel: echte cijfers i.p.v. voorbeeldscenario's. Het formulier gaat via
+// /api/submit (form_type=pilot) naar D1 + Telegram + autoresponder.
+
+const voorWie = [
+  { titel: 'Praktijken', voorbeeld: 'fysio, tandarts, huisarts, dierenarts, pedicure' },
+  { titel: 'Salons', voorbeeld: 'kapper, schoonheidssalon, barbier' },
+  { titel: 'Garages', voorbeeld: 'onderhoud, APK, banden, schadeherstel' },
+  { titel: 'Installateurs', voorbeeld: 'cv, elektra, loodgieter, zonnepanelen' },
+];
+
+const uKrijgt = [
+  `Emma Groei (telefoon + WhatsApp, agenda-koppeling, 1.000 belminuten) — 60 dagen tegen kostprijs in plaats van ${GROEI_MND}`,
+  'Begeleide onboarding: intake van 30 minuten, live binnen 7 werkdagen, geen setup-kosten in de pilot',
+  'Wekelijks een kort cijferoverzicht: beantwoorde gesprekken, ingeplande afspraken, gemiste oproepen, no-shows',
+  'Na 60 dagen: samen de cijfers doornemen; blijven of stoppen — zonder verplichting',
+  GARANTIE + ' geldt ook in de pilot',
+];
+
+const wijVragen = [
+  'Een klantcase met uw bedrijfsnaam en de echte cijfers (u leest en keurt de tekst goed vóór publicatie)',
+  'Een review op Google of Trustpilot — eerlijk, ook als het tegenvalt',
+  'Uw logo op onze website',
+  'Twee gesprekken van 30 minuten: intake en evaluatie',
+];
+
+const meten = [
+  { kpi: 'Beantwoorde gesprekken', hoe: 'Elk gesprek dat Emma opneemt, ook buiten openingstijden' },
+  { kpi: 'Ingeplande afspraken', hoe: 'Afspraken die Emma direct in uw agenda zet' },
+  { kpi: 'Gemiste oproepen', hoe: 'Vergelijking met de 30 dagen vóór de pilot (uw telefoonlogboek)' },
+  { kpi: 'No-shows', hoe: 'Alleen als Emma ook herinneringen via WhatsApp stuurt' },
+];
+
+const faq = [
+  { q: 'Waarom doen jullie dit?', a: 'Omdat wij liever échte cijfers van échte bedrijven laten zien dan voorbeeldscenario’s. U krijgt Emma tegen kostprijs, wij krijgen een klantcase die klopt.' },
+  { q: 'Wat is de kostprijs?', a: 'De directe kosten van telefonie en spraak voor uw volume — we noemen het exacte bedrag in de intake, vóór u iets tekent. Het ligt ruim onder het normale maandtarief.' },
+  { q: 'Wat als de cijfers tegenvallen?', a: 'Dan publiceren we niets zonder uw akkoord en stopt de pilot na 60 dagen. Een eerlijke review mag u altijd schrijven.' },
+  { q: 'Zegt Emma dat ze een AI is?', a: 'Ja, altijd, in de eerste zin. Dat is wettelijk verplicht (AI Act art. 50) en het is hoe wij het willen.' },
+  { q: 'Hoeveel plekken zijn er?', a: 'Vijf in deze ronde. We kiezen op spreiding over branches en regio’s, niet op wie het eerst komt.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': 'https://aanloopai.nl/pilot/#webpage',
+  url: 'https://aanloopai.nl/pilot/',
+  name: 'Emma-pilotprogramma voor afspraak-gedreven dienstverleners',
+  description: '60 dagen Emma Groei tegen kostprijs voor praktijken, salons, garages en installateurs — in ruil voor een klantcase met echte cijfers.',
+  inLanguage: 'nl-NL',
+  isPartOf: { '@type': 'WebSite', '@id': 'https://aanloopai.nl/#website' },
+};
+---
+
+<BaseLayout
+  title="Emma-pilot: 60 dagen tegen kostprijs, in ruil voor uw echte cijfers"
+  description="Vijf plekken voor praktijken, salons, garages en installateurs: 60 dagen Emma Groei (telefoon + WhatsApp + agenda) tegen kostprijs. U krijgt de cijfers, wij een klantcase met uw naam."
+  schema={[schema]}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Pilotprogramma · 5 plekken</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">
+          60 dagen Emma tegen kostprijs. In ruil voor uw echte cijfers.
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">
+          Voor praktijken, salons, garages en installateurs die geen telefoontje meer willen missen. Emma neemt 24/7 op en plant afspraken in uw agenda; u ziet wekelijks wat het oplevert. Na 60 dagen beslist u — en wij publiceren alleen wat u goedkeurt.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3 reveal reveal-delay-3">
+          <a href="#aanmelden" class="btn-primary text-base px-6 py-3.5">Aanmelden voor de pilot</a>
+          <button type="button" class="js-emma-live-trigger btn-outline text-base px-6 py-3.5" data-vis="demo">Eerst Emma live horen</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="grid md:grid-cols-4 gap-4 max-w-5xl">
+        {voorWie.map((v, i) => (
+          <div class={`card reveal reveal-delay-${i + 1}`}>
+            <h2 class="font-bold text-navy">{v.titel}</h2>
+            <p class="mt-1 text-sm text-slate-500">{v.voorbeeld}</p>
+          </div>
+        ))}
+      </div>
+      <div class="grid md:grid-cols-2 gap-6 max-w-5xl mt-10">
+        <div class="card reveal">
+          <p class="eyebrow mb-3">U krijgt</p>
+          <ul class="space-y-2.5">
+            {uKrijgt.map((p) => (
+              <li class="flex gap-3 text-sm text-slate-600 leading-relaxed"><span class="text-brand-emerald font-bold">✓</span><span>{p}</span></li>
+            ))}
+          </ul>
+        </div>
+        <div class="card reveal reveal-delay-1">
+          <p class="eyebrow mb-3">Wij vragen</p>
+          <ul class="space-y-2.5">
+            {wijVragen.map((p) => (
+              <li class="flex gap-3 text-sm text-slate-600 leading-relaxed"><span class="text-brand-indigo font-bold">→</span><span>{p}</span></li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-8">
+        <p class="eyebrow mb-3 reveal">Wat we meten</p>
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy reveal reveal-delay-1">Vier cijfers, elke week in uw mailbox.</h2>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4 max-w-4xl">
+        {meten.map((m, i) => (
+          <div class={`bg-white rounded-xl border border-slate-200 p-5 reveal reveal-delay-${(i % 2) + 1}`}>
+            <p class="font-bold text-navy">{m.kpi}</p>
+            <p class="mt-1 text-sm text-slate-600">{m.hoe}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section id="aanmelden" class="section scroll-mt-24">
+    <div class="container-page max-w-2xl mx-auto">
+      <div class="mb-8">
+        <p class="eyebrow mb-3">Aanmelden</p>
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy">Meld uw praktijk of bedrijf aan.</h2>
+        <p class="mt-3 text-sm text-slate-600">We reageren binnen 2 werkdagen. Geen verplichtingen tot de intake.</p>
+      </div>
+      <form id="pilot-form" novalidate class="space-y-5">
+        <input type="hidden" name="form_type" value="pilot" />
+        <input type="hidden" name="subject" value="Nieuwe pilot-aanmelding — Emma" />
+        <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
+        <div class="grid sm:grid-cols-2 gap-4">
+          <div>
+            <label for="voornaam" class="block text-sm font-medium text-navy mb-1">Voornaam *</label>
+            <input type="text" id="voornaam" name="voornaam" required autocomplete="given-name" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+          </div>
+          <div>
+            <label for="achternaam" class="block text-sm font-medium text-navy mb-1">Achternaam</label>
+            <input type="text" id="achternaam" name="achternaam" autocomplete="family-name" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+          </div>
+          <div>
+            <label for="email" class="block text-sm font-medium text-navy mb-1">E-mail *</label>
+            <input type="email" id="email" name="email" required autocomplete="email" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+          </div>
+          <div>
+            <label for="telefoon" class="block text-sm font-medium text-navy mb-1">Telefoon *</label>
+            <input type="tel" id="telefoon" name="telefoon" required autocomplete="tel" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+          </div>
+          <div>
+            <label for="bedrijfsnaam" class="block text-sm font-medium text-navy mb-1">Bedrijfsnaam *</label>
+            <input type="text" id="bedrijfsnaam" name="bedrijfsnaam" required autocomplete="organization" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+          </div>
+          <div>
+            <label for="branche" class="block text-sm font-medium text-navy mb-1">Branche *</label>
+            <select id="branche" name="branche" required class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo">
+              <option value="">Kies…</option>
+              <option>Praktijk (zorg / paramedisch)</option>
+              <option>Salon (kapper / beauty)</option>
+              <option>Garage / autobedrijf</option>
+              <option>Installatiebedrijf</option>
+              <option>Anders (afspraak-gedreven)</option>
+            </select>
+          </div>
+          <div>
+            <label for="plaats" class="block text-sm font-medium text-navy mb-1">Plaats</label>
+            <input type="text" id="plaats" name="plaats" autocomplete="address-level2" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+          </div>
+          <div>
+            <label for="oproepen" class="block text-sm font-medium text-navy mb-1">Inkomende oproepen per week (schatting)</label>
+            <select id="oproepen" name="oproepen_per_week" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo">
+              <option value="">Kies…</option>
+              <option>Minder dan 25</option>
+              <option>25 – 75</option>
+              <option>75 – 200</option>
+              <option>Meer dan 200</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="gemist" class="block text-sm font-medium text-navy mb-1">Wanneer mist u nu oproepen?</label>
+          <textarea id="gemist" name="gemist" rows="3" placeholder="Bijv. tijdens behandelingen, in de werkplaats, na 17:00, op zaterdag…" class="w-full px-4 py-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo"></textarea>
+        </div>
+        <label class="flex items-start gap-3 text-sm text-slate-600">
+          <input type="checkbox" id="akkoord" name="akkoord_privacy" required class="mt-0.5 w-4 h-4 rounded border-slate-300 text-brand-indigo focus:ring-brand-indigo" />
+          <span>Ik ga akkoord met de <a href="/privacy/" class="text-brand-indigo underline-offset-4 hover:underline">privacyverklaring</a> en begrijp dat de pilot een klantcase met bedrijfsnaam omvat (na mijn goedkeuring). *</span>
+        </label>
+        <p id="form-error" class="hidden text-sm text-brand-rose"></p>
+        <button type="submit" id="submit-btn" class="btn-primary text-base px-6 py-3.5 w-full sm:w-auto">
+          <span id="submit-txt">Aanmelden voor de pilot</span>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50 border-t border-slate-200">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-2xl font-bold tracking-tightest text-navy mb-6">Veelgestelde vragen</h2>
+      <div class="divide-y divide-slate-200 border-y border-slate-200">
+        {faq.map((f) => (
+          <details class="group py-4">
+            <summary class="cursor-pointer font-semibold text-navy list-none flex justify-between items-center gap-4">
+              {f.q}
+              <span class="text-slate-400 group-open:rotate-45 transition-transform text-xl leading-none">+</span>
+            </summary>
+            <p class="mt-3 text-sm text-slate-600 leading-relaxed">{f.a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('pilot-form') as HTMLFormElement | null;
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const err = document.getElementById('form-error') as HTMLElement;
+    const btn = document.getElementById('submit-btn') as HTMLButtonElement;
+    const txt = document.getElementById('submit-txt') as HTMLElement;
+    err.classList.add('hidden');
+    if (!form.checkValidity()) { form.reportValidity(); return; }
+    btn.disabled = true; txt.textContent = 'Verzenden…';
+    const ctrl = new AbortController();
+    const tid = setTimeout(() => ctrl.abort(), 30000);
+    try {
+      const res = await fetch('/api/submit', { method: 'POST', body: new FormData(form), signal: ctrl.signal });
+      clearTimeout(tid);
+      const json = await res.json().catch(() => ({}));
+      if (res.ok && json.success) {
+        (window as any)._track?.('generate_lead', { form_name: 'pilot_aanmelding', currency: 'EUR', value: 300 });
+        window.location.href = '/demo-bedankt/';
+        return;
+      }
+      throw new Error(json.message || `HTTP ${res.status}`);
+    } catch (e2: any) {
+      clearTimeout(tid);
+      err.textContent = 'Er ging iets mis bij het versturen (' + (e2?.message || 'onbekend') + '). Probeer opnieuw of mail hello@aanloopai.nl.';
+      err.classList.remove('hidden');
+      btn.disabled = false; txt.textContent = 'Aanmelden voor de pilot';
+    }
+  });
+</script>

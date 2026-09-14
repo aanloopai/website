@@ -26,7 +26,9 @@ export const FUNNEL_MAP: readonly FunnelEntry[] = [
   {
     serviceId: 'voice-agent',
     productKey: 'emma-telefoon',
-    tierNaam: 'Starter',
+    // Per 2026-09-15: het funnel-voorstel is begeleid (intake + go-live) en
+    // bevat WhatsApp — dat is Groei. Start is self-serve via het portaal.
+    tierNaam: 'Groei',
     sellable: true,
     roiInputs: ['gemiste_gesprekken_week', 'gemiddelde_klantwaarde'],
     fallbackKop: 'Emma neemt vanaf volgende week uw telefoon aan',
@@ -48,14 +50,14 @@ export const FUNNEL_MAP: readonly FunnelEntry[] = [
     // (WhatsApp/chat-assistent, Lite/Standard) is geschrapt — WhatsApp is nu
     // uitsluitend een inbegrepen kanaal van 'emma-telefoon'. Deze intake-entry
     // wijst daarom naar diezelfde tier; een lead die WhatsApp-automatisering
-    // wil krijgt een voorstel op basis van Emma AI-receptie (vanaf €497/mnd).
+    // wil krijgt een voorstel op basis van Emma Groei (€299/mnd, telefoon + WhatsApp).
     serviceId: 'whatsapp-bot',
     productKey: 'emma-telefoon',
-    tierNaam: 'Starter',
+    tierNaam: 'Groei',
     sellable: false,
     roiInputs: ['gemiste_gesprekken_week', 'gemiddelde_klantwaarde'],
     fallbackKop: 'WhatsApp zit inbegrepen bij Emma',
-    fallbackTekst: 'Emma (vanaf €497/mnd) beantwoordt uw WhatsApp-berichten binnen seconden, ook buiten kantooruren — als onderdeel van dezelfde AI-receptie die ook de telefoon opneemt.',
+    fallbackTekst: 'Emma Groei (€299/mnd) beantwoordt uw WhatsApp-berichten binnen seconden, ook buiten kantooruren — als onderdeel van dezelfde AI-receptie die ook de telefoon opneemt.',
   },
   // ai-scan-consult heeft BEWUST geen entry: het verkoopt vandaag een
   // persoonlijk adviesgesprek (lead + intake, start.astro), geen

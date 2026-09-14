@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { GARANTIE, OVERAGE_LABEL } from '../data/pricing';
+
+// Eén pagina met alles wat een ondernemer wil weten vóór hij een AI zijn telefoon
+// laat opnemen. Alleen feiten die elders op de site of in de code al waar zijn
+// (privacy.astro, diensten/emma.astro FAQ, src/lib/elevenlabs.js) — geen nieuwe
+// claims, geen certificaten die we niet hebben.
+
+const blokken = [
+  {
+    kop: 'Uw data blijft in de EU',
+    punten: [
+      'Gesprekken en berichten worden verwerkt en bewaard in EU-datacenters (Amsterdam/Frankfurt).',
+      'Encryptie at-rest en in-transit.',
+      'Bewaartermijn standaard 90 dagen, instelbaar tussen 7 en 365 dagen.',
+      'Recht op verwijdering: binnen 24 uur uitgevoerd.',
+      'Aparte compliance-eisen (zorg, juridisch)? Dan een dedicated tenant en een NEN 7510-compatibele opzet.',
+    ],
+  },
+  {
+    kop: 'Emma zegt altijd dat ze een AI is',
+    punten: [
+      'Elke oproep en elk chatgesprek opent met "Emma, de AI-assistent van [uw bedrijf]" — conform artikel 50 van de EU AI-verordening, van kracht sinds 2 augustus 2026.',
+      'Vraagt iemand of hij met een mens spreekt, dan bevestigt Emma eerlijk dat ze een AI is. Ze doet zich nooit voor als mens.',
+      'Wil een beller een mens? Emma verbindt door of legt een terugbelverzoek vast — u bepaalt de regels.',
+      'Deze gedragsregels staan in de code van elke Emma-agent en worden door een geautomatiseerde test bewaakt.',
+    ],
+  },
+  {
+    kop: 'Verwerkersovereenkomst en sub-verwerkers',
+    punten: [
+      'Aanloop AI is verwerker; u blijft verwerkingsverantwoordelijke. Wij leveren een verwerkersovereenkomst (AVG art. 28) — vraag hem op via hello@aanloopai.nl.',
+      'Sub-verwerkers die wij inzetten: ElevenLabs (spraak), Meta (WhatsApp Business API), Cloudflare (hosting en opslag), Mollie (betalingen), Brevo (e-mail). Met elk van hen hebben wij een verwerkersovereenkomst.',
+      'Wij delen geen gegevens met derden buiten deze dienstverlening, tenzij wettelijk verplicht.',
+    ],
+  },
+  {
+    kop: 'Geen kleine lettertjes',
+    punten: [
+      `${GARANTIE} — op elk Emma-pakket (abonnementsdeel; een eenmalige setup valt erbuiten omdat dat werk dan al is gedaan).`,
+      `Belminuten op? Emma blijft opnemen; extra minuten kosten ${OVERAGE_LABEL} en staan apart op de factuur.`,
+      'Geen exit-fees. Alle prijzen exclusief btw en publiek op de tarievenpagina.',
+      'Nederlands bedrijf: Aanloop AI, Rotterdam, KVK 88606902.',
+    ],
+  },
+];
+
+const nietGeclaimd = [
+  'Wij hebben géén eigen ISO 27001- of SOC 2-certificaat. Onze cloud-sub-verwerkers zijn ISO 27001-gecertificeerd; wij zelf (nog) niet. Zodra dat verandert, staat het hier.',
+  'Wij publiceren geen uptime-percentage voor Start, Groei en Compleet. Een SLA met uptime-doel (99,9%) is onderdeel van Enterprise, op aanvraag.',
+  'Wij noemen geen klantaantallen of gemiddelde resultaten die we niet kunnen aantonen. Cijfers op deze site zijn gemarkeerd als indicatief of komen uit een met naam genoemde klantcase.',
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': 'https://aanloopai.nl/vertrouwen/#webpage',
+  url: 'https://aanloopai.nl/vertrouwen/',
+  name: 'Vertrouwen & AVG — Aanloop AI',
+  description: 'Waar uw data staat, hoe Emma zich als AI kenbaar maakt (AI Act art. 50), welke sub-verwerkers wij gebruiken en welke garantie geldt.',
+  inLanguage: 'nl-NL',
+  isPartOf: { '@type': 'WebSite', '@id': 'https://aanloopai.nl/#website' },
+};
+---
+
+<BaseLayout
+  title="Vertrouwen & AVG — waar uw data staat en hoe Emma zich gedraagt"
+  description="EU-datacenters, encryptie, bewaartermijnen, AI Act art. 50 (Emma zegt altijd dat ze een AI is), verwerkersovereenkomst, sub-verwerkers en 14 dagen niet goed geld terug. Zonder kleine lettertjes."
+  schema={[schema]}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Vertrouwen &amp; AVG</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08] reveal reveal-delay-1">
+          Voordat u een AI uw telefoon laat opnemen.
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">
+          Waar uw data staat, hoe Emma zich als AI kenbaar maakt, met wie wij samenwerken en wat u van ons mag verwachten. Alles op één pagina — inclusief wat we <em>niet</em> claimen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="grid md:grid-cols-2 gap-6 max-w-5xl">
+        {blokken.map((b, i) => (
+          <div class={`card reveal reveal-delay-${(i % 2) + 1}`}>
+            <h2 class="text-xl font-bold text-navy mb-4">{b.kop}</h2>
+            <ul class="space-y-2.5">
+              {b.punten.map((p) => (
+                <li class="flex gap-3 text-sm text-slate-600 leading-relaxed">
+                  <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-brand-emerald" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg>
+                  <span>{p}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <p class="eyebrow mb-3 reveal">Eerlijk</p>
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy reveal reveal-delay-1">Wat wij níet claimen.</h2>
+        <ul class="mt-6 space-y-3 reveal reveal-delay-2">
+          {nietGeclaimd.map((p) => (
+            <li class="flex gap-3 text-sm text-slate-600 leading-relaxed">
+              <span class="mt-2 w-1.5 h-1.5 rounded-full bg-slate-400 flex-shrink-0"></span>
+              <span>{p}</span>
+            </li>
+          ))}
+        </ul>
+        <p class="mt-8 text-sm text-slate-500 reveal reveal-delay-3">
+          Meer detail: <a href="/privacy/" class="text-brand-indigo underline-offset-4 hover:underline">privacyverklaring</a> · <a href="/voorwaarden/" class="text-brand-indigo underline-offset-4 hover:underline">algemene voorwaarden</a> · <a href="/avg-checklist-ai-mkb/" class="text-brand-indigo underline-offset-4 hover:underline">AVG-checklist voor AI in het MKB</a> · <a href="/tarieven/#garantie" class="text-brand-indigo underline-offset-4 hover:underline">garantie op de tarievenpagina</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-pearl reveal">Vragen over data, AVG of de verwerkersovereenkomst?</h2>
+        <p class="mt-4 text-slate-300 reveal reveal-delay-1">Mail <a href="mailto:hello@aanloopai.nl" class="text-pearl underline underline-offset-4">hello@aanloopai.nl</a> of plan een gesprek — u krijgt antwoord van een mens.</p>
+        <div class="mt-6 reveal reveal-delay-2">
+          <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Plan een gesprek</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

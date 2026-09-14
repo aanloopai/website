@@ -102,14 +102,15 @@ function makeRequest(orderId) {
 
 describe('handleCheckoutStart — subscriptions vs. Mollie/payments bedrag', () => {
   it('schrijft het maandbedrag naar subscriptions.bedrag_cent en het totaal naar Mollie + payments (tier met setup-fee)', async () => {
-    const tier = getCatalogTier('emma-telefoon', 'Starter');
+    // Per 2026-09-15 heeft Starter geen setup-fee meer; Groei wel — dus die tier hier.
+    const tier = getCatalogTier('emma-telefoon', 'Groei');
     expect(tier).toBeTruthy();
     expect(tier.setupCent).toBeGreaterThan(0); // deze test heeft alleen zin met een echte fee
 
     const { maandInclCent, totaalInclCent } = berekenEersteBetaling(tier);
     expect(totaalInclCent).toBeGreaterThan(maandInclCent); // sanity: er zit echt een fee in
 
-    const order = { id: 'ord_1', customer_id: 'cus_1', product_key: 'emma-telefoon', tier: 'Starter', status: 'concept' };
+    const order = { id: 'ord_1', customer_id: 'cus_1', product_key: 'emma-telefoon', tier: 'Groei', status: 'concept' };
     const customer = { id: 'cus_1', bedrijf: 'Testbedrijf', factuur_email: 'test@example.com', mollie_customer_id: null };
     const db = makeDbStub({ order, existingSub: null, customer });
     const user = { role: 'eigenaar', customer_id: 'cus_1', naam: 'Test User', email: 'test@example.com' };

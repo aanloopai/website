@@ -209,6 +209,7 @@ export const EVENT_TYPES = {
   route: 'Route (Maps-link)',
   mail: 'E-mail (mailto)',
   form: 'Formulier verzonden',
+  demo: 'Emma live-demo gestart',
 };
 
 const BOT_UA = /bot|crawl|spider|slurp|headless|lighthouse|pagespeed|preview|monitor|curl\/|wget|python-requests|facebookexternalhit/i;

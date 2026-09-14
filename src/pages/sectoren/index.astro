@@ -158,6 +158,11 @@ const sectors = [
   },
 ];
 
+// Niche (owner-besluit 2026-09-15): afspraak-gedreven dienstverleners eerst.
+const FOCUS = ['/sectoren/zorg/', '/sectoren/schoonheid/', '/sectoren/automotive/', '/sectoren/installatie/'];
+const focusSectors = FOCUS.map((h) => sectors.find((x) => x.href === h)).filter(Boolean);
+const otherSectors = sectors.filter((x) => !FOCUS.includes(x.href));
+
 const collectionSchema = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
@@ -195,17 +200,42 @@ const collectionSchema = {
           AI toegespitst op uw branche.
         </h1>
         <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl reveal reveal-delay-2">
-          Elke sector heeft zijn eigen ritme, klanten en uitdagingen. Op basis van gesprekken met MKB-ondernemers hebben we gespecialiseerde AI-oplossingen ontwikkeld die direct werken — zonder aanpassing.
+          Onze focus ligt op afspraak-gedreven dienstverleners: praktijken, salons, garages en installateurs — daar kost een gemiste oproep direct een afspraak. Elke sector heeft zijn eigen ritme, klanten en uitdagingen. Op basis van gesprekken met MKB-ondernemers hebben we gespecialiseerde AI-oplossingen ontwikkeld die direct werken — zonder aanpassing.
         </p>
       </div>
     </div>
   </section>
 
-  <!-- Sector grid -->
+  <!-- Sector grid: focus-sectoren (afspraak-gedreven) eerst, daarna de rest -->
   <section class="section">
     <div class="container-page">
+      <div class="max-w-3xl mb-8">
+        <p class="eyebrow mb-2 reveal">Onze focus</p>
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy reveal reveal-delay-1">Afspraak-gedreven dienstverleners.</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-14">
+        {focusSectors.map((sector, i) => (
+          <a href={sector.href}
+             class={`card group hover:shadow-xl transition-all border-2 ${sector.color} reveal reveal-delay-${(i % 4) + 1}`}>
+            <div class="flex items-start justify-between mb-3">
+              <h3 class="font-bold text-navy text-lg group-hover:text-brand-indigo transition-colors">{sector.title}</h3>
+              <svg class="w-4 h-4 flex-shrink-0 text-slate-300 group-hover:text-navy group-hover:translate-x-0.5 transition-all mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+              </svg>
+            </div>
+            <p class="text-sm text-slate-600 leading-relaxed mb-4">{sector.description}</p>
+            <div class="pt-3 border-t border-slate-100">
+              <span class="text-xs font-semibold text-brand-emerald">{sector.stats}</span>
+            </div>
+          </a>
+        ))}
+      </div>
+      <div class="max-w-3xl mb-8">
+        <p class="eyebrow mb-2 reveal">Ook actief in</p>
+        <h2 class="text-2xl sm:text-3xl font-bold tracking-tightest text-navy reveal reveal-delay-1">Andere branches.</h2>
+      </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        {sectors.map((sector, i) => (
+        {otherSectors.map((sector, i) => (
           <a href={sector.href}
              class={`card group hover:shadow-xl transition-all border-2 ${sector.color} reveal reveal-delay-${(i % 4) + 1}`}>
             <div class="flex items-start justify-between mb-3">
@@ -221,6 +251,7 @@ const collectionSchema = {
           </a>
         ))}
       </div>
+      <p class="mt-6 text-xs text-slate-500">Percentages zijn indicatieve branche-benchmarks uit vergelijkbare implementaties — geen gemeten resultaten van met naam genoemde klanten.</p>
 
       <!-- Niet gevonden -->
       <div class="mt-16 text-center reveal">

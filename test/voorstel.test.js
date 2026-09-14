@@ -8,7 +8,7 @@ const CUSTOMER = { name: 'Jan', company: 'Jansen Installatie', email: 'jan@examp
 describe('buildVoorstelData', () => {
   it('haalt de prijs uit de catalogus, niet uit een model', () => {
     const p = prijsVoorEntry(getFunnelEntry('voice-agent'));
-    expect(p.prijsCent).toBe(49700);
+    expect(p.prijsCent).toBe(29900); // Groei
     expect(p.setupCent).toBe(49500);
   });
 
@@ -16,7 +16,7 @@ describe('buildVoorstelData', () => {
     const data = await buildVoorstelData({}, { serviceId: 'voice-agent', customer: CUSTOMER, answers: ANSWERS });
     expect(data.copy.bronnen).toBe('fallback');
     expect(data.copy.kop).toBe(getFunnelEntry('voice-agent').fallbackKop);
-    expect(data.prijsCent).toBe(49700);
+    expect(data.prijsCent).toBe(29900);
     expect(data.roi.modus).toBe('punt');
   });
 
@@ -33,7 +33,7 @@ describe('buildVoorstelData', () => {
     const data = await buildVoorstelData(env, { serviceId: 'voice-agent', customer: CUSTOMER, answers: ANSWERS }, { llm });
     expect(data.copy.bronnen).toBe('llm');
     expect(data.copy.kop).toBe('Eigen kop');
-    expect(data.prijsCent).toBe(49700);
+    expect(data.prijsCent).toBe(29900);
   });
 
   it('weigert een niet-verkoopbare dienst', async () => {

@@ -9,10 +9,8 @@
 // vermelding van WhatsApp elders moet lezen als "WhatsApp zit inbegrepen bij
 // Emma (vanaf €497/mnd)" — nooit als eigen prijspunt.
 //
-// Emma is dus weer één product met twee tiers: Emma €497 · Groei €997.
-// SETUP-FEE: €495 (Emma) / €795 (Groei). Owner heeft bevestigd: de fee is echt.
-// Benchmark (jun 2026): voice managed €199-299 · omnichannel mid €290-499.
-// Publieke ladder: Emma €497 · Groei €997 · Enterprise op aanvraag.
+// (Historie: aug-sep 2026 was de ladder Emma €497 · Groei €997. Per 2026-09-15
+// vervangen door Start €149 · Groei €299 · Compleet €497 — zie hieronder.)
 
 export interface PricePoint {
   /** Maandprijs (excl. btw) in euro */
@@ -26,29 +24,52 @@ export interface PricePoint {
 }
 
 // ── PUBLIEKE MARKETING-LADDER (single source voor /tarieven + diensten/emma) ──
-/** Emma AI-receptie (telefoon) — neemt de telefoon op. WhatsApp INBEGREPEN. Setup €495. */
-export const EMMA: PricePoint = { monthly: 497, annual: 416, monthlyCent: 49700, setup: 495 };
+// Owner-besluit 2026-09-15: de ladder volgt de NL-markt (Voicelabs €149/€299,
+// Loekas €149, VoxFlow €99, ai-receptionisten €50). Dit draait het besluit van
+// 2026-08-11/09-10 ("geen prijs onder €497") bewust terug — zie
+// test/prijs-consistentie.test.js voor de nieuwe kanon. Mapping oud→nieuw:
+//   oud Emma €497 (150 gesprekken, tel+WhatsApp)  → Groei €299 (1.000 min)
+//   oud Groei €997 (onbeperkt, CRM, priority)      → Compleet €497
+//   nieuw: Start €149 (300 min, telefoon, self-serve, geen setup)
+// Elke tier: 14 dagen niet goed, geld terug (abonnement; setup uitgezonderd).
+// Boven de belminuten: €0,25 per minuut.
 
-/** Groei — onbeperkt gespreksvolume, WhatsApp INBEGREPEN, CRM, priority support. Setup €795. */
-export const GROEI: PricePoint = { monthly: 997, annual: 836, monthlyCent: 99700, setup: 795 };
+/** Emma Start — telefoon 24/7, 300 belminuten, agenda + lead-melding, self-serve. Geen setup. */
+export const START: PricePoint = { monthly: 149, annual: 125, monthlyCent: 14900, setup: 0 };
+
+/** Emma Groei — 1.000 belminuten, telefoon + WhatsApp, CRM-koppeling, begeleide onboarding. Setup €495. */
+export const GROEI: PricePoint = { monthly: 299, annual: 251, monthlyCent: 29900, setup: 495 };
+
+/** Emma Compleet — onbeperkt volume, multi-number, n8n-workflows op maat, priority support. Setup €795. */
+export const COMPLEET: PricePoint = { monthly: 497, annual: 416, monthlyCent: 49700, setup: 795 };
+
+/** Legacy alias: "Emma" zonder tier-naam = Compleet (de omnichannel agent van €497). */
+export const EMMA: PricePoint = COMPLEET;
 
 // Emma Enterprise — op aanvraag (SLA, dedicated, custom workflows, white-label). Geen vast tarief.
 
-// Oude €99/€249/€497-ladder (START/CORE/PRO) is per 2026-09-10 verwijderd:
-// owner-besluit "geen enkele prijs onder €497 op de site" — de constanten
-// bestonden alleen nog als herintroductie-risico. Portal gebruikt PORTAL_*.
+/** Belminuten boven het pakket — publiek zichtbaar, geen verrassingen op de factuur. */
+export const OVERAGE_PER_MIN = 0.25;
+export const OVERAGE_LABEL = '€0,25 per extra belminuut';
+/** Garantie op elk Emma-pakket (abonnementsdeel; eenmalige setup uitgezonderd). */
+export const GARANTIE = '14 dagen niet goed, geld terug';
+export const GARANTIE_KORT = '14 dagen geld terug';
 
 // ── Display-strings — gebruik deze overal i.p.v. hardcoded bedragen ──
-export const PRO_LABEL = '€497';
-export const PRO_MND = '€497/mnd';
-export const EMMA_LABEL = '€497';
-export const EMMA_MND = '€497/mnd';
-export const GROEI_LABEL = '€997';
-export const GROEI_MND = '€997/mnd';
-export const VANAF = 'Vanaf €497/mnd';
-/** schema.org Organization priceRange — publieke maandprijzen Emma t/m Groei.
- *  GEEN eenmalige/setup-bedragen hierin (owner-besluit 2026-08-11). */
-export const PRICE_RANGE = '€497-€997';
+export const START_LABEL = '€149';
+export const START_MND = '€149/mnd';
+export const GROEI_LABEL = '€299';
+export const GROEI_MND = '€299/mnd';
+export const COMPLEET_LABEL = '€497';
+export const COMPLEET_MND = '€497/mnd';
+export const EMMA_LABEL = COMPLEET_LABEL;
+export const EMMA_MND = COMPLEET_MND;
+export const PRO_LABEL = COMPLEET_LABEL;
+export const PRO_MND = COMPLEET_MND;
+export const VANAF = 'Vanaf €149/mnd';
+/** schema.org Organization priceRange — publieke maandprijzen Start t/m Compleet.
+ *  GEEN eenmalige/setup-bedragen hierin. */
+export const PRICE_RANGE = '€149-€497';
 
 // ── Setup-fees — interne bedragen (portal/Mollie/offerte-berekening). NIET
 //    tonen op publieke marketingpagina's — owner-besluit 2026-08-11: alle
@@ -57,12 +78,16 @@ export const PRICE_RANGE = '€497-€997';
 //    toepassing"); het bedrag wordt pas in het gesprek besproken. Gebruik
 //    EMMA_SETUP_LABEL/GROEI_SETUP_LABEL/SETUP_DISPLAY voor alle publieke tekst
 //    i.p.v. hardcoded €495/€795/€500 — één bron, geen whack-a-mole. ──
-export const EMMA_SETUP = 495;
-export const GROEI_SETUP = 795;
+export const START_SETUP = 0;
+export const GROEI_SETUP = 495;
+export const COMPLEET_SETUP = 795;
+export const EMMA_SETUP = COMPLEET_SETUP;
 /** Publiek display-label — GEEN bedrag. Owner-besluit 2026-08-11. */
 export const SETUP_DISPLAY = 'op aanvraag';
-export const EMMA_SETUP_LABEL = SETUP_DISPLAY;
+export const START_SETUP_LABEL = 'geen setup';
 export const GROEI_SETUP_LABEL = SETUP_DISPLAY;
+export const COMPLEET_SETUP_LABEL = SETUP_DISPLAY;
+export const EMMA_SETUP_LABEL = COMPLEET_SETUP_LABEL;
 /** Standaardzin voor de setup-fee. Eén formulering, site-breed. */
 export const SETUP_ZIN = 'Eenmalige setup van toepassing — bespreken we in het gesprek.';
 
@@ -76,13 +101,17 @@ export const EMMA_TELEFOON_NAAM = 'Emma AI-receptie (telefoon)';
 export const EMMA_TELEFOON_URL = '/diensten/emma/#telefoon';
 export const EMMA_WHATSAPP_URL = '/diensten/emma/#whatsapp';
 
-// ── LEGACY portal/Mollie tiers — D1-bound tier-namen (service_orders.tier), checkout-kritisch.
-//    NIET gebruiken op marketingpagina's. monthlyCent ONGEWIJZIGD = Mollie blijft identiek.
-//    Migratie naar de Emma-ladder (Start/Core/Pro) staat open — vereist M + data-migratie. ──
-export const PORTAL_CORE_497: PricePoint = { monthly: 497, annual: 416, monthlyCent: 49700, setup: 0 };
-export const PORTAL_GROEI_997: PricePoint = { monthly: 997, annual: 836, monthlyCent: 99700, setup: 0 };
-export const PORTAL_CORE_MND = '€497/mnd';
-export const PORTAL_GROEI_MND = '€997/mnd';
+// ── Portal/Mollie tiers — D1-bound tier-namen (service_orders.tier): 'Starter',
+//    'Groei', 'Partner' NOOIT hernoemen, alleen herprijzen. Per 2026-09-15 volgen ze
+//    de publieke ladder: Starter = Start €149 (geen setup), Groei = €299, nieuw
+//    'Compleet' = €497, Partner = op aanvraag. Bestaande Mollie-abonnementen houden
+//    het bedrag waarmee ze zijn aangemaakt; dit raakt alleen nieuwe checkouts. ──
+export const PORTAL_STARTER = START;
+export const PORTAL_GROEI = GROEI;
+export const PORTAL_COMPLEET = COMPLEET;
+export const PORTAL_STARTER_MND = START_MND;
+export const PORTAL_GROEI_MND = GROEI_MND;
+export const PORTAL_COMPLEET_MND = COMPLEET_MND;
 
 // ── À-la-carte diensten (ongewijzigd — geen kern, geen bron van inconsistentie) ──
 export const SEO = { audit: 495, setup: 1950, maand: 795 } as const;
