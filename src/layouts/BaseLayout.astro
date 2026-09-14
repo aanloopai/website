@@ -8,6 +8,7 @@ import RelatedLinks from '../components/RelatedLinks.astro';
 import { PRICE_RANGE } from '../data/pricing';
 import { getImage } from 'astro:assets';
 import { HERO_IMAGE, HERO_IMAGE_OPTIONS, HERO_MEDIA } from '../data/hero-image';
+import { visualFor } from '../data/page-visuals';
 
 export interface Props {
   title: string;
@@ -244,6 +245,9 @@ const faqSchemaLD = faqSchema?.length ? {
 
 // ── Breadcrumb Schema ─────────────────────────────────────────────
 const pathParts = Astro.url.pathname.replace(/\/$/, '').split('/').filter(Boolean);
+// Cinematisch paginabeeld achter de .hero-gradient-sectie (zie src/data/page-visuals.ts)
+const pageVisual = visualFor(Astro.url.pathname);
+const mainStyle = pageVisual ? `--page-visual:url('/visuals/${pageVisual.file}.jpg')` : undefined;
 const breadcrumbSchema = pathParts.length > 0 ? {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -516,7 +520,7 @@ const allSchemas = [
 
     <Header />
 
-    <main id="main">
+    <main id="main" class:list={[pageVisual && 'has-visual']} style={mainStyle}>
       {pathParts.length > 0 && (
         <nav aria-label="Kruimelpad" class="border-b border-slate-100 bg-white">
           <div class="container-page py-3">
