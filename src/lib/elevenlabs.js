@@ -73,8 +73,15 @@ function sArr(v, max = 8, itemMax = 80) {
   return (Array.isArray(v) ? v : []).slice(0, max).map((x) => s(x, itemMax)).filter(Boolean);
 }
 
+// EU AI Act art. 50 (van kracht sinds 2 augustus 2026): de beller/chatter moet
+// meteen weten dat hij met een AI spreekt. Daarom staat "AI-assistent" in elke
+// openingszin en mag Emma zich nooit als mens voordoen. Guard: test/emma-ai-disclosure.test.js
+export const AI_DISCLOSURE_RULE =
+  'Transparantie (EU AI Act art. 50): je bent een AI-assistent. Zeg dat in je eerste zin, ' +
+  'bevestig het eerlijk zodra iemand vraagt of hij met een mens of een AI spreekt, en doe je nooit voor als mens. ';
+
 // Build the agent prompt + first message from intake answers, per product.
-function buildConfig(productKey, intake) {
+export function buildConfig(productKey, intake) {
   const i = intake || {};
   if (productKey === 'emma') {
     const b = i.bedrijf || {}, k = i.kennis || {}, af = i.afhandeling || {};
@@ -85,11 +92,12 @@ function buildConfig(productKey, intake) {
       systemPrompt:
         `Je bent Emma, de AI-chatassistent van ${naam}${branche ? ` (${branche})` : ''}. ` +
         `Je beantwoordt vragen van klanten via chat en WhatsApp. ` +
+        AI_DISCLOSURE_RULE +
         `Talen: ${(talen.length ? talen : ['Nederlands']).join(', ')}. ` +
         `Overdracht naar mens: ${s(af.handover, 120) || 'handel zelf af'}.` +
         (af.handover_contact ? ` Doorschakelen naar: ${s(af.handover_contact, 80)}.` : '') +
         ` Wees vriendelijk en beknopt. Gebruik de kennisbank voor antwoorden.`,
-      firstMessage: `Hallo! Ik ben Emma van ${naam}. Hoe kan ik u helpen?`,
+      firstMessage: `Hallo! Ik ben Emma, de AI-assistent van ${naam}. Hoe kan ik u helpen?`,
       kbText: buildKbText(k.faq, k.productcatalogus),
     };
   }
@@ -103,11 +111,12 @@ function buildConfig(productKey, intake) {
       `Je bent Emma, de AI-telefoonreceptionist van ${naam}${branche ? ` (${branche})` : ''}. ` +
       `Openingstijden: ${s(br.openingstijden, 100) || 'onbekend'}. Buiten openingstijden: ${s(br.buiten_tijden, 120) || '-'}. ` +
       `Je taken: ${taken.join(', ') || 'vragen beantwoorden'}. ` +
+      AI_DISCLOSURE_RULE +
       (af.doorverbind_nummers ? `Doorverbindnummers: ${s(af.doorverbind_nummers, 200)}. ` : '') +
       (af.escalatie ? `Bij urgente situaties: ${s(af.escalatie, 200)}. ` : '') +
       `Toon: ${s(k.toon, 60) || 'zakelijk en warm'}. Spreek altijd Nederlands, wees beknopt en behulpzaam. ` +
       `Gebruik de kennisbank voor antwoorden.`,
-    firstMessage: `Goedendag, u spreekt met Emma van ${naam}. Waarmee kan ik u helpen?`,
+    firstMessage: `Goedendag, u spreekt met Emma, de AI-assistent van ${naam}. Waarmee kan ik u helpen?`,
     kbText: buildKbText(k.faq, k.diensten),
   };
 }
