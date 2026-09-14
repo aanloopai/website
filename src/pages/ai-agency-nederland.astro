@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { EMMA_LABEL, GROEI_LABEL, EMMA_SETUP_LABEL, GROEI_SETUP_LABEL, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../data/pricing';
+import { START_LABEL, START_SETUP_LABEL, GROEI_LABEL, GROEI_SETUP_LABEL, COMPLEET_LABEL, COMPLEET_SETUP_LABEL, GARANTIE_KORT, PRICE_RANGE, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../data/pricing';
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -37,7 +37,7 @@ const comparison = [
   { row: 'AVG & datacompliance', diy: 'Zelf verwerkers-overeenkomsten regelen', agency: 'Geregeld — EU-data, self-hosted in NL' },
   { row: 'Onderhoud & updates', diy: 'Uzelf, naast uw kernactiviteit', agency: 'Bureau monitort en optimaliseert maandelijks' },
   { row: 'Aanspreekpunt bij storing', diy: 'Vendor-tickets, vaak in het Engels', agency: 'Direct contact met NL implementatie-team' },
-  { row: 'Maandelijkse kosten', diy: '€50-€300 tool-abonnement', agency: '€497-€997 managed service' },
+  { row: 'Maandelijkse kosten', diy: '€50-€300 tool-abonnement', agency: `${PRICE_RANGE} managed service` },
   { row: 'Verborgen kosten', diy: 'Eigen uren + leergeld + foutherstel', agency: 'Vast bedrag, voorspelbaar' },
 ];
 
@@ -63,7 +63,7 @@ const faqItems = [
   { question: 'Wat is het verschil tussen een AI agency en een marketingbureau?', answer: 'Een traditioneel marketingbureau richt zich op zichtbaarheid: campagnes, content en advertenties om klanten te bereiken. Een AI agency richt zich op operationele automatisering: processen sneller, goedkoper en 24/7 laten draaien zonder extra personeel. De disciplines overlappen — een AI agency kan ook AI-marketing doen — maar het kernverschil is dat een AI bureau bouwt aan uw bedrijfsvoering, niet alleen aan uw vindbaarheid.' },
   { question: 'Wat doet een AI agency concreet voor mijn bedrijf?', answer: 'Een AI agency levert doorgaans: AI-automatisering van repetitieve taken (offertes, facturen, data-overdracht), AI-agents die zelfstandig taken uitvoeren, een AI-receptionist die uw telefoon aanneemt, WhatsApp- en chatautomatisering, custom workflow-koppelingen tussen uw software, en strategisch advies over waar AI in uw bedrijf rendeert. Bij Aanloop AI vertaalt zich dat in Emma (AI-telefoniste), Emma (WhatsApp-agent) en custom n8n-workflows.' },
   { question: 'Heeft mijn MKB-bedrijf een AI agency nodig?', answer: 'Een AI agency loont vooral als u structureel telefoon of berichten mist buiten kantooruren, als medewerkers veel tijd kwijt zijn aan repetitief werk, als groei wordt geremd door personeelstekort, of als u losse AI-tools probeerde maar ze niet werkend kreeg. Heeft u weinig inkomend verkeer en geen automatiseerbare processen, dan is een agency mogelijk overbodig — een eerlijk bureau zegt dat ook.' },
-  { question: 'Wat kost een AI agency in Nederland?', answer: `Aanloop AI hanteert vaste pakketten: Emma ${EMMA_LABEL} per maand (Emma AI-telefoniste tot 150 gesprekken, eenmalige setup ${EMMA_SETUP_LABEL}), Groei ${GROEI_LABEL} per maand (Emma met onbeperkte gesprekken plus Emma WhatsApp-agent, setup ${GROEI_SETUP_LABEL}) en Enterprise op maat voor custom workflows. Bij jaarbetaling geldt circa 16% korting. Alle prijzen zijn exclusief 21% btw.` },
+  { question: 'Wat kost een AI agency in Nederland?', answer: `Aanloop AI hanteert vaste pakketten: Start ${START_LABEL} per maand (AI-telefoniste, 300 belminuten, self-serve, ${START_SETUP_LABEL}), Groei ${GROEI_LABEL} per maand (1.000 belminuten, telefoon + WhatsApp, CRM-koppeling, setup ${GROEI_SETUP_LABEL}), Compleet ${COMPLEET_LABEL} per maand (onbeperkt volume, workflows op maat, setup ${COMPLEET_SETUP_LABEL}) en Enterprise op maat voor custom workflows. Elk pakket: ${GARANTIE_KORT}. Bij jaarbetaling geldt circa 16% korting. Alle prijzen zijn exclusief 21% btw.` },
   { question: 'Hoe kies ik het juiste AI bureau in Nederland?', answer: 'Let op: een Nederlands KvK-geregistreerd bedrijf, transparante gepubliceerde tarieven, AVG-compliance met EU-datacenters, gebruik van bewezen techniek, eerlijkheid over wat AI niet kan, een concrete doorlooptijd en meetbare rapportage. Een bureau dat alleen "offerte op aanvraag" hanteert of 100% automatisering belooft, verdient extra kritische vragen.' },
   { question: 'Is een AI agency-oplossing AVG-compliant?', answer: 'Dat hangt af van het bureau. Aanloop AI verwerkt gegevens uitsluitend binnen de EU en draait de automatiseringslaag op self-hosted n8n in Nederland. Voor LLM- en voice-componenten zijn verwerkersovereenkomsten afgesloten. Vraag elk bureau expliciet waar data wordt verwerkt en opgeslagen — voor zorg, juridisch en financieel werk is EU-only verwerking een harde eis.' },
   { question: 'Hoe lang duurt het voordat een AI-oplossing live is?', answer: 'Bij Aanloop AI bent u binnen 7 werkdagen live, afhankelijk van het pakket. Het traject bestaat uit een gratis AI-scan, een voorstel met vaste prijs, de bouw- en trainingsfase met integratie van agenda en CRM, en daarna go-live met maandelijkse optimalisatie. Custom Partner-trajecten met complexe workflows kunnen iets langer duren.' },
@@ -73,7 +73,7 @@ const faqItems = [
 
 <BaseLayout
   title="AI Agency Nederland — Wat een AI Bureau Voor U Doet"
-  description="Wat is een AI agency, wat doet een AI bureau en wat kost het? Complete gids voor het Nederlandse MKB met checklist en tarieven vanaf €497 per maand."
+  description="Wat is een AI agency, wat doet een AI bureau en wat kost het? Complete gids voor het Nederlandse MKB met checklist en tarieven vanaf €149 per maand."
   schema={articleSchema}
   faqSchema={faqItems}
 >
@@ -196,11 +196,12 @@ const faqItems = [
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Wat kost een AI agency?</h2>
       <p class="text-slate-700 leading-relaxed mb-4">De prijs van een AI agency hangt af van wat u nodig heeft, maar transparantie hoort de norm te zijn. Aanloop AI publiceert daarom vaste pakketprijzen — geen "offerte op aanvraag" voor de standaarddiensten.</p>
       <ul class="space-y-3 text-slate-700 leading-relaxed mb-4">
-        <li class="flex gap-3"><span class="text-brand-indigo font-bold">·</span><div><strong class="text-navy">Emma — {EMMA_LABEL} per maand.</strong> Emma, onze AI-telefoniste, tot 150 gesprekken per maand. Eenmalige setup {EMMA_SETUP_LABEL}. Ideaal als eerste stap in AI-automatisering.</div></li>
-        <li class="flex gap-3"><span class="text-brand-indigo font-bold">·</span><div><strong class="text-navy">Groei — {GROEI_LABEL} per maand.</strong> Emma met onbeperkte gesprekken plus Emma, onze WhatsApp AI-agent. Eenmalige setup {GROEI_SETUP_LABEL}. Het meest gekozen pakket voor MKB-bedrijven die telefoon én chat willen automatiseren.</div></li>
-        <li class="flex gap-3"><span class="text-brand-indigo font-bold">·</span><div><strong class="text-navy">Partner — op maat.</strong> Emma plus custom AI-workflows op self-hosted n8n, met dedicated begeleiding. Voor bedrijven met complexere automatiseringsbehoeften.</div></li>
+        <li class="flex gap-3"><span class="text-brand-indigo font-bold">·</span><div><strong class="text-navy">Start — {START_LABEL} per maand.</strong> Emma, onze AI-telefoniste, 300 belminuten per maand, self-serve onboarding — zelf in 10 minuten live. {START_SETUP_LABEL}. Ideaal als eerste stap in AI-automatisering.</div></li>
+        <li class="flex gap-3"><span class="text-brand-indigo font-bold">·</span><div><strong class="text-navy">Groei — {GROEI_LABEL} per maand.</strong> 1.000 belminuten, telefoon + WhatsApp inbegrepen, CRM-koppeling. Eenmalige setup {GROEI_SETUP_LABEL}. Het meest gekozen pakket voor MKB-bedrijven die telefoon én chat willen automatiseren.</div></li>
+        <li class="flex gap-3"><span class="text-brand-indigo font-bold">·</span><div><strong class="text-navy">Compleet — {COMPLEET_LABEL} per maand.</strong> Onbeperkt volume, onbeperkte WhatsApp, multi-number, n8n-workflows op maat. Eenmalige setup {COMPLEET_SETUP_LABEL}. Voor bedrijven met hoger volume of complexere automatiseringsbehoeften.</div></li>
+        <li class="flex gap-3"><span class="text-brand-indigo font-bold">·</span><div><strong class="text-navy">Enterprise — op maat.</strong> Emma plus custom AI-workflows op self-hosted n8n, met dedicated begeleiding.</div></li>
       </ul>
-      <p class="text-slate-700 leading-relaxed mb-4">Alle prijzen zijn exclusief 21% btw. Bij jaarbetaling geldt circa 16% korting. U bent doorgaans binnen 7 werkdagen live.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Elk pakket: {GARANTIE_KORT} (setup uitgezonderd). Alle prijzen zijn exclusief 21% btw. Bij jaarbetaling geldt circa 16% korting. U bent doorgaans binnen 7 werkdagen live.</p>
       <p class="text-slate-700 leading-relaxed">Om deze bedragen in perspectief te plaatsen: een parttime receptionist of telefoniste kost al snel €1.500 tot €2.500 bruto per maand, werkt alleen tijdens kantooruren en is één persoon tegelijk. Een AI-agent neemt onbeperkt gesprekken aan, 24 uur per dag, voor een fractie van die kosten. Voor het volledige overzicht en de actuele tarieven, zie de <a href="/tarieven/" class="text-brand-indigo hover:underline">tarievenpagina</a>.</p>
     </div>
   </section>

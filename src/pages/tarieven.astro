@@ -3,66 +3,95 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import dashboardMockup from '../assets/images/dashboard-mockup.png';
 import {
-  EMMA,
+  START,
   GROEI,
-  EMMA_SETUP_LABEL,
+  COMPLEET,
+  EMMA,
+  START_SETUP_LABEL,
   GROEI_SETUP_LABEL,
+  COMPLEET_SETUP_LABEL,
   SETUP_ZIN,
+  OVERAGE_LABEL,
+  GARANTIE,
+  GARANTIE_KORT,
 } from '../data/pricing';
 
 // ── Pricing logic ──────────────────────────────────────────────
 // Prijzen komen uit src/data/pricing.ts (single source of truth).
 // Owner-besluit 2026-08-11: de standalone WhatsApp-only productlijn (Lite €49,
 // Standard €197) is geschrapt. Emma is weer één product: telefoon + WhatsApp
-// (WhatsApp is INBEGREPEN, nooit los bijtellen): Emma €497/mnd, Groei €997/mnd.
+// Ladder per 2026-09-15 (owner): Start €149 · Groei €299 · Compleet €497 · Enterprise op aanvraag.
 // Enterprise op aanvraag. Setup: op aanvraag (Emma/Groei) — owner-besluit 2026-08-11.
 // Gebruik SETUP_ZIN / EMMA_SETUP_LABEL / GROEI_SETUP_LABEL, nooit hardcoded €0.
 
 const plans = [
   {
-    id: 'emma',
-    name: 'Emma',
-    tagline: 'AI-telefoniste + WhatsApp + workflow — omnichannel',
-    price: { monthly: EMMA.monthly, annual: EMMA.annual, setup: EMMA.setup },
-    badge: 'WhatsApp inbegrepen',
+    id: 'start',
+    name: 'Emma Start',
+    tagline: 'AI-telefoniste 24/7 — zelf in 10 minuten live',
+    price: { monthly: START.monthly, annual: START.annual, setup: START.setup },
+    badge: null,
     highlight: false,
-    includes: 'Emma AI-receptie (telefoon) — incl. WhatsApp',
+    includes: 'Telefoon',
     features: [
       { text: 'AI-telefoon 24/7 (NL-nummer, doorverbinden)', included: true },
-      { text: 'WhatsApp AI (Business API) — inbegrepen', included: true },
-      { text: 'Workflow-automatisering', included: true },
+      { text: '300 belminuten per maand', included: true },
       { text: 'Afspraken + agenda-integratie (Google / Outlook)', included: true },
-      { text: 'Tot 3 callscripts op maat', included: true },
-      { text: 'Lead-melding via e-mail', included: true },
+      { text: 'Lead-melding via e-mail of Telegram', included: true },
       { text: 'Dashboard + transcripts', included: true },
-      { text: 'Live binnen 7 werkdagen', included: true },
-      { text: 'Onbeperkt volume + CRM-maatwerk', included: false },
-      { text: 'Multi-number + priority support', included: false },
+      { text: 'Self-serve onboarding, geen setup', included: true },
+      { text: GARANTIE_KORT, included: true },
+      { text: 'WhatsApp AI (Business API)', included: false },
+      { text: 'CRM-integratie', included: false },
+      { text: 'Workflows op maat', included: false },
     ],
-    cta: 'Start met Emma',
+    cta: 'Start met Emma Start',
     ctaHref: '/start/',
   },
   {
     id: 'groei',
-    name: 'Groei',
-    tagline: 'Onbeperkt volume — WhatsApp + CRM + priority',
+    name: 'Emma Groei',
+    tagline: 'Telefoon + WhatsApp + CRM — begeleid live in 7 werkdagen',
     price: { monthly: GROEI.monthly, annual: GROEI.annual, setup: GROEI.setup },
     badge: 'Meest gekozen',
     highlight: true,
-    includes: 'Emma AI-receptie (telefoon) — onbeperkt + WhatsApp',
+    includes: 'Telefoon + WhatsApp',
     features: [
-      { text: 'Alles uit Emma', included: true },
+      { text: 'Alles uit Start', included: true },
+      { text: '1.000 belminuten per maand', included: true },
+      { text: 'WhatsApp AI (Business API) — inbegrepen', included: true },
+      { text: 'CRM-integratie (HubSpot / Pipedrive)', included: true },
+      { text: 'Tot 3 callscripts op maat', included: true },
+      { text: 'Begeleide onboarding, live binnen 7 werkdagen', included: true },
+      { text: 'Support reactietijd < 4 uur', included: true },
+      { text: GARANTIE_KORT, included: true },
+      { text: 'Onbeperkt volume + multi-number', included: false },
+      { text: 'Workflows op maat + priority support', included: false },
+    ],
+    cta: 'Start met Emma Groei',
+    ctaHref: '/start/',
+  },
+  {
+    id: 'compleet',
+    name: 'Emma Compleet',
+    tagline: 'Onbeperkt volume — workflows op maat, priority support',
+    price: { monthly: COMPLEET.monthly, annual: COMPLEET.annual, setup: COMPLEET.setup },
+    badge: null,
+    highlight: false,
+    includes: 'Omnichannel + workflows',
+    features: [
+      { text: 'Alles uit Groei', included: true },
       { text: 'Onbeperkt gespreksvolume + onbeperkte WhatsApp', included: true },
       { text: 'Multi-number (meerdere NL-nummers)', included: true },
-      { text: 'CRM-integratie (HubSpot / Pipedrive)', included: true },
+      { text: 'n8n-workflows op maat (offertes, opvolging, intake)', included: true },
       { text: 'Onbeperkte callscripts', included: true },
-      { text: 'Geavanceerde workflow-automatisering', included: true },
       { text: 'Multi-team routing & escalatie', included: true },
-      { text: 'Priority support (reactie < 1 uur)', included: true },
       { text: 'Gespreksopnames', included: true },
-      { text: 'SLA + dedicated accountmanager', included: false },
+      { text: 'Maandelijkse optimalisatie', included: true },
+      { text: 'Priority support (reactie < 1 uur)', included: true },
+      { text: GARANTIE_KORT, included: true },
     ],
-    cta: 'Start met Groei',
+    cta: 'Start met Emma Compleet',
     ctaHref: '/start/',
   },
   {
@@ -172,37 +201,42 @@ const seoGeoPlans = [
 ];
 
 const eenmaligSetup = [
-  { plan: 'Emma', prijs: EMMA_SETUP_LABEL, desc: 'Eenmalige setup — intake, training, agenda-koppeling en go-live' },
-  { plan: 'Groei', prijs: GROEI_SETUP_LABEL, desc: 'Eenmalige setup — intake, training, CRM-koppeling, multi-number config en testfase' },
+  { plan: 'Emma Start', prijs: START_SETUP_LABEL, desc: 'Self-serve: u richt Emma zelf in via het klantportaal, wij controleren mee' },
+  { plan: 'Emma Groei', prijs: GROEI_SETUP_LABEL, desc: 'Eenmalige setup — intake, training, agenda- en CRM-koppeling, testfase en go-live' },
+  { plan: 'Emma Compleet', prijs: COMPLEET_SETUP_LABEL, desc: 'Eenmalige setup — intake, training, multi-number config, workflows op maat en testfase' },
   { plan: 'Emma Enterprise', prijs: 'Op maat', desc: 'Setup inbegrepen in het maatwerktraject' },
 ];
 
 const faqs = [
   { q: 'Zijn de prijzen exclusief btw?', a: 'Ja, alle prijzen zijn exclusief 21% btw. Dit is standaard voor B2B-diensten in Nederland.' },
-  { q: 'Zijn er setup-kosten?', a: 'Ja: een eenmalige setup is van toepassing (Emma en Groei), voor intake, training op uw bedrijf, technische configuratie en go-live begeleiding. De exacte kosten bespreken we in het gesprek. WhatsApp zit in beide al inbegrepen. Geen andere verborgen kosten.' },
+  { q: 'Zijn er setup-kosten?', a: 'Emma Start kent geen setup: u richt Emma zelf in via het klantportaal. Bij Groei en Compleet is een eenmalige setup van toepassing, voor intake, training op uw bedrijf, technische configuratie en go-live begeleiding. De exacte kosten bespreken we in het gesprek. WhatsApp zit in beide al inbegrepen. Geen andere verborgen kosten.' },
   { q: 'Wat is inbegrepen in het maandabonnement?', a: 'Emma als omnichannel AI-agent: telefoon (AI-receptionist 24/7), WhatsApp (Business API — standaard inbegrepen, u betaalt hier nooit apart voor) en workflow-automatisering. Plus hosting, onderhoud, platform-updates, monitoring en support. U betaalt nooit extra per gesprek of bericht.' },
-  { q: 'Wat is het verschil tussen Emma en Groei?', a: 'Emma (€497/mnd) is de omnichannel AI-agent: AI-telefoniste 24/7 + WhatsApp + workflow-automatisering, agenda-integratie en tot 150 gesprekken per maand. Groei (€997/mnd) voegt onbeperkt gespreksvolume, CRM-integratie, multi-number en priority support toe. Een eenmalige setup is bij beide van toepassing — de exacte kosten bespreken we in het gesprek. Enterprise is op aanvraag.' },
+  { q: 'Wat is het verschil tussen Start, Groei en Compleet?', a: 'Emma Start (€149/mnd) is de AI-telefoniste: 24/7 opnemen, afspraken in uw agenda, 300 belminuten, zelf in te richten. Emma Groei (€299/mnd) voegt WhatsApp, CRM-koppeling, 1.000 belminuten en begeleide onboarding toe — daarom kiezen de meeste praktijken en bedrijven Groei. Emma Compleet (€497/mnd) is onbeperkt volume met workflows op maat, multi-number en priority support. Boven de belminuten geldt ' + OVERAGE_LABEL + '. Enterprise is op aanvraag.' },
+  { q: 'Wat gebeurt er als ik mijn belminuten opgebruik?', a: 'Dan blijft Emma gewoon opnemen. Extra minuten rekenen we af tegen €0,25 per minuut, zichtbaar op de factuur — geen afgekapte gesprekken, geen verrassingen. Zit u structureel boven uw bundel, dan is upgraden voordeliger; dat zien we samen in het dashboard.' },
+  { q: 'Wat houdt de garantie in?', a: GARANTIE + ': bent u in de eerste 14 dagen na go-live niet tevreden, dan zegt u op en storten we het abonnementsbedrag van die maand terug. De eenmalige setup (Groei/Compleet) valt buiten de garantie, omdat dat werk al is uitgevoerd.' },
   { q: 'Hoe werkt jaarlijkse betaling?', a: 'Bij jaarlijkse betaling bespaart u circa 16% (±2 maanden gratis). U betaalt het volledige jaarbedrag vooruit en ontvangt één factuur per jaar.' },
-  { q: 'Hoe snel ben ik live?', a: 'Emma en Groei: 7 werkdagen. Enterprise: afhankelijk van de scope. Na ondertekening ontvangt u direct een onboarding-plan.' },
-  { q: 'Kan ik upgraden van Emma naar Groei?', a: 'Ja, u kunt op elk moment upgraden van Emma naar Groei. U betaalt het verschil in maandabonnement; wat dit betekent voor de eenmalige setup bespreken we in het intake-gesprek.' },
-  { q: 'Is er een gratis proefperiode?', a: 'We bieden geen automatische proefperiode, maar wel een gratis AI scan van 30 minuten en een live demo. U ziet Emma in actie voordat u beslist.' },
+  { q: 'Hoe snel ben ik live?', a: 'Emma Start: zelf in 10 minuten via het klantportaal. Groei en Compleet: 7 werkdagen. Enterprise: afhankelijk van de scope. Na ondertekening ontvangt u direct een onboarding-plan.' },
+  { q: 'Kan ik upgraden?', a: 'Ja, u kunt op elk moment upgraden van Start naar Groei of van Groei naar Compleet. U betaalt het verschil in maandabonnement; wat dit betekent voor de eenmalige setup bespreken we in het intake-gesprek.' },
+  { q: 'Is er een gratis proefperiode?', a: 'U kunt Emma direct live proberen op deze site ("Bel Emma nu"), zonder account. Daarnaast geldt op elk pakket: ' + GARANTIE + '. En wilt u eerst sparren: een gratis adviesgesprek van 30 minuten.' },
 ];
 
 const vergelijkRows = [
-  ['AI-telefoon (24/7, NL-nummer)', '✓', '✓ onbeperkt'],
-  ['WhatsApp AI (Business API)', '✓', 'Onbeperkt'],
-  ['Workflow automation', '✓', 'Geavanceerd'],
-  ['Belminuten / gesprekken', 'Tot 150/mnd', 'Onbeperkt'],
-  ['Callscripts', '3 op maat', 'Onbeperkt'],
-  ['Agenda-integratie', '✓', '✓'],
-  ['CRM-integratie', '—', '✓ maatwerk'],
-  ['Multi-number', '—', '✓'],
-  ['Lead-melding Telegram', '—', '✓'],
-  ['Gespreksopnames', '—', '✓'],
-  ['Multi-team routing & escalatie', '—', '✓'],
-  ['Support reactietijd', '< 4 uur', '< 1 uur'],
-  ['Eenmalige setup', EMMA_SETUP_LABEL, GROEI_SETUP_LABEL],
-  ['Live binnen', '7 dgn', '7 dgn'],
+  ['AI-telefoon (24/7, NL-nummer)', '✓', '✓', '✓'],
+  ['Belminuten per maand', '300', '1.000', 'Onbeperkt'],
+  ['Extra minuten', OVERAGE_LABEL, OVERAGE_LABEL, '—'],
+  ['WhatsApp AI (Business API)', '—', '✓', 'Onbeperkt'],
+  ['Agenda-integratie', '✓', '✓', '✓'],
+  ['Lead-melding e-mail / Telegram', '✓', '✓', '✓'],
+  ['CRM-integratie', '—', '✓', '✓ maatwerk'],
+  ['Callscripts', '1 standaard', '3 op maat', 'Onbeperkt'],
+  ['Workflows op maat (n8n)', '—', '—', '✓'],
+  ['Multi-number', '—', '—', '✓'],
+  ['Gespreksopnames', '—', '—', '✓'],
+  ['Multi-team routing & escalatie', '—', '—', '✓'],
+  ['Support reactietijd', 'e-mail, < 1 werkdag', '< 4 uur', '< 1 uur'],
+  ['Onboarding', 'Self-serve', 'Begeleid, 7 werkdagen', 'Begeleid, 7 werkdagen'],
+  ['Eenmalige setup', START_SETUP_LABEL, GROEI_SETUP_LABEL, COMPLEET_SETUP_LABEL],
+  ['Garantie', GARANTIE_KORT, GARANTIE_KORT, GARANTIE_KORT],
 ];
 
 // Service + Offer schema per tier — AI Overview citation trigger (P1 audit fix).
@@ -216,21 +250,21 @@ const productOfferGraph = {
   '@graph': [
     {
       '@type': 'Service',
-      '@id': 'https://aanloopai.nl/tarieven/#emma',
-      name: 'Aanloop AI — Emma',
+      '@id': 'https://aanloopai.nl/tarieven/#start',
+      name: 'Aanloop AI — Emma Start',
       serviceType: 'Omnichannel AI Agent',
       provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
       areaServed: { '@type': 'Country', name: 'Nederland' },
-      description: 'Emma omnichannel AI-agent voor Nederlandse MKB: AI-telefoon 24/7 (NL-nummer, doorverbinden) + WhatsApp Business API (inbegrepen) + workflow-automatisering, agenda-integratie en dashboard. Live binnen 7 werkdagen.',
+      description: 'Emma Start — AI-telefoniste voor Nederlandse MKB: 24/7 opnemen op een NL-nummer, afspraken in de agenda, 300 belminuten per maand, zelf in 10 minuten live. 14 dagen niet goed, geld terug.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       category: 'Omnichannel AI Agent',
       offers: {
         '@type': 'Offer',
-        price: '497',
+        price: '149',
         priceCurrency: 'EUR',
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
-          price: '497',
+          price: '149',
           priceCurrency: 'EUR',
           unitText: 'maand',
           referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
@@ -245,20 +279,48 @@ const productOfferGraph = {
     {
       '@type': 'Service',
       '@id': 'https://aanloopai.nl/tarieven/#groei',
-      name: 'Aanloop AI — Groei',
+      name: 'Aanloop AI — Emma Groei',
       serviceType: 'Omnichannel AI Agent',
       provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
       areaServed: { '@type': 'Country', name: 'Nederland' },
-      description: 'Emma omnichannel AI-agent met onbeperkt volume voor Nederlandse MKB: alles uit Emma plus onbeperkt gespreksvolume, multi-number (meerdere NL-nummers), CRM-integratie (HubSpot/Pipedrive), geavanceerde workflow-automatisering en priority support.',
+      description: 'Emma Groei — telefoon + WhatsApp voor Nederlandse MKB: 1.000 belminuten, CRM-koppeling (HubSpot/Pipedrive), tot 3 callscripts, begeleide onboarding en live binnen 7 werkdagen. 14 dagen niet goed, geld terug.',
       brand: { '@type': 'Brand', name: 'Aanloop AI' },
       category: 'Omnichannel AI Agent',
       offers: {
         '@type': 'Offer',
-        price: '997',
+        price: '299',
         priceCurrency: 'EUR',
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
-          price: '997',
+          price: '299',
+          priceCurrency: 'EUR',
+          unitText: 'maand',
+          referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
+        },
+        availability: 'https://schema.org/InStock',
+        url: 'https://aanloopai.nl/start/',
+        seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+        eligibleRegion: { '@type': 'Country', name: 'Nederland' },
+        priceValidUntil: '2026-12-31',
+      },
+    },
+    {
+      '@type': 'Service',
+      '@id': 'https://aanloopai.nl/tarieven/#compleet',
+      name: 'Aanloop AI — Emma Compleet',
+      serviceType: 'Omnichannel AI Agent',
+      provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+      areaServed: { '@type': 'Country', name: 'Nederland' },
+      description: 'Emma Compleet — omnichannel AI-agent met onbeperkt volume voor Nederlandse MKB: alles uit Groei plus onbeperkt gespreksvolume, multi-number, n8n-workflows op maat, gespreksopnames, multi-team routing en priority support. 14 dagen niet goed, geld terug.',
+      brand: { '@type': 'Brand', name: 'Aanloop AI' },
+      category: 'Omnichannel AI Agent',
+      offers: {
+        '@type': 'Offer',
+        price: '497',
+        priceCurrency: 'EUR',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: '497',
           priceCurrency: 'EUR',
           unitText: 'maand',
           referenceQuantity: { '@type': 'QuantitativeValue', value: 1, unitText: 'maand' },
@@ -394,7 +456,7 @@ const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 :
 
 <BaseLayout
   title="AI-Agent Prijs Nederland 2026 — Tarieven Aanloop AI"
-  description="Emma AI-agent vanaf €497/mnd (WhatsApp inbegrepen), Groei €997/mnd. Setup op aanvraag. Transparante tarieven, geen exit-fees — live in 7 werkdagen."
+  description="Emma AI-telefoniste vanaf €149/mnd. Groei €299/mnd (telefoon + WhatsApp + CRM), Compleet €497/mnd (onbeperkt + workflows). 14 dagen niet goed, geld terug. Transparante tarieven, geen exit-fees."
   schema={productOfferGraph}
   faqSchema={faqs.map(f => ({ question: f.q, answer: f.a }))}
 >
@@ -440,7 +502,7 @@ const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 :
   <!-- Pricing cards -->
   <section class="section">
     <div class="container-page">
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 max-w-6xl mx-auto">
         {plans.map((plan) => (
           <div class:list={[
             'relative rounded-2xl p-8 flex flex-col reveal',
@@ -512,6 +574,24 @@ const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 :
       </div>
 
       <p class="text-center text-xs text-slate-400 mt-8">Alle prijzen exclusief 21% btw · {SETUP_ZIN}</p>
+    </div>
+  </section>
+
+  <!-- Garantie + extra minuten — risico ligt bij ons, niet bij u -->
+  <section id="garantie" class="section-tight border-y border-slate-200 bg-emerald-50/40">
+    <div class="container-page">
+      <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        <div class="bg-white rounded-2xl border border-emerald-100 p-6">
+          <p class="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">Garantie</p>
+          <h2 class="text-xl font-bold text-navy">{GARANTIE}.</h2>
+          <p class="mt-2 text-sm text-slate-600 leading-relaxed">Op elk Emma-pakket. Niet tevreden in de eerste 14 dagen na go-live? Opzeggen en u krijgt het abonnementsbedrag van die maand terug. De eenmalige setup (Groei/Compleet) valt buiten de garantie — dat werk is dan al gedaan.</p>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-6">
+          <p class="text-xs font-semibold uppercase tracking-widest text-brand-indigo mb-2">Boven uw belminuten</p>
+          <h2 class="text-xl font-bold text-navy">{OVERAGE_LABEL}.</h2>
+          <p class="mt-2 text-sm text-slate-600 leading-relaxed">Emma blijft gewoon opnemen. Extra minuten staan apart op de factuur; structureel erboven? Dan is upgraden voordeliger en dat zien we samen in het dashboard. Geen afgekapte gesprekken, geen verrassingen.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -636,7 +716,7 @@ const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 :
           <p class="text-xs text-slate-500 mb-4">Eenmalige setup op aanvraag</p>
           <div class="pt-4 border-t border-slate-200">
             <p class="text-xs text-slate-500 mb-1">Vergelijk losse afname:</p>
-            <p class="text-sm text-slate-700">Los: website-bouw + Emma-setup + integratie eenmalig (op aanvraag), daarna website-onderhoud (maandtarief op aanvraag) + €497 Emma per maand. In de bundel vervallen de Emma-setup en de integratie — <span class="font-bold text-brand-emerald">voordeliger bij de start</span> — en betaalt u <span class="font-bold text-brand-emerald">€540 per jaar minder</span>.</p>
+            <p class="text-sm text-slate-700">Los: website-bouw + Emma-setup + integratie eenmalig (op aanvraag), daarna website-onderhoud (maandtarief op aanvraag) + €497 Emma Compleet per maand. In de bundel vervallen de Emma-setup en de integratie — <span class="font-bold text-brand-emerald">voordeliger bij de start</span> — en betaalt u <span class="font-bold text-brand-emerald">€540 per jaar minder</span>.</p>
           </div>
         </div>
       </div>
@@ -649,10 +729,10 @@ const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 :
       <div class="mb-10 text-center reveal">
         <p class="eyebrow mb-3">Waarom Aanloop AI?</p>
         <h2 class="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tightest text-navy text-balance">
-          €497 managed omnichannel vs €99–€299 zelf-service tools.
+          Dezelfde prijsklasse als zelf-service tools — mét implementatie.
         </h2>
         <p class="mt-4 text-slate-600 leading-relaxed max-w-2xl mx-auto">
-          Er zijn AI-tools vanaf €99/mnd. Op papier voordeliger. In de praktijk betaalt u tijd, integratiewerk en compliance-risico. Hier is wat Emma precies dekt — telefoon, WhatsApp en workflow in één.
+          Emma Start kost €149, net als de bekende zelf-service tools. Het verschil zit in wat u níet zelf hoeft te doen: AVG-inrichting, script-tuning, agenda- en CRM-koppeling en een Nederlands team dat meekijkt. Hier is wat Emma precies dekt — telefoon, WhatsApp en workflow in één.
         </p>
       </div>
 
@@ -662,7 +742,7 @@ const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 :
             <tr class="border-b border-slate-200 bg-slate-50">
               <th class="text-left py-4 px-5 text-slate-500 font-medium">Wat krijgt u?</th>
               <th class="text-center py-4 px-4 font-bold text-slate-500 w-[26%]">Zelf-service tools<br/><span class="text-xs font-normal">€99–€299/mnd</span></th>
-              <th class="text-center py-4 px-4 font-bold text-navy bg-brand-emerald/5 w-[26%]">Aanloop AI<br/><span class="text-xs font-normal text-brand-emerald">Emma €497/mnd managed</span></th>
+              <th class="text-center py-4 px-4 font-bold text-navy bg-brand-emerald/5 w-[26%]">Aanloop AI<br/><span class="text-xs font-normal text-brand-emerald">Emma vanaf €149/mnd, managed</span></th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
@@ -780,10 +860,10 @@ const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 :
             <label class="text-xs font-semibold text-slate-600 uppercase tracking-wide block mb-2">Aanloop pakket</label>
             <div class="grid grid-cols-2 gap-1.5" role="radiogroup" aria-label="Aanloop pakket selectie">
               {[
-                { id: 'emma', label: 'Emma', sub: `€${EMMA.monthly}/m`, monthly: EMMA.monthly, setup: EMMA.setup },
                 { id: 'groei', label: 'Groei', sub: `€${GROEI.monthly}/m`, monthly: GROEI.monthly, setup: GROEI.setup },
+                { id: 'compleet', label: 'Compleet', sub: `€${COMPLEET.monthly}/m`, monthly: COMPLEET.monthly, setup: COMPLEET.setup },
               ].map(t => (
-                <button type="button" class="tco-tier-btn rounded-lg border border-slate-300 bg-white px-2 py-2 text-center hover:border-navy focus:outline-none focus:ring-2 focus:ring-brand-indigo aria-checked:border-navy aria-checked:bg-navy aria-checked:text-white" role="radio" aria-checked={t.id === 'emma' ? 'true' : 'false'} data-tier={t.id} data-monthly={t.monthly} data-setup={t.setup}>
+                <button type="button" class="tco-tier-btn rounded-lg border border-slate-300 bg-white px-2 py-2 text-center hover:border-navy focus:outline-none focus:ring-2 focus:ring-brand-indigo aria-checked:border-navy aria-checked:bg-navy aria-checked:text-white" role="radio" aria-checked={t.id === 'compleet' ? 'true' : 'false'} data-tier={t.id} data-monthly={t.monthly} data-setup={t.setup}>
                   <span class="block text-xs font-bold">{t.label}</span>
                   <span class="block text-[10px] opacity-70">{t.sub}</span>
                 </button>
@@ -931,16 +1011,18 @@ const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 :
           <thead>
             <tr class="border-b border-slate-200">
               <th class="text-left py-4 pr-6 text-slate-500 font-medium w-2/5">Functie</th>
-              <th class="text-center py-4 px-3 font-bold text-navy">Emma<br/><span class="text-xs font-normal text-slate-400">€497/mnd</span></th>
-              <th class="text-center py-4 px-3 font-bold text-navy bg-navy/5 rounded-t-xl">Groei<br/><span class="text-xs font-normal text-slate-400">€997/mnd</span></th>
+              <th class="text-center py-4 px-3 font-bold text-navy">Start<br/><span class="text-xs font-normal text-slate-400">€{START.monthly}/mnd</span></th>
+              <th class="text-center py-4 px-3 font-bold text-navy bg-navy/5 rounded-t-xl">Groei<br/><span class="text-xs font-normal text-slate-400">€{GROEI.monthly}/mnd</span></th>
+              <th class="text-center py-4 px-3 font-bold text-navy">Compleet<br/><span class="text-xs font-normal text-slate-400">€{COMPLEET.monthly}/mnd</span></th>
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-100">
-            {vergelijkRows.map(([feature, emma, groei]) => (
+            {vergelijkRows.map(([feature, start, groei, compleet]) => (
               <tr>
                 <td class="py-3 pr-6 text-slate-700">{feature}</td>
-                <td class="py-3 px-3 text-center text-slate-500">{emma}</td>
+                <td class="py-3 px-3 text-center text-slate-500">{start}</td>
                 <td class="py-3 px-3 text-center text-navy font-medium bg-navy/5">{groei}</td>
+                <td class="py-3 px-3 text-center text-slate-700">{compleet}</td>
               </tr>
             ))}
           </tbody>

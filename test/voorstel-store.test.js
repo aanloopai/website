@@ -52,7 +52,7 @@ describe('voorstel-store', () => {
     });
     expect(res.token).toMatch(/^[0-9a-f]{64}$/);
     const row = env.PORTAL_DB.rows[0];
-    expect(row.prijs_cent).toBe(49700);
+    expect(row.prijs_cent).toBe(29900);
     expect(row.setup_cent).toBe(49500);
     expect(row.expires_at - row.created_at).toBe(VOORSTEL_TTL_MS);
 
@@ -61,7 +61,7 @@ describe('voorstel-store', () => {
     expect(row.intake_id).toBe('intake-1');
     expect(row.service_id).toBe('voice-agent');
     expect(row.product_key).toBe('emma-telefoon');
-    expect(row.tier_naam).toBe('Starter');
+    expect(row.tier_naam).toBe('Groei');
 
     // roi_json en copy_json zijn structureel verschillend (roi heeft "modus",
     // copy heeft "kop"). Als de bind-volgorde ze verwisselt, staat het
@@ -89,7 +89,7 @@ describe('voorstel-store', () => {
       answers: { gemiste_gesprekken_week: '5' },
     });
     const publiek = await leesVoorstelViaToken(env, token);
-    expect(publiek.prijsCent).toBe(49700);
+    expect(publiek.prijsCent).toBe(29900);
     expect(JSON.stringify(publiek)).not.toContain('jan@example.nl');
     expect(JSON.stringify(publiek)).not.toContain('0612345678');
   });

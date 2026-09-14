@@ -3,20 +3,17 @@
 // `key` matches services.product_key. `prijsCent` + `betaling` drive Mollie checkout.
 // NB: tier `naam` is stored in D1 (service_orders.tier) — never rename/remove, only reprice.
 
-// Portal/Mollie pricing is checkout-critical (D1 tier-namen). Use LEGACY constants so
-// monthlyCent stays identical — marketing pages use the new Emma ladder (START/CORE/PRO).
-// NB: EMMA/GROEI hier zijn de PUBLIEKE marketing-prijspunten (pricing.ts) — alleen
-// hun .setup wordt gebruikt. De checkout-kritische maandprijs blijft van de LEGACY
-// PORTAL_CORE_497/PORTAL_GROEI_997 komen (via CORE/GROEI hieronder), anders identiek
-// aan hoe het al was. Alias EMMA/GROEI naar iets anders dan CORE/GROEI om een
-// duplicate-identifier build-fout te voorkomen.
+// Portal/Mollie pricing is checkout-critical (D1 tier-namen 'Starter'/'Groei'/
+// 'Partner' nooit hernoemen). Per 2026-09-15 volgen de bedragen de publieke ladder
+// uit pricing.ts: Starter = Start €149 (geen setup) · Groei €299 · Compleet €497 ·
+// Partner op aanvraag. Bestaande Mollie-abonnementen behouden hun oude bedrag.
 import {
-  PORTAL_CORE_497 as CORE,
-  PORTAL_GROEI_997 as GROEI,
-  PORTAL_CORE_MND as CORE_MND,
+  PORTAL_STARTER as STARTER,
+  PORTAL_GROEI as GROEI,
+  PORTAL_COMPLEET as COMPLEET,
+  PORTAL_STARTER_MND as STARTER_MND,
   PORTAL_GROEI_MND as GROEI_MND,
-  EMMA as EMMA_PRICING,
-  GROEI as GROEI_PRICING,
+  PORTAL_COMPLEET_MND as COMPLEET_MND,
 } from './pricing';
 
 export type TierBetaling = 'maandelijks' | 'eenmalig' | 'aanvraag';
@@ -49,8 +46,9 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'Neemt inkomende telefoongesprekken 24/7 aan, plant afspraken in en legt leads vast. Nederlandse stem, klinkt natuurlijk.',
     meerInfoUrl: 'https://aanloopai.nl/diensten/emma/',
     tiers: [
-      { naam: 'Starter', prijs: CORE_MND, prijsCent: CORE.monthlyCent, setupCent: EMMA_PRICING.setup * 100, betaling: 'maandelijks', kenmerken: ['Max 150 gesprekken/mnd', 'Emma WhatsApp inbegrepen', 'Eigen belscript', 'Transcripties', 'Live in 7 werkdagen'] },
-      { naam: 'Groei', prijs: GROEI_MND, prijsCent: GROEI.monthlyCent, setupCent: GROEI_PRICING.setup * 100, betaling: 'maandelijks', kenmerken: ['Onbeperkt gesprekken', 'Emma WhatsApp inbegrepen', 'CRM-koppeling', 'Priority support <4u'] },
+      { naam: 'Starter', prijs: STARTER_MND, prijsCent: STARTER.monthlyCent, setupCent: STARTER.setup * 100, betaling: 'maandelijks', kenmerken: ['AI-telefoon 24/7', '300 belminuten/mnd', 'Afspraken in uw agenda', 'Lead-melding e-mail/Telegram', 'Self-serve, geen setup', '14 dagen niet goed, geld terug'] },
+      { naam: 'Groei', prijs: GROEI_MND, prijsCent: GROEI.monthlyCent, setupCent: GROEI.setup * 100, betaling: 'maandelijks', kenmerken: ['1.000 belminuten/mnd', 'WhatsApp inbegrepen', 'CRM-koppeling (HubSpot/Pipedrive)', 'Tot 3 callscripts', 'Begeleide onboarding, 7 werkdagen', '14 dagen niet goed, geld terug'] },
+      { naam: 'Compleet', prijs: COMPLEET_MND, prijsCent: COMPLEET.monthlyCent, setupCent: COMPLEET.setup * 100, betaling: 'maandelijks', kenmerken: ['Onbeperkt volume + WhatsApp', 'Multi-number', 'Workflows op maat (n8n)', 'Gespreksopnames', 'Priority support < 1 uur', '14 dagen niet goed, geld terug'] },
       { naam: 'Partner', prijs: 'Op aanvraag', prijsCent: null, setupCent: 0, betaling: 'aanvraag', kenmerken: ['Onbeperkt Emma', 'Custom workflows', 'Dedicated accountmanager', 'SLA 99,9%'] },
     ],
   },

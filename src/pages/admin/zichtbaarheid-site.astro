@@ -192,7 +192,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         if (!e.connected) { con.classList.add('hidden'); none.classList.remove('hidden'); return; }
         con.classList.remove('hidden'); none.classList.add('hidden');
         document.getElementById('e-range').textContent = 't/m ' + e.end;
-        var order = ['tel', 'whatsapp', 'route', 'mail', 'form'];
+        var order = ['tel', 'whatsapp', 'route', 'mail', 'form', 'demo'];
         document.getElementById('e-rows').innerHTML = order.map(function (k) {
           return '<tr><td>' + esc((e.labels || {})[k] || k) + '</td><td class="num">' + n((e.current || {})[k]) + '</td><td class="num">' + n((e.previous || {})[k]) + '</td></tr>';
         }).join('');

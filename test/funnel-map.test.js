@@ -3,10 +3,10 @@ import { getFunnelEntry, isSellable, FUNNEL_MAP } from '../src/data/funnel-map.t
 import { getCatalogTier } from '../src/data/portal-catalog.ts';
 
 describe('funnel-map', () => {
-  it('mapt voice-agent naar de betaalbare emma-telefoon Starter-tier', () => {
+  it('mapt voice-agent naar de begeleide emma-telefoon Groei-tier (2026-09-15: telefoon + WhatsApp, intake)', () => {
     const entry = getFunnelEntry('voice-agent');
     expect(entry.productKey).toBe('emma-telefoon');
-    expect(entry.tierNaam).toBe('Starter');
+    expect(entry.tierNaam).toBe('Groei');
     expect(entry.sellable).toBe(true);
   });
 

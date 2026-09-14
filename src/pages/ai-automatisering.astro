@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { EMMA, GROEI, EMMA_MND, GROEI_MND, EMMA_LABEL, GROEI_LABEL, EMMA_SETUP_LABEL, GROEI_SETUP_LABEL, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../data/pricing';
+import { START, GROEI, COMPLEET, START_MND, GROEI_MND, COMPLEET_MND, START_LABEL, GROEI_LABEL, COMPLEET_LABEL, START_SETUP_LABEL, GROEI_SETUP_LABEL, COMPLEET_SETUP_LABEL, GARANTIE, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../data/pricing';
 
 const serviceSchema = {
   '@context': 'https://schema.org',
@@ -14,7 +14,7 @@ const serviceSchema = {
     url: 'https://aanloopai.nl',
   },
   areaServed: { '@type': 'Country', name: 'Nederland' },
-  description: `AI automatisering voor het Nederlandse MKB: telefonie, WhatsApp, facturatie, documentverwerking, leads en e-mail automatisch afhandelen met AI-agents. AVG-compliant, n8n self-hosted in Nederland. Emma ${EMMA_MND}, Groei ${GROEI_MND}.`,
+  description: `AI automatisering voor het Nederlandse MKB: telefonie, WhatsApp, facturatie, documentverwerking, leads en e-mail automatisch afhandelen met AI-agents. AVG-compliant, n8n self-hosted in Nederland. Start ${START_MND}, Groei ${GROEI_MND}, Compleet ${COMPLEET_MND}.`,
   audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
   hasOfferCatalog: {
     '@type': 'OfferCatalog',
@@ -22,13 +22,13 @@ const serviceSchema = {
     itemListElement: [
       {
         '@type': 'Offer',
-        name: 'Emma',
-        price: EMMA.monthly.toFixed(2),
+        name: 'Start',
+        price: START.monthly.toFixed(2),
         priceCurrency: 'EUR',
-        description: `Emma AI-telefoniste tot 150 gesprekken per maand, agenda-integratie, dashboard. Eenmalige setup ${EMMA_SETUP_LABEL}. Live binnen 7 werkdagen.`,
+        description: `Emma AI-telefoniste 24/7, 300 belminuten per maand, agenda-integratie, lead-melding. Self-serve onboarding, ${START_SETUP_LABEL}.`,
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
-          price: EMMA.monthly.toFixed(2),
+          price: START.monthly.toFixed(2),
           priceCurrency: 'EUR',
           unitText: 'maand',
         },
@@ -38,10 +38,23 @@ const serviceSchema = {
         name: 'Groei',
         price: GROEI.monthly.toFixed(2),
         priceCurrency: 'EUR',
-        description: `Emma AI-telefoniste onbeperkt + Emma WhatsApp-agent + CRM-integratie + workflow automation. Eenmalige setup ${GROEI_SETUP_LABEL}. Meest gekozen.`,
+        description: `Emma AI-telefoniste 1.000 belminuten per maand, telefoon + WhatsApp inbegrepen, CRM-koppeling, dashboard. Eenmalige setup ${GROEI_SETUP_LABEL}. Meest gekozen.`,
         priceSpecification: {
           '@type': 'UnitPriceSpecification',
           price: GROEI.monthly.toFixed(2),
+          priceCurrency: 'EUR',
+          unitText: 'maand',
+        },
+      },
+      {
+        '@type': 'Offer',
+        name: 'Compleet',
+        price: COMPLEET.monthly.toFixed(2),
+        priceCurrency: 'EUR',
+        description: `Emma AI-telefoniste onbeperkt + onbeperkte WhatsApp + CRM-integratie + n8n-workflows op maat. Eenmalige setup ${COMPLEET_SETUP_LABEL}.`,
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: COMPLEET.monthly.toFixed(2),
           priceCurrency: 'EUR',
           unitText: 'maand',
         },
@@ -70,7 +83,7 @@ const faqItems = [
   { question: 'Wat is AI automatisering precies?', answer: 'AI automatisering is het automatisch laten uitvoeren van bedrijfsprocessen door AI-agents die taal begrijpen en zelfstandig beslissingen nemen. Anders dan klassieke automatisering werkt het ook met ongestructureerde input zoals telefoongesprekken, e-mails en losse documenten. Aanloop AI levert dit als beheerde dienst voor het Nederlandse MKB.' },
   { question: 'Welke processen kan ik automatiseren met AI?', answer: 'De meest voorkomende toepassingen zijn telefonie (Emma), WhatsApp en klantenservice (Emma), facturatie- en documentverwerking, leadopvolging, afspraken inplannen en terugkerende e-mailworkflows. In de praktijk is elk repetitief proces met een duidelijke logica een kandidaat. Tijdens de gratis AI-scan bepalen we samen welke processen de hoogste ROI opleveren.' },
   { question: 'Wat is het verschil tussen AI automatisering en RPA?', answer: 'RPA (Robotic Process Automation) volgt vaste, vooraf geprogrammeerde klikpaden en breekt zodra een scherm of formulier verandert. AI automatisering begrijpt de bedoeling achter een gesprek, e-mail of document en past zich aan. Voor processen met ongestructureerde input is AI flexibeler; voor strikt repetitieve digitale taken kan RPA volstaan. Vaak combineren we beide.' },
-  { question: 'Wat kost AI automatisering bij Aanloop AI?', answer: 'Aanloop AI hanteert vaste maandpakketten. Emma kost €497 per maand. Groei kost €997 per maand (meest gekozen) en bevat Emma en workflow automation. Een eenmalige setup is bij beide van toepassing, op aanvraag. Enterprise is op maat geprijsd. Alle bedragen zijn exclusief 21% btw.' },
+  { question: 'Wat kost AI automatisering bij Aanloop AI?', answer: 'Aanloop AI hanteert vaste maandpakketten. Start kost €149 per maand (telefoon, 300 belminuten, self-serve, geen setup). Groei kost €299 per maand (meest gekozen, 1.000 belminuten, telefoon + WhatsApp, CRM). Compleet kost €497 per maand (onbeperkt volume, multi-number, workflows op maat). Bij Groei en Compleet is een eenmalige setup van toepassing, op aanvraag. Enterprise is op maat geprijsd. Alle bedragen zijn exclusief 21% btw. Op elk pakket: 14 dagen niet goed, geld terug.' },
   { question: 'Hoe lang duurt het voordat AI automatisering live staat?', answer: 'Standaard staat een implementatie binnen 7 werkdagen live. Na de gratis AI-scan en het voorstel bouwen en trainen we de AI op uw kennisbank, bedrijfstoon en processen, koppelen we uw agenda, CRM en telefonie, en doorlopen we een testronde met echte scenario\'s voordat het volledig live gaat.' },
   { question: 'Is AI automatisering AVG-compliant?', answer: 'Ja. Aanloop AI draait n8n self-hosted in Nederland en verwerkt persoonsgegevens binnen de EU. Voor LLM- en voice-providers zoals OpenAI, Anthropic en ElevenLabs zijn verwerkersovereenkomsten afgesloten. Bewaartermijnen zijn instelbaar en u behoudt volledige controle over uw data.' },
   { question: 'Vervangt AI automatisering mijn medewerkers?', answer: 'Nee, AI automatisering neemt vooral repetitief en eerstelijnswerk over. Uw medewerkers houden tijd over voor complexe gesprekken, persoonlijk contact en groei-werk. De beste resultaten ontstaan in een hybride model: AI vangt het routinewerk op, mensen doen de uitzonderingen en het maatwerk.' },
@@ -80,7 +93,7 @@ const faqItems = [
 
 <BaseLayout
   title="AI Automatisering voor het MKB — Aanloop AI Nederland"
-  description="AI automatisering voor het MKB: telefonie, WhatsApp, facturatie en e-mail automatisch afhandelen. AVG-compliant, live in 7 werkdagen, vanaf €497/mnd."
+  description="AI automatisering voor het MKB: telefonie, WhatsApp, facturatie en e-mail automatisch afhandelen. AVG-compliant, live in 7 werkdagen, vanaf €149/mnd."
   schema={serviceSchema}
   faqSchema={faqItems}
 >
@@ -185,7 +198,7 @@ const faqItems = [
   <section class="section">
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Wat kost AI automatisering?</h2>
-      <p class="text-slate-700 leading-relaxed mb-4">Aanloop AI werkt met vaste, transparante maandpakketten — geen kosten per gesprek of per bericht, geen verrassingen. Alle bedragen zijn exclusief 21% btw.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Aanloop AI werkt met vaste, transparante maandpakketten — geen kosten per gesprek of per bericht, geen verrassingen. Alle bedragen zijn exclusief 21% btw. Op elk pakket: {GARANTIE}.</p>
       <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm my-6">
         <table class="w-full text-sm">
           <thead class="bg-slate-50">
@@ -198,19 +211,25 @@ const faqItems = [
           </thead>
           <tbody>
             <tr class="bg-white">
-              <td class="p-4 font-medium text-navy">Emma</td>
-              <td class="p-4 text-slate-700">{EMMA_LABEL}</td>
-              <td class="p-4 text-slate-700">{EMMA_SETUP_LABEL}</td>
-              <td class="p-4 text-slate-700">Emma AI-telefoniste tot 150 gesprekken, agenda-integratie, dashboard</td>
+              <td class="p-4 font-medium text-navy">Start</td>
+              <td class="p-4 text-slate-700">{START_LABEL}</td>
+              <td class="p-4 text-slate-700">{START_SETUP_LABEL}</td>
+              <td class="p-4 text-slate-700">Emma AI-telefoniste 24/7, 300 belminuten, agenda-integratie, self-serve onboarding</td>
             </tr>
             <tr class="bg-slate-50/40">
               <td class="p-4 font-medium text-navy">Groei <span class="text-xs text-brand-indigo">(meest gekozen)</span></td>
               <td class="p-4 text-slate-700">{GROEI_LABEL}</td>
               <td class="p-4 text-slate-700">{GROEI_SETUP_LABEL}</td>
-              <td class="p-4 text-slate-700">Emma onbeperkt + Emma WhatsApp-agent + CRM-integratie + workflow automation</td>
+              <td class="p-4 text-slate-700">1.000 belminuten, telefoon + WhatsApp inbegrepen, CRM-koppeling, tot 3 callscripts</td>
             </tr>
             <tr class="bg-white">
-              <td class="p-4 font-medium text-navy">Partner</td>
+              <td class="p-4 font-medium text-navy">Compleet</td>
+              <td class="p-4 text-slate-700">{COMPLEET_LABEL}</td>
+              <td class="p-4 text-slate-700">{COMPLEET_SETUP_LABEL}</td>
+              <td class="p-4 text-slate-700">Onbeperkt volume + onbeperkte WhatsApp, multi-number, n8n-workflows op maat, priority support</td>
+            </tr>
+            <tr class="bg-slate-50/40">
+              <td class="p-4 font-medium text-navy">Enterprise</td>
               <td class="p-4 text-slate-700">Op maat</td>
               <td class="p-4 text-slate-700">Op maat</td>
               <td class="p-4 text-slate-700">Volledige AI automatisering met custom workflows, dedicated begeleiding en SLA</td>
@@ -218,7 +237,7 @@ const faqItems = [
           </tbody>
         </table>
       </div>
-      <p class="text-slate-700 leading-relaxed mb-4">Het Emma-pakket is de laagdrempelige instap, vooral geschikt om met telefonie-automatisering te beginnen. Het Groei-pakket combineert telefoon én WhatsApp met workflow automation en is daardoor de meest gekozen optie voor MKB-bedrijven die meerdere processen ineens willen automatiseren. Partner is maatwerk voor bedrijven met complexe of bedrijfsbrede automatisering.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Het Start-pakket is de laagdrempelige instap om zelf met telefonie-automatisering te beginnen. Het Groei-pakket combineert telefoon én WhatsApp met CRM-koppeling en is de meest gekozen optie. Compleet biedt onbeperkt volume en workflow automation op maat voor MKB-bedrijven die meerdere processen ineens willen automatiseren. Enterprise is maatwerk voor bedrijven met complexe of bedrijfsbrede automatisering.</p>
       <p class="text-slate-700 leading-relaxed">Een volledig overzicht met alle pakketten en opties vindt u op de <a href="/tarieven/" class="text-brand-indigo hover:underline">tarievenpagina</a>.</p>
     </div>
   </section>

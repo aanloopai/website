@@ -1,14 +1,17 @@
-// Guard voor de prijs- en claim-consistentie-audit van 2026-08-25.
-// Kanon (src/data/pricing.ts + /tarieven): Emma €497 (tot 150 gesprekken,
-// tot 3 callscripts) · Groei €997 (onbeperkt) · derde tier heet "Enterprise"
-// (niet "Partner" of "Growth") · setup publiek "op aanvraag" · go-live-claim
-// "7 werkdagen". Faalt deze test, dan is een oude/verzonnen claim teruggekeerd.
+// Guard voor de prijs- en claim-consistentie.
+// Kanon per 2026-09-15 (owner, src/data/pricing.ts + /tarieven):
+//   Emma Start €149 (300 belminuten, telefoon, self-serve, geen setup)
+//   Emma Groei €299 (1.000 belminuten, telefoon + WhatsApp, CRM, tot 3 callscripts, setup op aanvraag)
+//   Emma Compleet €497 (onbeperkt, multi-number, workflows op maat, priority, setup op aanvraag)
+//   Enterprise op aanvraag · extra minuten €0,25 · 14 dagen niet goed, geld terug.
+// Dit vervangt de ladder Emma €497 / Groei €997 (aug-sep 2026). "€997", "vanaf
+// €497", "150 gesprekken" en "Emma €497" zonder tier-naam zijn dus oude claims.
 //
-// Aanscherping 2026-09-10 (owner): €49, €197 en €129 mogen NERGENS meer op de
-// site staan — ook niet als "dat kostte het vroeger" en ook niet voor website/
-// webshop-maandtarieven. Er bestaat geen prijs of pakket onder €497; website-
-// maandtarieven zijn "op aanvraag". De rectificatie-pagina (vs Schedulio)
-// corrigeert het publiek zónder het oude bedrag te herhalen.
+// Ouder, blijft gelden: €49 / €197 / €129 / €249 / €397 (WhatsApp-Lite, website-
+// maandtarieven, founding) mogen NERGENS meer staan; website-maandtarieven zijn
+// "op aanvraag"; setup-bedragen zijn publiek "op aanvraag"; go-live-claim is
+// 7 werkdagen. De rectificatie-pagina (vs Schedulio) corrigeert zonder het oude
+// WhatsApp-bedrag te herhalen.
 import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
@@ -67,6 +70,14 @@ const BANNED = [
   [/\b(495|795) euro (eenmalige )?setup/u, 'setup-bedragen zijn publiek verborgen — "op aanvraag"'],
   [/setup van? €?(495|795)\b/iu, 'setup-bedragen zijn publiek verborgen — "op aanvraag"'],
   [/€1\.997\/maand/u, 'verzonnen beheerd-automatisering-tarief — custom is op maat'],
+  // Ladder 2026-09-15: Start €149 · Groei €299 · Compleet €497. Oude ladder-claims:
+  [/(€|&euro;)\s?997(?![0-9.,])/u, 'Groei €997 bestaat niet meer — onbeperkt volume is Emma Compleet €497'],
+  // Voluit geschreven bedragen: alleen in Emma/Groei-context (andere diensten hebben eigen prijzen).
+  [/(Emma|Groei(?!-))[^.\n]{0,80}\b997\s?(euro|EUR)\b|\b997\s?(euro|EUR)\b[^.\n]{0,80}(Emma|Groei(?!-))/iu, '"Groei 997 euro" — bestaat niet meer; onbeperkt volume is Emma Compleet 497 euro'],
+  [/(vanaf|v\.a\.)\s+(€|EUR)\s?497(?![0-9.,])/iu, '"vanaf €497" — instap is Emma Start €149'],
+  [/\b150 gesprekken/u, '"150 gesprekken" was de oude Emma-bundel — nu 300/1.000 belminuten of onbeperkt'],
+  [/Emma \(?€\s?497/u, '"Emma €497" zonder tier-naam — dat is Emma Compleet; Start €149 / Groei €299 bestaan ook'],
+  [/(€|&euro;)\s?497[–-]€?\s?997/u, 'oude range €497–€997 — nu €149–€497'],
 ];
 
 const isComment = (line) => {
@@ -93,7 +104,7 @@ describe('prijs- en claim-consistentie', () => {
     const body = readFileSync(RECTIFICATIE_PAGINA, 'utf8');
     expect(body).toMatch(/bestaat niet meer/);
     expect(body).toMatch(/11 augustus 2026/);
-    expect(body).toMatch(/€497/);
+    expect(body).toMatch(/€149/);
     expect(body).toMatch(/Heeft Aanloop AI een goedkoop WhatsApp-only instaptarief\?/);
     const code = body.split('\n').filter((l) => !isComment(l)).join('\n');
     expect(code).not.toMatch(/(€|&euro;)\s?49(?![0-9.,])/);

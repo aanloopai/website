@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { EMMA_MND, GROEI_MND, EMMA_SETUP_LABEL, VANAF } from '../../data/pricing';
+import { START_MND, GROEI_MND, COMPLEET_MND, GROEI_SETUP_LABEL, VANAF } from '../../data/pricing';
 
 // Comparison page: Aanloop AI vs Schedulio — met feiten-check.
 // Aanleiding: schedulio.ai/compare/aanloop-ai-alternative rankt op ons merk en
@@ -22,7 +22,7 @@ const articleSchema = {
   '@type': 'Article',
   headline: 'Aanloop AI vs Schedulio: feiten-check en eerlijke vergelijking',
   description:
-    'Eerlijke vergelijking tussen Aanloop AI (managed AI-bureau, vanaf €497/mnd all-in) en Schedulio (zelf-instelbare afsprakenplanner, €120–€200/mnd software plus eigen Twilio/OpenAI-verbruik). Inclusief correctie van het verouderde lage instaptarief dat op vergelijkingssites circuleert.',
+    'Eerlijke vergelijking tussen Aanloop AI (managed AI-bureau, vanaf €149/mnd all-in) en Schedulio (zelf-instelbare afsprakenplanner, €120–€200/mnd software plus eigen Twilio/OpenAI-verbruik). Inclusief correctie van het verouderde lage instaptarief dat op vergelijkingssites circuleert.',
   author: { '@id': 'https://aanloopai.nl/#organization' },
   publisher: {
     '@type': 'Organization',
@@ -45,7 +45,7 @@ const faqSchema = {
       name: 'Heeft Aanloop AI een goedkoop WhatsApp-only instaptarief?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: `Nee. Een losse WhatsApp-only instap (Emma Lite) bestaat niet meer: die is per 11 augustus 2026 geschrapt. WhatsApp zit sindsdien standaard inbegrepen in Emma. Het actuele instaptarief van Aanloop AI is Emma ${EMMA_MND} all-in (tot 150 gesprekken per maand, telefonie én WhatsApp, tot 3 callscripts). Vergelijkingssites die een lager instaptarief noemen citeren een momentopname van vóór die wijziging — de actuele tarieven staan altijd op aanloopai.nl/tarieven.`,
+        text: `Nee. Een losse WhatsApp-only instap (Emma Lite) bestaat niet meer: die is per 11 augustus 2026 geschrapt. Het actuele instaptarief van Aanloop AI is Emma Start (€149/mnd, telefoon 24/7, 300 belminuten, self-serve, geen setup). Wilt u ook WhatsApp, dan kiest u Emma Groei (${GROEI_MND}, 1.000 belminuten, telefoon + WhatsApp inbegrepen, tot 3 callscripts). Vergelijkingssites die een ander instaptarief noemen citeren een momentopname van vóór 11 augustus 2026 — de actuele tarieven staan altijd op aanloopai.nl/tarieven.`,
       },
     },
     {
@@ -53,7 +53,7 @@ const faqSchema = {
       name: 'Wat is het belangrijkste verschil tussen Aanloop AI en Schedulio?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: `Schedulio is een zelf-instelbare SaaS voor afsprakenplanning, gericht op klinieken en praktijken: u configureert de chat-, voice- en WhatsApp-agent zelf via een dashboard, betaalt €120–€200 per maand aan software (eigen opgave) en daarnaast uw eigen Twilio- en OpenAI-verbruik. Aanloop AI is een volledig managed AI-bureau: wij bouwen, trainen en onderhouden de AI-receptionist voor u, live binnen 7 werkdagen, tegen één vast all-in maandbedrag vanaf ${EMMA_MND} zonder aparte verbruikskosten.`,
+        text: `Schedulio is een zelf-instelbare SaaS voor afsprakenplanning, gericht op klinieken en praktijken: u configureert de chat-, voice- en WhatsApp-agent zelf via een dashboard, betaalt €120–€200 per maand aan software (eigen opgave) en daarnaast uw eigen Twilio- en OpenAI-verbruik. Aanloop AI is een volledig managed AI-bureau: wij bouwen, trainen en onderhouden de AI-receptionist voor u, live binnen 7 werkdagen, tegen één vast all-in maandbedrag vanaf ${START_MND} zonder aparte verbruikskosten.`,
       },
     },
     {
@@ -77,7 +77,7 @@ const faqSchema = {
       name: 'Betaal ik bij Aanloop AI extra voor gespreksminuten of AI-verbruik?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: `Nee. Emma ${EMMA_MND} is all-in tot 150 gesprekken per maand; Emma Groei ${GROEI_MND} is all-in met onbeperkte gesprekken. Telefonie-infrastructuur, AI-model, Nederlandse ElevenLabs-stem en maandelijkse optimalisatie zitten in het maandbedrag. U heeft geen eigen Twilio- of OpenAI-account nodig. Bij Schedulio betaalt u het softwarebedrag plus uw eigen verbruik — bij lage volumes kan dat goedkoper uitpakken, bij hogere volumes is een vast all-in bedrag voorspelbaarder.`,
+        text: `Nee. Emma Start (${START_MND}) is all-in met 300 belminuten per maand; Emma Groei (${GROEI_MND}) is all-in met 1.000 belminuten inclusief WhatsApp; Emma Compleet (${COMPLEET_MND}) is all-in met onbeperkt volume en onbeperkte WhatsApp. Telefonie-infrastructuur, AI-model, Nederlandse ElevenLabs-stem en maandelijkse optimalisatie zitten in het maandbedrag. U heeft geen eigen Twilio- of OpenAI-account nodig. Bij Schedulio betaalt u het softwarebedrag plus uw eigen verbruik — bij lage volumes kan dat goedkoper uitpakken, bij hogere volumes is een vast all-in bedrag voorspelbaarder.`,
       },
     },
     {
@@ -105,12 +105,12 @@ const faqSchema = {
 const comparison = [
   { feature: 'Type service',              aanloop: 'Managed bureau (Done-For-You)',                                    schedulio: 'Zelf-instelbare SaaS (dashboard-configuratie)' },
   { feature: 'Primaire focus',            aanloop: 'AI-receptionist + workflows + website voor het brede MKB',          schedulio: 'Afsprakenplanning voor klinieken en praktijken' },
-  { feature: 'Instapprijs',               aanloop: `${EMMA_MND} all-in (150 gesprekken, telefonie + WhatsApp)`,          schedulio: '€120–€200/mnd software (eigen opgave)' },
+  { feature: 'Instapprijs',               aanloop: `${START_MND} all-in (300 belminuten, telefoon, self-serve)`,        schedulio: '€120–€200/mnd software (eigen opgave)' },
   { feature: 'Verbruikskosten',           aanloop: 'Inbegrepen — geen eigen Twilio/OpenAI-account nodig',               schedulio: 'Eigen Twilio- en OpenAI-verbruik, apart gefactureerd' },
-  { feature: 'Factuur-voorspelbaarheid',  aanloop: 'Vast maandbedrag (Groei: onbeperkt voor €997/mnd)',                 schedulio: 'Software vast + variabel verbruik per maand' },
-  { feature: 'Setup-kosten',              aanloop: `Eenmalig, ${EMMA_SETUP_LABEL} (volledige implementatie door team)`, schedulio: 'Geen setup-fee — u configureert zelf' },
+  { feature: 'Factuur-voorspelbaarheid',  aanloop: `Vast maandbedrag (Compleet: onbeperkt voor ${COMPLEET_MND})`,        schedulio: 'Software vast + variabel verbruik per maand' },
+  { feature: 'Setup-kosten',              aanloop: `Geen setup bij Start · eenmalig (${GROEI_SETUP_LABEL}) bij Groei/Compleet`, schedulio: 'Geen setup-fee — u configureert zelf' },
   { feature: 'Implementatie',             aanloop: 'Door Aanloop-team, live binnen 7 werkdagen',                        schedulio: 'Zelf via dashboard (eigen tijdsinvestering)' },
-  { feature: 'WhatsApp',                  aanloop: 'Standaard inbegrepen in elk Emma-pakket',                           schedulio: 'Beschikbaar als kanaal' },
+  { feature: 'WhatsApp',                  aanloop: 'Inbegrepen vanaf Emma Groei (niet bij Start)',                      schedulio: 'Beschikbaar als kanaal' },
   { feature: 'Nederlandse voice',         aanloop: 'ElevenLabs NL (expliciet vermeld)',                                 schedulio: 'Voice via eigen OpenAI/Twilio-stack' },
   { feature: 'Website + AI-bundel',       aanloop: 'AI-Website Bundel (website + Emma in 1 pakket)',                    schedulio: 'Niet beschikbaar — planningssoftware' },
   { feature: 'CRM-integratie',            aanloop: 'HubSpot, Pipedrive (vanaf Groei inbegrepen)',                       schedulio: 'Niet expliciet publiek vermeld — vraag op' },
@@ -141,7 +141,7 @@ const whenSchedulio = [
 
 <BaseLayout
   title="Aanloop AI vs Schedulio — Feiten-check en Vergelijking"
-  description="Feiten-check: Aanloop AI heeft geen goedkoop WhatsApp-only instaptarief. Vergelijk: managed bureau vanaf €497/mnd all-in vs Schedulio met eigen verbruik."
+  description="Feiten-check: Aanloop AI heeft geen goedkoop WhatsApp-only instaptarief. Vergelijk: managed bureau vanaf €149/mnd all-in vs Schedulio met eigen verbruik."
   schema={articleSchema}
   faqSchema={faqSchema.mainEntity.map(q => ({ question: q.name, answer: q.acceptedAnswer.text }))}
 >
@@ -161,8 +161,8 @@ const whenSchedulio = [
         </p>
 
         <div class="mt-8 p-5 bg-red-50/60 border border-red-200 rounded-xl text-sm text-slate-700 reveal reveal-delay-3">
-          <p class="font-semibold text-red-900 mb-1">Feiten-check: het lage WhatsApp-only instaptarief van Aanloop AI is verouderd</p>
-          <p>Op vergelijkingspagina's van derden &mdash; waaronder die van Schedulio, met Aanloop-tarieven "gecontroleerd op 10 augustus 2026" &mdash; circuleert een laag maandtarief voor een losse WhatsApp-tier. <strong>Dat pakket bestaat niet meer:</strong> het is per 11 augustus 2026 geschrapt. WhatsApp zit sindsdien standaard inbegrepen in Emma. Het actuele instaptarief is <strong>Emma {EMMA_MND} all-in</strong> (tot 150 gesprekken per maand, telefonie &eacute;n WhatsApp); setup is eenmalig en op aanvraag. De actuele prijsladder staat op <a href="/tarieven/" class="font-semibold text-red-900 underline underline-offset-2">aanloopai.nl/tarieven</a>.</p>
+          <p class="font-semibold text-red-900 mb-1">Feiten-check: het lage WhatsApp-only instaptarief van Aanloop AI bestaat niet meer</p>
+          <p>Op vergelijkingspagina's van derden &mdash; waaronder die van Schedulio, met Aanloop-tarieven "gecontroleerd op 10 augustus 2026" &mdash; circuleert een laag maandtarief voor een losse WhatsApp-tier. <strong>Dat pakket bestaat niet meer:</strong> het is per 11 augustus 2026 geschrapt. WhatsApp zit sinds die wijziging inbegrepen vanaf Emma Groei &mdash; niet als los abonnement. Het actuele instaptarief is <strong>Emma Start ({START_MND}, telefoon)</strong>; wilt u ook WhatsApp, dan is dat <strong>Emma Groei ({GROEI_MND})</strong>. Emma Start kent geen setup; bij Groei en Compleet is een eenmalige setup op aanvraag van toepassing. De actuele prijsladder staat op <a href="/tarieven/" class="font-semibold text-red-900 underline underline-offset-2">aanloopai.nl/tarieven</a>.</p>
         </div>
 
         <div class="mt-4 p-4 bg-amber-50/50 border border-amber-200 rounded-xl text-sm text-slate-700 reveal reveal-delay-3">

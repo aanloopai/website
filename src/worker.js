@@ -59,6 +59,11 @@ const AUTORESPONSE_TEMPLATES = {
     intro: 'Bedankt voor uw demo-aanvraag bij Aanloop AI.',
     body: 'We hebben uw gegevens goed ontvangen en plannen binnen 1 werkdag een 30-minuten demo in waarin we live laten zien hoe AI agents werken voor uw situatie.',
   },
+  pilot: {
+    subject: 'Uw aanmelding voor het Emma-pilotprogramma — Aanloop AI',
+    intro: 'Bedankt voor uw aanmelding voor het Emma-pilotprogramma.',
+    body: 'We beoordelen binnen 2 werkdagen of uw praktijk of bedrijf past bij deze pilotronde (afspraak-gedreven dienstverleners, 5 plekken). Past het, dan plannen we een intake van 30 minuten en staat Emma binnen 7 werkdagen live. Na 60 dagen bespreken we samen de cijfers en de klantcase.',
+  },
   aanvraag: {
     subject: 'Bedankt voor uw aanvraag — Aanloop AI',
     intro: 'Bedankt voor uw aanvraag bij Aanloop AI.',
