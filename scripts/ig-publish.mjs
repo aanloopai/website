@@ -63,7 +63,7 @@ async function resolveSchedulePath() {
   // Pick lowest-N wave with any pending slot, so earlier waves finish before later ones.
   for (const f of waves) {
     const sched = JSON.parse(await fs.readFile(path.join(SCHEDULE_DIR, f), "utf8"));
-    if ((sched.posts || []).some((p) => p.posted_at === null)) {
+    if ((sched.posts || []).some((p) => p.posted_at === null && !p.skip_reason)) {
       return path.join(SCHEDULE_DIR, f);
     }
   }
@@ -79,7 +79,7 @@ async function writeSchedule(p, sched) {
 }
 
 function findDuePost(sched, nowMs) {
-  return sched.posts.find((p) => p.posted_at === null && new Date(p.slot_iso).getTime() <= nowMs);
+  return sched.posts.find((p) => p.posted_at === null && !p.skip_reason && new Date(p.slot_iso).getTime() <= nowMs);
 }
 
 async function graphGet(urlPath, params = {}) {
@@ -240,7 +240,7 @@ async function main() {
       console.log(`  - ${p.id}: ${status}`);
     }
 
-    const hasPending = sched.posts.some((p) => p.posted_at === null);
+    const hasPending = sched.posts.some((p) => p.posted_at === null && !p.skip_reason);
     if (hasPending) {
       // Some slot(s) still ahead of us in this wave — nothing due yet, that's normal.
       console.log("\nFuture slot(s) pending in this wave. Nothing due yet.");
