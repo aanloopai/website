@@ -102,3 +102,48 @@ describe('buildVoorstelData', () => {
     expect(data.copy.tekst).toContain('22 gemiste gesprekken per maand');
   });
 });
+
+// 2026-09-15: /tarieven/ "Emma Start €149" stuurde naar /start/, waar de enige
+// verkoopbare dienst (voice-agent) een Groei-voorstel (€299 + setup) opleverde.
+// De gekozen ladder-trede reist nu mee als `tierNaam`; de prijs blijft uit de
+// catalogus komen. Onbekende of onbetaalbare tiers vallen terug op de funnel-
+// default, nooit op een verzonnen bedrag.
+describe('buildVoorstelData — gekozen tier van /tarieven/', () => {
+  it('Starter: €149/mnd en GEEN setup (pricing.ts START_SETUP = 0)', async () => {
+    const data = await buildVoorstelData({}, { serviceId: 'voice-agent', customer: CUSTOMER, answers: ANSWERS, tierNaam: 'Starter' });
+    expect(data.tierNaam).toBe('Starter');
+    expect(data.prijsCent).toBe(14900);
+    expect(data.setupCent).toBe(0);
+  });
+
+  it('Compleet: €497/mnd + setup uit pricing.ts', async () => {
+    const data = await buildVoorstelData({}, { serviceId: 'voice-agent', customer: CUSTOMER, answers: ANSWERS, tierNaam: 'Compleet' });
+    expect(data.tierNaam).toBe('Compleet');
+    expect(data.prijsCent).toBe(49700);
+    expect(data.setupCent).toBe(79500);
+  });
+
+  it('onbekende tier valt terug op de funnel-default (Groei), geen fout', async () => {
+    const data = await buildVoorstelData({}, { serviceId: 'voice-agent', customer: CUSTOMER, answers: ANSWERS, tierNaam: 'Platinum' });
+    expect(data.tierNaam).toBe('Groei');
+    expect(data.prijsCent).toBe(29900);
+  });
+
+  it('tier zonder prijs (Partner/op aanvraag) valt terug op de funnel-default', async () => {
+    const data = await buildVoorstelData({}, { serviceId: 'voice-agent', customer: CUSTOMER, answers: ANSWERS, tierNaam: 'Partner' });
+    expect(data.tierNaam).toBe('Groei');
+    expect(data.prijsCent).toBe(29900);
+  });
+
+  it('zonder tierNaam blijft het gedrag ongewijzigd (Groei)', async () => {
+    const data = await buildVoorstelData({}, { serviceId: 'voice-agent', customer: CUSTOMER, answers: ANSWERS });
+    expect(data.tierNaam).toBe('Groei');
+    expect(data.setupCent).toBe(49500);
+  });
+
+  it('setup-tabel volgt pricing.ts voor elke trede — Starter mag nooit de Compleet-setup erven', () => {
+    expect(prijsVoorEntry({ productKey: 'emma-telefoon', tierNaam: 'Starter' }).setupCent).toBe(0);
+    expect(prijsVoorEntry({ productKey: 'emma-telefoon', tierNaam: 'Groei' }).setupCent).toBe(49500);
+    expect(prijsVoorEntry({ productKey: 'emma-telefoon', tierNaam: 'Compleet' }).setupCent).toBe(79500);
+  });
+});

@@ -76,3 +76,20 @@ export function getFunnelEntry(serviceId: string): FunnelEntry | null {
 export function isSellable(serviceId: string): boolean {
   return getFunnelEntry(serviceId)?.sellable === true;
 }
+
+/**
+ * /tarieven/ → /start/?plan=<slug> → intake answers.gekozen_plan → voorstel-tier.
+ * 2026-09-15: vóór deze koppeling landde "Emma Start €149" op een Groei-voorstel
+ * (€299 + setup) omdat de funnel-default de enige route was. Alleen deze drie
+ * slugs zijn geldig; al het andere geeft null en de funnel-default wint.
+ */
+export const PLAN_SLUG_TO_TIER: Readonly<Record<string, string>> = {
+  start: 'Starter',
+  groei: 'Groei',
+  compleet: 'Compleet',
+};
+
+export function tierForPlanSlug(slug: unknown): string | null {
+  const key = String(slug || '').trim().toLowerCase();
+  return Object.prototype.hasOwnProperty.call(PLAN_SLUG_TO_TIER, key) ? PLAN_SLUG_TO_TIER[key] : null;
+}

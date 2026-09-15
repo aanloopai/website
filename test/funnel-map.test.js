@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getFunnelEntry, isSellable, FUNNEL_MAP } from '../src/data/funnel-map.ts';
+import { getFunnelEntry, isSellable, FUNNEL_MAP, PLAN_SLUG_TO_TIER, tierForPlanSlug } from '../src/data/funnel-map.ts';
 import { getCatalogTier } from '../src/data/portal-catalog.ts';
 
 describe('funnel-map', () => {
@@ -41,5 +41,27 @@ describe('funnel-map', () => {
       expect(tier.prijsCent).toBeGreaterThan(0);
       expect(tier.betaling).toBe('maandelijks');
     }
+  });
+
+  // /tarieven/?plan=… → voorstel-tier. Elke slug moet op een bestaande,
+  // betaalbare catalogus-tier landen; al het andere → null (funnel-default).
+  it('vertaalt de /tarieven/-slugs naar bestaande betaalbare Emma-tiers', () => {
+    expect(tierForPlanSlug('start')).toBe('Starter');
+    expect(tierForPlanSlug('groei')).toBe('Groei');
+    expect(tierForPlanSlug('compleet')).toBe('Compleet');
+    expect(tierForPlanSlug(' Start ')).toBe('Starter');
+    for (const slug of Object.keys(PLAN_SLUG_TO_TIER)) {
+      const tier = getCatalogTier('emma-telefoon', PLAN_SLUG_TO_TIER[slug]);
+      expect(tier, `slug ${slug}`).toBeDefined();
+      expect(tier.prijsCent).toBeGreaterThan(0);
+    }
+  });
+
+  it('geeft null voor onbekende, lege of prototype-slugs', () => {
+    expect(tierForPlanSlug('enterprise')).toBeNull();
+    expect(tierForPlanSlug('')).toBeNull();
+    expect(tierForPlanSlug(undefined)).toBeNull();
+    expect(tierForPlanSlug('constructor')).toBeNull();
+    expect(tierForPlanSlug('__proto__')).toBeNull();
   });
 });

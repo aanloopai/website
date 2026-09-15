@@ -8,21 +8,43 @@
 import { berekenRoi } from './roi.js';
 import { getFunnelEntry } from '../data/funnel-map.ts';
 import { getCatalogTier } from '../data/portal-catalog.ts';
-import { EMMA, GROEI } from '../data/pricing.ts';
+import { START, GROEI, COMPLEET } from '../data/pricing.ts';
 
 const LLM_TIMEOUT_MS = 8000;
 const GEMINI_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
 
-/** Setup-fee per tiernaam. Losstaand van portal-catalogus.setupCent — deze bron blijft hier apart. */
+/**
+ * Setup-fee per tiernaam. Losstaand van portal-catalogus.setupCent — deze bron
+ * blijft hier apart. Volgt de ladder in pricing.ts: Starter heeft GEEN setup
+ * (2026-09-15; daarvoor erfde 'Starter' hier per ongeluk de EMMA=Compleet-setup).
+ */
 const SETUP_CENT_PER_TIER = {
-  Starter: EMMA.setup * 100,
+  Starter: START.setup * 100,
   Groei: GROEI.setup * 100,
+  Compleet: COMPLEET.setup * 100,
 };
 
 export function prijsVoorEntry(entry) {
   const tier = getCatalogTier(entry.productKey, entry.tierNaam);
   if (!tier || !tier.prijsCent) throw new Error(`Geen betaalbare tier voor ${entry.productKey}/${entry.tierNaam}`);
   return { prijsCent: tier.prijsCent, setupCent: SETUP_CENT_PER_TIER[entry.tierNaam] || 0 };
+}
+
+/**
+ * De trede die de bezoeker op /tarieven/ koos (?plan=start|groei|compleet →
+ * intake `tier`). Alleen een tier die in de catalogus bestaat én een prijs
+ * heeft, overschrijft de funnel-default; al het andere (onbekend, 'Partner'
+ * op aanvraag, leeg) valt stil terug op de default. Nooit een fout richting
+ * de bezoeker — de intake is al opgeslagen, het voorstel mag niet omvallen.
+ * @param {{ productKey: string, tierNaam: string }} entry
+ * @param {string | undefined} tierNaam
+ */
+export function kiesTier(entry, tierNaam) {
+  const gewenst = String(tierNaam || '').trim();
+  if (!gewenst || gewenst === entry.tierNaam) return entry;
+  const tier = getCatalogTier(entry.productKey, gewenst);
+  if (!tier || !tier.prijsCent) return entry;
+  return { ...entry, tierNaam: tier.naam };
 }
 
 function euro(cent) {
@@ -119,13 +141,14 @@ function parseCopy(raw) {
 
 /**
  * @param {{ GEMINI_API_KEY?: string }} env
- * @param {{ serviceId: string, customer: object, answers: object }} request
+ * @param {{ serviceId: string, customer: object, answers: object, tierNaam?: string }} request
  * @param {{ llm?: (prompt: string) => Promise<string> }} [opts] Optionele injecteerbare LLM-call (tests).
  */
-export async function buildVoorstelData(env, { serviceId, customer, answers }, { llm } = {}) {
-  const entry = getFunnelEntry(serviceId);
-  if (!entry) throw new Error(`Onbekende dienst: ${serviceId}`);
-  if (!entry.sellable) throw new Error(`Dienst ${serviceId} is niet verkoopbaar`);
+export async function buildVoorstelData(env, { serviceId, customer, answers, tierNaam }, { llm } = {}) {
+  const funnelEntry = getFunnelEntry(serviceId);
+  if (!funnelEntry) throw new Error(`Onbekende dienst: ${serviceId}`);
+  if (!funnelEntry.sellable) throw new Error(`Dienst ${serviceId} is niet verkoopbaar`);
+  const entry = kiesTier(funnelEntry, tierNaam);
 
   const { prijsCent, setupCent } = prijsVoorEntry(entry);
   const roi = berekenRoi(answers || {});
