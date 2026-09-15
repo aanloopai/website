@@ -52,7 +52,7 @@ async function resolveSchedulePath() {
   if (!waves.length) throw new Error(`No wave-N-reels-schedule.json in ${SCHEDULE_DIR}`);
   for (const f of [...waves].reverse()) {
     const sched = JSON.parse(await fs.readFile(path.join(SCHEDULE_DIR, f), "utf8"));
-    if ((sched.posts || []).some((p) => p.posted_at === null)) {
+    if ((sched.posts || []).some((p) => p.posted_at === null && !p.skip_reason)) {
       return path.join(SCHEDULE_DIR, f);
     }
   }
@@ -68,7 +68,7 @@ async function writeSchedule(p, sched) {
 }
 
 function findDuePost(sched, nowMs) {
-  return sched.posts.find((p) => p.posted_at === null && new Date(p.slot_iso).getTime() <= nowMs);
+  return sched.posts.find((p) => p.posted_at === null && !p.skip_reason && new Date(p.slot_iso).getTime() <= nowMs);
 }
 
 async function graphGet(urlPath, params = {}) {

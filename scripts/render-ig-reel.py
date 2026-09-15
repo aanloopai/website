@@ -597,7 +597,7 @@ def resolve_schedule_path() -> Path:
     waves.sort()
     for _, _, f in reversed(waves):
         sched = json.loads(f.read_text(encoding="utf-8"))
-        if any(p.get("posted_at") is None for p in sched.get("posts", [])):
+        if any(p.get("posted_at") is None and not p.get("skip_reason") for p in sched.get("posts", [])):
             return f
     return waves[-1][2]
 
@@ -644,7 +644,7 @@ def main() -> int:
             return 0
         targets = [due]
     elif args.all:
-        targets = [s for s in sched["posts"] if s.get("posted_at") is None]
+        targets = [s for s in sched["posts"] if s.get("posted_at") is None and not s.get("skip_reason")]
     else:
         print("specify --slot <id>, --due or --all", file=sys.stderr)
         return 2
