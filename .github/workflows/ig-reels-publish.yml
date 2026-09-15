@@ -78,14 +78,19 @@ jobs:
           fi
 
       - name: Commit rendered MP4(s)
+        # A freshly rendered Reel is an UNTRACKED file; `git diff --quiet` only
+        # sees modified tracked files, so every new render was reported as "No
+        # new MP4s", never pushed, and the publisher then handed the Graph API a
+        # raw.githubusercontent URL that 404'd -> container status=ERROR
+        # (issue #57, 2026-09-11..14). Stage first, then compare the index.
         run: |
-          if git diff --quiet public/social-feed/reels/; then
+          git add public/social-feed/reels/
+          if git diff --cached --quiet -- public/social-feed/reels/; then
             echo "No new MP4s to commit."
             exit 0
           fi
           git config user.name "aanloop-reels-bot"
           git config user.email "bot@aanloopai.nl"
-          git add public/social-feed/reels/
           git commit -m "chore(reels): render Reel MP4(s) $(date -u +%Y-%m-%dT%H:%M:%SZ)"
           git push origin master
 
