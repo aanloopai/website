@@ -566,7 +566,17 @@ def render_slot(slot: dict, out_dir: Path = OUT_DIR) -> Path:
         print(f"  cache hit: {out_path.name}", file=sys.stderr)
         return out_path
     RENDERERS[template](slot, out_path)
-    print(f"  rendered: {out_path.name}", file=sys.stderr)
+    # Fail loud (uit PR #77, 2026-09-01). Een renderer die terugkeert zonder
+    # bestand (moviepy slikt een ffmpeg-fout, template schrijft elders) slaagde
+    # stil; de publisher gaf Instagram dan een 404-URL en de echte oorzaak werd
+    # pas zichtbaar als een generieke container ERROR.
+    if not out_path.exists() or out_path.stat().st_size == 0:
+        raise SystemExit(
+            f"Render produced no usable file for slot {slot['id']}: expected "
+            f"{out_path} to exist and be non-empty. Aborting before the publisher "
+            "can post a dead video URL."
+        )
+    print(f"  rendered: {out_path.name} ({out_path.stat().st_size} bytes)", file=sys.stderr)
     return out_path
 
 

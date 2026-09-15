@@ -116,10 +116,13 @@ function sleep(ms) {
 // or replaces the original error — it only adds a log line before we throw.
 async function logDiagnosticContainerStatus(containerId) {
   try {
-    const url = `https://graph.facebook.com/${GRAPH_VERSION}/${containerId}?fields=status_code,status&access_token=${TOKEN}`;
+    // graph.instagram.com, niet graph.facebook.com: een Instagram-Login-token is
+    // daar niet te parsen ("code 190 Invalid OAuth access token") en dat
+    // verborg twee weken lang de echte 404 (PR #77, 2026-09-01).
+    const url = `https://graph.instagram.com/${GRAPH_VERSION}/${containerId}?fields=status_code,status&access_token=${TOKEN}`;
     const res = await fetch(url);
     const text = await res.text();
-    console.error(`Diagnostic (graph.facebook.com) container status: HTTP ${res.status}: ${text.slice(0, 500)}`);
+    console.error(`Diagnostic (graph.instagram.com) container status: HTTP ${res.status}: ${text.slice(0, 500)}`);
   } catch (diagErr) {
     console.error(`Diagnostic container status fetch failed (non-fatal): ${diagErr.message}`);
   }

@@ -55,12 +55,14 @@ const AI_BOTS = [
   'CCBot', 'Bytespider', 'meta-externalagent',
 ];
 
+// 2026-09-15 ladder (aanloopai/website#97): Start €149 · Groei €299 · Compleet
+// €497. €997 (oude Groei) is sindsdien een stale prijs, net als de rest.
 const FORBIDDEN_PRICES = [
-  '€297', '€397', '€697', '€797', '€897',
-  'EUR 297', 'EUR 397', 'EUR 697', 'EUR 797', 'EUR 897',
+  '€297', '€397', '€697', '€797', '€897', '€997',
+  'EUR 297', 'EUR 397', 'EUR 697', 'EUR 797', 'EUR 897', 'EUR 997',
 ];
 
-const REQUIRED_PRICES_TARIEVEN = ['€497', '€997'];
+const REQUIRED_PRICES_TARIEVEN = ['€149', '€299', '€497'];
 
 const CRITICAL_STRINGS = [
   { path: '/', must: ['Aanloop AI'] },
