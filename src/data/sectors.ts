@@ -4,6 +4,14 @@
 export interface Sector {
   slug: string;
   title: string;
+  /**
+   * Optionele <title> die de zoekvraag letterlijk draagt (max 60 tekens incl.
+   * ' · Aanloop AI'-staart). 2026-09-15 SERP-onderzoek: 'ai receptionist
+   * kapsalon' en 'gemiste oproepen garage' hebben in NL géén aanbieder in de
+   * top-10; de generieke 'AI voor <sector> NL' titel dekte die vraag niet.
+   * Ontbreekt hij, dan blijft de generieke titel in [sector].astro.
+   */
+  seoTitle?: string;
   shortDescription: string;
   description: string;
   icon: string;
@@ -201,7 +209,7 @@ export const sectors: Sector[] = [
   {
     slug: 'zorg',
     title: 'Zorg & welzijn',
-    shortDescription: 'Afsprakenbeheer, intake-vragenlijsten, patiëntcommunicatie.',
+    shortDescription: 'AI-telefoniste voor huisarts-, fysio- en tandartspraktijken: Emma neemt op tijdens behandelingen en plant afspraken in.',
     description: 'AI voor huisartspraktijken, fysiotherapeuten, tandartsen en welzijnsorganisaties die meer tijd voor patiënten willen, minder voor administratie.',
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>',
     hero: {
@@ -236,11 +244,12 @@ export const sectors: Sector[] = [
   {
     slug: 'automotive',
     title: 'Automotive & garage',
-    shortDescription: 'Pech- en APK-calls 24/7 aangenomen, werkplaats vol — zonder gemiste telefoon.',
+    seoTitle: 'Gemiste oproepen garage? AI-telefoniste Emma',
+    shortDescription: 'Gemiste oproepen in de garage? Emma neemt APK-, onderhouds- en pechcalls 24/7 aan en plant ze in uw werkplaatsplanning.',
     description: 'AI-oplossingen voor garagebedrijven, autodealers en bandenspecialisten die geen onderhouds- of pechafspraak meer willen missen terwijl de werkplaats draait.',
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13l2-5a2 2 0 012-1h10a2 2 0 012 1l2 5M5 17h14M6 13h12M7 17v2M17 17v2"/></svg>',
     hero: {
-      headline: 'AI voor de garage die elke afspraak vastlegt.',
+      headline: 'Gemiste oproepen in de garage? Emma legt elke afspraak vast.',
       subheadline: 'Terwijl uw monteurs sleutelen, neemt Emma de telefoon aan: APK, onderhoud, pech. Geen gemiste klant meer, de planning altijd vol.',
     },
     challenges: [
@@ -271,7 +280,8 @@ export const sectors: Sector[] = [
   {
     slug: 'installatie',
     title: 'Installatie & techniek',
-    shortDescription: 'Spoed (lekkage, storing, gas) gefilterd en doorgezet — ook in de avond en het weekend.',
+    seoTitle: 'AI-telefoon voor installateurs: Emma neemt op',
+    shortDescription: 'Telefoon beantwoorden als installateur op de steiger: Emma filtert spoed (lekkage, storing, gas) en zet door — ook in het weekend.',
     description: 'AI-oplossingen voor loodgieters, installateurs, elektriciens en cv-monteurs die spoedmeldingen nooit willen missen terwijl ze op locatie werken.',
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M14 7l-3 3m0 0l-7 7 3 3 7-7m-3-3l3 3m4-9a4 4 0 01-5 5l-7 7"/></svg>',
     hero: {
@@ -306,11 +316,12 @@ export const sectors: Sector[] = [
   {
     slug: 'schoonheid',
     title: 'Schoonheid & kappers',
-    shortDescription: 'Telefoon tijdens de behandeling? Emma neemt op, Emma stuurt reminders — no-shows omlaag.',
+    seoTitle: 'AI-receptionist voor kapsalons: Emma neemt op',
+    shortDescription: 'AI-receptionist voor kapsalons en schoonheidssalons: Emma neemt op tijdens de behandeling, boekt in uw agenda en stuurt reminders.',
     description: 'AI-oplossingen voor kapsalons, schoonheidssalons, nagelstudio’s en pedicures die geen afspraak meer willen missen en no-shows willen terugdringen.',
     icon: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" d="M14.5 9.5L21 3m-7 7l-3 3m0 0l-6 6m6-6l-3-3M9 4a5 5 0 100 10A5 5 0 009 4z"/></svg>',
     hero: {
-      headline: 'AI die opneemt terwijl u knipt.',
+      headline: 'AI-receptionist voor uw kapsalon: Emma neemt op terwijl u knipt.',
       subheadline: 'U staat met de handen vol — Emma neemt de telefoon aan en boekt direct in uw agenda. Emma stuurt reminders en haalt no-shows naar beneden.',
     },
     challenges: [
