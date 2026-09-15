@@ -74,6 +74,19 @@ describe('voorstel-store', () => {
     expect(copy).not.toHaveProperty('modus');
   });
 
+  it('slaat de op /tarieven/ gekozen trede op: Starter → €149, setup 0 (2026-09-15)', async () => {
+    await maakVoorstel(env, {
+      intakeId: 'intake-2', serviceId: 'voice-agent',
+      customer: { name: 'Jan', company: 'Jansen' },
+      answers: { gemiste_gesprekken_week: '5', gemiddelde_klantwaarde: '400', gekozen_plan: 'start' },
+      tierNaam: 'Starter',
+    });
+    const row = env.PORTAL_DB.rows[0];
+    expect(row.tier_naam).toBe('Starter');
+    expect(row.prijs_cent).toBe(14900);
+    expect(row.setup_cent).toBe(0);
+  });
+
   it('maakt geen voorstel voor een niet-verkoopbare dienst', async () => {
     const res = await maakVoorstel(env, {
       intakeId: 'intake-2', serviceId: 'whatsapp-bot', customer: {}, answers: {},

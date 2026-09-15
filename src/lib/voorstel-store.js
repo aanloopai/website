@@ -12,13 +12,14 @@ export const VOORSTEL_TTL_MS = 14 * 24 * 60 * 60 * 1000;
 
 /**
  * @param {{ PORTAL_DB: object }} env
- * @param {{ intakeId: string, serviceId: string, customer: object, answers: object }} request
+ * @param {{ intakeId: string, serviceId: string, customer: object, answers: object, tierNaam?: string }} request
+ *   `tierNaam` = de trede die de bezoeker op /tarieven/ koos; optioneel, zie voorstel.js kiesTier.
  * @returns {Promise<{ id: string, token: string } | null>} null wanneer de dienst niet verkoopbaar is.
  */
-export async function maakVoorstel(env, { intakeId, serviceId, customer, answers }) {
+export async function maakVoorstel(env, { intakeId, serviceId, customer, answers, tierNaam }) {
   if (!isSellable(serviceId)) return null;
 
-  const data = await buildVoorstelData(env, { serviceId, customer, answers });
+  const data = await buildVoorstelData(env, { serviceId, customer, answers, tierNaam });
   const id = randomId('vst');
   const token = randomToken();
   const now = Date.now();

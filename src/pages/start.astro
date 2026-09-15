@@ -514,6 +514,13 @@ const toolSchema = {
       return { ok: true };
     }
 
+    // /tarieven/ → /start/?plan=start|groei|compleet. De gekozen trede reist mee
+    // in answers.gekozen_plan; de worker vertaalt die naar de voorstel-tier
+    // (src/data/funnel-map.ts tierForPlanSlug). Zonder plan: funnel-default.
+    const PLAN_SLUGS = ['start', 'groei', 'compleet'] as const;
+    const planParam = (new URLSearchParams(window.location.search).get('plan') || '').toLowerCase();
+    const gekozenPlan = (PLAN_SLUGS as readonly string[]).includes(planParam) ? planParam : '';
+
     function collectServiceAnswers(): Record<string, string> {
       const answers: Record<string, string> = {};
       if (!selectedService) return answers;
@@ -522,6 +529,7 @@ const toolSchema = {
         const el = document.getElementById(`sf-${f.name}`) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
         if (el) answers[f.name] = el.value.trim();
       });
+      if (gekozenPlan && selectedService === 'voice-agent') answers.gekozen_plan = gekozenPlan;
       return answers;
     }
 
@@ -626,5 +634,15 @@ const toolSchema = {
     form.addEventListener('submit', (e) => e.preventDefault());
 
     showStep(0);
+
+    // Emma-pakket gekozen op /tarieven/: dienst staat vast (voice-agent), dus
+    // de dienstkeuze overslaan en direct de Emma-vragen tonen.
+    if (gekozenPlan) {
+      const emmaCard = document.querySelector<HTMLButtonElement>('.start-service-card[data-service-id="voice-agent"]');
+      if (emmaCard) {
+        selectService('voice-agent', emmaCard);
+        nextStep();
+      }
+    }
   });
 </script>

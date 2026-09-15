@@ -40,6 +40,7 @@ import { countVandaagProspects, prospectsNeedingFollowupDraft, generateFollowupD
 import { isWerkdag } from './lib/crm.js';
 import { aiSignalScan } from './lib/ai-crm.js';
 import { maakVoorstel, leesVoorstelViaToken } from './lib/voorstel-store.js';
+import { tierForPlanSlug } from './data/funnel-map.ts';
 import { handleVoorstelClaim } from './lib/voorstel-claim.js';
 import { handleVoorstelVerify } from './lib/voorstel-verify.js';
 import { visibilityIngest, visibilityEvent, beaconScript, gbpSyncIfDue } from './lib/visibility.js';
@@ -478,7 +479,10 @@ async function handleIntake(request, env) {
   // de intake is al durable opgeslagen, dus er gaat nooit een lead verloren.
   let voorstelToken = null;
   try {
-    const voorstel = await maakVoorstel(env, { intakeId: id, serviceId, customer, answers: answersIn });
+    // De op /tarieven/ gekozen trede reist mee in answers.gekozen_plan
+    // (start|groei|compleet); ongeldig → null → funnel-default (Groei).
+    const tierNaam = tierForPlanSlug(answersIn.gekozen_plan);
+    const voorstel = await maakVoorstel(env, { intakeId: id, serviceId, customer, answers: answersIn, tierNaam });
     voorstelToken = voorstel?.token || null;
   } catch (err) {
     console.error('[/api/intake] voorstel genereren mislukt (intake blijft bewaard):', err?.message || err);
