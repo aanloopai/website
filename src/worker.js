@@ -41,6 +41,7 @@ import { isWerkdag } from './lib/crm.js';
 import { aiSignalScan } from './lib/ai-crm.js';
 import { maakVoorstel, leesVoorstelViaToken } from './lib/voorstel-store.js';
 import { tierForPlanSlug } from './data/funnel-map.ts';
+import { extractBusinessFacts, normalizeSiteUrl, isFetchableSiteUrl } from './lib/site-prefill.js';
 import { handleVoorstelClaim } from './lib/voorstel-claim.js';
 import { handleVoorstelVerify } from './lib/voorstel-verify.js';
 import { visibilityIngest, visibilityEvent, beaconScript, gbpSyncIfDue } from './lib/visibility.js';
@@ -489,6 +490,56 @@ async function handleIntake(request, env) {
   }
 
   return jsonResponse({ success: true, message: 'Aanvraag ontvangen', voorstel_token: voorstelToken });
+}
+
+const PREFILL_MAX_BYTES = 512 * 1024;
+const PREFILL_TIMEOUT_MS = 6000;
+
+// GET /api/intake/prefill?url=<site> → { ok, bedrijfsnaam, telefoon, openingstijden, kvk, bron }
+// Haalt één publieke HTML-pagina op en geeft alleen terug wat er letterlijk op
+// staat (src/lib/site-prefill.js). Faalt zacht: elke fout is { ok:false } met
+// 200, zodat de wizard gewoon doorgaat met een leeg formulier.
+async function handleIntakePrefill(request, env, url) {
+  if (request.method === 'OPTIONS') return new Response(null, { headers: CORS_HEADERS });
+  if (request.method !== 'GET') return jsonResponse({ ok: false, message: 'Use GET' }, 405);
+
+  const clientIp = request.headers.get('CF-Connecting-IP') || 'unknown';
+  const rl = await rateLimit(env.GOOGLE_TOKENS, `rl:prefill:${clientIp}`, 20, 600);
+  if (!rl.allowed) return jsonResponse({ ok: false, message: 'Te veel verzoeken.' }, 429);
+
+  const target = normalizeSiteUrl(url.searchParams.get('url') || '');
+  if (!target || !isFetchableSiteUrl(target)) {
+    return jsonResponse({ ok: false, message: 'Geen geldige publieke website-URL.' });
+  }
+
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), PREFILL_TIMEOUT_MS);
+  try {
+    const res = await fetch(target, {
+      method: 'GET',
+      redirect: 'follow',
+      signal: ctrl.signal,
+      headers: { 'user-agent': 'AanloopAI-prefill/1.0 (+https://aanloopai.nl/start/)', accept: 'text/html' },
+      cf: { cacheTtl: 300 },
+    });
+    // Een redirect mag niet alsnog op een interne host uitkomen.
+    if (res.url && !isFetchableSiteUrl(res.url)) {
+      return jsonResponse({ ok: false, message: 'Website verwijst door naar een niet-publieke host.' });
+    }
+    const type = res.headers.get('content-type') || '';
+    if (!res.ok || !type.includes('text/html')) {
+      return jsonResponse({ ok: false, message: `Website gaf ${res.status} (${type || 'geen html'})` });
+    }
+    const buf = await res.arrayBuffer();
+    const html = new TextDecoder('utf-8').decode(buf.slice(0, PREFILL_MAX_BYTES));
+    const facts = extractBusinessFacts(html, res.url || target);
+    const found = Boolean(facts.bedrijfsnaam || facts.telefoon || facts.openingstijden || facts.kvk);
+    return jsonResponse({ ok: found, ...facts });
+  } catch (err) {
+    return jsonResponse({ ok: false, message: err?.name === 'AbortError' ? 'Website reageerde niet binnen 6s.' : 'Website niet bereikbaar.' });
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 async function sendBrevoEmail(apiKey, payload, label) {
@@ -1254,6 +1305,12 @@ export default {
     // Pre-sale intake wizard (aanloopai.nl/start) — see handleIntake above.
     if (url.pathname === '/api/intake') {
       return handleIntake(request, env);
+    }
+
+    // /start/ "Uw website" → bedrijfsnaam/telefoon/openingstijden vooraf
+    // invullen (zie src/lib/site-prefill.js). Alleen GET, publieke sites.
+    if (url.pathname === '/api/intake/prefill') {
+      return handleIntakePrefill(request, env, url);
     }
 
     // Publieke leesroute voor de voorstelpagina. Het token is de enige
