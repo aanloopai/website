@@ -17,6 +17,6 @@
  * More: https://www.indexnow.org/
  */
 
-export const INDEXNOW_KEY = 'e336017952984cce846f0b055c795108';
+export const INDEXNOW_KEY = '5792f8c6ff1c450ab008b567cca7472c';
 export const INDEXNOW_HOST = 'aanloopai.nl';
 export const INDEXNOW_API_ENDPOINT = 'https://api.indexnow.org/indexnow';
