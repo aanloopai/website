@@ -23,13 +23,27 @@ const args = new Set(process.argv.slice(2));
 const JSON_ONLY = args.has('--json');
 const RUN_ALL = !args.has('--schema') && !args.has('--robots') && !args.has('--pricing') && !args.has('--critical');
 
+// De schematypes hieronder volgen wat de pagina's bewust publiceren.
+//
+// Product en SoftwareApplication zijn in augustus 2026 doelbewust van de
+// dienstenpagina's gehaald: Google verlangt daar aggregateRating of review —
+// beoordelingen die we niet hebben — en Semrush rapporteerde ze daardoor als
+// ongeldige items. Service dekt een maandelijks afgenomen dienst bovendien
+// beter. Deze tabel bleef achter en eiste nog de oude types, waardoor de Daily
+// Site Audit sinds 14 augustus elke dag rood stond op vijf regels terwijl de
+// pagina's juist correcte schema's publiceerden.
+//
+// Wijzig dit niet zonder ook de toelichting boven het schema in
+// src/pages/diensten/emma.astro te wijzigen: die twee horen bij elkaar.
 const KEY_URLS = [
   { path: '/', schemas: ['Organization', 'WebSite'] },
-  { path: '/diensten/marco/', schemas: ['Product', 'SoftwareApplication'], anyOf: true },
-  { path: '/diensten/emma/', schemas: ['Product', 'SoftwareApplication'], anyOf: true },
-  { path: '/tarieven/', schemas: ['Product', 'FAQPage'], requireFaqPopulated: true },
-  { path: '/ai-roi-calculator/', schemas: ['SoftwareApplication', 'HowTo'] },
-  { path: '/gratis-ai-scan/', schemas: ['SoftwareApplication', 'HowTo'] },
+  // /diensten/marco/ staat hier niet meer: het is geen eigen pagina meer maar
+  // een 301 naar /diensten/emma/, dus die regel toetste tweemaal dezelfde
+  // pagina en meldde elke fout dubbel.
+  { path: '/diensten/emma/', schemas: ['Service', 'Product', 'SoftwareApplication'], anyOf: true },
+  { path: '/tarieven/', schemas: ['Service', 'FAQPage'], requireFaqPopulated: true },
+  { path: '/ai-roi-calculator/', schemas: ['SoftwareApplication', 'HowTo'], anyOf: true },
+  { path: '/gratis-ai-scan/', schemas: ['SoftwareApplication', 'HowTo'], anyOf: true },
   { path: '/contact/', schemas: [] },
 ];
 
@@ -41,12 +55,14 @@ const AI_BOTS = [
   'CCBot', 'Bytespider', 'meta-externalagent',
 ];
 
+// 2026-09-15 ladder (aanloopai/website#97): Start €149 · Groei €299 · Compleet
+// €497. €997 (oude Groei) is sindsdien een stale prijs, net als de rest.
 const FORBIDDEN_PRICES = [
-  '€297', '€397', '€697', '€797', '€897',
-  'EUR 297', 'EUR 397', 'EUR 697', 'EUR 797', 'EUR 897',
+  '€297', '€397', '€697', '€797', '€897', '€997',
+  'EUR 297', 'EUR 397', 'EUR 697', 'EUR 797', 'EUR 897', 'EUR 997',
 ];
 
-const REQUIRED_PRICES_TARIEVEN = ['€497', '€997'];
+const REQUIRED_PRICES_TARIEVEN = ['€149', '€299', '€497'];
 
 const CRITICAL_STRINGS = [
   { path: '/', must: ['Aanloop AI'] },

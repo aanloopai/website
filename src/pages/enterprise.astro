@@ -33,13 +33,12 @@ const serviceSchema = {
     url: 'https://aanloopai.nl',
   },
   areaServed: { '@type': 'Country', name: 'Netherlands' },
-  description: 'Enterprise AI-oplossingen met dedicated support, SLA, SSO, API-toegang en AVG/EU AI Act compliance voor Nederlandse organisaties met 200+ medewerkers.',
-  offers: {
-    '@type': 'Offer',
-    priceCurrency: 'EUR',
-    availability: 'https://schema.org/InStock',
-    description: 'Enterprise-tarief op maat — geen vast maandbedrag, prijs op aanvraag na discovery call.',
-  },
+  description: 'Enterprise AI-oplossingen met dedicated support, SLA, SSO, API-toegang en AVG/EU AI Act compliance voor Nederlandse organisaties met 200+ medewerkers. Tarief op maat — prijs op aanvraag na discovery call.',
+  // Geen offers-blok: het enterprise-tarief is op maat en er is dus geen prijs
+  // om op te geven. Een Offer zonder price is ongeldig (dit was de enige
+  // schemafout op de hele site, 1 op 1638 blokken), en een bedrag verzinnen om
+  // de validator tevreden te stellen zou een onjuiste prijs publiceren. De
+  // "op aanvraag"-informatie staat in de description hierboven en op de pagina.
 };
 ---
 
