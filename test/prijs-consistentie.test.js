@@ -33,6 +33,10 @@ const pageFiles = [
   ...collect(join(ROOT, 'src', 'data'), ['.ts']),
   ...collect(join(ROOT, 'src', 'components'), ['.astro']),
   ...collect(join(ROOT, 'src', 'content'), ['.md']),
+  // 2026-09-15: de n8n-social-catalogus droeg nog Marco €997 / Emma-WhatsApp
+  // €1.200 uit mei; wat een pipeline als bron leest, valt onder dezelfde kanon.
+  ...collect(join(ROOT, 'automation', 'social', 'data'), ['.json']),
+  ...collect(join(ROOT, 'automation', 'social', 'prompts'), ['.md']),
   join(ROOT, 'public', 'llms.txt'),
   join(ROOT, 'public', 'llms-full.txt'),
 ];

@@ -120,7 +120,7 @@ Her zaman JSON ile dön:
   "lang": "nl",
   "text": "<post text including hashtags and CTA>",
   "hashtags": ["#AIvoorMKB", "#Rotterdam"],
-  "cta_url": "https://aanloopai.nl/diensten/marco-ai-sekreter/?utm_source=linkedin&utm_medium=social&utm_campaign=service_20260501",
+  "cta_url": "https://aanloopai.nl/diensten/emma/?utm_source=linkedin&utm_medium=social&utm_campaign=service_20260915",
   "image_prompt": "<short description for asset generator>",
   "char_count": 720
 }
