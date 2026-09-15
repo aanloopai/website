@@ -15,6 +15,15 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
     <div class="kpi"><div class="kpi-label">Openstaande factuur</div><div class="kpi-value" id="ov-inv"><span class="pskel inline-block h-7 w-20"></span></div></div>
   </div>
 
+  <!-- Emma pilot-KPI's (30 dagen). Verborgen zolang er geen actieve Emma-agent is.
+       Afspraken/no-shows tonen "—" tot er een agendabron gekoppeld is: geen schattingen. -->
+  <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4 hidden" id="ov-emma" data-src="/api/portal/emma/stats">
+    <div class="kpi"><div class="kpi-label">Emma: gesprekken (30 dagen)</div><div class="kpi-value" id="ov-em-calls">—</div></div>
+    <div class="kpi"><div class="kpi-label">Emma: belminuten (30 dagen)</div><div class="kpi-value" id="ov-em-min">—</div></div>
+    <div class="kpi"><div class="kpi-label">Ingeplande afspraken</div><div class="kpi-value" id="ov-em-appt">—</div><div class="text-xs" style="color:var(--p-muted)">agendakoppeling nodig</div></div>
+    <div class="kpi"><div class="kpi-label">No-shows</div><div class="kpi-value" id="ov-em-noshow">—</div><div class="text-xs" style="color:var(--p-muted)">agendakoppeling nodig</div></div>
+  </div>
+
   <div class="mt-6 grid gap-6 lg:grid-cols-3">
     <!-- Onboarding -->
     <section class="pcard lg:col-span-1">
@@ -63,6 +72,22 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
       function euro(cent) {
         return (Number(cent || 0) / 100).toLocaleString('nl-NL', { style: 'currency', currency: 'EUR' });
       }
+
+      fetch('/api/portal/emma/stats', { credentials: 'same-origin' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+          if (!d || !d.agents) return;
+          var box = document.getElementById('ov-emma');
+          box.classList.remove('hidden');
+          if (d.ok && d.stats) {
+            document.getElementById('ov-em-calls').textContent = d.stats.gesprekken;
+            document.getElementById('ov-em-min').textContent = d.stats.belminuten;
+          } else {
+            document.getElementById('ov-em-calls').textContent = 'n.b.';
+            document.getElementById('ov-em-min').textContent = 'n.b.';
+          }
+        })
+        .catch(function () {});
 
       fetch('/api/portal/overview', { credentials: 'same-origin' })
         .then(function (r) { if (r.status === 401) { location.href = '/portal/login'; throw 0; } return r.json(); })

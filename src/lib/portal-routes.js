@@ -10,6 +10,7 @@ import { handleCheckoutStart, cancelSubscription } from './mollie.js';
 import { getCatalogProduct, getCatalogTier } from '../data/portal-catalog.ts';
 import { dealVoorOrder } from './crm.js';
 import { escapeHtml } from './escape.js';
+import { aggregateConversations, fetchConversations, agentIdFromProvisioning } from './emma-stats.js';
 import { alertStaff } from './notify.js';
 import { onboardingState } from './onboarding.js';
 import { getIntakeSchema } from '../data/intake-schemas.ts';
@@ -426,6 +427,7 @@ export async function handlePortalApi(request, env) {
 
     if (path === '/api/portal/me') return await portalMe(env, user);
     if (path === '/api/portal/overview') return await portalOverview(env, user);
+    if (path === '/api/portal/emma/stats') return await portalEmmaStats(env, user);
     if (path === '/api/portal/services') return await portalServices(env, user, url);
     if (path === '/api/portal/requests') return await portalRequests(env, user);
     if (path === '/api/portal/service-request' && method === 'POST') return await createServiceRequest(request, env, user);
@@ -505,6 +507,31 @@ async function portalOverview(env, user) {
     openInvoice: openInvoice || null,
     onboarding,
   });
+}
+
+// Pilot-KPI's (plan D3): gesprekken + belminuten van de laatste 30 dagen per
+// Emma-dienst met een geprovisioneerde ElevenLabs-agent. Afspraken/no-shows
+// blijven null zolang er geen agendabron is — liever leeg dan verzonnen.
+// Faalt zacht: { ok:true, agents:0 } zonder agent, { ok:false } bij API-fout.
+const EMMA_STATS_DAYS = 30;
+async function portalEmmaStats(env, user) {
+  const cid = user.customer_id;
+  const rows = (await env.PORTAL_DB
+    .prepare("SELECT id, naam, provisioning_json FROM services WHERE customer_id = ? AND product_key = 'emma-telefoon' AND status = 'actief'")
+    .bind(cid).all()).results || [];
+  const targets = rows.map((r) => ({ id: r.id, naam: r.naam, agentId: agentIdFromProvisioning(r.provisioning_json) })).filter((r) => r.agentId);
+  if (!targets.length) return jsonResponse({ ok: true, agents: 0, dagen: EMMA_STATS_DAYS, stats: null });
+  const nowSecs = Math.floor(Date.now() / 1000);
+  const sinceSecs = nowSecs - EMMA_STATS_DAYS * 86400;
+  try {
+    const all = [];
+    for (const t of targets) all.push(...(await fetchConversations(env, t.agentId, { sinceSecs })));
+    const stats = aggregateConversations(all, { sinceSecs, nowSecs });
+    return jsonResponse({ ok: true, agents: targets.length, dagen: EMMA_STATS_DAYS, stats });
+  } catch (err) {
+    console.error('[portal/emma/stats]', err?.message || err);
+    return jsonResponse({ ok: false, agents: targets.length, dagen: EMMA_STATS_DAYS, stats: null, message: 'Statistieken tijdelijk niet beschikbaar.' });
+  }
 }
 
 async function portalServices(env, user, url) {
