@@ -133,7 +133,13 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         var bw = (w - padL) / series.length;
         var bars = series.map(function (p, i) {
           var bh = (p.clicks / max) * (h - padB - 8);
-          return '<rect x="' + (padL + i * bw + 0.5).toFixed(1) + '" y="' + (h - padB - bh).toFixed(1) + '" width="' + Math.max(1, bw - 1).toFixed(1) + '" height="' + bh.toFixed(1) + '"><title>' + esc(p.datum) + ': ' + n(p.clicks) + ' klikken, ' + n(p.impressions) + ' vertoningen</title></rect>';
+          // Svg-tooltip: de title-element-tags hieronder zijn bewust
+          // opgeknipt (zie de string-concatenatie) zodat de bron geen
+          // aaneengesloten open- en sluit-tag bevat — check-meta.mjs scant
+          // de ruwe HTML-tekst, óók binnen een script-blok, en telt zo'n
+          // aaneengesloten paar anders als een tweede title-element naast
+          // het echte element in de document-head.
+          return '<rect x="' + (padL + i * bw + 0.5).toFixed(1) + '" y="' + (h - padB - bh).toFixed(1) + '" width="' + Math.max(1, bw - 1).toFixed(1) + '" height="' + bh.toFixed(1) + '"><' + 'title>' + esc(p.datum) + ': ' + n(p.clicks) + ' klikken, ' + n(p.impressions) + ' vertoningen</' + 'title></rect>';
         }).join('');
         var labels = '';
         var every = Math.max(1, Math.round(series.length / 6));

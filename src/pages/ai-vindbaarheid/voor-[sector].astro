@@ -35,9 +35,13 @@ const faqSchema = sector.faq.map((f) => ({ question: f.q, answer: f.a }));
 // Met de langere sectortitels ("GEO voor reisbureaus & touroperators") liep dat
 // op tot 89 tekens en kapte Google hem af. De variant hieronder blijft onder de
 // 60 en houdt de zoekterm intact.
+// Meta-titel gebruikt "en" i.p.v. "&": de langste sectortitels + " & ...& Gemini"
+// escapen tot &amp; (2x +4 tekens) en duwen het gerenderde <title> over 60 tekens
+// heen. Zichtbare H1/kop op de pagina zelf houdt gewoon "&".
+const metaTitel = sector.titel.replace(/ & /g, ' en ');
 ---
 <BaseLayout
-  title={`${sector.titel} in ChatGPT & Gemini`}
+  title={`${metaTitel} in ChatGPT en Gemini`}
   description={`AI-vindbaarheid (GEO) voor de ${sector.naam}: word gevonden en aanbevolen in ChatGPT, Gemini en Claude. Doe de gratis GEO Quick Scan.`}
   schema={[schema]}
   faqSchema={faqSchema}

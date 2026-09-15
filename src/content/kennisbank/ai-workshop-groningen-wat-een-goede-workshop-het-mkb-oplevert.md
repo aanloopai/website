@@ -1,5 +1,5 @@
 ---
-title: "AI workshop Groningen: wat een goede workshop het MKB oplevert"
+title: "AI workshop Groningen: wat levert het MKB op?"
 description: "Een AI workshop in Groningen voor het MKB: wat je leert, hoe je een goede workshop herkent en wanneer een workshop slimmer is dan direct automatiseren."
 excerpt: "Een AI workshop is voor veel MKB-bedrijven in Groningen de eerste kennismaking met kunstmatige intelligentie. Dit artikel legt uit wat een goede workshop inhoudt, wat je erin leert over je eigen processen en regels zoals de AVG, en wanneer je beter direct een kleine automatisering kunt laten bouwen."
 published: 2026-09-11

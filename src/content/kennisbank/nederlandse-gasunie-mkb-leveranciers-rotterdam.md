@@ -1,5 +1,5 @@
 ---
-title: "Nederlandse Gasunie: wat het bedrijf doet en wat dat betekent voor het MKB"
+title: "Nederlandse Gasunie: wat betekent dat voor het MKB"
 description: "Nederlandse Gasunie: wat het staatsbedrijf doet, welke projecten in Rotterdam lopen en hoe MKB-leveranciers zich slim voorbereiden op samenwerking."
 excerpt: "Gasunie beheert het gastransportnet en bouwt tegelijk aan waterstof-, warmte- en CO₂-infrastructuur. Dit artikel legt uit wat het bedrijf precies doet, welke projecten in en rond Rotterdam lopen en wat dat betekent als u als MKB-bedrijf wilt meedoen in die keten."
 published: 2026-08-29

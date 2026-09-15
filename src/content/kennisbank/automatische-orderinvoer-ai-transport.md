@@ -1,5 +1,5 @@
 ---
-title: "Automatische orderinvoer met AI in transport: zo werkt het in de praktijk"
+title: "Automatische orderinvoer met AI in transport"
 description: "Automatische orderinvoer met AI in transport: hoe vervoerders in Rotterdam e-mails, PDF's en EDI omzetten in complete ritorders zonder overtypen."
 excerpt: "Transportopdrachten komen binnen als e-mail, PDF, Excel of portaalbericht en worden daarna met de hand overgetypt in het TMS. Dit artikel legt uit hoe automatische orderinvoer met AI werkt, welke koppelingen u nodig heeft en waar vervoerders in de regio Rotterdam op moeten letten."
 published: 2026-09-05

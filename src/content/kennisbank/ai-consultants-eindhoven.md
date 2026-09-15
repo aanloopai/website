@@ -1,5 +1,5 @@
 ---
-title: "AI consultants in Eindhoven: wat ze doen en hoe u de juiste kiest"
+title: "AI consultants in Eindhoven: hoe kiest u de juiste?"
 description: "AI consultants in Eindhoven zoeken? Lees wat een AI-consultant doet, hoe u aanbieders vergelijkt en waarom MKB'ers uit Rotterdam ook in Brainport kijken."
 excerpt: "Wie zoekt naar AI consultants in Eindhoven vindt alles van universitaire specialisten tot grote adviesbureaus, en dat werk verschilt sterk. Dit artikel legt uit wat een AI-consultant werkelijk doet, waarom Brainport zo'n populaire zoekterm is en waar ondernemers uit Eindhoven én de regio Rotterdam op moeten letten voordat ze een opdracht geven."
 published: 2026-09-09
