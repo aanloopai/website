@@ -1,5 +1,5 @@
 ---
-title: "AI hypotheek software: wat het doet en wanneer het past bij een adviseurskantoor"
+title: "AI hypotheek software: wat het doet en wanneer nuttig"
 description: "Wat AI hypotheek software doet voor hypotheekadviseurs: documentcontrole, dossieropbouw en klantcommunicatie. Uitleg voor MKB-kantoren in Nederland."
 excerpt: "AI hypotheek software neemt het voorbereidende werk van hypotheekadviseurs over: documenten uitlezen, dossiers controleren en klantvragen beantwoorden. Dit artikel legt uit wat zulke software wel en niet doet, wat de Wft en AVG ervan vragen en wanneer een kleine automatisering slimmer is dan een compleet pakket."
 published: 2026-09-10

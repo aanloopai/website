@@ -1,0 +1,48 @@
+name: CI
+
+# 2026-09-15: tot nu toe was "Workers Builds: website" (Cloudflare) de enige
+# check op een PR. De vitest-guards (prijs-consistentie, AI-disclosure,
+# page-visuals, IG-wachtrij, …) draaiden alleen lokaal — een PR kon ze
+# breken zonder dat iemand het zag. Deze workflow maakt ze een echte gate,
+# plus de metadata-bewaking over de gebouwde site.
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test-build:
+    name: vitest + build + meta
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # build-sitemap.cjs leest de laatste commitdatum per bestand (<lastmod>).
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Unit + guard tests
+        run: npm test
+
+      - name: Build site
+        run: npm run build
+
+      - name: Metadata guard (title ≤ 60, description 110–155, één H1)
+        run: node scripts/check-meta.mjs

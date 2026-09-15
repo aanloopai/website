@@ -1,5 +1,5 @@
 ---
-title: "Off-site autoriteitssprint: reviews, gratis NL-directories en één mediapitch"
+title: "Off-site autoriteitssprint voor het MKB"
 description: "Off-site autoriteit in één sprint: Trustpilot, Google Reviews, gratis NL SaaS-directories en één mediapitch met eigen data. Praktisch stappenplan voor MKB."
 excerpt: "Wat er buiten uw website gebeurt bepaalt hoe betrouwbaar u overkomt bij klanten én bij zoekmachines. Dit artikel laat zien hoe u in een korte sprint reviewprofielen, gratis vermeldingen en één goed onderbouwde mediapitch op orde brengt."
 published: 2026-08-29
