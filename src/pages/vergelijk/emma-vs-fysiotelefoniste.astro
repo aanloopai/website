@@ -1,0 +1,236 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { START_MND, GROEI_MND, COMPLEET_MND, OVERAGE_LABEL, GARANTIE } from '../../data/pricing';
+// Vergelijking: Emma (Aanloop AI) vs FysioTelefoniste (Flireo B.V.).
+// Aanleiding (SERP-onderzoek 2026-09-15): "ai telefoniste praktijk" is de
+// enige niche-query waar een directe Nederlandse niche-concurrent bovenaan
+// staat — fysiotelefoniste.nl met een Intramed-koppel-gids.
+// Bron FysioTelefoniste: publieke pagina's van fysiotelefoniste.nl, gescraped
+// 2026-09-15 (homepage, /prijzen, /over-ons, /faq, /blog/intramed-koppelen-
+// ai-telefoniste). Aanloop-data: pricing.ts, vertrouwen.astro, diensten/emma.astro.
+// Fair-compare: alleen publiek geverifieerde feiten; wat we niet konden
+// verifiëren staat er letterlijk zo in. Geen eigen cijfers van de concurrent
+// overgenomen als feit (hun "30% gemiste telefoontjes" is hun claim).
+const SCRAPED = '15 september 2026';
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: 'Emma vs FysioTelefoniste: welke telefoon-AI past bij uw fysiopraktijk?',
+  description: 'Eerlijke vergelijking tussen Emma (Aanloop AI, vaste maandprijs, telefoon + WhatsApp) en FysioTelefoniste (Flireo B.V., pay-per-minuut, fysio-specifiek): prijs, Intramed, AVG, AI-disclosure.',
+  author: { '@id': 'https://aanloopai.nl/#organization' },
+  publisher: {
+    '@type': 'Organization',
+    '@id': 'https://aanloopai.nl/#organization',
+    name: 'Aanloop AI',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-09-15',
+  dateModified: '2026-09-15',
+  mainEntityOfPage: 'https://aanloopai.nl/vergelijk/emma-vs-fysiotelefoniste/',
+  inLanguage: 'nl-NL',
+};
+
+const faqs = [
+  {
+    q: 'Wat is het belangrijkste verschil tussen Emma en FysioTelefoniste?',
+    a: `FysioTelefoniste is een pay-per-minuut dienst (€0,15 per belminuut, geen abonnement) die specifiek is gebouwd voor Nederlandse fysiotherapiepraktijken, met vergoedingsregels ingebouwd. Emma van Aanloop AI is een AI-agent voor telefoon én WhatsApp op een vaste maandprijs (vanaf ${START_MND}), inzetbaar in meerdere sectoren en niet vooraf op fysiotherapie getraind. Het verschil zit in het prijsmodel (verbruik versus abonnement) en de mate van specialisatie.`,
+  },
+  {
+    q: 'Heeft een van beide een kant-en-klare koppeling met Intramed?',
+    a: 'Nee, geen van beide claimt dat. FysioTelefoniste schrijft in de eigen Intramed-gids letterlijk: "Wij bieden geen kant-en-klare Intramed-koppeling aan" en beschrijft vier maatwerkroutes, afhankelijk van uw Intramed-versie (Lokaal, Online of PLUS). Bij Emma is een EPD-koppeling niet met naam genoemd; wij bouwen op aanvraag een integratie via REST API of webhook. Zonder koppeling leveren beide een gestructureerd afspraakverzoek dat u zelf in uw systeem zet.',
+  },
+  {
+    q: 'Is Emma net als FysioTelefoniste getraind op fysiotherapie-vergoedingen?',
+    a: 'Niet standaard. FysioTelefoniste is gebouwd rondom de Nederlandse fysiotherapiesector en kent vanaf de start vergoedingsregels, verwijsstructuur en behandeltypes. Emma wordt tijdens de onboarding getraind op uw eigen kennisbank, FAQ en documenten — inclusief vergoedingslogica als u die aanlevert — maar komt niet met fysio-kennis vooraf ingebouwd.',
+  },
+  {
+    q: 'Waar staat de data en wie is verwerker bij beide diensten?',
+    a: 'Beide noemen EU-hosting en een verwerkersovereenkomst. Aanloop AI noemt Amsterdam en Frankfurt als datacenters, een instelbare bewaartermijn van 7 tot 365 dagen en verwijdering binnen 24 uur. FysioTelefoniste noemt "EU-servers" zonder locatie, versleutelde opslag, en stelt dat zij geen medische dossiergegevens verwerken — alleen telefoonverkeer. Vraag bij beide de verwerkersovereenkomst op voordat u gezondheidsdata laat verwerken.',
+  },
+  {
+    q: 'Meldt de AI aan de beller dat het een AI is?',
+    a: `Bij Emma wel: elk gesprek opent met "Emma, de AI-assistent van [uw praktijk]", conform artikel 50 van de EU AI-verordening, en Emma bevestigt eerlijk een AI te zijn als iemand het vraagt. Op de publieke pagina's van fysiotelefoniste.nl hebben wij op ${SCRAPED} geen tekst gevonden over of en hoe hun AI zichzelf als AI identificeert — niet vermeld is niet hetzelfde als niet aanwezig; vraag het na.`,
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+
+const FT = 'https://www.fysiotelefoniste.nl';
+const comparison = [
+  { feature: 'Doelgroep', emma: 'AI-receptionist voor praktijken, salons, garages en installateurs; ook andere MKB-sectoren', ft: 'Specifiek voor Nederlandse fysiotherapiepraktijken ("getraind op de Nederlandse fysiotherapiesector")', src: `${FT}/over-ons` },
+  { feature: 'Prijsmodel', emma: 'Vaste maandprijs per pakket', ft: 'Pay-per-minuut, geen abonnement, geen minimumafname', src: `${FT}/prijzen` },
+  { feature: 'Prijs', emma: `Start ${START_MND} (300 min) · Groei ${GROEI_MND} (1.000 min) · Compleet ${COMPLEET_MND}; ${OVERAGE_LABEL}`, ft: '€0,15 per belminuut; eigen rekenvoorbeelden: ±€9/mnd (±30 gesprekken) tot ±€90/mnd (±300 gesprekken)', src: `${FT}/prijzen` },
+  { feature: 'Setup', emma: 'Start: geen setup. Groei/Compleet: eenmalige inrichting, bedrag bespreken we in het gesprek', ft: 'Vanaf €250 eenmalig (kennismaking, AI op maat, testen, live)', src: `${FT}/prijzen` },
+  { feature: 'Proefperiode / garantie', emma: GARANTIE, ft: 'Geen geld-terug-termijn vermeld; wel geen abonnement ("Niet tevreden? Dan stop je gewoon.")', src: `${FT}/prijzen` },
+  { feature: 'Praktijksoftware (Intramed)', emma: 'Geen kant-en-klare EPD-koppeling; integratie via REST API/webhook op aanvraag', ft: '"Wij bieden geen kant-en-klare Intramed-koppeling aan" — vier maatwerkroutes per Intramed-versie', src: `${FT}/blog/intramed-koppelen-ai-telefoniste` },
+  { feature: 'WhatsApp', emma: 'Inbegrepen vanaf Groei (officiële WhatsApp Business API)', ft: `Niet vermeld op fysiotelefoniste.nl (${SCRAPED})`, src: FT },
+  { feature: 'Datalocatie / AVG', emma: 'EU-datacenters (Amsterdam/Frankfurt), encryptie, verwerkersovereenkomst, bewaartermijn 7-365 dagen instelbaar', ft: 'EU-servers, versleutelde opslag, verwerkersovereenkomst; "we verwerken geen medische dossiergegevens"', src: `${FT}/faq` },
+  { feature: 'AI-disclosure (AI Act art. 50)', emma: 'Ja — opent met "Emma, de AI-assistent van …"; bevestigt AI te zijn als gevraagd', ft: `Niet vermeld op fysiotelefoniste.nl (${SCRAPED})`, src: FT },
+  { feature: 'Wie beheert de bot', emma: 'Aanloop AI bouwt, traint en optimaliseert maandelijks', ft: 'Flireo B.V. bouwt op maat; aanpassingen inbegrepen ("je geeft het door en we passen de AI aan")', src: `${FT}/faq` },
+  { feature: 'Live binnen', emma: '7 werkdagen (Groei/Compleet begeleid)', ft: '3 werkdagen na het kennismakingsgesprek', src: `${FT}/faq` },
+  { feature: 'Klantcases / reviews', emma: 'Geen klantaantallen of reviews geclaimd — zie /vertrouwen/ "wat wij níet claimen"', ft: `Geen klantnamen of testimonials aangetroffen (${SCRAPED})`, src: FT },
+  { feature: 'Bedrijf', emma: 'Aanloop AI, Rotterdam, KvK 88606902', ft: 'Flireo B.V., Deventer, KvK 94622868', src: `${FT}/over-ons` },
+];
+
+const whenFt = [
+  'U heeft een fysiotherapiepraktijk en wilt een AI die de Nederlandse vergoedingsregels al standaard kent.',
+  'Uw belvolume is laag (tientallen gesprekken per maand) en u wilt geen vaste maandlasten — per minuut is dan goedkoper.',
+  'U heeft alleen telefonie nodig, geen WhatsApp, CRM-koppeling of workflows.',
+  'Een lage eenmalige instap (setup vanaf €250) weegt voor u zwaarder dan een geld-terug-garantie op het abonnement.',
+];
+const whenEmma = [
+  'U wilt telefoon én WhatsApp in dezelfde assistent, met CRM-koppeling of workflows op maat.',
+  'Uw belvolume is hoger of onvoorspelbaar en u wilt een vaste, voorspelbare maandprijs.',
+  `U wilt de assistent eerst risicoloos proberen: ${GARANTIE.toLowerCase()}.`,
+  'Uw praktijk is geen fysiopraktijk (tandarts, huisarts, salon, garage, installateur) — FysioTelefoniste is daar niet voor gebouwd.',
+  'AI-transparantie (AI Act art. 50) moet gedocumenteerd en getest zijn, niet alleen beloofd.',
+];
+---
+
+<BaseLayout
+  title="Emma vs FysioTelefoniste"
+  description="Emma (vaste maandprijs, telefoon + WhatsApp) versus FysioTelefoniste (pay-per-minuut, fysio-specifiek): prijs, Intramed, AVG en AI-disclosure vergeleken."
+  schema={articleSchema}
+  faqSchema={faqs.map((f) => ({ question: f.q, answer: f.a }))}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-4xl">
+        <div class="flex items-center gap-4 mb-6 reveal">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <span class="eyebrow">Vergelijking &middot; september 2026</span>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+          Emma <span class="text-slate-400">vs</span> FysioTelefoniste
+          <span class="block text-2xl sm:text-3xl lg:text-4xl font-semibold text-slate-500 mt-2">Welke telefoon-AI past bij uw praktijk?</span>
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed text-pretty max-w-3xl reveal reveal-delay-2">
+          Beide laten een AI de telefoon van een Nederlandse praktijk opnemen, maar het zijn andere producten. FysioTelefoniste (Flireo B.V., Deventer) is een <strong>fysio-specifieke dienst per belminuut</strong> vanaf &euro;0,15/min zonder abonnement. Emma van Aanloop AI is een <strong>AI-assistent voor telefoon &eacute;n WhatsApp op een vaste maandprijs</strong> vanaf {START_MND}, met {GARANTIE.toLowerCase()}. Hieronder de vergelijking op wat beide partijen zelf publiceren.
+        </p>
+
+        <div class="mt-8 p-4 bg-amber-50/50 border border-amber-200 rounded-xl text-sm text-slate-700 reveal reveal-delay-3">
+          <p class="font-semibold text-amber-900 mb-1">Bron-disclaimer</p>
+          <p>FysioTelefoniste-gegevens komen van de publieke pagina's van fysiotelefoniste.nl, gelezen op {SCRAPED}. Aanloop-gegevens komen van onze eigen tarieven- en productpagina's van dezelfde datum. Beide partijen wijzigen hun aanbod &mdash; controleer de actuele stand op beide websites. Waar wij iets niet konden verifi&euml;ren, staat dat er letterlijk zo in. Cijfers die FysioTelefoniste over gemiste telefoontjes of extra pati&euml;nten noemt, zijn hun eigen claims en niet door ons gecontroleerd.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-6xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Side-by-side</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">{comparison.length} punten naast elkaar.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Elke FysioTelefoniste-cel linkt naar de pagina waar het staat.</p>
+      </div>
+
+      <div class="overflow-x-auto reveal reveal-delay-1">
+        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200">
+          <thead>
+            <tr class="border-b border-slate-200">
+              <th class="text-left py-4 px-5 text-slate-500 font-medium w-[24%]">Criterium</th>
+              <th class="text-left py-4 px-4 font-bold text-navy bg-brand-emerald/5 w-[38%]">Emma (Aanloop AI)<br/><span class="text-xs font-normal text-brand-emerald">Vaste maandprijs, telefoon + WhatsApp</span></th>
+              <th class="text-left py-4 px-4 font-bold text-navy w-[38%]">FysioTelefoniste<br/><span class="text-xs font-normal text-slate-500">Per belminuut, fysio-specifiek</span></th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-100">
+            {comparison.map((row) => (
+              <tr>
+                <td class="py-3 px-5 text-slate-700 font-medium">{row.feature}</td>
+                <td class="py-3 px-4 text-navy bg-brand-emerald/5 text-xs">{row.emma}</td>
+                <td class="py-3 px-4 text-slate-600 text-xs">
+                  {row.ft}
+                  <a href={row.src} rel="nofollow noopener" target="_blank" class="ml-1 text-slate-400 hover:text-brand-indigo underline underline-offset-2" title="Bron op fysiotelefoniste.nl">bron</a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page max-w-5xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-2">Welke past bij u?</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Doelgroep-fit per aanbieder.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Geen "wij zijn beter"-framing &mdash; beide hebben een eigen ideale klant.</p>
+      </div>
+
+      <div class="grid lg:grid-cols-2 gap-8">
+        <div class="bg-white border-2 border-brand-emerald/30 rounded-2xl p-6 reveal">
+          <p class="text-xs font-semibold uppercase tracking-widest text-brand-emerald mb-2">Kies Emma als</p>
+          <ul class="space-y-3 mt-4">
+            {whenEmma.map((p) => (
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {p}
+              </li>
+            ))}
+          </ul>
+          <div class="mt-6 flex flex-wrap gap-4">
+            <a href="/diensten/emma/" class="inline-flex items-center gap-2 text-sm font-semibold text-brand-emerald hover:underline">Lees meer over Emma</a>
+            <a href="/sectoren/zorg/" class="inline-flex items-center gap-2 text-sm font-semibold text-brand-emerald hover:underline">Emma voor praktijken</a>
+          </div>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 reveal reveal-delay-1">
+          <p class="text-xs font-semibold uppercase tracking-widest text-slate-500 mb-2">Kies FysioTelefoniste als</p>
+          <ul class="space-y-3 mt-4">
+            {whenFt.map((p) => (
+              <li class="flex items-start gap-3 text-sm text-slate-700">
+                <svg class="w-4 h-4 mt-0.5 flex-shrink-0 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                {p}
+              </li>
+            ))}
+          </ul>
+          <p class="mt-6 text-xs text-slate-400 italic">FysioTelefoniste is een onafhankelijke aanbieder &mdash; voor hun actuele aanbod verwijzen wij naar <a href="https://www.fysiotelefoniste.nl" rel="nofollow noopener" target="_blank" class="underline">fysiotelefoniste.nl</a>.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <div class="mb-10 reveal">
+        <p class="eyebrow mb-3">Veelgestelde vragen</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tighter-2 text-navy">Emma vs FysioTelefoniste &mdash; de vragen die praktijken stellen.</h2>
+      </div>
+      <div class="space-y-3">
+        {faqs.map((item) => (
+          <details class="card group reveal">
+            <summary class="flex items-center justify-between cursor-pointer list-none">
+              <span class="text-base font-bold text-navy pr-6">{item.q}</span>
+              <svg class="w-5 h-5 text-slate-400 group-open:rotate-180 transition-transform flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{item.a}</p>
+          </details>
+        ))}
+      </div>
+      <p class="mt-8 text-xs text-slate-400">Meer vergelijkingen: <a href="/vergelijk/" class="underline">overzicht</a> &middot; <a href="/vergelijk/aanloop-vs-voicelabs/" class="underline">Emma vs Voicelabs</a> &middot; <a href="/vertrouwen/" class="underline">wat wij wel en niet claimen</a>.</p>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page">
+      <div class="max-w-3xl">
+        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+          Hoor Emma zelf, nu, zonder afspraak.
+        </h2>
+        <p class="mt-4 text-slate-300 leading-relaxed">
+          Klik op "Bel Emma nu" in het menu en praat 30 seconden met haar in uw browser. Ze zegt meteen dat ze een AI is. Daarna beslist u rustig &mdash; per minuut of per maand.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <button type="button" class="js-emma-live-trigger btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5" data-vis="demo">Bel Emma nu &mdash; live</button>
+          <a href="/tarieven/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Bekijk tarieven</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
