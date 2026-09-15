@@ -21,7 +21,7 @@ const path = require('path');
 const https = require('https');
 
 // Config
-const INDEXNOW_KEY = 'e336017952984cce846f0b055c795108';
+const INDEXNOW_KEY = '5792f8c6ff1c450ab008b567cca7472c';
 const INDEXNOW_HOST = 'aanloopai.nl';
 const INDEXNOW_API_ENDPOINT = 'https://api.indexnow.org/indexnow';
 const SITEMAP_PATH = path.join(__dirname, '../dist/sitemap.xml');
@@ -122,7 +122,7 @@ async function main() {
   const payload = {
     host: INDEXNOW_HOST,
     key: INDEXNOW_KEY,
-    keyLocation: `https://${INDEXNOW_HOST}/e336017952984cce846f0b055c795108.txt`,
+    keyLocation: `https://${INDEXNOW_HOST}/5792f8c6ff1c450ab008b567cca7472c.txt`,
     urlList: urlsToSubmit,
   };
 
