@@ -189,6 +189,15 @@ async function main() {
     return;
   }
 
+  // Preflight: the Graph API only reports "container status=ERROR" when it
+  // cannot fetch the MP4 — no reason, no HTTP code. Check reachability here so
+  // a missing/unpushed render fails with the real cause (issue #57).
+  const head = await fetch(videoUrl, { method: "HEAD", redirect: "follow" });
+  if (!head.ok) {
+    throw new Error(`Video URL not reachable (HTTP ${head.status}): ${videoUrl} — is the MP4 committed and pushed to master?`);
+  }
+  console.log(`Video reachable: HTTP ${head.status}, ${head.headers.get("content-length") || "?"} bytes`);
+
   console.log(`\nCreating REELS container...`);
   const createResp = await graphPost(`/${igUserId}/media`, {
     media_type: "REELS",

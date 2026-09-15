@@ -48,3 +48,27 @@ describe('Instagram-wachtrij: geen Marco meer', () => {
     expect(py).toContain('not s.get("skip_reason")');
   });
 });
+
+// Issue #57 (2026-09-11..14): een vers gerenderde Reel is een UNTRACKED bestand;
+// `git diff --quiet <dir>` ziet alleen gewijzigde getrackte bestanden, dus de
+// workflow meldde "No new MP4s", pushte niets, en de Graph API kreeg een
+// raw.githubusercontent-URL die 404'de -> container status=ERROR.
+describe('Reels-workflow commit nieuwe renders wél', () => {
+  const yml = fs.readFileSync('.github/workflows/ig-reels-publish.yml', 'utf8');
+
+  it('staged eerst en vergelijkt daarna de index (niet de werkboom)', () => {
+    const add = yml.indexOf('git add public/social-feed/reels/');
+    const cached = yml.indexOf('git diff --cached --quiet -- public/social-feed/reels/');
+    expect(add).toBeGreaterThan(-1);
+    expect(cached).toBeGreaterThan(add);
+    expect(yml).not.toContain('git diff --quiet public/social-feed/reels/');
+  });
+
+  it('de publisher controleert de video-URL vóór het aanmaken van de container', () => {
+    const src = fs.readFileSync('scripts/ig-publish-reel.mjs', 'utf8');
+    const preflight = src.indexOf('method: "HEAD"');
+    const create = src.indexOf('media_type: "REELS"');
+    expect(preflight).toBeGreaterThan(-1);
+    expect(preflight).toBeLessThan(create);
+  });
+});
