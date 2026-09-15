@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow,noarchive">
-<meta name="description" content="AanloopAI · Alakuş Yapı kontrol katmanı demo (adlar maskeli)">
+<meta name="description" content="AanloopAI demo: Alakuş Yapı için Netsim üzerinde salt-okunur kontrol katmanı. İskonto, stok, fiyat ve tahsilat bulguları; cari ve kullanıcı adları maskeli.">
 <title>Alakuş Kontrol Katmanı</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
@@ -411,6 +411,7 @@ $("#yil").addEventListener("change",e=>{ S.yil=e.target.value; S.limit=40; S.ope
 const yrs = () => S.yil==="all" ? D.yil : D.yil.filter(y=>String(y.y)===S.yil);
 const tip=$("#tip");
 function showTip(e,html){ tip.innerHTML=html; tip.style.display="block"; moveTip(e); }
+document.addEventListener("mousemove",e=>{ const t=e.target.closest?.("[data-tip]"); if(t) showTip(e,esc(t.dataset.tip)); else if(tip.style.display==="block"&&!e.target.closest?.(".hit,.b")) hideTip(); });
 function moveTip(e){ const w=tip.offsetWidth,h=tip.offsetHeight; let x=e.clientX+14,y=e.clientY+14; if(x+w>innerWidth-8)x=e.clientX-w-10; if(y+h>innerHeight-8)y=e.clientY-h-10; tip.style.left=x+"px"; tip.style.top=y+"px"; }
 function hideTip(){ tip.style.display="none"; }
 
@@ -611,7 +612,7 @@ $("#top22").innerHTML=`<thead><tr><th>Ürün</th><th>Grup</th><th class="n">Mikt
   const W=300,H=110,pl=30,pb=18,iw=W-pl-6,ih=H-8-pb, bw=iw/k3.length-6;
   const ib=v=>ih-v/75*ih;
   let bars=`<g class="grid">`+[0,25,50,75].map(v=>`<line x1="${pl}" x2="${W-6}" y1="${8+ib(v)}" y2="${8+ib(v)}"/><text x="${pl-5}" y="${8+ib(v)+4}" text-anchor="end">${v}</text>`).join("")+`</g>`;
-  k3.forEach((y,i)=>{ const x=pl+i*(iw/k3.length)+3; bars+=`<rect x="${x}" y="${8+ib(y.oran)}" width="${bw}" height="${ih-ib(y.oran)}" fill="var(--accent)" rx="2"><title>${y.y}: ${y.teklif} teklif, %${y.oran} kazanıldı (tutar bazında %${y.oran_tl})</title></rect><text x="${x+bw/2}" y="${H-4}" text-anchor="middle">${String(y.y).slice(2)}</text>`; });
+  k3.forEach((y,i)=>{ const x=pl+i*(iw/k3.length)+3; bars+=`<rect x="${x}" y="${8+ib(y.oran)}" width="${bw}" height="${ih-ib(y.oran)}" fill="var(--accent)" rx="2" class="k3hit" data-tip="${y.y}: ${y.teklif} teklif, %${y.oran} kazanıldı (tutar bazında %${y.oran_tl})"></rect><text x="${x+bw/2}" y="${H-4}" text-anchor="middle">${String(y.y).slice(2)}</text>`; });
   const y22=G.k3.son;
   const dmax=Math.max(...G.k2.dilim.map(d=>d.tl),1);
   const cek=G.k4.durum.slice(0,5);
