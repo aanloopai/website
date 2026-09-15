@@ -279,7 +279,7 @@ const toolSchema = {
   interface StartField {
     name: string;
     label: string;
-    type: 'text' | 'textarea' | 'tel' | 'select';
+    type: 'text' | 'textarea' | 'tel' | 'select' | 'url';
     required?: boolean;
     options?: string[];
     placeholder?: string;
@@ -297,6 +297,14 @@ const toolSchema = {
       { name: 'nummer_overdracht', label: 'Wilt u uw bestaande telefoonnummer overdragen?', type: 'select', required: true, options: ['Ja', 'Nee', 'Weet ik nog niet'] },
     ],
     'voice-agent': [
+      {
+        name: 'website',
+        label: 'Uw website',
+        type: 'url',
+        required: false,
+        placeholder: 'bijv. www.uwpraktijk.nl',
+        hint: 'Optioneel — we vullen bedrijfsnaam en telefoonnummer alvast in vanaf uw site.',
+      },
       { name: 'huidige_lijn', label: 'Huidig telefoonnummer / lijn', type: 'tel', required: true, placeholder: '+31 6 12345678' },
       { name: 'call_volume', label: 'Verwacht aantal gesprekken per dag', type: 'select', required: true, options: ['Minder dan 10', '10-30', '30-75', 'Meer dan 75'] },
       { name: 'openingstoon', label: 'Gewenste toon van het openingsbericht', type: 'select', required: true, options: ['Formeel', 'Zakelijk en warm', 'Informeel'] },
@@ -436,7 +444,8 @@ const toolSchema = {
           input = sel;
         } else {
           const inp = document.createElement('input');
-          inp.type = f.type === 'tel' ? 'tel' : 'text';
+          inp.type = f.type === 'tel' ? 'tel' : f.type === 'url' ? 'url' : 'text';
+          if (f.type === 'url') { inp.autocomplete = 'url'; inp.inputMode = 'url'; }
           inp.id = `sf-${f.name}`;
           inp.name = f.name;
           inp.className = baseClass;
@@ -456,6 +465,58 @@ const toolSchema = {
 
         serviceFields.appendChild(wrap);
       });
+
+      wirePrefill();
+    }
+
+    // "Uw website" → /api/intake/prefill → bedrijfsnaam / telefoon / lijn
+    // alvast invullen (alleen lege velden; de bezoeker houdt het laatste woord).
+    // Faalt stil: geen prefill is gewoon het oude lege formulier.
+    let lastPrefilledUrl = '';
+    function wirePrefill(): void {
+      const site = document.getElementById('sf-website') as HTMLInputElement | null;
+      if (!site) return;
+      const status = document.createElement('p');
+      status.className = 'mt-1 text-xs text-slate-500 hidden';
+      status.id = 'sf-website-status';
+      site.insertAdjacentElement('afterend', status);
+
+      const fill = (id: string, value: string): boolean => {
+        const el = document.getElementById(id) as HTMLInputElement | null;
+        if (!el || !value || el.value.trim()) return false;
+        el.value = value;
+        return true;
+      };
+
+      const run = async () => {
+        const raw = site.value.trim();
+        if (!raw || raw === lastPrefilledUrl) return;
+        lastPrefilledUrl = raw;
+        status.textContent = 'Even kijken op uw website…';
+        status.classList.remove('hidden');
+        try {
+          const res = await fetch(`/api/intake/prefill?url=${encodeURIComponent(raw)}`, { headers: { accept: 'application/json' } });
+          const data = await res.json().catch(() => ({}));
+          if (!data || !data.ok) {
+            status.textContent = 'Geen gegevens gevonden — vul de velden gewoon zelf in.';
+            trackEvent('intake_prefill', { result: 'empty' });
+            return;
+          }
+          const filled: string[] = [];
+          if (fill('sf-huidige_lijn', data.telefoon)) filled.push('telefoonnummer');
+          if (fill('start-bedrijfsnaam', data.bedrijfsnaam)) filled.push('bedrijfsnaam');
+          if (fill('start-telefoon', data.telefoon)) filled.push('contactnummer');
+          status.textContent = filled.length
+            ? `Alvast ingevuld vanaf uw site: ${filled.join(', ')}. Controleer en pas aan waar nodig.`
+            : 'Uw site is gelezen — de velden waren al ingevuld.';
+          trackEvent('intake_prefill', { result: 'ok', fields: filled.length });
+        } catch {
+          status.textContent = 'Website niet bereikbaar — vul de velden zelf in.';
+          trackEvent('intake_prefill', { result: 'error' });
+        }
+      };
+      site.addEventListener('change', run);
+      site.addEventListener('blur', run);
     }
 
     function selectService(id: ServiceId, cardEl: HTMLElement): void {
