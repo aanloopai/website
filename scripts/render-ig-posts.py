@@ -1088,6 +1088,64 @@ def post_wave10_09_personeelstekort() -> None:
     img.save(OUT_DIR / "wave10-09-personeelstekort.png", "PNG", optimize=True)
 
 
+# ---------------------------------------------------------------------------
+# Wave 11 (2026-09-21 → 10-02) — eerste wave na de niche-pivot: Emma als
+# AI-telefoniste voor praktijken, kapsalons, garages en installateurs. Zelfde
+# editorial-opzet als wave 9/10; één helper, vijf singles.
+# ---------------------------------------------------------------------------
+
+def _wave11_single(eyebrow: str, lines: list[str], accent: str, subline: str,
+                   filename: str, big: int = 100, sub: int = 34) -> None:
+    img = Image.new("RGB", (SIZE, SIZE), NAVY)
+    d = ImageDraw.Draw(img)
+    draw_brand_signature_top(d)
+    draw_centered(d, eyebrow, 250, font(FONT_REG, 26), PEARL_DIM)
+    f_big = font(FONT_BLACK, big)
+    _, h_line = text_size(d, lines[0], f_big)
+    line_spacing = 8
+    block_h = len(lines) * h_line + (len(lines) - 1) * line_spacing
+    y = (SIZE - block_h) // 2 - 40
+    for ln in lines:
+        y = draw_centered(d, ln, y, f_big, PEARL)
+        y += line_spacing
+    y += 36
+    y = draw_line(d, y, 200, accent, 6)
+    y += 46
+    draw_centered(d, subline, y, font(FONT_LIGHT, sub), PEARL)
+    draw_wordmark(d, SIZE - 60)
+    img.save(OUT_DIR / filename, "PNG", optimize=True)
+
+
+def post_wave11_01_kapsalon_schaar() -> None:
+    """Wave 11.1 — kapsalon: de telefoon gaat tijdens de behandeling."""
+    _wave11_single("EMMA  \u00b7  KAPSALON", ["12:10.", "Schaar in de hand.", "De telefoon gaat."],
+                   ROSE, "Emma neemt op terwijl jij knipt.", "wave11-01-kapsalon-schaar.png", big=96)
+
+
+def post_wave11_03_prijs_149() -> None:
+    """Wave 11.3 — aanbod: Start \u20ac149, geen setup, 14 dagen geld terug (pricing.ts)."""
+    _wave11_single("EMMA START", ["\u20ac149 per maand.", "Geen setup.", "14 dagen geld terug."],
+                   EMERALD, "Telefoon 24/7, 300 belminuten, afspraken in je agenda.", "wave11-03-prijs-149.png", big=92, sub=32)
+
+
+def post_wave11_05_garage_brug() -> None:
+    """Wave 11.5 — garage: iedereen in de werkplaats, balie schakelt naar voicemail."""
+    _wave11_single("EMMA  \u00b7  GARAGE", ["Onder de brug.", "Telefoon gaat.", "Voicemail."],
+                   AMBER, "Emma plant APK, onderhoud en pech in je werkplaatsplanning.", "wave11-05-garage-brug.png", big=100, sub=32)
+
+
+def post_wave11_07_ai_act() -> None:
+    """Wave 11.7 — autoriteit: AI Act art. 50 van toepassing sinds 2 augustus 2026."""
+    _wave11_single("AI ACT  \u00b7  ARTIKEL 50", ["Sinds 2 augustus:", "uw voicebot moet zeggen", "dat het een AI is."],
+                   INDIGO, "Emma doet dat in haar eerste zin. Altijd.", "wave11-07-ai-act.png", big=80)
+
+
+def post_wave11_09_installateur_lekkage() -> None:
+    """Wave 11.9 — installateur: spoed buiten kantooruren."""
+    _wave11_single("EMMA  \u00b7  INSTALLATEUR", ["22:14.", "Lekkage.", "Wie neemt op?"],
+                   ROSE, "Emma filtert spoed en zet de dienstdoende monteur in de lijn.", "wave11-09-installateur-lekkage.png", big=104, sub=32)
+
+
 def main() -> None:
     post_01()
     post_02()
@@ -1124,6 +1182,11 @@ def main() -> None:
     post_wave10_05_bouwplaats_marco()
     post_wave10_07_review_moment()
     post_wave10_09_personeelstekort()
+    post_wave11_01_kapsalon_schaar()
+    post_wave11_03_prijs_149()
+    post_wave11_05_garage_brug()
+    post_wave11_07_ai_act()
+    post_wave11_09_installateur_lekkage()
     for p in sorted(OUT_DIR.glob("post-*.png")):
         print(f"{p.name}\t{p.stat().st_size} bytes")
     for p in sorted(OUT_DIR.glob("wave8-*.png")):
@@ -1131,6 +1194,8 @@ def main() -> None:
     for p in sorted(OUT_DIR.glob("wave9-*.png")):
         print(f"{p.name}\t{p.stat().st_size} bytes")
     for p in sorted(OUT_DIR.glob("wave10-*.png")):
+        print(f"{p.name}\t{p.stat().st_size} bytes")
+    for p in sorted(OUT_DIR.glob("wave11-*.png")):
         print(f"{p.name}\t{p.stat().st_size} bytes")
 
 
