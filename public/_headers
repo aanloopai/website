@@ -38,6 +38,19 @@
   ! Cache-Control
   Cache-Control: public, max-age=300, s-maxage=86400, stale-while-revalidate=604800
 
+# Portaal- en admin-schillen: statische HTML met per-deploy ingebedde data
+# (window.__SCHEMAS enz.) achter een login. Met de /*.html-regel hierboven
+# bleef /portal/intake/ na de leadpartner-deploy (16-09) een dag oud op de
+# edge (s-maxage=86400, geen purge-recht in CI) — de nieuwe intake bestond
+# in de HTML niet. Geen edge-cache voor deze paden; de assets eronder
+# (/_astro/*) zijn content-hashed en blijven immutable.
+/portal/*
+  ! Cache-Control
+  Cache-Control: private, no-store
+/admin/*
+  ! Cache-Control
+  Cache-Control: private, no-store
+
 # SEO/AI-crawler files: short cache for fast updates
 /sitemap.xml
   ! Cache-Control

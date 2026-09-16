@@ -4,11 +4,39 @@
 // in server access logs, browser history, or HTTP Referer headers. Also stops
 // e-mail security scanners from silently consuming the one-time token by
 // pre-fetching, because GET-pre-fetching this page does not POST the token.
-import PortalLayout from '../../layouts/PortalLayout.astro';
+//
+// Self-contained shell, exactly like login.astro — this page must NOT use
+// PortalLayout: that shell runs the auth guard (GET /api/portal/me → 401 →
+// location.href = /portal/login), which in production wins the race against
+// the verify-POST below (32 ms vs ~100+ ms). Result before this fix: the POST
+// was aborted mid-flight, the one-time token was burned server-side and the
+// customer landed on the login page without a session — every magic-link
+// login failed. Seen live on 2026-09-16 (leadpartner go-live test).
+import '../../styles/global.css';
+import '../../styles/portal.css';
 ---
 
-<PortalLayout title="Inloggen…" active="overzicht">
-  <div class="mx-auto max-w-md">
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Inloggen… · Aanloop AI Klantportaal</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  </head>
+  <body class="portal flex min-h-screen flex-col">
+    <header class="border-b px-5 py-4" style="background:var(--p-surface);border-color:var(--p-border)">
+      <div class="mx-auto flex max-w-5xl items-center justify-between">
+        <a href="/" aria-label="Aanloop AI home">
+          <img src="/brand/logo-horizontal-light.svg" alt="Aanloop AI" class="h-7" />
+        </a>
+        <span class="section-title">Klantportaal</span>
+      </div>
+    </header>
+
+    <main class="flex flex-1 items-center justify-center px-4 py-12">
+  <div class="mx-auto w-full max-w-md">
     <div class="pcard">
       <div class="pcard-b text-center" style="padding:40px 24px">
         <div id="v-pending">
@@ -58,4 +86,6 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
         });
     })();
   </script>
-</PortalLayout>
+    </main>
+  </body>
+</html>
