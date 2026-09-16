@@ -380,7 +380,7 @@ html[data-rol="satis"] .rolnote{display:block}
 
 <section class="panel" id="zincir-sec">
   <div class="ph"><div><h2>Fiyat zinciri: teklif → satış fişi → fatura <span class="st">incele</span></h2><div class="sub">Netsim'de fiyat üç belgede yazılır. Bir belgeden diğerine geçerken birim fiyat %2'den fazla değişmişse listelenir: düşerse gelir kaybı adayı, yükselirse müşteri itirazı adayı. Pazarlık da olabilir, giriş hatası da; karar insanın. Gider/hizmet kalemleri sayılmaz, aynı ürün + aynı birim şart.</div></div></div>
-  <div class="row c2" id="zincir"></div>
+  <div class="row c2" id="zincir"></div><div id="zincir-akt"></div>
 </section>
 <section class="panel" id="u360-sec">
   <div class="ph"><div><h2>Ürün 360 <span class="st">çalışıyor</span></h2><div class="sub">Ekim ürün analizi kartı: yıllık satış ve brüt marj, alış fiyat geçmişi ve tedarikçi payı, stok/depo/yaş, açık bulgular. Alış kaydı olmayan ürün "fabrikadan sevk ya da başka kart" olarak görünür (veri kalitesi S2).</div></div>
@@ -390,7 +390,7 @@ html[data-rol="satis"] .rolnote{display:block}
 
 <section class="panel rol-yonetim" id="kul-sec">
   <div class="ph"><div><h2>Kullanıcı özeti <span class="st" id="kul-yil"></span></h2><div class="sub">Netsim kullanıcısı bazında: satış, verdiği ortalama iskonto (tutar ağırlıklı), açık kesin bulgular ve oranı, teklif kazanma. Kural bulgusu "suç" değil, süreç izi: net-fiyat giriş tarzı (%0 iskonto) ile liste-eksi-iskonto tarzı farkı da burada görünür.</div></div></div>
-  <div class="tw" style="max-height:420px"><table id="kul-tbl"></table></div>
+  <div class="tw" style="max-height:420px"><table id="kul-tbl"></table></div><div id="kul-akt"></div>
 </section>
 
 <section class="panel rol-yonetim" id="t360-sec">
@@ -413,13 +413,13 @@ html[data-rol="satis"] .rolnote{display:block}
 </section>
 
 <section class="row c2" id="stok-sec">
-  <div class="panel"><div class="ph"><div><h2>Hareketsiz ürünler</h2><div class="sub">1 yıldan uzun süredir çıkışı olmayan stok, bağlı paraya göre</div></div></div><div class="tw" style="max-height:380px"><table id="atil"></table></div></div>
+  <div class="panel" id="atil-panel"><div class="ph"><div><h2>Hareketsiz ürünler</h2><div class="sub">1 yıldan uzun süredir çıkışı olmayan stok, bağlı paraya göre</div></div></div><div class="tw" style="max-height:380px"><table id="atil"></table></div><div class="sonra"><b>Sonra:</b> Tam yaşlandırma listesi <code>urun-analizi.xlsx</code>; 2+ yıl hareketsiz kalemler Ekim fabrika görüşmesinde iade/takas konusu (Tedarikçi 360 kartı).</div></div>
   <div class="panel"><div class="ph"><div><h2 id="top22-h"></h2><div class="sub"><span class="rol-yonetim">Net satış ve brüt marj (alış maliyetine göre)</span></div></div></div><div class="tw" style="max-height:380px"><table id="top22"></table></div></div>
 </section>
 
 <section id="diger-sec">
   <div class="ph" style="margin-bottom:10px"><div><h2 style="font-size:16px">Diğer kontroller</h2><div class="sub">Listedeki diğer maddeler, aynı yedek üzerinde. Yöntem kanıtı; güncel yedekle bugünkü durumu üretir.</div></div></div>
-  <div class="k7" id="k7"></div>
+  <div class="k7" id="k7"></div><div id="k7-akt"></div>
 </section>
 
 <section class="panel method" id="method-sec">
@@ -860,7 +860,7 @@ function renderC360(){
     </div></div>`;
   const c360Akt=document.createElement("div"); $("#c360").appendChild(c360Akt);
   aksiyonBar(c360Akt,{konu:`Cari 360 · ${($("#c360-in")||{}).value||""}`, metin:()=>kartMetni("#c360").replace(/\n(Kopyala|E-posta|WhatsApp|Yazdır \/ PDF)\n?/g,"\n"), print:"#c360-sec",
-    sonra:"Kart, Bulgu kaydı doğrulandıkça ve yeni yedek geldikçe güncellenir. Yazdır / PDF yalnız bu kartı basar (toplantı çıktısı)."});
+    sonra:`<button class="lnk" data-kayit-q="${esc(($("#c360-in")||{}).value||"")}">Bu kartın bulgularını kayıtta aç →</button> Kart, Bulgu kaydı doğrulandıkça ve yeni yedek geldikçe güncellenir. Yazdır / PDF yalnız bu kartı basar (toplantı çıktısı).`});
 }
 // ---------- WhatsApp önizleme (bulgu kaydından, istemci tarafı) ----------
 function waMetin(rows, baslik, max){
@@ -943,7 +943,7 @@ function renderU360(){
     </div></div>`;
   const u360Akt=document.createElement("div"); $("#u360").appendChild(u360Akt);
   aksiyonBar(u360Akt,{konu:`Ürün 360 · ${($("#u360-in")||{}).value||""}`, metin:()=>kartMetni("#u360").replace(/\n(Kopyala|E-posta|WhatsApp|Yazdır \/ PDF)\n?/g,"\n"), print:"#u360-sec",
-    sonra:"Kart, Bulgu kaydı doğrulandıkça ve yeni yedek geldikçe güncellenir. Yazdır / PDF yalnız bu kartı basar (toplantı çıktısı)."});
+    sonra:`<button class="lnk" data-kayit-q="${esc(($("#u360-in")||{}).value||"")}">Bu kartın bulgularını kayıtta aç →</button> Kart, Bulgu kaydı doğrulandıkça ve yeni yedek geldikçe güncellenir. Yazdır / PDF yalnız bu kartı basar (toplantı çıktısı).`});
 }
 // ---------- kullanıcı özeti ----------
 (function(){
@@ -985,7 +985,7 @@ function renderT360(){
     </div></div>`;
   const t360Akt=document.createElement("div"); $("#t360").appendChild(t360Akt);
   aksiyonBar(t360Akt,{konu:`Tedarikçi 360 · ${($("#t360-in")||{}).value||""}`, metin:()=>kartMetni("#t360").replace(/\n(Kopyala|E-posta|WhatsApp|Yazdır \/ PDF)\n?/g,"\n"), print:"#t360-sec",
-    sonra:"Kart, Bulgu kaydı doğrulandıkça ve yeni yedek geldikçe güncellenir. Yazdır / PDF yalnız bu kartı basar (toplantı çıktısı)."});
+    sonra:`<button class="lnk" data-kayit-q="${esc(($("#t360-in")||{}).value||"")}">Bu kartın bulgularını kayıtta aç →</button> Kart, Bulgu kaydı doğrulandıkça ve yeni yedek geldikçe güncellenir. Yazdır / PDF yalnız bu kartı basar (toplantı çıktısı).`});
 }
 // ---------- onay kuyruğu ----------
 (function(){
@@ -1007,6 +1007,19 @@ function renderT360(){
 function renderAll(){ renderKPI(); barChart($("#ch-yil"),D.yil); lineChart($("#ch-isk"),D.yil); renderFeed(); renderTbl(); renderSide(); renderKayit(); renderC360(); renderT360(); renderU360(); renderWA(); }
 renderAll();
 
+document.addEventListener("click",e=>{ const b=e.target.closest("[data-kayit-q]"); if(!b) return; KF.q=b.dataset.kayitQ.trim().toLowerCase(); KF.k=""; $("#kf-k").value=""; $("#kf-q").value=b.dataset.kayitQ; KF.limit=50; renderKayit(); $("#kayit-sec").scrollIntoView({behavior:"smooth",block:"start"}); });
+// ---------- kalan bölümlerin aksiyonları ----------
+(function(){
+  const dosya=ad=>D.kaynak.out_dir?` Dosya: <a href="file:///${D.kaynak.out_dir}/${ad}">${ad}</a>.`:` Tam liste: <code>${ad}</code> (lokal panel).`;
+  if($("#zincir-akt")&&!$("#zincir-sec").hidden) aksiyonBar($("#zincir-akt"),{konu:"Fiyat zinciri: teklif → fiş → fatura", metin:()=>kartMetni("#zincir").replace(/\n(Kopyala|E-posta|WhatsApp)\n?/g,"\n"),
+    sonra:`Bu bir "incele" listesi: fiş ile fatura arasındaki farkın pazarlık mı giriş hatası mı olduğunu veri söyleyemez. En büyük kalemleri Mevlüt Bey'e sorun (mesaj taslakları 7–8); doğrulananlar için fiyat, Netsim'de düzeltilir.${dosya("kesin-hatalar-2.xlsx")}`});
+  if($("#kul-akt")&&D.kul) aksiyonBar($("#kul-akt"),{konu:`Kullanıcı özeti ${D.kul.yil}`, metin:()=>kartMetni("#kul-tbl"), print:"#kul-sec",
+    sonra:`Ortak yönetici hesabıyla girilen satışlar "kim girdi" izini siler (veri kalitesi K2): her kullanıcıya kendi hesabı. İskonto üst limiti hiçbir kullanıcıda tanımlı değil; limit Netsim ayarıdır, Nokta'ya soru 6.${dosya("kullanici-ozet.xlsx")}`});
+  if($("#k7-akt")) aksiyonBar($("#k7-akt"),{konu:"Diğer kontroller ve veri kalitesi", metin:()=>kartMetni("#k7").replace(/\n(Kopyala|E-posta|WhatsApp)\n?/g,"\n"), print:"#diger-sec",
+    sonra:`Veri kalitesi maddeleri "kimin işi" etiketiyle gelir: Nokta ayarı olanlar Nokta'ya (mesaj taslakları), kart temizliği muhasebe/satışa. Sayım listesi depo sorumlusuna gider; tahsilat riski muhasebeye.${dosya("veri-kalitesi.xlsx")}${dosya("diger-kontroller.xlsx")}`});
+  // KPI kartı tıklanınca ilgili bölüm açılır
+  $$("#kpis .kpi").forEach((k,i)=>{ if(i>1) return; k.style.cursor="pointer"; k.title="Sapma listesini aç"; k.addEventListener("click",()=>{ const t=$(i===0?"#tab-alis":"#tab-satis"); t&&t.click(); $("#sapma").scrollIntoView({behavior:"smooth",block:"start"}); }); });
+})();
 // ---------- ana sorun kartı (rol-duyarlı; kayıt satırlarından hesaplanır) ----------
 const KURAL_AD={R1:"stok düşülmemiş satış",R2:"fiyat tutarsızlığı",R3:"tedarikçi sözleşme sapması",R4:"birim karışıklığı",R5:"maliyet altı satış",R8:"müşteri sözleşme sapması"};
 function renderOzet(){
