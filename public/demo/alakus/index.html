@@ -405,7 +405,7 @@ html[data-rol="satis"] .rolnote{display:block}
   </div>
 </section>
 
-<footer><span>AanloopAI · Faz 0 · 14.09.2026</span><span>Kaynak tablolar: ALSAASIL · ALSADETA · ALSAINDI · ALSALINK · STOKISLM · STOKKART · CARIKART · KULLANIC</span></footer>
+<footer><span id="foot-l">AanloopAI · Faz 0</span><span>Kaynak tablolar: ALSAASIL · ALSADETA · ALSAINDI · ALSALINK · STOKISLM · STOKKART · CARIKART · KULLANIC</span></footer>
 </div>
 <div class="tip" id="tip" role="tooltip"></div>
 
@@ -450,6 +450,7 @@ $("#note-txt").innerHTML = D.kaynak.guncel
   ? `<b>Veri güncel.</b> Son işlem ${D.kaynak.son_islem}; kesim ${D.kaynak.kesim}. ${D.kaynak.ilk_yil}–${D.kaynak.son_yil} arası ${D.kaynak.son_yil-D.kaynak.ilk_yil+1} yıl. Tutarlar o günkü TL.`
   : `<b>Gönderilen yedek ${D.kaynak.son_ay} sonunda bitiyor.</b> ${D.kaynak.ilk_yil}–${D.kaynak.son_yil} arası ${D.kaynak.son_yil-D.kaynak.ilk_yil+1} yıl tam; sonrası için yalnız ${fmt(D.kaynak.sarkan_baslik)} işlem başlığı var. Tutarlar o günkü TL. Ekim'deki fabrika görüşmeleri için güncel yedek gerekiyor; Nokta Bilgisayar'a talep hazır.`;
 $("#status-txt").textContent=`Veri ${D.kaynak.ilk_yil}–${D.kaynak.son_yil} · kesim ${D.kaynak.kesim}`;
+$("#foot-l").textContent=`AanloopAI · Faz 0 · koşu ${D.kaynak.uretim||""}`;
 if(D.kosu){ const yavas=[...D.kosu.adimlar].sort((a,b)=>b.sure_s-a.sure_s)[0]; $("#kosu-txt").textContent=` · son tam koşu ${D.kosu.bitis||D.kosu.baslangic} · ${Math.round((D.kosu.toplam_s||0)/60)} dk · ${D.kosu.adimlar.length} adım${yavas?` (en uzun ${yavas.adim} ${yavas.sure_s}s)`:""} · ${esc(D.kosu.test||"")}`; } $("#top22-h").textContent=`${D.kaynak.son_yil} ciro liderleri`;
 $("#supheli").textContent=fmt(D.kpi.supheli_n);
 $("#irs").textContent=fmt(D.kaynak.irsaliye_dusulen);
