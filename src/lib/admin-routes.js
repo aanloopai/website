@@ -238,16 +238,23 @@ async function createCustomer(request, env) {
     'INSERT INTO users (id, customer_id, email, naam, role, created_at) VALUES (?, ?, ?, ?, ?, ?)',
   ).bind(randomId('usr'), customerId, eigenaarEmail, eigenaarNaam || eigenaarEmail.split('@')[0], 'eigenaar', today()).run();
 
-  try {
+  // `send_mail: false` — geen welkomstmail. Voor het leadpartner-pad: de
+  // intake-uitnodiging (POST /api/admin/intake-invite) is dan de enige mail,
+  // anders krijgt de klant er twee van het systeem. Default (weggelaten of
+  // true) blijft de bestaande welkomstmail — andere flows veranderen niet.
+  let mailed = false;
+  if (b.send_mail !== false) try {
+    mailed = true;
     await mailCustomer(env, eigenaarEmail, eigenaarNaam, 'Welkom bij het Aanloop AI klantportaal',
       `<p>Hallo ${escapeHtml(eigenaarNaam.split(' ')[0] || 'daar')},</p>
        <p>Er is een klantportaal voor <strong>${escapeHtml(bedrijf)}</strong> voor u aangemaakt. U kunt inloggen — geen wachtwoord nodig:</p>
        <p style="margin:24px 0"><a href="https://aanloopai.nl/portal/login" style="display:inline-block;background:#4f46e5;color:#fff;padding:13px 22px;border-radius:10px;text-decoration:none;font-weight:600">Naar het klantportaal</a></p>
        <p>Vul uw e-mailadres in en u ontvangt direct een veilige inloglink.</p>`);
   } catch (err) {
+    mailed = false;
     console.error('[admin] welcome email failed:', err.message || err);
   }
-  return jsonResponse({ ok: true, customer_id: customerId, message: 'Klant aangemaakt' });
+  return jsonResponse({ ok: true, customer_id: customerId, mailed, message: 'Klant aangemaakt' });
 }
 
 async function updateCustomer(request, env) {

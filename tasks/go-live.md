@@ -6,7 +6,7 @@
 ## A. Prod'da müşteri + eigenaar (mevcut admin UI)
 
 1. `https://aanloopai.nl/admin/klanten` → "Nieuwe klant": Bedrijf `Cy FlexService`, Eigenaar e-mail = **M verir (dosyaya yazılmadı)**, naam = contactpersoon.
-   - Bu adım otomatik **"Welkom bij het Aanloop AI klantportaal"** maili gönderir (mevcut davranış, `createCustomer`). İstenmiyorsa önce `send_mail` opsiyonu eklenmeli (todo "Sonraki fikirler").
+   - **"Welkomstmail sturen" kutusunu UITVINK** (→ `send_mail:false`): bu akışta tek mail = intake-uitnodiging. Kutu işaretli kalırsa müşteri iki sistem maili alır.
    - E-posta zaten bir hesaba bağlıysa 409 → o müşteri kaydını kullan.
 2. Kontrol: klant-sayfasında eigenaar görünüyor; rol `eigenaar` (kijker DEĞİL — kijker intake yazamaz).
 

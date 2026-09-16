@@ -53,6 +53,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         </div>
         <input id="m-eig-naam" placeholder="Naam eigenaar" class="pinput" />
         <input id="m-eig-email" type="email" placeholder="E-mail eigenaar *" class="pinput" />
+        <label class="flex items-start gap-2 text-sm" style="color:var(--p-ink)">
+          <input id="m-welkom" type="checkbox" class="mt-0.5" checked />
+          <span>Welkomstmail sturen <span class="p-muted">— uitvinken als u direct een intake-uitnodiging stuurt (dan is dát de enige mail)</span></span>
+        </label>
       </div>
       <p id="m-msg" class="palert mt-3 hidden"></p>
       <div class="mt-4 flex justify-end gap-2">
@@ -125,6 +129,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             stad: document.getElementById('m-stad').value.trim(),
             eigenaar_naam: document.getElementById('m-eig-naam').value.trim(),
             eigenaar_email: document.getElementById('m-eig-email').value.trim(),
+            send_mail: document.getElementById('m-welkom').checked,
           }),
         })
           .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
