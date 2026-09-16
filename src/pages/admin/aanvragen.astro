@@ -85,6 +85,8 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
           .catch(function (err) { window.adminFout.vangRest(err, 'Orders'); });
       }
       function wireOrders() {
+        // Deeplink uit de Telegram-melding: /admin/aanvragen?order=<id> → intake open.
+        var wanted = new URLSearchParams(location.search).get('order');
         document.querySelectorAll('#o-list [data-id]').forEach(function (card) {
           var id = card.getAttribute('data-id');
           card.querySelector('.o-save').addEventListener('click', function () {
@@ -105,6 +107,10 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
               .then(function (d) { box.innerHTML = renderIntake(d.order); })
               .catch(function () { box.innerHTML = '<p class="text-sm p-muted">Kon intake niet laden.</p>'; });
           });
+          if (wanted && wanted === id) {
+            card.querySelector('.o-view').click();
+            card.scrollIntoView({ block: 'start' });
+          }
         });
       }
       function renderIntake(order) {
@@ -114,9 +120,10 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
         return '<div class="rounded-md border p-3" style="border-color:var(--p-border);background:var(--p-subtle)">' +
           schema.steps.map(function (step) {
             var vals = intake[step.key] || {};
-            var rows = step.fields.map(function (f) {
+            var rows = step.fields.filter(function (f) { return f.type !== 'info'; }).map(function (f) {
               var v = vals[f.name], disp;
-              if (Array.isArray(v) && v.length && v[0] && v[0].vraag !== undefined) {
+              if (f.type === 'consent') { disp = v === true ? 'Ja' : 'Nee'; }
+              else if (Array.isArray(v) && v.length && v[0] && v[0].vraag !== undefined) {
                 disp = v.map(function (p) { return esc(p.vraag) + ' → ' + esc(p.antwoord); }).join('<br>') || '—';
               } else if (Array.isArray(v)) { disp = v.length ? v.map(esc).join(', ') : '—'; }
               else { disp = v ? esc(v) : '—'; }

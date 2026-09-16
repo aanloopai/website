@@ -20,6 +20,21 @@ export async function sha256Hex(input) {
   return bytesToHex(digest);
 }
 
+// `?next=` na login: alleen een site-intern portaalpad. Weigert alles wat een
+// browser als host/scheme kan lezen (`//`, `\\`, `:`, `http…`), en alles
+// buiten /portal/. Ongeldig → null; de aanroeper valt dan terug op het
+// standaard-doel. Toegevoegd voor de leadpartner-uitnodiging (deeplink naar
+// /portal/intake/?order=…), zie tasks/go-live.md.
+export function safeNextPath(raw) {
+  if (typeof raw !== 'string') return null;
+  const s = raw;
+  if (s.length === 0 || s.length > 512) return null;
+  if (!s.startsWith('/portal/')) return null;
+  if (s.startsWith('//') || s.includes('\\') || s.includes(':') || /[\x00-\x1f\x7f]/.test(s)) return null;
+  if (s.includes('/../') || s.endsWith('/..')) return null;
+  return s;
+}
+
 // Cryptographically-random URL-safe token (32 bytes → 64 hex chars).
 export function randomToken() {
   return bytesToHex(crypto.getRandomValues(new Uint8Array(32)));

@@ -35,6 +35,12 @@ export interface CatalogProduct {
   omschrijving: string;
   tiers: CatalogTier[];
   meerInfoUrl: string;
+  /**
+   * Niet in /portal/ontdekken tonen en niet door klanten zelf te starten
+   * (POST /api/portal/orders weigert). Een order voor zo'n product ontstaat
+   * alleen via de admin-uitnodiging (POST /api/admin/intake-invite).
+   */
+  verborgen?: boolean;
 }
 
 export const PORTAL_CATALOG: CatalogProduct[] = [
@@ -131,6 +137,20 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
     meerInfoUrl: 'https://aanloopai.nl/diensten/custom/',
     tiers: [
       { naam: 'Maatwerk', prijs: 'Op aanvraag', prijsCent: null, setupCent: 0, betaling: 'aanvraag', kenmerken: ['n8n / Make-integraties', 'Procesanalyse vooraf', 'Koppeling met uw tools', 'Offerte op maat'] },
+    ],
+  },
+  {
+    // Leadpartner-intake (leads kopen, B2B). Verborgen: alleen via uitnodiging.
+    // Prijs per lead wordt in gesprek afgesproken — nooit een bedrag hier.
+    key: 'leadpartner',
+    naam: 'Leads kopen — partnerintake',
+    categorie: 'Leads',
+    omschrijving:
+      'Intake voor leadpartners: uw dienstverlening, werkgebied en wat voor u een goede lead is. Geen abonnement, betalen per lead.',
+    meerInfoUrl: 'https://aanloopai.nl/leads-kopen/',
+    verborgen: true,
+    tiers: [
+      { naam: 'Exclusief', prijs: 'Op aanvraag', prijsCent: null, setupCent: 0, betaling: 'aanvraag', kenmerken: ['Exclusieve leads', 'Per lead betalen', 'Geen abonnement of minimumafname', 'Reclamatie binnen 48 uur'] },
     ],
   },
 ];

@@ -10,7 +10,7 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
   <p class="mt-1 text-xs" style="color:var(--p-ink-4)">Alle bedragen zijn exclusief 21% btw; bij het afrekenen wordt de btw toegevoegd.</p>
 
   <div class="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-    {PORTAL_CATALOG.map((p) => (
+    {PORTAL_CATALOG.filter((p) => !p.verborgen).map((p) => (
       <article
         class="catalog-card pcard flex flex-col"
         data-key={p.key}

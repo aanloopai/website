@@ -34,6 +34,8 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
 
       var body = new URLSearchParams();
       body.set('token', token);
+      var next = new URLSearchParams(location.search).get('next');
+      if (next) body.set('next', next); // server: safeNextPath — alleen /portal/…
       // x-www-form-urlencoded is a CORS "simple request" — no preflight needed.
       fetch('/api/auth/verify', {
         method: 'POST',
