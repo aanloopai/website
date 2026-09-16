@@ -83,10 +83,11 @@ import '../../styles/portal.css';
           if (!email) return;
           btn.disabled = true;
           btn.textContent = 'Versturen...';
+          var next = new URLSearchParams(location.search).get('next') || '';
           fetch('/api/auth/request', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: email }),
+            body: JSON.stringify(next ? { email: email, next: next } : { email: email }),
           })
             .then(function (r) { return r.json().then(function (d) { return { status: r.status, body: d }; }); })
             .then(function (res) {

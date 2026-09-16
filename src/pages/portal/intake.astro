@@ -67,6 +67,7 @@ for (const p of PORTAL_CATALOG) {
       escHtml as esc,
       fieldHtml,
       wireFaqLists,
+      wireShowIf,
       collectStepValues,
       missingRequiredFields,
     } from '../../lib/portal-intake-fields.js';
@@ -78,7 +79,15 @@ for (const p of PORTAL_CATALOG) {
       var schema = null, answers = {}, stepIdx = 0, productKey = '', tier = '', betaling = 'aanvraag';
 
       fetch('/api/portal/order?id=' + encodeURIComponent(orderId), { credentials: 'same-origin' })
-        .then(function (r) { if (r.status === 401) { location.href = '/portal/login'; throw 0; } return r.json(); })
+        .then(function (r) {
+          if (r.status === 401) {
+            // Directe link (uitnodigingsmail) zonder sessie: na de magic link
+            // terug naar precies deze intake. Alleen pad+query, nooit een host.
+            location.href = '/portal/login?next=' + encodeURIComponent(location.pathname + location.search);
+            throw 0;
+          }
+          return r.json();
+        })
         .then(function (d) {
           if (!d.ok) { location.href = '/portal/ontdekken'; return; }
           var o = d.order;
@@ -114,9 +123,10 @@ for (const p of PORTAL_CATALOG) {
         document.getElementById('iw-stepintro').textContent = step.intro || '';
         var vals = answers[step.key] || {};
         document.getElementById('iw-fields').innerHTML = step.fields.map(function (f) {
-          return '<div>' + fieldHtml(f, vals[f.name]) + '</div>';
+          return '<div id="fw_' + esc(f.name) + '">' + fieldHtml(f, vals[f.name]) + '</div>';
         }).join('');
         wireFaqLists();
+        wireShowIf(step);
       }
 
       function collectStep() {
@@ -131,10 +141,13 @@ for (const p of PORTAL_CATALOG) {
         document.getElementById('iw-stepintro').textContent = 'Controleer uw gegevens en dien de aanvraag in.';
         var html = schema.steps.map(function (step) {
           var vals = answers[step.key] || {};
-          var rows = step.fields.map(function (f) {
+          var rows = step.fields.filter(function (f) {
+            return f.type !== 'info';
+          }).map(function (f) {
             var v = vals[f.name];
             var disp;
-            if (Array.isArray(v) && v.length && v[0] && v[0].vraag !== undefined) {
+            if (f.type === 'consent') { disp = v === true ? 'Ja' : '—'; }
+            else if (Array.isArray(v) && v.length && v[0] && v[0].vraag !== undefined) {
               disp = v.map(function (p) { return esc(p.vraag); }).join('; ') || '—';
             } else if (Array.isArray(v)) { disp = v.length ? v.map(esc).join(', ') : '—'; }
             else { disp = v ? esc(v) : '—'; }

@@ -4,14 +4,14 @@ import { jsonResponse, errorResponse } from './google-auth.js';
 import {
   MAGIC_LINK_TTL_MS, INVITE_TTL_MS,
   sha256Hex, randomToken, randomId, createSession,
-  sessionCookie, clearCookie, getSessionUser,
+  sessionCookie, clearCookie, getSessionUser, safeNextPath,
 } from './auth.js';
 import { handleCheckoutStart, cancelSubscription } from './mollie.js';
 import { getCatalogProduct, getCatalogTier } from '../data/portal-catalog.ts';
 import { dealVoorOrder } from './crm.js';
 import { escapeHtml } from './escape.js';
 import { aggregateConversations, fetchConversations, agentIdFromProvisioning } from './emma-stats.js';
-import { alertStaff } from './notify.js';
+import { alertStaff, notifyTelegram } from './notify.js';
 import { onboardingState } from './onboarding.js';
 import { getIntakeSchema } from '../data/intake-schemas.ts';
 import { activateOrder } from './activation.js';
@@ -149,6 +149,9 @@ export async function handleAuthRequest(request, env) {
   try { body = await request.json(); } catch { return errorResponse('Ongeldige aanvraag', 400); }
   const email = (body?.email || '').toString().trim().toLowerCase();
   if (!isValidEmail(email)) return errorResponse('Ongeldig e-mailadres', 400);
+  // Optionele terugkeer-URL (deeplink naar een intake). Ongeldig = genegeerd,
+  // nooit een fout — de login zelf mag hier niet op stuklopen.
+  const next = safeNextPath(body?.next);
 
   const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
   if (await rateLimited(env, `ip:${ip}`, 6, 600) ||
@@ -171,7 +174,7 @@ export async function handleAuthRequest(request, env) {
       await sendMail(env, email, user.naam, 'Uw inloglink voor het Aanloop AI klantportaal',
         `<p>Hallo ${escapeHtml((user.naam || '').split(' ')[0] || 'daar')},</p>
          <p>Klik op de knop hieronder om in te loggen op het Aanloop AI portaal:</p>
-         ${mailButton(`${SITE_ORIGIN}/portal/verify?token=${token}`, 'Inloggen op het portaal')}
+         ${mailButton(`${SITE_ORIGIN}/portal/verify?token=${token}${next ? `&next=${encodeURIComponent(next)}` : ''}`, 'Inloggen op het portaal')}
          <p style="font-size:13px;color:#64748b">Deze link is 15 minuten geldig en kan één keer gebruikt worden. Niet aangevraagd? Negeer deze mail.</p>`);
     } catch (err) {
       // This used to be logged and then answered with "check your inbox" — the
@@ -270,7 +273,8 @@ export async function handleAuthVerify(request, env) {
   if (!isPost) {
     const token = url.searchParams.get('token') || '';
     if (!token) return fail();
-    return Response.redirect(`${url.origin}/portal/verify?token=${encodeURIComponent(token)}`, 302);
+    const nextGet = safeNextPath(url.searchParams.get('next') || '');
+    return Response.redirect(`${url.origin}/portal/verify?token=${encodeURIComponent(token)}${nextGet ? `&next=${encodeURIComponent(nextGet)}` : ''}`, 302);
   }
 
   // CSRF / origin guard — must run before any token consumption or cookie mint.
@@ -278,9 +282,11 @@ export async function handleAuthVerify(request, env) {
   if (csrf) return csrf;
 
   let token = '';
+  let next = null;
   try {
     const form = await request.formData();
     token = (form.get('token') || '').toString();
+    next = safeNextPath((form.get('next') || '').toString());
   } catch { return fail(); }
   if (!token) return fail();
 
@@ -300,7 +306,9 @@ export async function handleAuthVerify(request, env) {
   await env.PORTAL_DB.prepare('UPDATE users SET last_login = ? WHERE id = ?').bind(Date.now(), row.user_id).run();
 
   const user = await env.PORTAL_DB.prepare('SELECT role FROM users WHERE id = ?').bind(row.user_id).first();
-  const dest = user?.role === 'staff' ? '/admin/' : '/portal/';
+  // `next` alleen voor klantaccounts (staff landt altijd op /admin/) en alleen
+  // als het door safeNextPath kwam — een externe URL is hier nooit mogelijk.
+  const dest = user?.role === 'staff' ? '/admin/' : (next || '/portal/');
   const session = await createSession(row.user_id, env.PORTAL_SESSION_SECRET);
   return new Response(JSON.stringify({ ok: true, redirect: dest }), {
     status: 200,
@@ -771,7 +779,12 @@ async function createOrder(request, env, user) {
   if (!productKey) return errorResponse('Product ontbreekt', 400);
   // Pin product_key to the static catalog — prevents arbitrary values leaking
   // into provisioning + downstream Mollie descriptions.
-  if (!getCatalogProduct(productKey)) return errorResponse('Onbekend product', 400);
+  const product = getCatalogProduct(productKey);
+  if (!product) return errorResponse('Onbekend product', 400);
+  // Verborgen producten (bv. leadpartner) start de klant niet zelf — die order
+  // ontstaat via de admin-uitnodiging. Zelfde foutmelding als 'onbekend' zodat
+  // de catalogus-verborgenheid niet via de API te sonderen is.
+  if (product.verborgen) return errorResponse('Onbekend product', 400);
   const id = randomId('ord');
   await env.PORTAL_DB
     .prepare('INSERT INTO service_orders (id, customer_id, user_id, product_key, tier, intake_json, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
@@ -949,7 +962,46 @@ async function submitOrder(request, env, user) {
 
   await notifyAanloop(env, 'Nieuwe aanvraag — intake compleet',
     `Klant-id: ${user.customer_id}\nProduct: ${o.product_key} (${o.tier || '-'})\nDoor: ${user.naam} (${user.email})\nAanvraag: ${o.id}\nBekijk de volledige intake in het admin-panel.`);
+  // Owner-besluit 2026-09-10: elke inbound gebeurtenis ook op Telegram.
+  // Best-effort (notifyTelegram slikt zijn fouten). Alleen een korte
+  // samenvatting — nooit de volledige intake (persoonsgegevens) in de chat.
+  await notifyTelegram(env, formatOrderSubmitTelegram({
+    bedrijf: customer?.bedrijf || user.naam,
+    productKey: o.product_key,
+    tier: o.tier,
+    orderId: o.id,
+    intake: body.intake && typeof body.intake === 'object' ? body.intake : null,
+  }));
   return jsonResponse({ ok: true, message: 'Uw aanvraag is ingediend. We nemen het in behandeling.' });
+}
+
+/**
+ * Telegram-tekst voor een ingediende portaal-aanvraag. Voor `leadpartner`
+ * komen branche/werkgebied/volume mee (samenvatting, geen contactgegevens).
+ * @param {{bedrijf: string, productKey: string, tier?: string|null, orderId: string, intake?: Record<string, any>|null}} p
+ */
+export function formatOrderSubmitTelegram({ bedrijf, productKey, tier, orderId, intake }) {
+  const lines = [
+    `📝 Intake ingediend via het portaal`,
+    `Bedrijf: ${bedrijf || '-'}`,
+    `Product: ${productKey}${tier ? ` · ${tier}` : ''}`,
+    `Order: ${orderId}`,
+  ];
+  if (productKey === 'leadpartner' && intake) {
+    const pick = (step, key) => {
+      const v = intake[step]?.[key];
+      return Array.isArray(v) ? v.join(', ') : (v == null ? '' : String(v));
+    };
+    const sectoren = pick('opdrachtgever', 'sectoren');
+    const basis = pick('werkgebied', 'basis');
+    const straal = pick('werkgebied', 'straal');
+    const volume = pick('volume', 'volume_maand');
+    if (sectoren) lines.push(`Branche: ${sectoren.slice(0, 200)}`);
+    if (basis || straal) lines.push(`Werkgebied: ${[basis, straal].filter(Boolean).join(' · ').slice(0, 120)}`);
+    if (volume) lines.push(`Volume: ${volume.slice(0, 60)}/maand`);
+  }
+  lines.push(`→ ${SITE_ORIGIN}/admin/aanvragen?order=${encodeURIComponent(orderId)}`);
+  return lines.join('\n');
 }
 
 // Customer edits the configuration of their own service.

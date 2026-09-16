@@ -7,6 +7,7 @@ import { activateOrder } from './activation.js';
 import { teardownProvisioning } from './elevenlabs.js';
 import { canProvision } from './provisioners/index.js';
 import { alertStaff } from './notify.js';
+import { getCatalogProduct, getCatalogTier } from '../data/portal-catalog.ts';
 import {
   outreachProspects, outreachMailDetail, outreachImport,
   outreachGenerateMail, outreachEvaluateMail, outreachUpdateMail,
@@ -82,6 +83,7 @@ export async function handleAdminApi(request, env) {
       return await customerDetail(env, url);
     }
     if (path === '/api/admin/user' && method === 'POST') return await createUser(request, env);
+    if (path === '/api/admin/intake-invite' && method === 'POST') return await intakeInvite(request, env);
     if (path === '/api/admin/service' && method === 'POST') return await createService(request, env);
     if (path === '/api/admin/service' && method === 'PATCH') return await updateService(request, env);
     if (path === '/api/admin/service' && method === 'DELETE') return await deleteService(request, env);
@@ -236,16 +238,23 @@ async function createCustomer(request, env) {
     'INSERT INTO users (id, customer_id, email, naam, role, created_at) VALUES (?, ?, ?, ?, ?, ?)',
   ).bind(randomId('usr'), customerId, eigenaarEmail, eigenaarNaam || eigenaarEmail.split('@')[0], 'eigenaar', today()).run();
 
-  try {
+  // `send_mail: false` — geen welkomstmail. Voor het leadpartner-pad: de
+  // intake-uitnodiging (POST /api/admin/intake-invite) is dan de enige mail,
+  // anders krijgt de klant er twee van het systeem. Default (weggelaten of
+  // true) blijft de bestaande welkomstmail — andere flows veranderen niet.
+  let mailed = false;
+  if (b.send_mail !== false) try {
+    mailed = true;
     await mailCustomer(env, eigenaarEmail, eigenaarNaam, 'Welkom bij het Aanloop AI klantportaal',
       `<p>Hallo ${escapeHtml(eigenaarNaam.split(' ')[0] || 'daar')},</p>
        <p>Er is een klantportaal voor <strong>${escapeHtml(bedrijf)}</strong> voor u aangemaakt. U kunt inloggen — geen wachtwoord nodig:</p>
        <p style="margin:24px 0"><a href="https://aanloopai.nl/portal/login" style="display:inline-block;background:#4f46e5;color:#fff;padding:13px 22px;border-radius:10px;text-decoration:none;font-weight:600">Naar het klantportaal</a></p>
        <p>Vul uw e-mailadres in en u ontvangt direct een veilige inloglink.</p>`);
   } catch (err) {
+    mailed = false;
     console.error('[admin] welcome email failed:', err.message || err);
   }
-  return jsonResponse({ ok: true, customer_id: customerId, message: 'Klant aangemaakt' });
+  return jsonResponse({ ok: true, customer_id: customerId, mailed, message: 'Klant aangemaakt' });
 }
 
 async function updateCustomer(request, env) {
@@ -345,6 +354,65 @@ export async function deleteCustomer(request, env) {
   await db.prepare('DELETE FROM customers WHERE id = ?').bind(id).run();
 
   return jsonResponse({ ok: true, message: 'Klant verwijderd' });
+}
+
+// Concept-order + uitnodigingsmail voor een intake die de klant niet zelf
+// kan starten (catalogus `verborgen`, bv. leadpartner). Staff-only via de
+// dispatcher. De mail bevat de deeplink /portal/login?next=/portal/intake/?order=…;
+// de klant vraagt daar zijn eigen magic link aan (geen token in deze mail).
+export async function intakeInvite(request, env) {
+  const b = await request.json().catch(() => null);
+  const customerId = (b?.customer_id || '').toString().trim();
+  const productKey = (b?.product_key || '').toString().trim();
+  const tierNaam = (b?.tier || '').toString().trim();
+  if (!customerId || !productKey || !tierNaam) return errorResponse('Klant-id, product en tier zijn verplicht', 400);
+  const product = getCatalogProduct(productKey);
+  const tier = getCatalogTier(productKey, tierNaam);
+  if (!product || !tier) return errorResponse('Onbekend product of tier', 400);
+
+  const customer = await env.PORTAL_DB.prepare('SELECT id, bedrijf FROM customers WHERE id = ?').bind(customerId).first();
+  if (!customer) return errorResponse('Klant niet gevonden', 404);
+  const owner = await env.PORTAL_DB
+    .prepare("SELECT id, email, naam FROM users WHERE customer_id = ? AND role = 'eigenaar' ORDER BY created_at ASC LIMIT 1")
+    .bind(customerId).first();
+  if (!owner) return errorResponse('Klant heeft nog geen eigenaar-account', 409);
+
+  // Eén open concept per klant+product: bestaat er al een, hergebruik die
+  // (de mail opnieuw sturen mag), maak geen tweede order aan.
+  let order = await env.PORTAL_DB
+    .prepare("SELECT id FROM service_orders WHERE customer_id = ? AND product_key = ? AND status = 'concept' ORDER BY created_at DESC LIMIT 1")
+    .bind(customerId, productKey).first();
+  let created = false;
+  if (!order) {
+    const id = randomId('ord');
+    await env.PORTAL_DB
+      .prepare('INSERT INTO service_orders (id, customer_id, user_id, product_key, tier, intake_json, status, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)')
+      .bind(id, customerId, owner.id, productKey, tierNaam, '{}', 'concept', Date.now()).run();
+    order = { id };
+    created = true;
+  }
+
+  const intakePath = `/portal/intake/?order=${encodeURIComponent(order.id)}`;
+  const link = `${ADMIN_SITE_ORIGIN}/portal/login/?next=${encodeURIComponent(intakePath)}`;
+  let mailed = false;
+  if (b?.send_mail !== false && env.BREVO_API_KEY) {
+    try {
+      mailed = true;
+      await mailCustomer(env, owner.email, owner.naam, 'Uw intake voor leadpartnerschap staat klaar — Aanloop AI',
+        `<p>Hallo ${escapeHtml((owner.naam || '').split(' ')[0] || 'daar')},</p>
+         <p>Uw intake voor <strong>${escapeHtml(product.naam)}</strong> staat klaar in het Aanloop AI klantportaal.</p>
+         <p>U kunt uw intake invullen via onderstaande persoonlijke link. Uw antwoorden worden per stap automatisch als concept opgeslagen, dus u kunt tussendoor stoppen en later verder gaan.</p>
+         <p style="margin:24px 0"><a href="${escapeHtml(link)}" style="display:inline-block;background:#4f46e5;color:#fff;padding:13px 22px;border-radius:10px;text-decoration:none;font-weight:600">Intake invullen</a></p>
+         <p>Vul op de inlogpagina uw e-mailadres in (${escapeHtml(owner.email)}); u ontvangt dan direct een veilige inloglink en komt daarna meteen in de intake terecht.</p>`);
+    } catch (err) {
+      mailed = false;
+      console.error('[admin] intake-invite mail failed:', err.message || err);
+    }
+  }
+  return jsonResponse({
+    ok: true, order_id: order.id, created, mailed, link,
+    message: `${created ? 'Concept-order aangemaakt' : 'Bestaande concept-order hergebruikt'}${mailed ? ', uitnodiging verstuurd' : ' — mail MISLUKT, stuur de link handmatig'}`,
+  });
 }
 
 async function createUser(request, env) {
