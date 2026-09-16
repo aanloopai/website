@@ -273,7 +273,8 @@ export async function handleAuthVerify(request, env) {
   if (!isPost) {
     const token = url.searchParams.get('token') || '';
     if (!token) return fail();
-    return Response.redirect(`${url.origin}/portal/verify?token=${encodeURIComponent(token)}`, 302);
+    const nextGet = safeNextPath(url.searchParams.get('next') || '');
+    return Response.redirect(`${url.origin}/portal/verify?token=${encodeURIComponent(token)}${nextGet ? `&next=${encodeURIComponent(nextGet)}` : ''}`, 302);
   }
 
   // CSRF / origin guard — must run before any token consumption or cookie mint.
