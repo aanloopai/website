@@ -325,18 +325,20 @@ const featuredPillars = [
 
 <!-- Cookie consent banner -->
 <div id="cookie-banner" role="dialog" aria-labelledby="cookie-banner-title" aria-describedby="cookie-banner-desc" aria-modal="true">
-  <div class="bg-white border border-slate-200 rounded-2xl shadow-2xl p-6">
+  <!-- Mobiel (< md): compacte balk onderaan (~80px) zodat de hero-CTA's zichtbaar blijven.
+       Icoon en titel zijn verborgen; de titel blijft de toegankelijke naam via aria-labelledby. -->
+  <div class="bg-white border border-slate-200 rounded-t-2xl md:rounded-2xl shadow-2xl p-3 md:p-6">
     <div class="flex items-start gap-4">
-      <div class="w-10 h-10 flex-shrink-0 rounded-xl bg-brand-amber/10 flex items-center justify-center text-xl" aria-hidden="true">🍪</div>
+      <div class="hidden md:flex w-10 h-10 flex-shrink-0 rounded-xl bg-brand-amber/10 items-center justify-center text-xl" aria-hidden="true">🍪</div>
       <div class="flex-1 min-w-0">
-        <h3 id="cookie-banner-title" class="font-bold text-navy text-sm">Wij gebruiken cookies</h3>
-        <p id="cookie-banner-desc" class="mt-1 text-xs text-slate-600 leading-relaxed">
-          We gebruiken functionele en analytische cookies om uw ervaring te verbeteren.
-          Lees meer in onze <a href="/cookies/" class="underline hover:text-navy">cookieverklaring</a>.
+        <h3 id="cookie-banner-title" class="hidden md:block font-bold text-navy text-sm">Wij gebruiken cookies</h3>
+        <p id="cookie-banner-desc" class="md:mt-1 text-[11px] md:text-xs text-slate-600 leading-snug md:leading-relaxed">
+          We gebruiken functionele en analytische cookies<span class="hidden md:inline"> om uw ervaring te verbeteren</span>.
+          <span class="hidden md:inline">Lees meer in onze </span><a href="/cookies/" class="underline hover:text-navy"><span class="md:hidden">Meer info</span><span class="hidden md:inline">cookieverklaring</span></a>.
         </p>
-        <div class="mt-4 flex flex-wrap gap-2">
-          <button id="cookie-accept" class="btn-primary text-xs px-4 py-2">Alles accepteren</button>
-          <button id="cookie-necessary" class="btn-outline text-xs px-4 py-2">Alleen noodzakelijk</button>
+        <div class="mt-2 md:mt-4 flex flex-wrap gap-2">
+          <button id="cookie-accept" class="btn-primary text-xs px-4 py-1.5 md:py-2">Alles accepteren</button>
+          <button id="cookie-necessary" class="btn-outline text-xs px-4 py-1.5 md:py-2">Alleen noodzakelijk</button>
         </div>
       </div>
     </div>
