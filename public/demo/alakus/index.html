@@ -18,17 +18,7 @@
   --shadow:0 1px 2px rgba(24,32,41,.05),0 10px 30px -18px rgba(24,32,41,.25);
   --z-sticky:10; --z-tip:30;
 }
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    color-scheme:dark;
-    --bg:#131619; --panel:#1b1f24; --panel2:#242a30; --line:#333b44; --line2:#2a3138; --ink:#eef0ec; --ink2:#b8c0c8; --ink3:#86919c;
-    --bar:#0f1215; --bar-ink:#eef1ec; --bar-ink2:#98a4ae; --bar-line:#232a31;
-    --accent:#63b4d0; --accent-ink:#0d1a20; --accent-soft:#1a2f38; --accent-line:#2c5566;
-    --alis:#3987e5; --satis:#d95926; --grid:#2b3238;
-    --crit:#ff8a80; --crit-soft:#3a201d; --warn:#f0b64c; --warn-soft:#382d16; --good:#6fcf97; --good-soft:#173125;
-    --shadow:0 1px 2px rgba(0,0,0,.5),0 10px 30px -18px rgba(0,0,0,.8);
-  }
-}
+/* Koyu tema yalnız kullanıcı seçimiyle (Tema düğmesi); işletim sistemi tercihi otomatik uygulanmaz — panel hep beyaz açılır. */
 :root[data-theme="dark"]{
   color-scheme:dark;
   --bg:#131619; --panel:#1b1f24; --panel2:#242a30; --line:#333b44; --line2:#2a3138; --ink:#eef0ec; --ink2:#b8c0c8; --ink3:#86919c;
@@ -155,7 +145,34 @@ tr.det td{background:color-mix(in srgb,var(--accent-soft) 45%,var(--panel));padd
 .det tr.me td{font-weight:500;color:var(--crit)}
 .empty{padding:28px 14px;text-align:center;color:var(--ink2);font-size:13px}
 .more{align-self:center;margin-top:4px}
-[hidden]{display:none!important}  /* .panel{display:flex} UA hidden'ı ezmesin (artifact dışında reset yok) */
+[hidden]{display:none!important}
+/* Ana sorun kartı: panel açılınca ilk okunan şey */
+.ozet{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px;display:grid;grid-template-columns:1.35fr 1fr;gap:16px 32px;align-items:start}
+.ozet h2{font-size:18px;line-height:1.3;max-width:34ch}
+.ozet p{margin:8px 0 0;font-size:14px;color:var(--ink2);max-width:64ch;text-wrap:pretty}
+.ozet .big{display:flex;gap:26px;flex-wrap:wrap;margin-top:14px}
+.ozet .big .l{font-size:12px;color:var(--ink3)} .ozet .big .v{font-size:24px;font-weight:600;line-height:1.1} .ozet .big small{font-size:12px;color:var(--ink3);font-weight:400;margin-left:4px}
+.ozet h3{font-size:12.5px;color:var(--ink3);font-weight:500;letter-spacing:.02em;text-transform:uppercase;margin-bottom:6px}
+.ozet ol,.ozet ul{margin:0;padding-left:18px;font-size:13.5px;color:var(--ink2)} .ozet li{margin:3px 0}
+.ozet li b{color:var(--ink)}
+.ozet .adim{margin-top:14px}
+.ozet .lnk{background:none;border:0;padding:0;color:var(--accent);cursor:pointer;font:inherit;text-decoration:underline;text-underline-offset:2px}
+/* Katlanır bölümler: varsayılan kapalı, başlığa tıkla → ayrıntı */
+.foldbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;font-size:12.5px;color:var(--ink3)}
+.foldbar button{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:4px 10px;font:inherit;font-size:12.5px;color:var(--ink2);cursor:pointer}
+.foldbar button:hover{border-color:var(--accent-line);color:var(--ink)}
+.fold-h{display:flex;align-items:center;gap:8px 14px;flex-wrap:wrap;grid-column:1/-1}
+.fold-h .fbtn{display:inline-flex;align-items:center;gap:8px;background:none;border:0;padding:0;font:inherit;font-size:15px;font-weight:600;color:var(--ink);cursor:pointer;text-align:left}
+.fold-h .fbtn .arr{display:inline-block;width:16px;height:16px;border-radius:4px;border:1px solid var(--line);font-size:11px;line-height:14px;text-align:center;color:var(--ink3);transition:transform .15s}
+.fold-h .fbtn[aria-expanded="true"] .arr{transform:rotate(90deg)}
+.fold-h .fs{font-size:12.5px;color:var(--ink3)}
+.fold-h .fbtn:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+section.fold.closed{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 16px;display:block}
+section.fold.closed > :not(.fold-h){display:none!important}
+section.fold:not(.closed) > .ph h2{display:none}
+section.fold:not(.panel):not(.closed){border-top:1px solid var(--line);padding-top:14px}
+@media (max-width:1000px){.ozet{grid-template-columns:1fr}}
+@media print{section.fold.closed > :not(.fold-h){display:revert!important} .foldbar{display:none}}  /* .panel{display:flex} UA hidden'ı ezmesin (artifact dışında reset yok) */
 .guide{padding:10px 16px} .guide summary{cursor:pointer;font-weight:500;font-size:13.5px;color:var(--ink2)} .guide summary:hover{color:var(--ink)}
 .guide ol{margin:8px 0 4px;padding-left:20px;font-size:13px;line-height:1.55;color:var(--ink2);max-width:80ch} .guide li{margin:3px 0} .guide b{color:var(--ink);font-weight:500}
 .sel{font:inherit;font-size:13px;padding:5px 9px;border:1px solid var(--line);border-radius:6px;background:var(--panel);color:var(--ink);max-width:100%}
@@ -266,10 +283,12 @@ html[data-rol="satis"] .rolnote{display:block}
     <li>Sağ üstten <b>görünüm</b> (yönetim/muhasebe/satış) ve <b>yıl</b> seçilir; satış görünümü marj, maliyet, alacak ve "kim girdi" bilgisini göstermez. Tutarlar o günkü TL, KDV hariç.</li>
   </ol></details>
 
+<section class="ozet" id="ozet-sec" aria-label="Ana sorun"></section>
 <section class="kpis" id="kpis" aria-label="Özet"></section>
+<div class="foldbar"><span>Aşağıdaki bölümler ayrıntıdır; başlığa tıklayınca açılır.</span><button id="fold-all-open">Tümünü aç</button><button id="fold-all-close">Tümünü kapat</button></div>
 <div class="rolnote">Satış görünümü (demo): marj, maliyet, alacak ve "kim girdi" ekranda gösterilmez; bu istemci tarafı bir gizlemedir, yetki değil. Faz 1'de rol sunucu tarafında uygulanır, satış kullanıcısına o veriler hiç gönderilmez.</div>
 
-<section>
+<section id="kesin-sec">
   <div class="ph" style="margin-bottom:10px"><div><h2 style="font-size:16px">Kesin hatalar</h2><div class="sub">Deterministik kurallar: her satır tek bir kuralla açıklanır, istatistik yok. Bunlar "incele" değil, düzeltilecek kayıtlar.</div></div><div class="small muted" id="kayit-oz"></div></div>
   <div class="k7" id="kesin"></div>
 </section>
@@ -291,7 +310,7 @@ html[data-rol="satis"] .rolnote{display:block}
   <div class="more" id="kf-more"></div>
 </section>
 
-<section class="row c21">
+<section class="row c21" id="yil-sec">
   <div class="panel">
     <div class="ph"><div><h2>Yıllara göre tespit edilen sapma</h2><div class="sub">Yüksek + orta güven, bin TL. Yıl seçimi diğer bölümleri de filtreler.</div></div><div class="legend"><span class="rol-yonetim"><i style="background:var(--alis)"></i>Alış, fazla ödenen</span><span><i style="background:var(--satis)"></i>Satış, fazla verilen</span></div></div>
     <div id="ch-yil"></div>
@@ -303,7 +322,7 @@ html[data-rol="satis"] .rolnote{display:block}
   </div>
 </section>
 
-<section class="row c2">
+<section class="row c2" id="akis-sec">
   <div class="panel">
     <div class="ph"><div><h2>Uyarı akışı</h2><div class="sub">Sistem canlı olsaydı fatura günü bu satırlar düşerdi. Tıkla: tabloda aç.</div></div></div>
     <div class="feed" id="feed"></div>
@@ -311,7 +330,7 @@ html[data-rol="satis"] .rolnote{display:block}
   <div class="ex rol-yonetim" id="ornek" aria-label="Doğrulanmış örnek"></div>
 </section>
 
-<section class="row c21" style="align-items:start">
+<section class="row c21" style="align-items:start" id="wa-sec">
   <div class="panel"><div class="ph"><div><h2>Günlük WhatsApp özeti <span class="st">önizleme</span></h2><div class="sub">Kanal bağlanınca her sabah bu metin gider (Faz 1). Bulgu kaydından üretilir; yıl ve rol filtresine uyar. "ok &lt;no&gt;" yanıtı bulguyu kapatır.</div></div><div class="tb"><button class="btn" id="wa-copy">Metni kopyala</button></div></div>
     <div class="wa" id="wa"></div></div>
   <div class="panel rol-yonetim"><div class="ph"><div><h2>Mağaza özetleri</h2><div class="sub">Her mağaza müdürü yalnız kendi faturalarını alır.</div></div></div><div class="wa" id="wa-m"></div></div>
@@ -371,24 +390,24 @@ html[data-rol="satis"] .rolnote{display:block}
   <div><h3 class="h3">Aynı olabilecek cari çiftleri</h3><div class="tw" style="max-height:420px"><table id="onay-k"></table></div></div></div>
 </section>
 
-<section class="row c3">
+<section class="row c3" id="cari-sec">
   <div class="panel"><div class="ph"><div><h2 id="cari-h">Cari bazında</h2><div class="sub">Tıkla: tabloyu bu cariye daralt</div></div></div><div id="cari-oz"></div></div>
   <div class="panel rol-yonetim"><div class="ph"><div><h2>Kim girdi</h2><div class="sub">Sapan kalemi giren Netsim kullanıcısı</div></div></div><div id="kim-oz"></div></div>
   <div class="panel"><div class="ph"><div><h2>Stok yaşlandırma</h2><div class="sub" id="yas-sub"></div></div></div><div id="yas"></div><div class="xs faint" id="neg"></div></div>
 </section>
 
-<section class="row c2">
+<section class="row c2" id="stok-sec">
   <div class="panel"><div class="ph"><div><h2>Hareketsiz ürünler</h2><div class="sub">1 yıldan uzun süredir çıkışı olmayan stok, bağlı paraya göre</div></div></div><div class="tw" style="max-height:380px"><table id="atil"></table></div></div>
   <div class="panel"><div class="ph"><div><h2 id="top22-h"></h2><div class="sub"><span class="rol-yonetim">Net satış ve brüt marj (alış maliyetine göre)</span></div></div></div><div class="tw" style="max-height:380px"><table id="top22"></table></div></div>
 </section>
 
-<section>
+<section id="diger-sec">
   <div class="ph" style="margin-bottom:10px"><div><h2 style="font-size:16px">Diğer kontroller</h2><div class="sub">Listedeki diğer maddeler, aynı yedek üzerinde. Yöntem kanıtı; güncel yedekle bugünkü durumu üretir.</div></div></div>
   <div class="k7" id="k7"></div>
 </section>
 
-<section class="panel method">
-  <h3 style="color:var(--ink)">Yöntem ve sınırlar</h3>
+<section class="panel method" id="method-sec">
+  <h2 style="font-size:14px">Yöntem ve sınırlar</h2>
   <div class="cols">
     <ul>
       <li><b>Oran kontrolü:</b> cari × ürün grubu × yıl için en sık uygulanan iskonto "olağan"; 2 puandan fazla sapan kalem işaretlenir.</li>
@@ -424,9 +443,9 @@ const S = { yil:"all", yon:"alis", motors:new Set(["A+B","B"]), q:"", min:0, car
 // ---------- theme ----------
 (function(){
   let t=null; try{ t=localStorage.getItem("ak-theme"); }catch(e){}
-  if(t) document.documentElement.dataset.theme=t;
+  document.documentElement.dataset.theme = t==="dark" ? "dark" : "light";  // varsayılan beyaz; koyu yalnız kullanıcı seçtiyse
   $("#theme").addEventListener("click",()=>{
-    const cur=document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");
+    const cur=document.documentElement.dataset.theme==="dark"?"dark":"light";
     const nx=cur==="dark"?"light":"dark"; document.documentElement.dataset.theme=nx;
     try{ localStorage.setItem("ak-theme",nx); }catch(e){}
   });
@@ -584,7 +603,7 @@ function openRow(id){
   S.motors=new Set(["A+B","B"]); $$(".tb .chip[data-motor]").forEach(b=>b.setAttribute("aria-pressed","true"));
   S.q=""; $("#q").value=""; S.min=0; $("#min").value=0; S.cari=null; S.kim=null; S.open=id; S.limit=Math.max(S.limit,150);
   renderTbl(); renderSide();
-  const el=document.querySelector(`tr.r[data-id="${id}"]`); if(el){ el.scrollIntoView({block:"center",behavior:"smooth"}); el.focus({preventScroll:true}); }
+  const el=document.querySelector(`tr.r[data-id="${id}"]`); if(el){ if(window.foldReveal) foldReveal(el); el.scrollIntoView({block:"center",behavior:"smooth"}); el.focus({preventScroll:true}); }
 }
 function resetFilters(){ S.q="";$("#q").value="";S.min=0;$("#min").value=0;S.cari=null;S.kim=null;S.motors=new Set(["A+B","B"]);$$(".tb .chip[data-motor]").forEach(b=>b.setAttribute("aria-pressed","true"));S.limit=40;S.open=null;renderTbl();renderSide(); }
 $$("[role=tab]").forEach(b=>b.setAttribute("aria-selected",b.dataset.yon===S.yon));
@@ -893,6 +912,82 @@ function renderT360(){
 if(window.claude) $("#kf-csv")?.setAttribute("hidden","");  // artifact görüntüleyici indirmeye izin vermez
 function renderAll(){ renderKPI(); barChart($("#ch-yil"),D.yil); lineChart($("#ch-isk"),D.yil); renderFeed(); renderTbl(); renderSide(); renderKayit(); renderC360(); renderT360(); renderU360(); renderWA(); }
 renderAll();
+
+// ---------- ana sorun kartı (rol-duyarlı; kayıt satırlarından hesaplanır) ----------
+const KURAL_AD={R1:"stok düşülmemiş satış",R2:"fiyat tutarsızlığı",R3:"tedarikçi sözleşme sapması",R4:"birim karışıklığı",R5:"maliyet altı satış",R8:"müşteri sözleşme sapması"};
+function renderOzet(){
+  const rolS=document.documentElement.dataset.rol==="satis";
+  const rows=(D.kayit||[]).filter(r=>r.d!=="kapali"&&(!rolS||r.yon!=="alis"));
+  const tl=rows.reduce((a,r)=>a+(r.tl||0),0);
+  const byK={}; rows.forEach(r=>{ const k=byK[r.k]||(byK[r.k]={n:0,tl:0}); k.n++; k.tl+=r.tl||0; });
+  const top=Object.entries(byK).sort((a,b)=>b[1].tl-a[1].tl).slice(0,3);
+  const sonY=D.kaynak.son_yil, sonTl=rows.filter(r=>r.y===sonY).reduce((a,r)=>a+(r.tl||0),0);
+  const k=D.kaynak;
+  $("#ozet-sec").innerHTML=`<div>
+    <h2>Ana sorun: anlaşılan fiyat ve iskontolar faturaya her zaman doğru yansımıyor.</h2>
+    <p>${k.ilk_yil}–${sonY} arasında ${fmt(k.kapsam)} fatura kalemi tarandı. Kurallar <b>${fmt(rows.length)}</b> kaydı kesin hata olarak işaretledi: yorum değil, her biri tek kuralla açıklanan ve düzeltilecek kayıt. ${rolS?"Satış görünümünde yalnız satış tarafı gösterilir.":"Netsim bugün hiçbir iskonto oranını engellemiyor; her indirim elle giriliyor."}</p>
+    <div class="big">
+      <div><div class="l">Kesin hata</div><div class="v n">${fmt(rows.length)}<small>kayıt</small></div></div>
+      <div><div class="l">Tutar (${k.ilk_yil}–${sonY})</div><div class="v n">${fmt(tl)}<small>TL</small></div></div>
+      <div><div class="l">Yalnız ${sonY}</div><div class="v n">${fmt(sonTl)}<small>TL</small></div></div>
+    </div></div>
+    <div>
+      <h3>En büyük üç kalem</h3>
+      <ol>${top.map(([kk,v])=>`<li><b>${fmt(v.tl)} TL</b> · ${kk} ${KURAL_AD[kk]||""} · ${fmt(v.n)} kayıt</li>`).join("")||"<li>kayıt yok</li>"}</ol>
+      <div class="adim"><h3>Bugün yapılacak üç şey</h3>
+      <ol>
+        <li><button class="lnk" data-go="kayit-sec">Bulgu kaydını</button> aç, en büyük 20 kaydı Mevlüt Bey ile doğrula; doğru olanları "kapat".</li>
+        <li><button class="lnk" data-go="onay-sec">Onay kuyruğundaki</button> sözleşme oranlarını onayla; onaylanan oran kural olur, sapma otomatik yakalanır.</li>
+        <li>Nokta'dan "satış → otomatik stok düşümü" ayarını iste; R1 kalemleri kaynağında biter.</li>
+      </ol></div>
+    </div>`;
+  $$("#ozet-sec [data-go]").forEach(b=>b.addEventListener("click",()=>{ const t=$("#"+b.dataset.go); if(t) t.scrollIntoView({behavior:"smooth",block:"start"}); }));
+}
+renderOzet();
+$("#rol").addEventListener("change",()=>renderOzet());
+
+// ---------- katlanır bölümler: ayrıntı isteğe bağlı ----------
+(function(){
+  const secs=[...document.querySelectorAll(".wrap > section")].filter(x=>!x.classList.contains("kpis")&&x.id!=="ozet-sec");
+  const kr=()=>(D.kayit||[]).filter(r=>document.documentElement.dataset.rol!=="satis"||r.yon!=="alis");  // rol filtresi: satış görünümü alış yönlü kayıtları görmez
+  const SUM={
+    "kesin-sec":()=>`${fmt(kr().filter(r=>r.d!=="kapali").length)} açık kayıt`,
+    "kayit-sec":()=>`${fmt(kr().length)} satır · kural, mağaza, kullanıcı, durum filtresi · CSV`,
+    "yil-sec":()=>"sapma ve efektif iskonto, yıl yıl",
+    "akis-sec":()=>"sistem canlı olsaydı düşecek uyarılar + doğrulanmış örnek",
+    "sapma":()=>"istatistik motoru (incele): olağandan sapan kalemler",
+    "wa-sec":()=>"her sabah gidecek özet metnin önizlemesi",
+    "c360-sec":()=>D.c360?`${fmt(D.c360.toplam_cari)} müşteri kartı`:"",
+    "u360-sec":()=>D.u360?`${fmt(D.u360.toplam_urun)} ürün kartı`:"",
+    "kul-sec":()=>D.kul?`${D.kul.yil} · ${fmt(D.kul.kullanici.length)} kullanıcı`:"",
+    "t360-sec":()=>D.t360?`${fmt(D.t360.tedarikci.length)} tedarikçi · Ekim görüşmesi kartı`:"",
+    "onay-sec":()=>D.onay?`${fmt((D.onay.sozlesme||[]).length)} sözleşme dönemi, ${fmt((D.onay.kanon||[]).length)} cari çifti onay bekliyor`:"",
+    "cari-sec":()=>"cari · kullanıcı · stok yaşı",
+    "stok-sec":()=>"hareketsiz ürünler · en çok satanlar",
+    "diger-sec":()=>"veri kalitesi, tahsilat, mağaza, teklif, gider ve diğer kontroller",
+    "method-sec":()=>"kurallar nasıl çalışır, neyi göremez",
+  };
+  function setOpen(sec,open){ sec.classList.toggle("closed",!open); sec.querySelector(".fold-h .fbtn").setAttribute("aria-expanded",open?"true":"false"); }
+  secs.forEach(sec=>{
+    const own = sec.classList.contains("panel") || sec.querySelector(":scope > .ph");
+    const txt = h => { const c=h.cloneNode(true); c.querySelectorAll(".st").forEach(x=>x.remove()); return c.textContent.replace(/\s+/g," ").trim(); };  // durum çipi başlığa girmesin
+    const h = own ? sec.querySelector("h2") : null;
+    const ttl = h ? txt(h) : [...sec.querySelectorAll(":scope > .panel")].map(pn=>pn.querySelector("h2")).filter(Boolean).slice(0,3).map(txt).filter(Boolean).join(" · ");
+    const fh=document.createElement("div"); fh.className="fold-h";
+    fh.innerHTML=`<button class="fbtn" aria-expanded="false"><span class="arr" aria-hidden="true">▸</span><span>${esc(ttl||"Bölüm")}</span></button><span class="fs">${esc((SUM[sec.id]&&SUM[sec.id]())||"")}</span>`;
+    sec.prepend(fh); sec.classList.add("fold","closed");
+    fh.querySelector(".fbtn").addEventListener("click",()=>setOpen(sec,sec.classList.contains("closed")));
+    const orig=sec.scrollIntoView.bind(sec);
+    sec.scrollIntoView=o=>{ setOpen(sec,true); orig(o); };  // başka panelden gelen bağlantı hedefi açar
+  });
+  window.foldSums=()=>secs.forEach(sec=>{ const f=sec.querySelector(".fold-h .fs"); if(f) f.textContent=(SUM[sec.id]&&SUM[sec.id]())||""; });
+  $("#rol").addEventListener("change",()=>foldSums());
+  window.foldReveal=el=>{ const x=el&&el.closest&&el.closest("section.fold"); if(x) setOpen(x,true); };
+  $("#fold-all-open").addEventListener("click",()=>secs.forEach(x=>setOpen(x,true)));
+  $("#fold-all-close").addEventListener("click",()=>secs.forEach(x=>setOpen(x,false)));
+  window.addEventListener("beforeprint",()=>secs.forEach(x=>setOpen(x,true)));
+  if(location.hash){ const t=document.querySelector(location.hash); if(t&&t.classList.contains("fold")) setOpen(t,true); }
+})();
 </script>
 
 </html>
