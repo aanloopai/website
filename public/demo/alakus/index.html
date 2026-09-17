@@ -807,6 +807,8 @@ $("#top22").innerHTML=`<thead><tr><th>Ürün</th><th>Grup</th><th class="n">Mikt
     <div class="small muted">kg ↔ torba/paket karışıklığı: fiyat oranı ürün adındaki paket büyüklüğüne eşit. Düzeltme: satırın birimi.</div>
     ${ex(K.r4.ornek.slice(0,6),r=>`${esc(r.cari)} · ${esc(r.urun)}<div class="m">${r.kat}× · paket ${r.paket} <span class="rol-yonetim">· giren ${esc(r.kim)}</span></div>`)}
     <div class="xs"><button class="lnk" data-kural="R4">Tüm R4 kayıtlarını aç →</button>${dosya("kesin-hatalar-2.xlsx")}</div></div>`:""}`;
+{ const oz=$("#kayit-oz"); const f=oz?[...oz.querySelectorAll("span.faint")]:[]; if(f.length){ const d=document.createElement("details"); d.className="how"; d.innerHTML="<summary>Diğer ölçümler (incele)</summary>"; const w=document.createElement("div"); w.className="small muted";
+  f.forEach(x=>{ const pv=x.previousSibling; if(pv&&pv.nodeType===3&&pv.textContent.trim()==="·") pv.remove(); w.appendChild(x); w.append(" "); }); d.appendChild(w); oz.appendChild(d); } }
 $$("#kesin .panel > .small.muted").forEach(el=>{ const d=document.createElement("details"); d.className="how"; d.innerHTML="<summary>Nasıl hesaplanır?</summary>"; el.replaceWith(d); d.appendChild(el); });
 $$("#kesin [data-kural]").forEach(b=>b.addEventListener("click",()=>{ KF.k=b.dataset.kural; $("#kf-k").value=b.dataset.kural; KF.limit=50; renderKayit(); $("#kayit-sec").scrollIntoView({behavior:"smooth",block:"start"}); }));
 })();
@@ -963,10 +965,12 @@ function waMetin(rows, baslik, max){
   const MIN=(D.kaynak.uyari_min_tl||0);
   for(const r of [...acik].filter(r=>r.tl>=MIN).sort((a,b)=>(b.yeni-a.yeni)||(b.tl-a.tl))){ per[r.k]=(per[r.k]||0)+1; if(per[r.k]<=3&&top.length<max) top.push(r); }
   const mag={}; acik.forEach(r=>{ if(r.n){ const m=mag[r.n]||(mag[r.n]={n:0,tl:0}); m.n++; m.tl+=r.tl; } });
-  const L=[`*${baslik}*`,`_${fmt(acik.length)} kesin hata (${fmt(yeni)} yeni) · ${fmt(tl)} TL_`,"🔴 kesin hata · 🟠 sözleşme onayı bekliyor",""];
-  top.forEach(r=>L.push(`${ic[r.k]||"🟡"} ${ad[r.k]}: ${r.f} · ${r.c} · ${r.u.slice(0,36)} · ${fmt(r.tl)} TL`));
-  if(Object.keys(mag).length>1) L.push("",`Mağaza: ${Object.entries(mag).sort().map(([k,v])=>`${k} ${fmt(v.n)} hata / ${fmt(v.tl)} TL`).join(" · ")}`);
-  L.push("","Detay: panel → Bulgu kaydı. Yanıt: 'ok <no>' bulguyu kapatır.");
+  const tarih=D.kaynak.guncel?new Date().toLocaleDateString("tr-TR"):D.kaynak.kesim;
+  const L=[`*${baslik} · ${tarih}*`,`${fmt(acik.length)} kesin hata${yeni?` (${fmt(yeni)} yeni)`:""} · toplam ${fmt(tl)} TL`,""];
+  if(top.length) L.push(`*Öncelikli ${top.length} kayıt*`);
+  top.forEach((r,i)=>{ L.push(`${i+1}. ${ic[r.k]||"🟡"} ${ad[r.k]} · ${r.c} · ${fmt(r.tl)} TL`); L.push(`    Fatura ${r.f} · ${r.u.slice(0,40)}${r.n?` · ${r.n}`:""}`); });
+  if(Object.keys(mag).length>1) L.push("","*Mağaza*",Object.entries(mag).sort().map(([k,v])=>`${k}: ${fmt(v.n)} kayıt · ${fmt(v.tl)} TL`).join(" | "));
+  L.push("",`Doğrulama: "ok <fatura no>" yazın, kayıt kapanır. Ayrıntı: panel › Bulgu kaydı.`);
   return L.join("\n");
 }
 function renderWA(){
