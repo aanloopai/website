@@ -395,7 +395,8 @@ export async function intakeInvite(request, env) {
   const intakePath = `/portal/intake/?order=${encodeURIComponent(order.id)}`;
   const link = `${ADMIN_SITE_ORIGIN}/portal/login/?next=${encodeURIComponent(intakePath)}`;
   let mailed = false;
-  if (b?.send_mail !== false && env.BREVO_API_KEY) {
+  const mailSkipped = b?.send_mail === false;
+  if (!mailSkipped && env.BREVO_API_KEY) {
     try {
       mailed = true;
       await mailCustomer(env, owner.email, owner.naam, 'Uw intake voor leadpartnerschap staat klaar — Aanloop AI',
@@ -411,7 +412,8 @@ export async function intakeInvite(request, env) {
   }
   return jsonResponse({
     ok: true, order_id: order.id, created, mailed, link,
-    message: `${created ? 'Concept-order aangemaakt' : 'Bestaande concept-order hergebruikt'}${mailed ? ', uitnodiging verstuurd' : ' — mail MISLUKT, stuur de link handmatig'}`,
+    message: `${created ? 'Concept-order aangemaakt' : 'Bestaande concept-order hergebruikt'}${
+      mailed ? ', uitnodiging verstuurd' : mailSkipped ? ' — geen mail verstuurd (send_mail:false), deel de link zelf' : ' — mail MISLUKT, stuur de link handmatig'}`,
   });
 }
 

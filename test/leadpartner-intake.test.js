@@ -412,6 +412,18 @@ describe('POST /api/admin/intake-invite', () => {
     expect(mails).toHaveLength(1);
   });
 
+  it('send_mail:false → order wél, mail niet, melding zegt "geen mail" (niet "MISLUKT")', async () => {
+    const db = makeDb();
+    const res = await call(db, { customer_id: 'cust_1', product_key: 'leadpartner', tier: 'Exclusief', send_mail: false });
+    const j = await res.json();
+    expect(j.ok).toBe(true);
+    expect(j.mailed).toBe(false);
+    expect(db.state.orders).toHaveLength(1);
+    expect(mails).toHaveLength(0);
+    expect(j.message).toContain('geen mail verstuurd');
+    expect(j.message).not.toContain('MISLUKT');
+  });
+
   it('weigert: geen staff (403), onbekend product/tier (400), onbekende klant (404)', async () => {
     expect((await call(makeDb(), { customer_id: 'cust_1', product_key: 'leadpartner', tier: 'Exclusief' }, { asStaff: false })).status).toBe(403);
     expect((await call(makeDb(), { customer_id: 'cust_1', product_key: 'leadpartner', tier: 'Goud' })).status).toBe(400);
