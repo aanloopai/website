@@ -1,7 +1,9 @@
 # Go-live — Leadpartner-intake (Cy FlexService)
 
-> **Durum: HİÇBİRİ ÇALIŞTIRILMADI.** Her adım M'in açık onayıyla, sırayla. Prod D1'e yazma / e-posta gönderme = ayrı "evet".
-> Ön koşul: PR merge + `deploy.yml` yeşil + canlıda `/portal/ontdekken`'da leadpartner kartı YOK (gizlilik doğrulaması).
+> **Durum 2026-09-17:** PR #136/#139/#141 CANLI. A+B uygulandı (mail HARİÇ): klant `cust_d616721374c9` "Cy FlexService"
+> (eigenaar `cyflexservice@gmail.com`, Welkom YOK), concept-order `ord_2cf319a08878`. Davet maili henüz GÖNDERİLMEDİ — M onayı.
+> Link: `https://aanloopai.nl/portal/login/?next=%2Fportal%2Fintake%2F%3Forder%3Dord_2cf319a08878`
+> Gönderme = admin klant sayfası → "Uitnodiging sturen" (mevcut concept'i yeniden kullanır, mail atar) ya da linki elle WhatsApp/mail ile.
 
 ## A. Prod'da müşteri + eigenaar (mevcut admin UI)
 
