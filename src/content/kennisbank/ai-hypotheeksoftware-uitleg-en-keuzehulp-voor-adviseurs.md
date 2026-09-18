@@ -1,5 +1,5 @@
 ---
-title: "AI hypotheeksoftware: uitleg en keuzehulp voor hypotheekadviseurs"
+title: "AI hypotheeksoftware: uitleg en keuzehulp voor adviseurs"
 description: "Wat is AI hypotheeksoftware en wat levert het een hypotheekadvieskantoor in Nederland op? Uitleg, toepassingen, valkuilen en een nuchter stappenplan."
 excerpt: "Loonstroken, werkgeversverklaringen, taxatierapporten en bankafschriften: een hypotheekdossier bestaat uit tientallen documenten die iemand moet uitlezen en controleren. Dit artikel legt uit wat AI hypotheeksoftware doet, hoe die samenwerkt met een AI-telefoniste en waar u op let bij de keuze."
 published: 2026-09-17
