@@ -14,7 +14,7 @@ import { jsonResponse, errorResponse, getAccessToken } from './google-auth.js';
 import {
   SEED_SITES, GBP_METRICS, EVENT_TYPES, validateIngest, verifySignature, summarizeDaily,
   summarizeGbp, summarizeEvents, gbpResponseToRows, matchGbpLocation, bareHost, addDays,
-  parseEvent, eventHost, isBotUserAgent,
+  parseEvent, eventHost, isBotUserAgent, parseHit, summarizeHits,
 } from './visibility-core.js';
 import { rateLimit } from './rate-limit.js';
 
@@ -73,6 +73,24 @@ const SCHEMA = [
     waarde INTEGER NOT NULL DEFAULT 0,
     PRIMARY KEY (site_key, datum, event)
   )`,
+  `CREATE TABLE IF NOT EXISTS visibility_hits (
+    site_key TEXT NOT NULL,
+    ts INTEGER NOT NULL,
+    datum TEXT NOT NULL,
+    sid TEXT NOT NULL,
+    seq INTEGER NOT NULL,
+    t TEXT NOT NULL,
+    path TEXT NOT NULL,
+    ref TEXT,
+    src TEXT,
+    med TEXT,
+    dev TEXT,
+    sec INTEGER,
+    sc INTEGER,
+    meta TEXT
+  )`,
+  `CREATE INDEX IF NOT EXISTS ix_vh_site_ts ON visibility_hits(site_key, ts)`,
+  `CREATE INDEX IF NOT EXISTS ix_vh_site_sid ON visibility_hits(site_key, sid, seq)`,
 ];
 
 let schemaReady = false;
@@ -156,6 +174,19 @@ async function siteKeyForHost(env, host) {
   return siteCache.byHost.get(host) || '';
 }
 
+// visibility_hits retention: 90 days. Opportunistic (no cron needed) — a
+// small fraction of write requests also prune old rows, same pattern as
+// other best-effort housekeeping in this codebase.
+const HITS_RETENTION_MS = 90 * 86400000;
+const HITS_PRUNE_CHANCE = 0.02;
+
+async function bumpEventCounter(db, siteKey, datum, event) {
+  await db.prepare(
+    `INSERT INTO visibility_events_daily (site_key, datum, event, waarde) VALUES (?, ?, ?, 1)
+     ON CONFLICT(site_key, datum, event) DO UPDATE SET waarde = waarde + 1`,
+  ).bind(siteKey, datum, event).run();
+}
+
 export async function visibilityEvent(request, env) {
   if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: EVENT_CORS });
   if (request.method !== 'POST') return new Response(null, { status: 405, headers: EVENT_CORS });
@@ -165,41 +196,106 @@ export async function visibilityEvent(request, env) {
   if (isBotUserAgent(request.headers.get('user-agent'))) return done();
   const host = eventHost(request.headers.get('origin'), request.headers.get('referer'));
   if (!host) return done();
-  const ev = parseEvent(await request.text().catch(() => ''));
-  if (!ev) return done();
+  const raw = await request.text().catch(() => '');
+  let body;
+  try { body = JSON.parse(raw); } catch { return done(); }
+  if (!body || typeof body !== 'object') return done();
   const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
-  const rl = await rateLimit(env.GOOGLE_TOKENS, `rl:visevent:${ip}`, 30, 60);
-  if (!rl.allowed) return done();
   await ensureVisibilitySchema(env);
   const siteKey = await siteKeyForHost(env, host);
   if (!siteKey) return done();
   const datum = new Date().toISOString().slice(0, 10);
-  await env.PORTAL_DB.prepare(
-    `INSERT INTO visibility_events_daily (site_key, datum, event, waarde) VALUES (?, ?, ?, 1)
-     ON CONFLICT(site_key, datum, event) DO UPDATE SET waarde = waarde + 1`,
-  ).bind(siteKey, datum, ev.event).run();
+  const db = env.PORTAL_DB;
+
+  // New shape: {t, sid, seq, p, r, src, med, dev, sec, sc, meta} — one row
+  // per hit in visibility_hits, plus (for click/form types) the same daily
+  // counter bump the legacy shape did, so "Acties op de site" keeps working
+  // unchanged.
+  if (typeof body.t === 'string') {
+    const rl = await rateLimit(env.GOOGLE_TOKENS, `rl:vhit:${ip}`, 300, 600);
+    if (!rl.allowed) return done();
+    const hit = parseHit(body);
+    if (!hit) return done();
+    await db.prepare(
+      `INSERT INTO visibility_hits (site_key, ts, datum, sid, seq, t, path, ref, src, med, dev, sec, sc, meta)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    ).bind(
+      siteKey, Date.now(), datum, hit.sid, hit.seq, hit.t, hit.path,
+      hit.ref || null, hit.src || null, hit.med || null, hit.dev || null,
+      hit.sec ?? null, hit.sc ?? null, hit.meta || null,
+    ).run();
+    if (hit.t in EVENT_TYPES) await bumpEventCounter(db, siteKey, datum, hit.t);
+    if (Math.random() < HITS_PRUNE_CHANCE) {
+      await db.prepare('DELETE FROM visibility_hits WHERE ts < ?').bind(Date.now() - HITS_RETENTION_MS).run();
+    }
+    return done();
+  }
+
+  // Legacy shape ({e, p}) — older cached v.js copies keep working.
+  const rl = await rateLimit(env.GOOGLE_TOKENS, `rl:visevent:${ip}`, 30, 60);
+  if (!rl.allowed) return done();
+  const ev = parseEvent(body);
+  if (!ev) return done();
+  await bumpEventCounter(db, siteKey, datum, ev.event);
   return done();
 }
 
 // ── GET /v.js (public beacon script) ───────────────────────────────────────
 // One line per site: <script src="https://aanloopai.nl/v.js" defer></script>
-// Classifies clicks by href, form submits by <form>. Elements can force a
-// type with data-vis="tel|whatsapp|route|mail|form" (e.g. JS-driven
-// buttons) or opt out with data-vis="off".
+// Sends a 'view' hit on load and one 'leave' hit (with time-on-page +
+// max-scroll) on pagehide/hidden, so the admin can see entry/exit/flow per
+// page — plus the existing tel/mailto/WhatsApp/Maps click + form-submit
+// classification, now sent as hits too. No cookies, no localStorage, no
+// third-party requests. Elements can force a type with
+// data-vis="tel|whatsapp|route|mail|form" or opt out with data-vis="off".
 export const BEACON_JS = `(function(){
-var U='https://aanloopai.nl/api/visibility/event',last={};
-function send(e){var t=Date.now();if(last[e]&&t-last[e]<1500)return;last[e]=t;
-var b=JSON.stringify({e:e,p:location.pathname.slice(0,200)});
-try{if(navigator.sendBeacon&&navigator.sendBeacon(U,new Blob([b],{type:'text/plain'})))return;}catch(x){}
-try{fetch(U,{method:'POST',body:b,keepalive:true,mode:'no-cors',headers:{'content-type':'text/plain'}});}catch(x){}}
+var U='https://aanloopai.nl/api/visibility/event';
+var ST=Date.now(),MS=0,LS=false,LC={},M1,M2;
+function ss(k,v){try{if(v===undefined)return sessionStorage.getItem(k);sessionStorage.setItem(k,v);return true;}catch(x){return null;}}
+var sid=ss('av_sid');
+if(!sid){sid='';for(var i=0;i<16;i++)sid+=(Math.random()*16|0).toString(16);if(!ss('av_sid',sid))M1=sid;}
+var seq=(parseInt(ss('av_seq'),10)||0)+1;
+if(!ss('av_seq',seq))M2=seq;
+function gs(){return M1||sid;}
+function gq(){return M2||seq;}
+function dv(){try{return matchMedia('(max-width:767px)').matches?'m':'d';}catch(x){return'd';}}
+function qp(n){try{var m=location.search.match(new RegExp('[?&]'+n+'=([^&]*)'));return m?decodeURIComponent(m[1]).toLowerCase().slice(0,50):'';}catch(x){return'';}}
+function send(t,extra){
+var b={t:t,sid:gs(),seq:gq(),p:location.pathname.slice(0,200)};
+for(var k in extra)if(extra[k])b[k]=extra[k];
+var s=JSON.stringify(b);
+try{if(navigator.sendBeacon&&navigator.sendBeacon(U,new Blob([s],{type:'text/plain'})))return;}catch(x){}
+try{fetch(U,{method:'POST',body:s,keepalive:true,mode:'no-cors',headers:{'content-type':'text/plain'}});}catch(x){}}
+function throttled(e){var t=Date.now();if(LC[e]&&t-LC[e]<1500)return;LC[e]=t;send(e);}
+var ve={dev:dv()};
+if(gq()===1){try{var rh=document.referrer&&new URL(document.referrer).host;if(rh&&rh.replace(/^www\\./,'')!==location.host.replace(/^www\\./,''))ve.r=rh;}catch(x){}}
+var us=qp('utm_source'),um=qp('utm_medium');
+if(us)ve.src=us;if(um)ve.med=um;
+send('view',ve);
+function sp(){try{
+var d=document.documentElement,h=Math.max(d.scrollHeight,document.body?document.body.scrollHeight:0)-innerHeight;
+if(h<=0)return 100;
+var p=Math.round(((d.scrollTop||pageYOffset||0)+innerHeight)/(h+innerHeight)*100);
+return p<0?0:p>100?100:p;}catch(x){return 0;}}
+var tk=false;
+addEventListener('scroll',function(){if(tk)return;tk=true;
+setTimeout(function(){var p=sp();if(p>MS)MS=p;tk=false;},250);},{passive:true});
+function leave(){if(LS)return;LS=true;
+send('leave',{sec:Math.min(3600,Math.round((Date.now()-ST)/1000)),sc:MS});}
+addEventListener('pagehide',leave);
+document.addEventListener('visibilitychange',function(){if(document.visibilityState==='hidden')leave();});
 function classify(a){var v=a.getAttribute('data-vis');if(v==='off')return'';if(v)return v;
 var h=(a.getAttribute('href')||'').toLowerCase();if(!h)return'';
 if(h.indexOf('tel:')===0)return'tel';if(h.indexOf('mailto:')===0)return'mail';
 if(/wa\\.me|whatsapp/.test(h))return'whatsapp';
 if(/google\\.[a-z.]+\\/maps|maps\\.google|maps\\.app\\.goo\\.gl|goo\\.gl\\/maps|maps\\.apple|waze\\.com/.test(h))return'route';return'';}
 document.addEventListener('click',function(ev){var el=ev.target&&ev.target.closest?ev.target.closest('a[href],[data-vis]'):null;
-if(!el)return;var e=classify(el);if(e)send(e);},true);
-document.addEventListener('submit',function(ev){var f=ev.target;if(!f||f.getAttribute('data-vis')==='off')return;send('form');},true);
+if(!el)return;var e=classify(el);if(e)throttled(e);},true);
+document.addEventListener('submit',function(ev){var f=ev.target;if(!f||f.getAttribute('data-vis')==='off')return;throttled('form');},true);
+var fst=false;
+document.addEventListener('focusin',function(ev){if(fst)return;
+var el=ev.target;if(el&&el.closest&&el.closest('form')){fst=true;send('form_start');}},true);
+window.aanloopTrack=function(name,meta){send('custom',{meta:(String(name||'')+':'+String(meta||'')).slice(0,80)});};
 })();`;
 
 export function beaconScript() {
@@ -286,6 +382,26 @@ export async function visibilitySiteDetail(env, url) {
     gbp: { ...summarizeGbp(gbp.results || []), daily: gbp.results || [], labels: GBP_METRICS },
     events: { ...summarizeEvents(events.results || []), daily: events.results || [], labels: EVENT_TYPES, connected: (events.results || []).length > 0 },
   });
+}
+
+// ── GET /api/admin/visibility/gedrag?key=&win=28|90 (staff) ────────────────
+// "Gedrag op de site": entry/exit/flow funnel built from visibility_hits.
+// The window filter (site_key + ts) runs in SQL; the funnel math
+// (sessions/bounce/landing/exit/flow/…) is pure JS in summarizeHits so it
+// stays unit-testable without D1 — see visibility-core.js.
+const GEDRAG_ROW_LIMIT = 20000;
+
+export async function visibilityGedrag(env, url) {
+  await ensureVisibilitySchema(env);
+  const key = String(url.searchParams.get('key') || '').trim();
+  if (!key) return errorResponse('key ontbreekt', 400);
+  const win = Number(url.searchParams.get('win')) === 90 ? 90 : 28;
+  const since = Date.now() - win * 86400000;
+  const rows = (await env.PORTAL_DB.prepare(
+    `SELECT sid, seq, t, path, ref, src, med, dev, sec, sc FROM visibility_hits
+     WHERE site_key = ? AND ts >= ? ORDER BY sid, seq LIMIT ?`,
+  ).bind(key, since, GEDRAG_ROW_LIMIT).all()).results || [];
+  return jsonResponse({ ok: true, win, ...summarizeHits(rows) });
 }
 
 // ── PATCH /api/admin/visibility/site (staff) ───────────────────────────────

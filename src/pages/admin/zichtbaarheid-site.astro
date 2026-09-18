@@ -60,6 +60,48 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
   </section>
 
+  <section class="pcard mt-6">
+    <div class="pcard-h"><span>Gedrag op de site</span><span class="p-muted text-xs" id="b-range"></span></div>
+    <div class="pcard-b">
+      <div id="b-connected" class="hidden">
+        <div class="grid gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          <div class="kpi"><div class="kpi-label">Sessies</div><div class="kpi-value" id="b-sessions">—</div></div>
+          <div class="kpi"><div class="kpi-label">Bounce</div><div class="kpi-value" id="b-bounce">—</div></div>
+          <div class="kpi"><div class="kpi-label">Pagina's/sessie</div><div class="kpi-value" id="b-pps">—</div></div>
+          <div class="kpi"><div class="kpi-label">Gem. tijd</div><div class="kpi-value" id="b-sec">—</div></div>
+          <div class="kpi"><div class="kpi-label">Conversie</div><div class="kpi-value" id="b-conv">—</div></div>
+        </div>
+        <div class="mt-6 grid gap-6 lg:grid-cols-2">
+          <div class="overflow-x-auto">
+            <div class="p-muted mb-2 text-xs font-medium">Landingspagina's</div>
+            <table class="ptable"><thead><tr><th>Pagina</th><th class="num">Sessies</th><th class="num">Bounce</th><th class="num">Conversie</th></tr></thead><tbody id="b-landing"></tbody></table>
+          </div>
+          <div class="overflow-x-auto">
+            <div class="p-muted mb-2 text-xs font-medium">Uitstappagina's</div>
+            <table class="ptable"><thead><tr><th>Pagina</th><th class="num">Uitstappen</th><th class="num">Uitstap%</th></tr></thead><tbody id="b-exits"></tbody></table>
+          </div>
+          <div class="overflow-x-auto">
+            <div class="p-muted mb-2 text-xs font-medium">Pagina's</div>
+            <table class="ptable"><thead><tr><th>Pagina</th><th class="num">Weergaven</th><th class="num">Gem. tijd</th><th class="num">Gem. scroll</th><th class="num">Acties</th></tr></thead><tbody id="b-pages"></tbody></table>
+          </div>
+          <div class="overflow-x-auto">
+            <div class="p-muted mb-2 text-xs font-medium">Bronnen</div>
+            <table class="ptable"><thead><tr><th>Bron</th><th class="num">Sessies</th><th class="num">Conversie</th></tr></thead><tbody id="b-sources"></tbody></table>
+          </div>
+          <div class="overflow-x-auto">
+            <div class="p-muted mb-2 text-xs font-medium">Stroom</div>
+            <table class="ptable"><thead><tr><th>Van → Naar</th><th class="num">Aantal</th></tr></thead><tbody id="b-flow"></tbody></table>
+          </div>
+          <div class="overflow-x-auto">
+            <div class="p-muted mb-2 text-xs font-medium">Apparaat</div>
+            <table class="ptable"><thead><tr><th>Type</th><th class="num">Aandeel</th></tr></thead><tbody id="b-devices"></tbody></table>
+          </div>
+        </div>
+      </div>
+      <div id="b-none" class="empty hidden"><p class="empty-title">Nog geen gedragsdata — verschijnt zodra de site de nieuwe v.js laadt (cache max. 1 uur).</p></div>
+    </div>
+  </section>
+
   <div class="mt-6 grid gap-6 lg:grid-cols-2">
     <section class="pcard">
       <div class="pcard-h"><span>Google Bedrijfsprofiel (Maps &amp; zoeken)</span><span class="p-muted text-xs" id="g-range"></span></div>
@@ -111,7 +153,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
   <script is:inline>
     (function () {
       var key = new URLSearchParams(location.search).get('key') || '';
-      var data = null, win = 28;
+      var data = null, gedragData = null, win = 28;
       function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
       function n(v) { return Number(v || 0).toLocaleString('nl-NL'); }
       function pct(v) { return v == null ? '—' : (v * 100).toFixed(1).replace('.', ',') + '%'; }
@@ -203,6 +245,53 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           return '<tr><td>' + esc((e.labels || {})[k] || k) + '</td><td class="num">' + n((e.current || {})[k]) + '</td><td class="num">' + n((e.previous || {})[k]) + '</td></tr>';
         }).join('');
       }
+      function pct1(v) { return (v == null ? 0 : v).toFixed(1).replace('.', ',') + '%'; }
+      function secLabel(v) {
+        var s = Number(v || 0);
+        return s >= 60 ? Math.floor(s / 60) + 'm ' + (s % 60) + 's' : s + 's';
+      }
+      function bRows(list, tbodyId, cols) {
+        var tb = document.getElementById(tbodyId);
+        tb.innerHTML = list.map(function (r) { return '<tr>' + cols(r) + '</tr>'; }).join('');
+      }
+      function renderGedrag() {
+        var g = gedragData;
+        var con = document.getElementById('b-connected'), none = document.getElementById('b-none');
+        if (!g || !g.sessions) { con.classList.add('hidden'); none.classList.remove('hidden'); return; }
+        con.classList.remove('hidden'); none.classList.add('hidden');
+        document.getElementById('b-range').textContent = 'laatste ' + win + ' dagen';
+        document.getElementById('b-sessions').textContent = n(g.sessions);
+        document.getElementById('b-bounce').textContent = pct1(g.bounceRate);
+        document.getElementById('b-pps').textContent = String(g.pagesPerSession).replace('.', ',');
+        document.getElementById('b-sec').textContent = secLabel(g.avgSec);
+        document.getElementById('b-conv').textContent = pct1(g.conversionRate);
+        bRows(g.landing || [], 'b-landing', function (r) {
+          return '<td class="key" title="' + esc(r.path) + '">' + esc(r.path) + '</td><td class="num">' + n(r.sessions) + '</td><td class="num">' + pct1(r.bounce) + '</td><td class="num">' + pct1(r.conv) + '</td>';
+        });
+        bRows(g.exits || [], 'b-exits', function (r) {
+          return '<td class="key" title="' + esc(r.path) + '">' + esc(r.path) + '</td><td class="num">' + n(r.exits) + '</td><td class="num">' + pct1(r.exitRate) + '</td>';
+        });
+        bRows(g.pages || [], 'b-pages', function (r) {
+          return '<td class="key" title="' + esc(r.path) + '">' + esc(r.path) + '</td><td class="num">' + n(r.views) + '</td><td class="num">' + secLabel(r.avgSec) + '</td><td class="num">' + r.avgScroll + '%</td><td class="num">' + n(r.actions) + '</td>';
+        });
+        bRows(g.sources || [], 'b-sources', function (r) {
+          return '<td class="key" title="' + esc(r.bron) + '">' + esc(r.bron) + '</td><td class="num">' + n(r.sessions) + '</td><td class="num">' + pct1(r.conv) + '</td>';
+        });
+        bRows(g.flow || [], 'b-flow', function (r) {
+          return '<td class="key" title="' + esc(r.from) + ' → ' + esc(r.to) + '">' + esc(r.from) + ' → ' + esc(r.to) + '</td><td class="num">' + n(r.n) + '</td>';
+        });
+        var dev = g.devices || { m: 0, d: 0 }, devTotal = dev.m + dev.d;
+        bRows([
+          { label: 'Mobiel', v: devTotal ? (dev.m / devTotal) * 100 : 0 },
+          { label: 'Desktop', v: devTotal ? (dev.d / devTotal) * 100 : 0 },
+        ], 'b-devices', function (r) { return '<td>' + r.label + '</td><td class="num">' + pct1(r.v) + '</td>'; });
+      }
+      function loadGedrag() {
+        fetch('/api/admin/visibility/gedrag?key=' + encodeURIComponent(key) + '&win=' + win, { credentials: 'same-origin' })
+          .then(function (r) { return r.status === 200 ? r.json() : null; })
+          .then(function (d) { gedragData = d && d.ok ? d : null; renderGedrag(); })
+          .catch(function () { gedragData = null; renderGedrag(); });
+      }
       function renderLinks() {
         var site = data.site;
         document.getElementById('l-type').value = site.eigenaar || 'eigen';
@@ -226,10 +315,10 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       function load() {
         fetch('/api/admin/visibility/site?key=' + encodeURIComponent(key), { credentials: 'same-origin' })
           .then(function (r) { if (r.status === 403) { location.href = '/portal/login'; throw 0; } if (r.status !== 200) { location.href = '/admin/zichtbaarheid'; throw 0; } return r.json(); })
-          .then(function (d) { data = d; render(); })
+          .then(function (d) { data = d; render(); loadGedrag(); })
           .catch(function () {});
       }
-      document.querySelectorAll('[data-win]').forEach(function (b) { b.addEventListener('click', function () { win = Number(b.getAttribute('data-win')); if (data) renderWindow(); }); });
+      document.querySelectorAll('[data-win]').forEach(function (b) { b.addEventListener('click', function () { win = Number(b.getAttribute('data-win')); if (data) renderWindow(); loadGedrag(); }); });
       document.getElementById('l-save').addEventListener('click', function () {
         var msg = document.getElementById('l-msg'); msg.textContent = 'Opslaan…';
         post('/api/admin/visibility/site', 'PATCH', { key: key, customer_id: document.getElementById('l-klant').value || null, eigenaar: document.getElementById('l-type').value })
