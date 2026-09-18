@@ -19,7 +19,7 @@ import {
 } from './crm.js';
 import { aiFields, aiOnderzoek, aiUsage } from './ai-crm.js';
 import {
-  visibilityOverview, visibilitySiteDetail, visibilitySiteUpdate,
+  visibilityOverview, visibilitySiteDetail, visibilitySiteUpdate, visibilityGedrag,
   gbpInitiate, gbpLocationsRoute, gbpSyncRoute,
 } from './visibility.js';
 import {
@@ -129,6 +129,7 @@ export async function handleAdminApi(request, env) {
     if (path === '/api/admin/visibility/gbp/initiate') return await gbpInitiate(request, env);
     if (path === '/api/admin/visibility/gbp/locations') return await gbpLocationsRoute(env);
     if (path === '/api/admin/visibility/gbp/sync' && method === 'POST') return await gbpSyncRoute(request, env);
+    if (path === '/api/admin/visibility/gedrag') return await visibilityGedrag(env, url);
     if (path === '/api/admin/discovery/overview') return await discoveryOverview(env);
     if (path === '/api/admin/discovery/templates') return await discoveryTemplates(env);
     if (path === '/api/admin/discovery/client') {
