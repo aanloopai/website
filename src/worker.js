@@ -36,6 +36,7 @@ import { handleMcp } from './lib/mcp.js';
 import { rateLimit } from './lib/rate-limit.js';
 import { escapeHtml } from './lib/escape.js';
 import { alertStaff, notifyTelegram, formatSubmitTelegram } from './lib/notify.js';
+import { handleDemoIntake, sendIntakeInvite } from './lib/demo-intake.js';
 import { countVandaagProspects, prospectsNeedingFollowupDraft, generateFollowupDraft, outreachImport } from './lib/outreach.js';
 import { isWerkdag } from './lib/crm.js';
 import { aiSignalScan } from './lib/ai-crm.js';
@@ -240,6 +241,21 @@ function buildNotificationHtml(formType, fields, userEmail, userName) {
     <table style="border-collapse:collapse;width:100%;margin-top:16px;font-size:14px">${rows}</table>
     ${FOOTER_HTML}
   </body></html>`;
+}
+
+// (env, to, naam, subject, innerHtml) — de vorm die lib/demo-intake.js
+// verwacht; zelfde Brevo-pad en footer als de autoresponder.
+async function sendCustomerMail(env, to, naam, subject, innerHtml) {
+  await sendBrevoEmail(env.BREVO_API_KEY, {
+    sender: { name: SENDER_NAME, email: SENDER_EMAIL },
+    to: [{ email: to, name: naam || to }],
+    replyTo: { email: NOTIFICATION_EMAIL, name: 'Aanloop AI' },
+    subject,
+    htmlContent: `<!DOCTYPE html><html><body style="font-family:system-ui,sans-serif;max-width:640px;margin:0 auto;padding:24px;color:#0f172a">
+    ${innerHtml}
+    ${FOOTER_HTML}
+  </body></html>`,
+  }, 'autoresponse');
 }
 
 function buildAutoresponseHtml(template, userName) {
@@ -828,6 +844,16 @@ async function handleSubmit(request, env) {
       htmlContent: buildNotificationHtml(formType, fields, userEmail, fullName),
     }, 'notification');
 
+    // Demo-aanvraag (2026-09-19): één mail met "geen login nodig" + de
+    // persoonlijke intake-link vervangt de generieke autoresponder — zie
+    // lib/demo-intake.js. Valt terug op de oude mail als het token niet kan
+    // worden gezet (geen lead-id of secret), zodat de klant altijd iets krijgt.
+    if (formType === 'demo' && leadId && env.PORTAL_SESSION_SECRET) {
+      await sendIntakeInvite(env, { id: leadId, email: userEmail, naam: fullName }, sendCustomerMail);
+      await markLeadMail(env, leadId, 'verzonden', null);
+      return jsonResponse({ success: true, message: 'Verzonden' });
+    }
+
     let autoresponseHtml;
     if (formType === 'roi_calculator') {
       autoresponseHtml = buildRoiAutoresponseHtml(template, firstName, fields);
@@ -1354,6 +1380,11 @@ export default {
     // not a same-origin fetch() call.
     if (url.pathname === '/api/consent/confirm') {
       return handleConsentConfirm(request, env);
+    }
+
+    // Demo-intake: vijf vragen na een demo-aanvraag (lib/demo-intake.js).
+    if (url.pathname === '/api/demo-intake') {
+      return handleDemoIntake(request, env, { sendMailFn: sendCustomerMail });
     }
 
     // Native Google Calendar booking API (powers /demo-inplannen/)

@@ -7,6 +7,7 @@ import { activateOrder } from './activation.js';
 import { teardownProvisioning } from './elevenlabs.js';
 import { canProvision } from './provisioners/index.js';
 import { alertStaff } from './notify.js';
+import { sendIntakeInvite, ensureIntakeSchema } from './demo-intake.js';
 import { getCatalogProduct, getCatalogTier } from '../data/portal-catalog.ts';
 import {
   outreachProspects, outreachMailDetail, outreachImport,
@@ -98,6 +99,7 @@ export async function handleAdminApi(request, env) {
     }
     if (path === '/api/admin/leads') return await listLeads(env, url);
     if (path === '/api/admin/lead' && method === 'PATCH') return await updateLead(request, env);
+    if (path === '/api/admin/lead-intake-invite' && method === 'POST') return await leadIntakeInvite(request, env);
     if (path === '/api/admin/leadgen/leads') return await leadgenLeads(env);
     if (path === '/api/admin/leadgen/prospects') return await leadgenProspects(env);
     if (path === '/api/admin/leadgen/verkoop' && method === 'POST') return await leadgenVerkoop(request, env);
@@ -703,12 +705,39 @@ export async function updateOrder(request, env) {
 // ── inbound leads (public forms) ────────────────────────────────────────────
 async function listLeads(env, url) {
   const status = url.searchParams.get('status');
-  const base = `SELECT id, created_at, form_type, email, naam, bedrijf, telefoon, bericht,
-      status, mail_status, mail_error, notitie FROM inbound_leads`;
+  await ensureIntakeSchema(env);
+  const base = `SELECT l.id, l.created_at, l.form_type, l.email, l.naam, l.bedrijf, l.telefoon, l.bericht,
+      l.status, l.mail_status, l.mail_error, l.notitie,
+      i.mail_at AS intake_mail_at, i.mail_count AS intake_mail_count, i.answered_at AS intake_answered_at, i.answers_json AS intake_answers_json
+      FROM inbound_leads l LEFT JOIN lead_intake i ON i.lead_id = l.id`;
   const q = status
-    ? env.PORTAL_DB.prepare(`${base} WHERE status = ? ORDER BY created_at DESC LIMIT 200`).bind(status)
-    : env.PORTAL_DB.prepare(`${base} ORDER BY created_at DESC LIMIT 200`);
-  return jsonResponse({ ok: true, leads: (await q.all()).results || [] });
+    ? env.PORTAL_DB.prepare(`${base} WHERE l.status = ? ORDER BY l.created_at DESC LIMIT 200`).bind(status)
+    : env.PORTAL_DB.prepare(`${base} ORDER BY l.created_at DESC LIMIT 200`);
+  const leads = ((await q.all()).results || []).map((l) => {
+    let intake_answers = null;
+    if (l.intake_answers_json) { try { intake_answers = JSON.parse(l.intake_answers_json); } catch { intake_answers = null; } }
+    const { intake_answers_json, ...rest } = l;
+    return { ...rest, intake_answers };
+  });
+  return jsonResponse({ ok: true, leads });
+}
+
+// Stuurt (opnieuw) de demo-intake-uitnodiging naar een inbound lead — ook
+// voor leads van vóór 2026-09-19 die alleen de oude autoresponder kregen.
+async function leadIntakeInvite(request, env) {
+  const b = await request.json().catch(() => null);
+  const id = (b?.id || '').toString().trim();
+  if (!id) return errorResponse('Lead-id ontbreekt', 400);
+  const lead = await env.PORTAL_DB.prepare('SELECT id, email, naam, bedrijf FROM inbound_leads WHERE id = ?').bind(id).first();
+  if (!lead) return errorResponse('Lead niet gevonden', 404);
+  if (!env.BREVO_API_KEY) return errorResponse('BREVO_API_KEY niet geconfigureerd — mail kan niet verstuurd worden', 503);
+  try {
+    const link = await sendIntakeInvite(env, lead, mailCustomer);
+    return jsonResponse({ ok: true, mailed: true, link, message: `Intake-uitnodiging verstuurd naar ${lead.email}` });
+  } catch (err) {
+    console.error('[admin] lead-intake-invite failed:', err?.message || err);
+    return errorResponse(`Mail mislukt: ${err?.message || err}`, 502);
+  }
 }
 
 async function updateLead(request, env) {
