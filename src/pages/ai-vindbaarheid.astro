@@ -118,7 +118,7 @@ const schema = {
             <div class="accent-band"><span></span><span></span><span></span><span></span></div>
             <span class="eyebrow">AI-vindbaarheid · GEO</span>
           </div>
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05]">
             Uw klant Googelt niet meer. Hij vraagt het aan AI.
           </h1>
           <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-lg">
@@ -135,7 +135,7 @@ const schema = {
         </div>
         <div class="relative">
           <div class="absolute -inset-6 -z-10 bg-gradient-to-br from-brand-indigo/15 via-transparent to-brand-rose/10 blur-3xl"></div>
-          <div class="rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/20 ring-1 ring-slate-200/50 bg-white">
+          <div class="rounded-xl overflow-hidden shadow-2xl shadow-slate-900/20 ring-1 ring-slate-200/50 bg-white">
             <img
               src="/social-feed/geo-ai-aanbeveling-warmtepomp.png"
               alt="Voorbeeld van een AI-zoekantwoord dat een bedrijf aanbeveelt in ChatGPT, Gemini of Claude"
@@ -155,7 +155,7 @@ const schema = {
   <section class="section">
     <div class="container-page">
       <div class="max-w-3xl">
-        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy">Bij Google had u pagina 2. Bij AI bestaat die niet.</h2>
+        <h2 class="text-3xl lg:text-4xl font-semibold tracking-tighter text-navy">Bij Google had u pagina 2. Bij AI bestaat die niet.</h2>
         <p class="mt-5 text-lg text-slate-600 leading-relaxed">
           Vraagt iemand aan ChatGPT wie de beste in uw branche is, dan krijgt diegene 3 tot 5 namen. Niet honderd. Drie tot vijf. Dit heet <strong class="text-navy">AI-vindbaarheid</strong> (of GEO: Generative Engine Optimization) — en het is precies waar bijna het hele Nederlandse MKB nu nog onzichtbaar is.
         </p>
@@ -168,12 +168,12 @@ const schema = {
     <div class="container-page">
       <div class="max-w-2xl mb-12">
         <span class="eyebrow">Het mechanisme</span>
-        <h2 class="mt-4 text-3xl lg:text-4xl font-bold tracking-tightest text-navy">Hoe kiest een AI wie hij noemt?</h2>
+        <h2 class="mt-4 text-3xl lg:text-4xl font-semibold tracking-tighter text-navy">Hoe kiest een AI wie hij noemt?</h2>
         <p class="mt-4 text-lg text-slate-600">Een AI verzint zijn antwoord niet — hij vat samen wat hij online vertrouwt. Drie dingen bepalen of u genoemd wordt.</p>
       </div>
       <div class="grid md:grid-cols-3 gap-6">
         {factoren.map((f) => (
-          <div class="bg-white rounded-2xl border border-slate-200 p-7 shadow-sm">
+          <div class="bg-white rounded-lg border border-slate-200 p-7 shadow-sm">
             <div class="text-brand-indigo font-bold text-sm mb-3">{f.nr}</div>
             <h3 class="text-xl font-bold text-navy">{f.titel}</h3>
             <p class="mt-3 text-slate-600 leading-relaxed">{f.body}</p>
@@ -188,12 +188,12 @@ const schema = {
     <div class="container-page">
       <div class="max-w-2xl mb-12">
         <span class="eyebrow">Aan de slag</span>
-        <h2 class="mt-4 text-3xl lg:text-4xl font-bold tracking-tightest text-navy">Word gevonden door AI</h2>
+        <h2 class="mt-4 text-3xl lg:text-4xl font-semibold tracking-tighter text-navy">Word gevonden door AI</h2>
         <p class="mt-4 text-lg text-slate-600">Start gratis met een scan, of laat ons uw AI-vindbaarheid volledig inrichten.</p>
       </div>
       <div class="grid md:grid-cols-3 gap-6">
         {pakketten.map((p) => (
-          <div class={`rounded-2xl border p-7 flex flex-col ${p.featured ? 'border-brand-emerald ring-1 ring-brand-emerald/30 shadow-lg' : 'border-slate-200 shadow-sm'}`}>
+          <div class={`rounded-lg border p-7 flex flex-col ${p.featured ? 'border-brand-emerald ring-1 ring-brand-emerald/30 shadow-lg' : 'border-slate-200 shadow-sm'}`}>
             {p.featured && <span class="inline-flex self-start items-center px-3 py-1 rounded-full text-xs font-medium bg-brand-emerald/10 text-brand-emerald mb-4">Start hier — gratis</span>}
             <h3 class="text-xl font-bold text-navy">{p.naam}</h3>
             <div class="mt-3 flex items-baseline gap-1">
@@ -215,12 +215,12 @@ const schema = {
   <section class="section">
     <div class="container-page">
       <div class="max-w-3xl mx-auto text-center mb-10">
-        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy">AI-vindbaarheid voor jouw sector</h2>
+        <h2 class="text-3xl lg:text-4xl font-semibold tracking-tighter text-navy">AI-vindbaarheid voor jouw sector</h2>
         <p class="mt-4 text-lg text-slate-600">Andere vragen, andere AI-antwoorden. Bekijk wat klanten in jouw branche aan ChatGPT, Gemini en Claude vragen.</p>
       </div>
       <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {GEO_SECTORS.map((s) => (
-          <a href={`/ai-vindbaarheid/voor-${s.slug}/`} class="group rounded-2xl border border-slate-200 bg-white p-5 hover:border-brand-indigo hover:shadow-md transition-all">
+          <a href={`/ai-vindbaarheid/voor-${s.slug}/`} class="group rounded-lg border border-slate-200 bg-white p-5 hover:border-brand-indigo hover:shadow-md transition-all">
             <div class="text-2xl mb-2">{s.emoji}</div>
             <div class="font-semibold text-navy group-hover:text-brand-indigo transition-colors">{s.naam}</div>
             <div class="mt-1 text-sm text-slate-500">Word gevonden in AI →</div>
@@ -234,10 +234,10 @@ const schema = {
   <section class="section bg-slate-50 border-y border-slate-200">
     <div class="container-page">
       <div class="max-w-3xl mx-auto">
-        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest text-navy text-center mb-12">Veelgestelde vragen over AI-vindbaarheid</h2>
+        <h2 class="text-3xl lg:text-4xl font-semibold tracking-tighter text-navy text-center mb-12">Veelgestelde vragen over AI-vindbaarheid</h2>
         <div class="space-y-4">
           {faqItems.map((item) => (
-            <details class="group bg-white rounded-2xl border border-slate-200 p-6">
+            <details class="group bg-white rounded-lg border border-slate-200 p-6">
               <summary class="flex items-center justify-between cursor-pointer font-semibold text-navy list-none">
                 {item.question}
                 <span class="text-brand-indigo group-open:rotate-45 transition-transform text-2xl leading-none">+</span>
@@ -253,8 +253,8 @@ const schema = {
   <!-- CTA -->
   <section class="section">
     <div class="container-page">
-      <div class="rounded-3xl bg-navy text-white p-10 lg:p-14 text-center relative overflow-hidden">
-        <h2 class="text-3xl lg:text-4xl font-bold tracking-tightest">Word jij al genoemd door AI — of nog niet?</h2>
+      <div class="rounded-xl bg-navy text-white p-10 lg:p-14 text-center relative overflow-hidden">
+        <h2 class="text-3xl lg:text-4xl font-semibold tracking-tighter">Word jij al genoemd door AI — of nog niet?</h2>
         <p class="mt-4 text-lg text-slate-300 max-w-2xl mx-auto">Doe de gratis GEO Quick Scan en ontdek in 20 minuten hoe vindbaar uw bedrijf is in ChatGPT, Gemini en Claude.</p>
         <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
           <a href="/ai-vindbaarheid/check/" class="btn-primary text-base px-6 py-3.5">Gratis GEO Quick Scan</a>

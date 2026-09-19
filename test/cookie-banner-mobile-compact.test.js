@@ -18,7 +18,7 @@ describe('Cookiebanner — compact op mobiel', () => {
   });
 
   it('padding, tekst en knoppen zijn op mobiel krapper dan op desktop', () => {
-    expect(banner).toMatch(/rounded-t-2xl md:rounded-2xl shadow-2xl p-3 md:p-6/);
+    expect(banner).toMatch(/rounded-t-lg md:rounded-lg shadow-2xl p-3 md:p-6/);
     expect(banner).toMatch(/text-\[11px\] md:text-xs/);
     expect(banner).toMatch(/mt-2 md:mt-4 flex flex-wrap/);
     expect(banner).toMatch(/id="cookie-accept" class="[^"]*py-1\.5 md:py-2/);
