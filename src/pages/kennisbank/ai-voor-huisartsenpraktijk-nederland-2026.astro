@@ -141,7 +141,7 @@ const roiBreakdown = [
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
           <span class="eyebrow">Kennisbank · Sector — Huisartsenpraktijk</span>
         </div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05] reveal reveal-delay-1">
           AI voor huisartsenpraktijk — NHG-bewust, doktersassistente 70 procent ontlast
         </h1>
         <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
@@ -153,7 +153,7 @@ const roiBreakdown = [
 
   <section class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Welke processen automatiseerbaar zijn</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6 reveal">Welke processen automatiseerbaar zijn</h2>
       <p class="text-slate-600 leading-relaxed mb-4">Een AI assistent voor een huisartsenpraktijk neemt vooral de eerstelijns patiëntcontacten over: telefoongesprekken aannemen waarbij prospects of patiënten naar diensten vragen (consult, controle, kennismakingsintake, POH-S, POH-GGZ), benodigde informatie vragen (BSN, zorgverzekeraar, klacht-omschrijving voor doktersassistente-doorgeleiding), klantgegevens registreren in uw HIS en een afspraak plannen bij de juiste behandelaar (huisarts, doktersassistente, POH-S, POH-GGZ, POH-Jeugd) op het juiste tijdstip. De AI geeft geen klinische adviezen, doet geen NHG-TriageWijzer-toepassing, en signaleert direct wanneer er sprake is van pijn-triage of klinisch oordeel.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Voor lopende patiënten handelt de AI status-vragen af (wanneer is mijn volgende controle, klopt mijn afspraak, kan ik een herhaalrecept aanvragen, hoe staat het met mijn verwijzing) door realtime in uw HIS te kijken (MEDOM, Promedico, CGM-Huisarts, Bricks, OmniHis). Dit ontlast doktersassistente en POH voor 60-70 procent van inkomende routine-contacten — in een 2-3-huisarts praktijk met 7.000+ patiënten gaat dat al snel om 60-100 uur per maand.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Belangrijk: de AI vervangt nooit de medische beoordelingsfunctie. NHG-TriageWijzer (NTW) blijft 100 procent doktersassistente-werk onder huisarts-supervisie. Bij elke escalatie naar pijn, infectie, trauma of klinische vraag schakelt de AI direct door naar de doktersassistente, huisarts, of bij rode-vlag-keywords direct naar 112. WGBO-verplichtingen rond informed consent en patiëntdossier blijven volledig mensenwerk.</p>
@@ -164,11 +164,11 @@ const roiBreakdown = [
     <div class="container-page max-w-4xl mx-auto">
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">Top 7 processen</p>
-        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wat AI direct van uw doktersassistente overneemt.</h2>
+        <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy">Wat AI direct van uw doktersassistente overneemt.</h2>
       </div>
       <div class="grid sm:grid-cols-2 gap-6">
         {automatableProcesses.map((p, i) => (
-          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+          <div class={'rounded-lg border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
             <p class="text-base font-bold text-navy mb-2">{p.title}</p>
             <p class="text-sm text-slate-600 leading-relaxed">{p.body}</p>
           </div>
@@ -179,7 +179,7 @@ const roiBreakdown = [
 
   <section class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">NHG en AI: wat mag en wat niet</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">NHG en AI: wat mag en wat niet</h2>
       <p class="text-slate-600 leading-relaxed mb-4">Het <a href="https://www.nhg.org/" rel="external" target="_blank" class="text-brand-indigo hover:underline">Nederlands Huisartsen Genootschap (NHG)</a> en de <a href="https://www.lhv.nl/" rel="external" target="_blank" class="text-brand-indigo hover:underline">Landelijke Huisartsen Vereniging (LHV)</a> hebben geen specifieke AI-richtlijnen, maar de algemene NHG-Standaarden, gedragscode en patiëntveiligheidseisen onder de Wet BIG gelden onverminderd. Belangrijkste: WGBO-respect (informatieplicht en informed consent), zorgvuldigheidsverplichting onder Wet BIG, geheimhouding onder artikel 7:457 BW, en NHG-TriageWijzer (NTW) als standaard voor klinische triage. Voor AI betekent dit: alle data EU-only verwerkt op NEN 7510-bewuste cloud, geen modeltraining op patiëntdata, expliciete vermelding aan patiënt dat AI eerstelijns intake doet, en escalatie naar mens bij elke klinische of triage-vraag.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI levert specifiek voor huisartsenpraktijken een NHG-bewuste implementatie: vooraf-gescripte prompt-restricties die de AI verhinderen klinische triage of advies te geven (wat denkt u dat het is, hoe erg is het, moet ik mij zorgen maken), automatische escalatie bij 10 rode-vlag-keywords (zie volgende sectie), 112-instructie binnen seconden bij levensbedreigende klachten, en logging-trail die voldoet aan de toezichtsverplichtingen van de <a href="https://www.igj.nl/" rel="external" target="_blank" class="text-brand-indigo hover:underline">IGJ</a> plus uw kwaliteitsfunctionaris-audits.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Voor Wkkgz-compliance (Wet kwaliteit, klachten en geschillen zorg): AI mag patiëntklachten over de organisatie (bijvoorbeeld wachttijd, parkeren, factuur, bereikbaarheid) afhandelen volgens uw klachtenprocedure, maar klachten over zorgverlening, bejegening of klinische uitkomst escaleert AI altijd naar de praktijkhouder of klachtenfunctionaris. WGBO-informatie over behandelopties blijft volledig voorbehouden aan de huisarts tijdens consult. Voor Zorgverzekeringswet basisverzekering huisartsenzorg: AI mag administratieve handelingen verrichten maar niet declareren of medisch-inhoudelijk adviseren.</p>
@@ -190,7 +190,7 @@ const roiBreakdown = [
     <div class="container-page max-w-3xl mx-auto">
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">Escalatie-protocol</p>
-        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">10 rode-vlag-keywords die AI direct doorzet.</h2>
+        <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy">10 rode-vlag-keywords die AI direct doorzet.</h2>
         <p class="mt-3 text-slate-600">Voor huisartsenpraktijken configureren we strikte rode-vlag-detection conform NHG-TriageWijzer: zodra de patiënt iets klinisch-urgent of levensbedreigend zegt, geeft de AI binnen seconden de 112-instructie of escaleert naar de spoedlijn van de praktijk of huisartsenpost. Geen kans op vertraging bij hartinfarct-verdenking, CVA-verdenking of ander acuut letsel.</p>
       </div>
       <ul class="space-y-2 reveal reveal-delay-1">
@@ -208,11 +208,11 @@ const roiBreakdown = [
     <div class="container-page max-w-5xl mx-auto">
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">Integraties</p>
-        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Werkt met uw bestaande HIS.</h2>
+        <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy">Werkt met uw bestaande HIS.</h2>
         <p class="mt-3 text-slate-600 max-w-2xl">8 native of webhook-koppelingen voor de meest gebruikte Nederlandse huisartsen-HIS-systemen plus WhatsApp Business API. Eigen-built dossier-systemen via secure HL7-FHIR-routing.</p>
       </div>
       <div class="overflow-x-auto reveal reveal-delay-1">
-        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+        <table class="w-full text-sm border-collapse bg-white rounded-lg overflow-hidden border border-slate-200">
           <thead>
             <tr class="border-b border-slate-200">
               <th class="text-left py-3 px-4 text-slate-500 font-medium">Systeem</th>
@@ -236,7 +236,7 @@ const roiBreakdown = [
 
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Voorbeeldgesprek: AI handelt herhaalrecept-aanvraag af</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">Voorbeeldgesprek: AI handelt herhaalrecept-aanvraag af</h2>
       <p class="text-slate-600 leading-relaxed mb-4">Patiënt belt om 09:15 op een drukke maandagochtend (typisch piekuur). Doktersassistente is bezig met andere patiënt; voorheen zou de patiënt een ingesproken voicemail krijgen of geen contact maken. Nu neemt AI op: "Goedemorgen, u spreekt met de assistent van Huisartsenpraktijk Hofstraat. Hoe kan ik u helpen?". Patiënt: "ik heb mijn metformine bijna op, kan ik een herhaal-recept krijgen". AI vraagt naam plus geboortedatum, zoekt op in MEDOM, ziet dat de patiënt actief is in DM-zorgtraject, laatste HbA1c 4 maanden geleden binnen NHG-Standaard interval, geen medicatie-review-flag. AI: "uw metformine 850mg 2x daags is herhaalbaar. Aanvraag staat klaar voor de huisarts en uw apotheek krijgt vandaag de uitgifte-opdracht. Op uw bekende apotheek aan de Spoorlaan, klopt dat?". Patiënt bevestigt. AI: "fijne dag verder". Total tijd: 75 seconden, geen doktersassistente-tijd, patiënt geholpen op piekuur in plaats van uitgesteld.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Bij rood-licht (laatste controle 14 maanden geleden, of medicatie-review-flag, of allergie-context-flag): AI zou hebben gezegd "voor uw veiligheid wil ik u eerst even doorverbinden met onze doktersassistente — uw laatste controle dateert van langer dan een jaar geleden". Direct doorgeschakeld naar het secretariaat met context. Geen risico op onveilige automatisering.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Belangrijk wat de AI niet doet: geen advies over of de medicatie nog effectief is, geen klinische pre-screening ("hoe gaat het met uw bloedsuiker"), geen interactie-check (dat blijft apotheker plus huisarts). Bij vragen over werkzaamheid, bijwerkingen of klinische zorgen: directe escalatie naar huisarts via terugbel-verzoek.</p>
@@ -247,11 +247,11 @@ const roiBreakdown = [
     <div class="container-page max-w-4xl mx-auto">
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">Concrete ROI</p>
-        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Voor een 3-huisarts praktijk met 7.500 actieve patiënten.</h2>
+        <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy">Voor een 3-huisarts praktijk met 7.500 actieve patiënten.</h2>
         <p class="mt-3 text-slate-600 max-w-2xl">Realistische cijfers per maand voor een gemiddelde Nederlandse huisartsenpraktijk (2-3 huisartsen, 3-4 doktersassistentes, 2-3 POH). Uw eigen ROI varieert per patiëntenaantal, chronische zorgmix en POH-rolverdeling.</p>
       </div>
       <div class="overflow-x-auto reveal reveal-delay-1">
-        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+        <table class="w-full text-sm border-collapse bg-white rounded-lg overflow-hidden border border-slate-200">
           <thead>
             <tr class="border-b border-slate-200">
               <th class="text-left py-4 px-4 text-slate-500 font-medium w-[44%]">Metric</th>
@@ -276,7 +276,7 @@ const roiBreakdown = [
 
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl mx-auto">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Implementatie roadmap voor huisartsenpraktijken</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6 reveal">Implementatie roadmap voor huisartsenpraktijken</h2>
       <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Een succesvolle AI-implementatie in een huisartsenpraktijk verloopt in drie fasen. Fase 1 (week 1-3) is discovery en design: we analyseren 200 historische patiëntcontacten en de bel-piekpatronen van de afgelopen 3 maanden om de meest voorkomende vragen, escalaties en piek-uren in kaart te brengen. Op basis hiervan ontwerpen we de conversational flow, intake-vragenlijst per zorg-type (huisarts, doktersassistente, POH-S, POH-GGZ, POH-Jeugd), herhaalrecept-flow, recall-flow en NHG-bewuste rode-vlag-escalatieprotocollen die specifiek bij uw werkwijze, HIS en patiëntpopulatie passen.</p>
       <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-2">Fase 2 (week 4-7) is build en pilot: we configureren de AI met uw kennisbank (FAQ over openingstijden, bereikbaarheid, ANW-doorschakeling, herhaalrecept-beleid, NHG-Standaard recall-intervallen), koppelen aan uw HIS (MEDOM/Promedico/CGM-Huisarts/Bricks/OmniHis) plus WhatsApp Business API, en testen intern twee à drie weken lang. In deze periode simuleren u, doktersassistente-team en POH realistische patiënt-scenarios — de AI leert van correcties en wordt steeds nauwkeuriger op uw specifieke jargon, populatie en escalatie-criteria. Eind fase 2 gaat de AI live met 25-35 procent van uw patiëntverkeer voor monitoring (typisch eerst herhaalrecepten plus status-vragen, daarna intake).</p>
       <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-3">Fase 3 (week 8-14) is scale en optimaliseer: volledig live op het primaire kanaal met dagelijkse KPI-monitoring (bel-bereikbaarheid, herhaalrecept-doorlooptijd, recall-conversie chronische zorg), wekelijkse iteratie op herinnerings-templates en maandelijkse rapportage. Vanaf maand 3 ziet u typisch een stabiel piekuur-gemist percentage van minder dan 5 procent (van 25-40 procent baseline), een herhaalrecept-doorlooptijd van minder dan 4 uur (van 24-48 uur baseline) en 80-90 procent chronische-zorg recall-conversie (van 60-70 procent baseline).</p>
@@ -353,7 +353,7 @@ const roiBreakdown = [
   <section class="section-tight bg-midnight text-pearl">
     <div class="container-page">
       <div class="max-w-3xl">
-        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-pearl text-balance">
           Klaar om uw doktersassistente 70 procent te ontlasten?
         </h2>
         <p class="mt-4 text-slate-300 leading-relaxed">

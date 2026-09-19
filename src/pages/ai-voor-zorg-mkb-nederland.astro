@@ -100,7 +100,7 @@ const verderLezen = [
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
           <span class="eyebrow">Pillar-gids · Zorg-sector MKB</span>
         </div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05]">
           AI voor de Zorg-sector MKB Nederland
         </h1>
         <p class="speakable-lede mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
@@ -116,7 +116,7 @@ const verderLezen = [
 
   <section class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">In deze gids</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-4">In deze gids</h2>
       <ol class="space-y-2 text-slate-700">
         <li><a href="#waarom-nu" class="text-brand-indigo hover:underline">1. Waarom AI nu in de Nederlandse zorg</a></li>
         <li><a href="#sectoren" class="text-brand-indigo hover:underline">2. Welke zorg-sectoren profiteren het meest</a></li>
@@ -135,7 +135,7 @@ const verderLezen = [
 
   <section id="waarom-nu" class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-3">Waarom AI nu in de Nederlandse zorg</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-3">Waarom AI nu in de Nederlandse zorg</h2>
       <p class="text-slate-700 leading-relaxed mb-4">De Nederlandse eerstelijnszorg staat onder druk. Het tekort aan doktersassistenten en praktijkondersteuners is structureel, het aantal hulpvragen stijgt en patienten verwachten 24/7-bereikbaarheid die met menselijke bezetting onbetaalbaar is. Tegelijk is de regelgeving rond zorginformatie streng: NEN 7510, AVG, UAVG, WGBO, Wet BIG, Wkkgz en sinds 2026 de EU AI Act voor high-risk toepassingen.</p>
       <p class="text-slate-700 leading-relaxed mb-4">Tot 2024 was de combinatie technologie plus compliance een blokkade. In 2025-2026 is dat veranderd. Large language models zoals GPT-4 en Mistral Large draaien betrouwbaar op EU-infrastructuur, ElevenLabs heeft Nederlandse stemmen op natuurlijk niveau, en HIS-leveranciers zoals Pharmapartners (Medicom) en Promedico stellen API-koppelingen open onder voorwaarden.</p>
       <p class="text-slate-700 leading-relaxed">De ruimte voor AI in een zorgpraktijk is breed: triage volgens NHG-Standaarden, herhaalrecepten, no-show reductie, 24/7 spoedlijn, intake-vragenlijsten, wachtlijst-communicatie en mantelzorger-bericht. Wat AI niet doet en niet mag doen: diagnose stellen, voorbehouden handelingen verrichten of medicatie voorschrijven. Dat blijft 100 procent bij de BIG-geregistreerde zorgverlener.</p>
@@ -144,7 +144,7 @@ const verderLezen = [
 
   <section id="sectoren" class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-5xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Zeven zorg-sectoren waar AI het verschil maakt</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-8">Zeven zorg-sectoren waar AI het verschil maakt</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         {sectoren.map((s) => (
           <div class="card p-6 bg-white">
@@ -159,7 +159,7 @@ const verderLezen = [
 
   <section id="use-cases" class="section">
     <div class="container-page max-w-5xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-8">Zes use-cases die direct geautomatiseerd kunnen worden</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-8">Zes use-cases die direct geautomatiseerd kunnen worden</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         {useCases.map((uc, i) => (
           <div class="card p-6 bg-white">
@@ -175,7 +175,7 @@ const verderLezen = [
 
   <section id="triage" class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">NHG-conforme triage en BIG-register</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-4">NHG-conforme triage en BIG-register</h2>
       <p class="text-slate-700 leading-relaxed mb-4">In Nederland is het NHG-Triage-protocol (Nederlands Huisartsen Genootschap) leidend voor telefonische triage. Het classificeert hulpvragen in vijf urgentie-niveaus: U1 (levensbedreigend, direct), U2 (binnen 1 uur), U3 (binnen 1-3 uur), U4 (binnen 24 uur), U5 (regulier). Een zorg-AI moet exact deze classificatie volgen, niet improviseren.</p>
       <p class="text-slate-700 leading-relaxed mb-4">In de Aanloop AI implementatie functioneert de AI als digitale doktersassistent. De triage-prompt is opgebouwd uit de NHG-Standaarden, met een conservatieve escalatie-drempel bij twijfel. Bij iedere classificatie wordt de output gelogd voor audit (verplicht onder NEN 7510 plus Wkkgz).</p>
       <p class="text-slate-700 leading-relaxed mb-4">Belangrijk: de AI stelt geen diagnose en doet geen voorbehouden handelingen. Conform artikel 36 Wet BIG mag een AI wel symptomen inventariseren en routeren, maar niet medisch beoordelen of behandelen. Iedere U1 of U2-classificatie wordt direct doorgeschakeld naar een BIG-geregistreerde zorgverlener of de huisartsenpost (HAP).</p>
@@ -185,9 +185,9 @@ const verderLezen = [
 
   <section id="koppelingen" class="section">
     <div class="container-page max-w-5xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Koppeling met HIS en EPD-systemen</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-6">Koppeling met HIS en EPD-systemen</h2>
       <p class="text-slate-700 leading-relaxed mb-6 max-w-3xl">Een AI zonder EPD-koppeling is een gimmick. Aanloop AI bouwt productie-integraties met de meest gebruikte zorginformatie-systemen in Nederland. Onderstaande tabel geeft een actueel overzicht.</p>
-      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div class="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
         <table class="w-full text-sm">
           <thead class="bg-slate-50">
             <tr>
@@ -212,9 +212,9 @@ const verderLezen = [
 
   <section id="compliance" class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-5xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">NEN 7510, AVG en EU AI Act</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-4">NEN 7510, AVG en EU AI Act</h2>
       <p class="text-slate-700 leading-relaxed mb-6 max-w-3xl">Zorg-AI heeft de strengste compliance-eisen van alle MKB-sectoren. Onderstaand overzicht is geen juridisch advies maar een werkbare checklist voor zorgpraktijken die met Aanloop AI of een vergelijkbare aanbieder werken.</p>
-      <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <div class="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
         <table class="w-full text-sm">
           <thead class="bg-slate-50">
             <tr>
@@ -240,7 +240,7 @@ const verderLezen = [
 
   <section id="no-show" class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">No-show reductie in de praktijk</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-4">No-show reductie in de praktijk</h2>
       <p class="text-slate-700 leading-relaxed mb-4">Een gemiste afspraak in de fysiotherapie kost gemiddeld 35-50 euro aan netto-omzetderving. Bij een tandarts 80-150 euro. Bij een dierenarts (consult plus dieronderzoek) 60-120 euro. Bij een GGZ-praktijk soms 90-180 euro. Bij 8-12 procent no-show in een gemiddelde praktijk loopt dat op tot 8000-15.000 euro derving per jaar voor een solo-praktijk.</p>
       <p class="text-slate-700 leading-relaxed mb-4">De Aanloop AI no-show flow combineert drie kanalen. Op T-48u: vriendelijke SMS met afspraak-bevestiging, link om te verzetten of annuleren. Op T-24u: WhatsApp-herinnering met intake-vragenlijst (indien van toepassing). Op T-2u: korte AI-spraakcheck voor patienten die niet hebben bevestigd. Bij geen reactie: 1 outbound poging voor verzet of vrijgave.</p>
       <p class="text-slate-700 leading-relaxed mb-4">Vrijgekomen plekken worden direct aangeboden aan patienten op de wachtlijst, gesorteerd op urgentie en afstand. In productie bij vier fysiopraktijken zien we no-show dalen van 14-18 procent naar 7-9 procent binnen 8 weken. Dat betekent gemiddeld 200-300 euro extra netto-omzet per dag per behandelaar.</p>
@@ -250,7 +250,7 @@ const verderLezen = [
 
   <section id="spoedlijn" class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">24/7 spoedlijn en escalatie</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-4">24/7 spoedlijn en escalatie</h2>
       <p class="text-slate-700 leading-relaxed mb-4">Bij dierenartsen is een gemiste spoed-bel op zaterdagavond niet alleen omzetverlies — het kan dieronvriendelijk zijn. Bij huisartsen na 17:00 hoort iedere acute klacht via de HAP te lopen, maar in de praktijk belt 30-40 procent eerst de eigen praktijk. Een AI-spoedlijn ondervangt dit gat zonder dat een arts thuis de telefoon oppakt.</p>
       <p class="text-slate-700 leading-relaxed mb-4">De spoed-flow werkt in drie lagen. Laag 1 (eerste 10 seconden): AI scant op spoed-trefwoorden uit de NHG-spoed-lijst plus dier-spoed-lijst (kreupelheid, ademnood, vergiftiging, beet, niet-aanspreekbaar, zwaar bloedend). Bij hit: directe doorschakel-poging naar dienstdoende. Laag 2 (10-30 seconden): gestructureerde vragen over symptomen en duur, classificatie volgens U-schaal. Laag 3 (30 sec plus): instructies voor patient (richting HAP, dienstapotheek, dienstdierenarts, of bij levensgevaar 112).</p>
       <p class="text-slate-700 leading-relaxed mb-4">Iedere doorschakeling wordt gelogd met timestamp, transcript-fragment en classificatie. Dit is nodig voor Wkkgz-incident-onderzoek en biedt tegelijk feedback voor protocol-verbetering. Maandelijks rapport per praktijk: aantal spoed-meldingen, gemiddelde reactietijd, achteraf-validatie door arts.</p>
@@ -260,7 +260,7 @@ const verderLezen = [
 
   <section id="kosten" class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-4">Kosten en ROI voor zorgpraktijken</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-4">Kosten en ROI voor zorgpraktijken</h2>
       <p class="text-slate-700 leading-relaxed mb-4">Een eerlijke kosten-baten-analyse voor een gemiddelde solo-huisartsenpraktijk (ca. 2200 patienten, 1 huisarts, 1,5 doktersassistent FTE):</p>
       <ul class="list-disc pl-6 text-slate-700 leading-relaxed space-y-2 mb-4">
         <li>Maandkosten Aanloop AI: 697 euro inclusief HIS-koppeling, NHG-prompt en NEN 7510-pakket</li>
@@ -277,7 +277,7 @@ const verderLezen = [
 
   <section id="stappenplan" class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Stappenplan implementatie</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-6">Stappenplan implementatie</h2>
       <ol class="space-y-4 text-slate-700">
         <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">1</span><div><strong class="text-navy">Compliance-quickscan (gratis)</strong> — 30 minuten waarin we HIS of EPD, volume, openingstijden, doktersassistent-bezetting, huidige no-show en bestaande DPA-documentatie inventariseren.</div></li>
         <li class="flex gap-4"><span class="shrink-0 w-8 h-8 rounded-full bg-navy text-white flex items-center justify-center font-bold text-sm">2</span><div><strong class="text-navy">DPIA en sub-verwerkers-register</strong> — verplicht voor zorg-AI onder AVG. Aanloop AI levert template; finalisatie met praktijk-specifieke gegevens duurt 5-7 dagen.</div></li>
@@ -292,10 +292,10 @@ const verderLezen = [
 
   <section id="faq" class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Veelgestelde vragen</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-6">Veelgestelde vragen</h2>
       <div class="space-y-4">
         {faqItems.map((f) => (
-          <details class="rounded-2xl border border-slate-200 bg-white p-5 group">
+          <details class="rounded-lg border border-slate-200 bg-white p-5 group">
             <summary class="font-semibold text-navy cursor-pointer list-none flex items-start justify-between gap-3">
               <span>{f.question}</span>
               <span class="text-slate-400 group-open:rotate-180 transition-transform shrink-0">▾</span>
@@ -309,7 +309,7 @@ const verderLezen = [
 
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy mb-6">Verder lezen</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-6">Verder lezen</h2>
       <ul class="space-y-3 text-slate-700">
         {verderLezen.map((l) => (
           <li><a href={l.url} class="text-brand-indigo hover:underline">{l.tekst}</a></li>
@@ -321,7 +321,7 @@ const verderLezen = [
   <section class="section-tight bg-midnight text-pearl relative overflow-hidden">
     <div class="absolute inset-0 dot-grid opacity-[0.04]"></div>
     <div class="container-page relative max-w-3xl">
-      <h2 class="text-3xl font-bold tracking-tightest text-pearl text-balance">Klaar om uw zorgpraktijk te ontlasten?</h2>
+      <h2 class="text-3xl font-semibold tracking-tighter text-pearl text-balance">Klaar om uw zorgpraktijk te ontlasten?</h2>
       <p class="mt-4 text-slate-300">Gratis 30-minuten compliance-quickscan. We inventariseren uw HIS of EPD, volume telefonie, no-show percentage en de huidige knelpunten. U ontvangt een concreet stappenplan inclusief NEN 7510-pakket en kosten-indicatie.</p>
       <div class="mt-6 flex flex-col sm:flex-row gap-3">
         <a href="/gratis-ai-scan/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis quickscan</a>

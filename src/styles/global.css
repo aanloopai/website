@@ -30,6 +30,36 @@
     --brand-amber: #D97706;
     --brand-emerald: #047857;
     --brand-midnight: #0B1120;
+
+    /* ── shadcn/ui tokens (HSL, no hsl() wrapper) mapped onto the brand palette ──
+       foreground/primary = navy, secondary/muted/accent = pearl, border = slate-200,
+       ring = brand indigo. Consumed by tailwind.config.mjs `hsl(var(--x))`. */
+    --background: 0 0% 100%;
+    --foreground: 222.2 47.4% 11.2%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 47.4% 11.2%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 47.4% 11.2%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    /* slate-600 (#475569) instead of shadcn's slate-500: matches the
+       text-slate-600 body copy on the other 220+ pages and keeps AA on tinted bg. */
+    --muted-foreground: 215.3 19.3% 34.5%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 244 56.6% 50.6%;
+    --radius: 0.5rem;
+  }
+
+  * {
+    @apply border-border;
   }
 
   html {
@@ -43,23 +73,30 @@
   }
 
   body {
-    @apply bg-white text-navy font-sans antialiased;
+    @apply bg-background text-foreground font-sans antialiased;
     font-feature-settings: 'cv11', 'ss01', 'ss03';
   }
 
   ::selection {
-    @apply bg-brand-indigo/15 text-navy;
+    @apply bg-brand-indigo/15 text-foreground;
   }
 
-  /* Heading defaults */
+  /* Heading defaults — animated-hero register: tight tracking, semibold
+     (the hero H1 itself is regular with a semibold rotating word). */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold text-navy;
+    @apply font-semibold text-foreground;
+    text-wrap: balance;
+  }
+  h1, h2 {
+    letter-spacing: -0.04em;
+  }
+  h3, h4, h5, h6 {
     letter-spacing: -0.025em;
   }
 
-  /* Focus ring — accessible, brand-coloured */
+  /* Focus ring — shadcn ring token (brand indigo) */
   :focus-visible {
-    @apply outline-none ring-2 ring-brand-indigo ring-offset-2 ring-offset-white;
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
 
   /* Smooth details/summary */
@@ -91,32 +128,40 @@
 
   /* ─── Eyebrow ─── */
   .eyebrow {
-    @apply text-xs font-medium tracking-[0.15em] uppercase text-slate-500;
+    @apply text-xs font-medium tracking-[0.15em] uppercase text-muted-foreground;
   }
 
-  /* ─── Buttons ─── */
+  /* ─── Buttons — mirror shadcn `buttonVariants` (components/ui/button.tsx) so
+         the 126 .astro pages using .btn-* render identically to the React
+         <Button>. No fixed height: pages override padding per context. ─── */
   .btn {
-    @apply inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-medium text-sm transition-all duration-200;
+    @apply inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98];
   }
   .btn-primary {
-    @apply btn bg-navy text-white hover:bg-midnight active:scale-[0.98] shadow-sm hover:shadow-md;
+    @apply btn bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+  .btn-secondary {
+    @apply btn bg-secondary text-secondary-foreground hover:bg-secondary/80;
   }
   .btn-ghost {
-    @apply btn text-navy hover:bg-slate-100;
+    @apply btn hover:bg-accent hover:text-accent-foreground;
   }
   .btn-outline {
-    @apply btn border border-slate-300 text-navy hover:border-navy hover:bg-slate-50;
+    @apply btn border border-input bg-background hover:bg-accent hover:text-accent-foreground;
+  }
+  .btn-link {
+    @apply btn text-primary underline-offset-4 hover:underline;
   }
   .btn-accent {
-    @apply btn bg-brand-indigo text-white hover:bg-indigo-700 active:scale-[0.98] shadow-sm;
+    @apply btn bg-brand-indigo text-white hover:bg-brand-indigo/90;
   }
 
-  /* ─── Cards ─── */
+  /* ─── Cards — shadcn Card surface ─── */
   .card {
-    @apply bg-white border border-slate-200 rounded-2xl p-6 lg:p-8 transition-all duration-200;
+    @apply rounded-lg border bg-card text-card-foreground shadow-sm p-6 lg:p-8 transition-colors duration-200;
   }
   .card-interactive {
-    @apply card hover:border-slate-300 hover:shadow-lg hover:-translate-y-0.5;
+    @apply card hover:bg-accent/40 hover:shadow-md;
   }
 
   /* ─── Section spacing ─── */

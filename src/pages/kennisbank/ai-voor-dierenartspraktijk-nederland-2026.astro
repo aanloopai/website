@@ -142,7 +142,7 @@ const roiBreakdown = [
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
           <span class="eyebrow">Kennisbank · Sector — Dierenarts</span>
         </div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05] reveal reveal-delay-1">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05] reveal reveal-delay-1">
           AI voor dierenartspraktijk — KNMvD-bewust, spoed-veilig, no-show 70 procent omlaag
         </h1>
         <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
@@ -154,7 +154,7 @@ const roiBreakdown = [
 
   <section class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Welke processen automatiseerbaar zijn</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6 reveal">Welke processen automatiseerbaar zijn</h2>
       <p class="text-slate-600 leading-relaxed mb-4">Een AI assistent voor een dierenartspraktijk neemt vooral eerstelijns klantcontacten en administratieve handelingen over: telefoongesprekken aannemen waarbij eigenaren zich melden voor een nieuwe afspraak (jaarvaccinatie, klachten-consult, gewichtscontrole, post-op controle), gestructureerd dier-naam en symptoom-beeld uitvragen, plannen op het juiste consult-type, herhaalrecept-aanvragen administratief afhandelen via UDD-historie-check, en jaarcontrole-recall en post-op nazorg automatiseren. De AI stelt geen diagnose, doet geen medicatie-advies en doet geen behandel-suggestie.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Voor lopende patiënten handelt de AI ook status-vragen af (komt mijn afspraak nog door, wat zijn de nazorg-instructies, kan mijn herhaalrecept klaar zijn) door realtime in uw Animana, Vetware of Provet-EPD te kijken. Dit ontlast assistenten en dierenartsen voor 70-80 procent van inkomende routine-contacten — in een 4-dierenarts praktijk met 25-35 consulten per dierenarts per dag gaat dat al snel om 60-100 uur per maand die nu naar patiëntenzorg, chirurgie of preventieve uitbreiding kunnen.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Belangrijk: de AI vervangt nooit de bevoegde dierenarts. Diagnose, medicatie-keuze, behandelplan en chirurgische beslissingen blijven 100 procent voorbehouden aan de natuurlijke persoon met de bevoegdheid uit de Wet dieren en de Wet uitoefening diergeneeskunde (WUD). Bij elke eigenaar-vraag die over diagnose, medicatie of behandeling gaat schakelt de AI direct door — met als gestandaardiseerd antwoord "voor diagnose en behandeling wil ik u doorverbinden met een van onze dierenartsen". Bij detectie van levensbedreigende symptomen escaleert de AI binnen 5 seconden naar de dienstdoende dierenarts of doorverwijzing nooddienst — daarover meer in het spoed-protocol-blok hieronder.</p>
@@ -165,11 +165,11 @@ const roiBreakdown = [
     <div class="container-page max-w-4xl mx-auto">
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">Top 7 processen</p>
-        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Wat AI direct van uw assistenten en dierenartsen overneemt.</h2>
+        <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy">Wat AI direct van uw assistenten en dierenartsen overneemt.</h2>
       </div>
       <div class="grid sm:grid-cols-2 gap-6">
         {automatableProcesses.map((p, i) => (
-          <div class={'rounded-2xl border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
+          <div class={'rounded-lg border border-slate-200 bg-white p-6 reveal' + (i % 2 === 1 ? ' reveal-delay-1' : '')}>
             <p class="text-base font-bold text-navy mb-2">{p.title}</p>
             <p class="text-sm text-slate-600 leading-relaxed">{p.body}</p>
           </div>
@@ -180,7 +180,7 @@ const roiBreakdown = [
 
   <section class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">KNMvD, WUD en AI: wat mag en wat absoluut niet</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">KNMvD, WUD en AI: wat mag en wat absoluut niet</h2>
       <p class="text-slate-600 leading-relaxed mb-4">De Koninklijke Nederlandse Maatschappij voor Diergeneeskunde (KNMvD) is de beroepsorganisatie en zet de kwaliteits- en beroepsethische normen voor de Nederlandse dierenarts. De Wet dieren en de Wet uitoefening diergeneeskunde (WUD) bepalen wettelijk wat alleen door een bevoegde dierenarts mag gebeuren: het stellen van een diagnose, het voorschrijven van diergeneesmiddelen, het uitvoeren van invasieve handelingen, en het maken van een behandelplan. Voor AI betekent dit een harde scheidslijn: feiten verzamelen, processen begeleiden, administratie afhandelen en eigenaar-communicatie automatiseren mag, maar elke vorm van inhoudelijke veterinaire uitspraak (welke aandoening, welk middel, welke dosering, welke ingreep) is verboden voor AI.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI levert specifiek voor dierenartspraktijken een KNMvD-bewuste implementatie: vooraf-gescripte prompt-restricties die de AI verhinderen om diagnoses te stellen of medicatie-suggesties te doen, automatische escalatie bij 10 acute spoed-keywords (GDV, ademnood, urolithiasis-kat, stuipen, vergiftiging, trauma, dystocia, achterhand-verlamming, shock, hematemesis), gestandaardiseerde escalatie-formulering naar dienstdoende dierenarts, en logging-trail die voldoet aan KNMvD-kwaliteitsregister-verplichtingen plus EPD-dossiervorming. WUD-grens wordt zo nooit doorkruist — de AI doet alleen wat een gediplomeerde dierenartsassistent ook administratief zou mogen doen.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Voor de Geneesmiddelenwet diergeneeskunde en de UDD-regeling (Uitsluitend Door Dierenarts): herhaalrecepten en chronische medicatie zijn aan strikte controle gebonden. AI mag administratief het traject ondersteunen — aanvraag uitvragen, UDD-historie checken in EPD, doorzetten naar dierenarts voor goedkeuring — maar nooit zelf het recept genereren of de UDD-toets afronden. NVWA-toezicht op UDD blijft volledig intact. Voor AVG van eigenaar-gegevens (dier-medische data is strikt genomen geen "bijzondere persoonsgegevens" zoals humane gezondheidsdata, maar eigenaar-NAW en betalings-gegevens wel): standaard AVG-conform en EU-only data-verwerking met DPIA-template inbegrepen.</p>
@@ -191,7 +191,7 @@ const roiBreakdown = [
     <div class="container-page max-w-3xl mx-auto">
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">Spoed-protocol</p>
-        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">10 acute keywords met directe escalatie naar dienstdoende dierenarts.</h2>
+        <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy">10 acute keywords met directe escalatie naar dienstdoende dierenarts.</h2>
         <p class="mt-3 text-slate-600">Veterinaire spoed is een van de meest onderschatte risico's in een geautomatiseerde communicatie-flow. Een hond met GDV (maagdraaiing) is dood binnen 4-8 uur zonder operatie; een kat die niet kan plassen door urolithiasis sterft binnen 24 uur. Aanloop AI is voor dierenartspraktijken expliciet geconfigureerd op 10 levensbedreigende keywords met directe doorverbinding naar dienstdoende dierenarts of nooddienst, plus dossier-flag voor praktijkhouder-monitoring.</p>
       </div>
       <ul class="space-y-2 reveal reveal-delay-1">
@@ -209,11 +209,11 @@ const roiBreakdown = [
     <div class="container-page max-w-5xl mx-auto">
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">Integraties</p>
-        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Werkt met uw bestaande dierenarts-stack.</h2>
+        <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy">Werkt met uw bestaande dierenarts-stack.</h2>
         <p class="mt-3 text-slate-600 max-w-2xl">8 native of webhook-koppelingen voor de meest-gebruikte Nederlandse veterinaire EPD-systemen plus dierverzekeraars en WhatsApp Business API. Onafhankelijke KNMvD-praktijken zonder keten-binding: maximale flexibiliteit op uw bestaande Animana-, Vetware- of Provet-stack.</p>
       </div>
       <div class="overflow-x-auto reveal reveal-delay-1">
-        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+        <table class="w-full text-sm border-collapse bg-white rounded-lg overflow-hidden border border-slate-200">
           <thead>
             <tr class="border-b border-slate-200">
               <th class="text-left py-3 px-4 text-slate-500 font-medium">Systeem</th>
@@ -237,7 +237,7 @@ const roiBreakdown = [
 
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Voorbeeldgesprek: AI handelt acute spoed-melding 's avonds laat af</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">Voorbeeldgesprek: AI handelt acute spoed-melding 's avonds laat af</h2>
       <p class="text-slate-600 leading-relaxed mb-4">Eigenaar belt op zaterdag 22:45 — praktijk is al uren dicht en veel praktijken hebben pas maandag-ochtend bemensing op de telefoon: "hallo, mijn Duitse Dog van 6 jaar oud heeft sinds een uur een opgezette buik en lijkt steeds tevergeefs te willen kokhalzen, hij ligt nu en is heel onrustig". Voorheen zou deze eigenaar een antwoordapparaat horen met "voor spoed belt u 0900-..." waarna hij in paniek kostbare minuten verliest of misschien zelfs niet doorbelt. Nu antwoordt AI binnen 30 seconden, herkent direct GDV-rode-vlag (Duitse Dog grote-ras predispositie + opgezette buik + onsuccesvol braken — klassiek spoedgeval, sterfte 4-8 uur zonder OK), en escaleert binnen 5 seconden:</p>
       <p class="text-slate-600 leading-relaxed mb-4">"Dit klinkt als een mogelijke maagdraaiing, dit is een veterinaire spoedsituatie. Ik verbind u nu door met onze dienstdoende dierenarts. Blijft u alstublieft aan de lijn." AI belt parallel de dienstdoende dierenarts via diens persoonlijke nummer, geeft korte spoed-overdracht ("Duitse Dog 6 jaar, opgezette buik, onsuccesvol braken sinds 21:45, eigenaar in lijn"), en koppelt de gesprekken. Dierenarts vraagt of het dier ter plekke gebracht kan worden of dat eigenaar te ver woont voor onze praktijk; AI checkt parallel de eigenaar-locatie tegen de regio-nooddienst-list en geeft adres + telefoon van de dichtstbijzijnde 24u-veterinaire kliniek door. Total tijd van eerste contact tot dierenarts in lijn: 90 seconden. Met snelle OK-presentatie binnen 4u: dier overleeft.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Belangrijk wat de AI niet doet: geen GDV-diagnose stellen ("uw hond heeft een maagdraaiing"), geen medicatie-advies ("geef hem nu een Buscopan"), geen "wacht eerst af tot het beter wordt"-advies, geen probability-uitspraak. AI verzamelt feiten, herkent een rode-vlag-pattern op KNMvD-spoed-richtlijnen, en escaleert. Wet dieren en WUD-grens 100 procent gerespecteerd, en tegelijk life-saving-snel.</p>
@@ -248,11 +248,11 @@ const roiBreakdown = [
     <div class="container-page max-w-4xl mx-auto">
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">Concrete ROI</p>
-        <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy">Voor een 4-dierenarts praktijk met 100 consulten per dag.</h2>
+        <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy">Voor een 4-dierenarts praktijk met 100 consulten per dag.</h2>
         <p class="mt-3 text-slate-600 max-w-2xl">Realistische cijfers per maand voor een gemiddelde Nederlandse MKB-dierenartspraktijk (3-5 dierenartsen, 25-35 consulten per dierenarts per dag, gemiddelde consult-fee €55-€95, jaaromzet €800.000-€1.800.000). Uw eigen ROI varieert per patiënt-mix (hond/kat/exoot), per chirurgie-aandeel en per gemiddelde fee-niveau.</p>
       </div>
       <div class="overflow-x-auto reveal reveal-delay-1">
-        <table class="w-full text-sm border-collapse bg-white rounded-2xl overflow-hidden border border-slate-200">
+        <table class="w-full text-sm border-collapse bg-white rounded-lg overflow-hidden border border-slate-200">
           <thead>
             <tr class="border-b border-slate-200">
               <th class="text-left py-4 px-4 text-slate-500 font-medium w-[44%]">Metric</th>
@@ -277,7 +277,7 @@ const roiBreakdown = [
 
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl mx-auto">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6 reveal">Implementatie roadmap voor dierenartspraktijken</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6 reveal">Implementatie roadmap voor dierenartspraktijken</h2>
       <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Een succesvolle AI-implementatie in een dierenartspraktijk verloopt in drie fasen. Fase 1 (week 1-3) is discovery en design: we analyseren 200-400 historische klantcontacten, no-show patronen, jaarcontrole-respons-rates en herhaalrecept-volumes van de afgelopen 3 maanden om de meest voorkomende vragen, escalaties en piek-momenten in kaart te brengen. Op basis hiervan ontwerpen we de conversational flow voor afspraak-intake, herhaalrecept-flow, jaarcontrole-recall, no-show preventie en post-op nazorg — plus KNMvD-bewuste rode-vlag-escalatieprotocollen die specifiek bij uw werkwijze, EPD-stack en patiënt-mix (hond/kat/exoot/landbouwhuisdier) passen.</p>
       <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-2">Fase 2 (week 4-7) is build en pilot: we configureren de AI met uw kennisbank (FAQ over openingstijden, tarieven, vaccinatie-schema's, ras-specifieke jaarcontrole, betalings-opties, verzekeraar-procedures), koppelen aan uw Animana, Vetware, Provet of Plus1, plus WhatsApp Business API, en testen intern twee à drie weken lang. In deze periode simuleren u en uw assistenten realistische klant-scenarios — de AI leert van correcties en wordt steeds nauwkeuriger op uw specifieke triage-criteria, spoed-grenzen en verwijs-protocollen. Eind fase 2 gaat de AI live met 25-35 procent van uw klantverkeer voor monitoring (typisch eerst afspraak-intake plus jaarcontrole-recall).</p>
       <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-3">Fase 3 (week 8-14) is scale en optimaliseer: volledig live op het primaire kanaal met dagelijkse KPI-monitoring (no-show rate, jaarcontrole-recall conversie, herhaalrecept-doorlooptijd, spoed-detectie respons-tijd), wekelijkse iteratie op herinnerings-templates en maandelijkse rapportage. Vanaf maand 3 ziet u typisch een no-show stabiel onder 9 procent (van 18-30 procent baseline), jaarcontrole-recall conversie boven 45 procent (van 15-25 procent baseline), en herhaalrecept-doorlooptijd onder 8 uur (van 2-3 dagen baseline). Dat zijn voor een 4-dierenarts praktijk cijfers die direct zichtbaar zijn op de fee-omzet per kwartaal en op de werkdruk-belasting van uw assistenten en dierenartsen.</p>
@@ -358,7 +358,7 @@ const roiBreakdown = [
   <section class="section-tight bg-midnight text-pearl">
     <div class="container-page">
       <div class="max-w-3xl">
-        <h2 class="text-3xl sm:text-4xl font-bold tracking-tightest text-pearl text-balance">
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-pearl text-balance">
           Klaar om no-show te halveren en spoed-veiligheid 24/7 te garanderen?
         </h2>
         <p class="mt-4 text-slate-300 leading-relaxed">

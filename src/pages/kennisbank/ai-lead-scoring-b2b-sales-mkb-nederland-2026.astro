@@ -51,7 +51,7 @@ const faqItems = [
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
           <span class="eyebrow">Kennisbank · AI lead scoring + B2B sales</span>
         </div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tightest text-navy text-balance leading-[1.05]">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05]">
           AI lead scoring en B2B-sales-funnel — gids voor MKB Nederland
         </h1>
         <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
@@ -68,7 +68,7 @@ const faqItems = [
         <p class="text-sm text-slate-700">AI-lead-scoring koppelt uw CRM (HubSpot, Salesforce, Pipedrive, Teamleader) aan een scoring-engine die elke binnenkomende lead real-time verrijkt met firmographics plus persoons-data plus engagement-signalen, en een score-percentage berekent op basis van uw historische gewonnen deals of expliciete ICP-prompt. Voor MKB met 100+ historische gewonnen deals: HubSpot Predictive of Salesforce Einstein als u al in dat ecosysteem zit. Voor branche-specifieke ICP, niet-HubSpot CRM of full data-sovereignty: custom AI-scoring via Aanloop AI op n8n+Anthropic Claude EU+Postgres pgvector — vanaf 6.000 tot 12.000 euro implementatie + 497 euro per maand. Realistische ROI: +25 tot +40 procent MQL-to-SQL conversion, -30 procent AE-tijd op out-of-ICP, terugverdientijd 1 tot 3 maanden bij actief sales-team.</p>
       </div>
 
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Wat is AI-lead-scoring en wat doet het verschil met traditionele scoring</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">Wat is AI-lead-scoring en wat doet het verschil met traditionele scoring</h2>
       <p class="text-slate-600 leading-relaxed mb-4">Traditionele rule-based lead-scoring werkt met handmatig toegekende punten per attribuut: directeur-titel +15 punten, bedrijfsgrootte 50 tot 200 FTE +10 punten, demo aangevraagd +25 punten, e-mail-opens deze maand +5 punten, alles boven 50 wordt MQL. Het systeem is transparant en simpel maar mist subtiele patronen — bijvoorbeeld dat in uw branche een Hoofd-IT met 2-jarige anciënniteit en 4 sessies op de tarieven-pagina een sterker koopsignaal is dan een C-level met 1 sessie en geen tarieven-pagina-bezoek, ook al scoort de C-level hoger op pure functie-punten.</p>
       <p class="text-slate-600 leading-relaxed mb-4">AI-lead-scoring leert de werkelijke patronen uit uw historische gewonnen en verloren deals. Een predictive-model (HubSpot Predictive of Salesforce Einstein) traint op 12 tot 24 maanden CRM-historie en identificeert welke combinaties van firmographics, persoons-data en engagement-signalen daadwerkelijk correleren met gewonnen deals — vaak verrassend andere combinaties dan u handmatig had toegekend. Een AI-generative-model (Anthropic Claude EU plus expliciete ICP-prompt) werkt zonder veel historie: u beschrijft uw ICP plus 5 tot 10 voorbeeld-gewonnen deals en het model scoort nieuwe leads zero-shot of few-shot.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Onder de motorkap zitten typisch vier componenten. Een real-time enrichment-laag (Apollo.io, Clearbit, of KvK-API) die bij elke webform-submission of CRM-update binnen 2 seconden bedrijfs- en persoons-data toevoegt. Een engagement-tracking-laag (HubSpot tracking-pixel, Plausible, of custom) die alle website-interacties per lead bijhoudt met pagina, duur, content-download en e-mail-engagement. Een scoring-engine (HubSpot Predictive, Salesforce Einstein, of custom Claude EU) die deze data-stromen tot een score-percentage verwerkt. En een hand-off-laag (CRM-workflow, Slack-notificaties, agenda-planning) die bij MQL- en SQL-drempels de juiste actie triggert — automatische AE-assignment, demo-call-link, of nurture-flow voor laag-scoring leads.</p>
@@ -77,7 +77,7 @@ const faqItems = [
 
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">HubSpot Predictive vs Salesforce Einstein vs custom build</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">HubSpot Predictive vs Salesforce Einstein vs custom build</h2>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">HubSpot Predictive Lead Scoring (in HubSpot Marketing Hub Enterprise vanaf 3.300 euro per maand):</strong> ingebakken in HubSpot, zero engineering, leert op uw HubSpot-data van 100+ gewonnen deals. Geschikt bij: u zit al op HubSpot Enterprise, standaard B2B-funnel, 1 of 2 markten, MKB met 50+ medewerkers. Voordelen: native UX, automatische updates, sterk dashboarding, integratie met HubSpot Sequences en Workflows. Nadelen: alleen op HubSpot-data (geen externe intent-bronnen out-of-the-box), vendor lock-in, kosten Enterprise-tier hoog voor MKB tot 50 medewerkers, branche-specifieke ICP-tuning beperkt.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Salesforce Einstein Lead Scoring (in Sales Cloud Einstein add-on vanaf 75 euro per gebruiker per maand):</strong> enterprise-grade scoring binnen Salesforce, leert op uw Sales Cloud-data, integreert met Einstein Activity Capture (e-mail- en agenda-tracking) en Einstein Conversation Insights (call-transcript-analyse). Geschikt bij: u zit al op Salesforce Sales Cloud, MKB met 25+ AEs, formele sales-proces met meerdere stages. Voordelen: diepe integratie met Salesforce-stack, sterke audit-positie, schaalbare pricing. Nadelen: Salesforce zelf duur (Sales Cloud vanaf 165 euro per gebruiker per maand), Einstein add-on extra, te zwaar voor typisch MKB onder 25 AEs.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Apollo.io AI plus eigen scoring-rules (Apollo Professional vanaf 79 dollar per gebruiker per maand):</strong> Apollo.io biedt enrichment (firmographics + functie-titels) plus intent-data plus eenvoudige scoring-rules in één platform. Geschikt bij: outbound-zware sales (sequences, AE-tijd op cold), MKB met 5 tot 25 SDRs of AEs, geen volledig HubSpot- of Salesforce-budget. Voordelen: all-in-one outbound-stack, intent-data inbegrepen, snelle setup. Nadelen: scoring zelf is rule-based niet predictive, beperkter dan dedicated AI-scoring, US-data-residency (BDSG-twijfel bij Duitse leads).</p>
@@ -88,7 +88,7 @@ const faqItems = [
 
   <section class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">6 use-cases voor MKB met directe ROI</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">6 use-cases voor MKB met directe ROI</h2>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Use-case 1: real-time MQL-scoring op webform-submission.</strong> Bezoeker vult /demo-aanvragen/ in. Binnen 2 seconden: enrichment via Apollo (functie, FTE, branche), scoring via Claude EU plus uw ICP-prompt, automatische lifecycle-stage-update in CRM, Slack-notificatie naar AE bij high-score. AE belt binnen 5 minuten — speed-to-lead is de sterkste enkel-factor in conversion (industry-data: bellen binnen 5 min vs binnen 1 uur is 21x meer conversion-kans).</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Use-case 2: AI-gegenereerde lead-briefing voor AE.</strong> Bij MQL-drempel: AI haalt company-data, persoons-data, recente engagement, LinkedIn-activiteit en tech-stack op, genereert 1-page briefing met "waarom score hoog, top 3 talking points, suggested first message en 3 vragen om te stellen". AE bespaart 15 tot 25 minuten research per lead.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Use-case 3: out-of-ICP nurture-flow.</strong> Bij low-score-leads (typisch 50 tot 70 procent van inbound): automatische enrolling in 8-week e-mail-sequence met educational content. Geen AE-tijd verspild, lead krijgt waarde, en bij latere score-shift (functie-verandering, nieuwe sessies, specifieke content-download) automatische re-scoring en escalatie naar AE.</p>
@@ -100,7 +100,7 @@ const faqItems = [
 
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">AVG en EU AI Act — wat moet u regelen</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">AVG en EU AI Act — wat moet u regelen</h2>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">AVG artikel 22 — geautomatiseerde besluiten:</strong> lead-scoring kan onder <a href="https://www.autoriteitpersoonsgegevens.nl/themas/algoritmes-ai/algoritmes-ai-en-de-avg" target="_blank" rel="external" class="text-brand-indigo hover:underline">artikel 22 van de AVG</a> vallen wanneer een geautomatiseerde score een significante impact heeft op de betrokkene — bijvoorbeeld definitieve afwijzing voor commercieel contact zonder menselijke tussenkomst. Praktische mitigatie voor MKB: positioneer AI-scoring als ondersteunend in plaats van final. AE bevestigt elke MQL-to-SQL hand-off. Lage-score-leads gaan naar nurture-flow (educational e-mails) in plaats van hard-rejection. Documenteer keuze in privacy-statement plus DPIA bij hoog volume (typisch boven 1.000 leads per maand).</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Data-residentie:</strong> CRM-data (HubSpot, Salesforce) zit typisch op US-servers met EU-data-region-flag. Bevestig in admin-paneel. Apollo.io en Clearbit hosten primair US — bij Duitse of Zwitserse leads overweeg KvK-API plus DataProvider.com voor EU-only enrichment. Custom Aanloop AI scoring-engine: n8n self-hosted op Hetzner Frankfurt of Scaleway Amsterdam plus Anthropic Claude EU. 100 procent EU-data-flow met audit-controle.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Recht op uitleg en transparantie:</strong> bij low-score-rejection voor commercieel contact moet u op verzoek kunnen uitleggen waarom — dus logging van scoring-input plus rationale. Praktisch: per scoring-event opslaan welke attributen werden gewogen en welke score-cut-off werd toegepast. Bij Aanloop AI custom build wordt deze audit-laag standaard meegeleverd.</p>
@@ -111,7 +111,7 @@ const faqItems = [
 
   <section class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">8-stappen implementatie voor MKB</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">8-stappen implementatie voor MKB</h2>
       <p class="text-slate-600 leading-relaxed mb-4">(1) <strong class="text-navy">Bestaande lead-data en conversie-funnel analyseren:</strong> exporteer 12 maanden CRM-data (leads, MQLs, SQLs, gewonnen, verloren). Bepaal historische conversie per kanaal en per ICP-segment. Identificeer top-5 attributen die correleren met gewonnen deals. Doorlooptijd: 1 tot 2 dagen.</p>
       <p class="text-slate-600 leading-relaxed mb-4">(2) <strong class="text-navy">Scoring-framework kiezen:</strong> rule-based (BANT, MEDDIC), predictive (HubSpot of Einstein), of AI-generative (Claude EU). Voor MKB met 100+ historische deals: predictive. Voor minder data of nieuwe ICP: AI-generative met few-shot-prompt. Doorlooptijd: 0,5 dag beslissing.</p>
       <p class="text-slate-600 leading-relaxed mb-4">(3) <strong class="text-navy">CRM-integratie en data-flow inrichten:</strong> koppel scoring-engine aan CRM, configureer real-time enrichment via Apollo.io of Clearbit, automatische lifecycle-stage-updates, AE-assignment-rules bij SQL-drempel. Doorlooptijd: 2 tot 3 dagen (afhankelijk van CRM-koppeling-complexiteit).</p>
@@ -126,7 +126,7 @@ const faqItems = [
 
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">ROI — pipeline-conversie, AE-tijd en sales-cycle</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">ROI — pipeline-conversie, AE-tijd en sales-cycle</h2>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Baseline zonder AI-scoring:</strong> Nederlands B2B-MKB met 4 AEs en 600 inbound-leads per maand verwerkt typisch 18 tot 22 procent als MQL en converteert daarvan 12 tot 18 procent naar Won-deals — totaal 13 tot 24 gewonnen deals per maand. Sales-cycle-lengte typisch 45 tot 75 dagen. AE-tijd verspild aan out-of-ICP-leads typisch 35 tot 50 procent.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Conservatieve berekening met AI-scoring na 3 maanden:</strong> MQL-to-SQL conversion stijgt van 22 procent naar 32 procent (10 punten verbetering), SQL-to-Won stijgt van 15 procent naar 22 procent. Bij 600 leads per maand: van 20 gewonnen naar 27 gewonnen = 7 extra gewonnen deals per maand. Bij gemiddelde dealgrootte 65.000 euro en 25 procent margin: 7 maal 16.250 euro = 113.750 euro extra winst per maand. Plus 30 procent AE-tijd-besparing op out-of-ICP = 1,2 FTE bespaard bij 4 AEs = 7.500 euro per maand bij 65 euro per uur. Totaal directe ROI: 121.000 euro per maand.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Kosten Aanloop AI custom build voor 600 leads per maand:</strong> eenmalig 6.000 tot 12.000 euro implementatie inclusief CRM-koppeling, enrichment-laag, scoring-engine en hand-off-flows. Maandelijks 497 tot 797 euro beheer (logging, monitoring, model-bijsturing, kleine ICP-aanpassingen). Plus optioneel Apollo.io of Clearbit-licentie voor enrichment (79 tot 129 dollar per gebruiker per maand). Totaal maandnetto: 121.000 - 1.000 = 120.000 euro winst per maand. Terugverdientijd op implementatie: minder dan 1 maand bij actief sales-team.</p>
@@ -136,7 +136,7 @@ const faqItems = [
 
   <section class="section">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Veelgemaakte fouten en hoe ze te vermijden</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">Veelgemaakte fouten en hoe ze te vermijden</h2>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 1: AI-scoring trainen op te weinig historische data.</strong> Predictive-model op 30 historische deals leert ruis in plaats van patronen, scoort onbetrouwbaar. Mitigatie: bij minder dan 100 gewonnen deals — kies AI-generative met expliciete ICP-prompt, niet predictive.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 2: scoring zonder ondersteuning door AE-bevestiging.</strong> Pure geautomatiseerde rejection schendt AVG artikel 22 plus mist edge-case-context (bijv. lead is C-level van Fortune-500 maar score laag wegens lage engagement omdat ze contract direct intern bespreken). Mitigatie: AE bevestigt elke MQL-to-SQL hand-off, low-score gaat naar nurture niet rejection.</p>
       <p class="text-slate-600 leading-relaxed mb-4"><strong class="text-navy">Fout 3: model niet bijsturen na initial training.</strong> Markt verandert, ICP verandert, gewonnen-deal-profiel verandert — model gebaseerd op data van 18 maanden geleden veroudert. Mitigatie: maandelijkse re-training op nieuwste data, quartaal-review van ICP-criteria zelf met sales-team.</p>
@@ -148,7 +148,7 @@ const faqItems = [
 
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-6">Hoe Aanloop AI het invult voor MKB-klanten</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">Hoe Aanloop AI het invult voor MKB-klanten</h2>
       <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI begeleidt Nederlandse B2B-MKB-bedrijven met 200 tot 2.000 inbound-leads per maand en 2 tot 25 AEs in AI-lead-scoring-implementatie. Standaard-stack: n8n self-hosted op EU-VPS, Anthropic Claude EU als scoring-engine, Apollo.io of KvK-API voor enrichment, Postgres pgvector voor lead-history en feedback-loop, en CRM-koppeling met HubSpot, Salesforce, Pipedrive, Teamleader Focus, Microsoft Dynamics of Zoho. Eenmalig 6.000 tot 12.000 euro implementatie inclusief CRM-koppeling, ICP-prompt-tuning op uw historische gewonnen deals, hand-off-flows naar AEs, AVG-stack inrichten, AE-training en 4 weken pilot-coaching.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Voor klanten op HubSpot Marketing Hub Enterprise (HubSpot Predictive native beschikbaar): Aanloop AI biedt een hybride implementatie waarbij HubSpot Predictive werkt voor 80 procent standaard-leads en een custom Claude EU-flow toegevoegd wordt voor specifieke high-value-segmenten (bijv. enterprise-accounts die intent-data en LinkedIn-activiteit nodig hebben). Eenmalig 4.500 tot 8.000 euro implementatie voor de hybride laag, maandelijks 397 tot 497 euro beheer.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Compliance-stack standaard inbegrepen bij beide routes: DPIA-template, privacy-statement-aanvulling, verwerkingsregister-update, AE-bevestigings-stap als mens-in-de-loop, logging-laag voor audit en recht-op-uitleg, AI-literacy training met certificaten (NL-talig, 1 uur), verwerkersovereenkomst-template. Bij modelupdates (nieuwe Claude- of GPT-versie): refresh van ICP-prompt en bias-check inbegrepen.</p>
@@ -159,7 +159,7 @@ const faqItems = [
   <section class="section">
     <div class="container-page max-w-3xl">
       <p class="eyebrow mb-3">Veelgestelde vragen</p>
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-8">FAQ AI-lead-scoring en B2B-sales-funnel</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-8">FAQ AI-lead-scoring en B2B-sales-funnel</h2>
       <div class="space-y-3">
         {faqItems.map(item => (
           <details class="group card cursor-pointer">
@@ -176,7 +176,7 @@ const faqItems = [
 
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
-      <h2 class="text-2xl lg:text-3xl font-bold tracking-tightest text-navy text-balance mb-4">Bronnen en verdere informatie</h2>
+      <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-4">Bronnen en verdere informatie</h2>
       <p class="text-slate-600 leading-relaxed mb-4">AI-lead-scoring raakt aan de AVG (geautomatiseerde besluitvorming) en de EU AI Act. Hieronder de officiele bronnen voor verdere verdieping.</p>
       <ul class="space-y-2 text-slate-700">
         <li>&middot; <a href="https://www.autoriteitpersoonsgegevens.nl/themas/algoritmes-ai/algoritmes-ai-en-de-avg" target="_blank" rel="noopener noreferrer external" class="text-brand-indigo underline hover:text-navy">Autoriteit Persoonsgegevens &mdash; geautomatiseerde besluitvorming</a> &mdash; uitleg AVG artikel 22 en het recht op menselijke tussenkomst.</li>

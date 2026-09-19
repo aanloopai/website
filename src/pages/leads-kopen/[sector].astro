@@ -57,7 +57,7 @@ const description = descLang.length <= 155 ? descLang : descKort.length <= 155 ?
     <div class="container-page py-16 lg:py-20">
       <div class="max-w-3xl">
         <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Leads kopen · {sector.groep}</span></div>
-        <h1 class="text-4xl sm:text-5xl font-bold tracking-tightest text-navy text-balance leading-[1.08]">{sector.emoji} {sector.titel}</h1>
+        <h1 class="text-4xl sm:text-5xl font-semibold tracking-tighter text-navy text-balance leading-[1.08]">{sector.emoji} {sector.titel}</h1>
         <p class="mt-6 text-lg text-slate-600 leading-relaxed">{sector.intro}</p>
         <div class="mt-6 flex flex-wrap items-center gap-2 text-xs font-semibold">
           {actief
@@ -105,14 +105,14 @@ const description = descLang.length <= 155 ? descLang : descKort.length <= 155 ?
       <h2 class="text-2xl font-bold text-navy mb-6">Onze zekerheden</h2>
       <div class="grid sm:grid-cols-2 gap-5 mb-12">
         {LEAD_ZEKERHEDEN.map((z) => (
-          <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
             <h3 class="font-bold text-navy">{z.titel}</h3>
             <p class="mt-2 text-sm text-slate-600 leading-relaxed">{z.body}</p>
           </div>
         ))}
       </div>
 
-      <div class="rounded-2xl border border-brand-indigo/20 bg-brand-indigo/5 p-6 mb-12">
+      <div class="rounded-lg border border-brand-indigo/20 bg-brand-indigo/5 p-6 mb-12">
         <h2 class="text-xl font-bold text-navy">Prijs per lead</h2>
         <p class="mt-2 text-slate-700 leading-relaxed">De prijs per lead spreken we per partner af en hangt af van branche, regio, exclusiviteit en het verwachte volume. Geen abonnement, geen instapkosten: u betaalt per geleverde, geldige lead en wij factureren maandelijks achteraf. <a href="/leads-kopen/prijzen/" class="font-semibold text-brand-indigo hover:underline">Hoe de prijs tot stand komt →</a></p>
       </div>
@@ -120,7 +120,7 @@ const description = descLang.length <= 155 ? descLang : descKort.length <= 155 ?
       <h2 class="text-2xl font-bold text-navy mb-6">Hoe het werkt</h2>
       <ol class="grid sm:grid-cols-2 gap-4 mb-12">
         {LEAD_STAPPEN.map((s, i) => (
-          <li class="rounded-2xl border border-slate-200 bg-white p-5">
+          <li class="rounded-lg border border-slate-200 bg-white p-5">
             <span class="eyebrow text-xs">Stap {i + 1}</span>
             <h3 class="font-bold text-navy mt-1">{s.titel}</h3>
             <p class="mt-1 text-sm text-slate-600 leading-relaxed">{s.body}</p>
@@ -131,14 +131,14 @@ const description = descLang.length <= 155 ? descLang : descKort.length <= 155 ?
       <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde vragen</h2>
       <div class="space-y-4 mb-12">
         {[...sector.faq, ...LEAD_FAQ_ALGEMEEN].map((item) => (
-          <details class="group bg-white rounded-2xl border border-slate-200 p-6">
+          <details class="group bg-white rounded-lg border border-slate-200 p-6">
             <summary class="flex items-center justify-between cursor-pointer font-semibold text-navy list-none">{item.q}<span class="text-brand-indigo group-open:rotate-45 transition-transform text-2xl leading-none">+</span></summary>
             <p class="mt-4 text-slate-600 leading-relaxed">{item.a}</p>
           </details>
         ))}
       </div>
 
-      <div class="rounded-2xl bg-navy text-white p-8 text-center">
+      <div class="rounded-lg bg-navy text-white p-8 text-center">
         <h2 class="text-xl font-bold">{actief ? `Leads ontvangen als ${sector.doelgroep.split(' en ')[0]}?` : `Als eerste ${sector.doelgroep.split(' en ')[0]} in uw regio aansluiten?`}</h2>
         <p class="mt-2 text-slate-300 text-sm">Meld u aan met uw regio en het volume dat u aankunt. Wij nemen binnen één werkdag contact op om de prijs per lead en de leveringsafspraken door te nemen.</p>
         <div class="mt-5 flex flex-col sm:flex-row gap-3 justify-center">
