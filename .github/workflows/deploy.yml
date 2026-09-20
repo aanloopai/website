@@ -42,15 +42,16 @@ jobs:
       # 34463019974 + 34463350824). `versions secret bulk` is de
       # versions-bewuste variant: maakt een nieuwe versie met de secrets,
       # waarna de `versions upload` hieronder ze overerft.
-      - name: Push Worker secrets (Telegram)
+      - name: Push Worker secrets (Telegram + AGA)
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          AGA_TERMINAL_TOKEN: ${{ secrets.AGA_TERMINAL_TOKEN }}
         run: |
-          node -e "require('fs').writeFileSync('.secrets.json', JSON.stringify({ TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID: process.env.TELEGRAM_CHAT_ID }))"
-          npx --yes wrangler@4.130.0 versions secret bulk .secrets.json --message "telegram secrets" --tag telegram
+          node -e "require('fs').writeFileSync('.secrets.json', JSON.stringify({ TELEGRAM_BOT_TOKEN: process.env.TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID: process.env.TELEGRAM_CHAT_ID, AGA_TERMINAL_TOKEN: process.env.AGA_TERMINAL_TOKEN }))"
+          npx --yes wrangler@4.130.0 versions secret bulk .secrets.json --message "telegram + aga secrets" --tag secrets
           rm -f .secrets.json
 
       - name: Deploy to Cloudflare Workers

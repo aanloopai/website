@@ -29,6 +29,7 @@ import {
   handlePortalApi,
 } from './lib/portal-routes.js';
 import { handleAdminApi } from './lib/admin-routes.js';
+import { handleAgaChat, handleAgaModels } from './lib/aga-chat.js';
 import { handleMollieWebhook, reconcilePayments, billMonthlySubscriptions } from './lib/mollie.js';
 import { retryFailedProvisions } from './lib/activation.js';
 import { nudgeOnboarding } from './lib/onboarding-nudge.js';
@@ -1459,6 +1460,15 @@ export default {
     if (url.pathname === '/mcp') {
       return handleMcp(request, env);
     }
+    // Owner AGA chat — staff-only, streams SSE from the Hetzner AGA terminal.
+    if (url.pathname === '/api/aga/chat') {
+      if (request.method === 'OPTIONS') return new Response(null, { headers: PORTAL_CORS_HEADERS });
+      return handleAgaChat(request, env);
+    }
+    if (url.pathname === '/api/aga/models') {
+      return handleAgaModels(request, env);
+    }
+
     // Customer portal API + admin panel API — origin locked to aanloopai.nl.
     if (url.pathname.startsWith('/api/portal/')) {
       if (request.method === 'OPTIONS') return new Response(null, { headers: PORTAL_CORS_HEADERS });

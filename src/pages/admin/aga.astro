@@ -1,0 +1,27 @@
+---
+// Admin panel — AGA: owner-only chat with the full AGA agent (Hetzner).
+// Staff-gated by AdminLayout (redirects to /portal/login on 401/403) and by
+// the /api/aga/chat Worker route (getSessionUser + role === 'staff'). The chat
+// UI is a dark, ChatGPT/Claude-style React island talking to that route (SSE).
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import AgaChat from '../../components/AgaChat.tsx';
+---
+
+<AdminLayout title="AGA" active="aga">
+  <div class="aga-shell">
+    <AgaChat client:only="react" />
+  </div>
+</AdminLayout>
+
+<style>
+  /* AGA chat is its own dark surface, independent of the admin theme. Pull it
+     out to the full content width and give it a dark card. */
+  .aga-shell {
+    margin: -0.5rem 0 0;
+    border-radius: 1rem;
+    border: 1px solid rgb(38 38 38);
+    background: rgb(10 10 10);
+    overflow: hidden;
+    padding: 0 1rem;
+  }
+</style>
