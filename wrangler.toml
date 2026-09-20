@@ -4,6 +4,12 @@ main = "src/worker.js"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
+# Non-secret config. AGA_CHAT_URL = public bridge host for the owner AGA chat
+# (/admin/aga). The bearer token AGA_TERMINAL_TOKEN is a Worker SECRET, set via
+# CI (versions secret bulk in deploy.yml), never here.
+[vars]
+AGA_CHAT_URL = "https://aga.alfareclame.nl"
+
 [assets]
 directory = "./dist"
 binding = "ASSETS"
