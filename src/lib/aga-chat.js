@@ -21,6 +21,36 @@ import { getSessionUser } from './auth.js';
 const SITE_ORIGIN = 'https://aanloopai.nl';
 const MAX_TASK = 8000;
 
+// Staff-gate shared by both AGA routes.
+async function requireStaff(request, env) {
+  const origin = request.headers.get('Origin');
+  if (origin && origin !== SITE_ORIGIN) return 'Verboden (origin)';
+  const user = await getSessionUser(request, env);
+  if (!user || user.role !== 'staff') return 'Geen toegang';
+  if (!env.AGA_CHAT_URL || !env.AGA_TERMINAL_TOKEN) return 'AGA backend niet geconfigureerd';
+  return null;
+}
+
+// GET /api/aga/models — proxy the picker options (models + effort levels).
+export async function handleAgaModels(request, env) {
+  const deny = await requireStaff(request, env);
+  if (deny) return new Response(deny, { status: deny === 'Geen toegang' ? 403 : 503 });
+  const base = env.AGA_CHAT_URL.replace(/\/+$/, '');
+  try {
+    const r = await fetch(`${base}/models`, {
+      headers: { Authorization: `Bearer ${env.AGA_TERMINAL_TOKEN}` },
+    });
+    const text = await r.text();
+    return new Response(text, {
+      status: r.status,
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
+    });
+  } catch (err) {
+    return new Response(JSON.stringify({ models: [{ id: 'auto', label: 'Otomatik' }], efforts: [] }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } });
+  }
+}
+
 export async function handleAgaChat(request, env) {
   if (request.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
@@ -50,9 +80,20 @@ export async function handleAgaChat(request, env) {
     return new Response('Ongeldige JSON', { status: 400 });
   }
   const task = String(body.task || '').slice(0, MAX_TASK).trim();
-  if (!task) return new Response('Leeg bericht', { status: 400 });
+  const images = Array.isArray(body.images) ? body.images.slice(0, 4) : null;
+  if (!task && !images) return new Response('Leeg bericht', { status: 400 });
   const endpoint = body.mode === 'gorev' ? 'run' : 'chat';
   const adapter = body.adapter ? String(body.adapter).slice(0, 60) : null;
+  const model = body.model ? String(body.model).slice(0, 80) : null;
+  const effort = ['low', 'medium', 'max'].includes(body.effort) ? body.effort : 'medium';
+
+  const payload = { task, adapter };
+  // /run (gorev) is the heavy pipeline and ignores model/effort/images.
+  if (endpoint === 'chat') {
+    if (model) payload.model = model;
+    payload.effort = effort;
+    if (images) payload.images = images;
+  }
 
   const base = env.AGA_CHAT_URL.replace(/\/+$/, '');
   let upstream;
@@ -63,7 +104,7 @@ export async function handleAgaChat(request, env) {
         Authorization: `Bearer ${env.AGA_TERMINAL_TOKEN}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ task, adapter }),
+      body: JSON.stringify(payload),
     });
   } catch (err) {
     return new Response(`AGA onbereikbaar: ${err?.message || err}`, { status: 502 });
