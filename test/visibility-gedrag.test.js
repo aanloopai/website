@@ -147,6 +147,10 @@ function fakeVisibilityDb() {
       async run() {
         if (/^CREATE (TABLE|INDEX)/.test(sql)) return { meta: {} };
         if (sql.startsWith('INSERT OR IGNORE INTO visibility_sites')) return { meta: {} }; // pre-seeded above
+        if (sql.startsWith('UPDATE visibility_sites SET actief = 0 WHERE key IN')) {
+          for (const s of sites) if (args.includes(s.key)) s.actief = 0; // offboarded sites
+          return { meta: {} };
+        }
         if (sql.startsWith('INSERT INTO visibility_hits')) {
           const [site_key, ts, datum, sid, seq, t, path, ref, src, med, dev, sec, sc, meta] = args;
           hits.push({ site_key, ts, datum, sid, seq, t, path, ref, src, med, dev, sec, sc, meta });

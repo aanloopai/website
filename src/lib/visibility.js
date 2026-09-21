@@ -12,7 +12,7 @@
 // statements are idempotent; running both is harmless.
 import { jsonResponse, errorResponse, getAccessToken } from './google-auth.js';
 import {
-  SEED_SITES, GBP_METRICS, EVENT_TYPES, validateIngest, verifySignature, summarizeDaily,
+  SEED_SITES, OFFBOARDED_SITES, GBP_METRICS, EVENT_TYPES, validateIngest, verifySignature, summarizeDaily,
   summarizeGbp, summarizeEvents, gbpResponseToRows, matchGbpLocation, bareHost, addDays,
   parseEvent, eventHost, isBotUserAgent, parseHit, summarizeHits,
 } from './visibility-core.js';
@@ -102,6 +102,8 @@ export async function ensureVisibilitySchema(env) {
   await db.batch(SEED_SITES.map((s) => db
     .prepare('INSERT OR IGNORE INTO visibility_sites (key, naam, host, eigenaar, created_at) VALUES (?, ?, ?, ?, ?)')
     .bind(s.key, s.naam, s.host, s.eigenaar, now)));
+  await db.prepare(`UPDATE visibility_sites SET actief = 0 WHERE key IN (${OFFBOARDED_SITES.map(() => '?').join(', ')})`)
+    .bind(...OFFBOARDED_SITES).run();
   schemaReady = true;
 }
 
@@ -116,6 +118,7 @@ export async function visibilityIngest(request, env) {
   try { body = JSON.parse(raw); } catch { return errorResponse('Ongeldige JSON', 400); }
   const doc = validateIngest(body);
   if (!doc.ok) return errorResponse(doc.error, 400);
+  if (OFFBOARDED_SITES.includes(doc.site_key)) return jsonResponse({ ok: true, skipped: 'offboarded' });
 
   await ensureVisibilitySchema(env);
   const db = env.PORTAL_DB;
