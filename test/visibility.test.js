@@ -7,7 +7,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   validateIngest, summarizeDaily, summarizeGbp, gbpResponseToRows,
-  verifySignature, hmacHex, matchGbpLocation, bareHost, addDays, SEED_SITES,
+  verifySignature, hmacHex, matchGbpLocation, bareHost, addDays, SEED_SITES, OFFBOARDED_SITES,
   parseEvent, eventHost, isBotUserAgent, summarizeEvents, EVENT_TYPES,
 } from '../src/lib/visibility-core.js';
 import { BEACON_JS } from '../src/lib/visibility.js';
@@ -156,10 +156,20 @@ describe('site/location matching', () => {
     expect(matchGbpLocation('www.fleettrackholland.nl', locs)).toBeNull();
   });
 
-  it('seeds the six GSC-connected sites plus keukeninbeeld with unique keys', () => {
+  it('seeds the portfolio sites with unique keys', () => {
     const keys = SEED_SITES.map((s) => s.key);
     expect(new Set(keys).size).toBe(keys.length);
-    for (const k of ['aanloop', 'alfa', 'fth', 'pasfoto', 'tripandtick', 'klaasendaams', 'keukeninbeeld']) expect(keys).toContain(k);
+    for (const k of ['aanloop', 'alfa', 'fth', 'pasfoto', 'tripandtick', 'keukeninbeeld']) expect(keys).toContain(k);
+  });
+
+  // klaasendaams: customer relationship ended 2026-09-09. Re-adding it to the
+  // seed or dropping the cold-start deactivation brings it back on the panel.
+  it('keeps offboarded klaasendaams out of the seed and forces it inactive', () => {
+    expect(OFFBOARDED_SITES).toContain('klaasendaams');
+    expect(SEED_SITES.map((s) => s.key)).not.toContain('klaasendaams');
+    const src = read('src/lib/visibility.js');
+    expect(src).toMatch(/UPDATE visibility_sites SET actief = 0 WHERE key IN \(\$\{OFFBOARDED_SITES/);
+    expect(src).toMatch(/OFFBOARDED_SITES\.includes\(doc\.site_key\)/);
   });
 });
 

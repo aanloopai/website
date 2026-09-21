@@ -16,8 +16,12 @@ export const SEED_SITES = [
   { key: 'keukeninbeeld', naam: 'Keuken in Beeld', host: 'www.keukeninbeeld.nl', eigenaar: 'eigen' },
   { key: 'pasfoto', naam: 'Pasfoto Rotterdam Zuid', host: 'www.pasfotorotterdamzuid.nl', eigenaar: 'klant' },
   { key: 'tripandtick', naam: 'Trip and Tick', host: 'www.tripandtick.com', eigenaar: 'klant' },
-  { key: 'klaasendaams', naam: 'Klaas & Daams', host: 'www.klaasendaams.nl', eigenaar: 'klant' },
 ];
+
+// Former customers: never seeded, never ingested, and forced to actief=0 on
+// every cold start so a stale D1 row cannot resurface in the panel.
+// klaasendaams — relationship ended 2026-09-09 (fleetclaw sites.py mirrors this).
+export const OFFBOARDED_SITES = ['klaasendaams'];
 
 // Google Business Profile Performance API daily metrics we store. Keys are
 // the API enum names; labels are what the panel shows.
