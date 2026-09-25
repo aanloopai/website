@@ -1,0 +1,217 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Eerlijk certificeringsoverzicht. Regel: Aanloop AI claimt nooit een certificaat
+// van een leverancier als eigen certificaat. Leverancierscertificaten zijn per
+// 2026-09-25 gecontroleerd op de trust-pagina van elke leverancier (links hieronder).
+// Guard: test/beveiliging-geen-valse-certificering.test.js
+
+const LAATST_BIJGEWERKT = '25 september 2026';
+
+const status = [
+  {
+    norm: 'SOC 2 (Type I / Type II)',
+    wij: 'Nee',
+    uitleg: 'Aanloop AI heeft geen SOC 2-audit laten uitvoeren en heeft dus geen SOC 2-rapport. Een aantal van onze leveranciers wel (zie hieronder).',
+  },
+  {
+    norm: 'ISO/IEC 27001',
+    wij: 'Nee',
+    uitleg: 'Aanloop AI heeft zelf geen ISO 27001-certificaat. Onze hosting en de meeste leveranciers zijn wel ISO 27001-gecertificeerd.',
+  },
+  {
+    norm: 'HIPAA',
+    wij: 'Niet van toepassing',
+    uitleg: 'HIPAA is Amerikaanse zorgwetgeving en geldt niet voor Nederlandse bedrijven. Voor u gelden de AVG en, in de zorg, NEN 7510.',
+  },
+  {
+    norm: 'AVG / GDPR',
+    wij: 'Ja',
+    uitleg: 'Bij elke samenwerking sluiten we een verwerkersovereenkomst conform artikel 28 AVG. Het sub-verwerkersregister staat op deze pagina.',
+  },
+  {
+    norm: 'NEN 7510 (zorg)',
+    wij: 'Nee',
+    uitleg: 'Niet gecertificeerd. Voor zorgklanten richten we op verzoek een NEN 7510-bewuste opzet in; de certificering zelf moet dan bij uw eigen organisatie liggen.',
+  },
+  {
+    norm: 'PCI DSS (betalingen)',
+    wij: 'Via Mollie',
+    uitleg: 'Betalingen lopen via Mollie (PCI DSS Level 1). Wij zien of bewaren geen kaartgegevens.',
+  },
+];
+
+const subverwerkers = [
+  {
+    naam: 'Cloudflare, Inc.',
+    doel: 'Hosting van website en klantportaal, database van het portaal',
+    vestiging: 'Verenigde Staten (wereldwijd netwerk)',
+    cert: 'ISO 27001, SOC 2 Type II',
+    url: 'https://www.cloudflare.com/trust-hub/compliance-resources/',
+  },
+  {
+    naam: 'Hetzner Online GmbH',
+    doel: 'Server voor verwerking van aanvragen en automatiseringen',
+    vestiging: 'Duitsland (datacenter Neurenberg)',
+    cert: 'ISO 27001:2022',
+    url: 'https://www.hetzner.com/unternehmen/zertifizierung/',
+  },
+  {
+    naam: 'ElevenLabs',
+    doel: 'Spraak- en chatassistent Emma',
+    vestiging: 'Verenigde Staten',
+    cert: 'SOC 2 Type II, ISO 27001:2022',
+    url: 'https://compliance.elevenlabs.io/',
+  },
+  {
+    naam: 'OpenAI / Anthropic',
+    doel: 'Taalmodellen achter Emma en onze interne automatisering',
+    vestiging: 'Verenigde Staten',
+    cert: 'SOC 2 Type II, ISO 27001:2022 (beide)',
+    url: 'https://trust.anthropic.com/',
+    url2: 'https://trust.openai.com/',
+  },
+  {
+    naam: 'Google',
+    doel: 'Taalmodel Gemini (opstellen van voorstellen), agenda-koppeling, website-statistiek (alleen met uw toestemming)',
+    vestiging: 'Verenigde Staten / Ierland',
+    cert: 'ISO 27001, SOC 2 (Google Cloud)',
+    url: 'https://cloud.google.com/security/compliance',
+  },
+  {
+    naam: 'Brevo',
+    doel: 'Versturen van e-mail',
+    vestiging: 'Frankrijk',
+    cert: 'ISO 27001:2022',
+    url: 'https://www.brevo.com/features/data-security/',
+  },
+  {
+    naam: 'Mollie B.V.',
+    doel: 'Betalingen',
+    vestiging: 'Nederland',
+    cert: 'PCI DSS Level 1',
+    url: 'https://help.mollie.com/hc/en-us/articles/19315617471250-What-does-PCI-DSS-mean-for-me',
+  },
+  {
+    naam: 'Telegram',
+    doel: 'Interne melding aan ons team bij een nieuwe aanvraag',
+    vestiging: 'Verenigd Koninkrijk / VAE',
+    cert: 'Geen',
+    url: 'https://telegram.org/privacy',
+  },
+];
+
+const faqItems = [
+  { question: 'Is Aanloop AI SOC 2-gecertificeerd?', answer: 'Nee. Aanloop AI heeft geen SOC 2-audit laten uitvoeren. Een aantal van onze leveranciers (zoals Cloudflare, ElevenLabs, OpenAI en Anthropic) heeft wel een SOC 2 Type II-rapport, maar dat is hun certificaat, niet het onze.' },
+  { question: 'Is Aanloop AI ISO 27001-gecertificeerd?', answer: 'Nee. Aanloop AI heeft geen eigen ISO 27001-certificaat. Onze hosting (Cloudflare en Hetzner) en de meeste andere leveranciers zijn wel ISO 27001-gecertificeerd.' },
+  { question: 'Voldoet Aanloop AI aan HIPAA?', answer: 'HIPAA is Amerikaanse zorgwetgeving en is niet van toepassing op Nederlandse bedrijven. Voor u gelden de AVG en in de zorg NEN 7510. Aanloop AI werkt AVG-conform met een verwerkersovereenkomst.' },
+  { question: 'Gaan mijn gegevens buiten de EU?', answer: 'Een deel van onze leveranciers is Amerikaans (Cloudflare, ElevenLabs, OpenAI, Anthropic, Google). Doorgifte buiten de EU loopt via de verwerkersovereenkomst van die leverancier, op basis van standaardcontractbepalingen en/of het EU-VS Data Privacy Framework. Het volledige overzicht staat op deze pagina.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org', '@type': 'WebPage',
+  name: 'Beveiliging & certificering',
+  description: 'Eerlijk overzicht: welke certificeringen Aanloop AI wel en niet heeft (SOC 2, ISO 27001, HIPAA, AVG) en welke leveranciers uw data verwerken.',
+  url: 'https://aanloopai.nl/beveiliging/',
+  isPartOf: { '@type': 'WebSite', '@id': 'https://aanloopai.nl/#website' },
+  publisher: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization' },
+};
+---
+<BaseLayout
+  title="Beveiliging & certificering — SOC 2, ISO 27001, AVG"
+  description="Eerlijk overzicht: welke certificeringen Aanloop AI wel en niet heeft (SOC 2, ISO 27001, HIPAA, AVG) en welke leveranciers uw data verwerken."
+  schema={schema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Beveiliging &amp; certificering</span></div>
+        <h1 class="text-4xl sm:text-5xl font-semibold tracking-tighter text-navy text-balance leading-[1.08]">Wat we wel en niet gecertificeerd hebben</h1>
+        <p class="mt-5 text-lg text-slate-600 leading-relaxed">Veel AI-bureaus zetten SOC 2- of ISO 27001-logo's op hun site omdat hun cloudleverancier die heeft. Dat doen wij niet. Hieronder staat per norm wat voor Aanloop AI zelf geldt, en welke leveranciers uw gegevens verwerken met hun eigen certificering.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold text-navy mb-6">Certificering in één oogopslag</h2>
+      <div class="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm text-left">
+          <thead class="bg-slate-50 text-navy">
+            <tr>
+              <th scope="col" class="px-4 py-3 font-semibold">Norm</th>
+              <th scope="col" class="px-4 py-3 font-semibold whitespace-nowrap">Aanloop AI zelf</th>
+              <th scope="col" class="px-4 py-3 font-semibold">Toelichting</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            {status.map((s) => (
+              <tr>
+                <th scope="row" class="px-4 py-3 font-semibold text-navy align-top">{s.norm}</th>
+                <td class="px-4 py-3 align-top font-semibold whitespace-nowrap text-slate-700">{s.wij}</td>
+                <td class="px-4 py-3 align-top text-slate-600 leading-relaxed">{s.uitleg}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="max-w-3xl mt-12 space-y-10 text-slate-700 leading-relaxed">
+        <div>
+          <h2 class="text-2xl font-bold text-navy mb-3">Waarom het certificaat van een leverancier niet het onze is</h2>
+          <p>Een ISO 27001-certificaat of SOC 2-rapport gaat over de organisatie die is geaudit: haar processen, mensen en systemen. Dat Cloudflare of Hetzner gecertificeerd is, zegt dat hún datacenters en beheer goed geregeld zijn. Het zegt niets over hoe Aanloop AI zelf met toegang, wachtwoorden of incidenten omgaat. Daarom zeggen we: <strong>gehost op ISO 27001-gecertificeerde infrastructuur</strong>, en niet: ISO 27001-gecertificeerd.</p>
+        </div>
+      </div>
+
+      <h2 id="sub-verwerkers" class="text-2xl font-bold text-navy mt-14 mb-3">Sub-verwerkers</h2>
+      <p class="max-w-3xl text-slate-700 leading-relaxed mb-6">Deze leveranciers kunnen persoonsgegevens verwerken in de diensten die we voor u leveren. Welke er voor uw oplossing precies gebruikt worden, staat in uw verwerkersovereenkomst. Ontwikkeltools (zoals GitHub) verwerken geen klantgegevens en staan hier daarom niet.</p>
+      <div class="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
+        <table class="w-full text-sm text-left">
+          <thead class="bg-slate-50 text-navy">
+            <tr>
+              <th scope="col" class="px-4 py-3 font-semibold">Leverancier</th>
+              <th scope="col" class="px-4 py-3 font-semibold">Waarvoor</th>
+              <th scope="col" class="px-4 py-3 font-semibold">Vestiging</th>
+              <th scope="col" class="px-4 py-3 font-semibold">Certificering (leverancier)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-200">
+            {subverwerkers.map((v) => (
+              <tr>
+                <th scope="row" class="px-4 py-3 font-semibold text-navy align-top">{v.naam}</th>
+                <td class="px-4 py-3 align-top text-slate-600">{v.doel}</td>
+                <td class="px-4 py-3 align-top text-slate-600">{v.vestiging}</td>
+                <td class="px-4 py-3 align-top text-slate-700">
+                  {v.cert}
+                  <a href={v.url} rel="noopener nofollow" target="_blank" class="block text-brand-indigo hover:underline underline-offset-4">bron →</a>
+                  {v.url2 && <a href={v.url2} rel="noopener nofollow" target="_blank" class="block text-brand-indigo hover:underline underline-offset-4">bron 2 →</a>}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="max-w-3xl mt-4 text-sm text-slate-500 leading-relaxed">Leveranciers buiten de EU: doorgifte loopt via hun verwerkersovereenkomst, op basis van standaardcontractbepalingen en/of het EU-VS Data Privacy Framework. Certificeringen gecontroleerd op {LAATST_BIJGEWERKT} via de links hierboven.</p>
+
+      <div class="max-w-3xl mt-14 space-y-10 text-slate-700 leading-relaxed">
+        <div>
+          <h2 class="text-2xl font-bold text-navy mb-3">Wat we zelf doen</h2>
+          <ul class="list-disc pl-5 space-y-2">
+            <li>Al het verkeer naar onze website en het portaal loopt versleuteld via HTTPS.</li>
+            <li>Wachtwoorden van medewerkers worden alleen gehasht opgeslagen, nooit leesbaar.</li>
+            <li>Aanvragen die we doorsturen naar onze eigen server zijn ondertekend (HMAC), zodat onderweg niemand ze kan vervalsen.</li>
+            <li>In het klantportaal bepaalt u zelf welke teamleden toegang hebben en met welke rol.</li>
+            <li>Emma meldt aan het begin van elk gesprek dat u met een AI praat (EU AI-verordening, artikel 50).</li>
+            <li>Website-statistiek (Google Analytics) staat pas aan nadat u toestemming geeft in de cookiebanner.</li>
+          </ul>
+        </div>
+        <div>
+          <h2 class="text-2xl font-bold text-navy mb-3">Op aanvraag</h2>
+          <p>Verwerkersovereenkomst (art. 28 AVG), dit sub-verwerkersregister als document, en een DPIA-template voor uw eigen risicobeoordeling. Mail <a href="mailto:hello@aanloopai.nl" class="text-brand-indigo font-semibold hover:underline underline-offset-4">hello@aanloopai.nl</a>. Heeft uw organisatie een leverancier nodig met een eigen SOC 2- of ISO 27001-certificaat? Zeg dat dan vooraf; dan zeggen we u eerlijk of we de juiste partij zijn.</p>
+        </div>
+        <p class="text-sm text-slate-500">Laatst bijgewerkt: {LAATST_BIJGEWERKT}. Zie ook <a href="/zekerheden/" class="text-brand-indigo hover:underline underline-offset-4">Zekerheden &amp; AVG</a> en onze <a href="/privacy/" class="text-brand-indigo hover:underline underline-offset-4">privacyverklaring</a>.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
