@@ -28,6 +28,7 @@ import {
   discoveryUpdateClient, discoveryCreateDoc, discoveryDocDetail,
   discoverySaveAnswer,
 } from './discovery.js';
+import { zoekeenProxy } from './zoekeen-proxy.js';
 
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
 const AANLOOP_EMAIL = 'hello@aanloopai.nl';
@@ -103,6 +104,8 @@ export async function handleAdminApi(request, env) {
     if (path === '/api/admin/leadgen/leads') return await leadgenLeads(env);
     if (path === '/api/admin/leadgen/prospects') return await leadgenProspects(env);
     if (path === '/api/admin/leadgen/verkoop' && method === 'POST') return await leadgenVerkoop(request, env);
+    // Zoekeen (src/lib/zoekeen-proxy.js) — allow-listed proxy naar zoekeen.nl/api/ext/v1
+    if (path.startsWith('/api/admin/zoekeen/')) return await zoekeenProxy(request, env);
     if (path === '/api/admin/outreach/prospects') return await outreachProspects(env);
     if (path === '/api/admin/outreach/mail') {
       return method === 'POST' ? await outreachUpdateMail(request, env) : await outreachMailDetail(env, url);
