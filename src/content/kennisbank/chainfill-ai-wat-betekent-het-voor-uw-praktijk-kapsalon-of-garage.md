@@ -1,5 +1,5 @@
 ---
-title: "Chainfill AI: wat betekent het voor uw praktijk, kapsalon of garage?"
+title: "Chainfill AI: wat betekent het voor uw praktijk of garage?"
 description: "Chainfill AI: wat betekent 'chain fill' voor praktijken, kapsalons en garages in Nederland? Uitleg, vergelijking met een AI-telefoniste en keuzetips."
 excerpt: "De zoekterm chainfill ai duikt steeds vaker op bij ondernemers die gaten in hun klantketen willen dichten: gemiste oproepen, lege agendaplekken en no-shows. Dit artikel legt uit wat het principe achter die term inhoudt, hoe het zich verhoudt tot een AI-telefoniste en waar u op let voordat u met zo'n tool in zee gaat."
 published: 2026-09-23
