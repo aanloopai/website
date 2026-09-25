@@ -976,7 +976,7 @@ async function submitOrder(request, env, user) {
 }
 
 /**
- * Telegram-tekst voor een ingediende portaal-aanvraag. Voor `leadpartner`
+ * Telegram-tekst voor een ingediende portaal-aanvraag. Voor `leadpartner*`
  * komen branche/werkgebied/volume mee (samenvatting, geen contactgegevens).
  * @param {{bedrijf: string, productKey: string, tier?: string|null, orderId: string, intake?: Record<string, any>|null}} p
  */
@@ -987,7 +987,7 @@ export function formatOrderSubmitTelegram({ bedrijf, productKey, tier, orderId, 
     `Product: ${productKey}${tier ? ` · ${tier}` : ''}`,
     `Order: ${orderId}`,
   ];
-  if (productKey === 'leadpartner' && intake) {
+  if (productKey.startsWith('leadpartner') && intake) {
     const pick = (step, key) => {
       const v = intake[step]?.[key];
       return Array.isArray(v) ? v.join(', ') : (v == null ? '' : String(v));

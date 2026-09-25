@@ -81,7 +81,7 @@ describe('leadpartner schema', () => {
   });
 
   it('de 8 bestaande producten renderen ongewijzigd (geen nieuw veldtype in oude schema\'s)', () => {
-    for (const p of PORTAL_CATALOG.filter((x) => x.key !== 'leadpartner')) {
+    for (const p of PORTAL_CATALOG.filter((x) => !x.verborgen)) {
       const s = getIntakeSchema(p.key);
       for (const step of s.steps) for (const f of step.fields) {
         expect(['consent', 'info']).not.toContain(f.type);
@@ -103,8 +103,8 @@ describe('leadpartner in de catalogus', () => {
     expect(t.setupCent).toBe(0);
   });
 
-  it('is het enige verborgen product — de 8 bestaande blijven zichtbaar', () => {
-    expect(PORTAL_CATALOG.filter((p) => p.verborgen).map((p) => p.key)).toEqual(['leadpartner']);
+  it('alleen de leadpartner-intakes zijn verborgen — de 8 bestaande blijven zichtbaar', () => {
+    expect(PORTAL_CATALOG.filter((p) => p.verborgen).map((p) => p.key)).toEqual(['leadpartner', 'leadpartner-schoonmaak']);
     expect(PORTAL_CATALOG.filter((p) => !p.verborgen)).toHaveLength(8);
   });
 });

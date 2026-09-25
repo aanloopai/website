@@ -352,6 +352,119 @@ const LEADPARTNER: IntakeSchema = {
   ],
 };
 
+const leadpartnerStep = (key: string) => LEADPARTNER.steps.find((s) => s.key === key)!;
+
+// Leadpartner-intake voor schoonmaakbedrijven (zakelijke schoonmaak, B2B-leads).
+// Zelfde flow als LEADPARTNER, maar zonder de uitzend-vragen (Wtta, SNA,
+// functies, huisvesting). De stapsleutels opdrachtgever/werkgebied/volume en
+// hun velden sectoren/basis/straal/volume_maand blijven gelijk: de
+// Telegram-samenvatting (formatOrderSubmitTelegram) leest die.
+// Aanleiding: aanmelding Optima Facility Services, 23 sep 2026.
+const LEADPARTNER_SCHOONMAAK: IntakeSchema = {
+  steps: [
+    {
+      key: 'bedrijf',
+      title: 'Uw bedrijf',
+      intro: 'Zodat wij aanvragen kunnen selecteren die echt bij u passen.',
+      fields: [
+        { name: 'bedrijfsnaam', label: 'Bedrijfsnaam', type: 'text', required: true },
+        { name: 'kvk', label: 'KvK-nummer', type: 'text', required: true },
+        { name: 'website', label: 'Website', type: 'url', placeholder: 'https://' },
+        { name: 'vestigingsadres', label: 'Vestigingsadres', type: 'text', required: true },
+        { name: 'contactpersoon', label: 'Contactpersoon en functie', type: 'text', required: true, placeholder: 'bijv. Jan de Vries — eigenaar' },
+        { name: 'actief_sinds', label: 'Sinds wanneer verzorgt u zakelijke schoonmaak?', type: 'select', required: true, options: ['Minder dan 1 jaar', '1–3 jaar', '3–5 jaar', 'Meer dan 5 jaar'] },
+        { name: 'medewerkers', label: 'Hoeveel schoonmaakmedewerkers heeft u in dienst?', type: 'select', options: ['1–10', '11–50', '51–200', 'Meer dan 200'] },
+      ],
+    },
+    {
+      key: 'kwaliteit',
+      title: 'Keurmerken & zekerheid',
+      intro: 'Zakelijke opdrachtgevers vragen hier vaak naar. Met deze informatie kunnen wij aanvragen beter op u afstemmen.',
+      fields: [
+        { name: 'cao', label: 'Past u de cao voor het Schoonmaak- en Glazenwassersbedrijf toe?', type: 'select', required: true, options: ['Ja', 'Nee', 'Weet ik niet'] },
+        { name: 'keurmerken', label: 'Welke keurmerken of certificaten heeft u?', type: 'multiselect', required: true, options: ['OSB-keurmerk', 'ISO 9001', 'ISO 14001', 'VCA', 'Geen', 'Anders'] },
+        { name: 'keurmerken_anders', label: 'Andere keurmerken', type: 'text', showIf: { field: 'keurmerken', in: ['Anders'] } },
+        { name: 'aansprakelijkheid', label: 'Heeft u een bedrijfsaansprakelijkheidsverzekering?', type: 'select', required: true, options: ['Ja', 'Nee'] },
+        { name: 'g_rekening', label: 'G-rekening', type: 'select', options: ['Ja', 'Aangevraagd', 'Nee'] },
+        { name: 'kwaliteit_toelichting', label: 'Toelichting (optioneel)', type: 'textarea' },
+      ],
+    },
+    {
+      key: 'dienstverlening',
+      title: 'Uw dienstverlening',
+      fields: [
+        { name: 'diensten', label: 'Welke diensten biedt u aan?', type: 'multiselect', required: true, options: ['Dagelijkse / periodieke kantoorschoonmaak', 'Glasbewassing', 'Vloeronderhoud', 'Sanitaire hygiëne', 'Dieptereiniging', 'Oplever- en bouwschoonmaak', 'Gevelreiniging', 'Specialistische reiniging (zorg, cleanroom)', 'Anders'] },
+        { name: 'diensten_anders', label: 'Andere diensten', type: 'text', showIf: { field: 'diensten', in: ['Anders'] } },
+        { name: 'werktijden', label: 'Op welke momenten kunt u schoonmaken?', type: 'multiselect', options: ['Vroege ochtend', 'Overdag', 'Avond', 'Weekend'] },
+        { name: 'opstarttijd', label: 'Hoe snel kunt u een nieuw object opstarten?', type: 'select', required: true, options: ['Binnen een week', 'Binnen twee weken', 'Binnen een maand', 'Langer'] },
+        { name: 'capaciteit', label: 'Hoeveel nieuwe objecten kunt u per maand maximaal opstarten?', type: 'select', required: true, options: ['1', '2–3', '4–5', 'Meer dan 5'] },
+      ],
+    },
+    {
+      key: 'opdrachtgever',
+      title: 'Uw ideale opdrachtgever',
+      intro: 'Welke aanvraag wilt u als lead ontvangen?',
+      fields: [
+        { name: 'sectoren', label: 'Type pand', type: 'multiselect', required: true, options: ['Kantoren', 'Bedrijfshallen / logistiek', 'Winkels', 'Horeca', 'Onderwijs', 'Zorg en praktijken', 'Kinderopvang', "VvE's / trappenhuizen", 'Overheid', 'Anders'] },
+        { name: 'sectoren_anders', label: 'Andere panden', type: 'text', showIf: { field: 'sectoren', in: ['Anders'] } },
+        { name: 'oppervlakte', label: 'Oppervlakte van het pand', type: 'multiselect', required: true, options: ['Tot 250 m²', '250–1.000 m²', '1.000–5.000 m²', 'Meer dan 5.000 m²'] },
+        { name: 'frequentie', label: 'Gewenste schoonmaakfrequentie', type: 'multiselect', required: true, options: ['Dagelijks', 'Meerdere keren per week', 'Wekelijks', 'Tweewekelijks', 'Maandelijks of periodiek', 'Eenmalig'] },
+        { name: 'type_opdracht', label: 'Soort opdracht', type: 'select', required: true, options: ['Structureel contract', 'Eenmalige opdracht', 'Beide'] },
+        { name: 'min_opdracht', label: 'Vanaf welke omvang is een aanvraag voor u interessant?', type: 'select', required: true, options: ['Elke opdracht', 'Vanaf ca. 4 uur per week', 'Vanaf ca. 10 uur per week', 'Vanaf ca. 20 uur per week'] },
+        { name: 'uitsluitingen', label: 'Bedrijven die u niet als lead wilt ontvangen', type: 'textarea', hint: 'Bijvoorbeeld bestaande klanten of bedrijven waar u niet mee wilt werken. Eén per regel.' },
+        { name: 'tarief_indicatie', label: 'Indicatie van uw uurtarief voor opdrachtgevers (optioneel)', type: 'text', hint: 'Helpt ons aanvragen met een passend budget te selecteren. Wordt niet gedeeld.' },
+      ],
+    },
+    {
+      key: 'werkgebied',
+      title: 'Werkgebied',
+      fields: [
+        { name: 'basis', label: 'Vanuit welke plaats werkt u?', type: 'text', required: true, placeholder: 'bijv. Almere' },
+        { name: 'straal', label: 'Maximale afstand van het pand tot uw basis', type: 'select', required: true, options: ['Tot 10 km', 'Tot 25 km', 'Tot 50 km', 'Tot 75 km', 'Tot 100 km', 'Heel Nederland'] },
+        { name: 'voorkeursgebieden', label: "Plaatsen, regio's of postcodes met voorkeur", type: 'textarea', placeholder: 'bijv. Almere, Lelystad, Huizen, 13xx' },
+        { name: 'uitgesloten_gebieden', label: 'Gebieden waar u niet wilt werken', type: 'textarea' },
+      ],
+    },
+    {
+      key: 'leadkwaliteit',
+      title: 'Wat is voor u een goede lead?',
+      fields: [
+        { name: 'verplichte_gegevens', label: 'Welke gegevens moet een lead minimaal bevatten?', type: 'multiselect', required: true, options: ['Bedrijfsnaam', 'Naam en functie contactpersoon', 'Telefoonnummer', 'E-mailadres', 'Type pand', 'Oppervlakte', 'Gewenste frequentie', 'Gewenste startdatum', 'Adres of plaats van het pand'] },
+        { name: 'beslisser', label: 'Moet de contactpersoon een beslisser zijn?', type: 'select', required: true, options: ['Ja, eigenaar / directie', 'Ja, facilitair of office manager', 'Maakt niet uit, als het bedrijf maar schoonmaak zoekt'] },
+        { name: 'startdatum', label: 'Binnen welke termijn moet de opdrachtgever willen starten?', type: 'select', required: true, options: ['Direct (binnen 1 week)', 'Binnen 1 maand', 'Binnen 3 maanden', 'Maakt niet uit'] },
+        { name: 'bezichtiging', label: 'Bezichtigt u het pand altijd voordat u een offerte maakt?', type: 'select', options: ['Ja, altijd', 'Alleen bij grotere panden', 'Nee, offerte op basis van de gegevens'] },
+        { name: 'geen_lead', label: 'Wanneer is een aanvraag voor u géén bruikbare lead?', type: 'textarea', required: true, hint: 'bijv. particulieren, eenmalige klussen onder een paar uur, panden buiten mijn regio.' },
+        { name: 'info_reclamatie', type: 'info', text: 'Een lead die onbereikbaar is, foutieve gegevens bevat, buiten uw werkgebied valt of dubbel is, kunt u binnen 48 uur melden. Die lead wordt dan niet in rekening gebracht.' },
+      ],
+    },
+    {
+      key: 'levering',
+      title: 'Levering & opvolging',
+      fields: [
+        { name: 'kanaal', label: 'Hoe wilt u leads ontvangen?', type: 'multiselect', required: true, options: ['E-mail', 'WhatsApp', 'Koppeling met ons CRM'] },
+        { name: 'lead_email', label: 'E-mailadres voor leads', type: 'email', required: true },
+        { name: 'lead_telefoon', label: 'WhatsApp-nummer voor leads', type: 'tel', showIf: { field: 'kanaal', in: ['WhatsApp'] } },
+        { name: 'crm', label: 'Welk CRM gebruikt u?', type: 'text', placeholder: 'bijv. Teamleader, HubSpot, Excel', showIf: { field: 'kanaal', in: ['Koppeling met ons CRM'] } },
+        { name: 'reactietijd', label: 'Hoe snel neemt u contact op met een nieuwe lead?', type: 'select', required: true, options: ['Binnen 1 uur', 'Binnen 4 uur', 'Dezelfde werkdag', 'Volgende werkdag'] },
+        { name: 'bereikbaar', label: 'Wanneer bent u bereikbaar voor nieuwe leads?', type: 'textarea', placeholder: 'bijv. Ma–Vr 07:00–18:00' },
+        { name: 'terugkoppeling', label: 'Wilt u per lead kort de uitkomst doorgeven (bezichtiging, offerte, gewonnen)?', type: 'select', required: true, options: ['Ja', 'Liever niet'], hint: 'Hiermee verbeteren wij de selectie van toekomstige aanvragen.' },
+      ],
+    },
+    leadpartnerStep('volume'),
+    {
+      key: 'huidig',
+      title: 'Huidige klantwerving',
+      fields: [
+        { name: 'kanalen_nu', label: 'Hoe vindt u nu nieuwe opdrachtgevers?', type: 'multiselect', options: ['Koude acquisitie (bellen / langsgaan)', 'LinkedIn', 'Netwerk en doorverwijzingen', 'Google / eigen website', 'Aanbestedingen', 'Leadplatforms', 'Nog geen vaste aanpak'] },
+        { name: 'platforms_ervaring', label: 'Heeft u eerder leads gekocht? Zo ja, waar en wat was uw ervaring?', type: 'textarea' },
+        { name: 'conversie', label: 'Van de 10 offertes die u uitbrengt, hoeveel worden klant?', type: 'select', options: ['0–1', '2–3', '4–5', 'Meer dan 5', 'Weet ik niet'] },
+        { name: 'usp', label: 'Waarom kiest een opdrachtgever voor u?', type: 'textarea', required: true, hint: 'Dit gebruiken wij om de juiste aanvragen bij u te laten landen.' },
+      ],
+    },
+    leadpartnerStep('afronding'),
+  ],
+};
+
 export const INTAKE_SCHEMAS: Record<string, IntakeSchema> = {
   'emma-telefoon': EMMA_TELEFOON,
   emma: EMMA,
@@ -359,6 +472,7 @@ export const INTAKE_SCHEMAS: Record<string, IntakeSchema> = {
   geo: GEO,
   'seo-geo-bundel': SEO,
   leadpartner: LEADPARTNER,
+  'leadpartner-schoonmaak': LEADPARTNER_SCHOONMAAK,
 };
 
 export function getIntakeSchema(productKey: string): IntakeSchema {
