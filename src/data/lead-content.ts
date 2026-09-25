@@ -12,7 +12,7 @@ export const LEAD_ZEKERHEDEN = [
 ] as const;
 
 export const LEAD_STAPPEN = [
-  { titel: 'U meldt zich aan', body: 'Branche, regio (postcodegebieden), verwacht volume en of u exclusiviteit wilt. Wij bellen binnen één werkdag om de prijs per lead en de levering af te spreken.' },
+  { titel: 'U meldt zich aan', body: 'Branche, regio (postcodegebieden), verwacht volume en of u exclusiviteit wilt. Wij nemen persoonlijk contact met u op om de prijs per lead en de levering af te spreken.' },
   { titel: 'Wij vangen de vraag op', body: 'Via eigen vergelijk- en informatiesites, zoekmachines en AI-assistenten komen aanvragers bij ons intakeformulier: budget, wens, regio, termijn en toestemming.' },
   { titel: 'Controle en toewijzing', body: 'Elke aanvraag wordt gecontroleerd op bereikbaarheid, volledigheid en regio. Past hij bij uw profiel, dan wordt hij exclusief aan u toegewezen.' },
   { titel: 'Levering en opvolging', body: 'U ontvangt de lead per e-mail en desgewenst via WhatsApp of een CSV/CRM-koppeling, met alle velden en het moment van aanvraag. U belt, wij houden de status bij.' },

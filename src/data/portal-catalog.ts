@@ -153,6 +153,20 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       { naam: 'Exclusief', prijs: 'Op aanvraag', prijsCent: null, setupCent: 0, betaling: 'aanvraag', kenmerken: ['Exclusieve leads', 'Per lead betalen', 'Geen abonnement of minimumafname', 'Reclamatie binnen 48 uur'] },
     ],
   },
+  {
+    // Leadpartner-intake voor schoonmaakbedrijven (zakelijke schoonmaak).
+    // Zelfde regels als 'leadpartner': verborgen, geen bedrag.
+    key: 'leadpartner-schoonmaak',
+    naam: 'Leads kopen — partnerintake schoonmaak',
+    categorie: 'Leads',
+    omschrijving:
+      'Intake voor schoonmaakbedrijven: uw diensten, werkgebied en welke panden en opdrachten voor u een goede lead zijn. Geen abonnement, betalen per lead.',
+    meerInfoUrl: 'https://aanloopai.nl/leads-kopen/schoonmaakbedrijven/',
+    verborgen: true,
+    tiers: [
+      { naam: 'Exclusief', prijs: 'Op aanvraag', prijsCent: null, setupCent: 0, betaling: 'aanvraag', kenmerken: ['Exclusieve leads', 'Per lead betalen', 'Geen abonnement of minimumafname', 'Reclamatie binnen 48 uur'] },
+    ],
+  },
 ];
 
 export function getCatalogProduct(key: string): CatalogProduct | undefined {
