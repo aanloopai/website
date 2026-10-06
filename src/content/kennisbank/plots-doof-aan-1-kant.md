@@ -1,5 +1,6 @@
 ---
 title: "Plots doof aan 1 kant: wat nu, en hoe vangt uw praktijk die oproep op?"
+seoTitle: "Plots doof aan 1 kant: wat nu?"
 description: "Plots doof aan 1 kant? Lees wat plotselinge doofheid aan één oor kan betekenen, waarom u dezelfde dag belt en hoe praktijken zulke oproepen goed opvangen."
 excerpt: "Wie plots doof is aan één kant, zoekt vaak eerst online naar een verklaring. Dit artikel legt uit wat plotselinge doofheid aan één oor kan betekenen, waarom snel handelen telt en wat huisartsenpraktijken, KNO-praktijken en audiciens kunnen doen om zulke oproepen nooit te laten liggen."
 published: 2026-09-26

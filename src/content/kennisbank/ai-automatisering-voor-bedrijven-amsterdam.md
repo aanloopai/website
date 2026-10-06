@@ -1,5 +1,6 @@
 ---
 title: "AI-automatisering voor bedrijven in Amsterdam: waar begint u?"
+seoTitle: "AI-automatisering in Amsterdam: waar begint u?"
 description: "AI-automatisering voor bedrijven in Amsterdam: wat u kunt automatiseren, welke partijen u helpen en hoe u als praktijk, salon of garage klein begint."
 excerpt: "Veel Amsterdamse ondernemers willen met AI-automatisering aan de slag, maar weten niet welke taken ze het eerst aanpakken en bij wie ze terechtkunnen. Dit artikel legt uit wat AI-automatisering voor bedrijven in Amsterdam concreet inhoudt, welke processen bij praktijken, salons, garages en installateurs de meeste winst opleveren, welke partijen in de regio helpen en hoe u klein en verstandig begint."
 published: 2026-09-30

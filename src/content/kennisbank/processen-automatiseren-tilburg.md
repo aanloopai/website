@@ -1,5 +1,6 @@
 ---
 title: "Processen automatiseren in Tilburg: waar begint u als praktijk, salon of garage?"
+seoTitle: "Processen automatiseren in Tilburg: waar begint u?"
 description: "Processen automatiseren in Tilburg? Lees welke processen u als praktijk, kapsalon, garage of installateur eerst automatiseert en hoe u slim begint."
 excerpt: "Steeds meer praktijken, kapsalons, garages en installateurs in Tilburg willen processen automatiseren, maar weten niet waar ze moeten beginnen. Dit artikel legt uit wat processen automatiseren voor een afspraak-gedreven bedrijf betekent, waarom de vraag ernaar in Tilburg groeit, welke processen u als eerste aanpakt, waarom de telefoon het logische startpunt is en hoe zo'n traject er in de praktijk uitziet."
 published: 2026-10-05

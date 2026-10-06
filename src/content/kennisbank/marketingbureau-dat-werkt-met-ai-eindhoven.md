@@ -1,6 +1,7 @@
 ---
 title: "Marketingbureau dat werkt met AI in Eindhoven: waar let u op?"
-description: "Een marketingbureau dat werkt met AI in Eindhoven kiezen? Lees waar u op let, wat AI in marketing oplevert voor praktijken, salons en garages en hoe u start."
+seoTitle: "Marketingbureau met AI in Eindhoven: waar let u op?"
+description: "Marketingbureau dat werkt met AI in Eindhoven kiezen? Lees waar u op let, wat AI in marketing oplevert voor praktijken, salons en garages en hoe u start."
 excerpt: "Steeds meer ondernemers in Eindhoven zoeken een marketingbureau dat werkt met AI, maar weten niet wat zo'n bureau precies anders doet en waar ze op moeten letten. Dit artikel legt uit wat AI-marketing in de regio Eindhoven inhoudt, welke vragen u stelt bij de keuze van een bureau, wat het oplevert voor praktijken, salons, garages en installateurs en waarom de telefoon na een campagne net zo belangrijk is als de campagne zelf."
 published: 2026-10-01
 category: "AI-automatisering"
