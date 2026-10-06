@@ -29,6 +29,7 @@ import {
   handlePortalApi,
 } from './lib/portal-routes.js';
 import { handleAdminApi } from './lib/admin-routes.js';
+import { handleKlantApi } from './lib/discovery-klant.js';
 import { handleAgaChat, handleAgaModels } from './lib/aga-chat.js';
 import { handleMollieWebhook, reconcilePayments, billMonthlySubscriptions } from './lib/mollie.js';
 import { retryFailedProvisions } from './lib/activation.js';
@@ -1473,6 +1474,11 @@ export default {
     if (url.pathname.startsWith('/api/portal/')) {
       if (request.method === 'OPTIONS') return new Response(null, { headers: PORTAL_CORS_HEADERS });
       return handlePortalApi(request, env);
+    }
+    // Discovery — klant vult eigen vragenlijst in (persoonlijke link → cookie).
+    if (url.pathname.startsWith('/api/discovery-klant/')) {
+      if (request.method === 'OPTIONS') return new Response(null, { headers: PORTAL_CORS_HEADERS });
+      return handleKlantApi(request, env);
     }
     if (url.pathname.startsWith('/api/admin/')) {
       if (request.method === 'OPTIONS') return new Response(null, { headers: PORTAL_CORS_HEADERS });

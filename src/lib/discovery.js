@@ -7,10 +7,11 @@
 import { jsonResponse, errorResponse } from './google-auth.js';
 import { SEED_TEMPLATE, SEED_CLIENTS, SEED_VERSION } from './discovery-seed.js';
 import { KEUKEN_SEED } from './discovery-seed-keuken.js';
+import { FORALLE_SEED, CLIENT_TEMPLATE_NAMES } from './discovery-seed-foralle.js';
 import { fieldAnswered } from './discovery-fields.js';
 
 // Ek şablon+müşteri seed'leri (SoleHome seed'inden bağımsız sürümlenir).
-const EXTRA_SEEDS = [KEUKEN_SEED];
+const EXTRA_SEEDS = [KEUKEN_SEED, FORALLE_SEED];
 
 const SECTION_NOTES_LABEL = 'Bölüm notları';
 
@@ -65,7 +66,7 @@ async function setMeta(db, key, value) {
     .bind(key, String(value)).run();
 }
 
-async function ensureSchemaAndSeed(db) {
+export async function ensureSchemaAndSeed(db) {
   if (!schemaReady) {
     await db.batch(SCHEMA.map((sql) => db.prepare(sql)));
     schemaReady = true;
@@ -249,11 +250,14 @@ async function seedClients(db) {
 }
 
 // Şablonun tam yapısını dokümana kopyalar; her bölümün sonuna serbest
-// "Bölüm notları" alanı ekler.
+// "Bölüm notları" alanı ekler — müşterinin kendisinin doldurduğu (NL-only)
+// şablonlarda HARİÇ: o not alanı TR ve intern.
 async function instantiateDoc(db, clientId, templateId, title) {
   const d = await db.prepare('INSERT INTO disc_docs (client_id, title, template_id) VALUES (?, ?, ?)')
     .bind(clientId, title, templateId).run();
   const docId = d.meta.last_row_id;
+  const tplRow = await db.prepare('SELECT name FROM disc_templates WHERE id = ?').bind(templateId).first();
+  const withNotes = !(tplRow && CLIENT_TEMPLATE_NAMES.includes(tplRow.name));
   const sections = (await db.prepare('SELECT * FROM disc_template_sections WHERE template_id = ? ORDER BY sort').bind(templateId).all()).results || [];
   for (const sec of sections) {
     const s = await db.prepare('INSERT INTO disc_doc_sections (doc_id, title, guidance, sort) VALUES (?, ?, ?, ?)')
@@ -263,7 +267,7 @@ async function instantiateDoc(db, clientId, templateId, title) {
     const stmts = questions.map((q) =>
       db.prepare('INSERT INTO disc_doc_questions (doc_section_id, sort, type, label, sub_items, guidance, config) VALUES (?, ?, ?, ?, ?, ?, ?)')
         .bind(docSectionId, q.sort, q.type, q.label, q.sub_items, q.guidance, q.config));
-    stmts.push(
+    if (withNotes) stmts.push(
       db.prepare('INSERT INTO disc_doc_questions (doc_section_id, sort, type, label, sub_items, guidance, config) VALUES (?, ?, ?, ?, ?, ?, ?)')
         .bind(docSectionId, questions.length, 'textarea', SECTION_NOTES_LABEL, '[]', 'Bu bölümle ilgili serbest notlar.', null));
     await db.batch(stmts);
@@ -366,10 +370,18 @@ export async function discoveryDocDetail(env, url) {
   await ensureSchemaAndSeed(db);
   const id = Number(url.searchParams.get('id'));
   if (!id) return errorResponse('id zorunlu', 400);
+  const data = await loadDocDetail(db, id);
+  if (!data) return errorResponse('Doküman bulunamadı', 404);
+  return jsonResponse({ ok: true, ...data });
+}
+
+// Doküman + bölümler + sorular + cevaplar. Yoksa null. Admin ve müşteri
+// (discovery-klant.js) aynı okuyucuyu kullanır.
+export async function loadDocDetail(db, id) {
   const doc = await db.prepare(
     'SELECT d.*, c.name AS client_name FROM disc_docs d JOIN disc_clients c ON c.id = d.client_id WHERE d.id = ?',
   ).bind(id).first();
-  if (!doc) return errorResponse('Doküman bulunamadı', 404);
+  if (!doc) return null;
   const sections = (await db.prepare('SELECT * FROM disc_doc_sections WHERE doc_id = ? ORDER BY sort').bind(id).all()).results || [];
   const questions = (await db.prepare(
     `SELECT q.*, a.value AS answer_value, a.answered, a.updated_at AS answer_updated_at
@@ -393,34 +405,48 @@ export async function discoveryDocDetail(env, url) {
       updated_at: q.answer_updated_at || null,
     });
   }
-  return jsonResponse({
-    ok: true,
+  return {
     doc: { id: doc.id, title: doc.title, client_id: doc.client_id, client_name: doc.client_name, created_at: doc.created_at },
     sections: sections.map((s) => ({ id: s.id, title: s.title, guidance: s.guidance || '', questions: bySection[s.id] || [] })),
-  });
+  };
 }
 
 // Tek cevabı kaydeder. Çakışma koruması: istemci yüklediği updated_at'i
 // (base_updated_at) gönderir; sunucudaki değer farklıysa yazma reddedilir —
 // "başka cihazda güncellendi, sayfayı yenile". Websocket/CRDT yok, bu yeter.
 export async function discoverySaveAnswer(request, env) {
-  const db = env.PORTAL_DB;
   const body = await request.json().catch(() => ({}));
+  const r = await saveAnswer(env.PORTAL_DB, body);
+  if (r.error === 'missing') return errorResponse('question_id zorunlu', 400);
+  if (r.error === 'notfound') return errorResponse('Soru bulunamadı', 404);
+  if (r.error === 'conflict') return errorResponse('Bu cevap başka bir cihazda güncellendi — sayfayı yenile', 409);
+  return jsonResponse({ ok: true, updated_at: r.updated_at, answered: r.answered });
+}
+
+// Ortak kayıt çekirdeği. opts.docId verilirse soru O dokümana ait olmalı
+// (müşteri erişimi başka dokümana yazamaz). Dönüş: {updated_at, answered}
+// ya da {error: 'missing'|'notfound'|'conflict'|'toolarge'}.
+export async function saveAnswer(db, body, opts = {}) {
   const qid = Number(body.question_id);
-  if (!qid) return errorResponse('question_id zorunlu', 400);
-  const q = await db.prepare('SELECT id, type FROM disc_doc_questions WHERE id = ?').bind(qid).first();
-  if (!q) return errorResponse('Soru bulunamadı', 404);
+  if (!qid) return { error: 'missing' };
+  const q = opts.docId
+    ? await db.prepare(
+      `SELECT q.id, q.type FROM disc_doc_questions q JOIN disc_doc_sections s ON s.id = q.doc_section_id
+       WHERE q.id = ? AND s.doc_id = ?`,
+    ).bind(qid, opts.docId).first()
+    : await db.prepare('SELECT id, type FROM disc_doc_questions WHERE id = ?').bind(qid).first();
+  if (!q) return { error: 'notfound' };
+  const value = body.value === undefined ? null : body.value;
+  const json = JSON.stringify(value);
+  if (opts.maxBytes && json.length > opts.maxBytes) return { error: 'toolarge' };
   const existing = await db.prepare('SELECT updated_at FROM disc_answers WHERE doc_question_id = ?').bind(qid).first();
   const base = body.base_updated_at || null;
-  if (existing && existing.updated_at !== base) {
-    return errorResponse('Bu cevap başka bir cihazda güncellendi — sayfayı yenile', 409);
-  }
-  const value = body.value === undefined ? null : body.value;
+  if (existing && existing.updated_at !== base) return { error: 'conflict' };
   const answered = computeAnswered(q.type, value);
   const now = new Date().toISOString();
   await db.prepare(
     `INSERT INTO disc_answers (doc_question_id, value, answered, updated_at) VALUES (?, ?, ?, ?)
      ON CONFLICT(doc_question_id) DO UPDATE SET value = excluded.value, answered = excluded.answered, updated_at = excluded.updated_at`,
-  ).bind(qid, JSON.stringify(value), answered, now).run();
-  return jsonResponse({ ok: true, updated_at: now, answered });
+  ).bind(qid, json, answered, now).run();
+  return { updated_at: now, answered };
 }
