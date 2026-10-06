@@ -1,5 +1,6 @@
 ---
 title: "AI search optimalisatie in Eindhoven: zo vindt de klant uw bedrijf"
+seoTitle: "AI search optimalisatie in Eindhoven"
 description: "AI search optimalisatie in Eindhoven: zo wordt uw praktijk, salon of garage gevonden in ChatGPT, Google AI Overviews en Perplexity. Praktische stappen."
 excerpt: "Steeds meer klanten in Eindhoven vragen ChatGPT, Perplexity of het AI-overzicht van Google om een tandarts, kapper of garage. Noemt de AI uw bedrijf niet, dan komt die klant ook niet bij u. Dit artikel legt uit wat AI search optimalisatie is, hoe AI-zoekmachines een lokaal bedrijf kiezen, welke vijf stappen u als dienstverlener in Eindhoven en omgeving zelf kunt zetten en waarom uw bereikbaarheid aan de telefoon daar direct bij hoort."
 published: 2026-10-03

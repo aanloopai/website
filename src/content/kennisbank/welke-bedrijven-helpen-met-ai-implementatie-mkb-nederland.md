@@ -1,5 +1,6 @@
 ---
 title: "Welke bedrijven helpen met AI-implementatie in het mkb in Nederland?"
+seoTitle: "Welke bedrijven helpen met AI-implementatie in het mkb?"
 description: "Welke bedrijven helpen met AI-implementatie in het mkb in Nederland? Overzicht van AI-bureaus, softwareleveranciers en regionale steun, plus hoe u begint."
 excerpt: "Veel mkb-ondernemers willen met AI aan de slag, maar weten niet bij wie ze moeten aankloppen. Dit artikel zet op een rij welke soorten bedrijven helpen met AI-implementatie in het mkb, waar u in uw regio onafhankelijk advies krijgt, waar u op let bij het kiezen van een partner en hoe u klein en verstandig begint."
 published: 2026-09-29
