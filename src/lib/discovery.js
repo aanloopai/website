@@ -6,6 +6,11 @@
 // takibi içindir.
 import { jsonResponse, errorResponse } from './google-auth.js';
 import { SEED_TEMPLATE, SEED_CLIENTS, SEED_VERSION } from './discovery-seed.js';
+import { KEUKEN_SEED } from './discovery-seed-keuken.js';
+import { fieldAnswered } from './discovery-fields.js';
+
+// Ek şablon+müşteri seed'leri (SoleHome seed'inden bağımsız sürümlenir).
+const EXTRA_SEEDS = [KEUKEN_SEED];
 
 const SECTION_NOTES_LABEL = 'Bölüm notları';
 
@@ -77,19 +82,77 @@ async function ensureSchemaAndSeed(db) {
     await upgradeSeed(db, ver);
     await setMeta(db, 'seed_version', SEED_VERSION);
   }
+  for (const seed of EXTRA_SEEDS) await ensureExtraSeed(db, seed);
+}
+
+// Ek seed: şablonu (isimle) kurar/günceller, müşteriyi (isimle) bulur ya da
+// açar, o müşteriye bu şablondan bir doküman garanti eder. Snapshot ilkesi:
+// cevap girilmiş dokümana dokunulmaz; cevapsız doküman yeni içerikle yeniden
+// kurulur. Eşzamanlı ilk çağrılar (overview + templates paralel gelir) için
+// sürüm başına kilit satırı: INSERT OR IGNORE, yalnız kazanan seed'ler.
+export async function ensureExtraSeed(db, seed) {
+  const ver = parseInt((await getMeta(db, seed.key)) || '0', 10);
+  if (ver >= seed.version) return;
+  const lockKey = `${seed.key}:lock:${seed.version}`;
+  const lock = await db.prepare('INSERT OR IGNORE INTO disc_meta (key, value) VALUES (?, ?)')
+    .bind(lockKey, new Date().toISOString()).run();
+  if (!lock.meta || !lock.meta.changes) return;
+  try {
+    const tplDef = seed.template;
+    let tpl = await db.prepare('SELECT id FROM disc_templates WHERE name = ?').bind(tplDef.name).first();
+    let tplId;
+    if (tpl) {
+      tplId = tpl.id;
+      await db.prepare('UPDATE disc_templates SET description = ? WHERE id = ?').bind(tplDef.description, tplId).run();
+      await db.prepare(
+        'DELETE FROM disc_template_questions WHERE section_id IN (SELECT id FROM disc_template_sections WHERE template_id = ?)',
+      ).bind(tplId).run();
+      await db.prepare('DELETE FROM disc_template_sections WHERE template_id = ?').bind(tplId).run();
+    } else {
+      const t = await db.prepare('INSERT INTO disc_templates (name, description) VALUES (?, ?)')
+        .bind(tplDef.name, tplDef.description).run();
+      tplId = t.meta.last_row_id;
+    }
+    await insertTemplateContent(db, tplId, tplDef);
+
+    let client = await db.prepare('SELECT id FROM disc_clients WHERE name = ?').bind(seed.client.name).first();
+    if (!client) {
+      const r = await db.prepare('INSERT INTO disc_clients (name, contact, notes) VALUES (?, ?, ?)')
+        .bind(seed.client.name, seed.client.contact || null, seed.client.notes || null).run();
+      client = { id: r.meta.last_row_id };
+    }
+    const docs = (await db.prepare('SELECT id FROM disc_docs WHERE client_id = ? AND template_id = ? ORDER BY id')
+      .bind(client.id, tplId).all()).results || [];
+    let keep = 0;
+    for (const doc of docs) {
+      const answered = (await db.prepare(
+        `SELECT COUNT(*) AS n FROM disc_answers a
+         JOIN disc_doc_questions q ON a.doc_question_id = q.id
+         JOIN disc_doc_sections s ON q.doc_section_id = s.id
+         WHERE s.doc_id = ?`,
+      ).bind(doc.id).first()).n;
+      if (answered) keep++;
+      else await deleteDoc(db, doc.id);
+    }
+    if (!keep) await instantiateDoc(db, client.id, tplId, tplDef.name);
+    await setMeta(db, seed.key, seed.version);
+  } catch (err) {
+    await db.prepare('DELETE FROM disc_meta WHERE key = ?').bind(lockKey).run();
+    throw err;
+  }
 }
 
 async function seedTemplate(db) {
   const t = await db.prepare('INSERT INTO disc_templates (name, description) VALUES (?, ?)')
     .bind(SEED_TEMPLATE.name, SEED_TEMPLATE.description).run();
   const templateId = t.meta.last_row_id;
-  await insertTemplateContent(db, templateId);
+  await insertTemplateContent(db, templateId, SEED_TEMPLATE);
   return templateId;
 }
 
-async function insertTemplateContent(db, templateId) {
-  for (let si = 0; si < SEED_TEMPLATE.sections.length; si++) {
-    const sec = SEED_TEMPLATE.sections[si];
+async function insertTemplateContent(db, templateId, template) {
+  for (let si = 0; si < template.sections.length; si++) {
+    const sec = template.sections[si];
     const s = await db.prepare('INSERT INTO disc_template_sections (template_id, title, guidance, sort) VALUES (?, ?, ?, ?)')
       .bind(templateId, sec.title, sec.guidance || '', si).run();
     const sectionId = s.meta.last_row_id;
@@ -117,7 +180,7 @@ async function upgradeSeed(db, fromVer) {
     'DELETE FROM disc_template_questions WHERE section_id IN (SELECT id FROM disc_template_sections WHERE template_id = ?)',
   ).bind(tpl.id).run();
   await db.prepare('DELETE FROM disc_template_sections WHERE template_id = ?').bind(tpl.id).run();
-  await insertTemplateContent(db, tpl.id);
+  await insertTemplateContent(db, tpl.id, SEED_TEMPLATE);
 
   // Güncel şablonun doküman-soru sayısı (bölüm notları dahil) — "güncel soru
   // setli mi" kontrolü bu sayıyla yapılır.
@@ -210,8 +273,9 @@ async function instantiateDoc(db, clientId, templateId, title) {
 
 // Bir cevabın "cevaplanmış" sayılıp sayılmadığı — ilerleme yüzdesi bunun
 // üzerinden hesaplanır. Boş metin / hiç tik yok / tüm hücreler boş = 0.
-function computeAnswered(type, value) {
+export function computeAnswered(type, value) {
   if (value == null) return 0;
+  if (type === 'field') return fieldAnswered(value);
   if (type === 'text' || type === 'textarea') {
     // v2 biçimi: {main, subs:[]} — alt sorular ayrı kutucuklarda. Eski düz
     // string cevaplar da geçerli kalır.

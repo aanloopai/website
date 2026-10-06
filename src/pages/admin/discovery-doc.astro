@@ -20,6 +20,14 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
   <nav id="sec-nav" class="sec-nav no-print"></nav>
 
+  <!-- Field-dokümanları (R-id'li sorular) için araç çubuğu; diğerlerinde gizli. -->
+  <div id="f-tools" class="f-tools no-print" style="display:none">
+    <button id="f-staropen" class="f-star-open" type="button">★ nog open: <b id="f-staropen-n">0</b></button>
+    <button id="f-mail" class="pbtn pbtn--primary pbtn--sm" type="button">Genereer aanleverlijst</button>
+    <button id="f-md" class="pbtn pbtn--subtle pbtn--sm" type="button">Export .md</button>
+    <button id="f-lang" class="pbtn pbtn--subtle pbtn--sm" type="button">NL+TR</button>
+  </div>
+
   <div id="doc-print-head" class="print-only"></div>
 
   <div id="doc-body" class="mt-4 space-y-3"></div>
@@ -28,6 +36,31 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     <div class="pskel mt-2 h-24 w-full"></div>
   </div>
   <p id="doc-err" class="palert palert--warn mt-4 hidden"></p>
+
+  <div id="f-modal" class="pmodal-backdrop no-print">
+    <div class="pmodal f-modal">
+      <h3 class="page-title" style="font-size:17px" id="fm-title">Aanleverlijst</h3>
+      <div id="fm-mailopts">
+        <label class="plabel mt-3 block">Aanhef</label>
+        <input id="fm-aanhef" class="pinput q-input" type="text" />
+        <label class="plabel mt-2 block">Deadline</label>
+        <input id="fm-deadline" class="pinput q-input" type="text" placeholder="bv. vrijdag 9 oktober" />
+        <p class="text-xs mt-3" style="color:var(--p-ink-4)">Open + nog aan te leveren vragen — vink uit wat niet in de mail hoort:</p>
+        <div id="fm-items" class="fm-items"></div>
+        <label class="plabel mt-2 block">Onderwerp</label>
+        <input id="fm-subject" class="pinput q-input" type="text" />
+      </div>
+      <label class="plabel mt-2 block" id="fm-out-label">Tekst</label>
+      <textarea id="fm-out" class="pinput q-input fm-out" rows="12"></textarea>
+      <div class="mt-3 flex flex-wrap items-center gap-2">
+        <button id="fm-copy" class="pbtn pbtn--primary pbtn--sm" type="button">Kopieer</button>
+        <a id="fm-mailto" class="pbtn pbtn--subtle pbtn--sm" href="#">Open in mail-app</a>
+        <button id="fm-download" class="pbtn pbtn--subtle pbtn--sm" style="display:none" type="button">Download .md</button>
+        <span id="fm-msg" class="text-xs" style="color:#16a34a"></span>
+        <button id="fm-close" class="pbtn pbtn--subtle pbtn--sm ml-auto" type="button">Sluiten</button>
+      </div>
+    </div>
+  </div>
 
   <style is:inline>
     .doc-topbar { position: sticky; top: 0; z-index: 30; display: flex; align-items: center; gap: 12px;
@@ -63,6 +96,36 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     .sec-head { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
     .sec-count { margin-left: auto; font-size: 12px; color: var(--p-ink-4); flex-shrink: 0; }
     .print-only { display: none; }
+    .f-tools { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 6px 0 2px; }
+    .f-star-open { font-size: 12.5px; padding: 5px 10px; border-radius: 99px; border: 1px solid #f59e0b;
+      background: #fffbeb; color: #92400e; cursor: pointer; }
+    .f-star-open.is-zero { border-color: #86efac; background: #f0fdf4; color: #166534; }
+    .f-head { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; }
+    .f-id { font-size: 11px; font-weight: 700; color: var(--p-ink-4); font-variant-numeric: tabular-nums; }
+    .f-prio { font-size: 11px; font-weight: 700; border-radius: 99px; padding: 1px 7px; }
+    .f-prio--star { background: #fef3c7; color: #b45309; }
+    .f-prio--later { background: #e0e7ff; color: #3730a3; }
+    .f-block.is-star { border-left: 3px solid #f59e0b; padding-left: 10px; }
+    .f-tr { font-size: 12.5px; color: var(--p-ink-3); font-style: italic; margin: 2px 0 6px; }
+    .lang-nl .f-tr { display: none; }
+    .f-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 6px; }
+    .f-meta select { font-size: 12px; padding: 4px 6px; border: 1px solid var(--p-border); border-radius: 6px;
+      background: var(--p-surface, #fff); color: var(--p-ink-3); }
+    .f-meta .f-st-beantwoord { border-color: #86efac; color: #166534; }
+    .f-meta .f-st-nog_aanleveren { border-color: #a5b4fc; color: #3730a3; }
+    .f-mini { font-size: 11.5px; padding: 3px 9px; border-radius: 99px; border: 1px solid var(--p-border);
+      background: none; color: var(--p-ink-4); cursor: pointer; }
+    .f-mini.is-on { border-color: #0ea5e9; background: #e0f2fe; color: #075985; }
+    .f-pills { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 6px; }
+    .f-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 13.5px; padding: 7px 12px;
+      border: 1px solid var(--p-border); border-radius: 99px; cursor: pointer; color: var(--p-ink); }
+    .f-pill input { width: 16px; height: 16px; }
+    .f-pill.is-on { border-color: var(--p-ink-3); background: var(--p-accent-fill, #f1f5f9); font-weight: 600; }
+    .f-note { margin-top: 6px; font-size: 13px; }
+    .fm-items { max-height: 30vh; overflow-y: auto; border: 1px solid var(--p-border); border-radius: 8px; padding: 4px 8px; }
+    .fm-items label { display: flex; gap: 8px; align-items: flex-start; font-size: 12.5px; padding: 4px 0; color: var(--p-ink); }
+    .f-modal { max-width: 40rem; max-height: 92vh; overflow-y: auto; }
+    textarea.fm-out { font-size: 13px; resize: vertical; overflow: auto; min-height: 160px; font-family: inherit; }
     @media print {
       .no-print, aside, nav, .pbtn, .q-guide-btn, .tbl-add, .tbl-del { display: none !important; }
       .print-only { display: block; margin-bottom: 12px; }
@@ -73,7 +136,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     }
   </style>
 
-  <script is:inline>
+  <script>
+    import {
+      FIELD_STATUSES, FIELD_SOURCES, fieldStatus, fieldHasValue, starOpen,
+      collectAanleverlijst, buildAanleverMail, defaultAanhef, roleValue, buildMarkdown,
+    } from '../../lib/discovery-fields.js';
     (function () {
       function esc(s) {
         return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
@@ -101,6 +168,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       function computeAnswered(type, value) {
         if (value == null) return 0;
+        if (type === 'field') { var st = fieldStatus(value); return st === 'beantwoord' || st === 'n.v.t.' ? 1 : 0; }
         if (type === 'text' || type === 'textarea') {
           if (typeof value === 'object' && !Array.isArray(value)) {
             if (String(value.main || '').trim()) return 1;
@@ -120,6 +188,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       function readValue(qid) {
         var meta = state.q[qid];
+        if (meta.type === 'field') return readField(qid);
         if (meta.type === 'text' || meta.type === 'textarea') {
           var subEls = document.querySelectorAll('[data-sub="' + qid + '"]');
           if (subEls.length) {
@@ -154,12 +223,23 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         var total = 0; var answered = 0;
         state.sections.forEach(function (sec) {
           var st = 0; var sa = 0;
-          sec.questions.forEach(function (q) { st++; if (state.q[q.id].answered) sa++; });
+          // Field-bölümünde sayaç yalnız R-sorularını sayar (bölüm notları hariç).
+          var hasField = sec.questions.some(function (q) { return q.type === 'field'; });
+          var secQs = hasField ? sec.questions.filter(function (q) { return q.type === 'field'; }) : sec.questions;
+          secQs.forEach(function (q) { st++; if (state.q[q.id].answered) sa++; });
           total += st; answered += sa;
           var el = document.getElementById('seccount-' + sec.id);
-          if (el) el.textContent = sa + '/' + st;
+          if (el) {
+            var so = hasField ? starOpen([sec]).length : 0;
+            el.textContent = sa + '/' + st + (so ? ' · ★ ' + so + ' open' : '');
+          }
         });
         document.getElementById('h-progress').textContent = (total ? Math.round((answered / total) * 100) : 0) + '%';
+        if (state.hasFields) {
+          var n = starOpen(state.sections).length;
+          document.getElementById('f-staropen-n').textContent = n;
+          document.getElementById('f-staropen').classList.toggle('is-zero', n === 0);
+        }
       }
 
       function save(qid) {
@@ -168,6 +248,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         if (meta.saving) { meta.dirty = true; return; }
         meta.saving = true;
         var value = readValue(qid);
+        var cur = findQ(qid);
+        if (cur) cur.value = value; // ★-sayaç / aanleverlijst / export güncel değeri okur
         pendingSaves++;
         setStatus('saving');
         fetch('/api/admin/discovery/answer', {
@@ -202,7 +284,141 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       function autoGrow(el) { el.style.height = 'auto'; el.style.height = (el.scrollHeight + 2) + 'px'; }
 
+      // ── field-tipi (R-id'li sorular) ─────────────────────────────────────
+      var STATUS_LABEL = { 'open': 'open', 'beantwoord': 'beantwoord', 'nog_aanleveren': 'nog aanleveren', 'n.v.t.': 'n.v.t.' };
+      var BRON_LABEL = { '': 'bron —', 'gesprek': 'gesprek', 'observatie': 'observatie', 'mail': 'mail', 'bestand': 'bestand' };
+      var PILL_TYPES = { ja_nee: 1, keuze: 1, multi: 1 };
+
+      function statusClass(st) { return 'f-st-' + String(st).replace(/\./g, ''); }
+
+      function fieldVal(q) {
+        var v = q.value;
+        return v && typeof v === 'object' && !Array.isArray(v) ? v : {};
+      }
+
+      function fieldHtml(q) {
+        var c = q.config || {};
+        var val = fieldVal(q);
+        var type = c.answer_type || 'tekst';
+        var status = fieldStatus(q.value);
+        var prio = c.prio === 'star' ? '<span class="f-prio f-prio--star" title="verplicht in gesprek">★</span>'
+          : c.prio === 'later' ? '<span class="f-prio f-prio--later" title="later via mail/bestand">✉</span>' : '';
+        var head = '<div class="f-head"><span class="f-id">' + esc(c.qid) + '</span>' + prio +
+          '<span class="q-label">' + esc(q.label) + '</span></div>' +
+          (c.label_tr ? '<div class="f-tr">' + esc(c.label_tr) + '</div>' : '');
+        var input = '';
+        if (PILL_TYPES[type]) {
+          var opts = type === 'ja_nee' ? ['ja', 'nee'] : (c.choices || []);
+          var multi = type === 'multi';
+          var cur = multi ? (Array.isArray(val.v) ? val.v : []) : val.v;
+          input = '<div class="f-pills">' + opts.map(function (o) {
+            var on = multi ? cur.indexOf(o) >= 0 : cur === o;
+            var lbl = type === 'ja_nee' ? (o === 'ja' ? 'Ja' : 'Nee') : o;
+            return '<label class="f-pill' + (on ? ' is-on' : '') + '"><input type="' + (multi ? 'checkbox' : 'radio') +
+              '" name="fv-' + q.id + '" data-fopt="' + q.id + '" value="' + esc(o) + '"' + (on ? ' checked' : '') + ' />' + esc(lbl) + '</label>';
+          }).join('') + '</div>' +
+          '<input id="fvt-' + q.id + '" class="pinput q-input" type="text" placeholder="toelichting" value="' + esc(val.t || '') + '" />';
+        } else if (type === 'getal') {
+          input = '<input id="fv-' + q.id + '" class="pinput q-input" type="text" inputmode="decimal" value="' + esc(val.v || '') + '" />';
+        } else if (type === 'url') {
+          input = '<input id="fv-' + q.id + '" class="pinput q-input" type="url" inputmode="url" value="' + esc(val.v || '') + '" />';
+        } else {
+          var ph = type === 'bestand' ? ' placeholder="wat ontvangen / waar opgeslagen?"' : '';
+          input = '<textarea id="fv-' + q.id + '" class="pinput q-input" rows="1"' + ph + '>' + esc(val.v || '') + '</textarea>';
+        }
+        var statusSel = '<select data-fstatus="' + q.id + '" class="' + statusClass(status) + '" title="status">' +
+          FIELD_STATUSES.map(function (st) {
+            return '<option value="' + st + '"' + (st === status ? ' selected' : '') + '>' + STATUS_LABEL[st] + '</option>';
+          }).join('') + '</select>';
+        var bron = val.bron || '';
+        var bronSel = '<select data-fbron="' + q.id + '" title="bron">' + [''].concat(FIELD_SOURCES).map(function (b) {
+          return '<option value="' + b + '"' + (b === bron ? ' selected' : '') + '>' + BRON_LABEL[b] + '</option>';
+        }).join('') + '</select>';
+        var obsBtn = c.observable
+          ? '<button type="button" class="f-mini' + (bron === 'observatie' ? ' is-on' : '') + '" data-fobs="' + q.id + '">Observatie</button>' : '';
+        var hasNote = !!String(val.note || '').trim();
+        var noteBtn = '<button type="button" class="f-mini' + (hasNote ? ' is-on' : '') + '" data-fnotebtn="' + q.id + '">Not (TR)</button>';
+        var note = '<textarea id="fn-' + q.id + '" class="pinput q-input f-note' + (hasNote ? '' : ' hidden') +
+          '" rows="1" placeholder="intern not — müşteriye gitmez">' + esc(val.note || '') + '</textarea>';
+        return '<div class="q-block f-block' + (c.prio === 'star' ? ' is-star' : '') + '" id="q-' + q.id + '">' + head + input +
+          '<div class="f-meta no-print">' + statusSel + bronSel + obsBtn + noteBtn + '</div>' + note + '</div>';
+      }
+
+      function readField(qid) {
+        var q = findQ(qid);
+        var type = (q.config && q.config.answer_type) || 'tekst';
+        var out = {};
+        if (PILL_TYPES[type]) {
+          var checked = Array.prototype.filter.call(document.querySelectorAll('[data-fopt="' + qid + '"]'), function (el) { return el.checked; })
+            .map(function (el) { return el.value; });
+          out.v = type === 'multi' ? checked : (checked[0] || '');
+          out.t = document.getElementById('fvt-' + qid).value;
+        } else {
+          out.v = document.getElementById('fv-' + qid).value;
+        }
+        out.note = document.getElementById('fn-' + qid).value;
+        out.status = document.querySelector('[data-fstatus="' + qid + '"]').value;
+        out.bron = document.querySelector('[data-fbron="' + qid + '"]').value;
+        return out;
+      }
+
+      // Değer girilince 'open' → 'beantwoord'; değer silinince geri 'open'.
+      // Elle seçilmiş nog_aanleveren / n.v.t. korunur.
+      function syncStatus(qid) {
+        var sel = document.querySelector('[data-fstatus="' + qid + '"]');
+        var has = fieldHasValue(readField(qid));
+        if (has && sel.value === 'open') sel.value = 'beantwoord';
+        else if (!has && sel.value === 'beantwoord') sel.value = 'open';
+        sel.className = statusClass(sel.value);
+      }
+
+      function bindField(q) {
+        var qid = q.id;
+        var type = (q.config && q.config.answer_type) || 'tekst';
+        function changed(immediate) { syncStatus(qid); if (immediate) save(qid); else queueSave(qid); }
+        if (PILL_TYPES[type]) {
+          var opts = document.querySelectorAll('[data-fopt="' + qid + '"]');
+          opts.forEach(function (el) {
+            el._wasOn = el.checked;
+            el.addEventListener('click', function () {
+              // radio: aynı seçeneğe tekrar tıklamak seçimi kaldırır
+              if (el.type === 'radio' && el._wasOn) el.checked = false;
+              opts.forEach(function (o) {
+                o._wasOn = o.checked;
+                o.closest('.f-pill').classList.toggle('is-on', o.checked);
+              });
+              changed(true);
+            });
+          });
+          document.getElementById('fvt-' + qid).addEventListener('input', function () { changed(false); });
+        } else {
+          var el = document.getElementById('fv-' + qid);
+          if (el.tagName === 'TEXTAREA') autoGrow(el);
+          el.addEventListener('input', function () { if (el.tagName === 'TEXTAREA') autoGrow(el); changed(false); });
+        }
+        var note = document.getElementById('fn-' + qid);
+        note.addEventListener('input', function () { autoGrow(note); queueSave(qid); });
+        document.querySelector('[data-fnotebtn="' + qid + '"]').addEventListener('click', function () {
+          note.classList.remove('hidden'); autoGrow(note); note.focus();
+        });
+        if (!note.classList.contains('hidden')) autoGrow(note);
+        var st = document.querySelector('[data-fstatus="' + qid + '"]');
+        st.addEventListener('change', function () { st.className = statusClass(st.value); save(qid); });
+        var bron = document.querySelector('[data-fbron="' + qid + '"]');
+        var obs = document.querySelector('[data-fobs="' + qid + '"]');
+        bron.addEventListener('change', function () { if (obs) obs.classList.toggle('is-on', bron.value === 'observatie'); save(qid); });
+        if (obs) {
+          obs.addEventListener('click', function () {
+            bron.value = bron.value === 'observatie' ? '' : 'observatie';
+            obs.classList.toggle('is-on', bron.value === 'observatie');
+            save(qid);
+          });
+        }
+        state.q[qid].answered = q.answered;
+      }
+
       function questionHtml(q) {
+        if (q.type === 'field') return fieldHtml(q);
         var subs = (q.sub_items || []).length
           ? '<ul class="q-subs">' + q.sub_items.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('') + '</ul>' : '';
         var guide = q.guidance
@@ -271,6 +487,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       function bindQuestion(q) {
         var meta = state.q[q.id];
+        if (q.type === 'field') { bindField(q); return; }
         if (q.type === 'text' || q.type === 'textarea') {
           var el = document.getElementById('inp-' + q.id);
           if (el.tagName === 'TEXTAREA') { autoGrow(el); el.addEventListener('input', function () { autoGrow(el); }); }
@@ -367,9 +584,112 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           });
         });
 
+        state.doc = data.doc;
+        state.hasFields = data.sections.some(function (sec) {
+          return sec.questions.some(function (q) { return q.type === 'field'; });
+        });
+        if (state.hasFields) document.getElementById('f-tools').style.display = '';
+
         setStatus('saved');
         updateProgress();
       }
+
+      // ── araç çubuğu: dil, ★ open, aanleverlijst, export ─────────────────
+      function applyLang(l) {
+        document.body.classList.toggle('lang-nl', l === 'nl');
+        document.getElementById('f-lang').textContent = l === 'nl' ? 'NL' : 'NL+TR';
+      }
+      var lang = 'nltr';
+      try { lang = localStorage.getItem('disc-lang') === 'nl' ? 'nl' : 'nltr'; } catch (e) { /* storage kapalı */ }
+      applyLang(lang);
+      document.getElementById('f-lang').addEventListener('click', function () {
+        lang = lang === 'nl' ? 'nltr' : 'nl';
+        applyLang(lang);
+        try { localStorage.setItem('disc-lang', lang); } catch (e) { /* storage kapalı */ }
+      });
+
+      document.getElementById('f-staropen').addEventListener('click', function () {
+        var first = starOpen(state.sections)[0];
+        if (!first) return;
+        var el = document.getElementById('q-' + first.id);
+        var body = el.closest('.sec-body');
+        if (body) body.classList.remove('hidden');
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+
+      var modal = { mode: 'mail', items: [] };
+      function regenMail() {
+        var picked = modal.items.filter(function (it, i) {
+          var cb = document.querySelector('[data-fmitem="' + i + '"]');
+          return cb && cb.checked;
+        });
+        var mail = buildAanleverMail({
+          aanhef: document.getElementById('fm-aanhef').value,
+          items: picked,
+          deadline: document.getElementById('fm-deadline').value,
+        });
+        var subj = document.getElementById('fm-subject');
+        if (!subj.value) subj.value = mail.subject;
+        document.getElementById('fm-out').value = mail.body;
+        document.getElementById('fm-mailto').href = 'mailto:?subject=' + encodeURIComponent(subj.value) +
+          '&body=' + encodeURIComponent(mail.body);
+      }
+      function openModal(mode) {
+        modal.mode = mode;
+        document.getElementById('fm-msg').textContent = '';
+        var isMail = mode === 'mail';
+        document.getElementById('fm-title').textContent = isMail ? 'Aanleverlijst — opvolgmail' : 'Export — Markdown-samenvatting';
+        document.getElementById('fm-mailopts').classList.toggle('hidden', !isMail);
+        // .pbtn zet display — 'hidden'-klasse wint daar niet van, dus inline.
+        document.getElementById('fm-mailto').style.display = isMail ? '' : 'none';
+        document.getElementById('fm-download').style.display = isMail ? 'none' : '';
+        document.getElementById('fm-out-label').textContent = isMail ? 'Mailtekst' : 'Markdown (NL, zonder interne notities)';
+        if (isMail) {
+          modal.items = collectAanleverlijst(state.sections);
+          document.getElementById('fm-aanhef').value = defaultAanhef(state.doc && state.doc.client_name);
+          document.getElementById('fm-deadline').value = roleValue(state.sections, 'deadline');
+          document.getElementById('fm-subject').value = '';
+          document.getElementById('fm-items').innerHTML = modal.items.length ? modal.items.map(function (it, i) {
+            return '<label><input type="checkbox" data-fmitem="' + i + '" checked /> <span><b>' + esc(it.qid) + '</b>' +
+              (it.prio === 'star' ? ' ★' : it.prio === 'later' ? ' ✉' : '') + ' ' + esc(it.label) + '</span></label>';
+          }).join('') : '<p class="text-xs" style="color:var(--p-ink-4);padding:6px 0">Geen open vragen.</p>';
+          document.querySelectorAll('[data-fmitem]').forEach(function (cb) { cb.addEventListener('change', regenMail); });
+          regenMail();
+        } else {
+          document.getElementById('fm-out').value = buildMarkdown({
+            doc: state.doc, sections: state.sections, today: new Date().toISOString().slice(0, 10),
+          });
+        }
+        document.getElementById('f-modal').classList.add('open');
+      }
+      ['fm-aanhef', 'fm-deadline', 'fm-subject'].forEach(function (id) {
+        document.getElementById(id).addEventListener('input', regenMail);
+      });
+      document.getElementById('f-mail').addEventListener('click', function () { openModal('mail'); });
+      document.getElementById('f-md').addEventListener('click', function () { openModal('md'); });
+      document.getElementById('fm-close').addEventListener('click', function () {
+        document.getElementById('f-modal').classList.remove('open');
+      });
+      document.getElementById('fm-copy').addEventListener('click', function () {
+        var out = document.getElementById('fm-out');
+        var text = modal.mode === 'mail'
+          ? 'Onderwerp: ' + document.getElementById('fm-subject').value + '\n\n' + out.value : out.value;
+        var msg = document.getElementById('fm-msg');
+        function fallback() { out.select(); document.execCommand('copy'); msg.textContent = 'Gekopieerd ✓'; }
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { msg.textContent = 'Gekopieerd ✓'; }, fallback);
+        } else { fallback(); }
+      });
+      document.getElementById('fm-download').addEventListener('click', function () {
+        var blob = new Blob([document.getElementById('fm-out').value], { type: 'text/markdown;charset=utf-8' });
+        var a = document.createElement('a');
+        var name = String((state.doc && state.doc.client_name) || 'discovery').toLowerCase()
+          .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'discovery-' + name + '-' + new Date().toISOString().slice(0, 10) + '.md';
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+      });
 
       document.getElementById('h-print').addEventListener('click', function () { window.print(); });
 
