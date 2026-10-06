@@ -153,7 +153,14 @@ function makeD1() {
 describe.skipIf(!sqlite)('keukenzaak-seed op SQLite', async () => {
   const { discoveryOverview, discoveryDocDetail, discoverySaveAnswer, ensureExtraSeed } = await import('../src/lib/discovery.js');
 
-  async function overview(env) { return (await discoveryOverview(env)).json(); }
+  // Ron heeft ook het klant-document "Keukenzaak - Foralle" (discovery-foralle.test.js);
+  // deze tests gaan alleen over het interview-document.
+  const isInterview = (d) => d.title === KEUKEN_SEED.template.name;
+  async function overview(env) {
+    const ov = await (await discoveryOverview(env)).json();
+    for (const c of ov.clients) if (c.name === KEUKEN_SEED.client.name) c.docs = c.docs.filter(isInterview);
+    return ov;
+  }
 
   it('maakt template + klant Ron + één document, naast SoleHome', async () => {
     const env = { PORTAL_DB: makeD1() };

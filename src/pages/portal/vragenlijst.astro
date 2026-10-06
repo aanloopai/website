@@ -1,0 +1,236 @@
+---
+// Discovery — klant vult zelf zijn eigen vragenlijst in (bv. "Keukenzaak - Foralle").
+// Self-contained (geen portal-shell: die draait de portal-auth-guard). Toegang via
+// persoonlijke link /portal/vragenlijst/#t=<token> → /api/discovery-klant/login →
+// HttpOnly cookie. Alleen Nederlands. Klant ziet uitsluitend zijn eigen document.
+import '../../styles/global.css';
+import '../../styles/portal.css';
+---
+
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="robots" content="noindex, nofollow" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Vragenlijst · Aanloop AI</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+  </head>
+  <body class="portal flex min-h-screen flex-col">
+    <header class="vl-head border-b px-4 py-3" style="background:var(--p-surface);border-color:var(--p-border)">
+      <div class="mx-auto flex max-w-3xl items-center gap-3">
+        <img src="/brand/logo-horizontal-light.svg" alt="Aanloop AI" class="h-6" />
+        <span id="vl-save" class="ml-auto text-xs" style="color:var(--p-ink-4)"></span>
+        <button id="vl-logout" class="pbtn pbtn--subtle pbtn--sm" type="button" style="display:none">Uitloggen</button>
+      </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-3xl flex-1 px-4 py-6">
+      <div id="vl-intro" style="display:none">
+        <h1 class="page-title" id="vl-title"></h1>
+        <p class="page-sub mt-1">
+          Vul in wat u weet — alles wordt automatisch opgeslagen. U kunt altijd stoppen en later
+          via dezelfde link verder gaan. Weet u iets niet? Laat het gewoon leeg.
+        </p>
+        <div class="vl-progress mt-4"><div id="vl-bar"></div></div>
+        <p class="mt-1 text-xs" style="color:var(--p-ink-4)" id="vl-progress-txt"></p>
+      </div>
+
+      <div id="vl-body" class="mt-4 space-y-4"></div>
+
+      <div id="vl-done" class="pcard mt-6" style="display:none">
+        <div class="pcard-b">
+          <p class="text-sm" style="color:var(--p-ink)">
+            Bedankt! Uw antwoorden zijn opgeslagen en direct zichtbaar voor ons. U hoeft niets te versturen.
+          </p>
+        </div>
+      </div>
+
+      <p id="vl-msg" class="palert palert--warn mt-4" style="display:none"></p>
+      <p id="vl-loading" class="text-sm" style="color:var(--p-ink-4)">Laden…</p>
+    </main>
+
+    <footer class="px-4 py-6 text-center text-xs" style="color:var(--p-ink-4)">
+      Aanloop AI — aanloopai.nl — KvK 88606902 · Vragen? <a class="p-link" href="mailto:hello@aanloopai.nl">hello@aanloopai.nl</a>
+    </footer>
+
+    <style is:inline>
+      .vl-head { position: sticky; top: 0; z-index: 20; }
+      .vl-progress { height: 6px; border-radius: 99px; background: var(--p-border); overflow: hidden; }
+      .vl-progress > div { height: 100%; width: 0; background: #0f766e; transition: width .3s; }
+      .vl-sec-guide { font-size: 13px; color: var(--p-ink-3); margin-top: 4px; }
+      .vl-q { padding: 14px 0; border-top: 1px solid var(--p-border); }
+      .vl-q:first-of-type { border-top: none; }
+      .vl-label { display: block; font-size: 15px; font-weight: 600; color: var(--p-ink); }
+      .vl-guide { font-size: 12.5px; color: var(--p-ink-4); margin: 3px 0 6px; }
+      .vl-input { width: 100%; font-size: 16px; margin-top: 6px; }
+      textarea.vl-input { resize: none; overflow: hidden; min-height: 76px; }
+      .vl-chk { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; font-size: 15px; color: var(--p-ink); }
+      .vl-chk input { width: 20px; height: 20px; margin-top: 1px; flex-shrink: 0; }
+    </style>
+
+    <script>
+      type Q = { id: number; type: string; label: string; sub_items: string[]; guidance: string; value: unknown; answered: number; updated_at: string | null };
+      type Sec = { id: number; title: string; guidance: string; questions: Q[] };
+
+      const state: { q: Record<number, Q>; timers: Record<number, number>; pending: number } = { q: {}, timers: {}, pending: 0 };
+      const $ = (id: string) => document.getElementById(id) as HTMLElement;
+
+      function esc(s: unknown): string {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string));
+      }
+      function show(id: string, on: boolean) { $(id).style.display = on ? '' : 'none'; }
+      function message(text: string) { $('vl-msg').textContent = text; show('vl-msg', true); show('vl-loading', false); }
+      function setSave(text: string) { $('vl-save').textContent = text; }
+
+      function isAnswered(q: Q, value: unknown): boolean {
+        if (q.type === 'checklist') return Array.isArray(value) && value.some((v) => v === true);
+        if (value && typeof value === 'object' && !Array.isArray(value)) return String((value as { main?: string }).main || '').trim() !== '';
+        return String(value == null ? '' : value).trim() !== '';
+      }
+      function textValue(value: unknown): string {
+        if (value && typeof value === 'object' && !Array.isArray(value)) return String((value as { main?: string }).main || '');
+        return value == null ? '' : String(value);
+      }
+
+      function updateProgress() {
+        const all = Object.values(state.q);
+        const done = all.filter((q) => q.answered).length;
+        const pct = all.length ? Math.round((done / all.length) * 100) : 0;
+        $('vl-bar').style.width = pct + '%';
+        $('vl-progress-txt').textContent = done + ' van ' + all.length + ' vragen ingevuld';
+        show('vl-done', all.length > 0 && done === all.length);
+      }
+
+      function readValue(q: Q): unknown {
+        if (q.type === 'checklist') {
+          return Array.from(document.querySelectorAll<HTMLInputElement>('[data-chk="' + q.id + '"]')).map((el) => el.checked);
+        }
+        return (document.getElementById('in-' + q.id) as HTMLInputElement).value;
+      }
+
+      async function save(qid: number) {
+        const q = state.q[qid];
+        const value = readValue(q);
+        state.pending++;
+        setSave('Opslaan…');
+        try {
+          const r = await fetch('/api/discovery-klant/answer', {
+            method: 'POST', credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ question_id: qid, value, base_updated_at: q.updated_at }),
+          });
+          const j = await r.json().catch(() => ({}));
+          state.pending--;
+          if (r.ok && j.ok) {
+            q.updated_at = j.updated_at;
+            q.answered = j.answered;
+            q.value = value;
+            if (!state.pending) setSave('Opgeslagen ✓');
+            updateProgress();
+          } else if (r.status === 401) {
+            message('Uw sessie is verlopen. Open de persoonlijke link opnieuw om verder te gaan.');
+          } else {
+            setSave('');
+            message(j.error || 'Opslaan mislukt — probeer het opnieuw.');
+          }
+        } catch {
+          state.pending--;
+          setSave('Niet opgeslagen — controleer uw internetverbinding');
+        }
+      }
+
+      function queueSave(qid: number) {
+        setSave('…');
+        clearTimeout(state.timers[qid]);
+        state.timers[qid] = window.setTimeout(() => { delete state.timers[qid]; save(qid); }, 800);
+      }
+
+      function autoGrow(el: HTMLTextAreaElement) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 2 + 'px'; }
+
+      function questionHtml(q: Q): string {
+        const guide = q.guidance ? '<p class="vl-guide">' + esc(q.guidance) + '</p>' : '';
+        let input = '';
+        if (q.type === 'checklist') {
+          const vals = Array.isArray(q.value) ? q.value : [];
+          input = q.sub_items.map((item, i) =>
+            '<label class="vl-chk"><input type="checkbox" data-chk="' + q.id + '"' + (vals[i] === true ? ' checked' : '') + '> <span>' + esc(item) + '</span></label>').join('');
+          return '<div class="vl-q"><span class="vl-label">' + esc(q.label) + '</span>' + guide + input + '</div>';
+        }
+        if (q.type === 'textarea') {
+          input = '<textarea id="in-' + q.id + '" class="pinput vl-input" rows="3">' + esc(textValue(q.value)) + '</textarea>';
+        } else {
+          input = '<input id="in-' + q.id + '" class="pinput vl-input" type="text" value="' + esc(textValue(q.value)) + '">';
+        }
+        return '<div class="vl-q"><label class="vl-label" for="in-' + q.id + '">' + esc(q.label) + '</label>' + guide + input + '</div>';
+      }
+
+      function bind(q: Q) {
+        if (q.type === 'checklist') {
+          document.querySelectorAll('[data-chk="' + q.id + '"]').forEach((el) => el.addEventListener('change', () => save(q.id)));
+          return;
+        }
+        const el = document.getElementById('in-' + q.id) as HTMLTextAreaElement;
+        if (el.tagName === 'TEXTAREA') autoGrow(el);
+        el.addEventListener('input', () => { if (el.tagName === 'TEXTAREA') autoGrow(el); queueSave(q.id); });
+        el.addEventListener('blur', () => { if (state.timers[q.id]) { clearTimeout(state.timers[q.id]); delete state.timers[q.id]; save(q.id); } });
+      }
+
+      function render(data: { doc: { title: string }; sections: Sec[] }) {
+        document.title = data.doc.title + ' · Aanloop AI';
+        $('vl-title').textContent = data.doc.title;
+        $('vl-body').innerHTML = data.sections.map((sec) => {
+          sec.questions.forEach((q) => { q.answered = isAnswered(q, q.value) ? 1 : 0; state.q[q.id] = q; });
+          return '<section class="pcard"><div class="pcard-b"><h2 class="section-title" style="font-size:16px">' + esc(sec.title) + '</h2>' +
+            (sec.guidance ? '<p class="vl-sec-guide">' + esc(sec.guidance) + '</p>' : '') +
+            '<div class="mt-2">' + sec.questions.map(questionHtml).join('') + '</div></div></section>';
+        }).join('');
+        data.sections.forEach((sec) => sec.questions.forEach(bind));
+        show('vl-loading', false);
+        show('vl-intro', true);
+        show('vl-logout', true);
+        updateProgress();
+      }
+
+      async function loadDoc() {
+        const r = await fetch('/api/discovery-klant/doc', { credentials: 'same-origin' });
+        if (r.status === 401) {
+          message('Open deze pagina via uw persoonlijke link. Heeft u die niet (meer)? Mail naar hello@aanloopai.nl.');
+          return;
+        }
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok || !j.ok) { message(j.error || 'Laden mislukt — probeer het later opnieuw.'); return; }
+        render(j);
+      }
+
+      async function start() {
+        const m = location.hash.match(/(?:^#|&)t=([0-9a-f]{64})/);
+        if (m) {
+          // Token direct uit de adresbalk/geschiedenis halen.
+          history.replaceState(null, '', location.pathname);
+          const r = await fetch('/api/discovery-klant/login', {
+            method: 'POST', credentials: 'same-origin',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: m[1] }),
+          });
+          if (!r.ok) {
+            const j = await r.json().catch(() => ({}));
+            message(j.error || 'Deze link is ongeldig.');
+            return;
+          }
+        }
+        await loadDoc();
+      }
+
+      window.addEventListener('beforeunload', (e) => {
+        if (state.pending || Object.keys(state.timers).length) e.preventDefault();
+      });
+      $('vl-logout').addEventListener('click', async () => {
+        await fetch('/api/discovery-klant/logout', { method: 'POST', credentials: 'same-origin' }).catch(() => {});
+        location.reload();
+      });
+      start().catch(() => message('Netwerkfout — controleer uw verbinding en ververs de pagina.'));
+    </script>
+  </body>
+</html>

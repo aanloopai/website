@@ -28,6 +28,7 @@ import {
   discoveryUpdateClient, discoveryCreateDoc, discoveryDocDetail,
   discoverySaveAnswer,
 } from './discovery.js';
+import { discoveryAccess } from './discovery-klant.js';
 import { zoekeenProxy } from './zoekeen-proxy.js';
 
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
@@ -145,6 +146,7 @@ export async function handleAdminApi(request, env) {
       return method === 'POST' ? await discoveryCreateDoc(request, env) : await discoveryDocDetail(env, url);
     }
     if (path === '/api/admin/discovery/answer' && method === 'POST') return await discoverySaveAnswer(request, env);
+    if (path === '/api/admin/discovery/access') return await discoveryAccess(request, env, url);
     return errorResponse('Niet gevonden', 404);
   } catch (err) {
     console.error('[admin] API error:', err.message || err);
