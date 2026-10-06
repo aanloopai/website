@@ -286,6 +286,9 @@ export const KEUKEN_SEED = {
   key: 'seed_keuken_ron',
   version: 1,
   template: KEUKEN_TEMPLATE,
+  // Dokümanın adı (Ron'un firması). Ron bu dokümanı kendi girişiyle doldurur
+  // (discovery-klant.js) — görüşme ve müşteri cevapları TEK potada.
+  doc_title: 'Keukenzaak - Foralle',
   client: {
     name: 'Ron (keukenzaak)',
     contact: 'via Ömer / Kitchen To You',

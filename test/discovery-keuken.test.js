@@ -137,7 +137,9 @@ function makeD1() {
   const raw = new sqlite.DatabaseSync(':memory:');
   // discovery.js cachet "schema klaar" per isolate; elke verse test-DB krijgt
   // daarom het kanonieke migratiebestand.
-  raw.exec(fs.readFileSync(path.join(__dirname, '../migrations/0018_discovery.sql'), 'utf8'));
+  for (const f of ['0018_discovery.sql', '0022_discovery_access.sql', '0023_discovery_access_login.sql']) {
+    raw.exec(fs.readFileSync(path.join(__dirname, '../migrations', f), 'utf8'));
+  }
   const stmt = (sql, args = []) => ({
     bind: (...a) => stmt(sql, a),
     run: async () => {
@@ -153,9 +155,8 @@ function makeD1() {
 describe.skipIf(!sqlite)('keukenzaak-seed op SQLite', async () => {
   const { discoveryOverview, discoveryDocDetail, discoverySaveAnswer, ensureExtraSeed } = await import('../src/lib/discovery.js');
 
-  // Ron heeft ook het klant-document "Keukenzaak - Foralle" (discovery-foralle.test.js);
-  // deze tests gaan alleen over het interview-document.
-  const isInterview = (d) => d.title === KEUKEN_SEED.template.name;
+  // Eén pot: Ron heeft één document ("Keukenzaak - Foralle", zie discovery-foralle.test.js).
+  const isInterview = (d) => d.title === KEUKEN_SEED.doc_title;
   async function overview(env) {
     const ov = await (await discoveryOverview(env)).json();
     for (const c of ov.clients) if (c.name === KEUKEN_SEED.client.name) c.docs = c.docs.filter(isInterview);

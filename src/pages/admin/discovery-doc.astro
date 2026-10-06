@@ -63,20 +63,33 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </div>
   </div>
 
-  <!-- Müşteri girişi: müşteri bu dokümanı kişisel linkle kendisi doldurur. -->
+  <!-- Müşteri girişi: müşteri bu dokümanı kendisi doldurur (NL sayfa, yalnız R-soruları). -->
   <div id="a-modal" class="pmodal-backdrop no-print">
     <div class="pmodal">
       <h3 class="page-title" style="font-size:17px">Müşteri girişi</h3>
       <p class="text-xs mt-2" style="color:var(--p-ink-4)">
-        Müşteri bu linkle yalnız BU dokümanı görür ve doldurur (sayfa Hollandaca). Link tekrar kullanılabilir;
-        "Yeni link" eskisini geçersiz kılar. Link yalnız oluşturulduğunda gösterilir — kopyala ve müşteriye gönder.
+        Müşteri <b>aanloopai.nl/portal/vragenlijst/</b> adresinde giriş yapar, yalnız BU dokümanın sorularını
+        Hollandaca görür ve doldurur. Cevaplar buraya, aynı sorulara yazılır. TR etiket, intern not, durum ve 12–16 blokları görünmez.
       </p>
-      <p id="am-status" class="text-sm mt-3" style="color:var(--p-ink)"></p>
+
+      <h4 class="plabel mt-4 block">Kullanıcı adı + şifre</h4>
+      <p id="am-login-status" class="text-sm mt-1" style="color:var(--p-ink)"></p>
+      <form id="am-login-form" class="mt-2 flex flex-wrap gap-2" autocomplete="off">
+        <input id="am-user" class="pinput q-input" style="flex:1 1 140px" type="text" placeholder="kullanıcı adı" autocapitalize="none" />
+        <input id="am-pass" class="pinput q-input" style="flex:1 1 140px" type="text" placeholder="şifre (min. 8)" autocomplete="new-password" />
+        <button id="am-login-save" class="pbtn pbtn--primary pbtn--sm" type="submit">Kaydet</button>
+      </form>
+
+      <h4 class="plabel mt-4 block">Kişisel link (opsiyonel)</h4>
+      <p id="am-status" class="text-sm mt-1" style="color:var(--p-ink)"></p>
       <input id="am-url" class="pinput q-input mt-2" type="text" readonly style="display:none" />
-      <div class="mt-3 flex flex-wrap items-center gap-2">
-        <button id="am-new" class="pbtn pbtn--primary pbtn--sm" type="button">Yeni link</button>
+      <div class="mt-2 flex flex-wrap items-center gap-2">
+        <button id="am-new" class="pbtn pbtn--subtle pbtn--sm" type="button">Yeni link</button>
         <button id="am-copy" class="pbtn pbtn--subtle pbtn--sm" type="button" style="display:none">Kopyala</button>
-        <button id="am-revoke" class="pbtn pbtn--subtle pbtn--sm" type="button" style="display:none">Geri al</button>
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center gap-2">
+        <button id="am-revoke" class="pbtn pbtn--subtle pbtn--sm" type="button">Tüm erişimi kapat</button>
         <span id="am-msg" class="text-xs" style="color:#16a34a"></span>
         <button id="am-close" class="pbtn pbtn--subtle pbtn--sm ml-auto" type="button">Kapat</button>
       </div>
@@ -307,7 +320,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
 
       // ── field-tipi (R-id'li sorular) ─────────────────────────────────────
       var STATUS_LABEL = { 'open': 'open', 'beantwoord': 'beantwoord', 'nog_aanleveren': 'nog aanleveren', 'n.v.t.': 'n.v.t.' };
-      var BRON_LABEL = { '': 'bron —', 'gesprek': 'gesprek', 'observatie': 'observatie', 'mail': 'mail', 'bestand': 'bestand' };
+      var BRON_LABEL = { '': 'bron —', 'gesprek': 'gesprek', 'observatie': 'observatie', 'mail': 'mail', 'bestand': 'bestand', 'klant': 'klant (zelf)' };
       var PILL_TYPES = { ja_nee: 1, keuze: 1, multi: 1 };
 
       function statusClass(st) { return 'f-st-' + String(st).replace(/\./g, ''); }
@@ -723,45 +736,64 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           body: body ? JSON.stringify(body) : undefined,
         }).then(function (r) { return r.json(); });
       }
-      function accessStatus(active) {
-        var el = document.getElementById('am-status');
-        if (!active) { el.textContent = 'Aktif link yok.'; document.getElementById('am-revoke').style.display = 'none'; return; }
-        el.textContent = 'Aktif link var — oluşturuldu ' + String(active.created_at).slice(0, 16).replace('T', ' ') +
-          (active.last_seen_at ? ' · son kullanım ' + String(active.last_seen_at).slice(0, 16).replace('T', ' ') : ' · henüz açılmadı');
-        document.getElementById('am-revoke').style.display = '';
+      function fmtTs(ts) { return String(ts || '').slice(0, 16).replace('T', ' '); }
+      function seen(row) { return row.last_seen_at ? ' · son giriş ' + fmtTs(row.last_seen_at) : ' · henüz giriş yok'; }
+      function accessStatus(j) {
+        var lg = j && j.login, lk = j && j.link;
+        document.getElementById('am-login-status').textContent = lg
+          ? 'Aktif: kullanıcı adı "' + lg.username + '" — ' + fmtTs(lg.created_at) + seen(lg) + '. Yeni şifre girersen eskisi geçersiz olur.'
+          : 'Henüz kullanıcı adı/şifre yok.';
+        if (lg) document.getElementById('am-user').value = lg.username;
+        document.getElementById('am-status').textContent = lk ? 'Aktif link var — ' + fmtTs(lk.created_at) + seen(lk) : 'Aktif link yok.';
       }
+      function refreshAccess() {
+        return accessCall('GET').then(accessStatus)
+          .catch(function () { document.getElementById('am-login-status').textContent = 'Durum alınamadı.'; });
+      }
+      function amMsg(t, bad) { var m = document.getElementById('am-msg'); m.textContent = t; m.style.color = bad ? '#b45309' : '#16a34a'; }
       document.getElementById('h-access').addEventListener('click', function () {
         document.getElementById('am-url').style.display = 'none';
         document.getElementById('am-copy').style.display = 'none';
-        document.getElementById('am-msg').textContent = '';
-        document.getElementById('am-status').textContent = 'Yükleniyor…';
+        document.getElementById('am-pass').value = '';
+        amMsg('');
+        document.getElementById('am-login-status').textContent = 'Yükleniyor…';
         document.getElementById('a-modal').classList.add('open');
-        accessCall('GET').then(function (j) { accessStatus(j && j.active); })
-          .catch(function () { document.getElementById('am-status').textContent = 'Durum alınamadı.'; });
+        refreshAccess();
+      });
+      document.getElementById('am-login-form').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var pass = document.getElementById('am-pass');
+        accessCall('POST', { doc_id: docId, username: document.getElementById('am-user').value, password: pass.value })
+          .then(function (j) {
+            if (!j || !j.ok) { amMsg((j && j.error) || 'Hata', true); return; }
+            pass.value = '';
+            amMsg('Kaydedildi — giriş: ' + j.login_url);
+            refreshAccess();
+          }).catch(function () { amMsg('Ağ hatası', true); });
       });
       document.getElementById('am-new').addEventListener('click', function () {
         accessCall('POST', { doc_id: docId }).then(function (j) {
-          if (!j || !j.ok) { document.getElementById('am-msg').textContent = (j && j.error) || 'Hata'; return; }
+          if (!j || !j.ok) { amMsg((j && j.error) || 'Hata', true); return; }
           var inp = document.getElementById('am-url');
           inp.value = j.url; inp.style.display = '';
           document.getElementById('am-copy').style.display = '';
-          document.getElementById('am-msg').textContent = 'Yeni link hazır — eski link artık çalışmaz.';
-          accessStatus({ created_at: new Date().toISOString(), last_seen_at: null });
+          amMsg('Yeni link hazır — eski link artık çalışmaz.');
+          refreshAccess();
           inp.select();
         });
       });
       document.getElementById('am-copy').addEventListener('click', function () {
         var inp = document.getElementById('am-url');
         (navigator.clipboard ? navigator.clipboard.writeText(inp.value) : Promise.reject())
-          .then(function () { document.getElementById('am-msg').textContent = 'Kopyalandı.'; })
-          .catch(function () { inp.select(); document.execCommand('copy'); document.getElementById('am-msg').textContent = 'Kopyalandı.'; });
+          .then(function () { amMsg('Kopyalandı.'); })
+          .catch(function () { inp.select(); document.execCommand('copy'); amMsg('Kopyalandı.'); });
       });
       document.getElementById('am-revoke').addEventListener('click', function () {
         accessCall('DELETE', { doc_id: docId }).then(function () {
           document.getElementById('am-url').style.display = 'none';
           document.getElementById('am-copy').style.display = 'none';
-          document.getElementById('am-msg').textContent = 'Link geri alındı — müşteri artık giremez.';
-          accessStatus(null);
+          amMsg('Tüm erişim kapatıldı — müşteri artık giremez.');
+          refreshAccess();
         });
       });
       document.getElementById('am-close').addEventListener('click', function () {

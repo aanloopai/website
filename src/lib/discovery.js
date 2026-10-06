@@ -7,11 +7,10 @@
 import { jsonResponse, errorResponse } from './google-auth.js';
 import { SEED_TEMPLATE, SEED_CLIENTS, SEED_VERSION } from './discovery-seed.js';
 import { KEUKEN_SEED } from './discovery-seed-keuken.js';
-import { FORALLE_SEED, CLIENT_TEMPLATE_NAMES } from './discovery-seed-foralle.js';
 import { fieldAnswered } from './discovery-fields.js';
 
 // Ek şablon+müşteri seed'leri (SoleHome seed'inden bağımsız sürümlenir).
-const EXTRA_SEEDS = [KEUKEN_SEED, FORALLE_SEED];
+const EXTRA_SEEDS = [KEUKEN_SEED];
 
 const SECTION_NOTES_LABEL = 'Bölüm notları';
 
@@ -52,7 +51,27 @@ const SCHEMA = [
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP)`,
   `CREATE TABLE IF NOT EXISTS disc_meta (
     key TEXT PRIMARY KEY, value TEXT NOT NULL)`,
+  // Müşteri erişimi (discovery-klant.js) — migrations/0022 + 0023 kanonik.
+  `CREATE TABLE IF NOT EXISTS disc_access (
+    id INTEGER PRIMARY KEY AUTOINCREMENT, doc_id INTEGER NOT NULL,
+    token_hash TEXT NOT NULL UNIQUE,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    revoked_at TEXT, last_seen_at TEXT)`,
+  `CREATE INDEX IF NOT EXISTS idx_disc_access_doc ON disc_access(doc_id)`,
 ];
+
+// Sonradan eklenen kolonlar: mevcut tabloda ALTER, varsa "duplicate column"
+// hatası yutulur (D1'de ADD COLUMN IF NOT EXISTS yok).
+const COLUMN_ADDS = [
+  "ALTER TABLE disc_access ADD COLUMN kind TEXT NOT NULL DEFAULT 'link'",
+  'ALTER TABLE disc_access ADD COLUMN username TEXT',
+  'ALTER TABLE disc_access ADD COLUMN pw_hash TEXT',
+];
+
+// Eski ayrı "Keukenzaak - Foralle" soru seti (PR #177) — tek potaya
+// birleştirildi: Ron artık R01–R91 dokümanının kendisini doldurur.
+const LEGACY_FORALLE_TEMPLATE = 'Keukenzaak - Foralle';
+const ONE_POT_KEY = 'merge_foralle_onepot';
 
 let schemaReady = false;
 
@@ -69,6 +88,11 @@ async function setMeta(db, key, value) {
 export async function ensureSchemaAndSeed(db) {
   if (!schemaReady) {
     await db.batch(SCHEMA.map((sql) => db.prepare(sql)));
+    for (const sql of COLUMN_ADDS) {
+      try { await db.prepare(sql).run(); } catch (err) {
+        if (!/duplicate column/i.test(String(err && err.message))) throw err;
+      }
+    }
     schemaReady = true;
   }
   const tpl = await db.prepare('SELECT COUNT(*) AS n FROM disc_templates').first();
@@ -84,6 +108,54 @@ export async function ensureSchemaAndSeed(db) {
     await setMeta(db, 'seed_version', SEED_VERSION);
   }
   for (const seed of EXTRA_SEEDS) await ensureExtraSeed(db, seed);
+  await mergeForalleOnePot(db);
+}
+
+// Tek seferlik: eski ayrı Foralle şablonu kalkar; cevapsız Foralle dokümanı
+// silinir, cevaplı olan "(oud)" adıyla korunur (veri silinmez); o dokümanların
+// erişimleri kapatılır; Ron'un R01–R91 dokümanının adı "Keukenzaak - Foralle".
+export async function mergeForalleOnePot(db) {
+  if (await getMeta(db, ONE_POT_KEY)) return;
+  const lock = await db.prepare('INSERT OR IGNORE INTO disc_meta (key, value) VALUES (?, ?)')
+    .bind(`${ONE_POT_KEY}:lock`, new Date().toISOString()).run();
+  if (!lock.meta || !lock.meta.changes) return;
+  try {
+    const legacy = await db.prepare('SELECT id FROM disc_templates WHERE name = ?').bind(LEGACY_FORALLE_TEMPLATE).first();
+    if (legacy) {
+      const docs = (await db.prepare('SELECT id FROM disc_docs WHERE template_id = ?').bind(legacy.id).all()).results || [];
+      const now = new Date().toISOString();
+      for (const doc of docs) {
+        await db.prepare('UPDATE disc_access SET revoked_at = ? WHERE doc_id = ? AND revoked_at IS NULL').bind(now, doc.id).run();
+        const answered = (await db.prepare(
+          `SELECT COUNT(*) AS n FROM disc_answers a
+           JOIN disc_doc_questions q ON a.doc_question_id = q.id
+           JOIN disc_doc_sections s ON q.doc_section_id = s.id
+           WHERE s.doc_id = ? AND a.answered = 1`,
+        ).bind(doc.id).first()).n;
+        if (answered) {
+          await db.prepare('UPDATE disc_docs SET title = ?, template_id = NULL WHERE id = ?')
+            .bind('Keukenzaak - Foralle (oud, apart formulier)', doc.id).run();
+        } else {
+          await deleteDoc(db, doc.id);
+        }
+      }
+      await db.prepare(
+        'DELETE FROM disc_template_questions WHERE section_id IN (SELECT id FROM disc_template_sections WHERE template_id = ?)',
+      ).bind(legacy.id).run();
+      await db.prepare('DELETE FROM disc_template_sections WHERE template_id = ?').bind(legacy.id).run();
+      await db.prepare('DELETE FROM disc_templates WHERE id = ?').bind(legacy.id).run();
+    }
+    const tpl = await db.prepare('SELECT id FROM disc_templates WHERE name = ?').bind(KEUKEN_SEED.template.name).first();
+    const client = await db.prepare('SELECT id FROM disc_clients WHERE name = ?').bind(KEUKEN_SEED.client.name).first();
+    if (tpl && client) {
+      await db.prepare('UPDATE disc_docs SET title = ? WHERE client_id = ? AND template_id = ?')
+        .bind(KEUKEN_SEED.doc_title, client.id, tpl.id).run();
+    }
+    await setMeta(db, ONE_POT_KEY, '1');
+  } catch (err) {
+    await db.prepare('DELETE FROM disc_meta WHERE key = ?').bind(`${ONE_POT_KEY}:lock`).run();
+    throw err;
+  }
 }
 
 // Ek seed: şablonu (isimle) kurar/günceller, müşteriyi (isimle) bulur ya da
@@ -135,7 +207,7 @@ export async function ensureExtraSeed(db, seed) {
       if (answered) keep++;
       else await deleteDoc(db, doc.id);
     }
-    if (!keep) await instantiateDoc(db, client.id, tplId, tplDef.name);
+    if (!keep) await instantiateDoc(db, client.id, tplId, seed.doc_title || tplDef.name);
     await setMeta(db, seed.key, seed.version);
   } catch (err) {
     await db.prepare('DELETE FROM disc_meta WHERE key = ?').bind(lockKey).run();
@@ -250,14 +322,11 @@ async function seedClients(db) {
 }
 
 // Şablonun tam yapısını dokümana kopyalar; her bölümün sonuna serbest
-// "Bölüm notları" alanı ekler — müşterinin kendisinin doldurduğu (NL-only)
-// şablonlarda HARİÇ: o not alanı TR ve intern.
+// "Bölüm notları" alanı ekler.
 async function instantiateDoc(db, clientId, templateId, title) {
   const d = await db.prepare('INSERT INTO disc_docs (client_id, title, template_id) VALUES (?, ?, ?)')
     .bind(clientId, title, templateId).run();
   const docId = d.meta.last_row_id;
-  const tplRow = await db.prepare('SELECT name FROM disc_templates WHERE id = ?').bind(templateId).first();
-  const withNotes = !(tplRow && CLIENT_TEMPLATE_NAMES.includes(tplRow.name));
   const sections = (await db.prepare('SELECT * FROM disc_template_sections WHERE template_id = ? ORDER BY sort').bind(templateId).all()).results || [];
   for (const sec of sections) {
     const s = await db.prepare('INSERT INTO disc_doc_sections (doc_id, title, guidance, sort) VALUES (?, ?, ?, ?)')
@@ -267,7 +336,7 @@ async function instantiateDoc(db, clientId, templateId, title) {
     const stmts = questions.map((q) =>
       db.prepare('INSERT INTO disc_doc_questions (doc_section_id, sort, type, label, sub_items, guidance, config) VALUES (?, ?, ?, ?, ?, ?, ?)')
         .bind(docSectionId, q.sort, q.type, q.label, q.sub_items, q.guidance, q.config));
-    if (withNotes) stmts.push(
+    stmts.push(
       db.prepare('INSERT INTO disc_doc_questions (doc_section_id, sort, type, label, sub_items, guidance, config) VALUES (?, ?, ?, ?, ?, ?, ?)')
         .bind(docSectionId, questions.length, 'textarea', SECTION_NOTES_LABEL, '[]', 'Bu bölümle ilgili serbest notlar.', null));
     await db.batch(stmts);

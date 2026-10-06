@@ -1,8 +1,9 @@
 ---
 // Discovery — klant vult zelf zijn eigen vragenlijst in (bv. "Keukenzaak - Foralle").
-// Self-contained (geen portal-shell: die draait de portal-auth-guard). Toegang via
-// persoonlijke link /portal/vragenlijst/#t=<token> → /api/discovery-klant/login →
-// HttpOnly cookie. Alleen Nederlands. Klant ziet uitsluitend zijn eigen document.
+// Zelfde vragen als het gesprek (één pot): antwoorden komen in hetzelfde document.
+// Self-contained (geen portal-shell: die draait de portal-auth-guard). Inloggen met
+// gebruikersnaam + wachtwoord, of via persoonlijke link /portal/vragenlijst/#t=<token>.
+// Alleen Nederlands. Klant ziet uitsluitend zijn eigen document, geen interne velden.
 import '../../styles/global.css';
 import '../../styles/portal.css';
 ---
@@ -27,25 +28,33 @@ import '../../styles/portal.css';
     </header>
 
     <main class="mx-auto w-full max-w-3xl flex-1 px-4 py-6">
+      <div id="vl-login" class="pcard mx-auto w-full max-w-sm" style="display:none">
+        <div class="pcard-b">
+          <h1 class="page-title">Inloggen</h1>
+          <p class="page-sub">Log in om uw vragenlijst in te vullen.</p>
+          <form id="vl-login-form" class="mt-5" novalidate>
+            <label for="vl-user" class="plabel">Gebruikersnaam</label>
+            <input id="vl-user" class="pinput" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required />
+            <label for="vl-pass" class="plabel mt-3 block">Wachtwoord</label>
+            <input id="vl-pass" class="pinput" type="password" autocomplete="current-password" required />
+            <button id="vl-login-btn" class="pbtn pbtn--primary mt-4 w-full" type="submit">Inloggen</button>
+          </form>
+          <p id="vl-login-msg" class="palert palert--warn mt-4" style="display:none"></p>
+        </div>
+      </div>
+
       <div id="vl-intro" style="display:none">
         <h1 class="page-title" id="vl-title"></h1>
         <p class="page-sub mt-1">
           Vul in wat u weet — alles wordt automatisch opgeslagen. U kunt altijd stoppen en later
-          via dezelfde link verder gaan. Weet u iets niet? Laat het gewoon leeg.
+          verder gaan. Weet u iets niet, of wilt u het liever bespreken? Laat het gewoon leeg.
         </p>
         <div class="vl-progress mt-4"><div id="vl-bar"></div></div>
         <p class="mt-1 text-xs" style="color:var(--p-ink-4)" id="vl-progress-txt"></p>
+        <nav id="vl-nav" class="vl-nav mt-3"></nav>
       </div>
 
       <div id="vl-body" class="mt-4 space-y-4"></div>
-
-      <div id="vl-done" class="pcard mt-6" style="display:none">
-        <div class="pcard-b">
-          <p class="text-sm" style="color:var(--p-ink)">
-            Bedankt! Uw antwoorden zijn opgeslagen en direct zichtbaar voor ons. U hoeft niets te versturen.
-          </p>
-        </div>
-      </div>
 
       <p id="vl-msg" class="palert palert--warn mt-4" style="display:none"></p>
       <p id="vl-loading" class="text-sm" style="color:var(--p-ink-4)">Laden…</p>
@@ -59,23 +68,32 @@ import '../../styles/portal.css';
       .vl-head { position: sticky; top: 0; z-index: 20; }
       .vl-progress { height: 6px; border-radius: 99px; background: var(--p-border); overflow: hidden; }
       .vl-progress > div { height: 100%; width: 0; background: #0f766e; transition: width .3s; }
-      .vl-sec-guide { font-size: 13px; color: var(--p-ink-3); margin-top: 4px; }
+      .vl-nav { display: flex; flex-wrap: wrap; gap: 6px; }
+      .vl-nav a { font-size: 12px; padding: 5px 10px; border-radius: 99px; border: 1px solid var(--p-border);
+        color: var(--p-ink-3); text-decoration: none; }
+      .vl-nav a.is-done { border-color: #86efac; color: #166534; }
       .vl-q { padding: 14px 0; border-top: 1px solid var(--p-border); }
       .vl-q:first-of-type { border-top: none; }
       .vl-label { display: block; font-size: 15px; font-weight: 600; color: var(--p-ink); }
-      .vl-guide { font-size: 12.5px; color: var(--p-ink-4); margin: 3px 0 6px; }
-      .vl-input { width: 100%; font-size: 16px; margin-top: 6px; }
-      textarea.vl-input { resize: none; overflow: hidden; min-height: 76px; }
-      .vl-chk { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; font-size: 15px; color: var(--p-ink); }
-      .vl-chk input { width: 20px; height: 20px; margin-top: 1px; flex-shrink: 0; }
+      .vl-input { width: 100%; font-size: 16px; margin-top: 8px; }
+      textarea.vl-input { resize: none; overflow: hidden; min-height: 64px; }
+      .vl-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+      .vl-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 15px; padding: 8px 14px;
+        border-radius: 99px; border: 1px solid var(--p-border); cursor: pointer; color: var(--p-ink); }
+      .vl-pill input { width: 16px; height: 16px; }
+      .vl-pill.is-on { border-color: #0f766e; background: #f0fdfa; }
+      .vl-hint { font-size: 12.5px; color: var(--p-ink-4); margin-top: 4px; }
     </style>
 
     <script>
-      type Q = { id: number; type: string; label: string; sub_items: string[]; guidance: string; value: unknown; answered: number; updated_at: string | null };
-      type Sec = { id: number; title: string; guidance: string; questions: Q[] };
+      type Val = { v: string | string[] | null; t: string };
+      type Q = { id: number; label: string; answer_type: string; choices: string[]; value: Val; updated_at: string | null; done?: boolean };
+      type Sec = { id: number; title: string; questions: Q[] };
 
-      const state: { q: Record<number, Q>; timers: Record<number, number>; pending: number } = { q: {}, timers: {}, pending: 0 };
+      const state: { q: Record<number, Q>; secs: Sec[]; timers: Record<number, number>; pending: number } = { q: {}, secs: [], timers: {}, pending: 0 };
       const $ = (id: string) => document.getElementById(id) as HTMLElement;
+      const PILLS: Record<string, boolean> = { ja_nee: true, keuze: true, multi: true };
+      const UPLOAD_HINT = 'Bestanden kunt u hier niet uploaden — zet een link neer (WeTransfer, Google Drive, Dropbox) of mail ze naar hello@aanloopai.nl.';
 
       function esc(s: unknown): string {
         return String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string));
@@ -84,30 +102,30 @@ import '../../styles/portal.css';
       function message(text: string) { $('vl-msg').textContent = text; show('vl-msg', true); show('vl-loading', false); }
       function setSave(text: string) { $('vl-save').textContent = text; }
 
-      function isAnswered(q: Q, value: unknown): boolean {
-        if (q.type === 'checklist') return Array.isArray(value) && value.some((v) => v === true);
-        if (value && typeof value === 'object' && !Array.isArray(value)) return String((value as { main?: string }).main || '').trim() !== '';
-        return String(value == null ? '' : value).trim() !== '';
-      }
-      function textValue(value: unknown): string {
-        if (value && typeof value === 'object' && !Array.isArray(value)) return String((value as { main?: string }).main || '');
-        return value == null ? '' : String(value);
+      function hasValue(val: Val): boolean {
+        const v = val.v;
+        return (Array.isArray(v) ? v.some((x) => String(x).trim()) : String(v == null ? '' : v).trim() !== '') || String(val.t || '').trim() !== '';
       }
 
       function updateProgress() {
         const all = Object.values(state.q);
-        const done = all.filter((q) => q.answered).length;
+        const done = all.filter((q) => q.done).length;
         const pct = all.length ? Math.round((done / all.length) * 100) : 0;
         $('vl-bar').style.width = pct + '%';
         $('vl-progress-txt').textContent = done + ' van ' + all.length + ' vragen ingevuld';
-        show('vl-done', all.length > 0 && done === all.length);
+        state.secs.forEach((sec) => {
+          const a = document.querySelector('[data-nav="' + sec.id + '"]');
+          if (a) a.classList.toggle('is-done', sec.questions.every((q) => state.q[q.id].done));
+        });
       }
 
-      function readValue(q: Q): unknown {
-        if (q.type === 'checklist') {
-          return Array.from(document.querySelectorAll<HTMLInputElement>('[data-chk="' + q.id + '"]')).map((el) => el.checked);
+      function readValue(q: Q): Val {
+        const t = (document.getElementById('t-' + q.id) as HTMLInputElement | null)?.value || '';
+        if (PILLS[q.answer_type]) {
+          const checked = Array.from(document.querySelectorAll<HTMLInputElement>('[data-opt="' + q.id + '"]')).filter((el) => el.checked).map((el) => el.value);
+          return { v: q.answer_type === 'multi' ? checked : (checked[0] || null), t };
         }
-        return (document.getElementById('in-' + q.id) as HTMLInputElement).value;
+        return { v: (document.getElementById('in-' + q.id) as HTMLInputElement).value, t };
       }
 
       async function save(qid: number) {
@@ -125,12 +143,12 @@ import '../../styles/portal.css';
           state.pending--;
           if (r.ok && j.ok) {
             q.updated_at = j.updated_at;
-            q.answered = j.answered;
             q.value = value;
+            q.done = hasValue(value);
             if (!state.pending) setSave('Opgeslagen ✓');
             updateProgress();
           } else if (r.status === 401) {
-            message('Uw sessie is verlopen. Open de persoonlijke link opnieuw om verder te gaan.');
+            location.reload();
           } else {
             setSave('');
             message(j.error || 'Opslaan mislukt — probeer het opnieuw.');
@@ -146,48 +164,74 @@ import '../../styles/portal.css';
         clearTimeout(state.timers[qid]);
         state.timers[qid] = window.setTimeout(() => { delete state.timers[qid]; save(qid); }, 800);
       }
+      function flush(qid: number) {
+        if (state.timers[qid]) { clearTimeout(state.timers[qid]); delete state.timers[qid]; save(qid); }
+      }
 
       function autoGrow(el: HTMLTextAreaElement) { el.style.height = 'auto'; el.style.height = el.scrollHeight + 2 + 'px'; }
 
       function questionHtml(q: Q): string {
-        const guide = q.guidance ? '<p class="vl-guide">' + esc(q.guidance) + '</p>' : '';
+        const val = q.value || { v: null, t: '' };
+        const type = q.answer_type;
         let input = '';
-        if (q.type === 'checklist') {
-          const vals = Array.isArray(q.value) ? q.value : [];
-          input = q.sub_items.map((item, i) =>
-            '<label class="vl-chk"><input type="checkbox" data-chk="' + q.id + '"' + (vals[i] === true ? ' checked' : '') + '> <span>' + esc(item) + '</span></label>').join('');
-          return '<div class="vl-q"><span class="vl-label">' + esc(q.label) + '</span>' + guide + input + '</div>';
-        }
-        if (q.type === 'textarea') {
-          input = '<textarea id="in-' + q.id + '" class="pinput vl-input" rows="3">' + esc(textValue(q.value)) + '</textarea>';
+        if (PILLS[type]) {
+          const opts = type === 'ja_nee' ? ['ja', 'nee'] : q.choices;
+          const multi = type === 'multi';
+          const cur = multi ? (Array.isArray(val.v) ? val.v : []) : val.v;
+          input = '<div class="vl-pills">' + opts.map((o) => {
+            const on = multi ? (cur as string[]).indexOf(o) >= 0 : cur === o;
+            const lbl = type === 'ja_nee' ? (o === 'ja' ? 'Ja' : 'Nee') : o;
+            return '<label class="vl-pill' + (on ? ' is-on' : '') + '"><input type="' + (multi ? 'checkbox' : 'radio') +
+              '" name="o-' + q.id + '" data-opt="' + q.id + '" value="' + esc(o) + '"' + (on ? ' checked' : '') + '>' + esc(lbl) + '</label>';
+          }).join('') + '</div>' +
+            '<input id="t-' + q.id + '" class="pinput vl-input" type="text" placeholder="Toelichting (optioneel)" value="' + esc(val.t || '') + '">';
+        } else if (type === 'getal' || type === 'url') {
+          input = '<input id="in-' + q.id + '" class="pinput vl-input" type="' + (type === 'url' ? 'url' : 'text') + '"' +
+            (type === 'getal' ? ' inputmode="decimal"' : ' inputmode="url"') + ' value="' + esc(val.v || '') + '">';
         } else {
-          input = '<input id="in-' + q.id + '" class="pinput vl-input" type="text" value="' + esc(textValue(q.value)) + '">';
+          input = '<textarea id="in-' + q.id + '" class="pinput vl-input" rows="2">' + esc(val.v || '') + '</textarea>' +
+            (type === 'bestand' ? '<p class="vl-hint">' + esc(UPLOAD_HINT) + '</p>' : '');
         }
-        return '<div class="vl-q"><label class="vl-label" for="in-' + q.id + '">' + esc(q.label) + '</label>' + guide + input + '</div>';
+        const forAttr = PILLS[type] ? '' : ' for="in-' + q.id + '"';
+        return '<div class="vl-q"><label class="vl-label"' + forAttr + '>' + esc(q.label) + '</label>' + input + '</div>';
       }
 
       function bind(q: Q) {
-        if (q.type === 'checklist') {
-          document.querySelectorAll('[data-chk="' + q.id + '"]').forEach((el) => el.addEventListener('change', () => save(q.id)));
+        if (PILLS[q.answer_type]) {
+          const opts = document.querySelectorAll<HTMLInputElement>('[data-opt="' + q.id + '"]');
+          opts.forEach((el) => {
+            el.addEventListener('click', () => {
+              // radio: nogmaals klikken = keuze wissen
+              if (el.type === 'radio' && el.dataset.was === '1') el.checked = false;
+              opts.forEach((o) => { o.dataset.was = o.checked ? '1' : ''; (o.parentElement as HTMLElement).classList.toggle('is-on', o.checked); });
+              save(q.id);
+            });
+            el.dataset.was = el.checked ? '1' : '';
+          });
+          const t = document.getElementById('t-' + q.id) as HTMLInputElement;
+          t.addEventListener('input', () => queueSave(q.id));
+          t.addEventListener('blur', () => flush(q.id));
           return;
         }
         const el = document.getElementById('in-' + q.id) as HTMLTextAreaElement;
         if (el.tagName === 'TEXTAREA') autoGrow(el);
         el.addEventListener('input', () => { if (el.tagName === 'TEXTAREA') autoGrow(el); queueSave(q.id); });
-        el.addEventListener('blur', () => { if (state.timers[q.id]) { clearTimeout(state.timers[q.id]); delete state.timers[q.id]; save(q.id); } });
+        el.addEventListener('blur', () => flush(q.id));
       }
 
       function render(data: { doc: { title: string }; sections: Sec[] }) {
+        state.secs = data.sections;
         document.title = data.doc.title + ' · Aanloop AI';
         $('vl-title').textContent = data.doc.title;
+        $('vl-nav').innerHTML = data.sections.map((sec) => '<a href="#s-' + sec.id + '" data-nav="' + sec.id + '">' + esc(sec.title) + '</a>').join('');
         $('vl-body').innerHTML = data.sections.map((sec) => {
-          sec.questions.forEach((q) => { q.answered = isAnswered(q, q.value) ? 1 : 0; state.q[q.id] = q; });
-          return '<section class="pcard"><div class="pcard-b"><h2 class="section-title" style="font-size:16px">' + esc(sec.title) + '</h2>' +
-            (sec.guidance ? '<p class="vl-sec-guide">' + esc(sec.guidance) + '</p>' : '') +
+          sec.questions.forEach((q) => { q.done = hasValue(q.value || { v: null, t: '' }); state.q[q.id] = q; });
+          return '<section class="pcard" id="s-' + sec.id + '"><div class="pcard-b"><h2 class="section-title" style="font-size:16px">' + esc(sec.title) + '</h2>' +
             '<div class="mt-2">' + sec.questions.map(questionHtml).join('') + '</div></div></section>';
         }).join('');
         data.sections.forEach((sec) => sec.questions.forEach(bind));
         show('vl-loading', false);
+        show('vl-login', false);
         show('vl-intro', true);
         show('vl-logout', true);
         updateProgress();
@@ -196,7 +240,9 @@ import '../../styles/portal.css';
       async function loadDoc() {
         const r = await fetch('/api/discovery-klant/doc', { credentials: 'same-origin' });
         if (r.status === 401) {
-          message('Open deze pagina via uw persoonlijke link. Heeft u die niet (meer)? Mail naar hello@aanloopai.nl.');
+          show('vl-loading', false);
+          show('vl-login', true);
+          ($('vl-user') as HTMLInputElement).focus();
           return;
         }
         const j = await r.json().catch(() => ({}));
@@ -204,21 +250,43 @@ import '../../styles/portal.css';
         render(j);
       }
 
+      async function login(payload: object): Promise<string | null> {
+        const r = await fetch('/api/discovery-klant/login', {
+          method: 'POST', credentials: 'same-origin',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (r.ok) return null;
+        const j = await r.json().catch(() => ({}));
+        return j.error || 'Inloggen mislukt.';
+      }
+
+      $('vl-login-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = $('vl-login-btn') as HTMLButtonElement;
+        btn.disabled = true;
+        show('vl-login-msg', false);
+        try {
+          const err = await login({ username: ($('vl-user') as HTMLInputElement).value, password: ($('vl-pass') as HTMLInputElement).value });
+          ($('vl-pass') as HTMLInputElement).value = '';
+          if (err) { $('vl-login-msg').textContent = err; show('vl-login-msg', true); return; }
+          show('vl-loading', true);
+          await loadDoc();
+        } catch {
+          $('vl-login-msg').textContent = 'Netwerkfout — probeer het opnieuw.';
+          show('vl-login-msg', true);
+        } finally {
+          btn.disabled = false;
+        }
+      });
+
       async function start() {
         const m = location.hash.match(/(?:^#|&)t=([0-9a-f]{64})/);
         if (m) {
           // Token direct uit de adresbalk/geschiedenis halen.
           history.replaceState(null, '', location.pathname);
-          const r = await fetch('/api/discovery-klant/login', {
-            method: 'POST', credentials: 'same-origin',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: m[1] }),
-          });
-          if (!r.ok) {
-            const j = await r.json().catch(() => ({}));
-            message(j.error || 'Deze link is ongeldig.');
-            return;
-          }
+          const err = await login({ token: m[1] });
+          if (err) { $('vl-login-msg').textContent = err; show('vl-login-msg', true); }
         }
         await loadDoc();
       }

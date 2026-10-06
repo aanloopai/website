@@ -9,10 +9,10 @@
 //   t      : kısa toelichting (keuze/multi/ja_nee/bestand)
 //   note   : intern not (TR) — müşteriye giden hiçbir metne girmez
 //   status : open | beantwoord | nog_aanleveren | n.v.t.
-//   bron   : gesprek | observatie | mail | bestand | ''
+//   bron   : gesprek | observatie | mail | bestand | klant (zelf ingevuld) | ''
 
 export const FIELD_STATUSES = ['open', 'beantwoord', 'nog_aanleveren', 'n.v.t.'];
-export const FIELD_SOURCES = ['gesprek', 'observatie', 'mail', 'bestand'];
+export const FIELD_SOURCES = ['gesprek', 'observatie', 'mail', 'bestand', 'klant'];
 export const ANSWER_TYPES = ['tekst', 'getal', 'ja_nee', 'keuze', 'multi', 'bestand', 'url'];
 export const PRIORITIES = ['star', 'normaal', 'later'];
 
