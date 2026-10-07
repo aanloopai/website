@@ -1,5 +1,5 @@
 ---
-title: "Artificial intelligence voor zzp'ers: wat kunt u er als ondernemer mee?"
+title: "AI voor zzp'ers: wat kunt u er als ondernemer mee?"
 description: "Wat heeft een zzp'er in Nederland aan artificial intelligence? Toepassingen, valkuilen, regels en hoe een AI-telefoniste gemiste oproepen opvangt."
 excerpt: "Als zzp'er bent u tegelijk vakman, planner, boekhouder en telefoniste. Artificial intelligence neemt een deel van dat werk uit handen, maar niet alles wat 'AI' heet is voor een eenmanszaak zinvol. Dit artikel legt uit wat artificial intelligence voor een zzp'er concreet betekent, welke toepassingen in Nederland echt werken, waar u op moet letten en hoe een AI-telefoniste als Emma gemiste oproepen opvangt terwijl u aan het werk bent."
 published: 2026-10-06
