@@ -5,10 +5,12 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ExitIntentModal from '../components/ExitIntentModal.astro';
 import RelatedLinks from '../components/RelatedLinks.astro';
+import ExtraInlinks from '../components/ExtraInlinks.astro';
 import { PRICE_RANGE } from '../data/pricing';
 import { getImage } from 'astro:assets';
 import { HERO_IMAGE, HERO_IMAGE_OPTIONS, HERO_MEDIA } from '../data/hero-image';
 import { visualFor } from '../data/page-visuals';
+import noindexPaths from '../data/noindex-paths.json';
 
 export interface Props {
   title: string;
@@ -41,6 +43,10 @@ const {
 const heroPreload = preloadHero
   ? await getImage({ src: HERO_IMAGE, ...HERO_IMAGE_OPTIONS })
   : null;
+
+// Centrale noindex-lijst (src/data/noindex-paths.json): pagina blijft online en
+// volgbaar (noindex, follow), maar verdwijnt uit de sitemap (build-sitemap.cjs).
+const noindexListed = noindexPaths.groups.some((g) => g.paths.includes(Astro.url.pathname.endsWith('/') ? Astro.url.pathname : Astro.url.pathname + '/'));
 
 const canonical = canonicalOverride ?? new URL(Astro.url.pathname, 'https://aanloopai.nl').toString();
 // Smart suffix: only append " · Aanloop AI" when total stays <=60 chars
@@ -436,7 +442,7 @@ const allSchemas = [
     <meta name="description" content={description} />
     <meta name="keywords" content="AI receptionist, AI automatisering, WhatsApp AI, workflow automatisering, AI assistent Nederland, MKB AI oplossingen" />
     <meta name="author" content="Aanloop AI" />
-    <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'} />
+    <meta name="robots" content={noindex ? 'noindex, nofollow' : noindexListed ? 'noindex, follow' : 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'} />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -611,6 +617,7 @@ const allSchemas = [
     </section>
 
     <RelatedLinks />
+    <ExtraInlinks />
 
     <Footer />
 

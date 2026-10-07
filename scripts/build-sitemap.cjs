@@ -179,7 +179,12 @@ if (fs.existsSync(KENNISBANK_CONTENT_DIR)) {
   }
 }
 
-const uniqueSorted = Array.from(new Set(urls)).sort();
+// Centrale noindex-lijst (src/data/noindex-paths.json) — zelfde bron als BaseLayout.
+const NOINDEX_LISTED = new Set(
+  JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'data', 'noindex-paths.json'), 'utf8')).groups.flatMap((g) => g.paths)
+);
+
+const uniqueSorted = Array.from(new Set(urls)).filter((u) => !NOINDEX_LISTED.has(u)).sort();
 
 // Preserve existing lastmod values where the URL was already present
 const existingXml = fs.existsSync(SITEMAP) ? fs.readFileSync(SITEMAP, 'utf8') : '';
