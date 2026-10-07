@@ -47,6 +47,12 @@ export const EXTRA_INLINKS: ExtraInlink[] = [
   { target: '/vertrouwen/', label: 'Vertrouwen en AVG: waar uw data staat', sources: ['/over/', '/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/', '/diensten/emma/'] },
   { target: '/zekerheden/', label: 'Zekerheden: AVG, datalocatie en beveiliging', sources: ['/vertrouwen/', '/tarieven/', '/over/'] },
   { target: '/beveiliging/', label: 'Beveiliging: wat wel en niet geldt', sources: ['/vertrouwen/', '/zekerheden/'] },
+  { target: '/sectoren/automotive/', label: 'Automotive: AI voor garages en autobedrijven', sources: ['/kennisbank/ai-voor-garagebedrijf-autobedrijf-nederland/', '/kennisbank/ai-no-show-reductie-mkb-nederland/'] },
+  { target: '/sectoren/fitness/', label: 'Fitness: AI voor sportscholen en zwemscholen', sources: ['/kennisbank/ai-voor-fitnessclub-zwemschool-nederland/', '/kennisbank/ai-voor-sportclub-vereniging-ledenbeheer-nederland/'] },
+  { target: '/sectoren/installatie/', label: 'Installatie: AI voor installatiebedrijven', sources: ['/kennisbank/ai-voor-installatiebedrijf-loodgieter-nederland/', '/kennisbank/ai-automatisering-mkb-waar-beginnen/'] },
+  { target: '/sectoren/onderwijs/', label: 'Onderwijs en opleidingen: AI in de praktijk', sources: ['/kennisbank/ai-voor-coach-trainer-zelfstandige-nederland/', '/kennisbank/ai-voor-rijschool-lesplanning-nederland/'] },
+  { target: '/sectoren/recruitment/', label: 'Recruitment: AI voor uitzend- en wervingsbureaus', sources: ['/kennisbank/ai-voor-uitzendbureau-recruitment-nederland/', '/kennisbank/ai-lead-scoring-b2b-sales-mkb-nederland-2026/'] },
+  { target: '/sectoren/schoonheid/', label: 'Schoonheid: AI voor salons en praktijken', sources: ['/kennisbank/ai-voor-schoonheidssalon-kapsalon-nederland-2026/', '/kennisbank/ai-voor-pedicure-praktijk-nederland-2026/'] },
 ];
 
 /** Bronpad naar de extra links die daar gerenderd worden. */
