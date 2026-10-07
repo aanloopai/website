@@ -79,13 +79,16 @@ describe('leads-kopen — geen prijzen, geen valse beschikbaarheid', () => {
 });
 
 describe('leads-kopen — bedrading', () => {
-  it('sitemap bevat hub, subpagina\'s en elke branche', () => {
+  it('sitemap bevat hub, subpagina\'s en elke branche (behalve die in src/data/noindex-paths.json)', () => {
     const xml = read('public/sitemap.xml');
     for (const u of ['/leads-kopen/', '/leads-kopen/aanmelden/', '/leads-kopen/hoe-het-werkt/', '/leads-kopen/prijzen/', '/leads-kopen/voorwaarden/']) {
       expect(xml, u).toContain(`<loc>https://aanloopai.nl${u}</loc>`);
     }
+    const noindexed = new Set(JSON.parse(read('src/data/noindex-paths.json')).groups.flatMap((g) => g.paths));
     for (const s of LEAD_SECTORS) {
-      expect(xml, s.slug).toContain(`<loc>https://aanloopai.nl/leads-kopen/${s.slug}/</loc>`);
+      const loc = `<loc>https://aanloopai.nl/leads-kopen/${s.slug}/</loc>`;
+      if (noindexed.has(`/leads-kopen/${s.slug}/`)) expect(xml, s.slug).not.toContain(loc);
+      else expect(xml, s.slug).toContain(loc);
     }
   });
 

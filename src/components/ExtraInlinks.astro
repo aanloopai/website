@@ -1,0 +1,19 @@
+---
+// "Lees ook"-blok met extra interne links (data/extra-inlinks.ts).
+// Gemount in BaseLayout; rendert alleen op pagina's die in de lijst staan.
+import { extraInlinksFor } from '../data/extra-inlinks';
+
+const links = extraInlinksFor(Astro.url.pathname);
+---
+{links.length > 0 && (
+  <section class="section-tight border-t border-slate-200 bg-slate-50/50" aria-label="Lees ook">
+    <div class="container-page max-w-4xl mx-auto">
+      <p class="eyebrow mb-4">Lees ook</p>
+      <ul class="flex flex-col gap-2 text-sm">
+        {links.map((l) => (
+          <li><a href={l.href} class="text-brand-indigo font-medium hover:underline">{l.label}</a></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+)}
