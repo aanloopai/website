@@ -7,10 +7,11 @@
 import { jsonResponse, errorResponse } from './google-auth.js';
 import { SEED_TEMPLATE, SEED_CLIENTS, SEED_VERSION } from './discovery-seed.js';
 import { KEUKEN_SEED } from './discovery-seed-keuken.js';
+import { LEADPARTNER_SEED } from './discovery-seed-leadpartner.js';
 import { fieldAnswered } from './discovery-fields.js';
 
 // Ek şablon+müşteri seed'leri (SoleHome seed'inden bağımsız sürümlenir).
-const EXTRA_SEEDS = [KEUKEN_SEED];
+const EXTRA_SEEDS = [KEUKEN_SEED, LEADPARTNER_SEED];
 
 const SECTION_NOTES_LABEL = 'Bölüm notları';
 
@@ -207,7 +208,10 @@ export async function ensureExtraSeed(db, seed) {
       if (answered) keep++;
       else await deleteDoc(db, doc.id);
     }
-    if (!keep) await instantiateDoc(db, client.id, tplId, seed.doc_title || tplDef.name);
+    if (!keep) {
+      const docId = await instantiateDoc(db, client.id, tplId, seed.doc_title || tplDef.name);
+      await applyPrefill(db, docId, seed.prefill);
+    }
     await setMeta(db, seed.key, seed.version);
   } catch (err) {
     await db.prepare('DELETE FROM disc_meta WHERE key = ?').bind(lockKey).run();
@@ -323,6 +327,25 @@ async function seedClients(db) {
 
 // Şablonun tam yapısını dokümana kopyalar; her bölümün sonuna serbest
 // "Bölüm notları" alanı ekler.
+// Seed'den bilinen cevaplar (ör. mailden) YENİ dokümana yazılır: {qid: value}.
+// Yalnız field-sorular; bilinmeyen qid sessizce atlanır. Cevaplı doküman
+// snapshot'tır — oraya hiç uygulanmaz (çağıran yalnız yeni dokümanda çağırır).
+export async function applyPrefill(db, docId, prefill) {
+  const entries = Object.entries(prefill || {});
+  if (!entries.length) return;
+  const rows = (await db.prepare(
+    `SELECT q.id, q.config FROM disc_doc_questions q JOIN disc_doc_sections s ON s.id = q.doc_section_id
+     WHERE s.doc_id = ? AND q.type = 'field'`,
+  ).bind(docId).all()).results || [];
+  const byQid = new Map();
+  for (const r of rows) {
+    try { const qid = JSON.parse(r.config || '{}').qid; if (qid) byQid.set(qid, r.id); } catch { /* skip */ }
+  }
+  for (const [qid, value] of entries) {
+    const id = byQid.get(qid);
+    if (id) await saveAnswer(db, { question_id: id, value, base_updated_at: null });
+  }
+}
 async function instantiateDoc(db, clientId, templateId, title) {
   const d = await db.prepare('INSERT INTO disc_docs (client_id, title, template_id) VALUES (?, ?, ?)')
     .bind(clientId, title, templateId).run();
