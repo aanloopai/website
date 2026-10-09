@@ -274,11 +274,8 @@ async function agreementDetail(env, url) {
               FROM agr_consents c WHERE c.superseded = 0 AND c.agreement_document_id IN
                 (SELECT id FROM agreement_documents WHERE agreement_id = ?) ORDER BY c.checkbox_at`)
     .bind(agreement.id).all())?.results || [];
-  const otp = await env.PORTAL_DB
-    .prepare('SELECT verified_at FROM agr_otp WHERE agreement_id = ? AND verified_at IS NOT NULL ORDER BY verified_at DESC LIMIT 1')
-    .bind(agreement.id).first();
   const signature = await env.PORTAL_DB
-    .prepare('SELECT typed_name, otp_verified_at, signed_at, ip, user_agent, evidence_sha256, accepted_all_at, amounts_accepted_at FROM agr_signatures WHERE agreement_id = ?')
+    .prepare('SELECT typed_name, signed_at, ip, user_agent, evidence_sha256, accepted_all_at, amounts_accepted_at FROM agr_signatures WHERE agreement_id = ?')
     .bind(agreement.id).first();
   const audit = (await env.PORTAL_DB
     .prepare('SELECT id, actor, action, meta_json, ip, created_at FROM portal_audit_log WHERE customer_id = ? ORDER BY created_at DESC LIMIT 100')
@@ -290,7 +287,6 @@ async function agreementDetail(env, url) {
     const c = consents.find((x) => x.agreement_document_id === d.id);
     if (c) timeline.push({ stap: `Akkoord: ${d.title}`, at: c.checkbox_at, ip: c.ip || null });
   }
-  if (otp?.verified_at) timeline.push({ stap: 'Code geverifieerd', at: otp.verified_at, ip: null });
   if (signature?.accepted_all_at) timeline.push({ stap: 'Alle voorwaarden aanvaard', at: signature.accepted_all_at, ip: signature.ip || null });
   if (signature?.amounts_accepted_at) timeline.push({ stap: 'Bedragen bevestigd', at: signature.amounts_accepted_at, ip: signature.ip || null });
   if (signature) timeline.push({ stap: 'Ondertekend', at: signature.signed_at, ip: signature.ip || null });

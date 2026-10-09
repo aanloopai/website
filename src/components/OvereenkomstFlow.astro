@@ -114,14 +114,6 @@ const { mode = 'klant' } = Astro.props;
         <canvas id="ovk-canvas" class="sig-canvas mt-2" aria-label="Handtekening tekenen"></canvas>
         <p class="mt-1 text-xs" style="color:var(--p-ink-4)">Teken je handtekening met muis of vinger.</p>
 
-        <p class="plabel mt-5">Verificatiecode</p>
-        <div class="flex flex-wrap items-center gap-2">
-          <button type="button" id="ovk-otp-send" class="pbtn pbtn--subtle">Stuur code</button>
-          <input type="text" id="ovk-otp-code" class="pinput" style="width:9rem" inputmode="numeric" maxlength="6" placeholder="6 cijfers" autocomplete="one-time-code" />
-          <button type="button" id="ovk-otp-check" class="pbtn pbtn--subtle">Controleer code</button>
-        </div>
-        <p id="ovk-otp-msg" class="mt-2 text-xs" style="color:var(--p-ink-3)"></p>
-
         <label class="mt-5 flex items-start gap-2 text-sm" style="color:var(--p-ink)">
           <input type="checkbox" id="ovk-bevoegd" class="mt-1" />
           <span id="ovk-bevoegd-label"></span>
@@ -163,7 +155,6 @@ const { mode = 'klant' } = Astro.props;
       var data = null;          // GET /api/portal/overeenkomst?id=
       var step = 0;             // 0..2 documents, 3 = ondertekenen
       var docState = {};        // per document: { openLocal, scrolledAt }
-      var otpVerified = false;
       var pointCount = 0;
       var optiesPreviewNote = false; // voorbeeld: show the 'text not re-rendered' note once the option was toggled
 
@@ -440,7 +431,7 @@ const { mode = 'klant' } = Astro.props;
       }
       function isOwner() { return PREVIEW || !window.__portalUser || !window.__portalUser.role || window.__portalUser.role === 'eigenaar'; }
       function updateSignGate() {
-        var ok = $('ovk-naam').value.trim().length >= 4 && pointCount >= 20 && otpVerified && $('ovk-bevoegd').checked && $('ovk-aanvaard').checked && $('ovk-bedragen').checked && isOwner();
+        var ok = $('ovk-naam').value.trim().length >= 4 && pointCount >= 20 && $('ovk-bevoegd').checked && $('ovk-aanvaard').checked && $('ovk-bedragen').checked && isOwner();
         $('ovk-sign-btn').disabled = !ok;
       }
       function renderSign() {
@@ -462,8 +453,6 @@ const { mode = 'klant' } = Astro.props;
         $('ovk-aanvaard-label').textContent = data.acceptance_label;
         $('ovk-bevoegd-label').textContent = data.authorized_label;
         show('ovk-role-note', !isOwner());
-        if (!PREVIEW) otpVerified = !!data.otp_verified;
-        if (otpVerified) $('ovk-otp-msg').textContent = 'Code gecontroleerd.';
         if (!canvas) initCanvas();
         sizeCanvas();
         updateSignGate();
@@ -479,39 +468,6 @@ const { mode = 'klant' } = Astro.props;
           '<div class="flex justify-between gap-3"><span>Maandelijks (beheer &amp; groei, vanaf livegang)</span><span>' + esc(euro(t.maandelijks)) + '</span></div>' +
           '<div>Leads: ' + esc(euro(l.per_lead)) + ' per lead · bundel van ' + esc(l.bundel_aantal == null ? '—' : l.bundel_aantal) + ' = ' + esc(euro(l.bundel_prijs)) + '</div>';
         $('ovk-bedragen-label').textContent = data.amounts_label || '';
-      }
-      function sendOtp() {
-        if (PREVIEW) {
-          $('ovk-otp-code').value = '000000';
-          $('ovk-otp-msg').textContent = 'Voorbeeld: er wordt geen code verstuurd.';
-          return;
-        }
-        var b = $('ovk-otp-send');
-        b.disabled = true;
-        apiPost('/api/portal/overeenkomst/otp/sturen', { agreement_id: agrId }).then(function (res) {
-          if (res.ok) { msg(''); $('ovk-otp-msg').textContent = 'We hebben een code per e-mail gestuurd. Hij is 10 minuten geldig.'; }
-          else fail(res);
-        }).catch(function () {}).then(function () { b.disabled = false; });
-      }
-      function checkOtp() {
-        var code = $('ovk-otp-code').value.replace(/\D/g, '');
-        if (code.length !== 6) { $('ovk-otp-msg').textContent = 'Vul de code van 6 cijfers in.'; return; }
-        if (PREVIEW) {
-          otpVerified = true; msg('');
-          $('ovk-otp-msg').textContent = 'Code gecontroleerd.';
-          updateSignGate();
-          return;
-        }
-        apiPost('/api/portal/overeenkomst/otp/verifieer', { agreement_id: agrId, code: code }).then(function (res) {
-          if (res.ok && res.j.verified) {
-            otpVerified = true; msg('');
-            $('ovk-otp-msg').textContent = 'Code gecontroleerd.';
-          } else {
-            otpVerified = false;
-            $('ovk-otp-msg').textContent = (res.j && res.j.error) || 'De code klopt niet.';
-          }
-          updateSignGate();
-        }).catch(function () {});
       }
       function doSign() {
         if (PREVIEW) { msg(''); renderDone(); return; }
@@ -562,9 +518,8 @@ const { mode = 'klant' } = Astro.props;
           if (!res.ok) { fail(res, 'Deze overeenkomst is niet beschikbaar.'); return; }
           data = res.j;
           if (PREVIEW) {
-            // Fresh local simulation: ignore any stored consent/OTP state of the real agreement.
+            // Fresh local simulation: ignore any stored consent state of the real agreement.
             data.documents.forEach(function (d) { d.consent = null; });
-            data.otp_verified = false;
             if (data.opties && data.opties.optie_3d) data.opties.optie_3d.wijzigbaar = true;
           }
           $('ovk-title').textContent = data.agreement.title;
@@ -601,8 +556,6 @@ const { mode = 'klant' } = Astro.props;
       $('ovk-opties-check').addEventListener('change', onOptie);
       $('ovk-bedragen').addEventListener('change', updateSignGate);
       $('ovk-back2').addEventListener('click', function () { step = 2; renderStepper(); renderDoc(); });
-      $('ovk-otp-send').addEventListener('click', sendOtp);
-      $('ovk-otp-check').addEventListener('click', checkOtp);
       $('ovk-naam').addEventListener('input', updateSignGate);
       $('ovk-bevoegd').addEventListener('change', updateSignGate);
       $('ovk-aanvaard').addEventListener('change', updateSignGate);

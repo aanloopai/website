@@ -379,7 +379,7 @@ async function signaturePage(w, {
   if (signature?.accepted_all_at) rows.push(['Alle voorwaarden aanvaard', '', '', '', '', formatAmsterdam(signature.accepted_all_at)]);
   if (signature?.amounts_accepted_at) rows.push(['Bedragen bevestigd', '', '', '', '', formatAmsterdam(signature.amounts_accepted_at)]);
   w.table(rows, { size: 7, widths: [2.2, 0.9, 3.6, 1.7, 1, 1.7] });
-  w.text(`E-mailverificatie (eenmalige code) bevestigd: ${otpVerifiedAt ? formatAmsterdam(otpVerifiedAt) : 'onbekend'}`, { size: 9, gapAfter: 3 });
+  if (otpVerifiedAt) w.text(`E-mailverificatie (eenmalige code) bevestigd: ${formatAmsterdam(otpVerifiedAt)}`, { size: 9, gapAfter: 3 });
   const evidence = agreement?.evidence_sha256 || await computeEvidenceSha256({
     agreementId: agreement?.id ?? null,
     userId: null,

@@ -135,12 +135,11 @@ describe('consent', () => {
     expect((await res.json()).error).toBe('Vul eerst de bedrijfsgegevens aan');
   });
 
-  it('kijker krijgt 403 op open, consent, otp, ondertekenen en bedrijfsgegevens', async () => {
+  it('kijker krijgt 403 op open, consent, ondertekenen en bedrijfsgegevens', async () => {
     seedAgreement({ consents: 3 });
     for (const [p, json] of [
       ['/api/portal/overeenkomst/open', { document_id: 'agd_0' }],
       ['/api/portal/overeenkomst/consent', { document_id: 'agd_0' }],
-      ['/api/portal/overeenkomst/otp/sturen', { agreement_id: 'agr_1' }],
       ['/api/portal/overeenkomst/ondertekenen', { agreement_id: 'agr_1' }],
       ['/api/portal/overeenkomst/bedrijfsgegevens', { kvk: '12345678', btw_id: 'NL123456789B01' }],
     ]) {
@@ -210,61 +209,19 @@ describe('bedrijfsgegevens', () => {
   });
 });
 
-async function sendOtp() {
-  const sent = await post('/api/portal/overeenkomst/otp/sturen', 'usr_1', { agreement_id: 'agr_1' });
-  expect(sent.status).toBe(200);
-  return /(\d{6})<\/strong>/.exec(mails.at(-1).htmlContent)[1];
-}
-const verify = (code) => post('/api/portal/overeenkomst/otp/verifieer', 'usr_1', { agreement_id: 'agr_1', code });
-
-describe('OTP', () => {
-  it('weigert zonder 3 consents', async () => {
-    seedAgreement({ consents: 2 });
-    const res = await post('/api/portal/overeenkomst/otp/sturen', 'usr_1', { agreement_id: 'agr_1' });
-    expect(res.status).toBe(400);
-    expect(mails).toHaveLength(0);
-  });
-
-  it('mailt een code en bewaart alleen de hash', async () => {
+describe('geen verificatiecode meer', () => {
+  it('de OTP-routes bestaan niet meer (404)', async () => {
     seedAgreement({ consents: 3 });
-    const code = await sendOtp();
-    expect(mails.at(-1).subject).toBe('Je verificatiecode voor Mijn AanloopAI');
-    expect(mails.at(-1).to[0].email).toBe('ron@klant.nl');
-    const row = d1.raw.prepare('SELECT code_hash FROM agr_otp').get();
-    expect(row.code_hash).toMatch(/^[0-9a-f]{64}$/);
-    expect(row.code_hash).not.toContain(code);
-  });
-
-  it('sluit na 5 foute pogingen af, ook voor de juiste code', async () => {
-    seedAgreement({ consents: 3 });
-    const code = await sendOtp();
-    const wrong = code === '000000' ? '111111' : '000000';
-    for (let i = 0; i < 5; i++) expect((await verify(wrong)).status).toBe(400);
-    const locked = await verify(code);
-    expect(locked.status).toBe(429);
-    expect((await locked.json()).error).toBe('Te veel pogingen. Vraag een nieuwe code aan.');
-  });
-
-  it('consents van een andere gebruiker tellen niet mee voor de eigenaar', async () => {
-    seedAgreement();
-    for (let i = 0; i < 3; i++) addConsent(i, 'usr_3'); // bewerker heeft akkoord gegeven, eigenaar niet
-    const res = await post('/api/portal/overeenkomst/otp/sturen', 'usr_1', { agreement_id: 'agr_1' });
-    expect(res.status).toBe(400);
-    expect(mails).toHaveLength(0);
-  });
-
-  it('verifieert de juiste code', async () => {
-    seedAgreement({ consents: 3 });
-    const code = await sendOtp();
-    expect(await (await verify(code)).json()).toEqual({ ok: true, verified: true });
-  });
-
-  it('rate-limit: maximaal 5 codes per 15 minuten', async () => {
-    seedAgreement({ consents: 3 });
-    for (let i = 0; i < 5; i++) {
-      expect((await post('/api/portal/overeenkomst/otp/sturen', 'usr_1', { agreement_id: 'agr_1' })).status).toBe(200);
+    for (const p of ['/api/portal/overeenkomst/otp/sturen', '/api/portal/overeenkomst/otp/verifieer']) {
+      expect((await post(p, 'usr_1', { agreement_id: 'agr_1' })).status, p).toBe(404);
     }
-    expect((await post('/api/portal/overeenkomst/otp/sturen', 'usr_1', { agreement_id: 'agr_1' })).status).toBe(429);
+    expect(mails).toHaveLength(0);
+  });
+
+  it('detail bevat geen otp_verified', async () => {
+    seedAgreement({ consents: 3 });
+    const j = await (await call('/api/portal/overeenkomst?id=agr_1', { userId: 'usr_1' })).json();
+    expect(j).not.toHaveProperty('otp_verified');
   });
 });
 
@@ -278,11 +235,6 @@ describe('ondertekenen', () => {
     expect(d1.raw.prepare('SELECT status FROM agreements WHERE id = ?').get('agr_1').status).toBe('sent');
   });
 
-  it('weigert zonder geverifieerde OTP', async () => {
-    seedAgreement({ consents: 3 });
-    expect((await sign()).status).toBe(400);
-  });
-
   it('weigert bewerker (alleen eigenaar tekent)', async () => {
     seedAgreement({ consents: 3 });
     expect((await sign({}, 'usr_3')).status).toBe(403);
@@ -290,7 +242,6 @@ describe('ondertekenen', () => {
 
   it('volledige flow: opslaan, PDF in KV, 2 mails met bijlage, Telegram, audit, tweede poging 409', async () => {
     seedAgreement({ consents: 3 });
-    await verify(await sendOtp());
     mails.length = 0;
 
     expect((await sign({ typed_name: 'abc' })).status).toBe(400);
@@ -316,6 +267,7 @@ describe('ondertekenen', () => {
     expect(sig.evidence_sha256).toBe(ag.evidence_sha256);
     expect(sig.accepted_all_at).toBe(sig.signed_at);
     expect(sig.amounts_accepted_at).toBe(sig.signed_at);
+    expect(sig.otp_verified_at).toBe(0); // 0 = geen verificatiecode
     expect(kv.store.has(sig.signature_key)).toBe(true);
     expect(kv.store.has('portal:pdf:agr_1')).toBe(true);
 
@@ -338,7 +290,6 @@ describe('ondertekenen', () => {
 
   it('mailstoring is niet fataal: handtekening blijft opgeslagen', async () => {
     seedAgreement({ consents: 3 });
-    await verify(await sendOtp());
     globalThis.fetch = vi.fn(async () => new Response('boem', { status: 500 }));
     expect((await sign()).status).toBe(200);
     expect(d1.raw.prepare('SELECT status FROM agreements WHERE id = ?').get('agr_1').status).toBe('signed');
@@ -346,7 +297,6 @@ describe('ondertekenen', () => {
 
   it('weigert PNG-afmetingen buiten 10..2000 px (400, niets opgeslagen)', async () => {
     seedAgreement({ consents: 3 });
-    await verify(await sendOtp());
     for (const url of [pngUrl(9, 100), pngUrl(100, 9), pngUrl(2001, 100), pngUrl(100, 5000)]) {
       const res = await sign({ signature_png: url });
       expect(res.status).toBe(400);
@@ -357,7 +307,6 @@ describe('ondertekenen', () => {
 
   it('orphan handtekening-rij sluit de klant niet buiten: wordt opgeruimd en opnieuw geprobeerd', async () => {
     seedAgreement({ consents: 3 });
-    await verify(await sendOtp());
     d1.raw.prepare(`INSERT INTO agr_signatures (id, agreement_id, user_id, typed_name, signature_key, otp_verified_at, signed_at, evidence_sha256)
                     VALUES ('sig_orphan','agr_1','usr_1','Ron','portal:sig:sig_orphan',1,?, 'x')`).run(Date.now() - 5 * 60 * 1000);
     await kv.put('portal:sig:sig_orphan', new ArrayBuffer(1), {});
@@ -371,7 +320,6 @@ describe('ondertekenen', () => {
 
   it('een verse (nog lopende) handtekening-claim blijft staan: 409', async () => {
     seedAgreement({ consents: 3 });
-    await verify(await sendOtp());
     d1.raw.prepare(`INSERT INTO agr_signatures (id, agreement_id, user_id, typed_name, signature_key, otp_verified_at, signed_at, evidence_sha256)
                     VALUES ('sig_fresh','agr_1','usr_1','Ron','portal:sig:sig_fresh',1,?, 'x')`).run(Date.now());
     expect((await sign()).status).toBe(409);
@@ -380,7 +328,6 @@ describe('ondertekenen', () => {
 
   it('admin-annulering tijdens het tekenen: 409, handtekening en PDF teruggedraaid, geen audit', async () => {
     seedAgreement({ consents: 3 });
-    await verify(await sendOtp());
     const realPut = kv.put.bind(kv);
     kv.put = async (key, ...rest) => { // cancel right after the PDF is stored, before the final UPDATE
       await realPut(key, ...rest);
@@ -392,12 +339,11 @@ describe('ondertekenen', () => {
     expect(d1.raw.prepare('SELECT COUNT(*) AS n FROM agr_signatures').get().n).toBe(0);
     expect(kv.store.has('portal:pdf:agr_1')).toBe(false);
     expect(d1.raw.prepare("SELECT COUNT(*) AS n FROM portal_audit_log WHERE action = 'ondertekend'").get().n).toBe(0);
-    expect(mails).toHaveLength(1); // only the OTP mail
+    expect(mails).toHaveLength(0);
   });
 
   it('ondertekende overeenkomst zonder PDF in KV: 404 in plaats van concept-PDF', async () => {
     seedAgreement({ consents: 3 });
-    await verify(await sendOtp());
     expect((await sign()).status).toBe(200);
     kv.store.delete('portal:pdf:agr_1');
     const res = await call('/api/portal/overeenkomst/pdf?id=agr_1', { userId: 'usr_1' });
