@@ -14,6 +14,7 @@ const GELEZEN = /^\d{4}-\d{2}-\d{2}$/;
 // slug -> pagina waar de cijfers staan (voor bronUrl en citatie)
 const PAGES = {
   'branche-statistieken-mkb-ai': '/branche-statistieken-mkb-ai-nederland/',
+  'ai-adoptie-marktcontext-2026': '/onderzoek/ai-adoption-mkb-nederland-2026/',
 };
 
 function validate(bron) {
