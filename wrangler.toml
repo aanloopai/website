@@ -31,6 +31,12 @@ not_found_handling = "404-page"
 binding = "GOOGLE_TOKENS"
 id = "ffb342acce5544a8bb4ca8d93c0e9686"
 
+# Klantenportaal: uploads, handtekening-PNG's en ondertekende PDF's (prefix portal:file:/portal:sig:/portal:pdf:).
+# Zelfde namespace als GOOGLE_TOKENS (sleutels zijn geprefixt, dus geen botsing). KV-limiet: 25 MiB per waarde.
+[[kv_namespaces]]
+binding = "PORTAL_FILES"
+id = "ffb342acce5544a8bb4ca8d93c0e9686"
+
 # Customer portal database (C3). Created with: wrangler d1 create aanloop-portal
 # Still required: wrangler secret put PORTAL_SESSION_SECRET
 #   + apply migrations/0001_portal_schema.sql (see developing/portal/README.md).

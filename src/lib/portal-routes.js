@@ -16,6 +16,8 @@ import { onboardingState } from './onboarding.js';
 import { getIntakeSchema } from '../data/intake-schemas.ts';
 import { activateOrder } from './activation.js';
 import { handleAgendaInitiate, handleAgendaCallback } from './agenda-oauth.js';
+import { handleOvereenkomstApi } from './overeenkomst-routes.js';
+import { handleAanleverApi } from './aanlever-routes.js';
 
 const SITE_ORIGIN = 'https://aanloopai.nl';
 const MUTATING_METHODS = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
@@ -62,7 +64,8 @@ function mailLayout(inner) {
 function mailButton(href, label) {
   return `<p style="margin:28px 0"><a href="${escapeHtml(href)}" style="display:inline-block;background:#4f46e5;color:#fff;padding:13px 22px;border-radius:10px;text-decoration:none;font-weight:600">${escapeHtml(label)}</a></p>`;
 }
-export async function sendMail(env, to, toNaam, subject, innerHtml) {
+// attachments (optional): [{ name, contentBase64 }] → Brevo `attachment`.
+export async function sendMail(env, to, toNaam, subject, innerHtml, attachments) {
   // Throws instead of no-opping: a missing key means the magic link never
   // arrives, and the caller must be able to tell the user that rather than
   // claim "check your inbox" for a mail that was never sent.
@@ -75,6 +78,8 @@ export async function sendMail(env, to, toNaam, subject, innerHtml) {
       to: [{ email: to, name: toNaam || to }],
       subject,
       htmlContent: mailLayout(innerHtml),
+      ...(Array.isArray(attachments) && attachments.length
+        ? { attachment: attachments.map((a) => ({ name: a.name, content: a.contentBase64 })) } : {}),
     }),
   });
   if (!res.ok) throw new Error(`Brevo HTTP ${res.status}: ${(await res.text()).slice(0, 200)}`);
@@ -433,6 +438,8 @@ export async function handlePortalApi(request, env) {
     // Staff accounts must use /api/admin; reject them here to avoid dual-role privilege confusion.
     if (!user || !user.customer_id || user.role === 'staff') return errorResponse('Niet ingelogd', 401);
 
+    if (path.startsWith('/api/portal/overeenkomst')) return await handleOvereenkomstApi(request, env, user, url);
+    if (path.startsWith('/api/portal/aanleveren')) return await handleAanleverApi(request, env, user, url);
     if (path === '/api/portal/me') return await portalMe(env, user);
     if (path === '/api/portal/overview') return await portalOverview(env, user);
     if (path === '/api/portal/emma/stats') return await portalEmmaStats(env, user);

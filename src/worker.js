@@ -1485,6 +1485,21 @@ export default {
       return handleAdminApi(request, env);
     }
 
+    // Klantenportaal: oude /klanten-URL's (spec) -> /portal (301, permanent).
+    if (url.pathname === '/klanten' || url.pathname === '/klanten/') {
+      return Response.redirect(new URL('/portal/login', url.origin).toString(), 301);
+    }
+    if (url.pathname === '/klanten/dashboard') {
+      return Response.redirect(new URL('/portal/', url.origin).toString(), 301);
+    }
+    if (url.pathname === '/klanten/aanleveren') {
+      return Response.redirect(new URL('/portal/aanleveren/', url.origin).toString(), 301);
+    }
+    const klantOvk = url.pathname.match(/^\/klanten\/overeenkomst\/([^/]+)\/?$/);
+    if (klantOvk) {
+      return Response.redirect(new URL('/portal/overeenkomst/?id=' + klantOvk[1], url.origin).toString(), 301);
+    }
+
     if (env.ASSETS) {
       const assetResponse = await env.ASSETS.fetch(request);
       return applySecurityHeaders(assetResponse, url.pathname);
