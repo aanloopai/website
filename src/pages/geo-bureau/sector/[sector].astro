@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import FaqSection from '../../../components/FaqSection.astro';
+import GeoBureauBlok from '../../../components/geo/GeoBureauBlok.astro';
+import { GEO_SBI_SECTOREN } from '../../../data/geo-sbi-sectoren';
+
+export function getStaticPaths() {
+  return GEO_SBI_SECTOREN.map((s) => ({ params: { sector: s.slug }, props: { sector: s } }));
+}
+
+const { sector } = Astro.props;
+const url = `https://aanloopai.nl/geo-bureau/sector/${sector.slug}/`;
+const faqItems = sector.faq.map((f) => ({ question: f.q, answer: f.a }));
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${url}#service`,
+    name: sector.titel,
+    serviceType: 'Generative Engine Optimization',
+    description: sector.antwoord,
+    provider: { '@id': 'https://aanloopai.nl/#organization' },
+    areaServed: { '@type': 'Country', name: 'Nederland' },
+    audience: { '@type': 'BusinessAudience', audienceType: `${sector.naam} (SBI ${sector.sbi})` },
+    url,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': url,
+    name: sector.titel,
+    isPartOf: { '@id': 'https://aanloopai.nl/#website' },
+    about: { '@id': `${url}#service` },
+    inLanguage: 'nl-NL',
+  },
+];
+// <title> onder 60 tekens houden: de langste sectornamen krijgen een korte vorm.
+const kort = sector.naam.length > 28 ? sector.naam.split(/,| en /)[0].trim() : sector.naam;
+---
+<BaseLayout
+  title={`GEO-bureau ${kort.toLowerCase()} · Aanloop AI`}
+  description={`${sector.vraag} Aanloop AI maakt bedrijven in ${sector.naam.toLowerCase()} vindbaar in ChatGPT, Claude, Perplexity en Google AI. Gratis Quick Scan, openbare tarieven.`}
+  schema={schema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">GEO-bureau · {sector.naam} · SBI {sector.sbi}</span></div>
+        <h1 class="text-4xl sm:text-5xl font-semibold tracking-tighter text-navy text-balance leading-[1.08]">{sector.titel}</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed">{sector.intro}</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="/ai-vindbaarheid/check/" class="btn-primary text-base px-6 py-3.5">Gratis GEO Quick Scan</a>
+          <a href="/tarieven/" class="btn-outline text-base px-6 py-3.5">Bekijk tarieven</a>
+        </div>
+        <p class="mt-5 text-sm text-slate-500">Rotterdam · KvK 88606902 · heel Nederland</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl font-bold text-navy mb-4">{sector.vraag}</h2>
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-2">Direct antwoord</p>
+        <p class="text-slate-700 leading-relaxed" data-speakable>{sector.antwoord}</p>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-4">Vragen die klanten in deze sector aan AI stellen</h2>
+      <div class="space-y-3 mb-10">
+        {sector.voorbeelden.map((q) => (
+          <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4">
+            <span class="text-brand-indigo text-lg leading-none mt-0.5">"</span>
+            <p class="text-navy font-medium">{q}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-6">Wat wij in deze sector concreet doen</h2>
+      <div class="space-y-4 mb-10">
+        {sector.aanpak.map((a, i) => (
+          <div class="card">
+            <p class="text-xs font-semibold text-brand-indigo uppercase tracking-wide mb-1">Stap {i + 1}</p>
+            <h3 class="font-semibold text-navy mb-2">{a.titel}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{a.body}</p>
+          </div>
+        ))}
+      </div>
+
+      {sector.verwant && (
+        <p class="text-sm text-slate-600 mb-10">Meer over AI voor deze branche: <a href={sector.verwant} class="underline">{sector.verwant.includes('ai-vindbaarheid') ? 'AI-vindbaarheid per sector' : 'AI-oplossingen voor deze sector'}</a>.</p>
+      )}
+
+      <FaqSection items={faqItems} bare />
+    </div>
+  </section>
+
+  <GeoBureauBlok huidige={sector.slug} />
+</BaseLayout>

@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FaqSection from '../../components/FaqSection.astro';
+import GeoBureauBlok from '../../components/geo/GeoBureauBlok.astro';
+import { WATKOST } from '../../data/geo-gids';
+
+const url = 'https://aanloopai.nl/geo-bureau/wat-kost-geo/';
+const faqItems = WATKOST.faq.map((f) => ({ question: f.q, answer: f.a }));
+const eur = (n: number) => `€${n.toLocaleString('nl-NL')}`;
+const schema = {
+  '@context': 'https://schema.org', '@type': 'Article',
+  headline: WATKOST.titel,
+  description: WATKOST.intro.slice(0, 200),
+  author: { '@id': 'https://aanloopai.nl/#organization' },
+  publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
+  datePublished: '2026-10-09', dateModified: '2026-10-09', inLanguage: 'nl-NL',
+  mainEntityOfPage: url, articleSection: 'GEO-bureau',
+};
+---
+<BaseLayout
+  title="Wat kost GEO in Nederland? · Aanloop AI"
+  description="Wat kost GEO (AI-vindbaarheid) bij een bureau? Kostenposten, prijsmodellen en de openbare tarieven van Aanloop AI: gratis Quick Scan, maandabonnement, SEO + GEO bundel."
+  schema={schema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">GEO-bureau · Kosten</span></div>
+        <h1 class="text-4xl sm:text-5xl font-semibold tracking-tighter text-navy text-balance leading-[1.08]">{WATKOST.titel}</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed" data-speakable>{WATKOST.intro}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl font-bold text-navy mb-6">Waar u voor betaalt</h2>
+      <div class="space-y-4 mb-12">
+        {WATKOST.kostenposten.map((k) => (
+          <div class="card">
+            <h3 class="font-semibold text-navy mb-2">{k.titel}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{k.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-6">Drie prijsmodellen</h2>
+      <div class="grid sm:grid-cols-3 gap-4 mb-12">
+        {WATKOST.modellen.map((m) => (
+          <div class="card">
+            <h3 class="font-semibold text-navy mb-2">{m.naam}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{m.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-4">Wat GEO kost bij Aanloop AI</h2>
+      <p class="text-slate-600 mb-6">Alle bedragen exclusief 21% btw. De volledige tarieven staan op <a href="/tarieven/" class="underline">/tarieven/</a>.</p>
+      <div class="overflow-x-auto mb-12">
+        <table class="w-full text-sm border border-slate-200 rounded-xl overflow-hidden">
+          <thead><tr class="bg-slate-50 text-navy text-left"><th class="p-3 font-bold">Dienst</th><th class="p-3 font-bold">Prijs</th><th class="p-3 font-bold">Wat zit erin</th></tr></thead>
+          <tbody class="text-slate-600">
+            {WATKOST.aanloop.map((a) => (
+              <tr class="border-t border-slate-200">
+                <td class="p-3 font-medium text-navy">{a.naam}</td>
+                <td class="p-3 whitespace-nowrap">{a.prijs === 0 ? 'Gratis' : a.prijs === null ? 'Op aanvraag' : eur(a.prijs)} <span class="text-slate-400">{a.eenheid}</span></td>
+                <td class="p-3">{a.body}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-4">Waarom prijzen tussen bureaus verschillen</h2>
+      {WATKOST.waaromVerschilt.map((p) => <p class="text-slate-700 leading-relaxed mb-4">{p}</p>)}
+
+      <p class="text-sm text-slate-600 mt-8">Hoe u een bureau kiest, leest u in <a href="/geo-bureau/kiezen/" class="underline">GEO-bureau kiezen</a>. Een onafhankelijke vergelijking staat op <a href="/geo-bureau/vergelijken/" class="underline">GEO-bureaus vergelijken</a>.</p>
+
+      <FaqSection items={faqItems} bare />
+    </div>
+  </section>
+
+  <GeoBureauBlok compact />
+</BaseLayout>

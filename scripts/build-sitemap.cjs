@@ -60,6 +60,8 @@ function priorityFor(url) {
   if (url.startsWith('/locaties/')) return '0.75';
   if (url.startsWith('/vergelijk/')) return '0.75';
   if (url === '/glossarium/') return '0.75';
+  if (url === '/geo-bureau/') return '0.9';
+  if (url.startsWith('/geo-bureau/')) return '0.85';
   if (url.startsWith('/ai-')) return '0.85';
   return '0.7';
 }
@@ -140,6 +142,16 @@ const geoSlugs = Array.from(geoSectorsSrc.matchAll(/slug:\s*'([^']+)'/g)).map((m
 for (const s of geoSlugs) {
   urls.push(`/ai-vindbaarheid/voor-${s}/`);
   sourceByUrl.set(`/ai-vindbaarheid/voor-${s}/`, path.join(ROOT, 'src', 'data', 'geo-sectors.ts'));
+}
+
+// /geo-bureau/[regio] en /geo-bureau/sector/[sector] dynamic routes — slugs uit
+// geo-regios.ts en geo-sbi-sectoren.ts (zelfde indeling als de GEO Agency Index).
+for (const [file, prefix] of [['geo-regios.ts', '/geo-bureau/'], ['geo-sbi-sectoren.ts', '/geo-bureau/sector/']]) {
+  const src = fs.readFileSync(path.join(ROOT, 'src', 'data', file), 'utf8');
+  for (const m of src.matchAll(/slug:\s*'([^']+)'/g)) {
+    urls.push(`${prefix}${m[1]}/`);
+    sourceByUrl.set(`${prefix}${m[1]}/`, path.join(ROOT, 'src', 'data', file));
+  }
 }
 
 // /leads-kopen/[sector] dynamic route — slugs uit lead-sectors.ts (nieuwe branches auto-included).
