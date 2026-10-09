@@ -76,7 +76,7 @@ describe('geo-bureau: geen verzonnen claims', () => {
     regios: alleTeksten(GEO_REGIOS),
     sectoren: alleTeksten(GEO_SBI_SECTOREN),
     gids: alleTeksten({ KIEZEN, WATKOST }),
-    pillar: read('src/pages/geo-bureau/index.astro'),
+    pillar: read('src/pages/geo-bureau/index.astro') + read('src/data/geo-pillar.ts'),
     vergelijken: read('src/pages/geo-bureau/vergelijken.astro'),
     blok: read('src/components/geo/GeoBureauBlok.astro'),
     llms: read('public/llms.txt'),
@@ -189,5 +189,102 @@ describe('geo-bureau: Person/Wikidata-schakelaar', () => {
     expect(b).toContain("from '../data/oprichter'");
     expect(b).toMatch(/const personSchema = OPRICHTER \?/);
     expect(b).toMatch(/personSchema,/);
+  });
+});
+
+describe('geo-bureau: AI-feitenlaag (Markdown-twins, JSON-feiten, glossarium)', () => {
+  const EMDASH = /—/;
+  const GET_ = async (p) => (await import(p)).GET();
+  const SETUP_GETAL = /\b1\.?450\b/;
+
+  it('facts.json, pricing.json en claims.json bestaan als Astro-endpoints', () => {
+    for (const f of ['facts', 'pricing', 'claims']) expect(fs.existsSync(path.join(ROOT, `src/pages/${f}.json.ts`)), f).toBe(true);
+  });
+
+  it('elke geo-bureau-pagina heeft een .md-twin-endpoint', () => {
+    for (const f of ['[regio].md.ts', 'index.md.ts', 'kiezen.md.ts', 'wat-kost-geo.md.ts', 'vergelijken.md.ts', 'sector/[sector].md.ts']) {
+      expect(fs.existsSync(path.join(ROOT, 'src/pages/geo-bureau', f)), f).toBe(true);
+    }
+  });
+
+  it('pricing.json publiceert de GEO Setup-prijs niet (bron noch uitvoer)', async () => {
+    const src = read('src/pages/pricing.json.ts');
+    expect(src).not.toMatch(/GEO\.setup/);
+    expect(src).not.toMatch(/GROEI_SETUP\b|COMPLEET_SETUP\b|EMMA_SETUP\b/);
+    const res = await GET_('../src/pages/pricing.json.ts');
+    const txt = await res.text();
+    expect(res.headers.get('content-type')).toMatch(/^application\/json/);
+    expect(txt).not.toMatch(SETUP_GETAL);
+    const j = JSON.parse(txt);
+    expect(j.geo.diensten.find((d) => d.naam === 'GEO Setup').prijs_excl_btw).toBeNull();
+    expect(j.geo.diensten.find((d) => d.naam === 'GEO Maandelijks').prijs_per_maand_excl_btw).toBe(GEO_PRIJZEN.maand);
+    expect(j.geo.diensten.find((d) => d.naam === 'SEO + GEO Bundel').prijs_per_maand_excl_btw).toBe(GEO_PRIJZEN.bundel);
+  });
+
+  it('JSON-endpoints zijn geldig, hebben stabiele sleutelvolgorde en noemen geen persoon', async () => {
+    for (const f of ['facts', 'pricing', 'claims']) {
+      const a = await (await GET_(`../src/pages/${f}.json.ts`)).text();
+      const b = await (await GET_(`../src/pages/${f}.json.ts`)).text();
+      expect(a, f).toBe(b);
+      expect(() => JSON.parse(a), f).not.toThrow();
+      expect(a, f).not.toMatch(EMDASH);
+      expect(a, f).not.toMatch(/"@type":\s*"Person"/);
+    }
+    const facts = JSON.parse(await (await GET_('../src/pages/facts.json.ts')).text());
+    expect(facts.organisatie.kvk).toBe('88606902');
+    expect(facts.sectoren).toHaveLength(17);
+    expect(facts.regios).toHaveLength(7);
+  });
+
+  it('claims.json: elke claim heeft een bron op onze site of bij Gold Lemon en een controledatum', async () => {
+    const { claims } = JSON.parse(await (await GET_('../src/pages/claims.json.ts')).text());
+    expect(claims.length).toBeGreaterThanOrEqual(10);
+    for (const c of claims) {
+      expect(Object.keys(c)).toEqual(['claim', 'source', 'verified']);
+      expect(c.source, c.claim).toMatch(/^https:\/\/(aanloopai\.nl|goldlemon\.nl)\//);
+      expect(c.verified, c.claim).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      for (const re of VERBODEN) expect(c.claim, c.claim).not.toMatch(re);
+    }
+  });
+
+  it('Markdown-twins: bronregel, datum, geen em-dash en geen GEO Setup-prijs', async () => {
+    const { regioMd, sectorMd, pillarMd, kiezenMd, watKostMd, vergelijkenMd } = await import('../src/lib/geo-markdown.ts');
+    const paginas = [
+      ...GEO_REGIOS.map((r) => [`/geo-bureau/${r.slug}/`, regioMd(r)]),
+      ...GEO_SBI_SECTOREN.map((s) => [`/geo-bureau/sector/${s.slug}/`, sectorMd(s)]),
+      ['/geo-bureau/', pillarMd()], ['/geo-bureau/kiezen/', kiezenMd()],
+      ['/geo-bureau/wat-kost-geo/', watKostMd()], ['/geo-bureau/vergelijken/', vergelijkenMd()],
+    ];
+    expect(paginas).toHaveLength(28);
+    for (const [pad, md] of paginas) {
+      expect(md, pad).toContain(`Bron: https://aanloopai.nl${pad}\n`);
+      expect(md, pad).toMatch(/\nLaatst bijgewerkt: \d{4}-\d{2}-\d{2}\n$/);
+      expect(md, pad).not.toMatch(EMDASH);
+      expect(md, pad).not.toMatch(SETUP_GETAL);
+      expect(md, pad).toMatch(/^# /);
+    }
+    expect(vergelijkenMd()).toContain(GEO_BENCHMARK.bronUrl);
+    expect(vergelijkenMd()).toContain(GEO_BENCHMARK.licentie);
+  });
+
+  it('glossarium: minstens 20 GEO-termen en elke sameAs is een Wikidata Q-id-URL', () => {
+    const src = read('src/pages/glossarium.astro');
+    const blokken = src.split('\n  {\n    term:').slice(1);
+    const geoTermen = blokken.filter((b) => /relatedHref: '(\/geo-bureau\/|\/llms\.txt)/.test(b));
+    expect(geoTermen.length).toBeGreaterThanOrEqual(20);
+    const sameAs = [...src.matchAll(/sameAs: \[([^\]]*)\]/g)].flatMap((m) => [...m[1].matchAll(/'([^']+)'/g)].map((x) => x[1]));
+    expect(sameAs.length).toBeGreaterThanOrEqual(10);
+    for (const u of sameAs) expect(u).toMatch(/^https:\/\/www\.wikidata\.org\/wiki\/Q\d+$/);
+    expect(new Set(sameAs).size).toBe(sameAs.length);
+    const slugs = [...src.matchAll(/\n    slug: '([^']+)'/g)].map((m) => m[1]);
+    expect(new Set(slugs).size).toBe(slugs.length);
+  });
+
+  it('llms.txt en llms-full.txt verwijzen naar de JSON-feiten en de .md-twins', () => {
+    for (const f of ['public/llms.txt', 'public/llms-full.txt']) {
+      const t = read(f);
+      for (const u of ['/facts.json', '/pricing.json', '/claims.json']) expect(t, `${f} mist ${u}`).toContain(`https://aanloopai.nl${u}`);
+      expect(t, f).toMatch(/\.md-twin/);
+    }
   });
 });
