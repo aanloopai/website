@@ -91,6 +91,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           <div class="overflow-x-auto">
             <div class="p-muted mb-2 text-xs font-medium">Kanalen</div>
             <table class="ptable"><thead><tr><th>Kanaal</th><th class="num">Sessies</th><th class="num">Conversies</th><th class="num">Conv%</th></tr></thead><tbody id="b-kanalen"></tbody></table>
+            <div class="p-muted mt-2 text-xs" id="b-formulier"></div>
           </div>
           <div id="b-ai-wrap" class="overflow-x-auto hidden">
             <div class="p-muted mb-2 text-xs font-medium">AI-landingspagina's</div>
@@ -288,6 +289,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         bRows(g.kanalen || [], 'b-kanalen', function (r) {
           return '<td>' + esc(r.kanaal) + '</td><td class="num">' + n(r.sessions) + '</td><td class="num">' + n(r.conv) + '</td><td class="num">' + pct1(r.convRate) + '</td>';
         });
+        var fm = g.formulier || {};
+        document.getElementById('b-formulier').textContent = 'Formulier-trechter: ' + n(fm.gezien || 0) + ' gezien → ' + n(fm.gestart || 0) + ' gestart → ' + n(fm.verzonden || 0) + ' verzonden (' + pct1(g.gestartNaarVerzonden || 0) + ' van gestart)';
         var aiL = g.aiLanding || [];
         document.getElementById('b-ai-wrap').classList.toggle('hidden', !aiL.length);
         bRows(aiL, 'b-ai-landing', function (r) {

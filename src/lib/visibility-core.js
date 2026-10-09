@@ -264,7 +264,7 @@ export function summarizeEvents(rows, today, windowDays = 28) {
 // beacon (v.js) sends; 'view'/'leave' bracket a page visit, the rest mirror
 // the click/form/custom events. sid/seq come from sessionStorage on the
 // client so a session is reconstructible without any personal data.
-export const HIT_TYPES = new Set(['view', 'leave', 'tel', 'whatsapp', 'route', 'mail', 'form', 'form_start', 'demo', 'custom']);
+export const HIT_TYPES = new Set(['view', 'leave', 'tel', 'whatsapp', 'route', 'mail', 'form', 'form_start', 'form_view', 'demo', 'custom']);
 const SID_RE = /^[a-z0-9]{8,32}$/;
 const MAX_SEQ = 500;
 
@@ -398,6 +398,7 @@ export function summarizeHits(rows) {
   }
 
   const sessions = bySid.size;
+  let formGezien = 0, formGestart = 0, formVerzonden = 0;
   let bounceCount = 0, convertingCount = 0, totalViews = 0, secSum = 0, secCount = 0;
   const landingMap = new Map();
   const exitMap = new Map();
@@ -421,6 +422,9 @@ export function summarizeHits(rows) {
     if (isBounce) bounceCount++;
     const converts = hits.some((h) => CONVERTING_HIT_TYPES.has(h.t));
     if (converts) convertingCount++;
+    if (hits.some((h) => h.t === 'form_view')) formGezien++;
+    if (hits.some((h) => h.t === 'form_start')) formGestart++;
+    if (hits.some((h) => h.t === 'form')) formVerzonden++;
 
     const landingHit = views.find((v) => v.seq === 1);
     if (landingHit) {
@@ -540,6 +544,8 @@ export function summarizeHits(rows) {
     kanalen,
     aiLanding,
     aiBronnen,
+    formulier: { gezien: formGezien, gestart: formGestart, verzonden: formVerzonden },
+    gestartNaarVerzonden: pct(formVerzonden, formGestart),
     flow,
     devices,
   };
