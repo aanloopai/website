@@ -33,7 +33,8 @@ describe('admin klantenportaal pages', () => {
     const flow = read('src/components/OvereenkomstFlow.astro');
     expect(page).toContain('mode="voorbeeld"');
     const s = page + flow;
-    for (const l of ['er wordt geen code verstuurd', 'niets ondertekend of opgeslagen', 'wordt de tekst niet opnieuw gerenderd', 'Er wordt niets opgeslagen']) expect(s).toContain(l);
+    for (const l of ['niets ondertekend of opgeslagen', 'wordt de tekst niet opnieuw gerenderd', 'Er wordt niets opgeslagen']) expect(s).toContain(l);
+    for (const w of ['Stuur code', 'Verificatiecode', 'er wordt geen code verstuurd']) expect(s).not.toContain(w);
     // fetch lives only in api(); every POST goes through apiPost, which throws in voorbeeld mode.
     expect(flow.match(/fetch\(/g)).toHaveLength(1);
     expect(flow.match(/'POST'/g)).toHaveLength(1);

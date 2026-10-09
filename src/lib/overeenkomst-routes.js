@@ -4,7 +4,6 @@
 // scoped by user.customer_id.
 import { jsonResponse, errorResponse } from './google-auth.js';
 import { randomId, sha256Hex } from './auth.js';
-import { rateLimit } from './rate-limit.js';
 import { notifyTelegram } from './notify.js';
 import { sendMail } from './portal-routes.js';
 import { escapeHtml } from './escape.js';
@@ -17,9 +16,9 @@ import {
 import { buildAgreementPdf } from './agreement-pdf.js';
 
 const STAFF_MAIL = 'm.dogan@aanloopai.nl';
-const OTP_TTL_MS = 10 * 60 * 1000;
-const OTP_VERIFIED_VALID_MS = 30 * 60 * 1000;
-const OTP_MAX_ATTEMPTS = 5;
+// agr_signatures.otp_verified_at is NOT NULL in the live schema (SQLite cannot relax it), so we write 0.
+// 0 = "geen verificatiecode (uitgeschakeld 2026-10-09)". The agr_otp table stays in the schema, empty.
+const OTP_NOT_USED = 0;
 const ORPHAN_SIGNATURE_MS = 60 * 1000;
 const OPEN_STATUSES = ['sent', 'in_progress'];
 
@@ -57,12 +56,6 @@ function base64ToBytes(b64) {
 async function sha256Bytes(bytes) {
   const d = await crypto.subtle.digest('SHA-256', bytes);
   return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, '0')).join('');
-}
-function constantTimeEqual(a, b) {
-  if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
-  let diff = 0;
-  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return diff === 0;
 }
 function safeFileId(id) { return String(id).replace(/[^A-Za-z0-9_-]/g, '_'); }
 
@@ -108,15 +101,6 @@ async function consentEverCount(env, agreementId) {
   return Number(row?.n || 0);
 }
 
-async function otpVerifiedAt(env, agreementId, userId) {
-  const row = await env.PORTAL_DB
-    .prepare(`SELECT verified_at FROM agr_otp WHERE agreement_id = ? AND user_id = ? AND verified_at IS NOT NULL
-              ORDER BY verified_at DESC LIMIT 1`)
-    .bind(agreementId, userId).first();
-  if (!row || Date.now() - row.verified_at > OTP_VERIFIED_VALID_MS) return null;
-  return row.verified_at;
-}
-
 function varsFor(agreement, customer) {
   return buildVars(agreement, customer);
 }
@@ -159,8 +143,6 @@ export async function handleOvereenkomstApi(request, env, user, url) {
     '/opties': opties,
     '/open': openDocument,
     '/consent': storeConsent,
-    '/otp/sturen': otpSturen,
-    '/otp/verifieer': otpVerifieer,
     '/ondertekenen': ondertekenen,
   };
   if (mutations[sub] && method === 'POST') return mutations[sub](request, env, user);
@@ -196,7 +178,6 @@ export async function buildDetailPayload(env, user, agreement, customer, docs, {
   const sig = await env.PORTAL_DB
     .prepare('SELECT typed_name, signed_at FROM agr_signatures WHERE agreement_id = ?')
     .bind(agreement.id).first();
-  const verified = user?.id ? await otpVerifiedAt(env, agreement.id, user.id) : null;
   const totalen = computeTotals(varsFor(agreement, customer));
   const openStatuses = previewDraft ? ['draft', ...OPEN_STATUSES] : OPEN_STATUSES;
   const wijzigbaar = canWrite(user?.role) && openStatuses.includes(agreement.status)
@@ -229,7 +210,6 @@ export async function buildDetailPayload(env, user, agreement, customer, docs, {
       };
     }),
     signature: sig ? { typed_name: sig.typed_name, signed_at: sig.signed_at } : null,
-    otp_verified: !!verified,
     authorized_label: AUTHORIZED_LABEL(customer?.bedrijf || ''),
     acceptance_label: ACCEPTANCE_LABEL,
     totalen,
@@ -385,7 +365,7 @@ async function storeConsent(request, env, user) {
   return jsonResponse({ ok: true, consent: { checkbox_at: now, time_on_document_sec: timeSec } });
 }
 
-// All documents consented + company data complete → may proceed to OTP/sign.
+// All documents consented + company data complete → may proceed to sign.
 async function signingPrerequisites(env, user, agreement) {
   const docs = await loadDocuments(env, agreement.id);
   const consents = await loadUserConsents(env, agreement.id, user.id);
@@ -395,71 +375,6 @@ async function signingPrerequisites(env, user, agreement) {
   const customer = await loadCustomer(env, user.customer_id);
   if (!bedrijfCompleet(customer)) return { error: errorResponse('Vul eerst je bedrijfsgegevens aan.', 400) };
   return { docs, consents, customer };
-}
-
-// ── POST /otp/sturen ───────────────────────────────────────────────────────
-async function otpSturen(request, env, user) {
-  if (user.role !== 'eigenaar') return errorResponse('Alleen de eigenaar van het account kan ondertekenen', 403);
-  const body = await readJson(request);
-  const agreement = await loadAgreement(env, user, str(body?.agreement_id));
-  if (!agreement) return errorResponse('Overeenkomst niet gevonden', 404);
-  if (!OPEN_STATUSES.includes(agreement.status)) return errorResponse('Overeenkomst is al ondertekend', 409);
-  const pre = await signingPrerequisites(env, user, agreement);
-  if (pre.error) return pre.error;
-
-  const rl = await rateLimit(env.GOOGLE_TOKENS, `portal:rl:otp:${user.id}`, 5, 15 * 60);
-  if (!rl.allowed) return errorResponse('Te veel aanvragen. Probeer het over een kwartier opnieuw.', 429);
-
-  const code = String(crypto.getRandomValues(new Uint32Array(1))[0] % 1000000).padStart(6, '0');
-  const id = randomId('otp');
-  const now = Date.now();
-  await env.PORTAL_DB
-    .prepare('INSERT INTO agr_otp (id, agreement_id, user_id, code_hash, expires_at, attempts, created_at) VALUES (?, ?, ?, ?, ?, 0, ?)')
-    .bind(id, agreement.id, user.id, await sha256Hex(`${id}:${code}`), now + OTP_TTL_MS, now).run();
-  try {
-    await sendMail(env, user.email, user.naam, 'Je verificatiecode voor Mijn AanloopAI',
-      `<p>Je verificatiecode is <strong style="font-size:22px;letter-spacing:3px">${escapeHtml(code)}</strong>.</p>`
-      + '<p>Geldig 10 minuten. Deel deze code met niemand.</p>');
-  } catch (err) {
-    console.error('[overeenkomst] OTP-mail mislukt:', err.message || err);
-    return errorResponse('De code kon niet worden verstuurd. Probeer het zo opnieuw.', 502);
-  }
-  await writeAudit(env.PORTAL_DB, {
-    customer_id: user.customer_id, actor: user.id, action: 'otp_verstuurd',
-    meta: { agreement_id: agreement.id }, ip: clientIp(request),
-  });
-  return jsonResponse({ ok: true });
-}
-
-// ── POST /otp/verifieer ────────────────────────────────────────────────────
-async function otpVerifieer(request, env, user) {
-  if (user.role !== 'eigenaar') return errorResponse('Alleen de eigenaar van het account kan ondertekenen', 403);
-  const body = await readJson(request);
-  const agreement = await loadAgreement(env, user, str(body?.agreement_id));
-  if (!agreement) return errorResponse('Overeenkomst niet gevonden', 404);
-  const code = str(body?.code, 12);
-  if (!/^\d{6}$/.test(code)) return errorResponse('Voer de code van 6 cijfers in.', 400);
-
-  const row = await env.PORTAL_DB
-    .prepare(`SELECT * FROM agr_otp WHERE agreement_id = ? AND user_id = ? AND expires_at > ?
-              ORDER BY created_at DESC, id DESC LIMIT 1`)
-    .bind(agreement.id, user.id, Date.now()).first();
-  if (!row) return errorResponse('Geen geldige code. Vraag een nieuwe code aan.', 400);
-  if (row.verified_at) return jsonResponse({ ok: true, verified: true });
-  if (row.attempts >= OTP_MAX_ATTEMPTS) return errorResponse('Te veel pogingen. Vraag een nieuwe code aan.', 429);
-
-  const bump = await env.PORTAL_DB
-    .prepare('UPDATE agr_otp SET attempts = attempts + 1 WHERE id = ? AND attempts < ?')
-    .bind(row.id, OTP_MAX_ATTEMPTS).run();
-  if (bump?.meta?.changes !== 1) return errorResponse('Te veel pogingen. Vraag een nieuwe code aan.', 429);
-  const ok = constantTimeEqual(await sha256Hex(`${row.id}:${code}`), row.code_hash);
-  if (!ok) return errorResponse('Onjuiste code.', 400);
-  await env.PORTAL_DB.prepare('UPDATE agr_otp SET verified_at = ? WHERE id = ?').bind(Date.now(), row.id).run();
-  await writeAudit(env.PORTAL_DB, {
-    customer_id: user.customer_id, actor: user.id, action: 'otp_geverifieerd',
-    meta: { agreement_id: agreement.id }, ip: clientIp(request),
-  });
-  return jsonResponse({ ok: true, verified: true });
 }
 
 // ── POST /ondertekenen ─────────────────────────────────────────────────────
@@ -508,8 +423,6 @@ async function ondertekenen(request, env, user) {
     return err.code === 'too_big' ? errorResponse('De handtekening is te groot.', 413) : errorResponse('Ongeldige handtekening', 400);
   }
   const png = { bytes: pngBytes };
-  const verifiedAt = await otpVerifiedAt(env, agreement.id, user.id);
-  if (!verifiedAt) return errorResponse('Bevestig eerst de verificatiecode.', 400);
   if (!env.PORTAL_FILES) return errorResponse('Er ging iets mis', 500);
 
   const ip = clientIp(request);
@@ -523,14 +436,14 @@ async function ondertekenen(request, env, user) {
   const evidence = await computeEvidenceSha256({
     agreementId: agreement.id, userId: user.id, contentHashes: docs.map((d) => d.content_sha256),
     typedName, signedAtMs: signedAt, signatureSha256: await sha256Bytes(png.bytes),
-    otpVerifiedAt: verifiedAt, consentCheckboxAts: docs.map((d) => consents.get(d.id).checkbox_at), acceptedAllAt, amountsAcceptedAt,
+    otpVerifiedAt: null, consentCheckboxAts: docs.map((d) => consents.get(d.id).checkbox_at), acceptedAllAt, amountsAcceptedAt,
   });
 
   // The UNIQUE(agreement_id) constraint is the double-sign guard: claim first.
   const insertSig = () => env.PORTAL_DB
     .prepare(`INSERT INTO agr_signatures (id, agreement_id, user_id, typed_name, signature_key, otp_verified_at,
               signed_at, ip, user_agent, evidence_sha256, accepted_all_at, amounts_accepted_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-    .bind(sigId, agreement.id, user.id, typedName, sigKey, verifiedAt, signedAt, ip, ua, evidence, acceptedAllAt, amountsAcceptedAt).run();
+    .bind(sigId, agreement.id, user.id, typedName, sigKey, OTP_NOT_USED, signedAt, ip, ua, evidence, acceptedAllAt, amountsAcceptedAt).run();
   try {
     await insertSig();
   } catch (err) {
@@ -569,7 +482,7 @@ async function ondertekenen(request, env, user) {
           scrolled_to_end_at: c.scrolled_to_end_at, time_on_document_sec: c.time_on_document_sec, checkbox_at: c.checkbox_at,
         };
       }),
-      otpVerifiedAt: verifiedAt,
+      otpVerifiedAt: null,
       aanloopSignaturePngBytes: await loadAanloopSignature(env),
       concept: false,
     });

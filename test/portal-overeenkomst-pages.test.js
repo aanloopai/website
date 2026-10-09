@@ -23,7 +23,6 @@ describe('portal/overeenkomst.astro', () => {
     'Bedankt, de overeenkomst is ondertekend.',
     'Ga naar aanleverlijst',
     'Wissen',
-    'Stuur code',
     'Ondertekenen',
     'Download als PDF',
     'Gelezen en akkoord',
@@ -36,6 +35,10 @@ describe('portal/overeenkomst.astro', () => {
     expect(ovk).toContain(s);
   });
 
+  it('kent geen verificatiecode meer', () => {
+    for (const w of ['Stuur code', 'Verificatiecode', 'Controleer code', '/otp/']) expect(ovk).not.toContain(w);
+  });
+
   it('hardcodeert de drie toestemmingszinnen niet (komen uit de API)', () => {
     expect(ovk).not.toContain('Ik heb de overeenkomst volledig gelezen');
     expect(ovk).not.toContain('Ik heb de Algemene Voorwaarden');
@@ -45,7 +48,7 @@ describe('portal/overeenkomst.astro', () => {
   });
 
   it('gebruikt de contract-endpoints en de 24px scroll-drempel', () => {
-    for (const ep of ['/lijst', '/open', '/consent', '/bedrijfsgegevens', '/otp/sturen', '/otp/verifieer', '/ondertekenen', '/pdf?id=']) {
+    for (const ep of ['/lijst', '/open', '/consent', '/bedrijfsgegevens', '/ondertekenen', '/pdf?id=']) {
       expect(ovk).toContain(ep);
     }
     expect(ovk).toMatch(/scrollHeight\s*-\s*24/);
