@@ -93,6 +93,15 @@
   ! Cache-Control
   Cache-Control: public, max-age=300, s-maxage=3600
 
+# Open datasets (gegenereerd door scripts/gen-datasets.cjs): door iedereen op te halen,
+# maar niet in de zoekresultaten — de pagina's zelf zijn de indexeerbare ingang.
+/data/*
+  ! Cache-Control
+  Access-Control-Allow-Origin: *
+  X-Robots-Tag: noindex
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=300, s-maxage=3600
+
 # Catch-all: de HTML-default. Dit blok matcht ALLES, ook de assets hierboven —
 # Cloudflare past elke matchende regel toe en plakt gelijknamige headers met een
 # komma aan elkaar. Zonder tegenmaatregel gaf `/_astro/app.css` dus
