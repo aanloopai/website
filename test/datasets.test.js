@@ -10,6 +10,9 @@ const { validate, build, loadSources } = require('../scripts/gen-datasets.cjs');
 const bronBasis = () => structuredClone(loadSources()[0]);
 
 describe('gen-datasets', () => {
+  it('beide datasets staan in de bronmap', () => {
+    expect(loadSources().map((b) => b.slug).sort()).toEqual(['ai-adoptie-marktcontext-2026', 'branche-statistieken-mkb-ai']);
+  });
   it('weigert een datapunt zonder citaat', () => {
     const b = bronBasis();
     b.datapunten[0].bron.citaat = '  ';

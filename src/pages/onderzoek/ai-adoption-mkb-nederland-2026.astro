@@ -37,6 +37,38 @@ const faqItems = [
   { question: 'Hoe vaak wordt het onderzoek herhaald?', answer: 'Jaarlijks. Het 2026-rapport is editie 1; vanaf 2027 publiceren we elke september een vervolg. Hierdoor ontstaat over de jaren een longitudinale dataset van Nederlandse MKB-AI-adoptie - de eerste in zijn soort.' }
 ];
 
+const marktcontextJsonUrl = 'https://aanloopai.nl/data/ai-adoptie-marktcontext-2026.json';
+const marktcontextNaam = 'AI-adoptie marktcontext Nederland/EU 2026';
+const marktcontextCitation = 'Bron: Aanloop AI – AI-adoptie marktcontext Nederland/EU 2026, aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/';
+
+const marktcontextSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  '@id': 'https://aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/#marktcontext',
+  name: marktcontextNaam,
+  description: 'Publieke marktcontext bij het onderzoek AI-adoptie Nederlands MKB 2026: AI-gebruik door ondernemingen in de EU (Eurostat) en Nederland (CBS), het aantal mkb-bedrijven (CBS) en de uitrol van de EU AI Act. Elk datapunt heeft een primaire bron-URL en een letterlijk citaat.',
+  url: 'https://aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/',
+  identifier: 'aanloop-ai-adoptie-marktcontext-2026',
+  inLanguage: 'nl-NL',
+  creator: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl/' },
+  publisher: { '@id': 'https://aanloopai.nl/#organization' },
+  isAccessibleForFree: true,
+  license: 'https://creativecommons.org/licenses/by/4.0/',
+  datePublished: '2026-10-09',
+  dateModified: '2026-10-09',
+  spatialCoverage: { '@type': 'Place', name: 'Nederland en de Europese Unie' },
+  temporalCoverage: '2023/2026',
+  distribution: [
+    {
+      '@type': 'DataDownload',
+      name: 'AI-adoptie marktcontext 2026 (JSON, met bron per datapunt)',
+      encodingFormat: 'application/json',
+      contentUrl: marktcontextJsonUrl,
+    },
+  ],
+  citation: marktcontextCitation,
+};
+
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
@@ -84,7 +116,7 @@ const speakableSchema = {
 <BaseLayout
   title="AI-adoptie Nederlands MKB 2026 - Onderzoek + Benchmark"
   description="Origineel onderzoek naar AI-gebruik in Nederlands MKB. Sector-adoption, top use cases en barrieres. Doe mee en ontvang uw persoonlijke benchmark."
-  schema={[articleSchema, speakableSchema]}
+  schema={[articleSchema, speakableSchema, marktcontextSchema]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">
@@ -120,7 +152,7 @@ const speakableSchema = {
         <div class="card">
           <p class="text-5xl font-bold text-brand-indigo">Q3 '26</p>
           <p class="font-semibold text-navy mt-3">heeft minstens een AI-tool actief</p>
-          <p class="text-sm text-slate-600 mt-2">AI-adoptie per sector — definitieve cijfers verwacht Q3 2026. Referentie: CBS Statline meldde 18% AI-gebruik in 2024.</p>
+          <p class="text-sm text-slate-600 mt-2">AI-adoptie per sector — definitieve cijfers verwacht Q3 2026. Referentie: het CBS meldde 22,7% AI-gebruik in 2024 bij bedrijven met 10 of meer werkzame personen.</p>
         </div>
         <div class="card">
           <p class="text-5xl font-bold text-brand-indigo">Q3 '26</p>
@@ -311,45 +343,46 @@ const speakableSchema = {
 
       <div class="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="card border border-slate-200">
-          <p class="text-4xl font-bold text-brand-indigo">1,4 mln</p>
-          <p class="font-semibold text-navy mt-2">MKB-bedrijven in Nederland</p>
-          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Totaal aantal MKB-bedrijven (0-250 medewerkers) actief in Nederland per 2024.</p>
-          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: CBS Statline, Bedrijven; bedrijfsgrootte 2024</p>
+          <p class="text-4xl font-bold text-brand-indigo">1,56 mln</p>
+          <p class="font-semibold text-navy mt-2">mkb-bedrijven in Nederland</p>
+          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Aantal mkb-bedrijven begin 2024, inclusief zzp'ers (ruim 1,25 miljoen). Het CBS telt hier 1 tot 250 werkzame personen als mkb.</p>
+          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: <a href="https://www.cbs.nl/nl-nl/nieuws/2024/15/ruim-1-5-miljoen-mkb-bedrijven-in-nederland" class="underline" rel="noopener">CBS, Ruim 1,5 miljoen mkb-bedrijven in Nederland</a> (dataset: AI-adoptie marktcontext Nederland/EU 2026)</p>
         </div>
         <div class="card border border-slate-200">
-          <p class="text-4xl font-bold text-brand-indigo">63%</p>
-          <p class="font-semibold text-navy mt-2">van NL werkgelegenheid in MKB</p>
-          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Het Nederlandse MKB is verantwoordelijk voor circa 63% van de totale private werkgelegenheid in Nederland.</p>
-          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: CBS / MKB-Nederland, Jaarcijfers MKB 2023</p>
+          <p class="text-4xl font-bold text-brand-indigo">13,5%</p>
+          <p class="font-semibold text-navy mt-2">van de EU-ondernemingen gebruikt AI (2024)</p>
+          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Aandeel EU-ondernemingen met 10 of meer werknemers dat in 2024 AI-technologieën gebruikte, tegenover 8% in 2023 en 20,0% in 2025.</p>
+          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: <a href="https://ec.europa.eu/eurostat/web/products-eurostat-news/w/ddn-20251211-2" class="underline" rel="noopener">Eurostat, 20% of EU enterprises use AI technologies</a> (dataset: AI-adoptie marktcontext Nederland/EU 2026)</p>
         </div>
         <div class="card border border-slate-200">
-          <p class="text-4xl font-bold text-brand-indigo">34%</p>
-          <p class="font-semibold text-navy mt-2">van EU-bedrijven gebruikt AI (2024)</p>
-          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Aandeel EU-ondernemingen (10+ medewerkers) dat in 2024 minstens een AI-technologie inzet, een stijging van 8 procentpunt t.o.v. 2023.</p>
-          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: Eurostat, ICT Usage in Enterprises Survey 2024</p>
+          <p class="text-4xl font-bold text-brand-indigo">22,7%</p>
+          <p class="font-semibold text-navy mt-2">van de NL-bedrijven (10+) gebruikt AI (2024)</p>
+          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Aandeel Nederlandse bedrijven met 10 of meer werkzame personen dat in 2024 een of meer AI-technologieën gebruikte.</p>
+          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: <a href="https://www.cbs.nl/nl-nl/nieuws/2025/09/gebruik-kunstmatige-intelligentie--ai---door-bedrijven-neemt-toe" class="underline" rel="noopener">CBS, Gebruik van AI door bedrijven neemt toe</a> (dataset: AI-adoptie marktcontext Nederland/EU 2026)</p>
+        </div>
+        <div class="card border border-slate-200">
+          <p class="text-4xl font-bold text-brand-indigo">33%</p>
+          <p class="font-semibold text-navy mt-2">van de NL-bedrijven (10+) gebruikt AI (2025)</p>
+          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Aandeel Nederlandse bedrijven met 10 of meer werkzame personen dat in 2025 AI-technologie gebruikte. Voorlopig cijfer; het CBS gebruikt voor 2025 een andere meetreeks dan voor 2024, dus de twee percentages zijn niet één-op-één vergelijkbaar.</p>
+          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: <a href="https://www.cbs.nl/nl-nl/longread/rapportages/2026/digitalisering-en-kenniseconomie-2025/3-ict-gebruik-bij-bedrijven" class="underline" rel="noopener">CBS, Digitalisering en kenniseconomie 2025</a> (dataset: AI-adoptie marktcontext Nederland/EU 2026)</p>
+        </div>
+        <div class="card border border-slate-200">
+          <p class="text-4xl font-bold text-brand-indigo">feb 2025</p>
+          <p class="font-semibold text-navy mt-2">EU AI Act: verboden praktijken van toepassing</p>
+          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Sinds 2 februari 2025 zijn de verboden AI-praktijken en de AI-geletterdheidsverplichtingen van de EU AI Act van toepassing.</p>
+          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" class="underline" rel="noopener">Europese Commissie, AI Act</a> (dataset: AI-adoptie marktcontext Nederland/EU 2026)</p>
         </div>
         <div class="card border border-slate-200">
           <p class="text-4xl font-bold text-brand-indigo">aug 2026</p>
-          <p class="font-semibold text-navy mt-2">EU AI Act verbodsbepalingen van kracht</p>
-          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Vanaf 2 augustus 2026 gelden de verbodsbepalingen voor onaanvaardbaar-risicovolle AI-systemen voor alle organisaties die AI inzetten in de EU, inclusief MKB.</p>
-          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: Verordening (EU) 2024/1689, Publicatieblad EU</p>
-        </div>
-        <div class="card border border-slate-200">
-          <p class="text-4xl font-bold text-brand-indigo">+18 pp</p>
-          <p class="font-semibold text-navy mt-2">AI-adoptiegroei EU MKB in 2 jaar</p>
-          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Het aandeel EU-bedrijven met 10-49 medewerkers dat AI inzet groeide van 16% (2022) naar 34% (2024), een verdubbeling in twee jaar.</p>
-          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: Eurostat, ICT Usage in Enterprises 2022-2024</p>
-        </div>
-        <div class="card border border-slate-200">
-          <p class="text-4xl font-bold text-brand-indigo">top-3</p>
-          <p class="font-semibold text-navy mt-2">NL in EU Digital Economy Index</p>
-          <p class="text-sm text-slate-500 mt-2 leading-relaxed">Nederland behoort consistent tot de top-3 van de EU op de DESI-ranglijst (Digital Economy and Society Index), met name op connectiviteit en digitale vaardigheden.</p>
-          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: Europese Commissie, DESI 2023</p>
+          <p class="font-semibold text-navy mt-2">EU AI Act: algemene toepassing</p>
+          <p class="text-sm text-slate-500 mt-2 leading-relaxed">De AI Act is sinds 2 augustus 2026 algemeen van toepassing, met uitzonderingen. Voor hoog-risicosystemen gelden verlengde overgangstermijnen.</p>
+          <p class="text-xs text-slate-400 mt-3 font-medium">Bron: <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" class="underline" rel="noopener">Europese Commissie, AI Act</a> (dataset: AI-adoptie marktcontext Nederland/EU 2026)</p>
         </div>
       </div>
-      <p class="mt-6 text-xs text-slate-400 italic">
-        Citeerbaar als: "Bron: Aanloop AI onderzoekspagina, aanloopai.nl/onderzoek/ai-adoption-mkb-nederland-2026/ — met verwijzing naar oorspronkelijke bronnen (CBS, Eurostat, EU-verordening)."
-      </p>
+      <div class="mt-6 card p-6 bg-white border border-slate-200 text-sm text-slate-700 leading-relaxed">
+        <p><strong class="text-navy">Data downloaden (JSON):</strong> <a href={marktcontextJsonUrl} class="text-brand-indigo underline">ai-adoptie-marktcontext-2026.json</a> (CC BY 4.0). Bevat alleen cijfers met bron-URL en letterlijk citaat.</p>
+        <p class="mt-2"><strong class="text-navy">Citeren als:</strong> {marktcontextCitation}</p>
+      </div>
     </div>
   </section>
 
