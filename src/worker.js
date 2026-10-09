@@ -47,7 +47,7 @@ import { tierForPlanSlug } from './data/funnel-map.ts';
 import { extractBusinessFacts, normalizeSiteUrl, isFetchableSiteUrl } from './lib/site-prefill.js';
 import { handleVoorstelClaim } from './lib/voorstel-claim.js';
 import { handleVoorstelVerify } from './lib/voorstel-verify.js';
-import { visibilityIngest, visibilityEvent, beaconScript, gbpSyncIfDue } from './lib/visibility.js';
+import { visibilityIngest, visibilityEvent, visibilitySummary, beaconScript, gbpSyncIfDue } from './lib/visibility.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -1424,6 +1424,10 @@ export default {
     // Site-acties beacon: public, cross-origin, no auth (counts only).
     if (url.pathname === '/api/visibility/event') {
       return visibilityEvent(request, env);
+    }
+    // Machine-readable per-site summary for the AGA digest (HMAC over raw query).
+    if (url.pathname === '/api/visibility/summary') {
+      return visibilitySummary(request, env);
     }
     if (url.pathname === '/v.js') {
       return beaconScript();
