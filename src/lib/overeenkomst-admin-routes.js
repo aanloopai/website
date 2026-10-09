@@ -13,6 +13,7 @@ import {
   DEFAULT_UPLOAD_ITEMS, writeAudit, ensurePortaalSchema,
 } from './overeenkomst-core.js';
 import { buildAgreementPdf } from './agreement-pdf.js';
+import { attachmentDisposition } from './aanlever-routes.js';
 
 const SITE_ORIGIN = 'https://aanloopai.nl';
 const MAX_FILE_MIB = 25;
@@ -339,7 +340,7 @@ async function versturen(request, env, user) {
         `<p>Beste ${voornaam},</p>
 <p>In Mijn AanloopAI vind je de overeenkomst voor ${project}. Lees de documenten, onderteken digitaal en lever daarna de gevraagde bestanden aan.</p>
 ${mailButton(link, 'Inloggen')}
-<p style="font-size:13px;color:#64748b">Je ontvangt na het klikken een inloglink per e-mail (24 uur geldig).</p>`);
+<p style="font-size:13px;color:#64748b">Je ontvangt na het klikken een inloglink per e-mail.</p>`);
       mailed += 1;
     } catch (err) {
       lastErr = err;
@@ -545,12 +546,11 @@ async function aanleverBestand(env, url) {
   if (!up || !up.file_key || !env.PORTAL_FILES) return errorResponse('Bestand niet gevonden', 404);
   const stored = await env.PORTAL_FILES.getWithMetadata(up.file_key, 'arrayBuffer');
   if (!stored?.value) return errorResponse('Bestand niet gevonden', 404);
-  const name = str(up.original_name || stored.metadata?.name || 'bestand').replace(/["\r\n\\]/g, '_');
   return new Response(stored.value, {
     status: 200,
     headers: {
       'Content-Type': up.mime || stored.metadata?.mime || 'application/octet-stream',
-      'Content-Disposition': `attachment; filename="${name}"`,
+      'Content-Disposition': attachmentDisposition(up.original_name || stored.metadata?.name || 'bestand'),
       'Cache-Control': 'private, no-store',
       'X-Content-Type-Options': 'nosniff',
     },

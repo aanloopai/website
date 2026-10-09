@@ -76,8 +76,13 @@ export function minReadSeconds(markdown) {
   return Math.max(20, Math.ceil(wordCount(markdown) / 8));
 }
 
-export async function computeEvidenceSha256({ contentHashes, typedName, signedAtMs }) {
-  return sha256Hex(`${contentHashes.join('|')}|${typedName}|${signedAtMs}`);
+// Fixed key order: the hash must stay reproducible from the stored audit data.
+export async function computeEvidenceSha256({
+  agreementId, userId, contentHashes, typedName, signedAtMs, signatureSha256, otpVerifiedAt, consentCheckboxAts,
+}) {
+  return sha256Hex(JSON.stringify({
+    agreementId, userId, contentHashes, typedName, signedAtMs, signatureSha256, otpVerifiedAt, consentCheckboxAts,
+  }));
 }
 
 // The 13 items of SPEC §7. max_mb capped at 25 (KV value limit).

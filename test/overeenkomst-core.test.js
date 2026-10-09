@@ -43,11 +43,28 @@ describe('minReadSeconds', () => {
 });
 
 describe('evidence hash', () => {
-  it('is sha256 of hashes|name|ts and deterministic', async () => {
-    const a = await computeEvidenceSha256({ contentHashes: ['h1', 'h2'], typedName: 'Jan', signedAtMs: 5 });
-    expect(a).toBe(await sha256Hex('h1|h2|Jan|5'));
+  const base = {
+    agreementId: 'agr_1', userId: 'usr_1', contentHashes: ['h1', 'h2'], typedName: 'Jan', signedAtMs: 5,
+    signatureSha256: 'sig', otpVerifiedAt: 4, consentCheckboxAts: [1, 2],
+  };
+  it('is sha256 of the fixed-order JSON object and deterministic', async () => {
+    const a = await computeEvidenceSha256(base);
+    expect(a).toBe(await sha256Hex(JSON.stringify({
+      agreementId: 'agr_1', userId: 'usr_1', contentHashes: ['h1', 'h2'], typedName: 'Jan', signedAtMs: 5,
+      signatureSha256: 'sig', otpVerifiedAt: 4, consentCheckboxAts: [1, 2],
+    })));
     expect(a).toMatch(/^[0-9a-f]{64}$/);
-    expect(await computeEvidenceSha256({ contentHashes: ['h1', 'h2'], typedName: 'Jan', signedAtMs: 6 })).not.toBe(a);
+    // caller key order is irrelevant
+    expect(await computeEvidenceSha256({ ...base, signedAtMs: 5, agreementId: 'agr_1' })).toBe(a);
+  });
+  it('changes when any covered field changes', async () => {
+    const a = await computeEvidenceSha256(base);
+    for (const patch of [
+      { agreementId: 'agr_2' }, { userId: 'usr_2' }, { contentHashes: ['h1', 'h3'] }, { typedName: 'Piet' },
+      { signedAtMs: 6 }, { signatureSha256: 'sig2' }, { otpVerifiedAt: 3 }, { consentCheckboxAts: [1, 3] },
+    ]) {
+      expect(await computeEvidenceSha256({ ...base, ...patch }), JSON.stringify(patch)).not.toBe(a);
+    }
   });
 });
 

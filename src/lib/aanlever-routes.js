@@ -40,6 +40,12 @@ export function sanitizeFileName(name) {
 }
 function asciiFallback(name) { return name.replace(/[^\x20-\x7e]/g, '_').replace(/[\\"%;]/g, '_'); }
 
+// Content-Disposition safe for any name: ASCII fallback + RFC 5987 UTF-8 form (non-Latin-1 throws in workerd).
+export function attachmentDisposition(rawName) {
+  const name = sanitizeFileName(rawName);
+  return `attachment; filename="${asciiFallback(name)}"; filename*=UTF-8''${encodeURIComponent(name)}`;
+}
+
 const startsWith = (b, sig, off = 0) => b.length >= off + sig.length && sig.every((x, i) => b[off + i] === x);
 // Magic-byte check per extension. Unknown extensions are not content-checked.
 function magicOk(ext, bytes) {

@@ -20,6 +20,9 @@ const OTP_TTL_MS = 10 * 60 * 1000;
 const OTP_VERIFIED_VALID_MS = 30 * 60 * 1000;
 const OTP_MAX_ATTEMPTS = 5;
 const MAX_SIGNATURE_BYTES = 300 * 1024;
+const MIN_SIGNATURE_PX = 10;
+const MAX_SIGNATURE_PX = 2000;
+const ORPHAN_SIGNATURE_MS = 60 * 1000;
 const OPEN_STATUSES = ['sent', 'in_progress'];
 const PNG_MAGIC = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 
@@ -88,12 +91,12 @@ async function loadDocuments(env, agreementId) {
   return res.results || [];
 }
 
-// Latest non-superseded consent per document (any user of the customer).
-async function loadActiveConsents(env, agreementId) {
+// Same, but only the given user's own consents (signer must consent personally).
+async function loadUserConsents(env, agreementId, userId) {
   const res = await env.PORTAL_DB
     .prepare(`SELECT c.* FROM agr_consents c JOIN agreement_documents d ON d.id = c.agreement_document_id
-              WHERE d.agreement_id = ? AND c.superseded = 0 ORDER BY c.created_at, c.id`)
-    .bind(agreementId).all();
+              WHERE d.agreement_id = ? AND c.user_id = ? AND c.superseded = 0 ORDER BY c.created_at, c.id`)
+    .bind(agreementId, userId).all();
   const byDoc = new Map();
   for (const c of res.results || []) byDoc.set(c.agreement_document_id, c);
   return byDoc;
@@ -181,10 +184,10 @@ async function detail(env, user, url) {
   if (!agreement) return errorResponse('Overeenkomst niet gevonden', 404);
   const customer = await loadCustomer(env, user.customer_id);
   let docs = await loadDocuments(env, agreement.id);
-  if (agreement.status !== 'signed' && (await consentEverCount(env, agreement.id)) === 0) {
+  if (user.role !== 'kijker' && agreement.status !== 'signed' && (await consentEverCount(env, agreement.id)) === 0) {
     docs = await rerenderDocuments(env, agreement, customer, docs);
   }
-  const consents = await loadActiveConsents(env, agreement.id);
+  const consents = await loadUserConsents(env, agreement.id, user.id);
   const sig = await env.PORTAL_DB
     .prepare('SELECT typed_name, signed_at FROM agr_signatures WHERE agreement_id = ?')
     .bind(agreement.id).first();
@@ -231,6 +234,14 @@ async function bedrijfsgegevens(request, env, user) {
   const btw = normalizeBtw(body.btw_id);
   if (!validKvk(kvk)) return errorResponse('Een KvK-nummer bestaat uit 8 cijfers.', 400);
   if (!validBtw(btw)) return errorResponse('Een btw-nummer ziet eruit als NL123456789B01.', 400);
+  const locked = await env.PORTAL_DB
+    .prepare(`SELECT COUNT(*) AS n FROM agr_consents c JOIN agreement_documents d ON d.id = c.agreement_document_id
+              JOIN agreements a ON a.id = d.agreement_id
+              WHERE a.customer_id = ? AND c.superseded = 0`)
+    .bind(user.customer_id).first();
+  if (Number(locked?.n || 0) > 0) {
+    return errorResponse('Bedrijfsgegevens kunnen niet meer worden gewijzigd nadat je akkoord hebt gegeven. Neem contact op met AanloopAI.', 409);
+  }
   await env.PORTAL_DB.prepare('UPDATE customers SET kvk = ?, btw_id = ? WHERE id = ?')
     .bind(kvk, btw, user.customer_id).run();
   await writeAudit(env.PORTAL_DB, {
@@ -282,13 +293,19 @@ async function storeConsent(request, env, user) {
     .bind(doc.id, user.id).first();
   if (!opened) return errorResponse('Document is nog niet geopend', 400);
 
+  const customer = await loadCustomer(env, user.customer_id);
+  if (!String(customer?.kvk ?? '').trim() || !String(customer?.btw_id ?? '').trim()) {
+    return errorResponse('Vul eerst de bedrijfsgegevens aan', 400);
+  }
+
   const now = Date.now();
   const minSec = minReadSeconds(doc.rendered_markdown);
-  const timeSec = Math.floor(Number(body.time_on_document_sec));
   const scrolledAt = Math.floor(Number(body.scrolled_to_end_at));
   const tooEarly = errorResponse('Lees het document volledig voordat je akkoord gaat.', 400);
+  if (!Number.isFinite(scrolledAt) || scrolledAt < opened.opened_at || scrolledAt > now + 5000) return tooEarly;
+  // Client-claimed time can never exceed what the server measured (+2s slack).
+  const timeSec = Math.min(Math.floor(Number(body.time_on_document_sec)), Math.floor((now - opened.opened_at) / 1000) + 2);
   if (!Number.isFinite(timeSec) || timeSec < minSec) return tooEarly;
-  if (!Number.isFinite(scrolledAt) || scrolledAt <= 0) return tooEarly;
   if (now - opened.opened_at < minSec * 1000) return tooEarly;
 
   const ip = clientIp(request);
@@ -325,7 +342,7 @@ async function storeConsent(request, env, user) {
 // All documents consented + company data complete → may proceed to OTP/sign.
 async function signingPrerequisites(env, user, agreement) {
   const docs = await loadDocuments(env, agreement.id);
-  const consents = await loadActiveConsents(env, agreement.id);
+  const consents = await loadUserConsents(env, agreement.id, user.id);
   if (docs.length < TEMPLATE_SLUGS.length || !docs.every((d) => consents.has(d.id))) {
     return { error: errorResponse('Bevestig eerst alle drie de documenten.', 400) };
   }
@@ -385,7 +402,10 @@ async function otpVerifieer(request, env, user) {
   if (row.verified_at) return jsonResponse({ ok: true, verified: true });
   if (row.attempts >= OTP_MAX_ATTEMPTS) return errorResponse('Te veel pogingen. Vraag een nieuwe code aan.', 429);
 
-  await env.PORTAL_DB.prepare('UPDATE agr_otp SET attempts = attempts + 1 WHERE id = ?').bind(row.id).run();
+  const bump = await env.PORTAL_DB
+    .prepare('UPDATE agr_otp SET attempts = attempts + 1 WHERE id = ? AND attempts < ?')
+    .bind(row.id, OTP_MAX_ATTEMPTS).run();
+  if (bump?.meta?.changes !== 1) return errorResponse('Te veel pogingen. Vraag een nieuwe code aan.', 429);
   const ok = constantTimeEqual(await sha256Hex(`${row.id}:${code}`), row.code_hash);
   if (!ok) return errorResponse('Onjuiste code.', 400);
   await env.PORTAL_DB.prepare('UPDATE agr_otp SET verified_at = ? WHERE id = ?').bind(Date.now(), row.id).run();
@@ -407,6 +427,11 @@ function decodeSignaturePng(dataUrl) {
   try { bytes = base64ToBytes(m[1]); } catch { return null; }
   if (bytes.length > MAX_SIGNATURE_BYTES) return { tooBig: true };
   if (bytes.length < PNG_MAGIC.length || !PNG_MAGIC.every((b, i) => bytes[i] === b)) return null;
+  // IHDR: width/height are big-endian uint32 at bytes 16-23; reject PNG bombs / tiny images.
+  if (bytes.length < 24) return null;
+  const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const w = dv.getUint32(16); const h = dv.getUint32(20);
+  if (w < MIN_SIGNATURE_PX || h < MIN_SIGNATURE_PX || w > MAX_SIGNATURE_PX || h > MAX_SIGNATURE_PX) return null;
   return { bytes };
 }
 
@@ -419,6 +444,11 @@ async function loadAanloopSignature(env) {
     console.error('[overeenkomst] handtekening-asset niet leesbaar:', err.message || err);
     return null;
   }
+}
+
+async function dropSignature(env, id, key) {
+  try { await env.PORTAL_DB.prepare('DELETE FROM agr_signatures WHERE id = ?').bind(id).run(); } catch { /* best effort */ }
+  try { if (key) await env.PORTAL_FILES.delete(key); } catch { /* best effort */ }
 }
 
 function pdfDocsPayload(docs) {
@@ -445,7 +475,7 @@ async function ondertekenen(request, env, user) {
   if (body.bevoegd !== true) return errorResponse('Bevestig dat je bevoegd bent om te ondertekenen.', 400);
   const png = decodeSignaturePng(body.signature_png);
   if (png?.tooBig) return errorResponse('De handtekening is te groot.', 413);
-  if (!png) return errorResponse('Zet eerst je handtekening.', 400);
+  if (!png) return errorResponse('Ongeldige handtekening', 400);
   const verifiedAt = await otpVerifiedAt(env, agreement.id, user.id);
   if (!verifiedAt) return errorResponse('Bevestig eerst de verificatiecode.', 400);
   if (!env.PORTAL_FILES) return errorResponse('Er ging iets mis', 500);
@@ -456,18 +486,31 @@ async function ondertekenen(request, env, user) {
   const sigId = randomId('sig');
   const sigKey = `portal:sig:${sigId}`;
   const evidence = await computeEvidenceSha256({
-    contentHashes: docs.map((d) => d.content_sha256), typedName, signedAtMs: signedAt,
+    agreementId: agreement.id, userId: user.id, contentHashes: docs.map((d) => d.content_sha256),
+    typedName, signedAtMs: signedAt, signatureSha256: await sha256Bytes(png.bytes),
+    otpVerifiedAt: verifiedAt, consentCheckboxAts: docs.map((d) => consents.get(d.id).checkbox_at),
   });
 
   // The UNIQUE(agreement_id) constraint is the double-sign guard: claim first.
+  const insertSig = () => env.PORTAL_DB
+    .prepare(`INSERT INTO agr_signatures (id, agreement_id, user_id, typed_name, signature_key, otp_verified_at,
+              signed_at, ip, user_agent, evidence_sha256) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+    .bind(sigId, agreement.id, user.id, typedName, sigKey, verifiedAt, signedAt, ip, ua, evidence).run();
   try {
-    await env.PORTAL_DB
-      .prepare(`INSERT INTO agr_signatures (id, agreement_id, user_id, typed_name, signature_key, otp_verified_at,
-                signed_at, ip, user_agent, evidence_sha256) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-      .bind(sigId, agreement.id, user.id, typedName, sigKey, verifiedAt, signedAt, ip, ua, evidence).run();
+    await insertSig();
   } catch (err) {
     console.error('[overeenkomst] handtekening opslaan mislukt:', err.message || err);
-    return errorResponse('Overeenkomst is al ondertekend', 409);
+    // An orphan row (earlier attempt died after the claim) must not lock the customer out forever.
+    const existing = await env.PORTAL_DB
+      .prepare(`SELECT s.id, s.signature_key, s.signed_at, a.status, a.pdf_key FROM agr_signatures s
+                JOIN agreements a ON a.id = s.agreement_id WHERE s.agreement_id = ?`)
+      .bind(agreement.id).first();
+    // The age guard keeps us from deleting the claim of a sign request that is still in flight.
+    const orphan = existing && (existing.status !== 'signed' || !existing.pdf_key)
+      && Date.now() - existing.signed_at > ORPHAN_SIGNATURE_MS;
+    if (!orphan) return errorResponse('Overeenkomst is al ondertekend', 409);
+    await dropSignature(env, existing.id, existing.signature_key);
+    try { await insertSig(); } catch { return errorResponse('Overeenkomst is al ondertekend', 409); }
   }
 
   let pdfBytes;
@@ -496,20 +539,30 @@ async function ondertekenen(request, env, user) {
   } catch (err) {
     // Roll back our own just-claimed signature row so the customer can retry.
     console.error('[overeenkomst] PDF/KV mislukt, handtekening teruggedraaid:', err.message || err);
-    try { await env.PORTAL_DB.prepare('DELETE FROM agr_signatures WHERE id = ?').bind(sigId).run(); } catch { /* best effort */ }
-    try { await env.PORTAL_FILES.delete(sigKey); } catch { /* best effort */ }
+    await dropSignature(env, sigId, sigKey);
     return errorResponse('Ondertekenen is niet gelukt. Probeer het opnieuw.', 500);
   }
 
   const pdfSha = await sha256Bytes(pdfBytes);
-  await env.PORTAL_DB
-    .prepare(`UPDATE agreements SET status = 'signed', signed_at = ?, pdf_key = ?, pdf_sha256 = ?, evidence_sha256 = ?
-              WHERE id = ?`)
-    .bind(signedAt, pdfKey, pdfSha, evidence, agreement.id).run();
-  await writeAudit(env.PORTAL_DB, {
-    customer_id: user.customer_id, actor: user.id, action: 'ondertekend',
-    meta: { agreement_id: agreement.id, evidence_sha256: evidence, pdf_sha256: pdfSha, typed_name: typedName }, ip,
-  });
+  // One batch: status flip + audit row. The audit insert only fires when the UPDATE changed a row.
+  const batchRes = await env.PORTAL_DB.batch([
+    env.PORTAL_DB
+      .prepare(`UPDATE agreements SET status = 'signed', signed_at = ?, pdf_key = ?, pdf_sha256 = ?, evidence_sha256 = ?
+                WHERE id = ? AND status IN ('sent', 'in_progress')`)
+      .bind(signedAt, pdfKey, pdfSha, evidence, agreement.id),
+    env.PORTAL_DB
+      .prepare(`INSERT INTO portal_audit_log (id, customer_id, actor, action, meta_json, ip, created_at)
+                SELECT ?, ?, ?, ?, ?, ?, ? WHERE changes() = 1`)
+      .bind(randomId('aud'), user.customer_id, user.id, 'ondertekend',
+        JSON.stringify({ agreement_id: agreement.id, evidence_sha256: evidence, pdf_sha256: pdfSha, typed_name: typedName }),
+        ip, Date.now()),
+  ]);
+  if (batchRes?.[0]?.meta?.changes !== 1) {
+    // Lost a race (e.g. admin cancelled meanwhile): undo our claim and artifacts.
+    await dropSignature(env, sigId, sigKey);
+    try { await env.PORTAL_FILES.delete(pdfKey); } catch { /* best effort */ }
+    return errorResponse('Overeenkomst kan niet meer ondertekend worden', 409);
+  }
 
   // Mails + Telegram: failures are logged, never fatal (signature is stored).
   const attachments = [{ name: `overeenkomst-${safeFileId(agreement.id)}.pdf`, contentBase64: bytesToBase64(pdfBytes) }];
@@ -548,6 +601,7 @@ async function pdfDownload(env, user, url) {
     const buf = await env.PORTAL_FILES.get(agreement.pdf_key, 'arrayBuffer');
     if (buf) return new Response(buf, { status: 200, headers });
   }
+  if (agreement.status === 'signed') return errorResponse('PDF niet gevonden', 404);
   // Not signed (or PDF missing): concept copy from the stored documents.
   const customer = await loadCustomer(env, user.customer_id);
   const docs = await loadDocuments(env, agreement.id);

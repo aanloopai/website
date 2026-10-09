@@ -12,7 +12,14 @@ import {
 } from './_portal-test-helpers.js';
 
 const originalFetch = globalThis.fetch;
-const PNG_1PX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+// Synthetic PNG header (magic + IHDR with the given size); the PDF builder is mocked in this file.
+function pngUrl(w, h) {
+  const b = Buffer.alloc(33);
+  Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]).copy(b, 0);
+  b.writeUInt32BE(13, 8); b.write('IHDR', 12); b.writeUInt32BE(w, 16); b.writeUInt32BE(h, 20);
+  return `data:image/png;base64,${b.toString('base64')}`;
+}
+const PNG_1PX = pngUrl(300, 100);
 const WORDS = Array.from({ length: 40 }, (_, i) => `woord${i}`).join(' '); // min = 20s
 
 let d1; let kv; let env; let mails; let telegrams;
@@ -102,6 +109,32 @@ describe('consent', () => {
     expect(d1.raw.prepare("SELECT COUNT(*) AS n FROM portal_audit_log WHERE action = 'consent_vervangen'").get().n).toBe(1);
   });
 
+  it('weigert scrolled_to_end_at vóór opened_at en in de toekomst', async () => {
+    seedAgreement(); backdateOpen('agd_0');
+    for (const scrolled of [1, Date.now() + 60000]) {
+      const res = await post('/api/portal/overeenkomst/consent', 'usr_1',
+        { document_id: 'agd_0', scrolled_to_end_at: scrolled, time_on_document_sec: 60 });
+      expect(res.status).toBe(400);
+    }
+  });
+
+  it('kapt time_on_document_sec af op de server-gemeten tijd (+2s)', async () => {
+    seedAgreement(); backdateOpen('agd_0'); // 120s geleden geopend
+    const res = await post('/api/portal/overeenkomst/consent', 'usr_1',
+      { document_id: 'agd_0', scrolled_to_end_at: Date.now(), time_on_document_sec: 99999 });
+    expect(res.status).toBe(200);
+    expect((await res.json()).consent.time_on_document_sec).toBeLessThanOrEqual(122);
+  });
+
+  it('weigert consent zolang kvk of btw ontbreekt', async () => {
+    seedAgreement(); backdateOpen('agd_0');
+    d1.raw.prepare("UPDATE customers SET kvk = '' WHERE id = 'cus_1'").run();
+    const res = await post('/api/portal/overeenkomst/consent', 'usr_1',
+      { document_id: 'agd_0', scrolled_to_end_at: Date.now(), time_on_document_sec: 60 });
+    expect(res.status).toBe(400);
+    expect((await res.json()).error).toBe('Vul eerst de bedrijfsgegevens aan');
+  });
+
   it('kijker krijgt 403 op open, consent, otp, ondertekenen en bedrijfsgegevens', async () => {
     seedAgreement({ consents: 3 });
     for (const [p, json] of [
@@ -150,6 +183,13 @@ describe('GET detail + bevriezen', () => {
 });
 
 describe('bedrijfsgegevens', () => {
+  it('is vergrendeld (409) zodra er een consent bestaat', async () => {
+    seedAgreement({ consents: 1 });
+    const res = await post('/api/portal/overeenkomst/bedrijfsgegevens', 'usr_1', { kvk: '87654321', btw_id: 'NL987654321B02' });
+    expect(res.status).toBe(409);
+    expect(d1.raw.prepare('SELECT kvk FROM customers WHERE id = ?').get('cus_1').kvk).toBe('12345678');
+  });
+
   it('valideert kvk en btw en slaat genormaliseerd op', async () => {
     const bad = await post('/api/portal/overeenkomst/bedrijfsgegevens', 'usr_1', { kvk: '123', btw_id: 'x' });
     expect(bad.status).toBe(400);
@@ -193,6 +233,14 @@ describe('OTP', () => {
     const locked = await verify(code);
     expect(locked.status).toBe(429);
     expect((await locked.json()).error).toBe('Te veel pogingen. Vraag een nieuwe code aan.');
+  });
+
+  it('consents van een andere gebruiker tellen niet mee voor de eigenaar', async () => {
+    seedAgreement();
+    for (let i = 0; i < 3; i++) addConsent(i, 'usr_3'); // bewerker heeft akkoord gegeven, eigenaar niet
+    const res = await post('/api/portal/overeenkomst/otp/sturen', 'usr_1', { agreement_id: 'agr_1' });
+    expect(res.status).toBe(400);
+    expect(mails).toHaveLength(0);
   });
 
   it('verifieert de juiste code', async () => {
@@ -275,6 +323,67 @@ describe('ondertekenen', () => {
     globalThis.fetch = vi.fn(async () => new Response('boem', { status: 500 }));
     expect((await sign()).status).toBe(200);
     expect(d1.raw.prepare('SELECT status FROM agreements WHERE id = ?').get('agr_1').status).toBe('signed');
+  });
+
+  it('weigert PNG-afmetingen buiten 10..2000 px (400, niets opgeslagen)', async () => {
+    seedAgreement({ consents: 3 });
+    await verify(await sendOtp());
+    for (const url of [pngUrl(9, 100), pngUrl(100, 9), pngUrl(2001, 100), pngUrl(100, 5000)]) {
+      const res = await sign({ signature_png: url });
+      expect(res.status).toBe(400);
+      expect((await res.json()).error).toBe('Ongeldige handtekening');
+    }
+    expect(d1.raw.prepare('SELECT COUNT(*) AS n FROM agr_signatures').get().n).toBe(0);
+  });
+
+  it('orphan handtekening-rij sluit de klant niet buiten: wordt opgeruimd en opnieuw geprobeerd', async () => {
+    seedAgreement({ consents: 3 });
+    await verify(await sendOtp());
+    d1.raw.prepare(`INSERT INTO agr_signatures (id, agreement_id, user_id, typed_name, signature_key, otp_verified_at, signed_at, evidence_sha256)
+                    VALUES ('sig_orphan','agr_1','usr_1','Ron','portal:sig:sig_orphan',1,?, 'x')`).run(Date.now() - 5 * 60 * 1000);
+    await kv.put('portal:sig:sig_orphan', new ArrayBuffer(1), {});
+    expect((await sign()).status).toBe(200);
+    expect(kv.store.has('portal:sig:sig_orphan')).toBe(false);
+    const rows = d1.raw.prepare('SELECT id FROM agr_signatures').all();
+    expect(rows).toHaveLength(1);
+    expect(rows[0].id).not.toBe('sig_orphan');
+    expect(d1.raw.prepare('SELECT status FROM agreements WHERE id = ?').get('agr_1').status).toBe('signed');
+  });
+
+  it('een verse (nog lopende) handtekening-claim blijft staan: 409', async () => {
+    seedAgreement({ consents: 3 });
+    await verify(await sendOtp());
+    d1.raw.prepare(`INSERT INTO agr_signatures (id, agreement_id, user_id, typed_name, signature_key, otp_verified_at, signed_at, evidence_sha256)
+                    VALUES ('sig_fresh','agr_1','usr_1','Ron','portal:sig:sig_fresh',1,?, 'x')`).run(Date.now());
+    expect((await sign()).status).toBe(409);
+    expect(d1.raw.prepare('SELECT id FROM agr_signatures').all().map((r) => r.id)).toEqual(['sig_fresh']);
+  });
+
+  it('admin-annulering tijdens het tekenen: 409, handtekening en PDF teruggedraaid, geen audit', async () => {
+    seedAgreement({ consents: 3 });
+    await verify(await sendOtp());
+    const realPut = kv.put.bind(kv);
+    kv.put = async (key, ...rest) => { // cancel right after the PDF is stored, before the final UPDATE
+      await realPut(key, ...rest);
+      if (key === 'portal:pdf:agr_1') d1.raw.prepare("UPDATE agreements SET status = 'cancelled' WHERE id = 'agr_1'").run();
+    };
+    const res = await sign();
+    expect(res.status).toBe(409);
+    expect((await res.json()).error).toBe('Overeenkomst kan niet meer ondertekend worden');
+    expect(d1.raw.prepare('SELECT COUNT(*) AS n FROM agr_signatures').get().n).toBe(0);
+    expect(kv.store.has('portal:pdf:agr_1')).toBe(false);
+    expect(d1.raw.prepare("SELECT COUNT(*) AS n FROM portal_audit_log WHERE action = 'ondertekend'").get().n).toBe(0);
+    expect(mails).toHaveLength(1); // only the OTP mail
+  });
+
+  it('ondertekende overeenkomst zonder PDF in KV: 404 in plaats van concept-PDF', async () => {
+    seedAgreement({ consents: 3 });
+    await verify(await sendOtp());
+    expect((await sign()).status).toBe(200);
+    kv.store.delete('portal:pdf:agr_1');
+    const res = await call('/api/portal/overeenkomst/pdf?id=agr_1', { userId: 'usr_1' });
+    expect(res.status).toBe(404);
+    expect((await res.json()).error).toBe('PDF niet gevonden');
   });
 
   it('concept-PDF voor niet-ondertekende overeenkomst', async () => {

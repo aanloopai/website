@@ -18,6 +18,12 @@ const HEAD_FILL = rgb(0.93, 0.93, 0.95);
 
 const EXTRA_WINANSI = new Set(['€', '‘', '’', '“', '”', '–', '—', '…', '•', '‚', '„', '†', '‡', '‰', '‹', '›', '™', 'Œ', 'œ', 'Š', 'š', 'Ž', 'ž', 'Ÿ', 'ƒ', 'ˆ', '˜']);
 
+const LETTER_MAP = {
+  'ı': 'i', 'İ': 'I', 'ł': 'l', 'Ł': 'L', 'đ': 'd', 'Đ': 'D', 'ø': 'o', 'Ø': 'O',
+  'ş': 's', 'Ş': 'S', 'ğ': 'g', 'Ğ': 'G', 'ț': 't', 'Ț': 'T', 'ș': 's', 'Ș': 'S',
+  'ħ': 'h', 'Ħ': 'H', 'ŧ': 't', 'Ŧ': 'T', 'ð': 'd', 'Ð': 'D', 'þ': 'th', 'Þ': 'Th',
+};
+
 // Sanitize to what Helvetica/WinAnsi can encode. Never throws.
 export function toWinAnsi(input) {
   const str = String(input ?? '').normalize('NFC');
@@ -44,6 +50,8 @@ export function toWinAnsi(input) {
       || (cp >= 0xfe00 && cp <= 0xfe0f) || (cp >= 0x2190 && cp <= 0x2bff)
       || (cp >= 0x1f000 && cp <= 0x1faff) || (cp >= 0xe0000 && cp <= 0xe007f)
       || (cp >= 0x300 && cp <= 0x36f)) continue;
+    // letters that do not NFD-decompose (ı, ł, đ, ø ...): explicit map
+    if (Object.hasOwn(LETTER_MAP, ch)) { out += LETTER_MAP[ch]; continue; }
     // letters with diacritics outside Latin-1: strip the mark (ğ -> g)
     const base = ch.normalize('NFD').replace(/[̀-ͯ]/g, '');
     if (base !== ch && /^[\x20-\x7e]+$/.test(base)) { out += base; continue; }
@@ -258,6 +266,12 @@ async function tryEmbedPng(doc, bytes) {
   try { return await doc.embedPng(bytes); } catch { return null; }
 }
 
+// Customer signature: a broken PNG must fail the sign request, never fall back to typed text.
+async function embedCustomerPng(doc, bytes) {
+  if (!bytes || !bytes.length) return null;
+  return doc.embedPng(bytes);
+}
+
 function cover(w, { agreement, customer, documents, concept }) {
   const bedrijf = customer?.bedrijf || '';
   w.y = PAGE_H - 200;
@@ -296,7 +310,7 @@ async function signaturePage(w, {
   w.text(`Ondertekend op: ${formatAmsterdam(signedAt)} (Europe/Amsterdam)`, { gapAfter: 2 });
   w.text(`IP-adres: ${signature?.ip || 'onbekend'}`, { gapAfter: 2 });
   w.text(`Apparaat: ${String(signature?.user_agent || 'onbekend').slice(0, 160)}`, { gapAfter: 8, size: 8, color: MUTED });
-  const img = await tryEmbedPng(doc, signature?.pngBytes);
+  const img = await embedCustomerPng(doc, signature?.pngBytes);
   if (img) {
     const { width, height } = fitImage(img, 220, 90);
     w.ensure(height + 12);
@@ -349,9 +363,14 @@ async function signaturePage(w, {
   w.table(rows, { size: 7, widths: [2.2, 0.9, 3.6, 1.7, 1, 1.7] });
   w.text(`E-mailverificatie (eenmalige code) bevestigd: ${otpVerifiedAt ? formatAmsterdam(otpVerifiedAt) : 'onbekend'}`, { size: 9, gapAfter: 3 });
   const evidence = agreement?.evidence_sha256 || await computeEvidenceSha256({
+    agreementId: agreement?.id ?? null,
+    userId: null,
     contentHashes: documents.map((d) => d.content_sha256),
     typedName: signature?.typed_name ?? '',
     signedAtMs: signedAt,
+    signatureSha256: null,
+    otpVerifiedAt: otpVerifiedAt ?? null,
+    consentCheckboxAts: consents.map((c) => c.checkbox_at ?? null),
   });
   w.text(`Bewijs-hash (SHA-256): ${evidence}`, { size: 8, gapAfter: 3 });
   w.text('Digitale handtekening conform eIDAS en art. 3:15a BW.', { size: 8, color: MUTED });

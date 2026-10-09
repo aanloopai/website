@@ -36,6 +36,9 @@ describe('toWinAnsi', () => {
     expect(toWinAnsi('a → b ≥ c ≤ d')).toBe('a -> b >= c <= d');
     expect(toWinAnsi('hi 😀 there')).toBe('hi  there');
     expect(toWinAnsi('ğ日')).toBe('g-');
+    expect(toWinAnsi('Yılmaz')).toBe('Yilmaz');
+    expect(toWinAnsi('Łukasz')).toBe('Lukasz');
+    expect(toWinAnsi('İŞĞ ışğ đøȚ')).toBe('ISG isg døT');
     expect(toWinAnsi('a\tb\nc')).toBe('a b c');
   });
 });
@@ -79,10 +82,19 @@ describe('buildAgreementPdf', () => {
     const bytes = await buildAgreementPdf({
       agreement: { id: 'agr_x' }, customer: null,
       documents: [{ title: 'Doc 😀', template_version: '1.0', rendered_markdown: md, content_sha256: 'abc' }],
-      signature: { typed_name: 'Zoë 日本', pngBytes: Uint8Array.from([1, 2, 3]), signed_at: 1 },
+      signature: { typed_name: 'Zoë 日本', pngBytes: null, signed_at: 1 },
       consents: [{ document_title: 'Doc', content_sha256: 'abc' }],
       otpVerifiedAt: 1, aanloopSignaturePngBytes: Uint8Array.from([9]), concept: false,
     });
     expect(Buffer.from(bytes.slice(0, 4)).toString()).toBe('%PDF');
+  });
+
+  it('throws on a broken customer signature PNG (no silent typed-text fallback)', async () => {
+    await expect(buildAgreementPdf({
+      agreement: { id: 'agr_x' }, customer: null,
+      documents: [{ title: 'Doc', template_version: '1.0', rendered_markdown: 'tekst', content_sha256: 'abc' }],
+      signature: { typed_name: 'Jan Jansen', pngBytes: Uint8Array.from([1, 2, 3]), signed_at: 1 },
+      consents: [], otpVerifiedAt: 1, aanloopSignaturePngBytes: null, concept: false,
+    })).rejects.toThrow();
   });
 });
