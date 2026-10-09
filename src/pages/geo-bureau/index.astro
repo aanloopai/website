@@ -8,22 +8,11 @@ import FaqSection from '../../components/FaqSection.astro';
 import GeoBureauBlok from '../../components/geo/GeoBureauBlok.astro';
 import { GEO_BENCHMARK } from '../../data/geo-benchmark';
 import { GEO_PRIJZEN } from '../../data/geo-bureau';
+import { PILLAR_FAQ, PILLAR_STAPPEN } from '../../data/geo-pillar';
 
 const url = 'https://aanloopai.nl/geo-bureau/';
-const eur = (n: number) => `€${n.toLocaleString('nl-NL')}`;
 
-const faqItems = [
-  { question: 'Wat is een GEO-bureau?', answer: 'Een GEO-bureau (Generative Engine Optimization) zorgt dat AI-assistenten zoals ChatGPT, Claude, Perplexity, Gemini en Google AI Overviews een bedrijf noemen en aanbevelen wanneer iemand om een leverancier vraagt. Andere namen voor hetzelfde vak zijn AEO (Answer Engine Optimization), LLMO en AI-SEO. Het werk bestaat uit techniek (schema.org-entiteiten, llms.txt, toegang voor AI-crawlers), antwoordgerichte content, consistente vermeldingen en een herhaalde meting.' },
-  { question: 'Welke bureaus in Nederland zijn goed in GEO?', answer: 'Een onafhankelijk ijkpunt is de GEO Agency Index Nederland van Gold Lemon, die maandelijks meet welke bureaus AI-assistenten noemen en hoe hun website er technisch en qua transparantie voor staat. In de editie van oktober 2026 stond Aanloop AI op plaats 24 van 222, met 90,6 op techniek en 100 op transparantie van het aanbod. Vergelijk bureaus op gepubliceerde prijzen, meetbaarheid en eerlijkheid over wat wel en niet te garanderen is; op onze pagina GEO-bureaus vergelijken staat de top 10 met bron.' },
-  { question: 'Wie kan mijn bedrijf zichtbaar maken in ChatGPT?', answer: 'Aanloop AI doet dat voor het Nederlandse MKB: wij richten uw website in als bron die AI-assistenten kunnen lezen en citeren, schrijven content die de vragen van uw klanten letterlijk beantwoordt, zorgen voor consistente vermeldingen en meten elke maand in ChatGPT, Claude, Perplexity, Gemini en Google AI of u genoemd wordt. We beginnen met een gratis GEO Quick Scan als nulmeting.' },
-  { question: 'Wat kost een GEO-bureau?', answer: `Bij Aanloop AI is de GEO Quick Scan gratis. GEO Maandelijks kost ${eur(GEO_PRIJZEN.maand)} per maand en de SEO + GEO Bundel ${eur(GEO_PRIJZEN.bundel)} per maand, beide exclusief 21% btw. De eenmalige GEO Setup hangt af van de omvang van uw website en wordt in het eerste gesprek vastgesteld. Alle maandtarieven staan op /tarieven/.` },
-  { question: 'Kan een GEO-bureau een vermelding in ChatGPT garanderen?', answer: 'Nee. Geen enkel bureau bepaalt wat een AI-assistent antwoordt; de antwoorden verschillen per engine, per dag en per formulering. Een serieus GEO-bureau belooft daarom een meetbare aanpak en een maandelijkse meting, geen gegarandeerde plek. Wees voorzichtig bij bureaus die wel een garantie geven.' },
-  { question: 'Wat is het verschil tussen SEO en GEO?', answer: 'SEO maakt u vindbaar in de blauwe links van Google en Bing. GEO maakt u onderdeel van het antwoord dat een AI-assistent geeft, met doorgaans drie tot vijf namen. De signalen overlappen: een snelle, goed gestructureerde site met heldere content helpt beide. GEO voegt entiteiten (Organization, Person, Service), llms.txt, FAQ-structuur en vermeldingen op bronnen die AI leest toe.' },
-  { question: 'Hoe meet Aanloop AI of GEO werkt?', answer: 'Met een vaste set vragen die uw klanten stellen, gesteld aan ChatGPT, Claude, Perplexity, Gemini en Google AI Overviews. We leggen per engine vast of u genoemd wordt, op welke plek in het antwoord en welke pagina als bron dient. Dezelfde vragen elke maand, zodat verschillen echt verschillen zijn en geen toeval.' },
-  { question: 'Hoe snel zie ik resultaat?', answer: 'Eerste citaties zien we doorgaans binnen 4 tot 6 weken na de technische setup, afhankelijk van hoe vaak AI-crawlers uw site bezoeken en hoe druk uw markt is. In sectoren met veel aanbod duurt het langer. We geven geen garantie op termijnen; we laten de meting spreken.' },
-  { question: 'Werkt Aanloop AI in heel Nederland?', answer: 'Ja. We zitten in Rotterdam en werken remote voor heel Nederland, met een intake en oplevering op locatie waar dat zinvol is. Per regio en per sector hebben we aparte pagina\'s met de vragen die daar spelen.' },
-  { question: 'Blijft alles van mij als ik stop?', answer: 'Ja. Alle techniek, content en gestructureerde data staan op uw eigen domein. Er is geen tool of platform van ons waar uw vindbaarheid van afhangt, dus bij een vertrek blijft alles werken.' },
-];
+const faqItems = PILLAR_FAQ;
 
 const schema = [
   {
@@ -60,13 +49,7 @@ const schema = [
   },
 ];
 
-const stappen = [
-  { titel: 'Nulmeting', body: 'We stellen de vragen die uw klanten stellen aan ChatGPT, Claude, Perplexity, Gemini en Google AI en leggen vast wie genoemd wordt, in welke volgorde en met welke bron.' },
-  { titel: 'Entiteiten en techniek', body: 'Organisatie, personen en diensten als schema.org-entiteiten met sameAs en KvK-nummer, een llms.txt, robots.txt met toegang voor AI-crawlers, inhoud die leesbaar is zonder JavaScript.' },
-  { titel: 'Antwoordgerichte content', body: 'Pagina\'s die de echte vraag letterlijk beantwoorden: diensten, prijzen, werkgebied, sector, veelgestelde vragen. Geen omwegen, geen marketingtaal die een AI niet kan citeren.' },
-  { titel: 'Vermeldingen en bronnen', body: 'Consistente bedrijfsgegevens op de platforms die AI-engines lezen. Zonder betaalde advertenties en zonder gekochte vermeldingen.' },
-  { titel: 'Maandelijkse meting', body: 'Dezelfde vragen, dezelfde engines, elke maand. U ziet wat verandert, welke pagina als bron dient en waar we bijsturen.' },
-];
+const stappen = PILLAR_STAPPEN;
 ---
 <BaseLayout
   title="GEO-bureau Nederland · Aanloop AI"

@@ -6,17 +6,12 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import FaqSection from '../../components/FaqSection.astro';
 import GeoBureauBlok from '../../components/geo/GeoBureauBlok.astro';
 import { GEO_BENCHMARK as B } from '../../data/geo-benchmark';
+import { VERGELIJKEN_FAQ } from '../../data/geo-pillar';
 
 const url = 'https://aanloopai.nl/geo-bureau/vergelijken/';
 const nl = (n: number, d = 1) => n.toLocaleString('nl-NL', { minimumFractionDigits: d, maximumFractionDigits: d });
 
-const faqItems = [
-  { question: 'Welke GEO-bureaus in Nederland worden het vaakst genoemd door AI?', answer: `In de ${B.naam} van ${B.uitgever} (editie ${B.editie}) stonden ${B.top10.slice(0, 5).map((r) => r.bureau).join(', ')} in de top 5 van de index. Het vaakst genoemd werd ${B.top10.reduce((a, b) => (a.genoemdPct > b.genoemdPct ? a : b)).bureau}, in ${nl(B.top10.reduce((a, b) => (a.genoemdPct > b.genoemdPct ? a : b)).genoemdPct)}% van de ${B.antwoorden.toLocaleString('nl-NL')} antwoorden. De index weegt vermeldingen voor ${B.weging.vermeldingen}%, techniek voor ${B.weging.techniek}% en transparantie van het aanbod voor ${B.weging.aanbod}%.` },
-  { question: 'Hoe wordt de GEO Agency Index Nederland gemeten?', answer: `${B.vragen} vragen zonder bureaunamen, gesteld aan ${B.engines} AI-engines (ChatGPT via API en app, Claude, Gemini, Perplexity, Google AI Mode en het AI-overzicht van Google), samen ${B.antwoorden.toLocaleString('nl-NL')} antwoorden. Daarnaast ${27} technische controles en ${8} transparantiepunten op de website van elk van de ${B.register.toLocaleString('nl-NL')} geregistreerde aanbieders. Een plaats krijgt wie minstens vijf keer genoemd wordt. De methode staat openbaar op goldlemon.nl.` },
-  { question: 'Waar staat Aanloop AI in de index?', answer: `Op plaats ${B.aanloop.plaats} van ${B.geplaatst} in de editie ${B.editie}, met een index van ${nl(B.aanloop.index)}, ${nl(B.aanloop.techniek)} van 100 op techniek en ${nl(B.aanloop.aanbod)} van 100 op transparantie van het aanbod. AI noemde ons in ${B.aanloop.genoemdAantal} antwoorden (${nl(B.aanloop.genoemdPct)}%), vooral bij vragen over de zorg, waar we op plaats ${B.aanloop.sectorZorgPlaats} staan. Het verschil met de top zit in het aantal vermeldingen, niet in techniek of transparantie.` },
-  { question: 'Is een hoge plek in deze index hetzelfde als een goed bureau?', answer: 'Nee. De index meet zichtbaarheid in AI-antwoorden en de staat van de eigen website, niet de resultaten die een bureau voor klanten haalt. Dat zegt de uitgever zelf ook. Gebruik de index als startpunt en vergelijk daarna op gepubliceerde prijzen, meetbaarheid en eerlijkheid over garanties.' },
-  { question: 'Waarom publiceert Aanloop AI een lijst waarin concurrenten hoger staan?', answer: 'Omdat de cijfers openbaar zijn en u ze toch vindt. Liever met de juiste bron en context dan zonder. Wij meten onze eigen klanten met dezelfde logica, dus het zou vreemd zijn om voor onszelf een andere maatstaf te kiezen.' },
-];
+const faqItems = VERGELIJKEN_FAQ;
 
 const schema = [
   {
