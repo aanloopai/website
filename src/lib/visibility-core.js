@@ -322,6 +322,59 @@ export function parseHit(raw) {
   return hit;
 }
 
+// ── Kanaal-classificatie (referrer/utm) ────────────────────────────────────
+// Spiegel van keukeninbeeld functions/api/v.js (bepaalKanaal). ChatGPT hangt zelf
+// ?utm_source=chatgpt.com aan links; de verwijzer is de terugval. Zonder de AI-
+// hosts telt een assistent stil als "verwijzing" of "zoek".
+export const AI_HOSTS = [
+  'chatgpt.com', 'chat.openai.com', 'openai.com',
+  'perplexity.ai', 'www.perplexity.ai',
+  'claude.ai', 'anthropic.com',
+  'gemini.google.com', 'bard.google.com',
+  'copilot.microsoft.com',
+  'you.com', 'phind.com', 'poe.com', 'mistral.ai', 'grok.com', 'x.ai',
+  'meta.ai', 'duck.ai', 'deepseek.com', 'kagi.com', 'chat.qwen.ai', 'pi.ai',
+  'copilot.cloud.microsoft', 'm365.cloud.microsoft', 'edgeservices.bing.com',
+  'notebooklm.google.com', 'aistudio.google.com',
+];
+export const ZOEK_HOSTS = ['google.', 'bing.com', 'duckduckgo.com', 'ecosia.org', 'yahoo.', 'yandex.', 'startpagina.nl', 'search.brave.com'];
+export const SOCIAAL_HOSTS = ['facebook.com', 'instagram.com', 'linkedin.com', 'pinterest.', 'reddit.com', 'youtube.com', 't.co', 'twitter.com', 'x.com', 'tiktok.com', 'tweakers.net', 'marktplaats.nl'];
+const GBP_BRONNEN = new Set(['gbp', 'google-bedrijfsprofiel', 'bing-places']);
+
+function hostMatchOne(h, patroon) {
+  if (patroon.endsWith('.')) {
+    // Label moet als heel label voorkomen met minstens één label (TLD) erachter.
+    const labels = h.split('.');
+    const i = labels.indexOf(patroon.slice(0, -1));
+    return i >= 0 && i < labels.length - 1;
+  }
+  return h === patroon || h.endsWith('.' + patroon);
+}
+
+// Labelgrens, nooit substring ('box.ai' is geen 'x.ai'). `patterns`: string of lijst.
+export function hostMatch(host, patterns) {
+  const h = String(host || '').toLowerCase();
+  if (!h) return false;
+  return (Array.isArray(patterns) ? patterns : [patterns]).some((p) => hostMatchOne(h, String(p).toLowerCase()));
+}
+
+// src = utm_source (lowercased), ref = kale verwijzer-host. utm wint van de verwijzer.
+export function bepaalKanaal(src, ref) {
+  const s = String(src || '').trim().toLowerCase();
+  const r = String(ref || '').trim().toLowerCase();
+  const findAi = (v) => (v ? AI_HOSTS.find((a) => hostMatch(v, a)) : undefined);
+
+  const srcAi = findAi(s);
+  if (srcAi) return { kanaal: 'ai', aiBron: srcAi };
+  if (GBP_BRONNEN.has(s)) return { kanaal: 'gbp', aiBron: null };
+  const refAi = findAi(r);
+  if (refAi) return { kanaal: 'ai', aiBron: refAi };
+  if (!r && !s) return { kanaal: 'direct', aiBron: null };
+  if (hostMatch(r, ZOEK_HOSTS)) return { kanaal: 'zoek', aiBron: null };
+  if (hostMatch(r, SOCIAAL_HOSTS)) return { kanaal: 'sociaal', aiBron: null };
+  return { kanaal: 'verwijzing', aiBron: null };
+}
+
 const CONVERTING_HIT_TYPES = new Set(['tel', 'whatsapp', 'mail', 'form', 'route']);
 const FLOW_SEP = '\u0000';
 
@@ -350,6 +403,9 @@ export function summarizeHits(rows) {
   const exitMap = new Map();
   const pageMap = new Map();
   const sourceMap = new Map();
+  const kanaalMap = new Map();
+  const aiLandingMap = new Map();
+  const aiBronMap = new Map();
   const flowMap = new Map();
   const devices = { m: 0, d: 0 };
 
@@ -387,6 +443,21 @@ export function summarizeHits(rows) {
       const s = sourceMap.get(bron);
       s.sessions++;
       if (converts) s.conv++;
+    }
+
+    if (firstHit) {
+      const { kanaal, aiBron } = bepaalKanaal(firstHit.src, firstHit.ref);
+      const bump = (map, key) => {
+        if (!map.has(key)) map.set(key, { sessions: 0, conv: 0 });
+        const e = map.get(key);
+        e.sessions++;
+        if (converts) e.conv++;
+      };
+      bump(kanaalMap, kanaal);
+      if (kanaal === 'ai') {
+        bump(aiBronMap, aiBron);
+        bump(aiLandingMap, firstHit.path);
+      }
     }
 
     const devHit = hits.find((h) => h.dev === 'm' || h.dev === 'd');
@@ -438,6 +509,19 @@ export function summarizeHits(rows) {
     .sort((a, b) => b.sessions - a.sessions)
     .slice(0, 25);
 
+  const kanalen = [...kanaalMap.entries()]
+    .map(([kanaal, v]) => ({ kanaal, sessions: v.sessions, conv: v.conv, convRate: pct(v.conv, v.sessions) }))
+    .sort((a, b) => b.sessions - a.sessions);
+
+  const aiLanding = [...aiLandingMap.entries()]
+    .map(([path, v]) => ({ path, sessions: v.sessions, conv: v.conv }))
+    .sort((a, b) => b.sessions - a.sessions)
+    .slice(0, 10);
+
+  const aiBronnen = [...aiBronMap.entries()]
+    .map(([bron, v]) => ({ bron, sessions: v.sessions, conv: v.conv }))
+    .sort((a, b) => b.sessions - a.sessions);
+
   const flow = [...flowMap.entries()]
     .map(([key, n]) => { const [from, to] = key.split(FLOW_SEP); return { from, to, n }; })
     .sort((a, b) => b.n - a.n)
@@ -453,6 +537,9 @@ export function summarizeHits(rows) {
     exits,
     pages,
     sources,
+    kanalen,
+    aiLanding,
+    aiBronnen,
     flow,
     devices,
   };

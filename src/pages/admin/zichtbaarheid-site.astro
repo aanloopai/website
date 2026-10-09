@@ -89,6 +89,14 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             <table class="ptable"><thead><tr><th>Bron</th><th class="num">Sessies</th><th class="num">Conversie</th></tr></thead><tbody id="b-sources"></tbody></table>
           </div>
           <div class="overflow-x-auto">
+            <div class="p-muted mb-2 text-xs font-medium">Kanalen</div>
+            <table class="ptable"><thead><tr><th>Kanaal</th><th class="num">Sessies</th><th class="num">Conversies</th><th class="num">Conv%</th></tr></thead><tbody id="b-kanalen"></tbody></table>
+          </div>
+          <div id="b-ai-wrap" class="overflow-x-auto hidden">
+            <div class="p-muted mb-2 text-xs font-medium">AI-landingspagina's</div>
+            <table class="ptable"><thead><tr><th>Pagina</th><th class="num">Sessies</th><th class="num">Conversies</th></tr></thead><tbody id="b-ai-landing"></tbody></table>
+          </div>
+          <div class="overflow-x-auto">
             <div class="p-muted mb-2 text-xs font-medium">Stroom</div>
             <table class="ptable"><thead><tr><th>Van → Naar</th><th class="num">Aantal</th></tr></thead><tbody id="b-flow"></tbody></table>
           </div>
@@ -276,6 +284,14 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         });
         bRows(g.sources || [], 'b-sources', function (r) {
           return '<td class="key" title="' + esc(r.bron) + '">' + esc(r.bron) + '</td><td class="num">' + n(r.sessions) + '</td><td class="num">' + pct1(r.conv) + '</td>';
+        });
+        bRows(g.kanalen || [], 'b-kanalen', function (r) {
+          return '<td>' + esc(r.kanaal) + '</td><td class="num">' + n(r.sessions) + '</td><td class="num">' + n(r.conv) + '</td><td class="num">' + pct1(r.convRate) + '</td>';
+        });
+        var aiL = g.aiLanding || [];
+        document.getElementById('b-ai-wrap').classList.toggle('hidden', !aiL.length);
+        bRows(aiL, 'b-ai-landing', function (r) {
+          return '<td class="key" title="' + esc(r.path) + '">' + esc(r.path) + '</td><td class="num">' + n(r.sessions) + '</td><td class="num">' + n(r.conv) + '</td>';
         });
         bRows(g.flow || [], 'b-flow', function (r) {
           return '<td class="key" title="' + esc(r.from) + ' → ' + esc(r.to) + '">' + esc(r.from) + ' → ' + esc(r.to) + '</td><td class="num">' + n(r.n) + '</td>';
