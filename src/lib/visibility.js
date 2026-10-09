@@ -395,17 +395,47 @@ export async function visibilitySiteDetail(env, url) {
 // stays unit-testable without D1 — see visibility-core.js.
 const GEDRAG_ROW_LIMIT = 20000;
 
-export async function visibilityGedrag(env, url) {
-  await ensureVisibilitySchema(env);
-  const key = String(url.searchParams.get('key') || '').trim();
-  if (!key) return errorResponse('key ontbreekt', 400);
-  const win = Number(url.searchParams.get('win')) === 90 ? 90 : 28;
+// Shared by the staff route and the machine summary route (no behaviour change).
+async function loadHitSummary(env, key, win) {
   const since = Date.now() - win * 86400000;
   const rows = (await env.PORTAL_DB.prepare(
     `SELECT sid, seq, t, path, ref, src, med, dev, sec, sc FROM visibility_hits
      WHERE site_key = ? AND ts >= ? ORDER BY sid, seq LIMIT ?`,
   ).bind(key, since, GEDRAG_ROW_LIMIT).all()).results || [];
-  return jsonResponse({ ok: true, win, ...summarizeHits(rows) });
+  return summarizeHits(rows);
+}
+
+export async function visibilityGedrag(env, url) {
+  await ensureVisibilitySchema(env);
+  const key = String(url.searchParams.get('key') || '').trim();
+  if (!key) return errorResponse('key ontbreekt', 400);
+  const win = Number(url.searchParams.get('win')) === 90 ? 90 : 28;
+  return jsonResponse({ ok: true, win, ...(await loadHitSummary(env, key, win)) });
+}
+
+// ── GET /api/visibility/summary?site=&win=28|90 (machine, fleetclaw) ───────
+// Auth: X-Intake-Signature: sha256=<hex HMAC-SHA256 over the exact raw query
+// string, without the leading "?">, key = INTAKE_WEBHOOK_SECRET.
+export async function visibilitySummary(request, env) {
+  const noindex = (res) => { res.headers.set('X-Robots-Tag', 'noindex, nofollow'); return res; };
+  if (request.method !== 'GET') return noindex(errorResponse('Use GET', 405));
+  if (!env.INTAKE_WEBHOOK_SECRET) return noindex(errorResponse('summary niet geconfigureerd', 503));
+  const url = new URL(request.url);
+  const ok = await verifySignature(env.INTAKE_WEBHOOK_SECRET, url.search.replace(/^\?/, ''), request.headers.get('x-intake-signature'));
+  if (!ok) return noindex(errorResponse('Ongeldige handtekening', 403));
+  await ensureVisibilitySchema(env);
+  const site = String(url.searchParams.get('site') || '').trim();
+  const known = site && !OFFBOARDED_SITES.includes(site)
+    ? await env.PORTAL_DB.prepare('SELECT key FROM visibility_sites WHERE key = ? AND actief = 1').bind(site).first()
+    : null;
+  if (!known) return noindex(errorResponse('site onbekend', 404));
+  const win = Number(url.searchParams.get('win')) === 90 ? 90 : 28;
+  const s = await loadHitSummary(env, site, win);
+  return noindex(jsonResponse({
+    ok: true, site, win, generatedAt: new Date().toISOString(),
+    sessions: s.sessions, conversionRate: s.conversionRate, bounceRate: s.bounceRate,
+    kanalen: s.kanalen, aiLanding: s.aiLanding, aiBronnen: s.aiBronnen, formulier: s.formulier,
+  }));
 }
 
 // ── PATCH /api/admin/visibility/site (staff) ───────────────────────────────
