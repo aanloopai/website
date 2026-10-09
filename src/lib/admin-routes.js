@@ -30,6 +30,7 @@ import {
 } from './discovery.js';
 import { discoveryAccess } from './discovery-klant.js';
 import { zoekeenProxy } from './zoekeen-proxy.js';
+import { handleOvereenkomstAdminApi } from './overeenkomst-admin-routes.js';
 
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
 const AANLOOP_EMAIL = 'hello@aanloopai.nl';
@@ -56,6 +57,7 @@ async function mailCustomer(env, to, naam, subject, innerHtml) {
 
 // ── dispatcher (/api/admin/*) ───────────────────────────────────────────────
 const ADMIN_SITE_ORIGIN = 'https://aanloopai.nl';
+const OVEREENKOMST_ADMIN_PREFIXES = ['/api/admin/overeenkomst', '/api/admin/aanlever', '/api/admin/portal-audit', '/api/admin/sjablonen'];
 const ADMIN_MUTATING = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
 
 export async function handleAdminApi(request, env) {
@@ -73,6 +75,9 @@ export async function handleAdminApi(request, env) {
   if (!user || user.role !== 'staff') return errorResponse('Geen toegang', 403);
 
   try {
+    if (OVEREENKOMST_ADMIN_PREFIXES.some((p) => path === p || path.startsWith(`${p}/`))) {
+      return await handleOvereenkomstAdminApi(request, env, user, url);
+    }
     if (path === '/api/admin/me') {
       return jsonResponse({ ok: true, user: { id: user.id, email: user.email, naam: user.naam, role: user.role } });
     }

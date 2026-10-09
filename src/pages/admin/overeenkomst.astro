@@ -1,0 +1,270 @@
+---
+// Admin panel — overeenkomsten per klant (?klant=cust_…) en detail (?id=agr_…).
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Overeenkomst" active="klanten">
+  <a id="o-terug" href="/admin/klanten" class="p-link text-sm">← Alle klanten</a>
+  <h1 id="o-titel" class="page-title mt-2">Overeenkomsten</h1>
+  <div id="o-loading" class="mt-6"><div class="pskel h-48 w-full max-w-2xl"></div></div>
+
+  <!-- Lijst + nieuw -->
+  <div id="v-lijst" class="hidden mt-6 space-y-6">
+    <section class="pcard">
+      <div class="pcard-h">Overeenkomsten</div>
+      <div class="pcard-b"><div id="l-items" class="space-y-2"></div></div>
+    </section>
+    <section class="pcard">
+      <div class="pcard-h">Nieuwe overeenkomst</div>
+      <div class="pcard-b">
+        <label class="plabel">Titel</label>
+        <input id="n-titel" class="pinput" value="Overeenkomst van opdracht" />
+        <div id="n-velden" class="mt-4 grid gap-3 sm:grid-cols-2"></div>
+        <div class="mt-4 flex items-center gap-3">
+          <button id="n-maak" class="pbtn pbtn--primary">Overeenkomst aanmaken</button>
+          <span id="n-msg" class="text-sm"></span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Detail -->
+  <div id="v-detail" class="hidden mt-6 space-y-6">
+    <section class="pcard">
+      <div class="pcard-h">Status</div>
+      <div class="pcard-b">
+        <div class="flex flex-wrap items-center gap-3">
+          <span id="d-status" class="pbadge pbadge--gray"></span>
+          <span id="d-klant" class="text-sm p-muted"></span>
+        </div>
+        <div class="mt-4 flex flex-wrap items-center gap-2">
+          <button id="d-versturen" class="pbtn pbtn--primary">Versturen</button>
+          <button id="d-annuleren" class="pbtn" style="color:#b3093c;border-color:#b3093c">Annuleren</button>
+          <a id="d-pdf" class="pbtn pbtn--subtle" href="#">PDF downloaden</a>
+          <span id="d-msg" class="text-sm"></span>
+        </div>
+        <p class="mt-3 text-xs p-muted">Evidence SHA-256: <code id="d-evidence" class="break-all">—</code></p>
+      </div>
+    </section>
+
+    <section class="pcard">
+      <div class="pcard-h">Gegevens</div>
+      <div class="pcard-b">
+        <p id="d-slot" class="hidden mb-3 text-sm p-muted">Deze overeenkomst is vergrendeld en kan niet meer worden gewijzigd.</p>
+        <label class="plabel">Titel</label>
+        <input id="d-titel" class="pinput" />
+        <div id="d-velden" class="mt-4 grid gap-3 sm:grid-cols-2"></div>
+        <div class="mt-4 flex items-center gap-3">
+          <button id="d-opslaan" class="pbtn pbtn--primary">Opslaan</button>
+          <span id="d-opslaan-msg" class="text-sm"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="pcard">
+      <div class="pcard-h">Preview</div>
+      <div class="pcard-b"><div id="d-docs" class="space-y-3"></div></div>
+    </section>
+
+    <section class="pcard">
+      <div class="pcard-h">Tijdlijn</div>
+      <div class="pcard-b"><div id="d-tijd" class="space-y-2"></div></div>
+    </section>
+
+    <section class="pcard">
+      <div class="pcard-h">Auditlog (laatste 100)</div>
+      <div class="pcard-b overflow-x-auto">
+        <table class="w-full text-left text-xs">
+          <thead><tr><th class="py-1 pr-3">Tijd</th><th class="py-1 pr-3">Actor</th><th class="py-1 pr-3">Actie</th><th class="py-1 pr-3">IP</th><th class="py-1">Details</th></tr></thead>
+          <tbody id="d-audit"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var FIELDS = [
+        ['klant_bedrijfsnaam', 'Bedrijfsnaam klant'], ['klant_rechtsvorm', 'Rechtsvorm'],
+        ['klant_kvk', 'KvK-nummer'], ['klant_btw', 'Btw-nummer'],
+        ['klant_adres', 'Adres'], ['klant_postcode', 'Postcode'], ['klant_plaats', 'Plaats'],
+        ['klant_contact_naam', 'Contactpersoon'], ['klant_contact_email', 'E-mail contactpersoon'],
+        ['klant_contact_tel', 'Telefoon contactpersoon'], ['klant_dagelijks_contact', 'Dagelijks aanspreekpunt'],
+        ['project_naam', 'Projectnaam'], ['project_domein', 'Domeinnaam'],
+        ['prijs_website', 'Prijs website (excl. btw)'], ['prijs_optie_3d', 'Prijs optie 3D-ontwerptool'],
+        ['optie_3d_gekozen', 'Optie 3D gekozen (ja/nee)'], ['prijs_beheer_maand', 'Beheer per maand (excl. btw)'],
+        ['prijs_lead', 'Prijs per lead (excl. btw)'], ['lead_bundel_aantal', 'Aantal leads per bundel'],
+        ['lead_bundel_prijs', 'Prijs per bundel'], ['lead_regio', 'Leadregio'],
+        ['lead_cap_per_dag', 'Maximum leads per dag'], ['betaling_fasen', 'Betaling in termijnen'],
+        ['betaaltermijn_dagen', 'Betaaltermijn (dagen)'],
+      ];
+      var STATUS = {
+        draft: ['Concept', 'pbadge--gray'], sent: ['Verstuurd', 'pbadge--amber'],
+        in_progress: ['In behandeling', 'pbadge--blue'], signed: ['Ondertekend', 'pbadge--green'],
+        cancelled: ['Geannuleerd', 'pbadge--gray'],
+      };
+      function $(id) { return document.getElementById(id); }
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      function flash(el, text, ok) {
+        el.textContent = text;
+        el.style.color = ok ? '#0e6245' : '#b3093c';
+        setTimeout(function () { el.textContent = ''; }, 4000);
+      }
+      function fmt(ms) {
+        if (!ms) return '—';
+        return new Date(Number(ms)).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam', dateStyle: 'short', timeStyle: 'short' });
+      }
+      function api(url, method, body) {
+        var opt = { method: method || 'GET', credentials: 'same-origin' };
+        if (body !== undefined) { opt.headers = { 'Content-Type': 'application/json' }; opt.body = JSON.stringify(body); }
+        return fetch(url, opt).then(function (r) {
+          if (r.status === 401 || r.status === 403) { window.adminFout.naarLogin(); throw 0; }
+          return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+        });
+      }
+      function fieldsHtml(prefix, vals) {
+        return FIELDS.map(function (f) {
+          return '<div><label class="plabel">' + esc(f[1]) + '</label><input class="pinput" data-var="' + f[0] +
+            '" id="' + prefix + f[0] + '" value="' + esc(vals[f[0]] || '') + '" /></div>';
+        }).join('');
+      }
+      function readVars(prefix) {
+        var o = {};
+        FIELDS.forEach(function (f) { o[f[0]] = $(prefix + f[0]).value.trim(); });
+        return o;
+      }
+      function parseVars(v) {
+        if (v && typeof v === 'object') return v;
+        try { return JSON.parse(v || '{}'); } catch (e) { return {}; }
+      }
+
+      var params = new URLSearchParams(location.search);
+      var klant = params.get('klant');
+      var aid = params.get('id');
+      if (!klant && !aid) { location.href = '/admin/klanten'; return; }
+
+      /* ---------- lijst ---------- */
+      function loadLijst() {
+        $('o-terug').href = '/admin/klant?id=' + encodeURIComponent(klant);
+        $('o-terug').textContent = '← Klant';
+        Promise.all([
+          api('/api/admin/customer?id=' + encodeURIComponent(klant)),
+          api('/api/admin/overeenkomst/lijst?customer_id=' + encodeURIComponent(klant)),
+        ]).then(function (res) {
+          $('o-loading').classList.add('hidden');
+          $('v-lijst').classList.remove('hidden');
+          var c = (res[0].j && res[0].j.customer) || {};
+          var users = (res[0].j && res[0].j.users) || [];
+          var contact = users[0] || {};
+          $('o-titel').textContent = 'Overeenkomsten — ' + (c.bedrijf || 'Klant');
+          $('n-velden').innerHTML = fieldsHtml('n-', {
+            klant_bedrijfsnaam: c.bedrijf, klant_kvk: c.kvk, klant_btw: c.btw_id, klant_adres: c.adres,
+            klant_postcode: c.postcode, klant_plaats: c.stad, klant_contact_naam: contact.naam,
+            klant_contact_email: contact.email, klant_contact_tel: c.telefoon, optie_3d_gekozen: 'nee',
+          });
+          var list = (res[1].j && res[1].j.agreements) || [];
+          $('l-items').innerHTML = list.length ? list.map(function (a) {
+            var s = STATUS[a.status] || [a.status, 'pbadge--gray'];
+            return '<a class="flex items-center justify-between rounded-md border px-4 py-2.5 text-sm" style="border-color:var(--p-border)" href="/admin/overeenkomst/?id=' +
+              encodeURIComponent(a.id) + '"><span style="color:var(--p-ink)">' + esc(a.title) +
+              '<span class="ml-2 p-muted">' + esc(fmt(a.created_at)) + '</span></span>' +
+              '<span class="pbadge ' + s[1] + '">' + esc(s[0]) + '</span></a>';
+          }).join('') : '<p class="text-sm p-muted">Nog geen overeenkomsten.</p>';
+        }).catch(function (e) { window.adminFout.vangRest(e, 'Overeenkomsten'); });
+      }
+      function maak() {
+        var btn = $('n-maak'); btn.disabled = true;
+        api('/api/admin/overeenkomst', 'POST', {
+          customer_id: klant, title: $('n-titel').value.trim(), variables_json: readVars('n-'),
+        }).then(function (res) {
+          btn.disabled = false;
+          if (res.ok && res.j.id) { location.href = '/admin/overeenkomst/?id=' + encodeURIComponent(res.j.id); return; }
+          flash($('n-msg'), res.j.error || 'Fout', false);
+        }).catch(function () { btn.disabled = false; flash($('n-msg'), 'Netwerkfout', false); });
+      }
+
+      /* ---------- detail ---------- */
+      function loadDetail() {
+        api('/api/admin/overeenkomst?id=' + encodeURIComponent(aid)).then(function (res) {
+          if (!res.ok) { window.adminFout.toon('Overeenkomst: ' + (res.j.error || 'niet gevonden')); return; }
+          renderDetail(res.j);
+        }).catch(function (e) { window.adminFout.vangRest(e, 'Overeenkomst'); });
+      }
+      function renderDetail(d) {
+        var a = d.agreement || {};
+        var c = d.customer || {};
+        $('o-loading').classList.add('hidden');
+        $('v-detail').classList.remove('hidden');
+        $('o-terug').href = '/admin/overeenkomst/?klant=' + encodeURIComponent(a.customer_id || c.id || '');
+        $('o-terug').textContent = '← Overeenkomsten';
+        $('o-titel').textContent = a.title || 'Overeenkomst';
+        var s = STATUS[a.status] || [a.status, 'pbadge--gray'];
+        $('d-status').textContent = s[0];
+        $('d-status').className = 'pbadge ' + s[1];
+        $('d-klant').textContent = c.bedrijf || '';
+        $('d-evidence').textContent = d.evidence_sha256 || a.evidence_sha256 || '—';
+        $('d-pdf').href = '/api/admin/overeenkomst/pdf?id=' + encodeURIComponent(aid);
+        // Frozen: signed/cancelled, or any consent exists (server refuses PATCH then).
+        var consented = (d.timeline || []).some(function (t) { return /gelezen|akkoord|consent|code|ondertekend/i.test(t.stap || ''); });
+        var frozen = a.status === 'signed' || a.status === 'cancelled' || consented;
+        $('d-versturen').classList.toggle('hidden', a.status !== 'draft');
+        $('d-annuleren').classList.toggle('hidden', a.status === 'signed' || a.status === 'cancelled');
+        $('d-slot').classList.toggle('hidden', !frozen);
+        $('d-titel').value = a.title || '';
+        $('d-velden').innerHTML = fieldsHtml('d-', parseVars(a.variables_json));
+        document.querySelectorAll('#d-velden input, #d-titel').forEach(function (i) { i.disabled = frozen; });
+        $('d-opslaan').disabled = frozen;
+
+        var docs = d.documents || [];
+        $('d-docs').innerHTML = docs.length ? docs.map(function (x) {
+          return '<details class="rounded-md border" style="border-color:var(--p-border)"><summary class="cursor-pointer px-4 py-2.5 text-sm" style="color:var(--p-ink);font-weight:500">' +
+            esc(x.title) + ' <span class="ml-2 p-muted" style="font-weight:400">versie ' + esc(x.version) + ' · sha ' + esc(x.sha12) + '</span></summary>' +
+            '<div class="doc-box px-4 py-3 text-sm" style="max-height:60vh;overflow:auto">' + (x.html || '') + '</div></details>';
+        }).join('') : '<p class="text-sm p-muted">Geen documenten.</p>';
+
+        $('d-tijd').innerHTML = (d.timeline || []).length ? d.timeline.map(function (t) {
+          return '<div class="flex items-center justify-between rounded-md border px-4 py-2 text-sm" style="border-color:var(--p-border)"><span>' +
+            esc(t.stap) + '</span><span class="p-muted">' + esc(fmt(t.at)) + (t.ip ? ' · ' + esc(t.ip) : '') + '</span></div>';
+        }).join('') : '<p class="text-sm p-muted">Nog geen stappen.</p>';
+
+        $('d-audit').innerHTML = (d.audit || []).slice(0, 100).map(function (r) {
+          return '<tr class="border-t" style="border-color:var(--p-border)"><td class="py-1 pr-3">' + esc(fmt(r.created_at)) + '</td><td class="py-1 pr-3">' +
+            esc(r.actor) + '</td><td class="py-1 pr-3">' + esc(r.action) + '</td><td class="py-1 pr-3">' + esc(r.ip || '') +
+            '</td><td class="py-1 break-all">' + esc(r.meta_json || '') + '</td></tr>';
+        }).join('') || '<tr><td colspan="5" class="py-2 p-muted">Geen regels.</td></tr>';
+      }
+      function actie(pad, vraag, ok) {
+        if (!confirm(vraag)) return;
+        api('/api/admin/overeenkomst/' + pad, 'POST', { id: aid }).then(function (res) {
+          flash($('d-msg'), res.ok ? ok : (res.j.error || 'Fout'), res.ok);
+          if (res.ok) loadDetail();
+        }).catch(function () { flash($('d-msg'), 'Netwerkfout', false); });
+      }
+
+      if (aid) {
+        $('d-versturen').addEventListener('click', function () {
+          actie('versturen', 'Overeenkomst nu versturen? De klant krijgt direct een e-mail met een link naar het portaal.', 'Verstuurd');
+        });
+        $('d-annuleren').addEventListener('click', function () {
+          actie('annuleren', 'Overeenkomst annuleren? Dit kan niet ongedaan worden gemaakt.', 'Geannuleerd');
+        });
+        $('d-opslaan').addEventListener('click', function () {
+          api('/api/admin/overeenkomst', 'PATCH', {
+            id: aid, title: $('d-titel').value.trim(), variables_json: readVars('d-'),
+          }).then(function (res) {
+            flash($('d-opslaan-msg'), res.ok ? 'Opgeslagen' : (res.j.error || 'Fout'), res.ok);
+            if (res.ok) loadDetail();
+          }).catch(function () { flash($('d-opslaan-msg'), 'Netwerkfout', false); });
+        });
+        loadDetail();
+      } else {
+        $('n-maak').addEventListener('click', maak);
+        loadLijst();
+      }
+    })();
+  </script>
+</AdminLayout>

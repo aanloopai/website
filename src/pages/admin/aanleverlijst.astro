@@ -1,0 +1,174 @@
+---
+// Admin panel — aanleverlijst per klant (?klant=cust_…).
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Aanleverlijst" active="klanten">
+  <a id="a-terug" href="/admin/klanten" class="p-link text-sm">← Alle klanten</a>
+  <h1 id="a-titel" class="page-title mt-2">Aanleverlijst</h1>
+  <div id="a-loading" class="mt-6"><div class="pskel h-48 w-full max-w-2xl"></div></div>
+
+  <div id="a-content" class="hidden mt-6 space-y-6">
+    <section class="pcard">
+      <div class="pcard-h">Items</div>
+      <div class="pcard-b">
+        <p id="a-voortgang" class="mb-3 text-sm p-muted"></p>
+        <div id="a-items" class="space-y-3"></div>
+        <div id="a-seed" class="hidden mt-2 flex flex-col gap-2 sm:flex-row">
+          <input id="s-domein" class="pinput flex-1" placeholder="Domeinnaam (bv. voorbeeld.nl)" />
+          <button id="s-maak" class="pbtn pbtn--primary">Standaardlijst aanmaken</button>
+        </div>
+        <div class="mt-4 flex items-center gap-3">
+          <button id="a-herinner" class="pbtn pbtn--subtle">Herinnering sturen</button>
+          <span id="a-msg" class="text-sm"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="pcard">
+      <div class="pcard-h">Item toevoegen</div>
+      <div class="pcard-b">
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div><label class="plabel">Naam</label><input id="i-label" class="pinput" /></div>
+          <div><label class="plabel">Toelichting</label><input id="i-desc" class="pinput" /></div>
+          <div><label class="plabel">Soort</label>
+            <select id="i-type" class="pselect">
+              <option value="file">Bestand</option>
+              <option value="text">Tekst</option>
+              <option value="boolean">Ja/nee</option>
+            </select></div>
+          <div><label class="plabel">Toegestane extensies (bv. jpg,png,pdf)</label><input id="i-ext" class="pinput" /></div>
+          <div><label class="plabel">Maximale grootte (MB, max 25)</label><input id="i-mb" type="number" min="1" max="25" value="25" class="pinput" /></div>
+          <div><label class="plabel">Maximaal aantal bestanden</label><input id="i-max" type="number" min="1" value="1" class="pinput" /></div>
+          <div class="flex items-center gap-4 sm:col-span-2">
+            <label class="text-sm"><input id="i-req" type="checkbox" checked /> Verplicht</label>
+            <label class="text-sm"><input id="i-multi" type="checkbox" /> Meerdere bestanden</label>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center gap-3">
+          <button id="i-add" class="pbtn pbtn--subtle">Item toevoegen</button>
+          <span id="i-msg" class="text-sm"></span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var STATUS = { open: 'Open', received: 'Ontvangen', nvt: 'N.v.t.' };
+      var BADGE = { open: 'pbadge--amber', received: 'pbadge--green', nvt: 'pbadge--gray' };
+      function $(id) { return document.getElementById(id); }
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      function flash(el, text, ok) {
+        el.textContent = text;
+        el.style.color = ok ? '#0e6245' : '#b3093c';
+        setTimeout(function () { el.textContent = ''; }, 4000);
+      }
+      function fmt(ms) {
+        if (!ms) return '';
+        return new Date(Number(ms)).toLocaleString('nl-NL', { timeZone: 'Europe/Amsterdam', dateStyle: 'short', timeStyle: 'short' });
+      }
+      function kb(n) { n = Number(n || 0); return n > 1048576 ? (n / 1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB'; }
+      function api(url, method, body) {
+        var opt = { method: method || 'GET', credentials: 'same-origin' };
+        if (body !== undefined) { opt.headers = { 'Content-Type': 'application/json' }; opt.body = JSON.stringify(body); }
+        return fetch(url, opt).then(function (r) {
+          if (r.status === 401 || r.status === 403) { window.adminFout.naarLogin(); throw 0; }
+          return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+        });
+      }
+      var klant = new URLSearchParams(location.search).get('klant');
+      if (!klant) { location.href = '/admin/klanten'; return; }
+      $('a-terug').href = '/admin/klant?id=' + encodeURIComponent(klant);
+      $('a-terug').textContent = '← Klant';
+
+      function load() {
+        Promise.all([
+          api('/api/admin/customer?id=' + encodeURIComponent(klant)),
+          api('/api/admin/aanlever?customer_id=' + encodeURIComponent(klant)),
+        ]).then(function (res) {
+          $('a-loading').classList.add('hidden');
+          $('a-content').classList.remove('hidden');
+          var c = (res[0].j && res[0].j.customer) || {};
+          $('a-titel').textContent = 'Aanleverlijst — ' + (c.bedrijf || 'Klant');
+          render((res[1].j && res[1].j.items) || []);
+        }).catch(function (e) { window.adminFout.vangRest(e, 'Aanleverlijst'); });
+      }
+
+      function render(items) {
+        var done = items.filter(function (i) { return i.status !== 'open' || (i.uploads || []).length; }).length;
+        $('a-voortgang').textContent = items.length ? done + ' van ' + items.length + ' aangeleverd' : '';
+        $('a-seed').classList.toggle('hidden', items.length > 0);
+        $('a-items').innerHTML = items.length ? items.map(function (it) {
+          var ups = (it.uploads || []).map(function (u) {
+            if (u.text_value != null && u.text_value !== '') {
+              return '<li class="text-xs">' + esc(u.text_value) + ' <span class="p-muted">' + esc(fmt(u.created_at)) + '</span></li>';
+            }
+            return '<li class="text-xs"><a class="p-link" href="/api/admin/aanlever/bestand?id=' + encodeURIComponent(u.id) + '">' +
+              esc(u.original_name || 'bestand') + '</a> <span class="p-muted">' + kb(u.size_bytes) + ' · ' + esc(fmt(u.created_at)) + '</span></li>';
+          }).join('');
+          return '<div class="rounded-md border p-3" style="border-color:var(--p-border)" data-id="' + esc(it.id) + '">' +
+            '<div class="flex items-center justify-between gap-2"><span style="color:var(--p-ink);font-weight:500">' + esc(it.label) +
+            (it.required ? '' : ' <span class="p-muted" style="font-weight:400">(optioneel)</span>') + '</span>' +
+            '<span class="pbadge ' + (BADGE[it.status] || 'pbadge--gray') + '">' + esc(STATUS[it.status] || it.status) + '</span></div>' +
+            (it.description ? '<p class="mt-1 text-xs p-muted">' + esc(it.description) + '</p>' : '') +
+            (ups ? '<ul class="mt-2 space-y-1">' + ups + '</ul>' : '') +
+            '<div class="mt-2 flex flex-wrap items-center gap-2">' +
+            '<select class="it-status pselect" style="width:auto;height:30px">' +
+            ['open', 'received', 'nvt'].map(function (s) {
+              return '<option value="' + s + '"' + (s === it.status ? ' selected' : '') + '>' + STATUS[s] + '</option>';
+            }).join('') + '</select>' +
+            '<button class="it-save pbtn pbtn--primary pbtn--sm">Opslaan</button>' +
+            '<button class="it-del pbtn pbtn--sm" style="color:#b3093c">Verwijderen</button></div></div>';
+        }).join('') : '<p class="text-sm p-muted">Nog geen items.</p>';
+
+        document.querySelectorAll('#a-items .it-save').forEach(function (b) {
+          b.addEventListener('click', function () {
+            var box = b.closest('[data-id]');
+            api('/api/admin/aanlever/item', 'PATCH', { id: box.getAttribute('data-id'), status: box.querySelector('.it-status').value })
+              .then(function (res) { flash($('a-msg'), res.ok ? 'Opgeslagen' : (res.j.error || 'Fout'), res.ok); if (res.ok) load(); })
+              .catch(function () { flash($('a-msg'), 'Netwerkfout', false); });
+          });
+        });
+        document.querySelectorAll('#a-items .it-del').forEach(function (b) {
+          b.addEventListener('click', function () {
+            if (!confirm('Item verwijderen? Eventuele aangeleverde bestanden worden ook verwijderd.')) return;
+            var box = b.closest('[data-id]');
+            api('/api/admin/aanlever/item?id=' + encodeURIComponent(box.getAttribute('data-id')), 'DELETE')
+              .then(function (res) { flash($('a-msg'), res.ok ? 'Verwijderd' : (res.j.error || 'Fout'), res.ok); if (res.ok) load(); })
+              .catch(function () { flash($('a-msg'), 'Netwerkfout', false); });
+          });
+        });
+      }
+
+      $('s-maak').addEventListener('click', function () {
+        api('/api/admin/aanlever/seed', 'POST', { customer_id: klant, project_domein: $('s-domein').value.trim() })
+          .then(function (res) { flash($('a-msg'), res.ok ? 'Standaardlijst aangemaakt' : (res.j.error || 'Fout'), res.ok); if (res.ok) load(); })
+          .catch(function () { flash($('a-msg'), 'Netwerkfout', false); });
+      });
+      $('a-herinner').addEventListener('click', function () {
+        if (!confirm('Herinnering per e-mail sturen naar de eigenaar(s) van dit account?')) return;
+        api('/api/admin/aanlever/herinnering', 'POST', { customer_id: klant })
+          .then(function (res) { flash($('a-msg'), res.ok ? 'Herinnering verstuurd' : (res.j.error || 'Fout'), res.ok); })
+          .catch(function () { flash($('a-msg'), 'Netwerkfout', false); });
+      });
+      $('i-add').addEventListener('click', function () {
+        var mb = parseInt($('i-mb').value, 10) || 25;
+        api('/api/admin/aanlever/item', 'POST', {
+          customer_id: klant, label: $('i-label').value.trim(), description: $('i-desc').value.trim(),
+          type: $('i-type').value, required: $('i-req').checked ? 1 : 0, accepted_ext: $('i-ext').value.trim(),
+          max_mb: Math.min(25, mb), multi: $('i-multi').checked ? 1 : 0, max_files: parseInt($('i-max').value, 10) || 1,
+        }).then(function (res) {
+          flash($('i-msg'), res.ok ? 'Toegevoegd' : (res.j.error || 'Fout'), res.ok);
+          if (res.ok) { $('i-label').value = ''; $('i-desc').value = ''; load(); }
+        }).catch(function () { flash($('i-msg'), 'Netwerkfout', false); });
+      });
+
+      load();
+    })();
+  </script>
+</AdminLayout>

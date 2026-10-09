@@ -24,6 +24,31 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
     <div class="kpi"><div class="kpi-label">No-shows</div><div class="kpi-value" id="ov-em-noshow">—</div><div class="text-xs" style="color:var(--p-muted)">agendakoppeling nodig</div></div>
   </div>
 
+  <!-- Overeenkomst + aanleverlijst -->
+  <div class="mt-6 grid gap-4 sm:grid-cols-2">
+    <section class="pcard">
+      <div class="pcard-h">
+        <span>Overeenkomst</span>
+        <span class="pbadge pbadge--gray" id="ov-ovk-status">…</span>
+      </div>
+      <div class="pcard-b">
+        <p class="text-sm p-muted" id="ov-ovk-text">Status wordt geladen.</p>
+        <a href="/portal/overeenkomst/" class="pbtn pbtn--subtle pbtn--sm mt-3" id="ov-ovk-link">Bekijk overeenkomst</a>
+      </div>
+    </section>
+    <section class="pcard">
+      <div class="pcard-h">
+        <span>Aanleverlijst</span>
+        <span class="text-sm p-muted" id="ov-aan-count">…</span>
+      </div>
+      <div class="pcard-b">
+        <div class="pprogress"><div id="ov-aan-bar" style="width:0%"></div></div>
+        <p class="mt-2 text-sm p-muted" id="ov-aan-text">Voortgang wordt geladen.</p>
+        <a href="/portal/aanleveren/" class="pbtn pbtn--subtle pbtn--sm mt-3">Naar aanleverlijst</a>
+      </div>
+    </section>
+  </div>
+
   <div class="mt-6 grid gap-6 lg:grid-cols-3">
     <!-- Onboarding -->
     <section class="pcard lg:col-span-1">
@@ -86,6 +111,51 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
             document.getElementById('ov-em-calls').textContent = 'n.b.';
             document.getElementById('ov-em-min').textContent = 'n.b.';
           }
+        })
+        .catch(function () {});
+
+      fetch('/api/portal/overeenkomst/lijst', { credentials: 'same-origin' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+          if (!d || !d.agreements) return;
+          var list = d.agreements;
+          var badge = document.getElementById('ov-ovk-status');
+          var text = document.getElementById('ov-ovk-text');
+          var link = document.getElementById('ov-ovk-link');
+          if (!list.length) {
+            badge.textContent = 'Nog niet beschikbaar';
+            text.textContent = 'Er staat nog geen overeenkomst voor u klaar.';
+            link.classList.add('hidden');
+            return;
+          }
+          var open = list.filter(function (a) { return a.status !== 'signed'; })[0];
+          var target = open || list[0];
+          if (open) {
+            var bezig = open.status === 'in_progress';
+            badge.textContent = bezig ? 'In behandeling' : 'Nog te lezen';
+            badge.className = 'pbadge ' + (bezig ? 'pbadge--blue' : 'pbadge--amber');
+            text.textContent = open.title;
+            link.textContent = bezig ? 'Verder met lezen en ondertekenen' : 'Lees en onderteken';
+          } else {
+            badge.textContent = 'Ondertekend';
+            badge.className = 'pbadge pbadge--green';
+            text.textContent = target.title;
+            link.textContent = 'Bekijk overeenkomst';
+          }
+          link.href = '/portal/overeenkomst/?id=' + encodeURIComponent(target.id);
+        })
+        .catch(function () {});
+
+      fetch('/api/portal/aanleveren', { credentials: 'same-origin' })
+        .then(function (r) { return r.ok ? r.json() : null; })
+        .then(function (d) {
+          if (!d || !d.progress) return;
+          var done = d.progress.done || 0, total = d.progress.total || 0;
+          document.getElementById('ov-aan-count').textContent = done + ' van ' + total;
+          document.getElementById('ov-aan-bar').style.width = (total ? Math.round((done / total) * 100) : 0) + '%';
+          document.getElementById('ov-aan-text').textContent = total
+            ? done + ' van ' + total + ' aangeleverd'
+            : 'Er staan nog geen items in uw aanleverlijst.';
         })
         .catch(function () {});
 

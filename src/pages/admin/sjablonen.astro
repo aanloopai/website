@@ -1,0 +1,158 @@
+---
+// Admin panel — documentsjablonen (versies per slug).
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Sjablonen" active="sjablonen">
+  <h1 class="page-title">Sjablonen</h1>
+  <div id="t-loading" class="mt-6"><div class="pskel h-48 w-full max-w-2xl"></div></div>
+
+  <div id="t-content" class="hidden mt-6 space-y-6">
+    <section class="pcard">
+      <div class="pcard-h">Versies</div>
+      <div class="pcard-b"><div id="t-lijst" class="space-y-4"></div></div>
+    </section>
+
+    <section id="t-bekijk" class="pcard hidden">
+      <div class="pcard-h" id="t-bekijk-titel">Sjabloon</div>
+      <div class="pcard-b"><pre id="t-body" class="whitespace-pre-wrap text-xs" style="max-height:60vh;overflow:auto"></pre></div>
+    </section>
+
+    <section class="pcard">
+      <div class="pcard-h">Handtekening AanloopAI</div>
+      <div class="pcard-b">
+        <p class="text-sm">Status: <strong id="h-status">laden…</strong></p>
+        <img id="h-img" alt="Huidige handtekening AanloopAI" class="hidden mt-3 rounded-md border" style="max-height:120px;background:#fff;border-color:var(--p-border)" />
+        <div class="mt-4 flex flex-wrap items-center gap-3">
+          <input id="h-file" type="file" accept="image/png" class="pinput" style="max-width:320px" />
+          <button id="h-upload" class="pbtn pbtn--primary">Uploaden</button>
+          <span id="h-msg" class="text-sm"></span>
+        </div>
+        <p class="mt-2 text-xs p-muted">Alleen PNG, maximaal 200 KB. Wordt op de ondertekeningspagina van de PDF geplaatst.</p>
+      </div>
+    </section>
+
+    <section class="pcard">
+      <div class="pcard-h">Nieuwe versie</div>
+      <div class="pcard-b">
+        <div class="grid gap-3 sm:grid-cols-3">
+          <div><label class="plabel">Sjabloon</label>
+            <select id="n-slug" class="pselect">
+              <option value="overeenkomst">Overeenkomst</option>
+              <option value="algemene-voorwaarden">Algemene voorwaarden</option>
+              <option value="privacy-verwerker">Privacy en verwerker</option>
+            </select></div>
+          <div><label class="plabel">Versie (bv. 1.1)</label><input id="n-versie" class="pinput" placeholder="1.1" /></div>
+          <div><label class="plabel">Titel</label><input id="n-titel" class="pinput" /></div>
+        </div>
+        <label class="plabel mt-3">Inhoud (markdown)</label>
+        <textarea id="n-body" class="pinput" rows="16" style="height:auto;font-family:monospace"></textarea>
+        <div class="mt-4 flex items-center gap-3">
+          <button id="n-opslaan" class="pbtn pbtn--primary">Nieuwe versie opslaan</button>
+          <span id="n-msg" class="text-sm"></span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var NAMEN = { 'overeenkomst': 'Overeenkomst', 'algemene-voorwaarden': 'Algemene voorwaarden', 'privacy-verwerker': 'Privacy en verwerker' };
+      function $(id) { return document.getElementById(id); }
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      function flash(el, text, ok) {
+        el.textContent = text;
+        el.style.color = ok ? '#0e6245' : '#b3093c';
+        setTimeout(function () { el.textContent = ''; }, 4000);
+      }
+      function fmt(ms) {
+        if (!ms) return '—';
+        return new Date(Number(ms)).toLocaleDateString('nl-NL', { timeZone: 'Europe/Amsterdam' });
+      }
+      function api(url, method, body) {
+        var opt = { method: method || 'GET', credentials: 'same-origin' };
+        if (body !== undefined) { opt.headers = { 'Content-Type': 'application/json' }; opt.body = JSON.stringify(body); }
+        return fetch(url, opt).then(function (r) {
+          if (r.status === 401 || r.status === 403) { window.adminFout.naarLogin(); throw 0; }
+          return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+        });
+      }
+
+      function load() {
+        api('/api/admin/sjablonen').then(function (res) {
+          $('t-loading').classList.add('hidden');
+          $('t-content').classList.remove('hidden');
+          var rows = (res.j && (res.j.templates || res.j.sjablonen)) || [];
+          var groups = {};
+          rows.forEach(function (t) { (groups[t.slug] = groups[t.slug] || []).push(t); });
+          var slugs = Object.keys(groups);
+          $('t-lijst').innerHTML = slugs.length ? slugs.map(function (slug) {
+            return '<div><div class="text-sm" style="color:var(--p-ink);font-weight:600">' + esc(NAMEN[slug] || slug) + '</div><div class="mt-2 space-y-2">' +
+              groups[slug].map(function (t) {
+                return '<div class="flex items-center justify-between rounded-md border px-4 py-2 text-sm" style="border-color:var(--p-border)" data-id="' + esc(t.id) + '" data-t="' + esc(t.title) + ' v' + esc(t.version) + '">' +
+                  '<span>versie ' + esc(t.version) + ' · ' + esc(t.title) + '<span class="ml-2 p-muted">' + esc(fmt(t.created_at)) + ' · ' + esc(t.chars || '') + ' tekens</span></span>' +
+                  '<button class="t-view pbtn pbtn--subtle pbtn--sm">Bekijken</button></div>';
+              }).join('') + '</div></div>';
+          }).join('') : '<p class="text-sm p-muted">Nog geen sjablonen.</p>';
+          document.querySelectorAll('#t-lijst .t-view').forEach(function (b) {
+            b.addEventListener('click', function () {
+              var box = b.closest('[data-id]');
+              api('/api/admin/sjablonen/item?id=' + encodeURIComponent(box.getAttribute('data-id'))).then(function (r) {
+                if (!r.ok) { flash($('n-msg'), r.j.error || 'Fout', false); return; }
+                var t = r.j.template || r.j.sjabloon || r.j.item || r.j;
+                $('t-bekijk').classList.remove('hidden');
+                $('t-bekijk-titel').textContent = box.getAttribute('data-t');
+                $('t-body').textContent = t.body_markdown || '';
+                $('n-slug').value = t.slug || $('n-slug').value;
+                $('n-titel').value = t.title || '';
+                $('n-body').value = t.body_markdown || '';
+                $('t-bekijk').scrollIntoView({ behavior: 'smooth' });
+              }).catch(function () { flash($('n-msg'), 'Netwerkfout', false); });
+            });
+          });
+        }).catch(function (e) { window.adminFout.vangRest(e, 'Sjablonen'); });
+      }
+
+      $('n-opslaan').addEventListener('click', function () {
+        api('/api/admin/sjablonen', 'POST', {
+          slug: $('n-slug').value, version: $('n-versie').value.trim(),
+          title: $('n-titel').value.trim(), body_markdown: $('n-body').value,
+        }).then(function (res) {
+          flash($('n-msg'), res.ok ? 'Nieuwe versie opgeslagen' : (res.j.error || 'Fout'), res.ok);
+          if (res.ok) load();
+        }).catch(function () { flash($('n-msg'), 'Netwerkfout', false); });
+      });
+
+      function laadHandtekening() {
+        api('/api/admin/sjablonen/handtekening').then(function (res) {
+          var aanwezig = !!(res.j && res.j.aanwezig);
+          $('h-status').textContent = aanwezig ? 'aanwezig (' + fmt(res.j.created_at) + ')' : 'ontbreekt';
+          var img = $('h-img');
+          if (aanwezig) { img.src = '/api/admin/sjablonen/handtekening/afbeelding?t=' + Date.now(); img.classList.remove('hidden'); }
+          else { img.removeAttribute('src'); img.classList.add('hidden'); }
+        }).catch(function () { $('h-status').textContent = 'onbekend'; });
+      }
+
+      $('h-upload').addEventListener('click', function () {
+        var f = $('h-file').files[0];
+        if (!f) { flash($('h-msg'), 'Kies eerst een PNG-bestand', false); return; }
+        var fd = new FormData();
+        fd.append('file', f);
+        fetch('/api/admin/sjablonen/handtekening', { method: 'POST', credentials: 'same-origin', body: fd }).then(function (r) {
+          if (r.status === 401 || r.status === 403) { window.adminFout.naarLogin(); throw 0; }
+          return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+        }).then(function (res) {
+          flash($('h-msg'), res.ok ? 'Handtekening opgeslagen' : (res.j.error || 'Fout'), res.ok);
+          if (res.ok) { $('h-file').value = ''; laadHandtekening(); }
+        }).catch(function () { flash($('h-msg'), 'Netwerkfout', false); });
+      });
+
+      laadHandtekening();
+      load();
+    })();
+  </script>
+</AdminLayout>

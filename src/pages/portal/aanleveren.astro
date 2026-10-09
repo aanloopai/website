@@ -1,0 +1,233 @@
+---
+// Customer portal — Aanleverlijst. Items per klant: bestanden, tekst of ja/nee.
+// Data: /api/portal/aanleveren/*.
+import PortalLayout from '../../layouts/PortalLayout.astro';
+---
+
+<PortalLayout title="Aanleverlijst" active="aanleveren">
+  <h1 class="page-title">Aanleverlijst</h1>
+  <p class="page-sub">Lever hier de bestanden en gegevens aan die we nodig hebben voor uw project.</p>
+
+  <div id="aan-msg" class="palert palert--warn mt-4 hidden" role="alert"></div>
+
+  <div class="pcard mt-6">
+    <div class="pcard-b">
+      <div class="flex items-center justify-between gap-3">
+        <span class="section-title">Voortgang</span>
+        <span class="text-sm" id="aan-progress-text" style="color:var(--p-ink)">…</span>
+      </div>
+      <div class="pprogress mt-2"><div id="aan-progress-bar" style="width:0%"></div></div>
+    </div>
+  </div>
+
+  <div id="aan-items" class="mt-6 space-y-4">
+    <div class="pskel h-28 w-full"></div>
+    <div class="pskel h-28 w-full"></div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      var API = '/api/portal/aanleveren';
+      var HARD_MAX_MB = 25;
+      var items = [];
+      var notice = '';
+
+      function $(id) { return document.getElementById(id); }
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      function msg(text) {
+        var el = $('aan-msg');
+        el.textContent = text || '';
+        el.classList.toggle('hidden', !text);
+        if (text) el.scrollIntoView({ block: 'nearest' });
+      }
+      function api(path, method, body, raw) {
+        var opt = { method: method || 'GET', credentials: 'same-origin' };
+        if (raw) opt.body = raw;
+        else if (body !== undefined) {
+          opt.headers = { 'Content-Type': 'application/json' };
+          opt.body = JSON.stringify(body);
+        }
+        return fetch(path, opt).then(function (r) {
+          if (r.status === 401) { location.href = '/portal/login'; throw new Error('unauth'); }
+          return r.json().catch(function () { return {}; }).then(function (j) { return { ok: r.ok, status: r.status, j: j }; });
+        });
+      }
+      function fail(res, fallback) { msg((res && res.j && res.j.error) || fallback || 'Er ging iets mis. Probeer het opnieuw.'); }
+      function find(id) { for (var i = 0; i < items.length; i++) if (items[i].id === id) return items[i]; return null; }
+      function exts(it) {
+        return String(it.accepted_ext || '').toLowerCase().split(/[,\s]+/).map(function (e) { return e.replace(/^\./, ''); }).filter(Boolean);
+      }
+      function maxMb(it) { return Math.min(Number(it.max_mb) || HARD_MAX_MB, HARD_MAX_MB); }
+      function mb(bytes) { return (Number(bytes || 0) / 1048576).toFixed(1).replace('.', ',') + ' MB'; }
+      function isDone(it) {
+        return it.status === 'received' || it.status === 'nvt' || (it.uploads && it.uploads.length > 0);
+      }
+
+      function statusBadge(it) {
+        if (it.status === 'nvt') return '<span class="pbadge pbadge--gray">n.v.t.</span>';
+        if (isDone(it)) return '<span class="pbadge pbadge--green">Aangeleverd</span>';
+        return it.required ? '<span class="pbadge pbadge--amber">Open</span>' : '<span class="pbadge pbadge--gray">Optioneel</span>';
+      }
+
+      function renderFile(it) {
+        var ups = it.uploads || [];
+        var html = '';
+        if (ups.length) {
+          html += '<ul class="mt-3 space-y-2">' + ups.map(function (u) {
+            return '<li class="flex items-center justify-between gap-3 rounded-md border px-3 py-2 text-sm" style="border-color:var(--p-border)">' +
+              '<a class="p-link truncate" href="' + API + '/bestand?id=' + encodeURIComponent(u.id) + '">' + esc(u.original_name) + '</a>' +
+              '<span class="flex shrink-0 items-center gap-3"><span class="text-xs p-muted">' + mb(u.size_bytes) + '</span>' +
+              '<button type="button" data-write data-act="del" data-id="' + esc(u.id) + '" class="pbtn pbtn--ghost pbtn--sm">Verwijderen</button></span></li>';
+          }).join('') + '</ul>';
+        }
+        var full = ups.length >= (it.multi ? Number(it.max_files) || 1 : 1);
+        if (!full && it.status !== 'nvt') {
+          var e = exts(it);
+          html += '<div class="mt-3" data-write>' +
+            '<input type="file" data-act="file" data-item="' + esc(it.id) + '"' + (it.multi ? ' multiple' : '') +
+            (e.length ? ' accept="' + e.map(function (x) { return '.' + x; }).join(',') + '"' : '') + ' class="text-sm" />' +
+            '<p class="mt-1 text-xs" style="color:var(--p-ink-4)">' +
+            (e.length ? 'Toegestaan: ' + e.join(', ') + '. ' : '') + 'Maximaal ' + maxMb(it) + ' MB per bestand' +
+            (it.multi ? ', tot ' + (Number(it.max_files) || 1) + ' bestanden.' : '.') + '</p>' +
+            '<p class="mt-1 text-xs hidden" data-prog="' + esc(it.id) + '" style="color:var(--p-accent)"></p></div>';
+        }
+        return html;
+      }
+
+      function renderText(it) {
+        var val = it.uploads && it.uploads[0] ? it.uploads[0].text_value || '' : '';
+        return '<div class="mt-3" data-write>' +
+          '<textarea class="ptextarea" maxlength="5000" id="txt-' + esc(it.id) + '"' + (it.status === 'nvt' ? ' disabled' : '') + '>' + esc(val) + '</textarea>' +
+          '<p class="mt-1 text-xs" style="color:var(--p-ink-4)">' + esc(notice) + '</p>' +
+          '<button type="button" data-act="text" data-id="' + esc(it.id) + '" class="pbtn pbtn--primary pbtn--sm mt-2"' + (it.status === 'nvt' ? ' disabled' : '') + '>Opslaan</button></div>';
+      }
+
+      function renderBool(it) {
+        var val = it.uploads && it.uploads[0] ? it.uploads[0].text_value || '' : '';
+        var dis = it.status === 'nvt' ? ' disabled' : '';
+        function radio(v, label) {
+          return '<label class="flex items-center gap-2 text-sm" style="color:var(--p-ink)">' +
+            '<input type="radio" name="bool-' + esc(it.id) + '" value="' + v + '" data-act="bool" data-id="' + esc(it.id) + '"' + (val === v ? ' checked' : '') + dis + ' />' + label + '</label>';
+        }
+        return '<div class="mt-3 flex gap-6" data-write>' + radio('ja', 'Ja') + radio('nee', 'Nee') + '</div>';
+      }
+
+      function render() {
+        var done = items.filter(isDone).length;
+        $('aan-progress-text').textContent = done + ' van ' + items.length + ' aangeleverd';
+        $('aan-progress-bar').style.width = (items.length ? Math.round((done / items.length) * 100) : 0) + '%';
+        var box = $('aan-items');
+        if (!items.length) {
+          box.innerHTML = '<div class="pcard"><div class="empty"><p class="empty-title">Nog geen items</p><p class="empty-text">Zodra uw aanleverlijst klaarstaat, ziet u de items hier.</p></div></div>';
+          return;
+        }
+        box.innerHTML = items.map(function (it) {
+          var body = it.type === 'file' ? renderFile(it) : (it.type === 'boolean' ? renderBool(it) : renderText(it));
+          var nvt = (!it.required && it.status !== 'nvt' && !(it.uploads && it.uploads.length))
+            ? '<button type="button" data-write data-act="nvt" data-id="' + esc(it.id) + '" class="pbtn pbtn--ghost pbtn--sm">n.v.t.</button>' : '';
+          return '<section class="pcard" data-item-card="' + esc(it.id) + '"><div class="pcard-b">' +
+            '<div class="flex items-start justify-between gap-3"><div>' +
+            '<div style="color:var(--p-ink);font-weight:600">' + esc(it.label) + '</div>' +
+            (it.description ? '<p class="mt-1 text-sm p-muted">' + esc(it.description) + '</p>' : '') +
+            '</div><div class="flex shrink-0 items-center gap-2">' + statusBadge(it) + nvt + '</div></div>' +
+            body + '</div></section>';
+        }).join('');
+        if (window.__portalUser && window.__portalUser.role === 'kijker') {
+          box.querySelectorAll('[data-write]').forEach(function (el) { el.classList.add('hidden'); });
+        }
+      }
+
+      function load() {
+        return api(API).then(function (res) {
+          if (!res.ok) { $('aan-items').innerHTML = ''; fail(res, 'De aanleverlijst kon niet worden geladen.'); return; }
+          items = res.j.items || [];
+          notice = res.j.notice || '';
+          render();
+        }).catch(function () {});
+      }
+
+      // Client-side pre-check (de server controleert opnieuw).
+      function precheck(it, file) {
+        var e = exts(it);
+        var name = file.name || '';
+        var ext = name.indexOf('.') > -1 ? name.split('.').pop().toLowerCase() : '';
+        if (e.length && e.indexOf(ext) === -1) return 'Bestandstype niet toegestaan voor "' + name + '". Toegestaan: ' + e.join(', ') + '.';
+        if (file.size > maxMb(it) * 1048576) return '"' + name + '" is te groot (maximaal ' + maxMb(it) + ' MB).';
+        if (file.size === 0) return '"' + name + '" is leeg.';
+        return '';
+      }
+
+      function sendFiles(it, files) {
+        var list = Array.prototype.slice.call(files);
+        var room = (it.multi ? Number(it.max_files) || 1 : 1) - ((it.uploads || []).length);
+        if (list.length > room) { msg('U kunt nog ' + Math.max(room, 0) + ' bestand(en) toevoegen voor dit item.'); return Promise.resolve(); }
+        for (var i = 0; i < list.length; i++) {
+          var bad = precheck(it, list[i]);
+          if (bad) { msg(bad); return Promise.resolve(); }
+        }
+        msg('');
+        var prog = document.querySelector('[data-prog="' + it.id + '"]');
+        var chain = Promise.resolve(true);
+        list.forEach(function (f, idx) {
+          chain = chain.then(function (okSoFar) {
+            if (!okSoFar) return false;
+            if (prog) { prog.classList.remove('hidden'); prog.textContent = 'Bezig met uploaden (' + (idx + 1) + ' van ' + list.length + ')…'; }
+            var fd = new FormData();
+            fd.append('item_id', it.id);
+            fd.append('file', f, f.name);
+            return api(API + '/upload', 'POST', undefined, fd).then(function (res) {
+              if (!res.ok) { fail(res, 'Uploaden van "' + f.name + '" is mislukt.'); return false; }
+              return true;
+            });
+          });
+        });
+        return chain.then(function () { return load(); });
+      }
+
+      var root = $('aan-items');
+      root.addEventListener('change', function (e) {
+        var t = e.target;
+        var act = t.getAttribute && t.getAttribute('data-act');
+        if (act === 'file' && t.files && t.files.length) {
+          var it = find(t.getAttribute('data-item'));
+          if (it) sendFiles(it, t.files);
+        } else if (act === 'bool') {
+          api(API + '/tekst', 'POST', { item_id: t.getAttribute('data-id'), text_value: t.value }).then(function (res) {
+            if (res.ok) { msg(''); load(); } else fail(res);
+          }).catch(function () {});
+        }
+      });
+      root.addEventListener('click', function (e) {
+        var t = e.target.closest ? e.target.closest('[data-act]') : null;
+        if (!t) return;
+        var act = t.getAttribute('data-act');
+        var id = t.getAttribute('data-id');
+        if (act === 'del') {
+          if (!confirm('Dit bestand verwijderen?')) return;
+          api(API + '/upload?id=' + encodeURIComponent(id), 'DELETE').then(function (res) {
+            if (res.ok) { msg(''); load(); } else fail(res);
+          }).catch(function () {});
+        } else if (act === 'nvt') {
+          api(API + '/nvt', 'POST', { item_id: id }).then(function (res) {
+            if (res.ok) { msg(''); load(); } else fail(res);
+          }).catch(function () {});
+        } else if (act === 'text') {
+          var ta = $('txt-' + id);
+          var v = ta ? ta.value.trim() : '';
+          if (!v) { msg('Vul eerst een antwoord in.'); return; }
+          t.disabled = true;
+          api(API + '/tekst', 'POST', { item_id: id, text_value: v }).then(function (res) {
+            if (res.ok) { msg(''); load(); } else { fail(res); t.disabled = false; }
+          }).catch(function () { t.disabled = false; });
+        }
+      });
+
+      document.addEventListener('portal:ready', function () { if (items.length) render(); });
+      load();
+    })();
+  </script>
+</PortalLayout>
