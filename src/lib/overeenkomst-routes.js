@@ -11,7 +11,7 @@ import { escapeHtml } from './escape.js';
 import { renderHtml } from './markdown-lite.js';
 import {
   TEMPLATE_SLUGS, CONSENT_LABELS, AUTHORIZED_LABEL, renderTemplate, buildVars,
-  minReadSeconds, computeEvidenceSha256, formatAmsterdam, writeAudit,
+  minReadSeconds, computeEvidenceSha256, formatAmsterdam, writeAudit, ensurePortaalSchema,
 } from './overeenkomst-core.js';
 import { buildAgreementPdf } from './agreement-pdf.js';
 
@@ -142,6 +142,7 @@ async function rerenderDocuments(env, agreement, customer, docs) {
 
 // ── dispatcher ─────────────────────────────────────────────────────────────
 export async function handleOvereenkomstApi(request, env, user, url) {
+  if (env.PORTAL_DB) await ensurePortaalSchema(env);
   const path = url.pathname.replace(/\/+$/, '');
   const method = request.method;
   const sub = path.slice('/api/portal/overeenkomst'.length); // '' | '/lijst' | ...

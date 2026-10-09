@@ -90,3 +90,54 @@ describe('writeAudit', () => {
     await expect(writeAudit(bad, { actor: 'x', action: 'y' })).resolves.toBeUndefined();
   });
 });
+
+describe('ensurePortaalSchema', () => {
+  async function load() {
+    const core = await import('../src/lib/overeenkomst-core.js');
+    core.resetPortaalSchemaMemo();
+    return core;
+  }
+  function makeDb({ count = 0, failBatchOnce = false } = {}) {
+    const calls = { batches: [], inserts: 0 };
+    let fail = failBatchOnce;
+    const db = {
+      prepare(sql) {
+        const st = { sql, args: [], bind(...a) { st.args = a; return st; }, first: async () => ({ n: count }) };
+        return st;
+      },
+      async batch(stmts) {
+        if (fail) { fail = false; throw new Error('d1 down'); }
+        calls.batches.push(stmts.map((x) => x.sql));
+        if (stmts[0].sql.startsWith('INSERT OR IGNORE')) calls.inserts += stmts.length;
+        return [];
+      },
+    };
+    return { db, calls };
+  }
+
+  it('draait het schema een keer voor twee aanroepen en seedt bij 0 sjablonen', async () => {
+    const { ensurePortaalSchema } = await load();
+    const { db, calls } = makeDb({ count: 0 });
+    await ensurePortaalSchema({ PORTAL_DB: db });
+    await ensurePortaalSchema({ PORTAL_DB: db });
+    expect(calls.batches).toHaveLength(2);
+    expect(calls.batches[0].every((x) => x.startsWith('CREATE '))).toBe(true);
+    expect(calls.inserts).toBe(3);
+  });
+
+  it('seedt niet als er al sjablonen zijn', async () => {
+    const { ensurePortaalSchema } = await load();
+    const { db, calls } = makeDb({ count: 3 });
+    await ensurePortaalSchema({ PORTAL_DB: db });
+    expect(calls.batches).toHaveLength(1);
+    expect(calls.inserts).toBe(0);
+  });
+
+  it('probeert opnieuw na een fout en gooit die fout door', async () => {
+    const { ensurePortaalSchema } = await load();
+    const { db, calls } = makeDb({ count: 3, failBatchOnce: true });
+    await expect(ensurePortaalSchema({ PORTAL_DB: db })).rejects.toThrow('d1 down');
+    await ensurePortaalSchema({ PORTAL_DB: db });
+    expect(calls.batches).toHaveLength(1);
+  });
+});

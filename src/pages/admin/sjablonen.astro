@@ -19,6 +19,20 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     </section>
 
     <section class="pcard">
+      <div class="pcard-h">Handtekening AanloopAI</div>
+      <div class="pcard-b">
+        <p class="text-sm">Status: <strong id="h-status">laden…</strong></p>
+        <img id="h-img" alt="Huidige handtekening AanloopAI" class="hidden mt-3 rounded-md border" style="max-height:120px;background:#fff;border-color:var(--p-border)" />
+        <div class="mt-4 flex flex-wrap items-center gap-3">
+          <input id="h-file" type="file" accept="image/png" class="pinput" style="max-width:320px" />
+          <button id="h-upload" class="pbtn pbtn--primary">Uploaden</button>
+          <span id="h-msg" class="text-sm"></span>
+        </div>
+        <p class="mt-2 text-xs p-muted">Alleen PNG, maximaal 200 KB. Wordt op de ondertekeningspagina van de PDF geplaatst.</p>
+      </div>
+    </section>
+
+    <section class="pcard">
       <div class="pcard-h">Nieuwe versie</div>
       <div class="pcard-b">
         <div class="grid gap-3 sm:grid-cols-3">
@@ -113,6 +127,31 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         }).catch(function () { flash($('n-msg'), 'Netwerkfout', false); });
       });
 
+      function laadHandtekening() {
+        api('/api/admin/sjablonen/handtekening').then(function (res) {
+          var aanwezig = !!(res.j && res.j.aanwezig);
+          $('h-status').textContent = aanwezig ? 'aanwezig (' + fmt(res.j.created_at) + ')' : 'ontbreekt';
+          var img = $('h-img');
+          if (aanwezig) { img.src = '/api/admin/sjablonen/handtekening/afbeelding?t=' + Date.now(); img.classList.remove('hidden'); }
+          else { img.removeAttribute('src'); img.classList.add('hidden'); }
+        }).catch(function () { $('h-status').textContent = 'onbekend'; });
+      }
+
+      $('h-upload').addEventListener('click', function () {
+        var f = $('h-file').files[0];
+        if (!f) { flash($('h-msg'), 'Kies eerst een PNG-bestand', false); return; }
+        var fd = new FormData();
+        fd.append('file', f);
+        fetch('/api/admin/sjablonen/handtekening', { method: 'POST', credentials: 'same-origin', body: fd }).then(function (r) {
+          if (r.status === 401 || r.status === 403) { window.adminFout.naarLogin(); throw 0; }
+          return r.json().then(function (j) { return { ok: r.ok, j: j }; });
+        }).then(function (res) {
+          flash($('h-msg'), res.ok ? 'Handtekening opgeslagen' : (res.j.error || 'Fout'), res.ok);
+          if (res.ok) { $('h-file').value = ''; laadHandtekening(); }
+        }).catch(function () { flash($('h-msg'), 'Netwerkfout', false); });
+      });
+
+      laadHandtekening();
       load();
     })();
   </script>

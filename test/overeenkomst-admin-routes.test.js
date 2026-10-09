@@ -38,7 +38,7 @@ function makeEnv() {
     users: [{
       id: 'usr_o', customer_id: 'cust_1', email: 'ron@foralle.nl', naam: 'Ron Houter', role: 'eigenaar',
     }],
-    agreements: [], docs: [], consents: [], audit: [],
+    agreements: [], docs: [], consents: [], audit: [], assets: {},
   };
   const respond = (sql, a) => {
     const q = sql.replace(/\s+/g, ' ').trim();
@@ -86,11 +86,19 @@ function makeEnv() {
     if (q.startsWith("UPDATE agreements SET status = 'sent'")) {
       return { run: () => { const ag = s.agreements.find((x) => x.id === a[1] && x.status === 'draft'); if (ag) { ag.status = 'sent'; ag.sent_at = a[0]; } } };
     }
+    if (q.startsWith('INSERT OR REPLACE INTO portal_assets')) {
+      return { run: () => { s.assets[a[0]] = { value_b64: a[1], mime: a[2], created_at: a[3] }; } };
+    }
+    if (q.startsWith('SELECT created_at FROM portal_assets')) return { first: () => (s.assets[a[0]] ? { created_at: s.assets[a[0]].created_at } : null) };
+    if (q.startsWith('SELECT value_b64, mime FROM portal_assets')) return { first: () => s.assets[a[0]] || null };
     if (q.startsWith('INSERT INTO portal_audit_log')) return { run: () => { s.audit.push(a); } };
     throw new Error(`stub: onbekende SQL: ${q}`);
   };
   const db = {
     prepare(sql) {
+      const q0 = sql.replace(/\s+/g, ' ').trim();
+      if (q0.startsWith('CREATE ')) return { run: async () => ({}) };
+      if (q0.startsWith('SELECT count(*) AS n FROM agr_templates')) return { first: async () => ({ n: 3 }) };
       return {
         bind: (...a) => {
           const r = respond(sql, a);
@@ -200,5 +208,49 @@ describe('overeenkomst-admin-routes', () => {
       const r = await handleAdminApi(new Request(`https://aanloopai.nl${p}`), { PORTAL_DB: env.PORTAL_DB, PORTAL_SESSION_SECRET: 's' });
       expect(r.status).toBe(403);
     }
+  });
+
+  describe('handtekening AanloopAI', () => {
+    const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3]);
+    const upload = (env, bytes, user = STAFF) => {
+      const fd = new FormData();
+      fd.append('file', new Blob([bytes]), 'sig.png');
+      return handleOvereenkomstAdminApi({ method: 'POST', headers: new Headers(), formData: async () => fd }, env, user, url('/api/admin/sjablonen/handtekening'));
+    };
+
+    it('niet-PNG -> 400, niets opgeslagen', async () => {
+      const { env, s } = makeEnv();
+      const res = await upload(env, new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 1, 2]));
+      expect(res.status).toBe(400);
+      expect(s.assets).toEqual({});
+    });
+
+    it('te groot (>200 KB) -> 400', async () => {
+      const { env, s } = makeEnv();
+      const big = new Uint8Array(200 * 1024 + 1);
+      big.set(PNG);
+      expect((await upload(env, big)).status).toBe(400);
+      expect(s.assets).toEqual({});
+    });
+
+    it('PNG wordt opgeslagen als base64 + audit, status en afbeelding werken', async () => {
+      const { env, s } = makeEnv();
+      const res = await upload(env, PNG);
+      expect(res.status).toBe(200);
+      expect(Buffer.from(s.assets['handtekening-aanloopai'].value_b64, 'base64')).toEqual(Buffer.from(PNG));
+      expect(s.assets['handtekening-aanloopai'].mime).toBe('image/png');
+      expect(s.audit.some((a) => a.includes('handtekening_geupload'))).toBe(true);
+      const st = await (await handleOvereenkomstAdminApi(req('GET'), env, STAFF, url('/api/admin/sjablonen/handtekening'))).json();
+      expect(st.aanwezig).toBe(true);
+      const img = await handleOvereenkomstAdminApi(req('GET'), env, STAFF, url('/api/admin/sjablonen/handtekening/afbeelding'));
+      expect(img.headers.get('Cache-Control')).toBe('private, no-store');
+      expect(new Uint8Array(await img.arrayBuffer())).toEqual(PNG);
+    });
+
+    it('niet-staff -> 403', async () => {
+      const { env, s } = makeEnv();
+      expect((await upload(env, PNG, { id: 'usr_o', role: 'eigenaar' })).status).toBe(403);
+      expect(s.assets).toEqual({});
+    });
   });
 });

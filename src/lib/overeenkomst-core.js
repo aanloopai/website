@@ -1,6 +1,8 @@
 // Shared pure helpers for the overeenkomst flow (templates, hashes, labels).
 import { randomId, sha256Hex } from './auth.js';
 import { wordCount } from './markdown-lite.js';
+import { SCHEMA_STATEMENTS } from './overeenkomst-schema.js';
+import { TEMPLATE_SEED } from './overeenkomst-templates-seed.js';
 
 export { sha256Hex };
 
@@ -123,4 +125,23 @@ export async function writeAudit(db, {
   } catch (err) {
     console.error('writeAudit failed', err);
   }
+}
+
+// Lazy schema + template seed (once per isolate). Mirrors discovery.js ensureSchemaAndSeed.
+let schemaReady = null;
+export function resetPortaalSchemaMemo() { schemaReady = null; }
+export async function ensurePortaalSchema(env) {
+  if (!schemaReady) {
+    const db = env.PORTAL_DB;
+    schemaReady = (async () => {
+      await db.batch(SCHEMA_STATEMENTS.map((s) => db.prepare(s)));
+      const row = await db.prepare('SELECT count(*) AS n FROM agr_templates').first();
+      if (!row || !row.n) {
+        await db.batch(TEMPLATE_SEED.map((t) => db.prepare(
+          'INSERT OR IGNORE INTO agr_templates (id, slug, version, title, body_markdown, effective_from, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        ).bind(t.id, t.slug, t.version, t.title, t.body, 1760000000000, 1760000000000)));
+      }
+    })().catch((err) => { schemaReady = null; throw err; });
+  }
+  return schemaReady;
 }

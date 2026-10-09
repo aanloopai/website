@@ -10,7 +10,7 @@ import { sendMail } from './portal-routes.js';
 import { renderHtml } from './markdown-lite.js';
 import {
   TEMPLATE_SLUGS, renderTemplate, buildVars, minReadSeconds, sha256Hex,
-  DEFAULT_UPLOAD_ITEMS, writeAudit,
+  DEFAULT_UPLOAD_ITEMS, writeAudit, ensurePortaalSchema,
 } from './overeenkomst-core.js';
 import { buildAgreementPdf } from './agreement-pdf.js';
 
@@ -603,15 +603,68 @@ async function portalAudit(env, url) {
   return jsonResponse({ ok: true, rows: r?.results || [] });
 }
 
+// ── AanloopAI signature PNG (kept in D1 portal_assets, never in the public repo) ──
+const SIG_KEY = 'handtekening-aanloopai';
+const SIG_MAX_BYTES = 200 * 1024;
+const PNG_MAGIC = [0x89, 0x50, 0x4e, 0x47];
+
+function bytesToBase64(bytes) {
+  let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+}
+
+async function handtekeningUpload(request, env, user) {
+  let form;
+  try { form = await request.formData(); } catch { return errorResponse('Ongeldig formulier', 400); }
+  const file = form.get('file');
+  if (!file || typeof file.arrayBuffer !== 'function') return errorResponse('Kies een PNG-bestand', 400);
+  if (file.size > SIG_MAX_BYTES) return errorResponse('Bestand is te groot (maximaal 200 KB)', 400);
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  if (bytes.length > SIG_MAX_BYTES) return errorResponse('Bestand is te groot (maximaal 200 KB)', 400);
+  if (bytes.length < PNG_MAGIC.length || !PNG_MAGIC.every((b, i) => bytes[i] === b)) {
+    return errorResponse('Alleen PNG-bestanden zijn toegestaan', 400);
+  }
+  const now = Date.now();
+  await env.PORTAL_DB
+    .prepare('INSERT OR REPLACE INTO portal_assets (key, value_b64, mime, created_at) VALUES (?, ?, ?, ?)')
+    .bind(SIG_KEY, bytesToBase64(bytes), 'image/png', now).run();
+  await writeAudit(env.PORTAL_DB, {
+    customer_id: null, actor: actorOf(user), action: 'handtekening_geupload', meta: { bytes: bytes.length }, ip: ipOf(request),
+  });
+  return jsonResponse({ ok: true, aanwezig: true, created_at: now });
+}
+
+async function handtekeningStatus(env) {
+  const row = await env.PORTAL_DB.prepare('SELECT created_at FROM portal_assets WHERE key = ?').bind(SIG_KEY).first();
+  return jsonResponse({ ok: true, aanwezig: !!row, created_at: row ? row.created_at : null });
+}
+
+async function handtekeningAfbeelding(env) {
+  const row = await env.PORTAL_DB.prepare('SELECT value_b64, mime FROM portal_assets WHERE key = ?').bind(SIG_KEY).first();
+  if (!row || !row.value_b64) return errorResponse('Geen handtekening aanwezig', 404);
+  const bin = atob(row.value_b64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i += 1) bytes[i] = bin.charCodeAt(i);
+  return new Response(bytes, {
+    status: 200,
+    headers: { 'Content-Type': row.mime || 'image/png', 'Cache-Control': 'private, no-store' },
+  });
+}
+
 // ── dispatcher ──────────────────────────────────────────────────────────────
 export async function handleOvereenkomstAdminApi(request, env, user, url) {
   if (!user || user.role !== 'staff') return errorResponse('Geen toegang', 403);
+  await ensurePortaalSchema(env);
   const path = url.pathname;
   const m = request.method;
 
   if (path === '/api/admin/sjablonen' && m === 'GET') return listSjablonen(env);
   if (path === '/api/admin/sjablonen' && m === 'POST') return createSjabloon(request, env, user);
   if (path === '/api/admin/sjablonen/item' && m === 'GET') return sjabloonItem(env, url);
+  if (path === '/api/admin/sjablonen/handtekening' && m === 'POST') return handtekeningUpload(request, env, user);
+  if (path === '/api/admin/sjablonen/handtekening' && m === 'GET') return handtekeningStatus(env);
+  if (path === '/api/admin/sjablonen/handtekening/afbeelding' && m === 'GET') return handtekeningAfbeelding(env);
 
   if (path === '/api/admin/overeenkomst/lijst' && m === 'GET') return lijst(env, url);
   if (path === '/api/admin/overeenkomst') {

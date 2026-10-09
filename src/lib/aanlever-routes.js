@@ -5,7 +5,7 @@
 import { jsonResponse, errorResponse } from './google-auth.js';
 import { randomId } from './auth.js';
 import { notifyTelegram } from './notify.js';
-import { NO_PASSWORD_NOTICE, writeAudit } from './overeenkomst-core.js';
+import { NO_PASSWORD_NOTICE, writeAudit, ensurePortaalSchema } from './overeenkomst-core.js';
 
 const KV_MAX_BYTES = 25 * 1024 * 1024;
 const MAX_TEXT_CHARS = 5000;
@@ -79,6 +79,7 @@ function publicUpload(u) {
 
 // ── dispatcher ─────────────────────────────────────────────────────────────
 export async function handleAanleverApi(request, env, user, url) {
+  if (env.PORTAL_DB) await ensurePortaalSchema(env);
   const path = url.pathname.replace(/\/+$/, '');
   const method = request.method;
   const sub = path.slice('/api/portal/aanleveren'.length);
