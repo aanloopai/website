@@ -72,21 +72,21 @@ describe('consent', () => {
     expect((await res.json()).error).toBe('Document is nog niet geopend');
   });
 
-  it('weigert wanneer tijd onder het minimum ligt, ook al is het document geopend', async () => {
-    seedAgreement(); backdateOpen('agd_0');
-    const res = await post('/api/portal/overeenkomst/consent', 'usr_1',
-      { document_id: 'agd_0', scrolled_to_end_at: Date.now(), time_on_document_sec: 5 });
-    expect(res.status).toBe(400);
-    expect((await res.json()).error).toBe('Lees het document volledig voordat je akkoord gaat.');
-  });
-
-  it('weigert een vervalste client-tijd als de server-gemeten tijd te kort is (net geopend)', async () => {
+  it('accepteert direct na openen + scrollen (geen minimale leestijd meer, owner 2026-10-09)', async () => {
     seedAgreement();
     const open = await post('/api/portal/overeenkomst/open', 'usr_1', { document_id: 'agd_0' });
     expect(open.status).toBe(200);
     const res = await post('/api/portal/overeenkomst/consent', 'usr_1',
-      { document_id: 'agd_0', scrolled_to_end_at: Date.now(), time_on_document_sec: 9999 });
+      { document_id: 'agd_0', scrolled_to_end_at: Date.now(), time_on_document_sec: 1 });
+    expect(res.status).toBe(200);
+  });
+
+  it('weigert een scrolled_to_end_at dat vóór het openen ligt', async () => {
+    seedAgreement(); backdateOpen('agd_0');
+    const res = await post('/api/portal/overeenkomst/consent', 'usr_1',
+      { document_id: 'agd_0', scrolled_to_end_at: 1, time_on_document_sec: 60 });
     expect(res.status).toBe(400);
+    expect((await res.json()).error).toBe('Lees het document volledig voordat je akkoord gaat.');
   });
 
   it('weigert zonder scrolled_to_end_at', async () => {
@@ -163,7 +163,7 @@ describe('GET detail + bevriezen', () => {
     expect(first.ok).toBe(true);
     expect(first.documents).toHaveLength(3);
     expect(first.bedrijf_compleet).toBe(true);
-    expect(first.documents[0].min_read_sec).toBe(20);
+    expect(first.documents[0].min_read_sec).toBe(0);
     expect(first.documents[0].consent).toBeNull();
     const md0 = d1.raw.prepare('SELECT rendered_markdown FROM agreement_documents WHERE id = ?').get('agd_0').rendered_markdown;
     expect(md0).toContain('Hallo Foralle BV.'); // herrender vanuit sjabloon met variabelen

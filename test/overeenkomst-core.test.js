@@ -40,10 +40,9 @@ describe('buildVars', () => {
 });
 
 describe('minReadSeconds', () => {
-  it('has a floor of 20 and scales at 8 words per second', () => {
-    expect(minReadSeconds('kort')).toBe(20);
-    expect(minReadSeconds(Array(800).fill('w').join(' '))).toBe(100);
-    expect(minReadSeconds(Array(801).fill('w').join(' '))).toBe(101);
+  it('enforces no minimum read time (owner decision 2026-10-09): scroll-to-end is the only gate', () => {
+    expect(minReadSeconds('kort')).toBe(0);
+    expect(minReadSeconds(Array(800).fill('w').join(' '))).toBe(0);
   });
 });
 
