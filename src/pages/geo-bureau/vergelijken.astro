@@ -1,0 +1,114 @@
+---
+// GEO-bureaus in Nederland vergeleken, op basis van de onafhankelijke
+// GEO Agency Index Nederland (Gold Lemon, CC BY 4.0). Alle cijfers komen uit
+// src/data/geo-benchmark.ts; niets hier is door ons gemeten of geschat.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FaqSection from '../../components/FaqSection.astro';
+import GeoBureauBlok from '../../components/geo/GeoBureauBlok.astro';
+import { GEO_BENCHMARK as B } from '../../data/geo-benchmark';
+
+const url = 'https://aanloopai.nl/geo-bureau/vergelijken/';
+const nl = (n: number, d = 1) => n.toLocaleString('nl-NL', { minimumFractionDigits: d, maximumFractionDigits: d });
+
+const faqItems = [
+  { question: 'Welke GEO-bureaus in Nederland worden het vaakst genoemd door AI?', answer: `In de ${B.naam} van ${B.uitgever} (editie ${B.editie}) stonden ${B.top10.slice(0, 5).map((r) => r.bureau).join(', ')} in de top 5 van de index. Het vaakst genoemd werd ${B.top10.reduce((a, b) => (a.genoemdPct > b.genoemdPct ? a : b)).bureau}, in ${nl(B.top10.reduce((a, b) => (a.genoemdPct > b.genoemdPct ? a : b)).genoemdPct)}% van de ${B.antwoorden.toLocaleString('nl-NL')} antwoorden. De index weegt vermeldingen voor ${B.weging.vermeldingen}%, techniek voor ${B.weging.techniek}% en transparantie van het aanbod voor ${B.weging.aanbod}%.` },
+  { question: 'Hoe wordt de GEO Agency Index Nederland gemeten?', answer: `${B.vragen} vragen zonder bureaunamen, gesteld aan ${B.engines} AI-engines (ChatGPT via API en app, Claude, Gemini, Perplexity, Google AI Mode en het AI-overzicht van Google), samen ${B.antwoorden.toLocaleString('nl-NL')} antwoorden. Daarnaast ${27} technische controles en ${8} transparantiepunten op de website van elk van de ${B.register.toLocaleString('nl-NL')} geregistreerde aanbieders. Een plaats krijgt wie minstens vijf keer genoemd wordt. De methode staat openbaar op goldlemon.nl.` },
+  { question: 'Waar staat Aanloop AI in de index?', answer: `Op plaats ${B.aanloop.plaats} van ${B.geplaatst} in de editie ${B.editie}, met een index van ${nl(B.aanloop.index)}, ${nl(B.aanloop.techniek)} van 100 op techniek en ${nl(B.aanloop.aanbod)} van 100 op transparantie van het aanbod. AI noemde ons in ${B.aanloop.genoemdAantal} antwoorden (${nl(B.aanloop.genoemdPct)}%), vooral bij vragen over de zorg, waar we op plaats ${B.aanloop.sectorZorgPlaats} staan. Het verschil met de top zit in het aantal vermeldingen, niet in techniek of transparantie.` },
+  { question: 'Is een hoge plek in deze index hetzelfde als een goed bureau?', answer: 'Nee. De index meet zichtbaarheid in AI-antwoorden en de staat van de eigen website, niet de resultaten die een bureau voor klanten haalt. Dat zegt de uitgever zelf ook. Gebruik de index als startpunt en vergelijk daarna op gepubliceerde prijzen, meetbaarheid en eerlijkheid over garanties.' },
+  { question: 'Waarom publiceert Aanloop AI een lijst waarin concurrenten hoger staan?', answer: 'Omdat de cijfers openbaar zijn en u ze toch vindt. Liever met de juiste bron en context dan zonder. Wij meten onze eigen klanten met dezelfde logica, dus het zou vreemd zijn om voor onszelf een andere maatstaf te kiezen.' },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org', '@type': 'Article',
+    headline: `GEO-bureaus in Nederland vergeleken (${B.editie})`,
+    description: `Top 10 GEO-bureaus volgens de ${B.naam}, met index, vermeldingen, techniek en transparantie. Inclusief de positie van Aanloop AI en uitleg van de methode.`,
+    author: { '@id': 'https://aanloopai.nl/#organization' },
+    publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
+    datePublished: '2026-10-09', dateModified: '2026-10-09', inLanguage: 'nl-NL',
+    mainEntityOfPage: url, articleSection: 'GEO-bureau',
+    citation: { '@type': 'Dataset', name: `${B.naam}, editie ${B.editie}`, creator: { '@type': 'Organization', name: B.uitgever }, url: B.bronUrl, license: 'https://creativecommons.org/licenses/by/4.0/' },
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'ItemList',
+    name: `Top 10 GEO-bureaus Nederland volgens de ${B.naam} (${B.editie})`,
+    itemListOrder: 'https://schema.org/ItemListOrderAscending',
+    numberOfItems: B.top10.length,
+    itemListElement: B.top10.map((r) => ({ '@type': 'ListItem', position: r.plaats, name: r.bureau })),
+  },
+];
+---
+<BaseLayout
+  title="GEO-bureaus Nederland vergelijken · Aanloop AI"
+  description={`Top 10 GEO-bureaus volgens de ${B.naam} (${B.editie}): AI-vermeldingen, techniek, transparantie. Met de positie van Aanloop AI.`}
+  schema={schema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">GEO-bureau · Vergelijken</span></div>
+        <h1 class="text-4xl sm:text-5xl font-semibold tracking-tighter text-navy text-balance leading-[1.08]">GEO-bureaus in Nederland vergeleken</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed" data-speakable>Welke GEO-bureaus noemen AI-assistenten het vaakst? De {B.naam} van {B.uitgever} meet dat maandelijks met {B.vragen} vragen aan {B.engines} AI-engines. Hieronder de top 10 van de editie {B.editie}, onze eigen positie en hoe u de cijfers leest.</p>
+        <p class="mt-4 text-sm text-slate-500">Bron: {B.naam} van {B.uitgever}, editie {B.editie}, <a href={B.bronUrl} rel="noopener" class="underline">goldlemon.nl/geo-benchmark</a>, licentie {B.licentie}. Gemeten op {B.meetdatum}, gepubliceerd op {B.publicatie}. Volgende editie: {B.volgende}.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold text-navy mb-4">Top 10 GEO-bureaus volgens de index</h2>
+      <p class="text-slate-600 mb-6">Index van 0 tot 100: AI-vermeldingen {B.weging.vermeldingen}%, techniek {B.weging.techniek}%, transparantie van het aanbod {B.weging.aanbod}%. "Genoemd" is het aandeel van de {B.antwoorden.toLocaleString('nl-NL')} antwoorden waarin het bureau voorkomt. Bij overlappende foutmarges is de volgorde niet hard; die marges staan bij de bron.</p>
+      <div class="overflow-x-auto mb-6">
+        <table class="w-full text-sm border border-slate-200 rounded-xl overflow-hidden">
+          <thead><tr class="bg-slate-50 text-navy text-left"><th class="p-3 font-bold">#</th><th class="p-3 font-bold">Bureau</th><th class="p-3 font-bold text-right">Genoemd</th><th class="p-3 font-bold text-right">Techniek</th><th class="p-3 font-bold text-right">Aanbod</th><th class="p-3 font-bold text-right">Index</th></tr></thead>
+          <tbody class="text-slate-600">
+            {B.top10.map((r) => (
+              <tr class="border-t border-slate-200">
+                <td class="p-3">{r.plaats}</td>
+                <td class="p-3 font-medium text-navy">{r.bureau}</td>
+                <td class="p-3 text-right">{nl(r.genoemdPct)}%</td>
+                <td class="p-3 text-right">{nl(r.techniek)}</td>
+                <td class="p-3 text-right">{nl(r.aanbod)}</td>
+                <td class="p-3 text-right font-semibold text-navy">{nl(r.index)}</td>
+              </tr>
+            ))}
+            <tr class="border-t-2 border-brand-indigo bg-brand-indigo/5">
+              <td class="p-3">{B.aanloop.plaats}</td>
+              <td class="p-3 font-medium text-navy">Aanloop AI</td>
+              <td class="p-3 text-right">{nl(B.aanloop.genoemdPct)}%</td>
+              <td class="p-3 text-right">{nl(B.aanloop.techniek)}</td>
+              <td class="p-3 text-right">{nl(B.aanloop.aanbod)}</td>
+              <td class="p-3 text-right font-semibold text-navy">{nl(B.aanloop.index)}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-xs text-slate-500 mb-12">Cijfers overgenomen uit het rapport van {B.editie} (methode {B.methode}). Namen zijn handelsnamen van de bureaus; wij hebben geen relatie met deze bureaus en ontvangen geen vergoeding voor vermelding.</p>
+
+      <h2 class="text-2xl font-bold text-navy mb-4">Hoe u deze cijfers leest</h2>
+      <div class="grid md:grid-cols-3 gap-4 mb-12">
+        <div class="card"><h3 class="font-semibold text-navy mb-2">Genoemd worden</h3><p class="text-sm text-slate-600 leading-relaxed">De helft van de score. Het bureau dat het vaakst genoemd wordt, staat niet automatisch bovenaan: techniek en transparantie tellen mee. Een bureau zonder prijzen, team of KvK-nummer op de site scoort 0 op aanbod.</p></div>
+        <div class="card"><h3 class="font-semibold text-navy mb-2">Techniek</h3><p class="text-sm text-slate-600 leading-relaxed">27 controles op de eigen website: toegang voor AI-crawlers, llms.txt, sitemap, JSON-LD met organisatie en personen, sameAs, Wikidata, FAQ-schema, auteurs, tekst zonder JavaScript, titels en canonicals.</p></div>
+        <div class="card"><h3 class="font-semibold text-navy mb-2">Aanbod</h3><p class="text-sm text-slate-600 leading-relaxed">8 punten: prijzen gepubliceerd, aparte prijspagina, garantie of resultaatafspraak, cases, team zichtbaar, KvK-nummer, algemene voorwaarden, telefoon en adres. Gemeten zonder JavaScript.</p></div>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-4">Waar AI zijn aanbevelingen vandaan haalt</h2>
+      <p class="text-slate-600 mb-4">Herkomst van de bronnen onder de antwoorden die minstens een bureau noemen, volgens hetzelfde rapport:</p>
+      <ul class="space-y-2 mb-6">
+        {B.bronnen.map((b) => (
+          <li class="flex items-center gap-3 text-sm"><span class="w-14 text-right font-semibold text-navy">{nl(b.pct)}%</span><span class="flex-1 h-2 rounded bg-slate-100 overflow-hidden"><span class="block h-full bg-brand-indigo" style={`width:${b.pct}%`}></span></span><span class="w-64 text-slate-600">{b.soort}</span></li>
+        ))}
+      </ul>
+      <p class="text-slate-700 leading-relaxed mb-12">De les voor elk MKB-bedrijf: AI leest vooral wat u zelf publiceert. Een heldere website met diensten, prijzen, werkgebied en veelgestelde vragen weegt zwaarder dan een vermelding in een gids. Dat is precies waarom ons GEO-werk bij uw eigen domein begint.</p>
+
+      <h2 class="text-2xl font-bold text-navy mb-4">Onze eigen positie, zonder omhaal</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Aanloop AI staat op plaats {B.aanloop.plaats}. Op techniek ({nl(B.aanloop.techniek)}) en transparantie ({nl(B.aanloop.aanbod)}) zitten we bij de bovenste groep; de drie ontbrekende technische punten zijn personen als entiteit, een Wikidata-koppeling en auteurs bij artikelen. Het verschil met de top 10 zit in het aantal vermeldingen: {B.aanloop.genoemdAantal} antwoorden tegenover meer dan honderd bij de koplopers. In de sector zorg en welzijn staan we op plaats {B.aanloop.sectorZorgPlaats}.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Wat we daaraan doen, is wat we voor klanten doen: per sector en per regio een pagina die de vraag van de koper letterlijk beantwoordt, een llms.txt die een AI in een oogopslag begrijpt, en een maandelijkse meting met dezelfde vragen. U kunt het volgen: de index verschijnt elke maand op de 1e.</p>
+
+      <FaqSection items={faqItems} bare />
+    </div>
+  </section>
+
+  <GeoBureauBlok compact />
+</BaseLayout>

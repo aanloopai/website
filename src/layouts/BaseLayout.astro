@@ -102,6 +102,8 @@ const stickyCtaHidePaths = new Set([
 const hideStickyCta = stickyCtaHidePaths.has(Astro.url.pathname);
 
 // ── Organization Schema ────────────────────────────────────────────
+import { OPRICHTER, ORGANISATIE_WIKIDATA, PERSON_ID } from '../data/oprichter';
+
 const orgSchema = {
   '@context': 'https://schema.org',
   '@type': ['Organization', 'ProfessionalService'],
@@ -177,6 +179,7 @@ const orgSchema = {
     'https://www.instagram.com/aanloop.ai/',
     'https://www.linkedin.com/company/aanloop-ai',
     'https://www.google.com/maps?cid=13817542784615558433',
+    ...(ORGANISATIE_WIKIDATA ? [`https://www.wikidata.org/wiki/${ORGANISATIE_WIKIDATA}`] : []),
     // TODO: voeg toe zodra entity-vermeldingen live zijn:
     // 'https://www.wikidata.org/wiki/[Q-id]',
     // 'https://www.crunchbase.com/organization/aanloop-ai',
@@ -204,8 +207,27 @@ const orgSchema = {
     'AFM Klantbelang Centraal',
     'Wwft clientonderzoek',
     'KiFiD klachtenroute',
+    'Generative Engine Optimization (GEO)',
+    'Answer Engine Optimization (AEO)',
+    'AI-vindbaarheid',
+    'llms.txt',
+    'Schema.org structured data',
   ],
+  ...(OPRICHTER ? { founder: { '@id': PERSON_ID } } : {}),
 };
+
+// ── Person Schema (oprichter) — alleen als de naam gepubliceerd mag worden ──
+const personSchema = OPRICHTER ? {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  '@id': PERSON_ID,
+  name: OPRICHTER.naam,
+  jobTitle: OPRICHTER.functie,
+  url: `https://aanloopai.nl${OPRICHTER.profielUrl}`,
+  worksFor: { '@id': 'https://aanloopai.nl/#organization' },
+  knowsAbout: ['Generative Engine Optimization (GEO)', 'AI agents', 'Voice AI', 'Workflow automation', 'AI voor MKB Nederland'],
+  sameAs: [OPRICHTER.linkedin, ...(OPRICHTER.wikidata ? [`https://www.wikidata.org/wiki/${OPRICHTER.wikidata}`] : [])],
+} : null;
 
 // ── WebSite Schema ────────────────────────────────────────────────
 const websiteSchema = {
@@ -288,8 +310,14 @@ const videoSchemaLD = videoSchema ? {
 // waarden blijven ongemoeid (idempotent).
 const enrichArticle = (s: Record<string, any>): Record<string, any> => {
   if (!s || s['@type'] !== 'Article') return s;
+  // Auteur als Person zodra de oprichter gepubliceerd is; anders blijft de
+  // bestaande Organization-auteur staan (centraal, dus alle artikelen tegelijk).
+  const author = OPRICHTER && (!s.author || s.author['@type'] === 'Organization' || s.author['@id'] === 'https://aanloopai.nl/#organization')
+    ? { '@type': 'Person', '@id': PERSON_ID, name: OPRICHTER.naam, url: `https://aanloopai.nl${OPRICHTER.profielUrl}` }
+    : s.author;
   return {
     ...s,
+    ...(author ? { author } : {}),
     image: s.image ?? { '@type': 'ImageObject', url: ogImage, width: 1200, height: 630 },
     mainEntityOfPage: s.mainEntityOfPage ?? { '@type': 'WebPage', '@id': canonical },
   };
@@ -297,6 +325,7 @@ const enrichArticle = (s: Record<string, any>): Record<string, any> => {
 
 const allSchemas = [
   orgSchema,
+  personSchema,
   websiteSchema,
   speakableSchema,
   breadcrumbSchema,
