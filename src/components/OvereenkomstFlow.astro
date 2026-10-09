@@ -165,7 +165,6 @@ const { mode = 'klant' } = Astro.props;
       var docState = {};        // per document: { openLocal, scrolledAt }
       var otpVerified = false;
       var pointCount = 0;
-      var tickTimer = null;
       var optiesPreviewNote = false; // voorbeeld: show the 'text not re-rendered' note once the option was toggled
 
       function $(id) { return document.getElementById(id); }
@@ -255,14 +254,11 @@ const { mode = 'klant' } = Astro.props;
         var chk = $('ovk-check');
         if (doc.consent) return;
         var st = docState[doc.id] || {};
-        var secs = readSecs(doc);
-        var left = Math.max(0, doc.min_read_sec - secs);
-        var ready = !!st.scrolledAt && !!st.openLocal && left === 0;
+        // Only gate: scrolled to the end (and the server knows the document was
+        // opened). No countdown — owner decision 2026-10-09.
+        var ready = !!st.scrolledAt && !!st.openLocal;
         chk.disabled = !ready;
-        var parts = [];
-        if (!st.scrolledAt) parts.push('Scroll tot het einde van het document.');
-        if (st.openLocal && left > 0) parts.push('Nog ' + left + ' seconden.');
-        $('ovk-count').textContent = ready ? '' : parts.join(' ');
+        $('ovk-count').textContent = ready || st.scrolledAt ? '' : 'Scroll tot het einde van het document.';
         show('ovk-help', !ready);
       }
       function onScroll() {
@@ -624,7 +620,6 @@ const { mode = 'klant' } = Astro.props;
       document.addEventListener('portal:ready', function () {
         if (data && step === 3) { show('ovk-role-note', !isOwner()); updateSignGate(); }
       });
-      tickTimer = setInterval(updateGate, 1000);
 
       if (agrId) loadAgreement();
       else if (PREVIEW) { show('ovk-list', false); msg('Geen overeenkomst gekozen.'); }

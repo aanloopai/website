@@ -19,6 +19,7 @@ const worker = read('src/worker.js');
 describe('portal/overeenkomst.astro', () => {
   it.each([
     'Lees het document volledig voordat je akkoord gaat.',
+    'Scroll tot het einde van het document.',
     'Bedankt, de overeenkomst is ondertekend.',
     'Ga naar aanleverlijst',
     'Wissen',
