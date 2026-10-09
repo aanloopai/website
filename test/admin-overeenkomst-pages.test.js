@@ -28,6 +28,18 @@ describe('admin klantenportaal pages', () => {
       'Cinematic 3D-beleving gekozen', 'Voorbeeld klantweergave', '/admin/overeenkomst-voorbeeld/?id=']) expect(s).toContain(l);
     expect(s).toMatch(/'ja' : 'nee'/);
   });
+  it('voorbeeld: lokale simulatie, geen schrijfacties naar de server', () => {
+    const page = read('src/pages/admin/overeenkomst-voorbeeld.astro');
+    const flow = read('src/components/OvereenkomstFlow.astro');
+    expect(page).toContain('mode="voorbeeld"');
+    const s = page + flow;
+    for (const l of ['er wordt geen code verstuurd', 'niets ondertekend of opgeslagen', 'wordt de tekst niet opnieuw gerenderd', 'Er wordt niets opgeslagen']) expect(s).toContain(l);
+    // fetch lives only in api(); every POST goes through apiPost, which throws in voorbeeld mode.
+    expect(flow.match(/fetch\(/g)).toHaveLength(1);
+    expect(flow.match(/'POST'/g)).toHaveLength(1);
+    expect(flow).toMatch(/function apiPost\(path, body\) \{\s*if \(PREVIEW\) throw/);
+    expect(flow).toMatch(/if \(PREVIEW && method && method !== 'GET'\) throw/);
+  });
   it('aanleverlijst: labels and endpoints', () => {
     const s = pages.aanleverlijst;
     for (const l of ['Standaardlijst aanmaken', 'Herinnering sturen']) expect(s).toContain(l);
