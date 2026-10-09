@@ -170,6 +170,29 @@ describe('geo-bureau: meta-descriptions binnen de CI-guard (110–155)', () => {
   });
 });
 
+describe('geo-bureau: interne links vanuit bestaande sectorpagina\'s', () => {
+  it('elke sitesector verwijst naar een bestaande SBI-sectorpagina', async () => {
+    const { GEO_SECTOR_VOOR_SITESECTOR } = await import('../src/data/geo-bureau.ts');
+    const sbi = new Set(GEO_SBI_SECTOREN.map((s) => s.slug));
+    for (const [k, v] of Object.entries(GEO_SECTOR_VOOR_SITESECTOR)) expect(sbi.has(v), `${k} → ${v}`).toBe(true);
+    const sectorsSrc = read('src/data/sectors.ts');
+    for (const m of sectorsSrc.matchAll(/slug:\s*'([^']+)'/g)) expect(GEO_SECTOR_VOOR_SITESECTOR[m[1]], `sectors.ts: ${m[1]} ontbreekt in de koppeling`).toBeTruthy();
+    const geoSrc = read('src/data/geo-sectors.ts');
+    for (const m of geoSrc.matchAll(/slug:\s*'([^']+)'/g)) expect(GEO_SECTOR_VOOR_SITESECTOR[m[1]], `geo-sectors.ts: ${m[1]} ontbreekt in de koppeling`).toBeTruthy();
+  });
+
+  it('elke statische sectorpagina rendert GeoBureauSectorLink', () => {
+    for (const f of fs.readdirSync(path.join(ROOT, 'src/pages/sectoren')).filter((n) => n.endsWith('.astro') && !['index.astro', '[sector].astro'].includes(n))) {
+      expect(read(`src/pages/sectoren/${f}`), f).toContain(`<GeoBureauSectorLink sector="${f.slice(0, -6)}" />`);
+    }
+    expect(read('src/pages/sectoren/[sector].astro')).toContain('<GeoBureauSectorLink sector={sector.slug} />');
+  });
+
+  it('sector-templates en de twee GEO-artikelen linken naar /geo-bureau/', () => {
+    for (const f of ['src/components/geo/GeoBureauSectorLink.astro', 'src/pages/ai-vindbaarheid/voor-[sector].astro', 'src/pages/kennisbank/wat-is-geo-ai-vindbaarheid-mkb-nederland.astro', 'src/pages/kennisbank/hoe-kom-ik-in-chatgpt-als-bedrijf-mkb-nederland.astro']) expect(read(f), f).toMatch(/\/geo-bureau\//);
+  });
+});
+
 describe('geo-bureau: Person/Wikidata-schakelaar', () => {
   it('OPRICHTER is null of volledig ingevuld (naam, functie, linkedin, profielUrl)', () => {
     if (OPRICHTER === null) return;

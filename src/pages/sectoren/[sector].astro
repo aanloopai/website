@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { sectors, serviceLabels } from '../../data/sectors';
 import { GEO_SECTORS } from '../../data/geo-sectors';
+import GeoBureauSectorLink from '../../components/geo/GeoBureauSectorLink.astro';
 import { KENNISBANK_ARTICLES } from '../../data/kennisbank-articles';
 
 export async function getStaticPaths() {
@@ -258,4 +259,6 @@ const metaDescription =
       </div>
     </div>
   </section>
+
+  <GeoBureauSectorLink sector={sector.slug} />
 </BaseLayout>

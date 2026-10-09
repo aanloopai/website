@@ -78,6 +78,20 @@ export const GEO_PRIJZEN = {
   bundel: SEO_GEO_BUNDEL,
 } as const;
 
+// Koppeling van de bestaande sectorpagina's (/sectoren/* en
+// /ai-vindbaarheid/voor-*) aan de SBI-sector van /geo-bureau/sector/*, zodat
+// elke sectorpagina een contextuele link naar het GEO-bureau-cluster heeft
+// (interne links bepalen mede welke pagina AI-engines als bron kiezen).
+export const GEO_SECTOR_VOOR_SITESECTOR: Record<string, string> = {
+  horeca: 'horeca', accountancy: 'financieel', zorg: 'zorg', vastgoed: 'vastgoed', bouw: 'bouw',
+  advocatuur: 'zakelijke-dienstverlening', logistiek: 'logistiek', detailhandel: 'handel-en-webwinkels',
+  schoonheid: 'overige-dienstverlening', automotive: 'handel-en-webwinkels', installatie: 'bouw',
+  fitness: 'cultuur-en-sport', reisbranche: 'zakelijke-dienstverlening', onderwijs: 'onderwijs',
+  zakelijk: 'zakelijke-dienstverlening', recruitment: 'recruitment',
+  'ai-voor-webshops': 'handel-en-webwinkels', 'ai-voor-zzp': 'zakelijke-dienstverlening',
+  'ai-voor-advocaten': 'zakelijke-dienstverlening',
+};
+
 // Vaste regio-indeling van de benchmark. Toewijzing van provincies aan
 // Midden/Oost/Noord/Zuid is onze aanname (de benchmark publiceert alleen de
 // zeven namen); zie test/geo-bureau.test.js.
