@@ -43,6 +43,34 @@ export interface GeoSbiSector {
   verwant?: string;          // bestaande sector-/ai-vindbaarheid-pagina
 }
 
+// Meta-descriptions: CI-guard (scripts/check-meta.mjs) eist 110–155 tekens.
+// Sector- en regionamen variëren van 7 tot 50 tekens, dus per pagina de
+// langste variant die past. Guard: test/geo-bureau.test.js.
+export const META_DESC_MIN = 110;
+export const META_DESC_MAX = 155;
+
+const pasVariant = (varianten: string[]): string => {
+  const ok = varianten.find((v) => v.length >= META_DESC_MIN && v.length <= META_DESC_MAX);
+  if (!ok) throw new Error(`Geen meta-description tussen ${META_DESC_MIN} en ${META_DESC_MAX} tekens: ${varianten[0]}`);
+  return ok;
+};
+
+export const geoRegioDesc = (naam: string): string => pasVariant([
+  `GEO-bureau ${naam}: Aanloop AI maakt het MKB in ${naam} vindbaar in ChatGPT, Claude, Perplexity en Google AI. Gratis Quick Scan en openbare tarieven.`,
+  `GEO-bureau ${naam}: Aanloop AI maakt het MKB in ${naam} vindbaar in ChatGPT, Claude en Google AI. Gratis Quick Scan en openbare tarieven.`,
+  `GEO-bureau ${naam}: vindbaar in ChatGPT, Claude en Google AI. Gratis Quick Scan en openbare tarieven.`,
+]);
+
+export const geoSectorDesc = (naam: string): string => {
+  const n = naam.charAt(0).toLowerCase() + naam.slice(1);
+  return pasVariant([
+    `GEO-bureau voor ${n}: vindbaar worden in ChatGPT, Claude, Perplexity en Google AI. Gratis Quick Scan, openbare tarieven, maandelijkse meting.`,
+    `GEO-bureau voor ${n}: vindbaar worden in ChatGPT, Claude, Perplexity en Google AI. Gratis Quick Scan en openbare tarieven.`,
+    `GEO-bureau voor ${n}: vindbaar in ChatGPT, Claude en Google AI. Gratis Quick Scan en openbare tarieven.`,
+    `GEO-bureau voor ${n}: genoemd worden in ChatGPT en Google AI. Gratis Quick Scan.`,
+  ]);
+};
+
 export const GEO_PRIJZEN = {
   scan: 0,
   setup: null as number | null, // op aanvraag

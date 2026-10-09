@@ -3,6 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import FaqSection from '../../components/FaqSection.astro';
 import GeoBureauBlok from '../../components/geo/GeoBureauBlok.astro';
 import { GEO_REGIOS } from '../../data/geo-regios';
+import { geoRegioDesc } from '../../data/geo-bureau';
 
 export function getStaticPaths() {
   return GEO_REGIOS.map((r) => ({ params: { regio: r.slug }, props: { regio: r } }));
@@ -37,7 +38,7 @@ const schema = [
 ---
 <BaseLayout
   title={`GEO-bureau ${regio.naam} · Aanloop AI`}
-  description={`Welk GEO-bureau in ${regio.naam}? Aanloop AI maakt MKB-bedrijven in ${regio.provincies.join(' en ')} vindbaar in ChatGPT, Claude, Perplexity en Google AI. Gratis Quick Scan, openbare tarieven.`}
+  description={geoRegioDesc(regio.naam)}
   schema={schema}
   faqSchema={faqItems}
 >

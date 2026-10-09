@@ -9,7 +9,7 @@
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
-import { GEO_REGIO_SLUGS, GEO_SBI_SLUGS, GEO_PRIJZEN } from '../src/data/geo-bureau.ts';
+import { GEO_REGIO_SLUGS, GEO_SBI_SLUGS, GEO_PRIJZEN, geoRegioDesc, geoSectorDesc, META_DESC_MIN, META_DESC_MAX } from '../src/data/geo-bureau.ts';
 import { GEO_REGIOS } from '../src/data/geo-regios.ts';
 import { GEO_SBI_SECTOREN } from '../src/data/geo-sbi-sectoren.ts';
 import { GEO_BENCHMARK } from '../src/data/geo-benchmark.ts';
@@ -145,6 +145,28 @@ describe('geo-bureau: sitemap, llms.txt en navigatie', () => {
 
   it('header, footer en homepage linken naar /geo-bureau/', () => {
     for (const f of ['src/components/Header.astro', 'src/components/Footer.astro', 'src/pages/index.astro']) expect(read(f), f).toContain("/geo-bureau/");
+  });
+});
+
+describe('geo-bureau: meta-descriptions binnen de CI-guard (110–155)', () => {
+  it('elke regio- en sectorpagina krijgt een passende description', () => {
+    for (const r of GEO_REGIOS) {
+      expect(geoRegioDesc(r.naam).length, r.slug).toBeGreaterThanOrEqual(META_DESC_MIN);
+      expect(geoRegioDesc(r.naam).length, r.slug).toBeLessThanOrEqual(META_DESC_MAX);
+    }
+    for (const s of GEO_SBI_SECTOREN) {
+      expect(geoSectorDesc(s.naam).length, s.slug).toBeGreaterThanOrEqual(META_DESC_MIN);
+      expect(geoSectorDesc(s.naam).length, s.slug).toBeLessThanOrEqual(META_DESC_MAX);
+    }
+  });
+
+  it('statische geo-bureau-pagina\'s hebben een description tussen 110 en 155 tekens', () => {
+    for (const f of ['index', 'kiezen', 'wat-kost-geo']) {
+      const m = read(`src/pages/geo-bureau/${f}.astro`).match(/\n  description="([^"]+)"/);
+      expect(m, f).toBeTruthy();
+      expect(m[1].length, `${f}: ${m[1].length}`).toBeGreaterThanOrEqual(META_DESC_MIN);
+      expect(m[1].length, `${f}: ${m[1].length}`).toBeLessThanOrEqual(META_DESC_MAX);
+    }
   });
 });
 

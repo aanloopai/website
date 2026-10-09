@@ -3,6 +3,7 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import FaqSection from '../../../components/FaqSection.astro';
 import GeoBureauBlok from '../../../components/geo/GeoBureauBlok.astro';
 import { GEO_SBI_SECTOREN } from '../../../data/geo-sbi-sectoren';
+import { geoSectorDesc } from '../../../data/geo-bureau';
 
 export function getStaticPaths() {
   return GEO_SBI_SECTOREN.map((s) => ({ params: { sector: s.slug }, props: { sector: s } }));
@@ -40,7 +41,7 @@ const kort = sector.naam.length > 28 ? sector.naam.split(/,| en /)[0].trim() : s
 ---
 <BaseLayout
   title={`GEO-bureau ${kort.toLowerCase()} · Aanloop AI`}
-  description={`${sector.vraag} Aanloop AI maakt bedrijven in ${sector.naam.toLowerCase()} vindbaar in ChatGPT, Claude, Perplexity en Google AI. Gratis Quick Scan, openbare tarieven.`}
+  description={geoSectorDesc(sector.naam)}
   schema={schema}
   faqSchema={faqItems}
 >
