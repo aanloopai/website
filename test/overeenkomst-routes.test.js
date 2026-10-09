@@ -260,7 +260,7 @@ describe('OTP', () => {
 
 describe('ondertekenen', () => {
   const sign = (extra = {}, userId = 'usr_1') => post('/api/portal/overeenkomst/ondertekenen', userId,
-    { agreement_id: 'agr_1', typed_name: 'Ron Houter', signature_png: PNG_1PX, bevoegd: true, ...extra });
+    { agreement_id: 'agr_1', typed_name: 'Ron Houter', signature_png: PNG_1PX, bevoegd: true, alles_aanvaard: true, ...extra });
 
   it('weigert zonder 3 consents', async () => {
     seedAgreement({ consents: 2 });
@@ -285,6 +285,9 @@ describe('ondertekenen', () => {
 
     expect((await sign({ typed_name: 'abc' })).status).toBe(400);
     expect((await sign({ bevoegd: false })).status).toBe(400);
+    const noAccept = await sign({ alles_aanvaard: false });
+    expect(noAccept.status).toBe(400);
+    expect((await noAccept.json()).error).toBe('Aanvaard eerst alle voorwaarden.');
     expect((await sign({ signature_png: 'data:image/png;base64,AAAA' })).status).toBe(400);
 
     const res = await sign();
@@ -297,6 +300,7 @@ describe('ondertekenen', () => {
     expect(ag.evidence_sha256).toMatch(/^[0-9a-f]{64}$/);
     const sig = d1.raw.prepare('SELECT * FROM agr_signatures').get();
     expect(sig.evidence_sha256).toBe(ag.evidence_sha256);
+    expect(sig.accepted_all_at).toBe(sig.signed_at);
     expect(kv.store.has(sig.signature_key)).toBe(true);
     expect(kv.store.has('portal:pdf:agr_1')).toBe(true);
 

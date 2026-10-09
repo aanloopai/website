@@ -5,7 +5,7 @@ import {
   PDFDocument, StandardFonts, rgb, degrees,
 } from 'pdf-lib';
 import { parseBlocks } from './markdown-lite.js';
-import { computeEvidenceSha256, formatAmsterdam } from './overeenkomst-core.js';
+import { computeEvidenceSha256, formatAmsterdam, ACCEPTANCE_LABEL } from './overeenkomst-core.js';
 
 const PAGE_W = 595.28;
 const PAGE_H = 841.89;
@@ -303,6 +303,12 @@ async function signaturePage(w, {
   w.heading('Ondertekening', 18, 0, 10);
   const signedAt = signature?.signed_at ?? agreement?.signed_at ?? Date.now();
 
+  // Blanket acceptance (step 4)
+  if (signature?.accepted_all_at) {
+    w.text(signature.acceptance_label || ACCEPTANCE_LABEL, { size: 9, gapAfter: 3 });
+    w.text(`Aanvaard op: ${formatAmsterdam(signature.accepted_all_at)} (Europe/Amsterdam)`, { size: 9, bold: true, gapAfter: 10 });
+  }
+
   // Opdrachtgever
   w.text('Opdrachtgever', { size: 12, bold: true, gapAfter: 4 });
   w.text(`Bedrijf: ${customer?.bedrijf || ''}`, { gapAfter: 2 });
@@ -333,7 +339,7 @@ async function signaturePage(w, {
   w.text(`Datum: ${formatAmsterdam(signedAt).split(' ')[0]}`, { gapAfter: 8 });
   const aimg = await tryEmbedPng(doc, aanloopSignaturePngBytes);
   if (aimg) {
-    const { width, height } = fitImage(aimg, 200, 90);
+    const { width, height } = fitImage(aimg, 180, 70);
     w.ensure(height + 12);
     w.page.drawImage(aimg, {
       x: MARGIN, y: w.y - height, width, height,
@@ -360,6 +366,7 @@ async function signaturePage(w, {
       c.checkbox_at ? formatAmsterdam(c.checkbox_at) : '',
     ]);
   }
+  if (signature?.accepted_all_at) rows.push(['Alle voorwaarden aanvaard', '', '', '', '', formatAmsterdam(signature.accepted_all_at)]);
   w.table(rows, { size: 7, widths: [2.2, 0.9, 3.6, 1.7, 1, 1.7] });
   w.text(`E-mailverificatie (eenmalige code) bevestigd: ${otpVerifiedAt ? formatAmsterdam(otpVerifiedAt) : 'onbekend'}`, { size: 9, gapAfter: 3 });
   const evidence = agreement?.evidence_sha256 || await computeEvidenceSha256({
@@ -371,6 +378,7 @@ async function signaturePage(w, {
     signatureSha256: null,
     otpVerifiedAt: otpVerifiedAt ?? null,
     consentCheckboxAts: consents.map((c) => c.checkbox_at ?? null),
+    acceptedAllAt: signature?.accepted_all_at ?? null,
   });
   w.text(`Bewijs-hash (SHA-256): ${evidence}`, { size: 8, gapAfter: 3 });
   w.text('Digitale handtekening conform eIDAS en art. 3:15a BW.', { size: 8, color: MUTED });

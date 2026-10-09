@@ -119,7 +119,7 @@ describe('ensurePortaalSchema', () => {
     let fail = failBatchOnce;
     const db = {
       prepare(sql) {
-        const st = { sql, args: [], bind(...a) { st.args = a; return st; }, first: async () => ({ n: count }) };
+        const st = { sql, args: [], bind(...a) { st.args = a; return st; }, first: async () => ({ n: count }), run: async () => ({}) };
         return st;
       },
       async batch(stmts) {

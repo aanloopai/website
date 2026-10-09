@@ -10,7 +10,7 @@ import { sendMail } from './portal-routes.js';
 import { escapeHtml } from './escape.js';
 import { renderHtml } from './markdown-lite.js';
 import {
-  TEMPLATE_SLUGS, CONSENT_LABELS, AUTHORIZED_LABEL, renderTemplate, buildVars,
+  TEMPLATE_SLUGS, CONSENT_LABELS, AUTHORIZED_LABEL, ACCEPTANCE_LABEL, decodeSignaturePng, renderTemplate, buildVars,
   minReadSeconds, computeEvidenceSha256, formatAmsterdam, writeAudit, ensurePortaalSchema,
 } from './overeenkomst-core.js';
 import { buildAgreementPdf } from './agreement-pdf.js';
@@ -19,12 +19,8 @@ const STAFF_MAIL = 'm.dogan@aanloopai.nl';
 const OTP_TTL_MS = 10 * 60 * 1000;
 const OTP_VERIFIED_VALID_MS = 30 * 60 * 1000;
 const OTP_MAX_ATTEMPTS = 5;
-const MAX_SIGNATURE_BYTES = 300 * 1024;
-const MIN_SIGNATURE_PX = 10;
-const MAX_SIGNATURE_PX = 2000;
 const ORPHAN_SIGNATURE_MS = 60 * 1000;
 const OPEN_STATUSES = ['sent', 'in_progress'];
-const PNG_MAGIC = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
 
 // ── helpers ────────────────────────────────────────────────────────────────
 function canWrite(role) { return role === 'eigenaar' || role === 'bewerker'; }
@@ -222,6 +218,7 @@ async function detail(env, user, url) {
     signature: sig ? { typed_name: sig.typed_name, signed_at: sig.signed_at } : null,
     otp_verified: !!verified,
     authorized_label: AUTHORIZED_LABEL(customer?.bedrijf || ''),
+    acceptance_label: ACCEPTANCE_LABEL,
   });
 }
 
@@ -417,24 +414,6 @@ async function otpVerifieer(request, env, user) {
 }
 
 // ── POST /ondertekenen ─────────────────────────────────────────────────────
-function decodeSignaturePng(dataUrl) {
-  if (typeof dataUrl !== 'string') return null;
-  const m = /^data:image\/png;base64,([A-Za-z0-9+/=]+)$/.exec(dataUrl);
-  if (!m) return null;
-  // Cheap size guard before decoding (base64 expands by 4/3).
-  if (m[1].length > Math.ceil(MAX_SIGNATURE_BYTES / 3) * 4 + 4) return { tooBig: true };
-  let bytes;
-  try { bytes = base64ToBytes(m[1]); } catch { return null; }
-  if (bytes.length > MAX_SIGNATURE_BYTES) return { tooBig: true };
-  if (bytes.length < PNG_MAGIC.length || !PNG_MAGIC.every((b, i) => bytes[i] === b)) return null;
-  // IHDR: width/height are big-endian uint32 at bytes 16-23; reject PNG bombs / tiny images.
-  if (bytes.length < 24) return null;
-  const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  const w = dv.getUint32(16); const h = dv.getUint32(20);
-  if (w < MIN_SIGNATURE_PX || h < MIN_SIGNATURE_PX || w > MAX_SIGNATURE_PX || h > MAX_SIGNATURE_PX) return null;
-  return { bytes };
-}
-
 async function loadAanloopSignature(env) {
   try {
     const row = await env.PORTAL_DB
@@ -473,9 +452,12 @@ async function ondertekenen(request, env, user) {
   const typedName = str(body.typed_name, 120);
   if (typedName.length < 4) return errorResponse('Typ je volledige naam (minimaal 4 tekens).', 400);
   if (body.bevoegd !== true) return errorResponse('Bevestig dat je bevoegd bent om te ondertekenen.', 400);
-  const png = decodeSignaturePng(body.signature_png);
-  if (png?.tooBig) return errorResponse('De handtekening is te groot.', 413);
-  if (!png) return errorResponse('Ongeldige handtekening', 400);
+  if (body.alles_aanvaard !== true) return errorResponse('Aanvaard eerst alle voorwaarden.', 400);
+  let pngBytes;
+  try { pngBytes = decodeSignaturePng(body.signature_png); } catch (err) {
+    return err.code === 'too_big' ? errorResponse('De handtekening is te groot.', 413) : errorResponse('Ongeldige handtekening', 400);
+  }
+  const png = { bytes: pngBytes };
   const verifiedAt = await otpVerifiedAt(env, agreement.id, user.id);
   if (!verifiedAt) return errorResponse('Bevestig eerst de verificatiecode.', 400);
   if (!env.PORTAL_FILES) return errorResponse('Er ging iets mis', 500);
@@ -483,19 +465,20 @@ async function ondertekenen(request, env, user) {
   const ip = clientIp(request);
   const ua = clientUa(request);
   const signedAt = Date.now();
+  const acceptedAllAt = signedAt;
   const sigId = randomId('sig');
   const sigKey = `portal:sig:${sigId}`;
   const evidence = await computeEvidenceSha256({
     agreementId: agreement.id, userId: user.id, contentHashes: docs.map((d) => d.content_sha256),
     typedName, signedAtMs: signedAt, signatureSha256: await sha256Bytes(png.bytes),
-    otpVerifiedAt: verifiedAt, consentCheckboxAts: docs.map((d) => consents.get(d.id).checkbox_at),
+    otpVerifiedAt: verifiedAt, consentCheckboxAts: docs.map((d) => consents.get(d.id).checkbox_at), acceptedAllAt,
   });
 
   // The UNIQUE(agreement_id) constraint is the double-sign guard: claim first.
   const insertSig = () => env.PORTAL_DB
     .prepare(`INSERT INTO agr_signatures (id, agreement_id, user_id, typed_name, signature_key, otp_verified_at,
-              signed_at, ip, user_agent, evidence_sha256) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-    .bind(sigId, agreement.id, user.id, typedName, sigKey, verifiedAt, signedAt, ip, ua, evidence).run();
+              signed_at, ip, user_agent, evidence_sha256, accepted_all_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+    .bind(sigId, agreement.id, user.id, typedName, sigKey, verifiedAt, signedAt, ip, ua, evidence, acceptedAllAt).run();
   try {
     await insertSig();
   } catch (err) {
@@ -520,8 +503,11 @@ async function ondertekenen(request, env, user) {
       metadata: { mime: 'image/png', name: 'handtekening.png', size: png.bytes.length, customer_id: user.customer_id },
     });
     pdfBytes = await buildAgreementPdf({
-      agreement, customer, documents: pdfDocsPayload(docs),
-      signature: { typed_name: typedName, pngBytes: png.bytes, signed_at: signedAt, ip, user_agent: ua },
+      // Same hash as stored in agreements/agr_signatures — never let the PDF
+      // builder fall back to its own computation (different inputs → mismatch).
+      agreement: { ...agreement, evidence_sha256: evidence },
+      customer, documents: pdfDocsPayload(docs),
+      signature: { typed_name: typedName, pngBytes: png.bytes, signed_at: signedAt, ip, user_agent: ua, accepted_all_at: acceptedAllAt, acceptance_label: ACCEPTANCE_LABEL },
       consents: docs.map((d) => {
         const c = consents.get(d.id);
         return {

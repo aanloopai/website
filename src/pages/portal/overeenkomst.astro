@@ -70,6 +70,11 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
         <p class="section-title">Samenvatting</p>
         <ul id="ovk-summary" class="mt-2 space-y-1.5 text-sm"></ul>
 
+        <label class="mt-4 flex items-start gap-2 text-sm" style="color:var(--p-ink)">
+          <input type="checkbox" id="ovk-aanvaard" class="mt-1" />
+          <span id="ovk-aanvaard-label"></span>
+        </label>
+
         <div id="ovk-role-note" class="palert palert--info mt-4 hidden">Alleen de eigenaar van het account kan de overeenkomst ondertekenen.</div>
 
         <label for="ovk-naam" class="plabel mt-5">Volledige naam</label>
@@ -329,18 +334,20 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
       }
       function isOwner() { return !window.__portalUser || !window.__portalUser.role || window.__portalUser.role === 'eigenaar'; }
       function updateSignGate() {
-        var ok = $('ovk-naam').value.trim().length >= 4 && pointCount >= 20 && otpVerified && $('ovk-bevoegd').checked && isOwner();
+        var ok = $('ovk-naam').value.trim().length >= 4 && pointCount >= 20 && otpVerified && $('ovk-bevoegd').checked && $('ovk-aanvaard').checked && isOwner();
         $('ovk-sign-btn').disabled = !ok;
       }
       function renderSign() {
         show('ovk-docstep', false);
         show('ovk-signstep', true);
         $('ovk-pdf-concept2').href = PDF + encodeURIComponent(agrId);
-        $('ovk-summary').innerHTML = data.documents.map(function (d) {
+        $('ovk-summary').innerHTML = data.documents.map(function (d, i) {
           return '<li class="flex items-center justify-between gap-3 rounded-md border px-3 py-2" style="border-color:var(--p-border)">' +
             '<span style="color:var(--p-ink)">' + esc(d.title) + ' <span class="p-muted">(versie ' + esc(d.version) + ')</span></span>' +
-            '<code class="text-xs p-muted">' + esc(d.sha12) + '</code></li>';
+            '<span class="flex items-center gap-3"><a href="#" class="ovk-bekijk p-link text-xs" data-i="' + i + '">Bekijken</a>' +
+            '<code class="text-xs p-muted">' + esc(d.sha12) + '</code></span></li>';
         }).join('');
+        $('ovk-aanvaard-label').textContent = data.acceptance_label;
         $('ovk-bevoegd-label').textContent = data.authorized_label;
         show('ovk-role-note', !isOwner());
         otpVerified = !!data.otp_verified;
@@ -378,7 +385,8 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
           agreement_id: agrId,
           typed_name: $('ovk-naam').value.trim(),
           signature_png: canvas.toDataURL('image/png'),
-          bevoegd: true
+          bevoegd: true,
+          alles_aanvaard: true
         }).then(function (res) {
           if (res.ok) { msg(''); data.agreement.status = 'signed'; data.agreement.signed_at = res.j.signed_at; renderDone(); }
           else { fail(res); updateSignGate(); }
@@ -445,6 +453,16 @@ import PortalLayout from '../../layouts/PortalLayout.astro';
       $('ovk-otp-check').addEventListener('click', checkOtp);
       $('ovk-naam').addEventListener('input', updateSignGate);
       $('ovk-bevoegd').addEventListener('change', updateSignGate);
+      $('ovk-aanvaard').addEventListener('change', updateSignGate);
+      // "Bekijken": jump to that document's step; consent and checkbox state stay untouched.
+      $('ovk-summary').addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('.ovk-bekijk');
+        if (!a) return;
+        e.preventDefault();
+        step = Number(a.getAttribute('data-i'));
+        renderStepper();
+        renderDoc();
+      });
       $('ovk-sign-btn').addEventListener('click', doSign);
       $('ovk-bedrijf-save').addEventListener('click', saveBedrijf);
       document.addEventListener('portal:ready', function () {

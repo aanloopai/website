@@ -18,3 +18,6 @@ export const SCHEMA_STATEMENTS = [
   "CREATE INDEX IF NOT EXISTS idx_audit_customer ON portal_audit_log(customer_id, created_at)",
   "CREATE TABLE IF NOT EXISTS portal_assets ( key TEXT PRIMARY KEY, value_b64 TEXT NOT NULL, mime TEXT NOT NULL, created_at INTEGER NOT NULL)",
 ];
+
+// Column additions (migrations 0026+). Not idempotent in SQLite: the runner ignores 'duplicate column'.
+export const SCHEMA_ALTERS = ['ALTER TABLE agr_signatures ADD COLUMN accepted_all_at INTEGER'];

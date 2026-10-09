@@ -10,7 +10,7 @@ import { sendMail } from './portal-routes.js';
 import { renderHtml } from './markdown-lite.js';
 import {
   TEMPLATE_SLUGS, renderTemplate, buildVars, minReadSeconds, sha256Hex,
-  DEFAULT_UPLOAD_ITEMS, writeAudit, ensurePortaalSchema,
+  DEFAULT_UPLOAD_ITEMS, writeAudit, ensurePortaalSchema, decodeSignaturePng,
 } from './overeenkomst-core.js';
 import { buildAgreementPdf } from './agreement-pdf.js';
 import { attachmentDisposition } from './aanlever-routes.js';
@@ -277,7 +277,7 @@ async function agreementDetail(env, url) {
     .prepare('SELECT verified_at FROM agr_otp WHERE agreement_id = ? AND verified_at IS NOT NULL ORDER BY verified_at DESC LIMIT 1')
     .bind(agreement.id).first();
   const signature = await env.PORTAL_DB
-    .prepare('SELECT typed_name, otp_verified_at, signed_at, ip, user_agent, evidence_sha256 FROM agr_signatures WHERE agreement_id = ?')
+    .prepare('SELECT typed_name, otp_verified_at, signed_at, ip, user_agent, evidence_sha256, accepted_all_at FROM agr_signatures WHERE agreement_id = ?')
     .bind(agreement.id).first();
   const audit = (await env.PORTAL_DB
     .prepare('SELECT id, actor, action, meta_json, ip, created_at FROM portal_audit_log WHERE customer_id = ? ORDER BY created_at DESC LIMIT 100')
@@ -290,6 +290,7 @@ async function agreementDetail(env, url) {
     if (c) timeline.push({ stap: `Akkoord: ${d.title}`, at: c.checkbox_at, ip: c.ip || null });
   }
   if (otp?.verified_at) timeline.push({ stap: 'Code geverifieerd', at: otp.verified_at, ip: null });
+  if (signature?.accepted_all_at) timeline.push({ stap: 'Alle voorwaarden aanvaard', at: signature.accepted_all_at, ip: signature.ip || null });
   if (signature) timeline.push({ stap: 'Ondertekend', at: signature.signed_at, ip: signature.ip || null });
 
   return jsonResponse({
@@ -605,32 +606,25 @@ async function portalAudit(env, url) {
 
 // ── AanloopAI signature PNG (kept in D1 portal_assets, never in the public repo) ──
 const SIG_KEY = 'handtekening-aanloopai';
-const SIG_MAX_BYTES = 200 * 1024;
-const PNG_MAGIC = [0x89, 0x50, 0x4e, 0x47];
-
 function bytesToBase64(bytes) {
   let bin = '';
   for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
   return btoa(bin);
 }
 
+// JSON only: { signature_png: 'data:image/png;base64,...' } drawn on the admin canvas.
 async function handtekeningUpload(request, env, user) {
-  let form;
-  try { form = await request.formData(); } catch { return errorResponse('Ongeldig formulier', 400); }
-  const file = form.get('file');
-  if (!file || typeof file.arrayBuffer !== 'function') return errorResponse('Kies een PNG-bestand', 400);
-  if (file.size > SIG_MAX_BYTES) return errorResponse('Bestand is te groot (maximaal 200 KB)', 400);
-  const bytes = new Uint8Array(await file.arrayBuffer());
-  if (bytes.length > SIG_MAX_BYTES) return errorResponse('Bestand is te groot (maximaal 200 KB)', 400);
-  if (bytes.length < PNG_MAGIC.length || !PNG_MAGIC.every((b, i) => bytes[i] === b)) {
-    return errorResponse('Alleen PNG-bestanden zijn toegestaan', 400);
+  const body = await request.json().catch(() => null);
+  let bytes;
+  try { bytes = decodeSignaturePng(body?.signature_png); } catch (err) {
+    return errorResponse(err.code === 'too_big' ? 'Handtekening is te groot (maximaal 300 KB)' : 'Ongeldige handtekening', err.code === 'too_big' ? 413 : 400);
   }
   const now = Date.now();
   await env.PORTAL_DB
     .prepare('INSERT OR REPLACE INTO portal_assets (key, value_b64, mime, created_at) VALUES (?, ?, ?, ?)')
     .bind(SIG_KEY, bytesToBase64(bytes), 'image/png', now).run();
   await writeAudit(env.PORTAL_DB, {
-    customer_id: null, actor: actorOf(user), action: 'handtekening_geupload', meta: { bytes: bytes.length }, ip: ipOf(request),
+    customer_id: null, actor: actorOf(user), action: 'handtekening_getekend', meta: { bytes: bytes.length }, ip: ipOf(request),
   });
   return jsonResponse({ ok: true, aanwezig: true, created_at: now });
 }

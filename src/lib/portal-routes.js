@@ -180,7 +180,7 @@ export async function handleAuthRequest(request, env) {
         `<p>Hallo ${escapeHtml((user.naam || '').split(' ')[0] || 'daar')},</p>
          <p>Klik op de knop hieronder om in te loggen op het Aanloop AI portaal:</p>
          ${mailButton(`${SITE_ORIGIN}/portal/verify?token=${token}${next ? `&next=${encodeURIComponent(next)}` : ''}`, 'Inloggen op het portaal')}
-         <p style="font-size:13px;color:#64748b">Deze link is 15 minuten geldig en kan één keer gebruikt worden. Niet aangevraagd? Negeer deze mail.</p>`);
+         <p style="font-size:13px;color:#64748b">Deze link is 48 uur geldig en kan één keer gebruikt worden. Niet aangevraagd? Negeer deze mail.</p>`);
     } catch (err) {
       // This used to be logged and then answered with "check your inbox" — the
       // customer waited for a mail that was never sent, and no one was told the
