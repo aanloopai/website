@@ -14,9 +14,10 @@ export function makeD1() {
   const db = new DatabaseSync(':memory:');
   db.exec(`CREATE TABLE customers (id TEXT PRIMARY KEY, email TEXT, naam TEXT, bedrijf TEXT, plan TEXT, created_at TEXT,
              kvk TEXT, btw_id TEXT, adres TEXT, postcode TEXT, stad TEXT, telefoon TEXT);
-           CREATE TABLE users (id TEXT PRIMARY KEY, customer_id TEXT, email TEXT, naam TEXT, role TEXT);`);
+           CREATE TABLE users (id TEXT PRIMARY KEY, customer_id TEXT, email TEXT, naam TEXT, role TEXT, created_at INTEGER);`);
   db.exec(readFileSync(new URL('../migrations/0024_overeenkomsten.sql', import.meta.url), 'utf8'));
   db.exec(readFileSync(new URL('../migrations/0026_signature_acceptance.sql', import.meta.url), 'utf8'));
+  db.exec(readFileSync(new URL('../migrations/0027_signature_amounts.sql', import.meta.url), 'utf8'));
   return {
     raw: db,
     prepare(sql) {

@@ -12,6 +12,7 @@ import { renderHtml } from './markdown-lite.js';
 import {
   TEMPLATE_SLUGS, CONSENT_LABELS, AUTHORIZED_LABEL, ACCEPTANCE_LABEL, decodeSignaturePng, renderTemplate, buildVars,
   minReadSeconds, computeEvidenceSha256, formatAmsterdam, writeAudit, ensurePortaalSchema,
+  computeTotals, AMOUNTS_LABEL,
 } from './overeenkomst-core.js';
 import { buildAgreementPdf } from './agreement-pdf.js';
 
@@ -36,8 +37,9 @@ export function normalizeKvk(raw) { return String(raw ?? '').replace(/\s+/g, '')
 export function normalizeBtw(raw) { return String(raw ?? '').replace(/[\s.]+/g, '').toUpperCase(); }
 export function validKvk(v) { return /^\d{8}$/.test(v); }
 export function validBtw(v) { return /^NL\d{9}B\d{2}$/.test(v); }
+// KvK is required; the btw number is optional.
 function bedrijfCompleet(c) {
-  return !!c && validKvk(normalizeKvk(c.kvk)) && validBtw(normalizeBtw(c.btw_id));
+  return !!c && validKvk(normalizeKvk(c.kvk));
 }
 
 function bytesToBase64(bytes) {
@@ -154,6 +156,7 @@ export async function handleOvereenkomstApi(request, env, user, url) {
 
   const mutations = {
     '/bedrijfsgegevens': bedrijfsgegevens,
+    '/opties': opties,
     '/open': openDocument,
     '/consent': storeConsent,
     '/otp/sturen': otpSturen,
@@ -183,13 +186,23 @@ async function detail(env, user, url) {
   if (user.role !== 'kijker' && agreement.status !== 'signed' && (await consentEverCount(env, agreement.id)) === 0) {
     docs = await rerenderDocuments(env, agreement, customer, docs);
   }
-  const consents = await loadUserConsents(env, agreement.id, user.id);
+  return jsonResponse(await buildDetailPayload(env, user, agreement, customer, docs));
+}
+
+// The exact customer GET payload. Pure reads (also used by the admin preview,
+// which passes the agreement + the eigenaar as `user` and never re-renders).
+export async function buildDetailPayload(env, user, agreement, customer, docs, { previewDraft = false } = {}) {
+  const consents = user?.id ? await loadUserConsents(env, agreement.id, user.id) : new Map();
   const sig = await env.PORTAL_DB
     .prepare('SELECT typed_name, signed_at FROM agr_signatures WHERE agreement_id = ?')
     .bind(agreement.id).first();
-  const verified = await otpVerifiedAt(env, agreement.id, user.id);
+  const verified = user?.id ? await otpVerifiedAt(env, agreement.id, user.id) : null;
+  const totalen = computeTotals(varsFor(agreement, customer));
+  const openStatuses = previewDraft ? ['draft', ...OPEN_STATUSES] : OPEN_STATUSES;
+  const wijzigbaar = canWrite(user?.role) && openStatuses.includes(agreement.status)
+    && (await consentEverCount(env, agreement.id)) === 0;
 
-  return jsonResponse({
+  return {
     ok: true,
     agreement: {
       id: agreement.id, title: agreement.title, status: agreement.status,
@@ -219,7 +232,43 @@ async function detail(env, user, url) {
     otp_verified: !!verified,
     authorized_label: AUTHORIZED_LABEL(customer?.bedrijf || ''),
     acceptance_label: ACCEPTANCE_LABEL,
+    totalen,
+    amounts_label: AMOUNTS_LABEL(totalen),
+    opties: { optie_3d: { gekozen: totalen.optie_3d.gekozen, prijs: totalen.optie_3d.prijs, wijzigbaar } },
+  };
+}
+
+// ── POST /opties ───────────────────────────────────────────────────────────
+async function opties(request, env, user) {
+  if (!canWrite(user.role)) return readOnly();
+  const body = await readJson(request);
+  if (!body) return errorResponse('Ongeldige aanvraag', 400);
+  const agreement = await loadAgreement(env, user, str(body.agreement_id));
+  if (!agreement) return errorResponse('Overeenkomst niet gevonden', 404);
+  if (typeof body.optie_3d_gekozen !== 'boolean') return errorResponse('Ongeldige aanvraag', 400);
+  const frozen = () => errorResponse('Opties zijn bevroren na de eerste akkoordverklaring.', 409);
+  if (!OPEN_STATUSES.includes(agreement.status) || (await consentEverCount(env, agreement.id)) > 0) return frozen();
+
+  let base = {};
+  try { base = JSON.parse(agreement.variables_json || '{}') || {}; } catch { base = {}; }
+  const value = body.optie_3d_gekozen ? 'ja' : 'nee';
+  const nextJson = JSON.stringify({ ...base, optie_3d_gekozen: value });
+  // Guarded UPDATE: loses cleanly against a consent stored in the meantime.
+  const res = await env.PORTAL_DB
+    .prepare(`UPDATE agreements SET variables_json = ?
+              WHERE id = ? AND status IN ('sent', 'in_progress')
+              AND NOT EXISTS (SELECT 1 FROM agr_consents c JOIN agreement_documents d ON d.id = c.agreement_document_id
+                              WHERE d.agreement_id = agreements.id)`)
+    .bind(nextJson, agreement.id).run();
+  if (res?.meta?.changes !== 1) return frozen();
+
+  const customer = await loadCustomer(env, user.customer_id);
+  await rerenderDocuments(env, { ...agreement, variables_json: nextJson }, customer, await loadDocuments(env, agreement.id));
+  await writeAudit(env.PORTAL_DB, {
+    customer_id: user.customer_id, actor: user.id, action: 'optie_gewijzigd',
+    meta: { agreement_id: agreement.id, optie_3d_gekozen: value }, ip: clientIp(request),
   });
+  return jsonResponse({ ok: true, optie_3d_gekozen: body.optie_3d_gekozen });
 }
 
 // ── POST /bedrijfsgegevens ─────────────────────────────────────────────────
@@ -230,7 +279,7 @@ async function bedrijfsgegevens(request, env, user) {
   const kvk = normalizeKvk(body.kvk);
   const btw = normalizeBtw(body.btw_id);
   if (!validKvk(kvk)) return errorResponse('Een KvK-nummer bestaat uit 8 cijfers.', 400);
-  if (!validBtw(btw)) return errorResponse('Een btw-nummer ziet eruit als NL123456789B01.', 400);
+  if (btw && !validBtw(btw)) return errorResponse('Een btw-nummer ziet eruit als NL123456789B01.', 400);
   const locked = await env.PORTAL_DB
     .prepare(`SELECT COUNT(*) AS n FROM agr_consents c JOIN agreement_documents d ON d.id = c.agreement_document_id
               JOIN agreements a ON a.id = d.agreement_id
@@ -291,7 +340,7 @@ async function storeConsent(request, env, user) {
   if (!opened) return errorResponse('Document is nog niet geopend', 400);
 
   const customer = await loadCustomer(env, user.customer_id);
-  if (!String(customer?.kvk ?? '').trim() || !String(customer?.btw_id ?? '').trim()) {
+  if (!String(customer?.kvk ?? '').trim()) {
     return errorResponse('Vul eerst de bedrijfsgegevens aan', 400);
   }
 
@@ -453,6 +502,7 @@ async function ondertekenen(request, env, user) {
   if (typedName.length < 4) return errorResponse('Typ je volledige naam (minimaal 4 tekens).', 400);
   if (body.bevoegd !== true) return errorResponse('Bevestig dat je bevoegd bent om te ondertekenen.', 400);
   if (body.alles_aanvaard !== true) return errorResponse('Aanvaard eerst alle voorwaarden.', 400);
+  if (body.bedragen_akkoord !== true) return errorResponse('Bevestig eerst de bedragen.', 400);
   let pngBytes;
   try { pngBytes = decodeSignaturePng(body.signature_png); } catch (err) {
     return err.code === 'too_big' ? errorResponse('De handtekening is te groot.', 413) : errorResponse('Ongeldige handtekening', 400);
@@ -466,19 +516,21 @@ async function ondertekenen(request, env, user) {
   const ua = clientUa(request);
   const signedAt = Date.now();
   const acceptedAllAt = signedAt;
+  const amountsAcceptedAt = signedAt;
+  const totalen = computeTotals(varsFor(agreement, customer));
   const sigId = randomId('sig');
   const sigKey = `portal:sig:${sigId}`;
   const evidence = await computeEvidenceSha256({
     agreementId: agreement.id, userId: user.id, contentHashes: docs.map((d) => d.content_sha256),
     typedName, signedAtMs: signedAt, signatureSha256: await sha256Bytes(png.bytes),
-    otpVerifiedAt: verifiedAt, consentCheckboxAts: docs.map((d) => consents.get(d.id).checkbox_at), acceptedAllAt,
+    otpVerifiedAt: verifiedAt, consentCheckboxAts: docs.map((d) => consents.get(d.id).checkbox_at), acceptedAllAt, amountsAcceptedAt,
   });
 
   // The UNIQUE(agreement_id) constraint is the double-sign guard: claim first.
   const insertSig = () => env.PORTAL_DB
     .prepare(`INSERT INTO agr_signatures (id, agreement_id, user_id, typed_name, signature_key, otp_verified_at,
-              signed_at, ip, user_agent, evidence_sha256, accepted_all_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-    .bind(sigId, agreement.id, user.id, typedName, sigKey, verifiedAt, signedAt, ip, ua, evidence, acceptedAllAt).run();
+              signed_at, ip, user_agent, evidence_sha256, accepted_all_at, amounts_accepted_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+    .bind(sigId, agreement.id, user.id, typedName, sigKey, verifiedAt, signedAt, ip, ua, evidence, acceptedAllAt, amountsAcceptedAt).run();
   try {
     await insertSig();
   } catch (err) {
@@ -507,7 +559,9 @@ async function ondertekenen(request, env, user) {
       // builder fall back to its own computation (different inputs → mismatch).
       agreement: { ...agreement, evidence_sha256: evidence },
       customer, documents: pdfDocsPayload(docs),
-      signature: { typed_name: typedName, pngBytes: png.bytes, signed_at: signedAt, ip, user_agent: ua, accepted_all_at: acceptedAllAt, acceptance_label: ACCEPTANCE_LABEL },
+      signature: { typed_name: typedName, pngBytes: png.bytes, signed_at: signedAt, ip, user_agent: ua, accepted_all_at: acceptedAllAt, acceptance_label: ACCEPTANCE_LABEL,
+        amounts_accepted_at: amountsAcceptedAt, amounts_label: AMOUNTS_LABEL(totalen), totalen,
+      },
       consents: docs.map((d) => {
         const c = consents.get(d.id);
         return {

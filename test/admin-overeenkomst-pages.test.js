@@ -22,6 +22,12 @@ describe('admin klantenportaal pages', () => {
     expect(s).toMatch(/confirm\(/);
     expect(s).toMatch(/'PATCH'/);
   });
+  it('overeenkomst detail: Wijzig/Opslaan/Annuleren, bevroren-notitie, 3D-checkbox en voorbeeld-knop', () => {
+    const s = pages.overeenkomst;
+    for (const l of ['Wijzig', 'Opslaan', 'Annuleren', 'Gegevens zijn bevroren na de eerste akkoordverklaring van de klant.',
+      'Cinematic 3D-beleving gekozen', 'Voorbeeld klantweergave', '/admin/overeenkomst-voorbeeld/?id=']) expect(s).toContain(l);
+    expect(s).toMatch(/'ja' : 'nee'/);
+  });
   it('aanleverlijst: labels and endpoints', () => {
     const s = pages.aanleverlijst;
     for (const l of ['Standaardlijst aanmaken', 'Herinnering sturen']) expect(s).toContain(l);
