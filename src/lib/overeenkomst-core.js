@@ -1,7 +1,7 @@
 // Shared pure helpers for the overeenkomst flow (templates, hashes, labels).
 import { randomId, sha256Hex } from './auth.js';
 import { wordCount } from './markdown-lite.js';
-import { SCHEMA_STATEMENTS } from './overeenkomst-schema.js';
+import { SCHEMA_STATEMENTS, SCHEMA_ALTERS } from './overeenkomst-schema.js';
 import { TEMPLATE_SEED } from './overeenkomst-templates-seed.js';
 
 export { sha256Hex };
@@ -21,6 +21,8 @@ export const CONSENT_LABELS = {
 };
 
 export const NO_PASSWORD_NOTICE = 'Deel geen wachtwoorden. Toegang verlenen we via uitnodiging op jouw account.';
+
+export const ACCEPTANCE_LABEL = 'Ik verklaar dat ik de overeenkomst, de Algemene Voorwaarden van AanloopAI en de Privacyverklaring en Verwerkersovereenkomst volledig heb gelezen, begrepen en aanvaard, en dat ik alle daarin opgenomen voorwaarden onvoorwaardelijk accepteer.';
 
 export const AUTHORIZED_LABEL = (bedrijf) => `Ik ben bevoegd om ${bedrijf} te vertegenwoordigen en onderteken deze overeenkomst digitaal. Ik begrijp dat deze digitale handtekening rechtsgeldig is (eIDAS, art. 3:15a BW).`;
 
@@ -78,11 +80,39 @@ export function minReadSeconds(markdown) {
 
 // Fixed key order: the hash must stay reproducible from the stored audit data.
 export async function computeEvidenceSha256({
-  agreementId, userId, contentHashes, typedName, signedAtMs, signatureSha256, otpVerifiedAt, consentCheckboxAts,
+  agreementId, userId, contentHashes, typedName, signedAtMs, signatureSha256, otpVerifiedAt, consentCheckboxAts, acceptedAllAt,
 }) {
   return sha256Hex(JSON.stringify({
-    agreementId, userId, contentHashes, typedName, signedAtMs, signatureSha256, otpVerifiedAt, consentCheckboxAts,
+    agreementId, userId, contentHashes, typedName, signedAtMs, signatureSha256, otpVerifiedAt, consentCheckboxAts, acceptedAllAt,
   }));
+}
+
+const MAX_SIGNATURE_BYTES = 300 * 1024;
+const MIN_SIGNATURE_PX = 10;
+const MAX_SIGNATURE_PX = 2000;
+const PNG_MAGIC = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+
+// data:image/png;base64,... -> Uint8Array. Throws Error with .code 'too_big' | 'invalid'.
+export function decodeSignaturePng(dataUrl) {
+  const fail = (code) => { const e = new Error(code === 'too_big' ? 'Handtekening te groot' : 'Ongeldige handtekening'); e.code = code; return e; };
+  if (typeof dataUrl !== 'string') throw fail('invalid');
+  const m = /^data:image\/png;base64,([A-Za-z0-9+/=]+)$/.exec(dataUrl);
+  if (!m) throw fail('invalid');
+  // Cheap size guard before decoding (base64 expands by 4/3).
+  if (m[1].length > Math.ceil(MAX_SIGNATURE_BYTES / 3) * 4 + 4) throw fail('too_big');
+  let bytes;
+  try {
+    const bin = atob(m[1]);
+    bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  } catch { throw fail('invalid'); }
+  if (bytes.length > MAX_SIGNATURE_BYTES) throw fail('too_big');
+  if (bytes.length < 24 || !PNG_MAGIC.every((b, i) => bytes[i] === b)) throw fail('invalid');
+  // IHDR: width/height are big-endian uint32 at bytes 16-23; reject PNG bombs / tiny images.
+  const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  const w = dv.getUint32(16); const h = dv.getUint32(20);
+  if (w < MIN_SIGNATURE_PX || h < MIN_SIGNATURE_PX || w > MAX_SIGNATURE_PX || h > MAX_SIGNATURE_PX) throw fail('invalid');
+  return bytes;
 }
 
 // The 13 items of SPEC §7. max_mb capped at 25 (KV value limit).
@@ -140,6 +170,11 @@ export async function ensurePortaalSchema(env) {
     const db = env.PORTAL_DB;
     schemaReady = (async () => {
       await db.batch(SCHEMA_STATEMENTS.map((s) => db.prepare(s)));
+      for (const alter of SCHEMA_ALTERS) {
+        try { await db.prepare(alter).run(); } catch (err) {
+          if (!/duplicate column/i.test(String(err?.message || err))) throw err;
+        }
+      }
       const row = await db.prepare('SELECT count(*) AS n FROM agr_templates').first();
       if (!row || !row.n) {
         await db.batch(TEMPLATE_SEED.map((t) => db.prepare(

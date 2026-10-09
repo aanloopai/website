@@ -97,7 +97,7 @@ function makeEnv() {
   const db = {
     prepare(sql) {
       const q0 = sql.replace(/\s+/g, ' ').trim();
-      if (q0.startsWith('CREATE ')) return { run: async () => ({}) };
+      if (q0.startsWith('CREATE ') || q0.startsWith('ALTER ')) return { run: async () => ({}) };
       if (q0.startsWith('SELECT count(*) AS n FROM agr_templates')) return { first: async () => ({ n: 3 }) };
       return {
         bind: (...a) => {
@@ -211,12 +211,19 @@ describe('overeenkomst-admin-routes', () => {
   });
 
   describe('handtekening AanloopAI', () => {
-    const PNG = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 1, 2, 3]);
-    const upload = (env, bytes, user = STAFF) => {
-      const fd = new FormData();
-      fd.append('file', new Blob([bytes]), 'sig.png');
-      return handleOvereenkomstAdminApi({ method: 'POST', headers: new Headers(), formData: async () => fd }, env, user, url('/api/admin/sjablonen/handtekening'));
-    };
+    function pngBytes(w, h) {
+      const b = new Uint8Array(33);
+      b.set([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+      const dv = new DataView(b.buffer);
+      dv.setUint32(16, w); dv.setUint32(20, h);
+      return b;
+    }
+    const PNG = pngBytes(606, 286);
+    const asUrl = (bytes) => `data:image/png;base64,${Buffer.from(bytes).toString('base64')}`;
+    const upload = (env, bytes, user = STAFF, dataUrl = asUrl(bytes)) => handleOvereenkomstAdminApi(
+      { method: 'POST', headers: new Headers(), json: async () => ({ signature_png: dataUrl }) },
+      env, user, url('/api/admin/sjablonen/handtekening'),
+    );
 
     it('niet-PNG -> 400, niets opgeslagen', async () => {
       const { env, s } = makeEnv();
@@ -225,11 +232,18 @@ describe('overeenkomst-admin-routes', () => {
       expect(s.assets).toEqual({});
     });
 
-    it('te groot (>200 KB) -> 400', async () => {
+    it('PNG-afmetingen buiten 10..2000 px -> 400', async () => {
       const { env, s } = makeEnv();
-      const big = new Uint8Array(200 * 1024 + 1);
+      expect((await upload(env, pngBytes(5, 100))).status).toBe(400);
+      expect((await upload(env, pngBytes(2001, 100))).status).toBe(400);
+      expect(s.assets).toEqual({});
+    });
+
+    it('te groot (>300 KB) -> 413', async () => {
+      const { env, s } = makeEnv();
+      const big = new Uint8Array(300 * 1024 + 1);
       big.set(PNG);
-      expect((await upload(env, big)).status).toBe(400);
+      expect((await upload(env, big)).status).toBe(413);
       expect(s.assets).toEqual({});
     });
 
@@ -239,7 +253,7 @@ describe('overeenkomst-admin-routes', () => {
       expect(res.status).toBe(200);
       expect(Buffer.from(s.assets['handtekening-aanloopai'].value_b64, 'base64')).toEqual(Buffer.from(PNG));
       expect(s.assets['handtekening-aanloopai'].mime).toBe('image/png');
-      expect(s.audit.some((a) => a.includes('handtekening_geupload'))).toBe(true);
+      expect(s.audit.some((a) => a.includes('handtekening_getekend'))).toBe(true);
       const st = await (await handleOvereenkomstAdminApi(req('GET'), env, STAFF, url('/api/admin/sjablonen/handtekening'))).json();
       expect(st.aanwezig).toBe(true);
       const img = await handleOvereenkomstAdminApi(req('GET'), env, STAFF, url('/api/admin/sjablonen/handtekening/afbeelding'));
