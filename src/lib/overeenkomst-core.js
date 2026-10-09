@@ -144,8 +144,11 @@ export function buildVars(agreement, customer) {
   return vars;
 }
 
-export function minReadSeconds(markdown) {
-  return Math.max(20, Math.ceil(wordCount(markdown) / 8));
+// Owner decision 2026-10-09: no minimum read time. The checkbox unlocks as soon as
+// the customer has scrolled to the end; time_on_document_sec is still recorded as
+// evidence but never enforced. (The old max(20, words/8) made the AV take ~9 min.)
+export function minReadSeconds(_markdown) {
+  return 0;
 }
 
 // Fixed key order: the hash must stay reproducible from the stored audit data.
