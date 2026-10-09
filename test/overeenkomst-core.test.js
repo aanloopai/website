@@ -3,6 +3,7 @@ import {
   FIXED_VARS, TEMPLATE_SLUGS, CONSENT_LABELS, NO_PASSWORD_NOTICE, AUTHORIZED_LABEL,
   renderTemplate, buildVars, minReadSeconds, computeEvidenceSha256, sha256Hex,
   DEFAULT_UPLOAD_ITEMS, formatAmsterdam, writeAudit,
+  parseEuro, formatEuro, computeTotals, AMOUNTS_LABEL, totalsLines,
 } from '../src/lib/overeenkomst-core.js';
 
 describe('renderTemplate', () => {
@@ -27,6 +28,10 @@ describe('buildVars', () => {
     expect(v.agreement_id).toBe('agr_1');
     expect(v.aanloopai_btw).toBe(FIXED_VARS.aanloopai_btw);
     expect(v.datum).toMatch(/^\d{1,2} (januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december) \d{4}$/);
+  });
+  it('renders an empty btw number as a dash (btw is optional)', () => {
+    expect(buildVars({ id: 'a', variables_json: '{"klant_btw":""}' }, { kvk: '12345678', btw_id: '' }).klant_btw).toBe('—');
+    expect(buildVars({ id: 'a', variables_json: '{}' }, { kvk: '12345678', btw_id: null }).klant_btw).toBe('—');
   });
   it('keeps variable value when customer value is empty and survives bad JSON', () => {
     expect(buildVars({ id: 'a', variables_json: '{"klant_kvk":"99999999"}' }, { kvk: '', btw_id: null }).klant_kvk).toBe('99999999');
@@ -62,6 +67,7 @@ describe('evidence hash', () => {
     for (const patch of [
       { agreementId: 'agr_2' }, { userId: 'usr_2' }, { contentHashes: ['h1', 'h3'] }, { typedName: 'Piet' },
       { signedAtMs: 6 }, { signatureSha256: 'sig2' }, { otpVerifiedAt: 3 }, { consentCheckboxAts: [1, 3] },
+      { amountsAcceptedAt: 7 },
     ]) {
       expect(await computeEvidenceSha256({ ...base, ...patch }), JSON.stringify(patch)).not.toBe(a);
     }
@@ -156,5 +162,52 @@ describe('ensurePortaalSchema', () => {
     await expect(ensurePortaalSchema({ PORTAL_DB: db })).rejects.toThrow('d1 down');
     await ensurePortaalSchema({ PORTAL_DB: db });
     expect(calls.batches).toHaveLength(1);
+  });
+});
+
+describe('bedragen', () => {
+  it('parseEuro: Dutch euro strings, plain numbers, garbage -> null', () => {
+    expect(parseEuro('€ 4.500')).toBe(4500);
+    expect(parseEuro('4500')).toBe(4500);
+    expect(parseEuro('€ 1.000,00')).toBe(1000);
+    expect(parseEuro('1.000,5')).toBe(1000.5);
+    expect(parseEuro('€ 25')).toBe(25);
+    expect(parseEuro('12.5')).toBe(12.5);
+    for (const bad of ['', 'abc', null, undefined, '1.5.5', '€']) expect(parseEuro(bad), String(bad)).toBeNull();
+  });
+  it('formatEuro: whole amounts without decimals, others with comma, null -> dash', () => {
+    expect(formatEuro(4500)).toBe('€ 4.500');
+    expect(formatEuro(25)).toBe('€ 25');
+    expect(formatEuro(1000.5)).toBe('€ 1.000,50');
+    expect(formatEuro(null)).toBe('—');
+  });
+  const vars = {
+    prijs_website: '€ 6.000', prijs_optie_3d: '€ 1.500', optie_3d_gekozen: 'nee', prijs_beheer_maand: '€ 250',
+    prijs_lead: '€ 25', lead_bundel_aantal: '10', lead_bundel_prijs: '€ 225',
+  };
+  it('computeTotals without the 3D option', () => {
+    const t = computeTotals(vars);
+    expect(t.eenmalig).toBe(6000);
+    expect(t.eenmalig_specificatie).toEqual([{ label: 'Website', bedrag: 6000 }]);
+    expect(t.maandelijks).toBe(250);
+    expect(t.leads).toEqual({ per_lead: 25, bundel_aantal: 10, bundel_prijs: 225 });
+    expect(t.optie_3d).toEqual({ gekozen: false, prijs: 1500 });
+  });
+  it('computeTotals with the 3D option adds a line and the amount', () => {
+    const t = computeTotals({ ...vars, optie_3d_gekozen: 'ja' });
+    expect(t.eenmalig).toBe(7500);
+    expect(t.eenmalig_specificatie.map((r) => r.label)).toEqual(['Website', 'Cinematic 3D-beleving']);
+    expect(t.optie_3d.gekozen).toBe(true);
+  });
+  it('computeTotals: unparseable amount -> null (never NaN or a partial sum)', () => {
+    expect(computeTotals({ ...vars, prijs_website: 'n.t.b.' }).eenmalig).toBeNull();
+    expect(computeTotals({ ...vars, optie_3d_gekozen: 'ja', prijs_optie_3d: '' }).eenmalig).toBeNull();
+    expect(computeTotals({}).maandelijks).toBeNull();
+  });
+  it('AMOUNTS_LABEL and totalsLines use the formatted amounts', () => {
+    const t = computeTotals({ ...vars, optie_3d_gekozen: 'ja' });
+    expect(AMOUNTS_LABEL(t)).toBe('Ik ga akkoord met het eenmalige bedrag van € 7.500 excl. btw en het maandelijkse bedrag van € 250 excl. btw, en met de leadprijs van € 25 per lead (bundel van 10 leads voor € 225).');
+    expect(totalsLines(t)[0]).toBe('Eenmalig: € 7.500 excl. btw');
+    expect(totalsLines(t).join('\n')).toContain('Cinematic 3D-beleving: € 1.500');
   });
 });

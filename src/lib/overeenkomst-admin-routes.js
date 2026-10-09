@@ -14,6 +14,7 @@ import {
 } from './overeenkomst-core.js';
 import { buildAgreementPdf } from './agreement-pdf.js';
 import { attachmentDisposition } from './aanlever-routes.js';
+import { buildDetailPayload } from './overeenkomst-routes.js';
 
 const SITE_ORIGIN = 'https://aanloopai.nl';
 const MAX_FILE_MIB = 25;
@@ -277,7 +278,7 @@ async function agreementDetail(env, url) {
     .prepare('SELECT verified_at FROM agr_otp WHERE agreement_id = ? AND verified_at IS NOT NULL ORDER BY verified_at DESC LIMIT 1')
     .bind(agreement.id).first();
   const signature = await env.PORTAL_DB
-    .prepare('SELECT typed_name, otp_verified_at, signed_at, ip, user_agent, evidence_sha256, accepted_all_at FROM agr_signatures WHERE agreement_id = ?')
+    .prepare('SELECT typed_name, otp_verified_at, signed_at, ip, user_agent, evidence_sha256, accepted_all_at, amounts_accepted_at FROM agr_signatures WHERE agreement_id = ?')
     .bind(agreement.id).first();
   const audit = (await env.PORTAL_DB
     .prepare('SELECT id, actor, action, meta_json, ip, created_at FROM portal_audit_log WHERE customer_id = ? ORDER BY created_at DESC LIMIT 100')
@@ -291,6 +292,7 @@ async function agreementDetail(env, url) {
   }
   if (otp?.verified_at) timeline.push({ stap: 'Code geverifieerd', at: otp.verified_at, ip: null });
   if (signature?.accepted_all_at) timeline.push({ stap: 'Alle voorwaarden aanvaard', at: signature.accepted_all_at, ip: signature.ip || null });
+  if (signature?.amounts_accepted_at) timeline.push({ stap: 'Bedragen bevestigd', at: signature.amounts_accepted_at, ip: signature.ip || null });
   if (signature) timeline.push({ stap: 'Ondertekend', at: signature.signed_at, ip: signature.ip || null });
 
   return jsonResponse({
@@ -309,11 +311,27 @@ async function agreementDetail(env, url) {
       html: renderHtml(d.rendered_markdown),
     })),
     timeline,
+    frozen: ['signed', 'cancelled'].includes(agreement.status) || consents.length > 0,
     signature: signature ? { typed_name: signature.typed_name, signed_at: signature.signed_at, ip: signature.ip } : null,
     evidence_sha256: agreement.evidence_sha256 || null,
     variable_keys: AGREEMENT_VARIABLE_KEYS,
     audit,
   });
+}
+
+// GET /klantweergave?id= — the exact customer GET payload, as the eigenaar would see it.
+// Strictly read-only: no re-render, no document open, no audit row.
+async function klantweergave(env, url) {
+  const agreement = await getAgreement(env, str(url.searchParams.get('id')));
+  if (!agreement) return errorResponse('Overeenkomst niet gevonden', 404);
+  const customer = await getCustomer(env, agreement.customer_id);
+  if (!customer) return errorResponse('Klant niet gevonden', 404);
+  const owner = (await eigenaarUsers(env, customer.id))[0];
+  const viewer = { id: owner?.id ?? null, customer_id: customer.id, role: 'eigenaar' };
+  const docs = (await env.PORTAL_DB
+    .prepare('SELECT * FROM agreement_documents WHERE agreement_id = ? ORDER BY order_index')
+    .bind(agreement.id).all())?.results || [];
+  return jsonResponse(await buildDetailPayload(env, viewer, agreement, customer, docs, { previewDraft: true }));
 }
 
 async function versturen(request, env, user) {
@@ -666,6 +684,7 @@ export async function handleOvereenkomstAdminApi(request, env, user, url) {
     if (m === 'PATCH') return patchAgreement(request, env, user);
     if (m === 'GET') return agreementDetail(env, url);
   }
+  if (path === '/api/admin/overeenkomst/klantweergave' && m === 'GET') return klantweergave(env, url);
   if (path === '/api/admin/overeenkomst/versturen' && m === 'POST') return versturen(request, env, user);
   if (path === '/api/admin/overeenkomst/annuleren' && m === 'POST') return annuleren(request, env, user);
   if (path === '/api/admin/overeenkomst/pdf' && m === 'GET') return agreementPdf(env, url);

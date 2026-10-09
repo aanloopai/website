@@ -126,7 +126,7 @@ describe('consent', () => {
     expect((await res.json()).consent.time_on_document_sec).toBeLessThanOrEqual(122);
   });
 
-  it('weigert consent zolang kvk of btw ontbreekt', async () => {
+  it('weigert consent zolang kvk ontbreekt (btw is optioneel)', async () => {
     seedAgreement(); backdateOpen('agd_0');
     d1.raw.prepare("UPDATE customers SET kvk = '' WHERE id = 'cus_1'").run();
     const res = await post('/api/portal/overeenkomst/consent', 'usr_1',
@@ -188,6 +188,16 @@ describe('bedrijfsgegevens', () => {
     const res = await post('/api/portal/overeenkomst/bedrijfsgegevens', 'usr_1', { kvk: '87654321', btw_id: 'NL987654321B02' });
     expect(res.status).toBe(409);
     expect(d1.raw.prepare('SELECT kvk FROM customers WHERE id = ?').get('cus_1').kvk).toBe('12345678');
+  });
+
+  it('btw is optioneel: alleen kvk volstaat; een ingevulde maar ongeldige btw blijft 400', async () => {
+    const onlyKvk = await post('/api/portal/overeenkomst/bedrijfsgegevens', 'usr_9', { kvk: '87601234', btw_id: '' });
+    expect(onlyKvk.status).toBe(200);
+    expect(d1.raw.prepare('SELECT kvk, btw_id FROM customers WHERE id = ?').get('cus_2')).toMatchObject({ kvk: '87601234', btw_id: '' });
+    const list = await (await call('/api/portal/overeenkomst/lijst', { userId: 'usr_9' })).json();
+    expect(list.bedrijf_compleet).toBe(true);
+    const badBtw = await post('/api/portal/overeenkomst/bedrijfsgegevens', 'usr_9', { kvk: '87601234', btw_id: 'x' });
+    expect(badBtw.status).toBe(400);
   });
 
   it('valideert kvk en btw en slaat genormaliseerd op', async () => {
@@ -260,7 +270,7 @@ describe('OTP', () => {
 
 describe('ondertekenen', () => {
   const sign = (extra = {}, userId = 'usr_1') => post('/api/portal/overeenkomst/ondertekenen', userId,
-    { agreement_id: 'agr_1', typed_name: 'Ron Houter', signature_png: PNG_1PX, bevoegd: true, alles_aanvaard: true, ...extra });
+    { agreement_id: 'agr_1', typed_name: 'Ron Houter', signature_png: PNG_1PX, bevoegd: true, alles_aanvaard: true, bedragen_akkoord: true, ...extra });
 
   it('weigert zonder 3 consents', async () => {
     seedAgreement({ consents: 2 });
@@ -288,6 +298,10 @@ describe('ondertekenen', () => {
     const noAccept = await sign({ alles_aanvaard: false });
     expect(noAccept.status).toBe(400);
     expect((await noAccept.json()).error).toBe('Aanvaard eerst alle voorwaarden.');
+    const noAmounts = await sign({ bedragen_akkoord: false });
+    expect(noAmounts.status).toBe(400);
+    expect((await noAmounts.json()).error).toBe('Bevestig eerst de bedragen.');
+    expect((await sign({ bedragen_akkoord: undefined })).status).toBe(400);
     expect((await sign({ signature_png: 'data:image/png;base64,AAAA' })).status).toBe(400);
 
     const res = await sign();
@@ -301,6 +315,7 @@ describe('ondertekenen', () => {
     const sig = d1.raw.prepare('SELECT * FROM agr_signatures').get();
     expect(sig.evidence_sha256).toBe(ag.evidence_sha256);
     expect(sig.accepted_all_at).toBe(sig.signed_at);
+    expect(sig.amounts_accepted_at).toBe(sig.signed_at);
     expect(kv.store.has(sig.signature_key)).toBe(true);
     expect(kv.store.has('portal:pdf:agr_1')).toBe(true);
 
@@ -395,5 +410,60 @@ describe('ondertekenen', () => {
     const res = await call('/api/portal/overeenkomst/pdf?id=agr_1', { userId: 'usr_1' });
     expect(res.status).toBe(200);
     expect(new Uint8Array(await res.arrayBuffer())[4]).toBe(0x43);
+  });
+});
+
+describe('totalen + opties', () => {
+  const VARS = '{"klant_bedrijfsnaam":"Foralle BV","prijs_website":"€ 6.000","prijs_optie_3d":"€ 1.500","optie_3d_gekozen":"nee","prijs_beheer_maand":"€ 250","prijs_lead":"€ 25","lead_bundel_aantal":"10","lead_bundel_prijs":"€ 225"}';
+  const getDetail = async (userId = 'usr_1') => (await call('/api/portal/overeenkomst?id=agr_1', { userId })).json();
+  const setOptie = (gekozen, userId = 'usr_1') => post('/api/portal/overeenkomst/opties', userId, { agreement_id: 'agr_1', optie_3d_gekozen: gekozen });
+  beforeEach(() => {
+    seedAgreement();
+    d1.raw.prepare('UPDATE agreements SET variables_json = ? WHERE id = ?').run(VARS, 'agr_1');
+    d1.raw.prepare("UPDATE agr_templates SET body_markdown = 'Optie 3D gekozen = {{optie_3d_gekozen}}. ' || ? WHERE id = 'tpl_o'").run(WORDS);
+    d1.raw.prepare("UPDATE agreement_documents SET rendered_markdown = 'x ' || ? WHERE id = 'agd_0'").run(WORDS);
+  });
+
+  it('GET detail levert totalen, amounts_label en opties (wijzigbaar zolang er geen consent is)', async () => {
+    const d = await getDetail();
+    expect(d.totalen.eenmalig).toBe(6000);
+    expect(d.totalen.maandelijks).toBe(250);
+    expect(d.totalen.leads).toEqual({ per_lead: 25, bundel_aantal: 10, bundel_prijs: 225 });
+    expect(d.opties.optie_3d).toEqual({ gekozen: false, prijs: 1500, wijzigbaar: true });
+    expect(d.amounts_label).toContain('€ 6.000 excl. btw');
+  });
+
+  it('POST opties: zet ja/nee, rendert documenten opnieuw, schrijft audit', async () => {
+    const res = await setOptie(true);
+    expect(res.status).toBe(200);
+    expect(JSON.parse(d1.raw.prepare('SELECT variables_json FROM agreements WHERE id = ?').get('agr_1').variables_json).optie_3d_gekozen).toBe('ja');
+    expect(d1.raw.prepare('SELECT rendered_markdown FROM agreement_documents WHERE id = ?').get('agd_0').rendered_markdown).toContain('gekozen = ja');
+    const d = await getDetail();
+    expect(d.opties.optie_3d.gekozen).toBe(true);
+    expect(d.totalen.eenmalig).toBe(7500);
+    expect(d1.raw.prepare("SELECT COUNT(*) AS n FROM portal_audit_log WHERE action = 'optie_gewijzigd'").get().n).toBe(1);
+    expect((await setOptie(false)).status).toBe(200);
+    expect((await getDetail()).totalen.eenmalig).toBe(6000);
+  });
+
+  it('POST opties: 409 zodra er een akkoord is, variabelen blijven onaangeroerd', async () => {
+    addConsent(0);
+    const res = await setOptie(true);
+    expect(res.status).toBe(409);
+    expect((await res.json()).error).toBe('Opties zijn bevroren na de eerste akkoordverklaring.');
+    expect(JSON.parse(d1.raw.prepare('SELECT variables_json FROM agreements WHERE id = ?').get('agr_1').variables_json).optie_3d_gekozen).toBe('nee');
+    expect((await getDetail()).opties.optie_3d.wijzigbaar).toBe(false);
+  });
+
+  it('POST opties: 409 bij ondertekende overeenkomst, 400 bij niet-boolean, 403 voor kijker, 404 voor andere klant', async () => {
+    expect((await post('/api/portal/overeenkomst/opties', 'usr_1', { agreement_id: 'agr_1', optie_3d_gekozen: 'ja' })).status).toBe(400);
+    expect((await setOptie(true, 'usr_2')).status).toBe(403);
+    expect((await setOptie(true, 'usr_9')).status).toBe(404);
+    d1.raw.prepare("UPDATE agreements SET status = 'signed' WHERE id = 'agr_1'").run();
+    expect((await setOptie(true)).status).toBe(409);
+  });
+
+  it('bewerker mag de optie wijzigen', async () => {
+    expect((await setOptie(true, 'usr_3')).status).toBe(200);
   });
 });

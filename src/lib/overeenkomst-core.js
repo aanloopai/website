@@ -26,6 +26,74 @@ export const ACCEPTANCE_LABEL = 'Ik verklaar dat ik de overeenkomst, de Algemene
 
 export const AUTHORIZED_LABEL = (bedrijf) => `Ik ben bevoegd om ${bedrijf} te vertegenwoordigen en onderteken deze overeenkomst digitaal. Ik begrijp dat deze digitale handtekening rechtsgeldig is (eIDAS, art. 3:15a BW).`;
 
+// ── Bedragen (all amounts excl. btw) ───────────────────────────────────────
+// '€ 4.500' / '4500' / '€ 1.000,00' / '1.000,5' -> number. Anything else -> null.
+export function parseEuro(raw) {
+  if (typeof raw === 'number') return Number.isFinite(raw) ? raw : null;
+  let t = String(raw ?? '').replace(/€|eur(o)?/gi, '').replace(/\s+/g, '').replace(/,-$/, '');
+  if (!t || !/^\d[\d.,]*$/.test(t)) return null;
+  const lastComma = t.lastIndexOf(',');
+  const lastDot = t.lastIndexOf('.');
+  if (lastComma > -1) {
+    // Dutch: '.' groups thousands, ',' is the decimal separator.
+    if (lastDot > lastComma) return null;
+    t = t.replace(/\./g, '').replace(',', '.');
+  } else if (lastDot > -1) {
+    // Only dots: 3 trailing digits after every dot = thousands grouping, otherwise a decimal point.
+    t = /^\d{1,3}(\.\d{3})+$/.test(t) ? t.replace(/\./g, '') : t;
+  }
+  const n = Number(t);
+  return Number.isFinite(n) ? n : null;
+}
+
+// 4500 -> '€ 4.500'; 1000.5 -> '€ 1.000,50'; null -> '—'.
+export function formatEuro(n) {
+  if (n == null || !Number.isFinite(Number(n))) return '—';
+  const v = Number(n);
+  const whole = Math.abs(v - Math.round(v)) < 0.005;
+  const txt = new Intl.NumberFormat('nl-NL', {
+    minimumFractionDigits: whole ? 0 : 2, maximumFractionDigits: whole ? 0 : 2,
+  }).format(whole ? Math.round(v) : v);
+  return `€ ${txt}`;
+}
+
+const intOrNull = (raw) => {
+  const n = parseEuro(raw);
+  return n == null ? null : Math.round(n);
+};
+
+export function computeTotals(vars) {
+  const v = vars || {};
+  const website = parseEuro(v.prijs_website);
+  const gekozen = String(v.optie_3d_gekozen ?? '').trim().toLowerCase() === 'ja';
+  const prijs3d = parseEuro(v.prijs_optie_3d);
+  const spec = [{ label: 'Website', bedrag: website }];
+  if (gekozen) spec.push({ label: 'Cinematic 3D-beleving', bedrag: prijs3d });
+  const eenmalig = spec.every((r) => r.bedrag != null) ? spec.reduce((a, r) => a + r.bedrag, 0) : null;
+  return {
+    eenmalig,
+    eenmalig_specificatie: spec,
+    maandelijks: parseEuro(v.prijs_beheer_maand),
+    leads: {
+      per_lead: parseEuro(v.prijs_lead),
+      bundel_aantal: intOrNull(v.lead_bundel_aantal),
+      bundel_prijs: parseEuro(v.lead_bundel_prijs),
+    },
+    optie_3d: { gekozen, prijs: prijs3d },
+  };
+}
+
+export const AMOUNTS_LABEL = (t) => `Ik ga akkoord met het eenmalige bedrag van ${formatEuro(t?.eenmalig)} excl. btw en het maandelijkse bedrag van ${formatEuro(t?.maandelijks)} excl. btw, en met de leadprijs van ${formatEuro(t?.leads?.per_lead)} per lead (bundel van ${t?.leads?.bundel_aantal ?? '—'} leads voor ${formatEuro(t?.leads?.bundel_prijs)}).`;
+
+// Plain-text lines of the totals block (used on the PDF signing page).
+export function totalsLines(t) {
+  const lines = [`Eenmalig: ${formatEuro(t?.eenmalig)} excl. btw`];
+  for (const r of t?.eenmalig_specificatie || []) lines.push(`  - ${r.label}: ${formatEuro(r.bedrag)}`);
+  lines.push(`Maandelijks (beheer & groei, vanaf livegang): ${formatEuro(t?.maandelijks)} excl. btw`);
+  lines.push(`Leads: ${formatEuro(t?.leads?.per_lead)} per lead - bundel van ${t?.leads?.bundel_aantal ?? '—'} = ${formatEuro(t?.leads?.bundel_prijs)} excl. btw`);
+  return lines;
+}
+
 // {{name}} / {{ name }} (an optional "|hint" suffix is ignored).
 // Unknown name -> "[ontbreekt: name]"; known-but-empty -> "".
 export function renderTemplate(bodyMarkdown, vars) {
@@ -71,6 +139,8 @@ export function buildVars(agreement, customer) {
   };
   if (customer?.kvk && String(customer.kvk).trim()) vars.klant_kvk = String(customer.kvk).trim();
   if (customer?.btw_id && String(customer.btw_id).trim()) vars.klant_btw = String(customer.btw_id).trim();
+  // btw is optional (e.g. no VAT number yet): never render an empty slot.
+  if (!String(vars.klant_btw ?? '').trim()) vars.klant_btw = '—';
   return vars;
 }
 
@@ -81,10 +151,14 @@ export function minReadSeconds(markdown) {
 // Fixed key order: the hash must stay reproducible from the stored audit data.
 export async function computeEvidenceSha256({
   agreementId, userId, contentHashes, typedName, signedAtMs, signatureSha256, otpVerifiedAt, consentCheckboxAts, acceptedAllAt,
+  amountsAcceptedAt,
 }) {
-  return sha256Hex(JSON.stringify({
+  const payload = {
     agreementId, userId, contentHashes, typedName, signedAtMs, signatureSha256, otpVerifiedAt, consentCheckboxAts, acceptedAllAt,
-  }));
+  };
+  // Appended last and only when present, so hashes of agreements signed before 0027 stay reproducible.
+  if (amountsAcceptedAt != null) payload.amountsAcceptedAt = amountsAcceptedAt;
+  return sha256Hex(JSON.stringify(payload));
 }
 
 const MAX_SIGNATURE_BYTES = 300 * 1024;

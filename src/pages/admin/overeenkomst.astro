@@ -41,6 +41,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           <button id="d-versturen" class="pbtn pbtn--primary">Versturen</button>
           <button id="d-annuleren" class="pbtn" style="color:#b3093c;border-color:#b3093c">Annuleren</button>
           <a id="d-pdf" class="pbtn pbtn--subtle" href="#">PDF downloaden</a>
+          <a id="d-voorbeeld" class="pbtn pbtn--subtle" href="#">Voorbeeld klantweergave</a>
           <span id="d-msg" class="text-sm"></span>
         </div>
         <p class="mt-3 text-xs p-muted">Evidence SHA-256: <code id="d-evidence" class="break-all">—</code></p>
@@ -50,13 +51,17 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
     <section class="pcard">
       <div class="pcard-h">Gegevens</div>
       <div class="pcard-b">
-        <p id="d-slot" class="hidden mb-3 text-sm p-muted">Deze overeenkomst is vergrendeld en kan niet meer worden gewijzigd.</p>
-        <label class="plabel">Titel</label>
-        <input id="d-titel" class="pinput" />
-        <div id="d-velden" class="mt-4 grid gap-3 sm:grid-cols-2"></div>
-        <div class="mt-4 flex items-center gap-3">
-          <button id="d-opslaan" class="pbtn pbtn--primary">Opslaan</button>
-          <span id="d-opslaan-msg" class="text-sm"></span>
+        <p id="d-slot" class="hidden text-sm p-muted">Gegevens zijn bevroren na de eerste akkoordverklaring van de klant.</p>
+        <div id="d-editor">
+          <label class="plabel">Titel</label>
+          <input id="d-titel" class="pinput" disabled />
+          <div id="d-velden" class="mt-4 grid gap-3 sm:grid-cols-2"></div>
+          <div class="mt-4 flex items-center gap-3">
+            <button id="d-wijzig" class="pbtn pbtn--subtle">Wijzig</button>
+            <button id="d-opslaan" class="pbtn pbtn--primary hidden">Opslaan</button>
+            <button id="d-wijzig-annuleer" class="pbtn pbtn--subtle hidden">Annuleren</button>
+            <span id="d-opslaan-msg" class="text-sm"></span>
+          </div>
         </div>
       </div>
     </section>
@@ -128,13 +133,20 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       }
       function fieldsHtml(prefix, vals) {
         return FIELDS.map(function (f) {
+          if (f[0] === 'optie_3d_gekozen') {
+            return '<div class="flex items-end pb-2"><label class="flex items-center gap-2 text-sm" style="color:var(--p-ink)"><input type="checkbox" data-var="' + f[0] +
+              '" id="' + prefix + f[0] + '"' + (String(vals[f[0]] || '').toLowerCase() === 'ja' ? ' checked' : '') + ' /> Cinematic 3D-beleving gekozen</label></div>';
+          }
           return '<div><label class="plabel">' + esc(f[1]) + '</label><input class="pinput" data-var="' + f[0] +
             '" id="' + prefix + f[0] + '" value="' + esc(vals[f[0]] || '') + '" /></div>';
         }).join('');
       }
       function readVars(prefix) {
         var o = {};
-        FIELDS.forEach(function (f) { o[f[0]] = $(prefix + f[0]).value.trim(); });
+        FIELDS.forEach(function (f) {
+          var el = $(prefix + f[0]);
+          o[f[0]] = f[0] === 'optie_3d_gekozen' ? (el.checked ? 'ja' : 'nee') : el.value.trim();
+        });
         return o;
       }
       function parseVars(v) {
@@ -208,16 +220,18 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         $('d-klant').textContent = c.bedrijf || '';
         $('d-evidence').textContent = d.evidence_sha256 || a.evidence_sha256 || '—';
         $('d-pdf').href = '/api/admin/overeenkomst/pdf?id=' + encodeURIComponent(aid);
+        $('d-voorbeeld').href = '/admin/overeenkomst-voorbeeld/?id=' + encodeURIComponent(aid);
         // Frozen: signed/cancelled, or any consent exists (server refuses PATCH then).
         var consented = (d.timeline || []).some(function (t) { return /gelezen|akkoord|consent|code|ondertekend/i.test(t.stap || ''); });
-        var frozen = a.status === 'signed' || a.status === 'cancelled' || consented;
+        var frozen = a.status === 'signed' || a.status === 'cancelled' || consented || d.frozen === true;
         $('d-versturen').classList.toggle('hidden', a.status !== 'draft');
         $('d-annuleren').classList.toggle('hidden', a.status === 'signed' || a.status === 'cancelled');
+        // Frozen: the whole editor is replaced by a note. Otherwise read-only until 'Wijzig'.
         $('d-slot').classList.toggle('hidden', !frozen);
-        $('d-titel').value = a.title || '';
-        $('d-velden').innerHTML = fieldsHtml('d-', parseVars(a.variables_json));
-        document.querySelectorAll('#d-velden input, #d-titel').forEach(function (i) { i.disabled = frozen; });
-        $('d-opslaan').disabled = frozen;
+        $('d-editor').classList.toggle('hidden', frozen);
+        loaded = { title: a.title || '', vars: parseVars(a.variables_json) };
+        fillEditor();
+        setEditing(false);
 
         var docs = d.documents || [];
         $('d-docs').innerHTML = docs.length ? docs.map(function (x) {
@@ -237,6 +251,17 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             '</td><td class="py-1 break-all">' + esc(r.meta_json || '') + '</td></tr>';
         }).join('') || '<tr><td colspan="5" class="py-2 p-muted">Geen regels.</td></tr>';
       }
+      var loaded = { title: '', vars: {} };
+      function fillEditor() {
+        $('d-titel').value = loaded.title;
+        $('d-velden').innerHTML = fieldsHtml('d-', loaded.vars);
+      }
+      function setEditing(on) {
+        document.querySelectorAll('#d-velden input, #d-titel').forEach(function (i) { i.disabled = !on; });
+        $('d-wijzig').classList.toggle('hidden', on);
+        $('d-opslaan').classList.toggle('hidden', !on);
+        $('d-wijzig-annuleer').classList.toggle('hidden', !on);
+      }
       function actie(pad, vraag, ok) {
         if (!confirm(vraag)) return;
         api('/api/admin/overeenkomst/' + pad, 'POST', { id: aid }).then(function (res) {
@@ -252,6 +277,8 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
         $('d-annuleren').addEventListener('click', function () {
           actie('annuleren', 'Overeenkomst annuleren? Dit kan niet ongedaan worden gemaakt.', 'Geannuleerd');
         });
+        $('d-wijzig').addEventListener('click', function () { setEditing(true); });
+        $('d-wijzig-annuleer').addEventListener('click', function () { fillEditor(); setEditing(false); });
         $('d-opslaan').addEventListener('click', function () {
           api('/api/admin/overeenkomst', 'PATCH', {
             id: aid, title: $('d-titel').value.trim(), variables_json: readVars('d-'),

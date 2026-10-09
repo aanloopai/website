@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { PDFDocument } from 'pdf-lib';
 import { buildAgreementPdf, toWinAnsi } from '../src/lib/agreement-pdf.js';
+import { computeTotals, AMOUNTS_LABEL } from '../src/lib/overeenkomst-core.js';
 import { renderTemplate, sha256Hex } from '../src/lib/overeenkomst-core.js';
 
 const PNG_1X1 = Uint8Array.from(Buffer.from(
@@ -60,6 +61,23 @@ describe('buildAgreementPdf', () => {
     expect(Buffer.from(bytes.slice(0, 4)).toString()).toBe('%PDF');
     const pdf = await PDFDocument.load(bytes);
     expect(pdf.getPageCount()).toBeGreaterThan(10);
+  });
+
+  it('prints the confirmed amounts on the signing page (more pages/bytes than without)', async () => {
+    const documents = await realDocs();
+    const consents = documents.map((d) => ({
+      document_title: d.title, template_version: '1.0', content_sha256: d.content_sha256,
+      scrolled_to_end_at: 1, time_on_document_sec: 90, checkbox_at: 2,
+    }));
+    const common = { agreement, customer, documents, consents, otpVerifiedAt: 3, aanloopSignaturePngBytes: null, concept: false };
+    const totalen = computeTotals({ prijs_website: '€ 6.000', optie_3d_gekozen: 'nee', prijs_beheer_maand: '€ 250', prijs_lead: '€ 25', lead_bundel_aantal: '10', lead_bundel_prijs: '€ 225' });
+    const plain = await buildAgreementPdf({ ...common, signature: { typed_name: 'Ron', pngBytes: PNG_1X1, signed_at: 5, accepted_all_at: 5 } });
+    const withAmounts = await buildAgreementPdf({
+      ...common,
+      signature: { typed_name: 'Ron', pngBytes: PNG_1X1, signed_at: 5, accepted_all_at: 5, amounts_accepted_at: 5, amounts_label: AMOUNTS_LABEL(totalen), totalen },
+    });
+    expect(Buffer.from(withAmounts.slice(0, 4)).toString()).toBe('%PDF');
+    expect(withAmounts.length).toBeGreaterThan(plain.length);
   });
 
   it('builds a concept PDF without signature data', async () => {

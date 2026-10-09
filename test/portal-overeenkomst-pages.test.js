@@ -7,7 +7,10 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const read = (p) => fs.readFileSync(path.join(__dirname, '..', p), 'utf8');
-const ovk = read('src/pages/portal/overeenkomst.astro');
+const ovkPage = read('src/pages/portal/overeenkomst.astro');
+const voorbeeldPage = read('src/pages/admin/overeenkomst-voorbeeld.astro');
+// Markup + script live in the shared component (klant + voorbeeld mode).
+const ovk = read('src/components/OvereenkomstFlow.astro');
 const aan = read('src/pages/portal/aanleveren.astro');
 const idx = read('src/pages/portal/index.astro');
 const layout = read('src/layouts/PortalLayout.astro');
@@ -22,6 +25,12 @@ describe('portal/overeenkomst.astro', () => {
     'Stuur code',
     'Ondertekenen',
     'Download als PDF',
+    'Gelezen en akkoord',
+    'Te betalen bedragen (excl. btw)',
+    'Cinematic 3D-beleving toevoegen',
+    'Vastgelegd bij je eerste akkoordverklaring.',
+    'btw-nummer (optioneel)',
+    'Voorbeeldweergave — zo ziet de klant de overeenkomst. Er wordt niets opgeslagen.',
   ])('bevat vaste UI-tekst: %s', (s) => {
     expect(ovk).toContain(s);
   });
@@ -42,6 +51,23 @@ describe('portal/overeenkomst.astro', () => {
     expect(ovk).toContain("toDataURL('image/png')");
     expect(ovk).toContain('pointerdown');
     expect(ovk).toContain('/portal/aanleveren/');
+  });
+});
+
+describe('OvereenkomstFlow: modi en bedragen', () => {
+  it('portal-pagina gebruikt de component in klant-modus, admin-voorbeeld in voorbeeld-modus', () => {
+    expect(ovkPage).toContain('OvereenkomstFlow mode="klant"');
+    expect(voorbeeldPage).toContain('OvereenkomstFlow mode="voorbeeld"');
+    expect(voorbeeldPage).toContain('AdminLayout');
+  });
+  it('voorbeeld haalt data uit klantweergave en stuurt geen mutaties', () => {
+    expect(ovk).toContain('/api/admin/overeenkomst/klantweergave?id=');
+    expect(ovk).toMatch(/PREVIEW && method && method !== 'GET'/);
+  });
+  it('ondertekenen stuurt bedragen_akkoord en opties gaat via POST /opties', () => {
+    expect(ovk).toContain('bedragen_akkoord: true');
+    expect(ovk).toContain('/api/portal/overeenkomst/opties');
+    expect(ovk).toContain('ovk-bedragen');
   });
 });
 

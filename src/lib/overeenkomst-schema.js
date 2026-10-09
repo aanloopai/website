@@ -20,4 +20,7 @@ export const SCHEMA_STATEMENTS = [
 ];
 
 // Column additions (migrations 0026+). Not idempotent in SQLite: the runner ignores 'duplicate column'.
-export const SCHEMA_ALTERS = ['ALTER TABLE agr_signatures ADD COLUMN accepted_all_at INTEGER'];
+export const SCHEMA_ALTERS = [
+  'ALTER TABLE agr_signatures ADD COLUMN accepted_all_at INTEGER',
+  'ALTER TABLE agr_signatures ADD COLUMN amounts_accepted_at INTEGER',
+];
