@@ -16,6 +16,28 @@ const pageSchema = {
   },
 };
 
+const datasets = [
+  {
+    id: 'https://aanloopai.nl/branche-statistieken-mkb-ai-nederland/#dataset',
+    name: 'AI-statistieken Nederlands MKB',
+    page: '/branche-statistieken-mkb-ai-nederland/',
+    json: '/data/branche-statistieken-mkb-ai.json',
+    citation: 'Bron: Aanloop AI – AI-statistieken Nederlands MKB, aanloopai.nl/branche-statistieken-mkb-ai-nederland/',
+  },
+];
+
+const catalogSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'DataCatalog',
+  '@id': 'https://aanloopai.nl/pers/#datacatalog',
+  name: 'Aanloop AI datasets',
+  url: 'https://aanloopai.nl/pers/',
+  inLanguage: 'nl-NL',
+  publisher: { '@id': 'https://aanloopai.nl/#organization' },
+  license: 'https://creativecommons.org/licenses/by/4.0/',
+  dataset: datasets.map((d) => ({ '@id': d.id })),
+};
+
 const facts = [
   { label: 'Bedrijfsnaam', value: 'Aanloop AI' },
   { label: 'KvK', value: '88606902' },
@@ -84,7 +106,7 @@ const factsheetLines = [
 <BaseLayout
   title="Pers & Media"
   description="Persinformatie, logos, bedrijfsfeiten en quotes van Aanloop AI Voor journalisten, partners en analisten die schrijven over AI in het Nederlandse MKB."
-  schema={pageSchema}
+  schema={[pageSchema, catalogSchema]}
 >
   <section class="section">
     <div class="container-page max-w-4xl">
@@ -134,6 +156,22 @@ const factsheetLines = [
               </div>
               <span class="pill bg-brand-indigo/10 text-brand-indigo">{p.price}</span>
             </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl">
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-4">Datasets</h2>
+      <p class="text-slate-600 text-sm mb-6">Machineleesbare cijfers onder CC BY 4.0. Elk datapunt draagt zijn eigen bron-URL en letterlijk citaat.</p>
+      <div class="space-y-4">
+        {datasets.map((d) => (
+          <div class="card p-6 bg-white border border-slate-200 text-sm text-slate-700 leading-relaxed">
+            <p class="font-bold text-navy text-base mb-2"><a href={d.page} class="hover:underline">{d.name}</a></p>
+            <p><a href={d.json} class="text-brand-indigo underline">Data downloaden (JSON)</a></p>
+            <p class="mt-2"><strong class="text-navy">Citeren als:</strong> {d.citation}</p>
           </div>
         ))}
       </div>
