@@ -43,13 +43,7 @@ const datasetSchema = {
   spatialCoverage: { '@type': 'Place', name: 'Nederland', address: { '@type': 'PostalAddress', addressCountry: 'NL' } },
   temporalCoverage: '2025-01/2026-12',
   variableMeasured: [
-    { '@type': 'PropertyValue', name: 'AI-adoptie per sector', unitText: 'percentage van MKB-bedrijven', description: 'Aandeel MKB-bedrijven per sector dat minimaal 1 AI-tool actief gebruikt' },
-    { '@type': 'PropertyValue', name: 'Year-over-year groeipercentage AI-adoptie', unitText: 'percentage punten YoY', description: 'Toename adoptie ten opzichte van vorig jaar per sector' },
-    { '@type': 'PropertyValue', name: 'AI use-case adoptie', unitText: 'percentage', description: 'Aandeel klanten dat een specifieke use case actief draait (voicebot, WhatsApp, workflow, etc.)' },
-    { '@type': 'PropertyValue', name: 'Investeringsniveau MKB op AI', unitText: 'percentage van klantenbestand', description: 'Verdeling klanten over maandelijkse investeringstiers (<200 / 200-500 / 500-1.500 / 1.500+ EUR/maand)' },
-    { '@type': 'PropertyValue', name: 'No-show reductie via AI', unitText: 'percentage', description: 'Verlaging van no-show op afspraken na AI WhatsApp-herinneringen' },
-    { '@type': 'PropertyValue', name: 'NPS-score AI WhatsApp versus traditionele helpdesk', unitText: 'percentage hoger', description: 'Net Promoter Score-uplift bij overstap naar AI-WhatsApp klantenservice' },
-    { '@type': 'PropertyValue', name: '12-maand ROI multiplier', unitText: 'multiplier', description: 'Gemiddelde ROI-multiplier in eerste 12 maanden bij goede AI-implementatie' },
+    { '@type': 'PropertyValue', name: 'AI-gebruik bedrijven met 10 of meer werkzame personen (2024)', unitText: 'percentage van bedrijven', description: 'Aandeel bedrijven met 10 of meer werkzame personen dat in 2024 een of meer AI-technologieën gebruikte (bron: CBS)' },
   ],
   distribution: [
     {
@@ -69,7 +63,7 @@ const datasetSchema = {
 };
 
 const stats = [
-  { value: '22,7%', label: 'Nederlandse MKB-bedrijven gebruikt minimaal een AI-tool', source: 'CBS, 2025' },
+  { value: '22,7%', label: 'van de bedrijven met 10 of meer werkzame personen gebruikte in 2024 AI', source: 'CBS' },
   { value: '8-15x', label: 'Gemiddelde 12-maand ROI bij goede AI-implementatie in MKB', source: 'Schatting o.b.v. publieke onderzoeken' },
   { value: '60-80%', label: 'Eerstelijns klantvragen autonoom afgehandeld door AI', source: 'Schatting o.b.v. publieke onderzoeken' },
   { value: '70%', label: 'Reductie van no-show via AI WhatsApp-herinneringen', source: 'Schatting o.b.v. publieke onderzoeken' },
