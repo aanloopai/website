@@ -298,7 +298,14 @@ document.addEventListener('submit',function(ev){var f=ev.target;if(!f||f.getAttr
 var fst=false;
 document.addEventListener('focusin',function(ev){if(fst)return;
 var el=ev.target;if(el&&el.closest&&el.closest('form')){fst=true;send('form_start');}},true);
-try{var fe=document.querySelector('form,[data-vis-form]');if(fe&&window.IntersectionObserver){var fo=new IntersectionObserver(function(en){if(en[0].isIntersecting){fo.disconnect();send('form_view');}},{threshold:0.25});fo.observe(fe);}}catch(x){}
+var fe,fo,fv,mo;
+function fw(){try{if(fv||!window.IntersectionObserver||(fe&&document.documentElement.contains(fe)))return;
+var n=document.querySelector('form,[data-vis-form]');if(!n)return;
+if(!fo)fo=new IntersectionObserver(function(en){if(en[en.length-1].isIntersecting){fv=1;fo.disconnect();if(mo)mo.disconnect();send('form_view');}},{threshold:0.25});
+else if(fe)fo.unobserve(fe);
+fe=n;fo.observe(n);}catch(x){}}
+fw();
+try{if(window.MutationObserver){mo=new MutationObserver(fw);mo.observe(document.documentElement,{childList:true,subtree:true});}}catch(x){}
 window.aanloopTrack=function(name,meta){send('custom',{meta:(String(name||'')+':'+String(meta||'')).slice(0,80)});};
 })();`;
 
