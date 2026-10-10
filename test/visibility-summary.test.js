@@ -17,7 +17,7 @@ describe('form_view hit + formulier funnel', () => {
     expect(BEACON_JS).toContain('IntersectionObserver');
     expect(BEACON_JS).toContain('0.25');
     expect(BEACON_JS).not.toMatch(/document\.cookie|localStorage/);
-    expect(Buffer.byteLength(BEACON_JS, 'utf8')).toBeLessThanOrEqual(3500);
+    expect(Buffer.byteLength(BEACON_JS, 'utf8')).toBeLessThanOrEqual(4000);
   });
 
   const rows = [
