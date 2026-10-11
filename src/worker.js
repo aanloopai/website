@@ -79,6 +79,13 @@ const AUTORESPONSE_TEMPLATES = {
     intro: 'Bedankt voor uw aanvraag voor een gratis AI-scan bij Aanloop AI.',
     body: 'We nemen binnen 1 werkdag contact met u op om een 30-minuten remote sessie in te plannen. Hierin analyseren we uw bedrijfsprocessen en laten we zien waar AI concrete besparingen oplevert — met indicatieve cijfers voor uw situatie.',
   },
+  // Snel contactformulier in de header (elke publieke pagina). Alleen de
+  // bezoekers die een e-mailadres opgeven krijgen deze bevestiging.
+  snel: {
+    subject: 'Bedankt voor uw bericht — Aanloop AI',
+    intro: 'Bedankt voor uw bericht bij Aanloop AI.',
+    body: 'We hebben uw gegevens goed ontvangen en nemen binnen 1 werkdag contact met u op.',
+  },
   contact: {
     subject: 'Bedankt voor uw bericht — Aanloop AI',
     intro: 'Bedankt voor uw bericht bij Aanloop AI.',
@@ -733,7 +740,9 @@ async function storeInboundLead(env, { formType, fields, userEmail, fullName, cl
       id,
       Date.now(),
       cap(formType, 60),
-      cap(userEmail, 200),
+      // email is NOT NULL in inbound_leads: het snelle contactformulier mag
+      // alleen een telefoonnummer bevatten, dan staat hier een lege string.
+      cap(userEmail, 200) || '',
       cap(fullName, 200),
       cap(fields.bedrijf || fields.bedrijfsnaam || fields.company, 200),
       cap(fields.telefoon || fields.phone, 60),
@@ -787,7 +796,18 @@ async function handleSubmit(request, env) {
   const firstName = (fields.voornaam || fields.naam || fields.name || '').toString().split(' ')[0] || 'daar';
   const fullName = (fields.voornaam ? `${fields.voornaam} ${fields.achternaam || ''}`.trim() : (fields.naam || fields.name || userEmail)) || userEmail;
 
-  if (!isValidEmail(userEmail)) {
+  if (formType === 'snel') {
+    // Snel contactformulier (header): naam + telefoon óf e-mail. Eén van de twee
+    // volstaat, dus een lege e-mail is hier geldig.
+    const phoneDigits = (fields.telefoon || fields.phone || '').toString().replace(/\D/g, '');
+    const name = (fields.naam || '').toString().trim();
+    if (!name) {
+      return jsonResponse({ success: false, message: 'Vul uw naam in.' }, 400);
+    }
+    if (userEmail ? !isValidEmail(userEmail) : phoneDigits.length < 8) {
+      return jsonResponse({ success: false, message: 'Vul een telefoonnummer of een geldig e-mailadres in.' }, 400);
+    }
+  } else if (!isValidEmail(userEmail)) {
     return jsonResponse({ success: false, message: 'Ongeldig e-mailadres.' }, 400);
   }
 
@@ -841,10 +861,18 @@ async function handleSubmit(request, env) {
     await sendBrevoEmail(env.BREVO_API_KEY, {
       sender: { name: SENDER_NAME, email: SENDER_EMAIL },
       to: [{ email: NOTIFICATION_EMAIL, name: 'Aanloop AI' }],
-      replyTo: { email: userEmail, name: fullName },
+      // Zonder e-mailadres (alleen telefoon) is er niets om op te antwoorden.
+      ...(userEmail ? { replyTo: { email: userEmail, name: fullName } } : {}),
       subject,
       htmlContent: buildNotificationHtml(formType, fields, userEmail, fullName),
     }, 'notification');
+
+    // Alleen telefoon: geen autoresponder en geen CRM-upsert mogelijk. De lead
+    // staat in D1, Telegram en de notificatiemail; terugbellen doet sales.
+    if (!userEmail) {
+      await markLeadMail(env, leadId, 'verzonden', null);
+      return jsonResponse({ success: true, message: 'Verzonden' });
+    }
 
     // Demo-aanvraag (2026-09-19): één mail met "geen login nodig" + de
     // persoonlijke intake-link vervangt de generieke autoresponder — zie
