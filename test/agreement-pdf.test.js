@@ -78,8 +78,9 @@ describe('buildAgreementPdf', () => {
     const standaard = await buildAgreementPdf({ ...common, auditTrail: true });
     const klant = await buildAgreementPdf({ ...common, auditTrail: false });
     expect(Buffer.from(klant.slice(0, 4)).toString()).toBe('%PDF');
-    expect(standaard.length).toBe(volledig.length); // default = met audit trail (AanloopAI-versie)
-    expect(klant.length).toBeLessThan(volledig.length);
+    // Bytes wijken een paar af door tijdstempels in de PDF-metadata — vergelijk met marge.
+    expect(Math.abs(standaard.length - volledig.length)).toBeLessThan(64); // default = met audit trail
+    expect(volledig.length - klant.length).toBeGreaterThan(500);
   });
 
   it('prints the confirmed amounts on the signing page (more pages/bytes than without)', async () => {
