@@ -66,6 +66,14 @@ function makeEnv() {
         },
       };
     }
+    if (q.includes('FROM agreements a LEFT JOIN customers c')) {
+      return {
+        all: () => ({
+          results: s.agreements.filter((x) => a[0] === '' || x.customer_id === a[1])
+            .map((x) => ({ ...x, bedrijf: (s.customers.find((c) => c.id === x.customer_id) || {}).bedrijf || null })),
+        }),
+      };
+    }
     if (q.startsWith('SELECT * FROM agreements WHERE id = ?')) return { first: () => s.agreements.find((x) => x.id === a[0]) || null };
     if (q.startsWith('SELECT COUNT(*) AS n FROM agr_consents')) return { first: () => ({ n: s.consents.length }) };
     if (q.startsWith('SELECT COUNT(*) AS n FROM agreement_documents')) return { first: () => ({ n: s.docs.filter((d) => d.agreement_id === a[0]).length }) };
@@ -147,6 +155,17 @@ describe('overeenkomst-admin-routes', () => {
     expect(vars.klant_plaats).toBe('Naarden');
     expect(s.agreements[0].status).toBe('draft');
     expect(s.audit.length).toBeGreaterThan(0);
+  });
+
+  it('lijst: zonder customer_id alle overeenkomsten met bedrijfsnaam; met customer_id gefilterd', async () => {
+    const { env, s } = makeEnv();
+    await create(env);
+    s.agreements.push({ id: 'agr_ander', customer_id: 'cust_2', title: 'Ander', status: 'draft', created_at: 1 });
+    const alle = await (await handleOvereenkomstAdminApi(req('GET'), env, STAFF, url('/api/admin/overeenkomst/lijst'))).json();
+    expect(alle.agreements).toHaveLength(2);
+    expect(alle.agreements.find((x) => x.customer_id === 'cust_1').bedrijf).toBe('Foralle Naarden BV');
+    const een = await (await handleOvereenkomstAdminApi(req('GET'), env, STAFF, url('/api/admin/overeenkomst/lijst?customer_id=cust_1'))).json();
+    expect(een.agreements.map((x) => x.customer_id)).toEqual(['cust_1']);
   });
 
   it('create: onbekende klant -> 404', async () => {
