@@ -462,12 +462,16 @@ async function ondertekenen(request, env, user) {
   }
 
   let pdfBytes;
+  let klantPdfBytes;
   const pdfKey = `portal:pdf:${agreement.id}`;
+  const klantPdfKey = klantPdfKeyFor(pdfKey);
   try {
     await env.PORTAL_FILES.put(sigKey, png.bytes.buffer.slice(png.bytes.byteOffset, png.bytes.byteOffset + png.bytes.byteLength), {
       metadata: { mime: 'image/png', name: 'handtekening.png', size: png.bytes.length, customer_id: user.customer_id },
     });
-    pdfBytes = await buildAgreementPdf({
+    // Volledige versie (met audit trail, IP en apparaat) is alleen voor AanloopAI;
+    // de klant krijgt dezelfde overeenkomst zonder die gegevens.
+    const pdfInput = {
       // Same hash as stored in agreements/agr_signatures — never let the PDF
       // builder fall back to its own computation (different inputs → mismatch).
       agreement: { ...agreement, evidence_sha256: evidence },
@@ -485,9 +489,14 @@ async function ondertekenen(request, env, user) {
       otpVerifiedAt: null,
       aanloopSignaturePngBytes: await loadAanloopSignature(env),
       concept: false,
-    });
+    };
+    pdfBytes = await buildAgreementPdf(pdfInput);
+    klantPdfBytes = await buildAgreementPdf({ ...pdfInput, auditTrail: false });
     await env.PORTAL_FILES.put(pdfKey, pdfBytes.buffer.slice(pdfBytes.byteOffset, pdfBytes.byteOffset + pdfBytes.byteLength), {
       metadata: { mime: 'application/pdf', name: `overeenkomst-${safeFileId(agreement.id)}.pdf`, size: pdfBytes.length, customer_id: user.customer_id },
+    });
+    await env.PORTAL_FILES.put(klantPdfKey, klantPdfBytes.buffer.slice(klantPdfBytes.byteOffset, klantPdfBytes.byteOffset + klantPdfBytes.byteLength), {
+      metadata: { mime: 'application/pdf', name: `overeenkomst-${safeFileId(agreement.id)}.pdf`, size: klantPdfBytes.length, customer_id: user.customer_id },
     });
   } catch (err) {
     // Roll back our own just-claimed signature row so the customer can retry.
@@ -513,19 +522,21 @@ async function ondertekenen(request, env, user) {
   if (batchRes?.[0]?.meta?.changes !== 1) {
     // Lost a race (e.g. admin cancelled meanwhile): undo our claim and artifacts.
     await dropSignature(env, sigId, sigKey);
-    try { await env.PORTAL_FILES.delete(pdfKey); } catch { /* best effort */ }
+    try { await env.PORTAL_FILES.delete(pdfKey); await env.PORTAL_FILES.delete(klantPdfKey); } catch { /* best effort */ }
     return errorResponse('Overeenkomst kan niet meer ondertekend worden', 409);
   }
 
   // Mails + Telegram: failures are logged, never fatal (signature is stored).
-  const attachments = [{ name: `overeenkomst-${safeFileId(agreement.id)}.pdf`, contentBase64: bytesToBase64(pdfBytes) }];
+  const pdfName = `overeenkomst-${safeFileId(agreement.id)}.pdf`;
+  const attachments = [{ name: pdfName, contentBase64: bytesToBase64(pdfBytes) }];
+  const klantAttachments = [{ name: pdfName, contentBase64: bytesToBase64(klantPdfBytes) }];
   const when = formatAmsterdam(signedAt);
   const bedrijf = customer?.bedrijf || '';
   try {
     await sendMail(env, user.email, user.naam, 'Je overeenkomst met AanloopAI is ondertekend',
       `<p>Beste ${escapeHtml(user.naam || typedName)},</p>`
-      + `<p>De overeenkomst is op ${escapeHtml(when)} digitaal ondertekend. In de bijlage vind je de volledige overeenkomst met ondertekeningsbewijs.</p>`
-      + '<p>Je kunt nu de gevraagde bestanden aanleveren in Mijn AanloopAI.</p>', attachments);
+      + `<p>De overeenkomst is op ${escapeHtml(when)} digitaal ondertekend. In de bijlage vind je de ondertekende overeenkomst.</p>`
+      + '<p>Je kunt nu de gevraagde bestanden aanleveren in Mijn AanloopAI.</p>', klantAttachments);
   } catch (err) { console.error('[overeenkomst] bevestigingsmail klant mislukt:', err.message || err); }
   try {
     await sendMail(env, STAFF_MAIL, 'Mustafa Dogan', `[Portaal] Overeenkomst ondertekend: ${bedrijf}`,
@@ -540,6 +551,8 @@ async function ondertekenen(request, env, user) {
   });
 }
 
+const klantPdfKeyFor = (pdfKey) => `${pdfKey}:klant`;
+
 // ── GET /pdf?id= ───────────────────────────────────────────────────────────
 async function pdfDownload(env, user, url) {
   const agreement = await loadAgreement(env, user, url.searchParams.get('id'));
@@ -550,8 +563,9 @@ async function pdfDownload(env, user, url) {
     'Cache-Control': 'private, no-store',
     'X-Content-Type-Options': 'nosniff',
   };
+  // Klant krijgt alleen de kopie zonder audit trail — nooit terugvallen op de volledige versie.
   if (agreement.status === 'signed' && agreement.pdf_key && env.PORTAL_FILES) {
-    const buf = await env.PORTAL_FILES.get(agreement.pdf_key, 'arrayBuffer');
+    const buf = await env.PORTAL_FILES.get(klantPdfKeyFor(agreement.pdf_key), 'arrayBuffer');
     if (buf) return new Response(buf, { status: 200, headers });
   }
   if (agreement.status === 'signed') return errorResponse('PDF niet gevonden', 404);

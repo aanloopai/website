@@ -2,7 +2,8 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 vi.mock('../src/lib/agreement-pdf.js', () => ({
-  buildAgreementPdf: vi.fn(async ({ concept }) => new Uint8Array([0x25, 0x50, 0x44, 0x46, concept ? 0x43 : 0x53])),
+  // byte 4: C=concept / S=signed; byte 5: A=met audit trail / K=klantkopie zonder audit trail.
+  buildAgreementPdf: vi.fn(async ({ concept, auditTrail = true }) => new Uint8Array([0x25, 0x50, 0x44, 0x46, concept ? 0x43 : 0x53, auditTrail ? 0x41 : 0x4b])),
 }));
 
 import { handlePortalApi } from '../src/lib/portal-routes.js';
@@ -270,12 +271,18 @@ describe('ondertekenen', () => {
     expect(sig.otp_verified_at).toBe(0); // 0 = geen verificatiecode
     expect(kv.store.has(sig.signature_key)).toBe(true);
     expect(kv.store.has('portal:pdf:agr_1')).toBe(true);
+    expect(kv.store.has('portal:pdf:agr_1:klant')).toBe(true);
 
     expect(mails).toHaveLength(2);
     expect(mails.map((m) => m.to[0].email).sort()).toEqual(['m.dogan@aanloopai.nl', 'ron@klant.nl']);
     expect(mails.every((m) => m.attachment?.[0]?.name === 'overeenkomst-agr_1.pdf' && m.attachment[0].content)).toBe(true);
     expect(mails.find((m) => m.to[0].email === 'ron@klant.nl').subject).toBe('Je overeenkomst met AanloopAI is ondertekend');
     expect(mails.find((m) => m.to[0].email !== 'ron@klant.nl').subject).toBe('[Portaal] Overeenkomst ondertekend: Foralle BV');
+    // Audit trail alleen voor AanloopAI: klant krijgt de kopie zonder, staff de volledige.
+    const marker = (m) => atob(m.attachment[0].content).charCodeAt(5);
+    expect(marker(mails.find((m) => m.to[0].email === 'ron@klant.nl'))).toBe(0x4b);
+    expect(marker(mails.find((m) => m.to[0].email !== 'ron@klant.nl'))).toBe(0x41);
+    expect(mails.find((m) => m.to[0].email === 'ron@klant.nl').htmlContent).not.toContain('ondertekeningsbewijs');
     expect(telegrams).toHaveLength(1);
     expect(d1.raw.prepare("SELECT COUNT(*) AS n FROM portal_audit_log WHERE action = 'ondertekend'").get().n).toBe(1);
 
@@ -286,6 +293,7 @@ describe('ondertekenen', () => {
     expect(pdf.headers.get('content-type')).toBe('application/pdf');
     expect(pdf.headers.get('cache-control')).toBe('private, no-store');
     expect(pdf.headers.get('content-disposition')).toBe('attachment; filename="overeenkomst-agr_1.pdf"');
+    expect(new Uint8Array(await pdf.arrayBuffer())[5]).toBe(0x4b);
   });
 
   it('mailstoring is niet fataal: handtekening blijft opgeslagen', async () => {
@@ -338,6 +346,7 @@ describe('ondertekenen', () => {
     expect((await res.json()).error).toBe('Overeenkomst kan niet meer ondertekend worden');
     expect(d1.raw.prepare('SELECT COUNT(*) AS n FROM agr_signatures').get().n).toBe(0);
     expect(kv.store.has('portal:pdf:agr_1')).toBe(false);
+    expect(kv.store.has('portal:pdf:agr_1:klant')).toBe(false);
     expect(d1.raw.prepare("SELECT COUNT(*) AS n FROM portal_audit_log WHERE action = 'ondertekend'").get().n).toBe(0);
     expect(mails).toHaveLength(0);
   });
@@ -345,7 +354,7 @@ describe('ondertekenen', () => {
   it('ondertekende overeenkomst zonder PDF in KV: 404 in plaats van concept-PDF', async () => {
     seedAgreement({ consents: 3 });
     expect((await sign()).status).toBe(200);
-    kv.store.delete('portal:pdf:agr_1');
+    kv.store.delete('portal:pdf:agr_1:klant'); // volledige versie (met audit trail) mag nooit als vervanging dienen
     const res = await call('/api/portal/overeenkomst/pdf?id=agr_1', { userId: 'usr_1' });
     expect(res.status).toBe(404);
     expect((await res.json()).error).toBe('PDF niet gevonden');
