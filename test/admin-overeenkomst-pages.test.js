@@ -61,6 +61,14 @@ describe('admin klantenportaal pages', () => {
     expect(k).toContain('/admin/sjablonen/');
     expect(read('src/layouts/AdminLayout.astro')).toContain("href: '/admin/sjablonen/'");
   });
+  it('menu "Overeenkomsten" opent alle overeenkomsten zonder door te sturen naar klanten', () => {
+    expect(read('src/layouts/AdminLayout.astro')).toContain("{ key: 'overeenkomsten', label: 'Overeenkomsten', href: '/admin/overeenkomst/' }");
+    const s = pages.overeenkomst;
+    expect(s).toContain('active="overeenkomsten"');
+    expect(s).toContain('Overeenkomsten — alle klanten');
+    expect(s).toMatch(/\} else \{\s*loadAlle\(\);/);
+    expect(s).not.toContain("if (!klant && !aid) { location.href = '/admin/klanten'");
+  });
   it('no forbidden foreign-language words', () => {
     for (const s of Object.values(pages)) {
       for (const w of ['Submit', 'gönder', 'imza', 'yükle']) expect(s).not.toContain(w);

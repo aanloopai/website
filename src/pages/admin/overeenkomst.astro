@@ -1,9 +1,9 @@
 ---
-// Admin panel — overeenkomsten per klant (?klant=cust_…) en detail (?id=agr_…).
+// Admin panel — alle overeenkomsten (geen parameter), per klant (?klant=cust_…) en detail (?id=agr_…).
 import AdminLayout from '../../layouts/AdminLayout.astro';
 ---
 
-<AdminLayout title="Overeenkomst" active="klanten">
+<AdminLayout title="Overeenkomst" active="overeenkomsten">
   <a id="o-terug" href="/admin/klanten" class="p-link text-sm">← Alle klanten</a>
   <h1 id="o-titel" class="page-title mt-2">Overeenkomsten</h1>
   <div id="o-loading" class="mt-6"><div class="pskel h-48 w-full max-w-2xl"></div></div>
@@ -14,7 +14,7 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       <div class="pcard-h">Overeenkomsten</div>
       <div class="pcard-b"><div id="l-items" class="space-y-2"></div></div>
     </section>
-    <section class="pcard">
+    <section id="n-sectie" class="pcard">
       <div class="pcard-h">Nieuwe overeenkomst</div>
       <div class="pcard-b">
         <label class="plabel">Titel</label>
@@ -157,7 +157,6 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
       var params = new URLSearchParams(location.search);
       var klant = params.get('klant');
       var aid = params.get('id');
-      if (!klant && !aid) { location.href = '/admin/klanten'; return; }
 
       /* ---------- lijst ---------- */
       function loadLijst() {
@@ -178,14 +177,27 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
             klant_postcode: c.postcode, klant_plaats: c.stad, klant_contact_naam: contact.naam,
             klant_contact_email: contact.email, klant_contact_tel: c.telefoon, optie_3d_gekozen: 'nee',
           });
-          var list = (res[1].j && res[1].j.agreements) || [];
-          $('l-items').innerHTML = list.length ? list.map(function (a) {
-            var s = STATUS[a.status] || [a.status, 'pbadge--gray'];
-            return '<a class="flex items-center justify-between rounded-md border px-4 py-2.5 text-sm" style="border-color:var(--p-border)" href="/admin/overeenkomst/?id=' +
-              encodeURIComponent(a.id) + '"><span style="color:var(--p-ink)">' + esc(a.title) +
-              '<span class="ml-2 p-muted">' + esc(fmt(a.created_at)) + '</span></span>' +
-              '<span class="pbadge ' + s[1] + '">' + esc(s[0]) + '</span></a>';
-          }).join('') : '<p class="text-sm p-muted">Nog geen overeenkomsten.</p>';
+          renderLijst((res[1].j && res[1].j.agreements) || [], false);
+        }).catch(function (e) { window.adminFout.vangRest(e, 'Overeenkomsten'); });
+      }
+      function renderLijst(list, metBedrijf) {
+        $('l-items').innerHTML = list.length ? list.map(function (a) {
+          var s = STATUS[a.status] || [a.status, 'pbadge--gray'];
+          return '<a class="flex items-center justify-between rounded-md border px-4 py-2.5 text-sm" style="border-color:var(--p-border)" href="/admin/overeenkomst/?id=' +
+            encodeURIComponent(a.id) + '"><span style="color:var(--p-ink)">' +
+            (metBedrijf ? '<strong>' + esc(a.bedrijf || 'Onbekende klant') + '</strong> · ' : '') + esc(a.title) +
+            '<span class="ml-2 p-muted">' + esc(fmt(a.created_at)) + '</span></span>' +
+            '<span class="pbadge ' + s[1] + '">' + esc(s[0]) + '</span></a>';
+        }).join('') : '<p class="text-sm p-muted">Nog geen overeenkomsten.</p>';
+      }
+      /* ---------- alle klanten ---------- */
+      function loadAlle() {
+        $('n-sectie').classList.add('hidden');
+        $('o-titel').textContent = 'Overeenkomsten — alle klanten';
+        api('/api/admin/overeenkomst/lijst').then(function (res) {
+          $('o-loading').classList.add('hidden');
+          $('v-lijst').classList.remove('hidden');
+          renderLijst((res.j && res.j.agreements) || [], true);
         }).catch(function (e) { window.adminFout.vangRest(e, 'Overeenkomsten'); });
       }
       function maak() {
@@ -288,9 +300,11 @@ import AdminLayout from '../../layouts/AdminLayout.astro';
           }).catch(function () { flash($('d-opslaan-msg'), 'Netwerkfout', false); });
         });
         loadDetail();
-      } else {
+      } else if (klant) {
         $('n-maak').addEventListener('click', maak);
         loadLijst();
+      } else {
+        loadAlle();
       }
     })();
   </script>

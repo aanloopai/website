@@ -175,16 +175,17 @@ async function createSjabloon(request, env, user) {
 
 // ── overeenkomsten ──────────────────────────────────────────────────────────
 async function lijst(env, url) {
+  // Zonder customer_id: alle overeenkomsten (admin-menu "Overeenkomsten").
   const customerId = str(url.searchParams.get('customer_id'));
-  if (!customerId) return errorResponse('Klant-id is verplicht', 400);
   const r = await env.PORTAL_DB.prepare(
-    `SELECT a.id, a.title, a.status, a.created_at, a.sent_at, a.signed_at, a.evidence_sha256,
+    `SELECT a.id, a.customer_id, c.bedrijf, a.title, a.status, a.created_at, a.sent_at, a.signed_at, a.evidence_sha256,
        (SELECT COUNT(*) FROM agreement_documents d WHERE d.agreement_id = a.id) AS doc_count,
        (SELECT COUNT(*) FROM agr_consents c WHERE c.superseded = 0 AND c.agreement_document_id IN
           (SELECT id FROM agreement_documents WHERE agreement_id = a.id)) AS consent_count,
        (SELECT typed_name FROM agr_signatures s WHERE s.agreement_id = a.id) AS signed_by
-     FROM agreements a WHERE a.customer_id = ? ORDER BY a.created_at DESC`,
-  ).bind(customerId).all();
+     FROM agreements a LEFT JOIN customers c ON c.id = a.customer_id
+     WHERE (? = '' OR a.customer_id = ?) ORDER BY a.created_at DESC`,
+  ).bind(customerId, customerId).all();
   return jsonResponse({ ok: true, agreements: r?.results || [], variable_keys: AGREEMENT_VARIABLE_KEYS });
 }
 
