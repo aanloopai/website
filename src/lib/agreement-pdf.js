@@ -1,6 +1,7 @@
 // Agreement PDF builder (pdf-lib, runs in a Cloudflare Worker: no Node APIs).
 // Layout: cover, the rendered documents, signature page + audit trail
-// (skipped for concept), footer "pagina X van Y" on every page.
+// (skipped for concept; audit trail, IP and device only when auditTrail — the
+// customer copy omits them), footer "pagina X van Y" on every page.
 import {
   PDFDocument, StandardFonts, rgb, degrees,
 } from 'pdf-lib';
@@ -298,7 +299,7 @@ function cover(w, { agreement, customer, documents, concept }) {
 }
 
 async function signaturePage(w, {
-  agreement, customer, signature, consents, otpVerifiedAt, aanloopSignaturePngBytes, documents,
+  agreement, customer, signature, consents, otpVerifiedAt, aanloopSignaturePngBytes, documents, auditTrail,
 }) {
   const { doc } = w;
   w.newPage();
@@ -323,9 +324,11 @@ async function signaturePage(w, {
   w.text('Opdrachtgever', { size: 12, bold: true, gapAfter: 4 });
   w.text(`Bedrijf: ${customer?.bedrijf || ''}`, { gapAfter: 2 });
   w.text(`Getypte naam: ${signature?.typed_name || ''}`, { gapAfter: 2 });
-  w.text(`Ondertekend op: ${formatAmsterdam(signedAt)} (Europe/Amsterdam)`, { gapAfter: 2 });
-  w.text(`IP-adres: ${signature?.ip || 'onbekend'}`, { gapAfter: 2 });
-  w.text(`Apparaat: ${String(signature?.user_agent || 'onbekend').slice(0, 160)}`, { gapAfter: 8, size: 8, color: MUTED });
+  w.text(`Ondertekend op: ${formatAmsterdam(signedAt)} (Europe/Amsterdam)`, { gapAfter: auditTrail ? 2 : 8 });
+  if (auditTrail) {
+    w.text(`IP-adres: ${signature?.ip || 'onbekend'}`, { gapAfter: 2 });
+    w.text(`Apparaat: ${String(signature?.user_agent || 'onbekend').slice(0, 160)}`, { gapAfter: 8, size: 8, color: MUTED });
+  }
   const img = await embedCustomerPng(doc, signature?.pngBytes);
   if (img) {
     const { width, height } = fitImage(img, 220, 90);
@@ -362,7 +365,8 @@ async function signaturePage(w, {
     w.text('Mustafa Dogan (AanloopAI)', { size: 16, bold: true, gapAfter: 10 });
   }
 
-  // Audit trail
+  // Audit trail — alleen in de AanloopAI-versie.
+  if (!auditTrail) return;
   w.y -= 8;
   w.heading('Controlelogboek (audit trail)', 14, 6, 6);
   const rows = [['Document', 'Versie', 'SHA-256', 'Scroll tot einde', 'Leestijd (s)', 'Akkoord']];
@@ -425,7 +429,7 @@ function decoratePages(doc, fonts, { agreementId, concept }) {
 }
 
 export async function buildAgreementPdf({
-  agreement, customer, documents, signature, consents, otpVerifiedAt, aanloopSignaturePngBytes, concept,
+  agreement, customer, documents, signature, consents, otpVerifiedAt, aanloopSignaturePngBytes, concept, auditTrail = true,
 }) {
   const docs = documents || [];
   const doc = await PDFDocument.create();
@@ -447,7 +451,7 @@ export async function buildAgreementPdf({
   }
   if (!concept) {
     await signaturePage(w, {
-      agreement, customer, signature, consents, otpVerifiedAt, aanloopSignaturePngBytes, documents: docs,
+      agreement, customer, signature, consents, otpVerifiedAt, aanloopSignaturePngBytes, documents: docs, auditTrail,
     });
   }
   decoratePages(doc, fonts, { agreementId: agreement?.id ?? '', concept: !!concept });

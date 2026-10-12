@@ -63,6 +63,25 @@ describe('buildAgreementPdf', () => {
     expect(pdf.getPageCount()).toBeGreaterThan(10);
   });
 
+  it('auditTrail: false (klantkopie) laat audit trail, IP en apparaat weg — kleiner dan de volledige versie', async () => {
+    const documents = await realDocs();
+    const common = {
+      agreement, customer, documents,
+      signature: { typed_name: 'Ron Houter', pngBytes: PNG_1X1, signed_at: agreement.signed_at, ip: '1.2.3.4', user_agent: 'Mozilla/5.0 test', accepted_all_at: 5 },
+      consents: documents.map((d) => ({
+        document_title: d.title, template_version: '1.0', content_sha256: d.content_sha256,
+        scrolled_to_end_at: 1, time_on_document_sec: 90, checkbox_at: 2,
+      })),
+      otpVerifiedAt: 3, aanloopSignaturePngBytes: PNG_1X1, concept: false,
+    };
+    const volledig = await buildAgreementPdf(common);
+    const standaard = await buildAgreementPdf({ ...common, auditTrail: true });
+    const klant = await buildAgreementPdf({ ...common, auditTrail: false });
+    expect(Buffer.from(klant.slice(0, 4)).toString()).toBe('%PDF');
+    expect(standaard.length).toBe(volledig.length); // default = met audit trail (AanloopAI-versie)
+    expect(klant.length).toBeLessThan(volledig.length);
+  });
+
   it('prints the confirmed amounts on the signing page (more pages/bytes than without)', async () => {
     const documents = await realDocs();
     const consents = documents.map((d) => ({

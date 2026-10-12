@@ -35,6 +35,10 @@ describe('portal/overeenkomst.astro', () => {
     expect(ovk).toContain(s);
   });
 
+  it('naamveld vraagt de eigen naam (identiteitsbewijs), niet de KvK-naam', () => {
+    expect(ovk).toContain('placeholder="Voor- en achternaam, zoals op je identiteitsbewijs"');
+    expect(ovk).not.toContain('zoals op de KvK');
+  });
   it('kent geen verificatiecode meer', () => {
     for (const w of ['Stuur code', 'Verificatiecode', 'Controleer code', '/otp/']) expect(ovk).not.toContain(w);
   });
