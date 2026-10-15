@@ -128,7 +128,8 @@
 # NEXT_PUBLIC_BASE_PATH=/demo/kitchentoyou). Never indexed: it is another brand's site.
 /demo/kitchentoyou/*
   X-Robots-Tag: noindex, nofollow
-# film frames, stills and Next build output are content-addressed per deploy: cache for a year
+# Next static output is content-hashed; frame folders are versioned (film2-legN), so a new film
+# must ship under new folder names. Both can be cached for a year.
 /demo/kitchentoyou/frames/*
   ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
