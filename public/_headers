@@ -124,15 +124,16 @@
   Content-Security-Policy: default-src 'self' blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com https://cdn.jsdelivr.net https://elevenlabs.io https://*.elevenlabs.io https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com https://www.google-analytics.com https://analytics.google.com https://api.web3forms.com https://*.elevenlabs.io wss://*.elevenlabs.io https://*.livekit.cloud wss://*.livekit.cloud https://www.clarity.ms; media-src 'self' blob: data: https://*.elevenlabs.io; worker-src 'self' blob: https://unpkg.com https://*.elevenlabs.io; child-src 'self' blob: https://*.elevenlabs.io; frame-ancestors 'none'; frame-src https://*.elevenlabs.io;
   Cache-Control: public, max-age=300, s-maxage=86400, stale-while-revalidate=604800
 
-# Client demo: Kitchen To You scroll walkthrough (built in aanloopai/kitchentoyou with
-# NEXT_PUBLIC_BASE_PATH=/demo/kitchentoyou). Never indexed: it is another brand's site.
-/demo/kitchentoyou/*
+# Client demo: Grynn Studio scroll walkthrough (built in aanloopai/kitchentoyou with
+# NEXT_PUBLIC_BASE_PATH=/demo/grynnstudio). Never indexed: it is another brand's site.
+# The old /demo/kitchentoyou/ address 301s here (_redirects).
+/demo/grynnstudio/*
   X-Robots-Tag: noindex, nofollow
 # Next static output is content-hashed; frame folders are versioned (film2-legN), so a new film
 # must ship under new folder names. Both can be cached for a year.
-/demo/kitchentoyou/frames/*
+/demo/grynnstudio/frames/*
   ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
-/demo/kitchentoyou/_next/static/*
+/demo/grynnstudio/_next/static/*
   ! Cache-Control
   Cache-Control: public, max-age=31536000, immutable
