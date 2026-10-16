@@ -11,7 +11,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 // - Emma Start €149/mnd, geen setup, 300 belminuten/mnd, self-serve
 // - Emma Groei €299/mnd, setup op aanvraag, 1.000 belminuten/mnd + WhatsApp + CRM
 // - Emma Compleet €497/mnd, setup op aanvraag, onbeperkt + onbeperkte WhatsApp + workflows
-// - AI-Website Bundel: €649/mnd, setup op aanvraag
+// - AI-Website Bundel: €1.000/mnd, €4.500 eenmalig (owner 2026-10-16)
 // - Enterprise: op maat (geen vastgestelde prijs)
 // Owner-besluit 2026-08-11: standalone "Emma Lite" WhatsApp-only tier (€49/mnd) geschrapt — blijft geschrapt.
 // Elk pakket: 14 dagen niet goed, geld terug (setup uitgezonderd).
@@ -130,7 +130,7 @@ const offerGraph = {
 const faqItems = [
   {
     question: 'Wat zijn de actuele Aanloop AI tarieven in 2026?',
-    answer: 'Aanloop AI hanteert vier vaste pakketten. Start: 149 euro per maand. Inbegrepen: Emma AI telefoniste 24/7, 300 belminuten per maand, afspraken in de agenda, lead-melding e-mail/Telegram, self-serve onboarding — geen setup. Groei: 299 euro per maand. Inbegrepen: 1.000 belminuten, telefoon + WhatsApp, tot 3 callscripts op maat, CRM-koppeling (HubSpot/Pipedrive), begeleide onboarding. Compleet: 497 euro per maand. Inbegrepen: onbeperkt volume + onbeperkte WhatsApp, multi-number, n8n-workflows op maat, onbeperkte callscripts, gespreksopnames, prioriteit support (reactie onder 1 uur). AI-Website Bundel: 649 euro per maand (website plus Emma als gecombineerd pakket). Een eenmalige setup is bij Groei, Compleet en de Bundel van toepassing — op aanvraag, besproken in het gesprek; Start kent geen setup. Enterprise op maat: op offerte. Elk pakket: 14 dagen niet goed, geld terug (setup uitgezonderd). Alle prijzen zijn exclusief 21% btw.',
+    answer: 'Aanloop AI hanteert vier vaste pakketten. Start: 149 euro per maand. Inbegrepen: Emma AI telefoniste 24/7, 300 belminuten per maand, afspraken in de agenda, lead-melding e-mail/Telegram, self-serve onboarding — geen setup. Groei: 299 euro per maand. Inbegrepen: 1.000 belminuten, telefoon + WhatsApp, tot 3 callscripts op maat, CRM-koppeling (HubSpot/Pipedrive), begeleide onboarding. Compleet: 497 euro per maand. Inbegrepen: onbeperkt volume + onbeperkte WhatsApp, multi-number, n8n-workflows op maat, onbeperkte callscripts, gespreksopnames, prioriteit support (reactie onder 1 uur). AI-Website Bundel: 1.000 euro per maand en 4.500 euro eenmalig (website, Emma, AI-vindbaarheid en meetpaneel als gecombineerd pakket). Een eenmalige setup is bij Groei en Compleet van toepassing — op aanvraag, besproken in het gesprek; Start kent geen setup. Enterprise op maat: op offerte. Elk pakket: 14 dagen niet goed, geld terug (setup uitgezonderd). Alle prijzen zijn exclusief 21% btw.',
   },
   {
     question: 'Welke verborgen kosten heeft AI voor MKB?',
@@ -158,7 +158,7 @@ const faqItems = [
   },
   {
     question: 'Wat zijn de AVG-implicaties van een AI telefoniste voor MKB?',
-    answer: 'Aanloop AI verwerkt persoonsgegevens uitsluitend op EU-servers (Frankfurt of Amsterdam, ISO 27001-gecertificeerde infrastructuur). U ontvangt een DPIA-template en een verwerkersovereenkomst conform AVG artikel 28. Gespreksopnames worden maximaal 90 dagen bewaard tenzij u anders configureert. Voor sectoren met bijzondere AVG-vereisten (zorg: NEN 7510, NEN 7513; financieel: Wft-dossiervorming; advocatuur: geheimhoudingsplicht) leveren we sectorspecifieke verwerkersovereenkomsten. Klanten informeren is uw verantwoordelijkheid als verwerkingsverantwoordelijke — Aanloop AI levert de standaard IVR-melding als instelling op aanvraag.',
+    answer: 'Aanloop AI verwerkt persoonsgegevens op ISO 27001-gecertificeerde infrastructuur (eigen server bij Hetzner in Duitsland); alle sub-verwerkers staan op aanloopai.nl/beveiliging. U ontvangt een DPIA-template en een verwerkersovereenkomst conform AVG artikel 28. Gespreksopnames worden maximaal 90 dagen bewaard tenzij u anders configureert. Voor sectoren met bijzondere AVG-vereisten (zorg: NEN 7510, NEN 7513; financieel: Wft-dossiervorming; advocatuur: geheimhoudingsplicht) leveren we sectorspecifieke verwerkersovereenkomsten. Klanten informeren is uw verantwoordelijkheid als verwerkingsverantwoordelijke — Aanloop AI levert de standaard IVR-melding als instelling op aanvraag.',
   },
   {
     question: 'Telt de EU AI Act mee in de kosten van een AI telefoniste?',
@@ -221,7 +221,7 @@ const aanloopTiers = [
   { tier: 'Emma Start', prijs: '149 euro/mnd', setup: 'Geen setup', inhoud: 'Emma AI telefoniste 24/7, 300 belminuten/mnd, agenda-integratie, e-mail/Telegram lead-melding, self-serve — zelf in 10 minuten live. 14 dagen niet goed, geld terug.', liveTijd: 'Zelf in 10 minuten', best: false },
   { tier: 'Emma Groei', prijs: '299 euro/mnd', setup: 'Op aanvraag', inhoud: 'Emma 1.000 belminuten/mnd + WhatsApp inbegrepen, tot 3 callscripts, CRM HubSpot/Pipedrive, Telegram lead-melding, begeleide onboarding. 14 dagen niet goed, geld terug.', liveTijd: '7 werkdagen', best: true },
   { tier: 'Emma Compleet', prijs: '497 euro/mnd', setup: 'Op aanvraag', inhoud: 'Emma onbeperkt + WhatsApp onbeperkt, multi-number, n8n-workflows op maat, onbeperkte callscripts, gespreksopnames, prioriteit support. 14 dagen niet goed, geld terug.', liveTijd: '7 werkdagen', best: false },
-  { tier: 'AI-Website Bundel', prijs: '649 euro/mnd', setup: 'Op aanvraag', inhoud: 'AI-ready website + Emma als gecombineerd pakket, 1 leverancier, 1 contract, 1 aanspreekpunt', liveTijd: '21 werkdagen', best: false },
+  { tier: 'AI-Website Bundel', prijs: '1.000 euro/mnd', setup: '4.500 euro', inhoud: 'Website + Emma + AI-vindbaarheid + meetpaneel als gecombineerd pakket, 1 leverancier, 1 contract, 1 aanspreekpunt', liveTijd: '6-8 weken', best: false },
   { tier: 'Enterprise op maat', prijs: 'Op offerte', setup: 'Op offerte', inhoud: 'Emma onbeperkt + custom n8n workflows, multi-team routing, dedicated account manager, uptime-doel 99,9% (SLA op aanvraag), maatwerk CRM/ERP', liveTijd: 'Afhankelijk van scope', best: false },
 ];
 
@@ -613,7 +613,7 @@ const sectorRoi = [
   <section class="section">
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6 reveal">Compliance-kosten: AVG en EU AI Act in de TCO</h2>
-      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Bij een eerlijke TCO-berekening hoort ook de compliance-kant. Een AI telefoniste verwerkt persoonsgegevens, en daarmee bent u verwerkingsverantwoordelijke onder de Algemene Verordening Gegevensbescherming (AVG). U sluit een verwerkersovereenkomst conform <a href="https://www.autoriteitpersoonsgegevens.nl/themas/basis-avg/avg-algemeen/verwerkersovereenkomst" rel="external" class="text-brand-indigo hover:underline">artikel 28 AVG, zoals toegelicht door de Autoriteit Persoonsgegevens</a>. Bij Aanloop AI is dat geen extra kostenpost: de verwerkersovereenkomst en een DPIA-template zijn inbegrepen, en alle data wordt verwerkt op EU-servers (Frankfurt of Amsterdam, ISO 27001-gecertificeerd). Bij sommige andere leveranciers betaalt u externe juridische kosten van 500 tot 2.500 euro voor een DPIA en sectorspecifieke audit.</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Bij een eerlijke TCO-berekening hoort ook de compliance-kant. Een AI telefoniste verwerkt persoonsgegevens, en daarmee bent u verwerkingsverantwoordelijke onder de Algemene Verordening Gegevensbescherming (AVG). U sluit een verwerkersovereenkomst conform <a href="https://www.autoriteitpersoonsgegevens.nl/themas/basis-avg/avg-algemeen/verwerkersovereenkomst" rel="external" class="text-brand-indigo hover:underline">artikel 28 AVG, zoals toegelicht door de Autoriteit Persoonsgegevens</a>. Bij Aanloop AI is dat geen extra kostenpost: de verwerkersovereenkomst en een DPIA-template zijn inbegrepen, en alle data wordt verwerkt op ISO 27001-gecertificeerde infrastructuur. Bij sommige andere leveranciers betaalt u externe juridische kosten van 500 tot 2.500 euro voor een DPIA en sectorspecifieke audit.</p>
       <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Sinds 2024 geldt daarnaast de <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="external" class="text-brand-indigo hover:underline">EU AI Act, het Europese regelgevingskader voor kunstmatige intelligentie</a>. Voor een AI telefoniste of WhatsApp-agent in regulier klantcontact is vooral de transparantieverplichting relevant: bellers moeten worden geïnformeerd dat zij met een AI-systeem communiceren. Dat is geen prijscomponent — Aanloop AI configureert de openingsmelding standaard. Een AI telefoniste voor regulier klantcontact valt niet in de hoog-risicocategorie, dus er zijn geen verplichte conformiteitsbeoordelingen die de TCO verhogen. De Nederlandse overheid licht de gefaseerde invoering toe op <a href="https://www.rijksoverheid.nl/themas/overheid-en-democratie/digitale-overheid" rel="external" class="text-brand-indigo hover:underline">rijksoverheid.nl</a>.</p>
       <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">De praktische conclusie voor uw TCO: vraag elke leverancier expliciet of de verwerkersovereenkomst, DPIA-ondersteuning en EU-datalocatie zijn inbegrepen, of dat dit losse kosten zijn. Het verschil kan oplopen tot enkele duizenden euro in jaar 1, zeker in gereguleerde sectoren als zorg, financieel advies en advocatuur.</p>
     </div>
@@ -692,7 +692,7 @@ const sectorRoi = [
         </a>
         <a href="/diensten/ai-website-bundel-mkb-nederland/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
           <p class="font-semibold text-navy">AI-Website Bundel</p>
-          <p class="text-slate-600 mt-1 text-xs">Website + Emma in 1 pakket. Vanaf 649 euro/mnd all-in — setup op aanvraag. Een factuur, een SLA.</p>
+          <p class="text-slate-600 mt-1 text-xs">Website + Emma + AI-vindbaarheid in 1 pakket. 1.000 euro/mnd all-in, 4.500 euro eenmalig. Een factuur, een SLA.</p>
         </a>
         <a href="/vergelijk/aanloop-vs-voicelabs/" class="rounded-xl border border-slate-200 bg-white p-4 hover:border-brand-emerald hover:shadow-sm transition">
           <p class="font-semibold text-navy">Aanloop vs Voicelabs</p>

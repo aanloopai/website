@@ -28,6 +28,9 @@ import {
   discoveryUpdateClient, discoveryCreateDoc, discoveryDocDetail,
   discoverySaveAnswer,
 } from './discovery.js';
+import { discoveryAccess } from './discovery-klant.js';
+import { zoekeenProxy } from './zoekeen-proxy.js';
+import { handleOvereenkomstAdminApi } from './overeenkomst-admin-routes.js';
 
 const BREVO_API = 'https://api.brevo.com/v3/smtp/email';
 const AANLOOP_EMAIL = 'hello@aanloopai.nl';
@@ -54,6 +57,7 @@ async function mailCustomer(env, to, naam, subject, innerHtml) {
 
 // ── dispatcher (/api/admin/*) ───────────────────────────────────────────────
 const ADMIN_SITE_ORIGIN = 'https://aanloopai.nl';
+const OVEREENKOMST_ADMIN_PREFIXES = ['/api/admin/overeenkomst', '/api/admin/aanlever', '/api/admin/portal-audit', '/api/admin/sjablonen'];
 const ADMIN_MUTATING = new Set(['POST', 'PATCH', 'PUT', 'DELETE']);
 
 export async function handleAdminApi(request, env) {
@@ -71,6 +75,9 @@ export async function handleAdminApi(request, env) {
   if (!user || user.role !== 'staff') return errorResponse('Geen toegang', 403);
 
   try {
+    if (OVEREENKOMST_ADMIN_PREFIXES.some((p) => path === p || path.startsWith(`${p}/`))) {
+      return await handleOvereenkomstAdminApi(request, env, user, url);
+    }
     if (path === '/api/admin/me') {
       return jsonResponse({ ok: true, user: { id: user.id, email: user.email, naam: user.naam, role: user.role } });
     }
@@ -103,6 +110,8 @@ export async function handleAdminApi(request, env) {
     if (path === '/api/admin/leadgen/leads') return await leadgenLeads(env);
     if (path === '/api/admin/leadgen/prospects') return await leadgenProspects(env);
     if (path === '/api/admin/leadgen/verkoop' && method === 'POST') return await leadgenVerkoop(request, env);
+    // Zoekeen (src/lib/zoekeen-proxy.js) — allow-listed proxy naar zoekeen.nl/api/ext/v1
+    if (path.startsWith('/api/admin/zoekeen/')) return await zoekeenProxy(request, env);
     if (path === '/api/admin/outreach/prospects') return await outreachProspects(env);
     if (path === '/api/admin/outreach/mail') {
       return method === 'POST' ? await outreachUpdateMail(request, env) : await outreachMailDetail(env, url);
@@ -142,6 +151,7 @@ export async function handleAdminApi(request, env) {
       return method === 'POST' ? await discoveryCreateDoc(request, env) : await discoveryDocDetail(env, url);
     }
     if (path === '/api/admin/discovery/answer' && method === 'POST') return await discoverySaveAnswer(request, env);
+    if (path === '/api/admin/discovery/access') return await discoveryAccess(request, env, url);
     return errorResponse('Niet gevonden', 404);
   } catch (err) {
     console.error('[admin] API error:', err.message || err);

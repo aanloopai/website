@@ -1,0 +1,573 @@
+---
+// Admin panel — Zoekeen. Beheer van zoekeen.nl vanuit aanloopai: leads (detail +
+// acties), ontvangers van de lead-mail, mail/agent-flags en secret-status.
+// Data: /api/admin/zoekeen/* (server-side proxy, src/lib/zoekeen-proxy.js) →
+// zoekeen.nl/api/ext/v1/*. Het token blijft in de Worker.
+import AdminLayout from '../../layouts/AdminLayout.astro';
+---
+
+<AdminLayout title="Zoekeen" active="zoekeen">
+  <h1 class="page-title">Zoekeen</h1>
+  <p class="page-sub">Leads, meldingen en instellingen van zoekeen.nl.</p>
+
+  <div class="mt-6 flex flex-wrap gap-2" role="tablist">
+    <button class="z-tab pbtn pbtn--primary pbtn--sm" data-tab="overzicht" role="tab">Overzicht</button>
+    <button class="z-tab pbtn pbtn--subtle pbtn--sm" data-tab="leads" role="tab">Leads</button>
+    <button class="z-tab pbtn pbtn--subtle pbtn--sm" data-tab="meldingen" role="tab">Meldingen</button>
+    <button class="z-tab pbtn pbtn--subtle pbtn--sm" data-tab="instellingen" role="tab">Instellingen</button>
+  </div>
+
+  <!-- ── Overzicht ─────────────────────────────────────────────────────── -->
+  <div class="z-panel" data-panel="overzicht">
+    <div class="mt-6 grid gap-4 sm:grid-cols-3">
+      <div class="kpi"><div class="kpi-label">Leads totaal</div><div class="kpi-value" id="k-total"><span class="pskel inline-block h-7 w-10"></span></div></div>
+      <div class="kpi"><div class="kpi-label">Laatste 24 uur</div><div class="kpi-value" id="k-24h"><span class="pskel inline-block h-7 w-10"></span></div></div>
+      <div class="kpi"><div class="kpi-label">Laatste 7 dagen</div><div class="kpi-value" id="k-7d"><span class="pskel inline-block h-7 w-10"></span></div></div>
+    </div>
+    <section class="pcard mt-6">
+      <div class="pcard-h">Per status</div>
+      <div class="pcard-b" id="o-status"><div class="pskel h-6 w-full"></div></div>
+    </section>
+    <section class="pcard mt-6">
+      <div class="pcard-h">Laatste agent-runs</div>
+      <div style="overflow-x:auto">
+        <table class="ptable">
+          <thead><tr><th>Agent</th><th>Gestart</th><th>Status</th><th>Modus</th><th>Samenvatting</th></tr></thead>
+          <tbody id="o-runs"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <!-- ── Leads ─────────────────────────────────────────────────────────── -->
+  <div class="z-panel hidden" data-panel="leads">
+    <section class="pcard mt-6">
+      <div class="pcard-b flex flex-wrap items-end gap-2">
+        <select id="f-status" class="pinput" style="max-width:180px"><option value="">Alle statussen</option></select>
+        <input id="f-sector" class="pinput" style="max-width:180px" placeholder="Sector (bv. schoonmaakbedrijf)" />
+        <select id="f-verif" class="pinput" style="max-width:180px" title="Filtert de geladen leads">
+          <option value="">Alle verificatie</option>
+        </select>
+        <input id="f-q" class="pinput" style="max-width:220px" placeholder="Zoek naam, e-mail, telefoon, id" />
+        <button id="f-apply" class="pbtn pbtn--primary pbtn--sm">Filter</button>
+      </div>
+    </section>
+    <section class="pcard mt-4">
+      <div id="l-tablewrap" class="hidden" style="overflow-x:auto">
+        <table class="ptable">
+          <thead><tr>
+            <th>Datum</th><th>Sector</th><th>Plaats</th><th>Status</th><th>Verificatie</th><th>Naam</th><th>Aanbieder</th>
+          </tr></thead>
+          <tbody id="l-rows"></tbody>
+        </table>
+      </div>
+      <div class="pcard-b" id="l-skel">
+        <div class="pskel h-10 w-full"></div>
+        <div class="pskel mt-2 h-10 w-full"></div>
+      </div>
+      <div id="l-empty" class="empty hidden">
+        <p class="empty-title">Geen leads</p>
+        <p class="empty-text">Geen zoekeen-leads voor deze filters.</p>
+      </div>
+      <div class="pcard-b hidden" id="l-more-wrap"><button id="l-more" class="pbtn pbtn--subtle pbtn--sm">Meer laden</button></div>
+    </section>
+  </div>
+
+  <!-- ── Meldingen ─────────────────────────────────────────────────────── -->
+  <div class="z-panel hidden" data-panel="meldingen">
+    <section class="pcard mt-6">
+      <div class="pcard-h">Ontvangers van de lead-mail</div>
+      <div class="pcard-b">
+        <p class="page-sub">Wie krijgt een e-mail bij elke nieuwe zoekeen-lead. Eén adres per regel, maximaal 10.
+          Leeg laten = de standaard-adminadressen van zoekeen krijgen de mail.</p>
+        <textarea id="m-emails" class="pinput mt-3" rows="6" style="font-family:ui-monospace,monospace"></textarea>
+        <p class="mt-2" style="font-size:13px;color:var(--p-ink-3)">Nu actief: <span id="m-effective">—</span></p>
+        <p class="mt-1" style="font-size:13px;color:var(--p-ink-3)">Standaard (fallback): <span id="m-fallback">—</span></p>
+        <p id="m-msg" class="palert mt-3 hidden"></p>
+        <div class="mt-4"><button id="m-save" class="pbtn pbtn--primary pbtn--sm">Opslaan</button></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ── Instellingen ──────────────────────────────────────────────────── -->
+  <div class="z-panel hidden" data-panel="instellingen">
+    <p class="palert palert--warn mt-6">Elke schakelaar hieronder is een productie-actie op zoekeen.nl en wordt direct toegepast.</p>
+    <section class="pcard mt-4">
+      <div class="pcard-h">E-mail</div>
+      <div class="pcard-b">
+        <label style="display:flex;align-items:center;gap:8px;font-size:14px">
+          <input id="s-mail-live" type="checkbox" /> <strong>mail:live</strong> — zoekeen verstuurt echte e-mails
+        </label>
+      </div>
+    </section>
+    <section class="pcard mt-4">
+      <div class="pcard-h">Agents</div>
+      <div style="overflow-x:auto">
+        <table class="ptable">
+          <thead><tr><th>Agent</th><th>Dry-run</th><th>Uitgeschakeld (kill)</th><th>Modus</th></tr></thead>
+          <tbody id="s-agents"></tbody>
+        </table>
+      </div>
+    </section>
+    <section class="pcard mt-4">
+      <div class="pcard-h">Secrets op zoekeen</div>
+      <div class="pcard-b">
+        <p class="page-sub">Alleen of een secret is ingesteld — waarden worden nooit getoond. Instellen gebeurt in Cloudflare.</p>
+        <ul id="s-secrets" class="mt-3" style="font-size:14px;line-height:1.9"></ul>
+      </div>
+    </section>
+    <p id="s-msg" class="palert mt-4 hidden"></p>
+  </div>
+
+  <!-- ── Lead-detail ───────────────────────────────────────────────────── -->
+  <div id="d-modal" class="pmodal-backdrop">
+    <div class="pmodal" style="max-width:52rem;max-height:90vh;overflow-y:auto">
+      <div class="flex items-start justify-between gap-4">
+        <h3 class="page-title" style="font-size:17px" id="d-title">Lead</h3>
+        <button id="d-close" class="pbtn pbtn--subtle pbtn--sm">Sluiten</button>
+      </div>
+      <div id="d-body" class="mt-4"><div class="pskel h-24 w-full"></div></div>
+      <p id="d-msg" class="palert mt-3 hidden"></p>
+      <div id="d-actions" class="mt-5 hidden" style="border-top:1px solid var(--p-border);padding-top:16px">
+        <div class="pcard-h" style="padding:0 0 8px">Acties</div>
+        <div class="flex flex-wrap items-center gap-2">
+          <select id="a-partner" class="pinput" style="max-width:260px"><option value="">Kies aanbieder...</option></select>
+          <button id="a-route" class="pbtn pbtn--primary pbtn--sm">Doorsturen</button>
+        </div>
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+          <input id="a-reason" class="pinput" style="max-width:360px" placeholder="Reden van afwijzen (2-500 tekens)" />
+          <button id="a-reject" class="pbtn pbtn--subtle pbtn--sm">Afwijzen</button>
+          <button id="a-spam" class="pbtn pbtn--subtle pbtn--sm">Spam</button>
+        </div>
+        <div class="mt-3 flex flex-wrap items-center gap-2">
+          <input id="a-confirm" class="pinput" style="max-width:200px" placeholder="Typ VERWIJDER" autocomplete="off" />
+          <button id="a-delete" class="pbtn pbtn--subtle pbtn--sm" style="color:#b91c1c">Definitief verwijderen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline>
+    (function () {
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+        });
+      }
+      function orDash(v) { return (v === null || v === undefined || v === '') ? '—' : esc(v); }
+      function dt(v) {
+        if (!v) return '—';
+        var d = new Date(v);
+        if (isNaN(d.getTime())) return esc(v);
+        return esc(d.toLocaleString('nl-NL', { dateStyle: 'short', timeStyle: 'short' }));
+      }
+      function parseJson(s) { if (!s) return null; try { return JSON.parse(s); } catch (e) { return null; } }
+
+      var API = '/api/admin/zoekeen/';
+      var STATUSES = ['new', 'verifying', 'verified', 'unverified', 'routed', 'delivered', 'accepted', 'rejected',
+        'no_contact', 'closed', 'unrouted', 'spam', 'deleted'];
+      var STATUS_BADGE = {
+        verified: 'pbadge--blue', routed: 'pbadge--amber', delivered: 'pbadge--green', accepted: 'pbadge--green',
+        spam: 'pbadge--gray', deleted: 'pbadge--gray', closed: 'pbadge--gray', rejected: 'pbadge--gray',
+      };
+      var AGENTS = ['verify', 'route', 'deliver', 'followup', 'quality', 'compliance', 'sweeper'];
+      var PAGE = 50;
+
+      // Eén fetch-helper. 401/403 = sessie weg → inlogscherm. Alle andere fouten
+      // komen als Error(melding) terug zodat de aanroeper ze op de juiste plek toont.
+      function api(method, path, body) {
+        var opts = { method: method, credentials: 'same-origin', headers: {} };
+        if (body !== undefined) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
+        return fetch(API + path, opts).then(function (r) {
+          if (window.adminFout.isAuthFout(r)) { window.adminFout.naarLogin(); throw new Error('no-access'); }
+          return r.json().catch(function () { return null; }).then(function (j) {
+            if (!r.ok || !j || !j.ok) {
+              var m = j && j.error;
+              if (m && typeof m === 'object') m = m.message;
+              throw new Error(m || ('serverfout ' + r.status));
+            }
+            return j.data;
+          });
+        });
+      }
+      function melding(el, tekst, soort) {
+        el.className = 'palert ' + (soort === 'ok' ? 'palert--ok' : 'palert--warn') + ' ' + (el.dataset.mt || 'mt-3');
+        el.textContent = tekst;
+        el.classList.remove('hidden');
+      }
+      function laadFout(context) {
+        return function (err) {
+          if (err && err.message === 'no-access') return;
+          window.adminFout.toon(context + ': ' + (err && err.message ? err.message : 'geen verbinding met de server.'));
+        };
+      }
+
+      // ── tabs ───────────────────────────────────────────────────────────
+      var geladen = {};
+      function toonTab(naam) {
+        document.querySelectorAll('.z-tab').forEach(function (b) {
+          var actief = b.getAttribute('data-tab') === naam;
+          b.classList.toggle('pbtn--primary', actief);
+          b.classList.toggle('pbtn--subtle', !actief);
+          b.setAttribute('aria-selected', actief ? 'true' : 'false');
+        });
+        document.querySelectorAll('.z-panel').forEach(function (p) {
+          p.classList.toggle('hidden', p.getAttribute('data-panel') !== naam);
+        });
+        try { history.replaceState(null, '', '#' + naam); } catch (e) { /* ok */ }
+        if (!geladen[naam]) { geladen[naam] = true; LADERS[naam](); }
+      }
+      document.querySelectorAll('.z-tab').forEach(function (b) {
+        b.addEventListener('click', function () { toonTab(b.getAttribute('data-tab')); });
+      });
+
+      // ── Overzicht ──────────────────────────────────────────────────────
+      function laadOverzicht() {
+        api('GET', 'stats').then(function (d) {
+          var l = d.leads || {};
+          document.getElementById('k-total').textContent = l.total != null ? l.total : '—';
+          document.getElementById('k-24h').textContent = l.last24h != null ? l.last24h : '—';
+          document.getElementById('k-7d').textContent = l.last7d != null ? l.last7d : '—';
+          var by = l.byStatus || {};
+          var keys = Object.keys(by);
+          document.getElementById('o-status').innerHTML = keys.length ? keys.map(function (k) {
+            return '<span class="pbadge ' + (STATUS_BADGE[k] || 'pbadge--gray') + '" style="margin:0 6px 6px 0">' + esc(k) + ': ' + esc(by[k]) + '</span>';
+          }).join('') : '<span style="color:var(--p-ink-3)">Nog geen leads.</span>';
+          var runs = d.agentRuns || {};
+          var rows = [];
+          AGENTS.forEach(function (a) {
+            var lijst = runs[a] || [];
+            if (!lijst.length) {
+              rows.push('<tr><td class="primary">' + esc(a) + '</td><td colspan="4" style="color:var(--p-ink-3)">Nog geen runs</td></tr>');
+              return;
+            }
+            lijst.forEach(function (r, i) {
+              rows.push('<tr>' +
+                '<td class="primary">' + (i === 0 ? esc(a) : '') + '</td>' +
+                '<td>' + dt(r.startedAt) + '</td>' +
+                '<td><span class="pbadge ' + (r.status === 'ok' ? 'pbadge--green' : 'pbadge--amber') + '">' + esc(r.status) + '</span></td>' +
+                '<td>' + (r.dryRun ? 'dry-run' : 'live') + '</td>' +
+                '<td>' + orDash(r.summary) + '</td></tr>');
+            });
+          });
+          document.getElementById('o-runs').innerHTML = rows.join('');
+        }).catch(laadFout('Overzicht'));
+      }
+
+      // ── Leads ──────────────────────────────────────────────────────────
+      var LEADS = { rows: [], offset: 0 };
+      var PARTNERS = null;
+      document.getElementById('f-status').innerHTML += STATUSES.map(function (s) {
+        return '<option value="' + s + '">' + s + '</option>';
+      }).join('');
+
+      function renderLeads() {
+        var verif = document.getElementById('f-verif').value;
+        var lijst = LEADS.rows.filter(function (l) { return !verif || l.verification_status === verif; });
+        document.getElementById('l-skel').classList.add('hidden');
+        document.getElementById('l-tablewrap').classList.toggle('hidden', lijst.length === 0);
+        document.getElementById('l-empty').classList.toggle('hidden', lijst.length > 0);
+        document.getElementById('l-rows').innerHTML = lijst.map(function (l) {
+          return '<tr class="z-lead" data-id="' + esc(l.id) + '" style="cursor:pointer">' +
+            '<td>' + dt(l.created_at) + '</td>' +
+            '<td>' + orDash(l.sector) + '</td>' +
+            '<td>' + orDash(l.city) + '</td>' +
+            '<td><span class="pbadge ' + (STATUS_BADGE[l.status] || 'pbadge--gray') + '">' + esc(l.status) + '</span></td>' +
+            '<td>' + orDash(l.verification_status) + '</td>' +
+            '<td class="primary">' + orDash(l.contact_name) + '</td>' +
+            '<td>' + orDash(l.partners) + '</td></tr>';
+        }).join('');
+        document.querySelectorAll('.z-lead').forEach(function (tr) {
+          tr.addEventListener('click', function () { openLead(tr.getAttribute('data-id')); });
+        });
+        // Verificatie-opties uit de geladen data (upstream filtert daar niet op).
+        var sel = document.getElementById('f-verif');
+        var bekend = {};
+        LEADS.rows.forEach(function (l) { if (l.verification_status) bekend[l.verification_status] = 1; });
+        var huidig = sel.value;
+        sel.innerHTML = '<option value="">Alle verificatie</option>' + Object.keys(bekend).sort().map(function (v) {
+          return '<option value="' + esc(v) + '"' + (v === huidig ? ' selected' : '') + '>' + esc(v) + '</option>';
+        }).join('');
+      }
+
+      function laadLeads(meer) {
+        if (!meer) { LEADS.rows = []; LEADS.offset = 0; }
+        var p = new URLSearchParams();
+        var st = document.getElementById('f-status').value;
+        var se = document.getElementById('f-sector').value.trim();
+        var q = document.getElementById('f-q').value.trim();
+        if (st) p.set('status', st);
+        if (se) p.set('sector', se);
+        if (q) p.set('q', q);
+        if (LEADS.offset) p.set('offset', String(LEADS.offset));
+        var qs = p.toString();
+        return api('GET', 'leads' + (qs ? '?' + qs : '')).then(function (d) {
+          var nieuw = d.leads || [];
+          LEADS.rows = LEADS.rows.concat(nieuw);
+          LEADS.offset += nieuw.length;
+          document.getElementById('l-more-wrap').classList.toggle('hidden', nieuw.length < PAGE);
+          renderLeads();
+        }).catch(laadFout('Leads'));
+      }
+      document.getElementById('f-apply').addEventListener('click', function () { laadLeads(false); });
+      document.getElementById('f-q').addEventListener('keydown', function (e) { if (e.key === 'Enter') laadLeads(false); });
+      document.getElementById('f-verif').addEventListener('change', renderLeads);
+      document.getElementById('l-more').addEventListener('click', function () { laadLeads(true); });
+
+      function laadPartners() {
+        if (PARTNERS) return Promise.resolve(PARTNERS);
+        return api('GET', 'partners').then(function (d) { PARTNERS = d.partners || []; return PARTNERS; });
+      }
+
+      // ── Lead-detail ────────────────────────────────────────────────────
+      var huidigeLead = null;
+      var dMsg = document.getElementById('d-msg');
+
+      function antwoordenHtml(lead) {
+        var a = parseJson(lead.answers_json) || {};
+        var keys = Object.keys(a);
+        if (!keys.length) return '<p style="color:var(--p-ink-3)">Geen antwoorden.</p>';
+        return '<table class="ptable"><tbody>' + keys.map(function (k) {
+          var v = Array.isArray(a[k]) ? a[k].join(', ') : a[k];
+          return '<tr><td style="width:40%">' + esc(k) + '</td><td class="primary">' + orDash(v) + '</td></tr>';
+        }).join('') + '</tbody></table>';
+      }
+
+      function renderDetail(d) {
+        var l = d.lead || {};
+        document.getElementById('d-title').textContent = (l.contact_name || 'Lead') + ' — ' + (l.sector || '') + (l.city ? ', ' + l.city : '');
+        var contact = [
+          ['Naam', l.contact_name], ['E-mail', l.email], ['Telefoon', l.phone], ['Bedrijf', l.company],
+          ['KvK', l.kvk], ['Postcode', l.postcode], ['Plaats', l.city], ['Voorkeur', l.contact_pref],
+        ];
+        var meta = [
+          ['Status', l.status], ['Verificatie', l.verification_status], ['Score', l.score], ['Bron', l.source],
+          ['Doelgroep', l.audience], ['Aangemaakt', null, dt(l.created_at)], ['Id', l.id],
+        ];
+        function kv(rows) {
+          return '<table class="ptable"><tbody>' + rows.map(function (r) {
+            return '<tr><td style="width:40%">' + esc(r[0]) + '</td><td class="primary">' + (r[2] || orDash(r[1])) + '</td></tr>';
+          }).join('') + '</tbody></table>';
+        }
+        var events = (d.events || []).map(function (e) {
+          var payload = e.payload_json ? '<div style="font-size:12px;color:var(--p-ink-3);word-break:break-all">' + esc(e.payload_json) + '</div>' : '';
+          return '<tr><td style="white-space:nowrap">' + dt(e.created_at) + '</td><td class="primary">' + esc(e.type) + '</td><td>' + esc(e.actor) + payload + '</td></tr>';
+        }).join('');
+        var deliveries = (d.deliveries || []).map(function (x) {
+          return '<tr><td class="primary">' + orDash(x.partner_name) + '</td><td>' + orDash(x.channel) + '</td>' +
+            '<td><span class="pbadge pbadge--gray">' + esc(x.status) + '</span></td>' +
+            '<td>' + dt(x.delivered_at || x.created_at) + '</td>' +
+            '<td>' + orDash(x.feedback) + '</td>' +
+            '<td><button class="z-resend pbtn pbtn--subtle pbtn--sm" data-id="' + esc(x.id) + '">Opnieuw versturen</button></td></tr>';
+        }).join('');
+        document.getElementById('d-body').innerHTML =
+          (l.summary ? '<p class="palert mb-4">' + esc(l.summary) + '</p>' : '') +
+          '<div class="grid gap-4 md:grid-cols-2">' +
+            '<div><div class="pcard-h" style="padding:0 0 6px">Contact</div>' + kv(contact) + '</div>' +
+            '<div><div class="pcard-h" style="padding:0 0 6px">Lead</div>' + kv(meta) + '</div>' +
+          '</div>' +
+          '<div class="pcard-h mt-5" style="padding:0 0 6px">Antwoorden</div>' + antwoordenHtml(l) +
+          '<div class="pcard-h mt-5" style="padding:0 0 6px">Leveringen</div>' +
+          (deliveries ? '<div style="overflow-x:auto"><table class="ptable"><thead><tr><th>Aanbieder</th><th>Kanaal</th><th>Status</th><th>Datum</th><th>Feedback</th><th></th></tr></thead><tbody>' + deliveries + '</tbody></table></div>'
+            : '<p style="color:var(--p-ink-3)">Nog niet doorgestuurd.</p>') +
+          '<div class="pcard-h mt-5" style="padding:0 0 6px">Tijdlijn</div>' +
+          (events ? '<div style="overflow-x:auto"><table class="ptable"><tbody>' + events + '</tbody></table></div>'
+            : '<p style="color:var(--p-ink-3)">Geen gebeurtenissen.</p>');
+        document.querySelectorAll('.z-resend').forEach(function (b) {
+          b.addEventListener('click', function () {
+            if (!confirm('Levering opnieuw versturen naar de aanbieder? Dit is een productie-actie.')) return;
+            actie('resend', { deliveryId: b.getAttribute('data-id') }, 'Levering opnieuw in de wachtrij gezet.');
+          });
+        });
+        document.getElementById('d-actions').classList.toggle('hidden', l.status === 'deleted');
+      }
+
+      function openLead(id) {
+        huidigeLead = id;
+        dMsg.classList.add('hidden');
+        document.getElementById('a-reason').value = '';
+        document.getElementById('a-confirm').value = '';
+        document.getElementById('d-title').textContent = 'Lead';
+        document.getElementById('d-body').innerHTML = '<div class="pskel h-24 w-full"></div>';
+        document.getElementById('d-actions').classList.add('hidden');
+        document.getElementById('d-modal').classList.add('open');
+        api('GET', 'leads/' + encodeURIComponent(id)).then(renderDetail).catch(function (err) {
+          if (err.message !== 'no-access') melding(dMsg, err.message);
+        });
+        laadPartners().then(function (ps) {
+          document.getElementById('a-partner').innerHTML = '<option value="">Kies aanbieder...</option>' + ps.map(function (p) {
+            var vo = p.vo_status === 'signed' ? '' : ' (VO niet getekend)';
+            return '<option value="' + esc(p.id) + '">' + esc(p.name) + vo + '</option>';
+          }).join('');
+        }).catch(function (err) { if (err.message !== 'no-access') melding(dMsg, 'Aanbieders: ' + err.message); });
+      }
+      function sluitLead() { document.getElementById('d-modal').classList.remove('open'); }
+      document.getElementById('d-close').addEventListener('click', sluitLead);
+
+      function actie(naam, body, okTekst) {
+        var id = huidigeLead;
+        document.querySelectorAll('#d-actions button, .z-resend').forEach(function (b) { b.disabled = true; });
+        return api('POST', 'leads/' + encodeURIComponent(id) + '/' + naam, body)
+          .then(function (data) {
+            var extra = naam === 'route' && data && data.dryRun ? ' (deliver-agent staat in dry-run: alleen een voorbeeld, niets verstuurd)' : '';
+            melding(dMsg, okTekst + extra, 'ok');
+            if (naam === 'delete') { sluitLead(); laadLeads(false); return; }
+            return api('GET', 'leads/' + encodeURIComponent(id)).then(renderDetail).then(function () {
+              melding(dMsg, okTekst + extra, 'ok');
+              if (geladen.leads) laadLeads(false);
+            });
+          })
+          .catch(function (err) { if (err.message !== 'no-access') melding(dMsg, err.message); })
+          .finally(function () {
+            document.querySelectorAll('#d-actions button, .z-resend').forEach(function (b) { b.disabled = false; });
+          });
+      }
+
+      document.getElementById('a-route').addEventListener('click', function () {
+        var sel = document.getElementById('a-partner');
+        if (!sel.value) { melding(dMsg, 'Kies eerst een aanbieder.'); return; }
+        var naam = sel.options[sel.selectedIndex].text;
+        if (!confirm('Lead doorsturen naar ' + naam + '? Dit is een productie-actie: als de deliver-agent live staat, krijgt de aanbieder echt een e-mail.')) return;
+        actie('route', { partnerId: sel.value }, 'Lead doorgestuurd.');
+      });
+      document.getElementById('a-reject').addEventListener('click', function () {
+        var reden = document.getElementById('a-reason').value.trim();
+        if (reden.length < 2 || reden.length > 500) { melding(dMsg, 'Vul een reden in (2-500 tekens).'); return; }
+        if (!confirm('Lead afwijzen en sluiten? Al betrokken aanbieders krijgen een intrekkingsbericht.')) return;
+        actie('reject', { reason: reden }, 'Lead afgewezen.');
+      });
+      document.getElementById('a-spam').addEventListener('click', function () {
+        if (!confirm('Lead als spam markeren?')) return;
+        actie('spam', undefined, 'Lead als spam gemarkeerd.');
+      });
+      document.getElementById('a-delete').addEventListener('click', function () {
+        var c = document.getElementById('a-confirm').value;
+        if (c !== 'VERWIJDER') { melding(dMsg, 'Typ precies VERWIJDER om te bevestigen.'); return; }
+        if (!confirm('Persoonsgegevens van deze lead definitief wissen? Dit kan niet ongedaan worden.')) return;
+        actie('delete', { confirm: 'VERWIJDER' }, 'Lead verwijderd.');
+      });
+
+      // ── Meldingen ──────────────────────────────────────────────────────
+      var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      function renderOntvangers(d) {
+        var eigen = d.notifyLeadEmails || [];
+        var fallback = d.notifyFallback || [];
+        document.getElementById('m-emails').value = eigen.join('\n');
+        document.getElementById('m-fallback').textContent = fallback.length ? fallback.join(', ') : '(geen)';
+        document.getElementById('m-effective').textContent = eigen.length
+          ? eigen.join(', ')
+          : (fallback.length ? fallback.join(', ') + ' (standaard, want de lijst is leeg)' : '(niemand)');
+      }
+      function laadMeldingen() {
+        api('GET', 'settings').then(function (d) { SETTINGS = d; renderOntvangers(d); }).catch(laadFout('Meldingen'));
+      }
+      document.getElementById('m-save').addEventListener('click', function () {
+        var btn = this;
+        var msg = document.getElementById('m-msg');
+        var emails = document.getElementById('m-emails').value.split(/[\s,;]+/).map(function (s) { return s.trim().toLowerCase(); })
+          .filter(Boolean);
+        emails = emails.filter(function (e, i) { return emails.indexOf(e) === i; });
+        var fout = emails.filter(function (e) { return !EMAIL_RE.test(e); });
+        if (fout.length) { melding(msg, 'Ongeldig adres: ' + fout.join(', ')); return; }
+        if (emails.length > 10) { melding(msg, 'Maximaal 10 adressen (nu ' + emails.length + ').'); return; }
+        btn.disabled = true;
+        api('PUT', 'settings/recipients', { emails: emails })
+          .then(function (d) {
+            var fb = (SETTINGS && SETTINGS.notifyFallback) || [];
+            renderOntvangers({ notifyLeadEmails: d.notifyLeadEmails || [], notifyFallback: fb });
+            melding(msg, 'Opgeslagen.', 'ok');
+          })
+          .catch(function (err) { if (err.message !== 'no-access') melding(msg, err.message); })
+          .finally(function () { btn.disabled = false; });
+      });
+
+      // ── Instellingen ───────────────────────────────────────────────────
+      var SETTINGS = null;
+      function renderInstellingen(d) {
+        var f = d.flags || { agents: {} };
+        document.getElementById('s-mail-live').checked = !!f.mailLive;
+        document.getElementById('s-agents').innerHTML = AGENTS.map(function (a) {
+          var s = (f.agents || {})[a];
+          if (!s) {
+            return '<tr><td class="primary">' + esc(a) + '</td><td colspan="2" style="color:var(--p-ink-3)">Niet gemeld door zoekeen</td>' +
+              '<td><span class="pbadge pbadge--gray">onbekend</span></td></tr>';
+          }
+          var modus = s.killed ? '<span class="pbadge pbadge--gray">uit</span>'
+            : (s.dryRun ? '<span class="pbadge pbadge--amber">dry-run</span>' : '<span class="pbadge pbadge--green">live</span>');
+          return '<tr><td class="primary">' + esc(a) + '</td>' +
+            '<td><input type="checkbox" class="z-flag" data-agent="' + a + '" data-field="dryRun"' + (s.dryRun ? ' checked' : '') + ' /></td>' +
+            '<td><input type="checkbox" class="z-flag" data-agent="' + a + '" data-field="killed"' + (s.killed ? ' checked' : '') + ' /></td>' +
+            '<td>' + modus + '</td></tr>';
+        }).join('');
+        document.querySelectorAll('.z-flag').forEach(function (cb) {
+          cb.addEventListener('change', function () { flipAgent(cb); });
+        });
+        var sec = d.secrets || {};
+        document.getElementById('s-secrets').innerHTML = Object.keys(sec).map(function (k) {
+          return '<li>' + (sec[k] ? '<span class="pbadge pbadge--green">✓ ingesteld</span>' : '<span class="pbadge pbadge--amber">✗ ontbreekt</span>') + ' <code>' + esc(k) + '</code></li>';
+        }).join('') || '<li style="color:var(--p-ink-3)">Geen gegevens.</li>';
+      }
+      function laadInstellingen() {
+        api('GET', 'settings').then(function (d) { SETTINGS = d; renderInstellingen(d); }).catch(laadFout('Instellingen'));
+      }
+      function zetFlags(body, cb, vorige) {
+        var msg = document.getElementById('s-msg');
+        msg.dataset.mt = 'mt-4';
+        document.querySelectorAll('#s-mail-live, .z-flag').forEach(function (x) { x.disabled = true; });
+        api('PUT', 'settings/flags', body)
+          .then(function (d) {
+            melding(msg, 'Toegepast: ' + JSON.stringify(d.applied || {}), 'ok');
+            return api('GET', 'settings').then(function (s) { SETTINGS = s; renderInstellingen(s); });
+          })
+          .catch(function (err) {
+            cb.checked = vorige;
+            if (err.message !== 'no-access') melding(msg, err.message);
+          })
+          .finally(function () {
+            document.querySelectorAll('#s-mail-live, .z-flag').forEach(function (x) { x.disabled = false; });
+          });
+      }
+      document.getElementById('s-mail-live').addEventListener('change', function () {
+        var cb = this;
+        var nieuw = cb.checked;
+        var tekst = nieuw
+          ? 'PRODUCTIE-ACTIE: mail:live AAN zetten? Zoekeen gaat dan echte e-mails versturen.'
+          : 'PRODUCTIE-ACTIE: mail:live UIT zetten? Zoekeen verstuurt dan geen e-mails meer.';
+        if (!confirm(tekst)) { cb.checked = !nieuw; return; }
+        zetFlags({ mailLive: nieuw }, cb, !nieuw);
+      });
+      function flipAgent(cb) {
+        var agent = cb.getAttribute('data-agent');
+        var veld = cb.getAttribute('data-field');
+        var nieuw = cb.checked;
+        var tekst;
+        if (veld === 'dryRun' && !nieuw) {
+          tekst = 'PRODUCTIE-ACTIE: agent "' + agent + '" LIVE zetten (dry-run uit)? ' +
+            (agent === 'deliver' || agent === 'followup'
+              ? 'Aanbieders krijgen dan echte e-mails.'
+              : 'De agent voert zijn acties dan echt uit, inclusief echte e-mails waar hij die verstuurt.');
+        } else if (veld === 'dryRun') {
+          tekst = 'PRODUCTIE-ACTIE: agent "' + agent + '" terug naar dry-run zetten?';
+        } else if (nieuw) {
+          tekst = 'PRODUCTIE-ACTIE: agent "' + agent + '" uitschakelen (kill)? Hij draait dan niet meer.';
+        } else {
+          tekst = 'PRODUCTIE-ACTIE: agent "' + agent + '" weer inschakelen?';
+        }
+        if (!confirm(tekst)) { cb.checked = !nieuw; return; }
+        var agents = {};
+        agents[agent] = {};
+        agents[agent][veld] = nieuw;
+        zetFlags({ agents: agents }, cb, !nieuw);
+      }
+
+      var LADERS = {
+        overzicht: laadOverzicht,
+        leads: function () { laadLeads(false); },
+        meldingen: laadMeldingen,
+        instellingen: laadInstellingen,
+      };
+      var start = (location.hash || '').replace('#', '');
+      toonTab(LADERS[start] ? start : 'overzicht');
+    })();
+  </script>
+</AdminLayout>

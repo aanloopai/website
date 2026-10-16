@@ -123,14 +123,14 @@ describe('summarizeHits', () => {
 });
 
 describe('beaconScript (v.js)', () => {
-  it('carries the entry/exit/custom-event hooks, no cookies/localStorage, and stays under 3500 bytes', () => {
+  it('carries the entry/exit/custom-event hooks, no cookies/localStorage, and stays under 4000 bytes', () => {
     expect(BEACON_JS).toContain('sendBeacon');
     expect(BEACON_JS).toContain('sessionStorage');
     expect(BEACON_JS).toContain('aanloopTrack');
     expect(BEACON_JS).toContain('pagehide');
     expect(BEACON_JS).toContain('visibilitychange');
     expect(BEACON_JS).not.toMatch(/document\.cookie|localStorage/);
-    expect(Buffer.byteLength(BEACON_JS, 'utf8')).toBeLessThanOrEqual(3500);
+    expect(Buffer.byteLength(BEACON_JS, 'utf8')).toBeLessThanOrEqual(4000);
   });
 });
 

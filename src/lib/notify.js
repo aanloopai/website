@@ -104,6 +104,7 @@ const FIELD_LABELS = [
   ['sector', 'Branche'], ['regio', 'Regio'], ['volume', 'Volume'], ['exclusief', 'Exclusief'],
   ['plan', 'Pakket'], ['dienst', 'Dienst'], ['type', 'Type'],
   ['bericht', 'Bericht'], ['message', 'Bericht'], ['vraag', 'Vraag'],
+  ['interesse', 'Interesse'], ['pagina', 'Pagina'],
 ];
 
 /**

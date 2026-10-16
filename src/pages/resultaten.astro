@@ -1,0 +1,213 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import FaqSection from '../components/FaqSection.astro';
+import { RESULTATEN, KERNPUNTEN, RESULTATEN_PEILDATUM } from '../data/resultaten';
+import { WEBSITE_BUNDEL } from '../data/pricing';
+
+// Alle cijfers op deze pagina komen uit src/data/resultaten.ts (guard:
+// test/resultaten.test.js). De tabel wordt na het laden ververst met de
+// 28-dagentotalen uit /api/resultaten; de statische waarden zijn de peildatum-
+// snapshot, zodat de pagina ook zonder JavaScript en voor crawlers klopt.
+const euro = (n: number) => `€${n.toLocaleString('nl-NL')}`;
+const datum = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
+const gemeten = RESULTATEN.filter((s) => s.cijfers.length);
+const gestart = RESULTATEN.filter((s) => !s.cijfers.length);
+
+const faqItems = [
+  { question: 'Zijn dit echte klanten of eigen projecten?', answer: 'Beide, en we zeggen per site welke het is. Keuken in Beeld, FleetTrack Holland, Alfa Reclame, Zoekeen en aanloopai.nl zijn eigen bedrijven en platforms uit dezelfde groep; Trip and Tick en Grynn Studio zijn klanten die akkoord zijn met publicatie. Juist omdat het eigen sites zijn, kunnen we de ruwe meting laten zien in plaats van een quote.' },
+  { question: 'Wat is een "contactactie" en waarom is dat geen lead?', answer: 'Een contactactie is een klik op bellen, WhatsApp, e-mail, route of een verzonden formulier, gemeten door onze eigen cookieloze beacon. Het zegt of een bezoeker contact wilde. Een lead is een aanvraag die daadwerkelijk in de inbox van het bedrijf is afgeleverd; die tellen we apart via de afleverstatistiek van de mailprovider en noemen we alleen als die telling er is.' },
+  { question: 'Waarom zijn sommige aantallen zo klein?', answer: 'Omdat het echte MKB-sites zijn, geen landelijke merken. Zes AI-sessies op een B2B-site in 28 dagen is weinig; dat drie daarvan contact opnemen, is het signaal. We tonen aantallen naast percentages, zodat u zelf kunt wegen hoe hard een cijfer is.' },
+  { question: 'Hoe vaak worden de cijfers ververst?', answer: `De tabel haalt bij elk bezoek de laatste 28 dagen op uit onze meting (met een uur cache). De toelichtingen en de leadtellingen zijn een momentopname van ${datum(RESULTATEN_PEILDATUM)}; die werken we bij als we nieuwe tellingen hebben gedaan, met de datum erbij.` },
+  { question: 'Kan ik dit ook voor mijn site krijgen?', answer: `Ja. Dezelfde bouwwijze, dezelfde AI-laag en dezelfde meting zitten in de AI-Website Bundel: ${euro(WEBSITE_BUNDEL.setup)} eenmalig en ${euro(WEBSITE_BUNDEL.maand)} per maand, exclusief btw. U krijgt dan hetzelfde paneel als wij hier gebruiken.` },
+];
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Dataset',
+    '@id': 'https://aanloopai.nl/resultaten/#dataset',
+    name: 'Gemeten resultaten van websites gebouwd door Aanloop AI',
+    description: 'Per site: bezoeken, aandeel en contactratio van verkeer via AI-assistenten tegenover Google, afgeleverde leads en externe benchmarkpositie. Elk cijfer met meetmethode, periode en meetdatum.',
+    url: 'https://aanloopai.nl/resultaten/',
+    creator: { '@id': 'https://aanloopai.nl/#organization' },
+    license: 'https://creativecommons.org/licenses/by/4.0/',
+    dateModified: RESULTATEN_PEILDATUM,
+    inLanguage: 'nl-NL',
+    distribution: [{ '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: 'https://aanloopai.nl/api/resultaten' }],
+    variableMeasured: ['sessies', 'sessies via AI-assistenten', 'contactacties', 'afgeleverde leads'],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Websites gebouwd door Aanloop AI',
+    itemListElement: RESULTATEN.map((s, i) => ({ '@type': 'ListItem', position: i + 1, name: s.naam, url: `https://aanloopai.nl/werk/${s.key}/` })),
+  },
+];
+---
+
+<BaseLayout
+  title="Resultaten: wat onze AI-websites opleveren, gemeten"
+  description="Live cijfers van zeven websites die Aanloop AI bouwde: bezoek via AI-assistenten, contactratio tegenover Google, leads. Elk cijfer met methode en datum."
+  schema={schema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Resultaten · gemeten, niet beloofd</span></div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05]">Wat onze AI-websites opleveren. In cijfers die u zelf kunt narekenen.</h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty" data-speakable>
+          Wij bouwen websites met AI voor onze eigen bedrijven en voor klanten, en meten op al die sites hetzelfde: hoeveel bezoek via ChatGPT, Perplexity en Gemini binnenkomt, hoe vaak dat bezoek contact opneemt vergeleken met Google-bezoek, en hoeveel aanvragen er echt in de inbox landen. Hieronder staat die meting — met de methode en de datum erbij, ook waar het cijfer klein is.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="/diensten/ai-website-bundel-mkb-nederland/" class="btn-primary text-base px-6 py-3.5">Dit ook voor mijn site</a>
+          <a href="/werk/" class="btn-outline text-base px-6 py-3.5">Bekijk de sites</a>
+        </div>
+        <p class="mt-5 text-sm text-slate-500">Peildatum snapshot: {datum(RESULTATEN_PEILDATUM)} · tabel ververst elk uur · <a href="/api/resultaten" class="underline underline-offset-2">JSON</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-slate-50 border-b border-slate-200">
+    <div class="container-page">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        {KERNPUNTEN.map((k) => (
+          <div class="card reveal">
+            <p class="text-3xl lg:text-4xl font-semibold tracking-tighter text-navy">{k.waarde}</p>
+            <p class="mt-1 text-sm font-medium text-slate-700 leading-snug">{k.label}</p>
+            <p class="mt-2 text-xs text-slate-500 leading-snug">{k.toelichting}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="max-w-3xl mb-8">
+        <p class="eyebrow mb-3">Live · laatste 28 dagen</p>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">AI-bezoek tegenover Google-bezoek, per site.</h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">Sessies, aandeel via AI-assistenten en het percentage sessies met een contactactie (bellen, WhatsApp, mail, route of formulier). Zelfde beacon, zelfde definitie op elke site. Aantallen staan ernaast: bij kleine aantallen telt de richting, niet de decimaal.</p>
+      </div>
+      <div class="card overflow-x-auto">
+        <table class="w-full text-sm" id="resultaten-tabel">
+          <thead>
+            <tr class="border-b-2 border-slate-200 text-left">
+              <th class="pb-3 font-bold text-navy">Site</th>
+              <th class="pb-3 font-bold text-slate-600 text-right">Sessies</th>
+              <th class="pb-3 font-bold text-slate-600 text-right">Via AI</th>
+              <th class="pb-3 font-bold text-brand-indigo text-right">Contact · AI</th>
+              <th class="pb-3 font-bold text-slate-600 text-right">Contact · Google</th>
+              <th class="pb-3 font-bold text-slate-600 text-right">Formulieren</th>
+            </tr>
+          </thead>
+          <tbody>
+            {RESULTATEN.map((s) => (
+              <tr class="border-b border-slate-100" data-site={s.key}>
+                <td class="py-3 pr-4">
+                  <a href={`/werk/${s.key}/`} class="font-semibold text-navy hover:text-brand-indigo">{s.naam}</a>
+                  <span class="block text-xs text-slate-500">{s.eigenaar === 'eigen' ? 'eigen' : 'klant'} · {s.host}</span>
+                </td>
+                <td class="py-3 text-right tabular-nums" data-live="sessies">{s.metingSinds ? '—' : '…'}</td>
+                <td class="py-3 text-right tabular-nums" data-live="ai">{s.metingSinds ? '—' : '…'}</td>
+                <td class="py-3 text-right tabular-nums font-semibold text-brand-indigo" data-live="ai-pct">{s.metingSinds ? '—' : '…'}</td>
+                <td class="py-3 text-right tabular-nums" data-live="zoek-pct">{s.metingSinds ? '—' : '…'}</td>
+                <td class="py-3 text-right tabular-nums" data-live="formulieren">{s.metingSinds ? '—' : '…'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p class="mt-4 text-xs text-slate-500" id="resultaten-status">Laden… Zonder JavaScript: bekijk de momentopname per site hieronder of de <a href="/api/resultaten" class="underline">JSON</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-10">
+        <p class="eyebrow mb-3">Per site</p>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Momentopname van {datum(RESULTATEN_PEILDATUM)}, met bron.</h2>
+      </div>
+      <div class="grid md:grid-cols-2 gap-6">
+        {gemeten.map((s) => (
+          <article class="card flex flex-col">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <h3 class="text-xl font-bold text-navy"><a href={`/werk/${s.key}/`} class="hover:text-brand-indigo">{s.naam}</a></h3>
+                <p class="text-xs text-slate-500 mt-0.5">{s.eigenaarLabel} · {s.sector}</p>
+              </div>
+              <a href={s.url} target="_blank" rel="noopener" class="text-xs font-semibold text-brand-indigo whitespace-nowrap hover:underline">{s.host} ↗</a>
+            </div>
+            <dl class="mt-5 grid grid-cols-2 gap-4">
+              {s.cijfers.map((c) => (
+                <div>
+                  <dt class="text-xs text-slate-500 leading-snug">{c.label}</dt>
+                  <dd class="text-2xl font-semibold tracking-tight text-navy">{c.waarde}</dd>
+                  <dd class="mt-1 text-xs text-slate-600 leading-snug">{c.toelichting}</dd>
+                  <dd class="mt-1 text-[11px] text-slate-400">{c.methode} · {c.periode}</dd>
+                </div>
+              ))}
+            </dl>
+            <a href={`/werk/${s.key}/`} class="mt-5 text-sm font-semibold text-brand-indigo hover:underline">Hoe we dit bouwden →</a>
+          </article>
+        ))}
+        {gestart.map((s) => (
+          <article class="card border-dashed">
+            <h3 class="text-xl font-bold text-navy"><a href={`/werk/${s.key}/`} class="hover:text-brand-indigo">{s.naam}</a></h3>
+            <p class="text-xs text-slate-500 mt-0.5">{s.eigenaarLabel} · {s.sector}</p>
+            <p class="mt-4 text-sm text-slate-600 leading-relaxed">{s.samenvatting}</p>
+            <p class="mt-3 text-xs text-slate-500">Meting gestart op {datum(s.metingSinds!)}; cijfers volgen zodra 28 dagen vol zijn. De live tabel hierboven toont intussen wat er al geteld is.</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <p class="eyebrow mb-3">Hoe we meten</p>
+      <h2 class="text-3xl font-semibold tracking-tighter text-navy mb-6">Drie bronnen, elk met een andere hardheid.</h2>
+      <div class="space-y-5 text-slate-700 leading-relaxed">
+        <p><strong class="text-navy">Beacon (eigen meting).</strong> Een cookieloos script van minder dan 4 kB op elke site telt sessies, de herkomst (AI-assistent, zoekmachine, sociaal, direct) en contactacties. Bots worden uitgefilterd op user-agent. Geen persoonsgegevens, geen cookies, geen fingerprinting; de herkomst "AI" is een lijst van bekende verwijzers zoals chatgpt.com, perplexity.ai, gemini.google.com en copilot.microsoft.com.</p>
+        <p><strong class="text-navy">Afleverstatistiek (leads).</strong> Elke aanvraag gaat als e-mail naar de inbox van het bedrijf via dezelfde mailprovider. We tellen de afgeleverde lead-notificaties in 30 dagen. Dat is de hardste telling die we hebben, en daarom staat "lead" alleen bij cijfers uit deze bron.</p>
+        <p><strong class="text-navy">Externe benchmark en AI-radar.</strong> De GEO Agency Index Nederland (Gold Lemon, maandelijks, CC BY 4.0) meet onafhankelijk of AI-assistenten ons noemen. Onze eigen AI-radar stelt wekelijks vaste vragen aan Gemini en ChatGPT en telt of een site wordt geciteerd; dat is een signaal, geen garantie.</p>
+        <p class="text-sm text-slate-500">Wat we niet doen: omzet of klantwaarde claimen die we niet meten, cijfers van verschillende bronnen bij elkaar optellen, of een percentage tonen zonder het aantal erachter.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-tight bg-midnight text-pearl">
+    <div class="container-page max-w-3xl">
+      <h2 class="text-3xl font-semibold tracking-tighter text-pearl">Dezelfde bouwwijze en meting voor uw site.</h2>
+      <p class="mt-4 text-slate-300 leading-relaxed">AI-Website Bundel: website, Emma als AI-receptionist, AI-vindbaarheid en dit meetpaneel. {euro(WEBSITE_BUNDEL.setup)} eenmalig, {euro(WEBSITE_BUNDEL.maand)} per maand, exclusief btw.</p>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        <a href="/diensten/ai-website-bundel-mkb-nederland/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Bekijk de bundel</a>
+        <a href="/demo-aanvragen/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Plan een gesprek</a>
+      </div>
+    </div>
+  </section>
+
+  <FaqSection items={faqItems} />
+
+  <script>
+    const nl = (n: number) => n.toLocaleString('nl-NL');
+    const pct = (n: number) => `${n.toLocaleString('nl-NL', { maximumFractionDigits: 1 })}%`;
+    const status = document.getElementById('resultaten-status');
+    fetch('/api/resultaten', { headers: { accept: 'application/json' } })
+      .then((r) => (r.ok ? r.json() : Promise.reject(new Error(String(r.status)))))
+      .then((data) => {
+        for (const s of data.sites || []) {
+          const row = document.querySelector(`tr[data-site="${s.site}"]`);
+          if (!row) continue;
+          const set = (k: string, v: string) => { const el = row.querySelector(`[data-live="${k}"]`); if (el) el.textContent = v; };
+          set('sessies', nl(s.sessies));
+          set('ai', s.sessies ? `${nl(s.ai.sessies)} (${pct(s.sessies ? (s.ai.sessies / s.sessies) * 100 : 0)})` : '0');
+          set('ai-pct', s.ai.sessies ? `${pct(s.ai.pct)} · ${nl(s.ai.contactacties)}/${nl(s.ai.sessies)}` : 'n.v.t.');
+          set('zoek-pct', s.zoek.sessies ? `${pct(s.zoek.pct)} · ${nl(s.zoek.contactacties)}/${nl(s.zoek.sessies)}` : 'n.v.t.');
+          set('formulieren', nl(s.formulieren));
+        }
+        if (status) status.textContent = `Live: laatste ${data.win} dagen, bijgewerkt ${new Date(data.generatedAt).toLocaleString('nl-NL', { dateStyle: 'medium', timeStyle: 'short' })}. Contact = sessies met bel-, WhatsApp-, mail-, route- of formulierklik; n.v.t. = nog geen sessies uit dat kanaal.`;
+      })
+      .catch(() => { if (status) status.textContent = 'De live tabel kon niet laden. De momentopname per site hieronder blijft geldig.'; });
+  </script>
+</BaseLayout>

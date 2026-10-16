@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FaqSection from '../../components/FaqSection.astro';
+import GeoBureauBlok from '../../components/geo/GeoBureauBlok.astro';
+import { GEO_REGIOS } from '../../data/geo-regios';
+import { geoRegioDesc } from '../../data/geo-bureau';
+
+export function getStaticPaths() {
+  return GEO_REGIOS.map((r) => ({ params: { regio: r.slug }, props: { regio: r } }));
+}
+
+const { regio } = Astro.props;
+const url = `https://aanloopai.nl/geo-bureau/${regio.slug}/`;
+const faqItems = regio.faq.map((f) => ({ question: f.q, answer: f.a }));
+
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    '@id': `${url}#service`,
+    name: `GEO-bureau ${regio.naam}`,
+    serviceType: 'Generative Engine Optimization',
+    description: regio.antwoord,
+    provider: { '@id': 'https://aanloopai.nl/#organization' },
+    areaServed: regio.provincies.map((p) => ({ '@type': 'AdministrativeArea', name: p })),
+    url,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    '@id': url,
+    name: `GEO-bureau ${regio.naam}`,
+    isPartOf: { '@id': 'https://aanloopai.nl/#website' },
+    about: { '@id': `${url}#service` },
+    inLanguage: 'nl-NL',
+  },
+];
+---
+<BaseLayout
+  title={`GEO-bureau ${regio.naam} · Aanloop AI`}
+  description={geoRegioDesc(regio.naam)}
+  schema={schema}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">GEO-bureau · {regio.naam}</span></div>
+        <h1 class="text-4xl sm:text-5xl font-semibold tracking-tighter text-navy text-balance leading-[1.08]">GEO-bureau {regio.naam}: vindbaar in ChatGPT en andere AI-assistenten</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed">Aanloop AI is een GEO-bureau uit Rotterdam voor het MKB in {regio.provincies.join(', ')}. Wij zorgen dat AI-assistenten uw bedrijf noemen wanneer een klant in {regio.naam} erom vraagt, en meten dat elke maand.</p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="/ai-vindbaarheid/check/" class="btn-primary text-base px-6 py-3.5">Gratis GEO Quick Scan</a>
+          <a href="/tarieven/" class="btn-outline text-base px-6 py-3.5">Bekijk tarieven</a>
+        </div>
+        <p class="mt-5 text-sm text-slate-500">Rotterdam · KvK 88606902 · remote en op locatie in {regio.naam}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl font-bold text-navy mb-4">{regio.vraag}</h2>
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
+        <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-2">Direct antwoord</p>
+        <p class="text-slate-700 leading-relaxed" data-speakable>{regio.antwoord}</p>
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-4">Zo zoekt het MKB in {regio.naam} via AI</h2>
+      {regio.markt.map((p) => <p class="text-slate-700 leading-relaxed mb-4">{p}</p>)}
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Vragen die klanten in {regio.naam} aan AI stellen</h2>
+      <div class="space-y-3 mb-10">
+        {regio.voorbeelden.map((q) => (
+          <div class="flex items-start gap-3 rounded-xl border border-slate-200 bg-white p-4">
+            <span class="text-brand-indigo text-lg leading-none mt-0.5">"</span>
+            <p class="text-navy font-medium">{q}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mb-4">Werkgebied in {regio.naam}</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">We werken remote voor heel {regio.naam} en komen op locatie voor de intake en de oplevering. Steden waar we al actief zijn met AI-oplossingen voor het MKB:</p>
+      <ul class="flex flex-wrap gap-2 mb-10">
+        {regio.steden.map((s) => (
+          <li>{s.href ? <a href={s.href} class="inline-block rounded-full border border-slate-200 bg-white px-3 py-1 text-sm text-slate-700 hover:border-navy">{s.naam}</a> : <span class="inline-block rounded-full border border-slate-200 bg-white px-3 py-1 text-sm text-slate-700">{s.naam}</span>}</li>
+        ))}
+      </ul>
+
+      <FaqSection items={faqItems} bare />
+    </div>
+  </section>
+
+  <GeoBureauBlok huidige={regio.slug} />
+</BaseLayout>
