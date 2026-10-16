@@ -7,7 +7,7 @@ const encoder = new TextEncoder();
 
 export const SESSION_COOKIE = 'aanloop_portal_session';
 const SESSION_TTL_MS = 7 * 24 * 60 * 60 * 1000;     // 7 days
-export const MAGIC_LINK_TTL_MS = 15 * 60 * 1000;    // 15 minutes
+export const MAGIC_LINK_TTL_MS = 48 * 60 * 60 * 1000; // 48 hours: portal-wide (customers open the invite mail later, e.g. next day)
 export const INVITE_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 function bytesToHex(buf) {

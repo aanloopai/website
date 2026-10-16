@@ -180,7 +180,7 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
       var FORM_LABEL = {
         contact: 'Contact', demo: 'Demo-aanvraag', aanvraag: 'Aanvraag', newsletter: 'Nieuwsbrief',
         roi_calculator: 'ROI-calculator', ai_readiness_scan: 'AI-scan', ai_vindbaarheid_scan: 'GEO-scan',
-        ai_matcher: 'Oplossing-matcher', founding: 'Founding member', survey_ai_adoption: 'Onderzoek',
+        ai_matcher: 'Oplossing-matcher', snel: 'Snel contact', founding: 'Founding member', survey_ai_adoption: 'Onderzoek',
       };
       function loadLeads() {
         fetch('/api/admin/leads', { credentials: 'same-origin' })
@@ -225,7 +225,7 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
                 (l.bedrijf ? ' — ' + esc(l.bedrijf) : '') + '</span>' +
                 '<span class="pbadge ' + (L_STATUS[l.status] || 'pbadge--gray') + '">' + esc(l.status) + '</span></div>' +
                 '<p class="mt-1 text-xs" style="color:var(--p-ink-4)">' + dt + ' · ' +
-                '<a href="mailto:' + esc(l.email) + '" style="color:var(--p-ink-4)">' + esc(l.email) + '</a>' +
+                (l.email ? '<a href="mailto:' + esc(l.email) + '" style="color:var(--p-ink-4)">' + esc(l.email) + '</a>' : 'geen e-mail') +
                 (l.telefoon ? ' · ' + esc(l.telefoon) : '') + '</p>' +
                 (l.bericht ? '<p class="mt-2 text-sm p-muted">' + esc(l.bericht) + '</p>' : '') +
                 mailWarn + intake +

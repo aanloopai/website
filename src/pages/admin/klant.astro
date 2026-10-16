@@ -105,6 +105,15 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
     </section>
 
     <section class="pcard">
+      <div class="pcard-h">Klantenportaal</div>
+      <div class="pcard-b flex flex-wrap gap-2">
+        <a id="kp-ov" class="pbtn pbtn--subtle" href="#">Overeenkomsten</a>
+        <a id="kp-al" class="pbtn pbtn--subtle" href="#">Aanleverlijst</a>
+        <a class="pbtn pbtn--subtle" href="/admin/sjablonen/">Sjablonen</a>
+      </div>
+    </section>
+
+    <section class="pcard">
       <div class="pcard-h">Gevaarlijke acties</div>
       <div class="pcard-b">
         <label class="plabel">Typ de bedrijfsnaam ter bevestiging</label>
@@ -332,6 +341,9 @@ import { PORTAL_CATALOG } from '../../data/portal-catalog';
           })
           .catch(function () { flash(msgEl, 'Netwerkfout', false); });
       });
+
+      document.getElementById('kp-ov').href = '/admin/overeenkomst/?klant=' + encodeURIComponent(cid);
+      document.getElementById('kp-al').href = '/admin/aanleverlijst/?klant=' + encodeURIComponent(cid);
 
       load();
     })();

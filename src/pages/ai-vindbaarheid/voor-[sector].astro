@@ -1,12 +1,14 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { GEO_SECTORS } from '../../data/geo-sectors';
+import { GEO_SECTOR_VOOR_SITESECTOR } from '../../data/geo-bureau';
 
 export function getStaticPaths() {
   return GEO_SECTORS.map((s) => ({ params: { sector: s.slug }, props: { sector: s } }));
 }
 
 const { sector } = Astro.props;
+const geoBureauSlug = GEO_SECTOR_VOOR_SITESECTOR[sector.slug];
 const url = `https://aanloopai.nl/ai-vindbaarheid/voor-${sector.slug}/`;
 
 // Ring-rotatie: elke pagina linkt de 4 vólgende sectoren (wrap-around), zodat
@@ -114,6 +116,7 @@ const metaTitel = sector.titel.replace(/ & /g, ' en ');
           {zusterSectoren.map((s) => (
             <li><a href={`/ai-vindbaarheid/voor-${s.slug}/`} class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-navy rounded-lg text-xs font-medium text-navy transition-all">Voor {s.naam}</a></li>
           ))}
+          {geoBureauSlug && <li><a href={`/geo-bureau/sector/${geoBureauSlug}/`} class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-navy text-white border border-navy rounded-lg text-xs font-medium">GEO-bureau voor deze sector</a></li>}
           <li><a href="/ai-vindbaarheid/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-slate-50 border border-slate-200 hover:border-navy rounded-lg text-xs font-medium text-navy transition-all">Alle sectoren</a></li>
         </ul>
       </div>

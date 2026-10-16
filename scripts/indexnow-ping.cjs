@@ -7,8 +7,14 @@
  * (Bing/Yandex) of new/changed content for instant indexing.
  *
  * Usage:
- *   node scripts/indexnow-ping.cjs
+ *   node scripts/indexnow-ping.cjs                     (all sitemap URLs)
+ *   node scripts/indexnow-ping.cjs --prev old.xml      (only URLs new/changed vs old sitemap;
+ *                                                       CI: old = live sitemap saved BEFORE deploy)
+ *   INDEXNOW_DRY=1 node scripts/indexnow-ping.cjs ...  (list only, no POST)
  *   npm run indexnow
+ *
+ * CI (.github/workflows/deploy.yml) runs it AFTER the deploy with INDEXNOW_PING=1 + --prev.
+ * The key is public (served at /<key>.txt, public/<key>.txt); INDEXNOW_KEY only overrides it.
  *
  * Typical flow:
  *   1. astro build (generates dist/sitemap.xml)
@@ -21,10 +27,19 @@ const path = require('path');
 const https = require('https');
 
 // Config
-const INDEXNOW_KEY = '5792f8c6ff1c450ab008b567cca7472c';
+const INDEXNOW_KEY = process.env.INDEXNOW_KEY || '5792f8c6ff1c450ab008b567cca7472c';
 const INDEXNOW_HOST = 'aanloopai.nl';
 const INDEXNOW_API_ENDPOINT = 'https://api.indexnow.org/indexnow';
 const SITEMAP_PATH = path.join(__dirname, '../dist/sitemap.xml');
+
+/** url -> lastmod ('' when absent) from sitemap XML text. */
+function parseSitemap(xml) {
+  const map = new Map();
+  for (const m of xml.matchAll(/<url>\s*<loc>([^<]+)<\/loc>(?:\s*<lastmod>([^<]+)<\/lastmod>)?/g)) {
+    map.set(m[1].trim(), (m[2] || '').trim());
+  }
+  return map;
+}
 
 /**
  * Extract URLs from sitemap.xml using regex
@@ -106,11 +121,32 @@ async function main() {
   }
 
   console.log('[IndexNow] Extracting URLs from sitemap...');
-  const urls = extractUrlsFromSitemap();
+  let urls = extractUrlsFromSitemap();
   console.log(`[IndexNow] Found ${urls.length} URLs`);
 
+  // --prev <old sitemap>: submit only new/lastmod-changed URLs (lastmod is git-based, so honest).
+  const prevIdx = process.argv.indexOf('--prev');
+  if (prevIdx > -1) {
+    const prevFile = process.argv[prevIdx + 1];
+    let prevXml = '';
+    try {
+      prevXml = fs.readFileSync(prevFile, 'utf-8');
+    } catch (_) {
+      /* handled below */
+    }
+    const prev = parseSitemap(prevXml);
+    if (prev.size === 0) {
+      console.warn(`[WARN] --prev ${prevFile} missing/empty - skipping (not resubmitting the whole site)`);
+      process.exit(AUTO_MODE ? 0 : 1);
+    }
+    const cur = parseSitemap(fs.readFileSync(SITEMAP_PATH, 'utf-8'));
+    // Only a NEWER lastmod counts: the live sitemap may carry deploy-date lastmods from before the git-based fix.
+    urls = urls.filter((u) => !prev.has(u) || (cur.get(u) && cur.get(u) > prev.get(u)));
+    console.log(`[IndexNow] ${urls.length} URL(s) new/changed vs ${prevFile}`);
+  }
+
   if (urls.length === 0) {
-    console.warn('[WARN] No URLs found in sitemap');
+    console.warn('[WARN] No URLs to submit');
     if (AUTO_MODE) process.exit(0);
     return;
   }
@@ -122,9 +158,14 @@ async function main() {
   const payload = {
     host: INDEXNOW_HOST,
     key: INDEXNOW_KEY,
-    keyLocation: `https://${INDEXNOW_HOST}/5792f8c6ff1c450ab008b567cca7472c.txt`,
+    keyLocation: `https://${INDEXNOW_HOST}/${INDEXNOW_KEY}.txt`,
     urlList: urlsToSubmit,
   };
+
+  if (process.env.INDEXNOW_DRY === '1') {
+    console.log(`[IndexNow] DRY-RUN: ${urlsToSubmit.length} URL(s) would be submitted:\n${urlsToSubmit.join('\n')}`);
+    process.exit(0);
+  }
 
   console.log(`[IndexNow] Posting ${urlsToSubmit.length} URLs to ${INDEXNOW_API_ENDPOINT}...`);
 

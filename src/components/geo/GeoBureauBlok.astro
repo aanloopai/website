@@ -1,0 +1,76 @@
+---
+// Vast blok onderaan elke /geo-bureau/*-pagina: prijzen (alleen wat openbaar is),
+// werkwijze in het kort, benchmark-positie met bron, en de sector-/regio-navigatie.
+// Eén bron voor alle 28 pagina's, zodat prijzen en claims nergens uiteenlopen.
+import { GEO_PRIJZEN } from '../../data/geo-bureau';
+import { GEO_REGIOS } from '../../data/geo-regios';
+import { GEO_SBI_SECTOREN } from '../../data/geo-sbi-sectoren';
+import { GEO_BENCHMARK } from '../../data/geo-benchmark';
+
+interface Props { huidige?: string; compact?: boolean }
+const { huidige, compact = false } = Astro.props;
+
+const eur = (n: number) => `€${n.toLocaleString('nl-NL')}`;
+const prijzen = [
+  { naam: 'GEO Quick Scan', prijs: 'Gratis', eenheid: 'nulmeting in ChatGPT, Claude, Perplexity en Gemini', href: '/ai-vindbaarheid/check/', cta: 'Scan aanvragen' },
+  { naam: 'GEO Setup', prijs: 'Op aanvraag', eenheid: 'eenmalig: schema.org-entiteiten, llms.txt, AI-crawler-toegang', href: '/contact/?type=offerte&dienst=geo-setup', cta: 'Offerte aanvragen' },
+  { naam: 'GEO Maandelijks', prijs: eur(GEO_PRIJZEN.maand), eenheid: 'per maand, excl. btw: meting, content-updates, rapportage', href: '/start/', cta: 'Starten' },
+  { naam: 'SEO + GEO Bundel', prijs: eur(GEO_PRIJZEN.bundel), eenheid: 'per maand, excl. btw: één strategie, één rapport', href: '/start/', cta: 'Bundel starten' },
+];
+---
+<section class="section-tight border-t border-slate-200 bg-slate-50">
+  <div class="container-page max-w-5xl mx-auto">
+    <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-3">Wat kost een GEO-bureau bij Aanloop AI?</h2>
+    <p class="text-slate-600 mb-8 max-w-3xl">Onze maandtarieven staan openbaar op <a href="/tarieven/" class="underline">de tarievenpagina</a>. De eenmalige setup hangt af van de omvang van uw website en volgt uit het eerste gesprek. Alle bedragen zijn exclusief 21% btw. Lees ook <a href="/geo-bureau/wat-kost-geo/" class="underline">wat GEO in Nederland kost</a>.</p>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+      {prijzen.map((p) => (
+        <div class="card flex flex-col">
+          <p class="text-sm font-semibold text-brand-indigo">{p.naam}</p>
+          <p class="text-2xl font-bold text-navy mt-2">{p.prijs}</p>
+          <p class="text-sm text-slate-500 mt-1 flex-1">{p.eenheid}</p>
+          <a href={p.href} class="btn-outline text-sm mt-4">{p.cta}</a>
+        </div>
+      ))}
+    </div>
+
+    {!compact && (
+      <div class="grid lg:grid-cols-2 gap-8 mb-12">
+        <div class="card">
+          <h3 class="text-lg font-bold text-navy mb-3">Zo werkt een GEO-traject bij ons</h3>
+          <ol class="list-decimal pl-5 space-y-2 text-sm text-slate-700">
+            <li><strong>Nulmeting.</strong> We stellen de vragen die uw klanten stellen aan ChatGPT, Claude, Perplexity, Gemini en Google AI en leggen vast wie genoemd wordt.</li>
+            <li><strong>Technische basis.</strong> Organisatie, personen en diensten als schema.org-entiteiten, llms.txt, robots.txt met toegang voor AI-crawlers, inhoud leesbaar zonder JavaScript.</li>
+            <li><strong>Antwoordgerichte content.</strong> Pagina's die de echte vraag letterlijk beantwoorden: diensten, prijzen, werkgebied, veelgestelde vragen.</li>
+            <li><strong>Vermeldingen en bronnen.</strong> Consistente bedrijfsgegevens op platforms die AI-engines lezen, zonder betaalde advertenties.</li>
+            <li><strong>Maandelijkse meting.</strong> Dezelfde vragen, dezelfde engines, elke maand. U ziet wat verandert en waarom.</li>
+          </ol>
+        </div>
+        <div class="card">
+          <h3 class="text-lg font-bold text-navy mb-3">Onafhankelijk gemeten</h3>
+          <p class="text-sm text-slate-700 leading-relaxed">In de <a href="/geo-bureau/vergelijken/" class="underline">GEO Agency Index Nederland</a> van Gold Lemon (editie {GEO_BENCHMARK.editie}) staat Aanloop AI op plaats {GEO_BENCHMARK.aanloop.plaats} van {GEO_BENCHMARK.geplaatst} gemeten bureaus, met {GEO_BENCHMARK.aanloop.techniek.toLocaleString('nl-NL')} van 100 op techniek en {GEO_BENCHMARK.aanloop.aanbod.toLocaleString('nl-NL')} van 100 op transparantie van het aanbod. In de sector zorg en welzijn staan we op plaats 3. Het verschil met de koplopers zit in het aantal keren dat AI ons noemt; daar werken we aan, met dezelfde methode die we voor klanten gebruiken.</p>
+          <p class="text-xs text-slate-500 mt-3">Bron: GEO Agency Index Nederland van Gold Lemon, editie {GEO_BENCHMARK.editie}, <a href={GEO_BENCHMARK.bronUrl} rel="noopener" class="underline">goldlemon.nl/geo-benchmark</a> (CC BY 4.0). Gemeten op {GEO_BENCHMARK.meetdatum}.</p>
+        </div>
+      </div>
+    )}
+
+    <div class="grid md:grid-cols-2 gap-8">
+      <div>
+        <h3 class="text-base font-bold text-navy mb-3">GEO-bureau per sector</h3>
+        <ul class="flex flex-wrap gap-2">
+          {GEO_SBI_SECTOREN.map((s) => (
+            <li><a href={`/geo-bureau/sector/${s.slug}/`} class={`inline-block rounded-full border px-3 py-1 text-xs ${huidige === s.slug ? 'bg-navy text-white border-navy' : 'bg-white border-slate-200 text-slate-700 hover:border-navy'}`}>{s.naam}</a></li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h3 class="text-base font-bold text-navy mb-3">GEO-bureau per regio</h3>
+        <ul class="flex flex-wrap gap-2">
+          {GEO_REGIOS.map((r) => (
+            <li><a href={`/geo-bureau/${r.slug}/`} class={`inline-block rounded-full border px-3 py-1 text-xs ${huidige === r.slug ? 'bg-navy text-white border-navy' : 'bg-white border-slate-200 text-slate-700 hover:border-navy'}`}>{r.naam}</a></li>
+          ))}
+        </ul>
+        <p class="text-xs text-slate-500 mt-4"><a href="/geo-bureau/" class="underline">GEO-bureau</a> · <a href="/geo-bureau/kiezen/" class="underline">GEO-bureau kiezen</a> · <a href="/geo-bureau/wat-kost-geo/" class="underline">Wat kost GEO?</a> · <a href="/geo-bureau/vergelijken/" class="underline">GEO-bureaus vergelijken</a> · <a href="/ai-vindbaarheid/" class="underline">AI-vindbaarheid (dienst)</a></p>
+      </div>
+    </div>
+  </div>
+</section>

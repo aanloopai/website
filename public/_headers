@@ -93,6 +93,15 @@
   ! Cache-Control
   Cache-Control: public, max-age=300, s-maxage=3600
 
+# Open datasets (gegenereerd door scripts/gen-datasets.cjs): door iedereen op te halen,
+# maar niet in de zoekresultaten — de pagina's zelf zijn de indexeerbare ingang.
+/data/*
+  ! Cache-Control
+  Access-Control-Allow-Origin: *
+  X-Robots-Tag: noindex
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=300, s-maxage=3600
+
 # Catch-all: de HTML-default. Dit blok matcht ALLES, ook de assets hierboven —
 # Cloudflare past elke matchende regel toe en plakt gelijknamige headers met een
 # komma aan elkaar. Zonder tegenmaatregel gaf `/_astro/app.css` dus
@@ -114,3 +123,4 @@
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
   Content-Security-Policy: default-src 'self' blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval' blob: https://static.cloudflareinsights.com https://www.googletagmanager.com https://www.google-analytics.com https://unpkg.com https://cdn.jsdelivr.net https://elevenlabs.io https://*.elevenlabs.io https://www.clarity.ms; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://cloudflareinsights.com https://www.google-analytics.com https://analytics.google.com https://api.web3forms.com https://*.elevenlabs.io wss://*.elevenlabs.io https://*.livekit.cloud wss://*.livekit.cloud https://www.clarity.ms; media-src 'self' blob: data: https://*.elevenlabs.io; worker-src 'self' blob: https://unpkg.com https://*.elevenlabs.io; child-src 'self' blob: https://*.elevenlabs.io; frame-ancestors 'none'; frame-src https://*.elevenlabs.io;
   Cache-Control: public, max-age=300, s-maxage=86400, stale-while-revalidate=604800
+

@@ -103,7 +103,7 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
       'Een nieuwe AI-ready website inclusief Emma — alles in één pakket opgezet.',
     meerInfoUrl: 'https://aanloopai.nl/diensten/ai-website-bundel-mkb-nederland/',
     tiers: [
-      { naam: 'Bundel', prijs: '€5.950 setup + €649/mnd', prijsCent: null, setupCent: 0, betaling: 'aanvraag', kenmerken: ['AI-ready website', 'Emma AI-receptionist (WhatsApp inbegrepen)', 'Eén vast maandbedrag'] },
+      { naam: 'Bundel', prijs: '€4.500 eenmalig + €1.000/mnd', prijsCent: null, setupCent: 0, betaling: 'aanvraag', kenmerken: ['AI-ready website', 'Emma AI-receptionist (WhatsApp inbegrepen)', 'Eén vast maandbedrag'] },
     ],
   },
   {
@@ -148,6 +148,20 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
     omschrijving:
       'Intake voor leadpartners: uw dienstverlening, werkgebied en wat voor u een goede lead is. Geen abonnement, betalen per lead.',
     meerInfoUrl: 'https://aanloopai.nl/leads-kopen/',
+    verborgen: true,
+    tiers: [
+      { naam: 'Exclusief', prijs: 'Op aanvraag', prijsCent: null, setupCent: 0, betaling: 'aanvraag', kenmerken: ['Exclusieve leads', 'Per lead betalen', 'Geen abonnement of minimumafname', 'Reclamatie binnen 48 uur'] },
+    ],
+  },
+  {
+    // Leadpartner-intake voor schoonmaakbedrijven (zakelijke schoonmaak).
+    // Zelfde regels als 'leadpartner': verborgen, geen bedrag.
+    key: 'leadpartner-schoonmaak',
+    naam: 'Leads kopen — partnerintake schoonmaak',
+    categorie: 'Leads',
+    omschrijving:
+      'Intake voor schoonmaakbedrijven: uw diensten, werkgebied en welke panden en opdrachten voor u een goede lead zijn. Geen abonnement, betalen per lead.',
+    meerInfoUrl: 'https://aanloopai.nl/leads-kopen/schoonmaakbedrijven/',
     verborgen: true,
     tiers: [
       { naam: 'Exclusief', prijs: 'Op aanvraag', prijsCent: null, setupCent: 0, betaling: 'aanvraag', kenmerken: ['Exclusieve leads', 'Per lead betalen', 'Geen abonnement of minimumafname', 'Reclamatie binnen 48 uur'] },

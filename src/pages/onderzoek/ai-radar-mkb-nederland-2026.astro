@@ -1,0 +1,319 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import data from '../../data/ai-radar-2026-10.json';
+
+// Elk getal op deze pagina komt uit src/data/ai-radar-2026-10.json (gebouwd door
+// scripts/build-ai-radar-dataset.cjs). Guard: test/onderzoek-ai-radar.test.js.
+const { meta, sectors } = data;
+const d = data.dutch_prompts; // hoofdcijfers: alleen Nederlandstalige prompts
+const all = data.overall;
+
+const pageUrl = 'https://aanloopai.nl/onderzoek/ai-radar-mkb-nederland-2026/';
+const jsonUrl = 'https://aanloopai.nl/onderzoek/ai-radar-mkb-nederland-2026.json';
+
+const nf = (n: number) => new Intl.NumberFormat('nl-NL').format(n);
+const dec = (n: number) => String(n).replace('.', ',');
+const p = (n: number) => `${dec(n)}%`;
+const datum = (iso: string) =>
+  new Intl.DateTimeFormat('nl-NL', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' }).format(new Date(iso + 'T00:00:00Z'));
+
+const dutchSectors = sectors.filter((s) => s.english_prompt_answers === 0);
+const englishSector = sectors.find((s) => s.english_prompt_answers > 0);
+const topDomain = d.top_domains[0];
+const biggestZeroNl = [...dutchSectors].sort((a, b) => b.zero_nl_pct - a.zero_nl_pct)[0];
+const sectorsWithOwnMention = dutchSectors.filter((s) => s.mentioned_pct > 0).length;
+const sectorsWithoutOwnMention = dutchSectors.length - sectorsWithOwnMention;
+const minAnswers = Math.min(...sectors.map((s) => s.answers));
+const maxAnswers = Math.max(...sectors.map((s) => s.answers));
+const minRuns = Math.min(...sectors.map((s) => s.runs));
+const maxRuns = Math.max(...sectors.map((s) => s.runs));
+
+const stats = [
+  { value: dec(d.avg_cited_domains), label: 'bronnen per antwoord', note: `Gemiddeld aantal geciteerde domeinen in ${nf(d.answered)} antwoorden.` },
+  { value: p(d.zero_nl_pct), label: 'zonder één Nederlands domein', note: `${nf(d.zero_nl_answers)} van ${nf(d.answers_with_sources)} antwoorden citeerden geen enkel .nl-domein.` },
+  { value: p(d.tld.nl_pct), label: 'van de bronnen is .nl', note: `Daarnaast ${p(d.tld.com_pct)} .com en ${p(d.tld.other_pct)} overige domeinen.` },
+  { value: p(d.mentioned_pct), label: 'eigen domein genoemd', note: `Het gemeten eigen domein werd in ${nf(d.mentioned)} antwoorden genoemd.` },
+  { value: p(d.stability.retained_domain_pct), label: 'zelfde bron volgende week', note: `Aandeel bronnen dat bij dezelfde vraag ook een week later terugkomt (${nf(d.stability.week_pairs)} weekparen).` },
+];
+
+const faqItems = [
+  {
+    question: 'Wat is de AI-radar MKB Nederland?',
+    answer: `Een meting van ${meta.runs} wekelijkse runs waarin ${meta.sector_count} Nederlandse sectoren hun koopgerichte vragen stelden aan ${meta.engine_description} (${datum(meta.date_from)} tot ${datum(meta.date_to)}). Per antwoord registreren wij welke domeinen als bron worden geciteerd en of het eigen domein wordt genoemd. De volledige geaggregeerde dataset is open onder ${meta.license}.`,
+  },
+  {
+    question: 'Hoeveel bronnen citeert Gemini per antwoord?',
+    answer: `Gemiddeld ${dec(d.avg_cited_domains)} domeinen per antwoord op Nederlandstalige vragen (${nf(d.answered)} antwoorden). In ${p(d.zero_nl_pct)} van de antwoorden stond geen enkel .nl-domein tussen de bronnen. Van alle geciteerde domeinen was ${p(d.tld.nl_pct)} een .nl-domein.`,
+  },
+  {
+    question: 'Zijn deze cijfers representatief voor alle AI-assistenten?',
+    answer: `Nee. Deze editie meet één engine (${meta.engine_description}) en eigen sites van Aanloop AI en gelieerde projecten, in ${meta.sector_count} sectoren. De uitkomsten zeggen iets over hoe Gemini deze vragen beantwoordde in de meetperiode, niet over ChatGPT, Perplexity of Claude, en niet over elk MKB-bedrijf. ${meta.excluded_runs_other_engines} runs met een andere engine zijn bewust niet meegeteld.`,
+  },
+  {
+    question: 'Mag ik de cijfers gebruiken en hoe citeer ik ze?',
+    answer: `Ja, onder ${meta.license}. Gebruik deze bronvermelding: ${meta.citation}. De dataset is te downloaden als JSON op ${jsonUrl}.`,
+  },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  '@id': `${pageUrl}#article`,
+  headline: 'AI-radar MKB Nederland 2026: welke bronnen citeert Gemini?',
+  description: `Meting van ${nf(all.answers)} antwoorden van Gemini op koopgerichte vragen in ${meta.sector_count} Nederlandse sectoren: welke domeinen worden geciteerd, hoe vaak ontbreekt .nl en hoe stabiel zijn de bronnen.`,
+  author: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  publisher: {
+    '@type': 'Organization',
+    name: 'Aanloop AI',
+    url: 'https://aanloopai.nl',
+    logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
+  },
+  datePublished: '2026-10-09',
+  dateModified: '2026-10-09',
+  mainEntityOfPage: pageUrl,
+  inLanguage: 'nl-NL',
+  license: meta.license_url,
+  citation: meta.citation,
+  about: { '@type': 'Thing', name: 'AI-zoekmachines en bronciteringen in Nederland' },
+};
+
+const datasetSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  '@id': `${pageUrl}#dataset`,
+  name: meta.title,
+  description: `Geaggregeerde GEO-radar-metingen: ${meta.runs} wekelijkse runs, ${nf(all.answers)} antwoorden, ${meta.sector_count} sectoren. Per sector: aandeel antwoorden met eigen domein, top geciteerde domeinen, TLD-verdeling en stabiliteit per week.`,
+  url: pageUrl,
+  identifier: 'aanloop-ai-radar-mkb-nederland-2026-10',
+  inLanguage: 'nl-NL',
+  creator: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl/' },
+  publisher: { '@id': 'https://aanloopai.nl/#organization' },
+  isAccessibleForFree: true,
+  license: meta.license_url,
+  datePublished: '2026-10-09',
+  dateModified: '2026-10-09',
+  spatialCoverage: { '@type': 'Place', name: 'Nederland' },
+  temporalCoverage: `${meta.date_from}/${meta.date_to}`,
+  measurementTechnique: `${meta.engine_description}, wekelijkse runs met vaste koopgerichte vragen`,
+  distribution: [
+    { '@type': 'DataDownload', name: 'AI-radar MKB Nederland, editie oktober 2026 (JSON)', encodingFormat: 'application/json', contentUrl: jsonUrl },
+  ],
+  citation: meta.citation,
+};
+
+const speakableSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'AI-radar MKB Nederland 2026',
+  url: pageUrl,
+  inLanguage: 'nl-NL',
+  speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '[data-speakable]'] },
+};
+---
+
+<BaseLayout
+  title="AI-radar MKB Nederland 2026: bronnen van Gemini"
+  description="Origineel onderzoek: welke bronnen citeert Gemini bij koopgerichte vragen in Nederland? Open dataset met top-domeinen, .nl-aandeel en stabiliteit per week."
+  schema={[articleSchema, datasetSchema, speakableSchema]}
+  faqSchema={faqItems}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-3 mb-6">
+          <div class="accent-band"><span></span><span></span><span></span><span></span></div>
+          <p class="eyebrow">Origineel onderzoek · Oktober 2026</p>
+        </div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05]">
+          AI-radar MKB Nederland 2026: welke bronnen citeert Gemini?
+        </h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed text-pretty" data-speakable>
+          Wij stelden {meta.sector_count} sectoren {meta.runs} keer dezelfde koopgerichte vragen aan {meta.engine_description}, tussen {datum(meta.date_from)} en {datum(meta.date_to)}. Op de {nf(d.answered)} Nederlandstalige antwoorden citeerde Gemini gemiddeld {dec(d.avg_cited_domains)} bronnen per antwoord. In {p(d.zero_nl_pct)} van de antwoorden stond geen enkel Nederlands domein tussen die bronnen, en het eigen domein van de gemeten site werd in {p(d.mentioned_pct)} van de antwoorden genoemd. Een week later kwam {p(d.stability.retained_domain_pct)} van de bronnen bij dezelfde vraag terug.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-4">
+          <a href="#dataset" class="btn-primary text-base px-6 py-3">Download de dataset</a>
+          <a href="#methodologie" class="btn-secondary text-base px-6 py-3">Bekijk de methodologie</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="kerncijfers">
+    <div class="container-page max-w-5xl">
+      <p class="eyebrow mb-3">Kerncijfers</p>
+      <h2 id="kerncijfers" class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Vijf cijfers uit {nf(d.answered)} antwoorden</h2>
+      <p class="mt-4 text-slate-600 leading-relaxed max-w-3xl">
+        Hoofdcijfers gelden voor Nederlandstalige vragen. {englishSector ? `Eén sector (${englishSector.label}, ${nf(englishSector.answers)} antwoorden) stelde Engelstalige vragen; die staat in de sectortabel maar vertekent het .nl-aandeel en is uit de hoofdcijfers gelaten.` : ''}
+      </p>
+      <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-10">
+        {stats.map((s) => (
+          <div class="card">
+            <p class="text-5xl font-bold text-brand-indigo">{s.value}</p>
+            <p class="font-semibold text-navy mt-3">{s.label}</p>
+            <p class="text-sm text-slate-600 mt-2">{s.note}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50 border-y border-slate-200" aria-labelledby="top-domeinen">
+    <div class="container-page max-w-5xl">
+      <p class="eyebrow mb-3">Wie wordt geciteerd</p>
+      <h2 id="top-domeinen" class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Top {d.top_domains.length} geciteerde domeinen</h2>
+      <p class="mt-4 text-slate-600 leading-relaxed max-w-3xl">
+        Het meest geciteerde domein, {topDomain.domain}, stond in {p(topDomain.share_pct)} van alle Nederlandstalige antwoorden ({nf(topDomain.count)} van {nf(d.answered)}). Het eigen domein van de gemeten site is niet meegeteld. In totaal kwamen {nf(d.unique_domains)} verschillende domeinen voorbij.
+      </p>
+      <div class="mt-8 overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b-2 border-slate-300">
+              <th class="text-left py-3 font-bold text-navy">#</th>
+              <th class="text-left py-3 font-bold text-navy">Domein</th>
+              <th class="text-right py-3 font-bold text-navy">Antwoorden</th>
+              <th class="text-right py-3 font-bold text-navy">Aandeel</th>
+            </tr>
+          </thead>
+          <tbody>
+            {d.top_domains.map((t, i) => (
+              <tr class="border-b border-slate-200">
+                <td class="py-3 text-slate-500">{i + 1}</td>
+                <td class="py-3 font-semibold text-navy">{t.domain}</td>
+                <td class="py-3 text-right text-slate-700">{nf(t.count)}</td>
+                <td class="py-3 text-right text-brand-indigo font-bold">{p(t.share_pct)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="per-sector">
+    <div class="container-page max-w-6xl">
+      <p class="eyebrow mb-3">Per sector</p>
+      <h2 id="per-sector" class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">{nf(sectors.length)} sectoren, {nf(sectors.length)} beelden</h2>
+      <p class="mt-4 text-slate-600 leading-relaxed max-w-3xl">
+        In {sectorsWithoutOwnMention} van de {dutchSectors.length} Nederlandstalige sectoren werd het eigen domein in geen enkel antwoord genoemd; in {sectorsWithOwnMention} sectoren wel. De sector {biggestZeroNl.label} had het hoogste aandeel antwoorden zonder Nederlands domein ({p(biggestZeroNl.zero_nl_pct)}).
+      </p>
+      <div class="mt-8 overflow-x-auto">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="border-b-2 border-slate-300">
+              <th class="text-left py-3 pr-3 font-bold text-navy">Sector</th>
+              <th class="text-right py-3 px-2 font-bold text-navy">Runs</th>
+              <th class="text-right py-3 px-2 font-bold text-navy">Antwoorden</th>
+              <th class="text-right py-3 px-2 font-bold text-navy">Eigen domein genoemd</th>
+              <th class="text-right py-3 px-2 font-bold text-navy">Eigen domein bron</th>
+              <th class="text-right py-3 px-2 font-bold text-navy">Bronnen per antwoord</th>
+              <th class="text-right py-3 px-2 font-bold text-navy">Zonder .nl</th>
+              <th class="text-right py-3 px-2 font-bold text-navy">Aandeel .nl</th>
+              <th class="text-right py-3 pl-2 font-bold text-navy">Zelfde bron volgende week</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sectors.map((s) => (
+              <tr class="border-b border-slate-200">
+                <td class="py-3 pr-3 font-semibold text-navy">{s.label}{s.english_prompt_answers > 0 ? ' *' : ''}</td>
+                <td class="py-3 px-2 text-right text-slate-700">{nf(s.runs)}</td>
+                <td class="py-3 px-2 text-right text-slate-700">{nf(s.answers)}</td>
+                <td class="py-3 px-2 text-right text-slate-700">{p(s.mentioned_pct)}</td>
+                <td class="py-3 px-2 text-right text-slate-700">{p(s.cited_pct)}</td>
+                <td class="py-3 px-2 text-right text-slate-700">{dec(s.avg_cited_domains)}</td>
+                <td class="py-3 px-2 text-right text-slate-700">{p(s.zero_nl_pct)}</td>
+                <td class="py-3 px-2 text-right text-slate-700">{p(s.tld.nl_pct)}</td>
+                <td class="py-3 pl-2 text-right text-brand-indigo font-bold">{p(s.stability.retained_domain_pct)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {englishSector && (
+        <p class="mt-3 text-xs text-slate-500">* Engelstalige vragen; niet meegeteld in de hoofdcijfers. Sectornamen zijn geanonimiseerd. De meetperiode per sector staat in de dataset.</p>
+      )}
+
+      <h3 class="mt-14 text-2xl font-semibold tracking-tighter text-navy">Meest geciteerde domeinen per sector</h3>
+      <div class="grid md:grid-cols-2 gap-6 mt-6">
+        {sectors.map((s) => (
+          <div class="card">
+            <p class="font-semibold text-navy">{s.label}</p>
+            <p class="text-xs text-slate-500 mt-1">{nf(s.answers)} antwoorden, {datum(s.date_from)} tot {datum(s.date_to)}</p>
+            <ol class="mt-4 space-y-2">
+              {s.top_domains.slice(0, 5).map((t) => (
+                <li class="flex items-baseline justify-between border-b border-slate-100 pb-2 text-sm">
+                  <span class="text-navy font-medium">{t.domain}</span>
+                  <span class="text-slate-500">{nf(t.count)}x, {p(t.share_pct)}</span>
+                </li>
+              ))}
+            </ol>
+            <p class="mt-4 text-xs text-slate-500">Voorbeeldvragen: {s.example_prompts.map((q) => `"${q}"`).join(' en ')}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-slate-50 border-y border-slate-200" aria-labelledby="stabiliteit">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Stabiliteit</p>
+      <h2 id="stabiliteit" class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Hoe vast liggen de bronnen?</h2>
+      <p class="mt-4 text-slate-700 leading-relaxed">
+        Voor {nf(d.stability.prompts_tracked)} vragen vergeleken wij de bronnenlijst van een week met die van de week erna ({nf(d.stability.week_pairs)} weekparen). Van de {nf(d.stability.base_domains)} domeinen in de eerste week stond {nf(d.stability.retained_domains)} ({p(d.stability.retained_domain_pct)}) ook in de tweede week in de lijst. Een vermelding in Gemini is dus geen vaste plek: de bronnenlijst wisselt van week tot week.
+      </p>
+    </div>
+  </section>
+
+  <section id="methodologie" class="section" aria-labelledby="methode-kop">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Methodologie</p>
+      <h2 id="methode-kop" class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Zo is gemeten</h2>
+      <ul class="mt-6 space-y-3 text-slate-700 leading-relaxed list-disc pl-5">
+        <li><strong>Engine:</strong> {meta.engine_description}. {meta.excluded_runs_other_engines} runs met een andere engine zijn niet meegeteld.</li>
+        <li><strong>Periode:</strong> {datum(meta.date_from)} tot en met {datum(meta.date_to)}, wekelijks; {meta.runs} runs in {meta.sector_count} sectoren, {nf(all.answers)} antwoorden in totaal.</li>
+        <li><strong>Vragen:</strong> koopgerichte vragen in de vorm "Wat is de beste aanbieder voor ...?" en "Welk bedrijf raad je aan voor ... in Nederland?". Per sector een vaste lijst; de lijst groeide in de loop van de meetperiode.</li>
+        <li><strong>Tellen:</strong> een antwoord telt één keer per domein, ook als Gemini dat domein meerdere keren noemt. Het eigen domein van de gemeten site is uit alle domeinstatistieken gehaald.</li>
+        <li><strong>Stabiliteit:</strong> per vraag de laatste run per kalenderweek; voor elk paar opeenvolgende weken het aandeel domeinen uit de eerste week dat ook in de tweede week staat.</li>
+        <li><strong>Onderzoeker:</strong> Aanloop AI, een GEO-bureau. Zie ook de <a href="/onderzoek/ai-adoption-mkb-nederland-2026/methodologie/" class="text-brand-indigo hover:underline">methodologie van ons adoptieonderzoek</a>.</li>
+      </ul>
+
+      <h3 class="mt-10 text-2xl font-semibold tracking-tighter text-navy">Beperkingen</h3>
+      <ul class="mt-4 space-y-3 text-slate-700 leading-relaxed list-disc pl-5">
+        <li>Eén engine. Andere assistenten kunnen andere bronnen kiezen.</li>
+        <li>Google-grounded: Gemini haalt bronnen uit Google Search, dus de uitkomst volgt deels de Nederlandse zoekresultaten.</li>
+        <li>Kleine steekproef: {nf(all.answers)} antwoorden, per sector tussen {nf(minAnswers)} en {nf(maxAnswers)}. Sectorverschillen zijn indicatief, geen statistische toets.</li>
+        <li>Eigen sites: de gemeten sites zijn van Aanloop AI en gelieerde projecten. Sectorkeuze en vraagformulering kunnen daardoor vertekenen, en "eigen domein genoemd" zegt iets over deze specifieke sites, niet over de sector.</li>
+        <li>Ongelijke meetduur: sectoren hebben tussen {nf(minRuns)} en {nf(maxRuns)} runs. Eén sector draaide meerdere runs op dezelfde dag.</li>
+        <li>Het zijn alleen geciteerde domeinen. Wij hebben niet beoordeeld of een bron inhoudelijk klopt.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="dataset" class="section bg-slate-50 border-y border-slate-200" aria-labelledby="dataset-kop">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Open data</p>
+      <h2 id="dataset-kop" class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Download en citeer</h2>
+      <p class="mt-4 text-slate-700 leading-relaxed">
+        De geaggregeerde dataset is vrij te gebruiken onder <a href={meta.license_url} class="text-brand-indigo hover:underline" rel="license">{meta.license}</a>. Per sector bevat hij aantallen en percentages, top geciteerde domeinen, TLD-verdeling en stabiliteit, plus twee voorbeeldvragen per sector. Ruwe antwoorden publiceren wij niet.
+      </p>
+      <p class="mt-6"><a href="/onderzoek/ai-radar-mkb-nederland-2026.json" class="btn-primary text-base px-6 py-3" download>Download dataset (JSON)</a></p>
+      <p class="mt-8 text-sm font-semibold text-navy">Bronvermelding</p>
+      <p class="mt-2 text-sm text-slate-700 leading-relaxed font-mono">{meta.citation}</p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="faq-kop">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow mb-3">Veelgestelde vragen</p>
+      <h2 id="faq-kop" class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Over dit onderzoek</h2>
+      <div class="mt-8 space-y-6">
+        {faqItems.map((f) => (
+          <div>
+            <h3 class="text-lg font-semibold text-navy">{f.question}</h3>
+            <p class="mt-2 text-slate-700 leading-relaxed">{f.answer}</p>
+          </div>
+        ))}
+      </div>
+      <p class="mt-10 text-slate-700">Wilt u weten welke bronnen AI-assistenten bij uw eigen vragen noemen? Vraag de <a href="/gratis-ai-scan/" class="text-brand-indigo hover:underline">gratis AI-scan</a> aan, of bekijk <a href="/onderzoek/" class="text-brand-indigo hover:underline">ons overige onderzoek</a>.</p>
+    </div>
+  </section>
+</BaseLayout>
