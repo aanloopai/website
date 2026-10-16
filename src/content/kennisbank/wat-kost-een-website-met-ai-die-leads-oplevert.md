@@ -30,12 +30,13 @@ We publiceren beide bedragen omdat "op aanvraag" u dwingt tot een gesprek voorda
 
 ## Wat u ervoor terugziet, gemeten
 
-Dit is het deel dat de meeste prijspagina's overslaan. Op zeven sites die wij bouwen en onderhouden, draait dezelfde cookieloze meting. Momentopname 9 oktober 2026:
+Dit is het deel dat de meeste prijspagina's overslaan. Op zeven sites die wij bouwen en onderhouden, draait dezelfde cookieloze meting. Momentopname 16 oktober 2026 (leads en KIB-serverstatistiek t/m 9 oktober):
 
 - Op **vier van de vijf** gemeten sites doet bezoek via AI-assistenten vaker een contactactie (bellen, WhatsApp, mail, formulier) dan bezoek via Google.
 - Op **keukeninbeeld.nl** is de lead-ratio uit AI-bezoek 3,9% tegenover 0,8% uit Google-zoekverkeer: 4,9 keer hoger, 30 dagen, 102 AI-bezoeken.
 - **FleetTrack Holland** en **Alfa Reclame**, twee eigen bedrijfssites, telden samen 19 afgeleverde leads in 30 dagen, geteld in de afleverstatistiek van de mailprovider.
-- **Trip and Tick**, een klantsite, haalt 23% van zijn bezoek uit AI-assistenten.
+- **Trip and Tick**, een klantsite, haalt 20% van zijn bezoek uit AI-assistenten, meer dan uit Google.
+- **Keuken in Beeld** telde 70 verzonden formulieren op 974 sessies in 28 dagen.
 
 De aantallen zijn klein, want het zijn echte MKB-sites. Daarom staan op [/resultaten/](/resultaten/) de aantallen naast de percentages, en per cijfer de methode en de meetdatum.
 

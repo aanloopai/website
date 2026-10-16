@@ -19,13 +19,13 @@ Twee gevolgen. Ten eerste: u wordt alleen bron als uw pagina het antwoord bevat 
 
 ## Wat we meten op zeven sites
 
-Op elke site die wij bouwen draait dezelfde cookieloze beacon. Die telt sessies, de herkomst (AI-assistent, zoekmachine, sociaal, direct) en contactacties: een klik op bellen, WhatsApp, e-mail, route of een verzonden formulier. Momentopname 9 oktober 2026, 28 dagen:
+Op elke site die wij bouwen draait dezelfde cookieloze beacon. Die telt sessies, de herkomst (AI-assistent, zoekmachine, sociaal, direct) en contactacties: een klik op bellen, WhatsApp, e-mail, route of een verzonden formulier. Momentopname 16 oktober 2026, 28 dagen:
 
-- **Trip and Tick** (reizen, 17 talen): 33 van 145 sessies via AI-assistenten, 23% van alle bezoek. Contactactie bij 15,2% van het AI-bezoek, tegenover 8,3% van het Google-bezoek.
-- **FleetTrack Holland** (GPS-tracking, B2B): 6 AI-sessies op 247. Drie daarvan deden een contactactie (50%); Google-bezoek 8,9%. Klein aantal, dus richting telt, niet de decimaal.
-- **Keuken in Beeld** (keukenplatform): 102 bezoeken via AI-assistenten in 30 dagen uit de eigen serverstatistiek, waarvan 95 via ChatGPT. Lead-ratio van dat bezoek 3,9%, tegenover 0,8% uit Google. Een ChatGPT-bezoeker leest gemiddeld 4,2 pagina's.
-- **Aanloop AI** (deze site): 7 AI-sessies op 361, contactactie bij 42,9% tegenover 9,8% uit Google.
-- **Alfa Reclame** (reclame, Rotterdam): 19 AI-sessies op 174 (11%). Contactactie 10,5% tegenover 11,1% uit Google: hier gelijkwaardig.
+- **Trip and Tick** (reizen, 17 talen): 33 van 165 sessies via AI-assistenten, 20% van alle bezoek en meer dan via Google (14). Contactactie bij 15,2% van het AI-bezoek, tegenover 7,1% van het Google-bezoek.
+- **FleetTrack Holland** (GPS-tracking, B2B): 8 AI-sessies op 342. Drie daarvan deden een contactactie (37,5%); Google-bezoek 8,3%. Klein aantal, dus richting telt, niet de decimaal.
+- **Keuken in Beeld** (keukenplatform): 102 bezoeken via AI-assistenten in 30 dagen uit de eigen serverstatistiek (t/m 9 oktober), waarvan 95 via ChatGPT. Lead-ratio van dat bezoek 3,9%, tegenover 0,8% uit Google. Een ChatGPT-bezoeker leest gemiddeld 4,2 pagina's. De beacon telde 70 verzonden formulieren op 974 sessies.
+- **Aanloop AI** (deze site): 8 AI-sessies op 475, contactactie bij 37,5% tegenover 8,3% uit Google.
+- **Alfa Reclame** (reclame, Rotterdam): 21 AI-sessies op 259 (8%). Contactactie 9,5% tegenover 10% uit Google: hier gelijkwaardig.
 
 Het patroon: weinig bezoek, hoge intentie. Wie via een AI-antwoord binnenkomt, heeft zijn vraag al gesteld en wil nu de aanbieder.
 
