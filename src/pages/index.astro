@@ -2,34 +2,41 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EmmaLiveDemo from '../components/EmmaLiveDemo.astro';
 import { Hero as AnimatedHero } from '../components/ui/animated-hero';
+import { WEBSITE_BUNDEL } from '../data/pricing';
+import { KERNPUNTEN, RESULTATEN, RESULTATEN_PEILDATUM } from '../data/resultaten';
+
+const euro = (n: number) => `€${n.toLocaleString('nl-NL')}`;
 
 // Homepage = vier diensten, tane voor tane. Alles wat hier niet staat, staat
 // op /diensten/ — de homepage moet in één scroll uitleggen wát we doen.
+// 2026-10-16 (owner): de site deed te weinig met wat we écht doen — websites
+// met AI bouwen die klanten opleveren en die AI-assistenten noemen. De bundel
+// staat daarom voorop, met gemeten bewijs (src/data/resultaten.ts) eronder.
 const services = [
   {
     n: '01',
+    href: '/diensten/ai-website-bundel-mkb-nederland/',
+    title: 'Website met AI die klanten oplevert',
+    what: 'Website, Emma als AI-receptionist, AI-vindbaarheid in ChatGPT, Gemini en Perplexity en een meetpaneel dat laat zien wat elk kanaal oplevert. Eén partner, één contract.',
+    price: `${euro(WEBSITE_BUNDEL.setup)} eenmalig · ${euro(WEBSITE_BUNDEL.maand)}/mnd all-in`,
+    cta: 'Bekijk de bundel',
+    badge: 'Meest gekozen',
+  },
+  {
+    n: '02',
     href: '/diensten/emma/',
     title: 'Emma — AI-receptionist',
     what: 'Neemt uw telefoon en WhatsApp 24/7 aan, plant afspraken in uw agenda en stuurt elke lead direct door. Vloeiend Nederlands — voor praktijken, salons, garages en installateurs.',
     price: 'v.a. €149/mnd · 14 dagen geld terug',
     cta: 'Bekijk Emma',
-    badge: 'Meest gekozen',
-  },
-  {
-    n: '02',
-    href: '/diensten/website-laten-maken-mkb-nederland-2026/',
-    title: 'Website of webshop',
-    what: 'Een snelle, AI-ready website of webshop die klanten vindt in Google én in ChatGPT. Met Emma erbij in één bundel: één partner, één factuur.',
-    price: 'Bundel v.a. €649/mnd all-in',
-    cta: 'Bekijk websites',
   },
   {
     n: '03',
-    href: '/diensten/custom/',
-    title: 'AI-automatisering op maat',
-    what: 'Repetitief werk uit handen: e-mails beantwoorden, documenten verwerken, offertes opstellen — gekoppeld aan uw CRM, agenda en boekhouding.',
-    price: 'Op maat · gratis audit vooraf',
-    cta: 'Bekijk automatisering',
+    href: '/ai-vindbaarheid/',
+    title: 'AI-vindbaarheid (GEO)',
+    what: 'Uw klant vraagt het aan ChatGPT, Gemini of Perplexity en krijgt drie tot vijf namen. Wij zorgen dat uw bedrijf in dat antwoord staat — en meten elke maand of dat lukt.',
+    price: 'Gratis scan · v.a. €595/mnd',
+    cta: 'Bekijk AI-vindbaarheid',
   },
   {
     n: '04',
@@ -43,14 +50,16 @@ const services = [
 ];
 
 const moreServices = [
+  { href: '/diensten/custom/', label: 'AI-automatisering op maat' },
+  { href: '/diensten/website-laten-maken-mkb-nederland-2026/', label: 'Alleen een website' },
   { href: '/diensten/ai-chatbot-website/', label: 'AI-chatbot voor uw website' },
   { href: '/diensten/ai-email-assistent/', label: 'AI e-mailassistent' },
   { href: '/diensten/ai-document-processing/', label: 'Documentverwerking' },
-  { href: '/diensten/ai-lead-qualification/', label: 'Lead-kwalificatie' },
-  { href: '/ai-vindbaarheid/', label: 'AI-vindbaarheid (GEO)' },
   { href: '/geo-bureau/', label: 'GEO-bureau (AEO)' },
   { href: '/gratis-ai-scan/', label: 'Gratis AI-scan' },
 ];
+
+const werk = RESULTATEN.filter((s) => s.cijfers.length);
 
 const steps = [
   { n: '1', title: 'Gesprek', desc: 'Gratis adviesgesprek van 30 minuten. We kijken waar AI in uw bedrijf het meeste oplevert.' },
@@ -78,8 +87,8 @@ const homeSchema = [
     '@type': 'WebPage',
     '@id': 'https://aanloopai.nl/#webpage',
     url: 'https://aanloopai.nl/',
-    name: 'Aanloop AI — AI Bureau Nederland voor MKB',
-    description: 'Aanloop AI is het AI bureau voor het Nederlandse MKB. Omnichannel AI-agent (telefoon + WhatsApp), workflow automatisering en custom AI agents.',
+    name: 'Aanloop AI — websites met AI die klanten opleveren',
+    description: 'Aanloop AI bouwt websites met AI voor het Nederlandse MKB: website + Emma AI-receptionist + AI-vindbaarheid in ChatGPT, Gemini en Perplexity + meetpaneel. Gemeten resultaten op /resultaten/.',
     inLanguage: 'nl-NL',
     isPartOf: { '@type': 'WebSite', '@id': 'https://aanloopai.nl/#website' },
     about: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization' },
@@ -98,6 +107,8 @@ const homeSchema = [
       '@type': 'OfferCatalog',
       name: 'AI Diensten Aanloop AI',
       itemListElement: [
+        { '@type': 'Offer', name: 'AI-Website Bundel — website die klanten oplevert', itemOffered: { '@type': 'Service', name: 'AI-Website Bundel: website + Emma + AI-vindbaarheid + meetpaneel', url: 'https://aanloopai.nl/diensten/ai-website-bundel-mkb-nederland/', provider: { '@id': 'https://aanloopai.nl/#organization' } }, price: String(WEBSITE_BUNDEL.maand), priceCurrency: 'EUR', priceSpecification: { '@type': 'UnitPriceSpecification', price: String(WEBSITE_BUNDEL.maand), priceCurrency: 'EUR', billingDuration: 'P1M', unitText: 'MONTH' }, url: 'https://aanloopai.nl/diensten/ai-website-bundel-mkb-nederland/', availability: 'https://schema.org/InStock' },
+        { '@type': 'Offer', name: 'AI-vindbaarheid (GEO) — maandelijks', itemOffered: { '@type': 'Service', name: 'AI-vindbaarheid (Generative Engine Optimization)', url: 'https://aanloopai.nl/ai-vindbaarheid/', provider: { '@id': 'https://aanloopai.nl/#organization' } }, price: '595', priceCurrency: 'EUR', priceSpecification: { '@type': 'UnitPriceSpecification', price: '595', priceCurrency: 'EUR', billingDuration: 'P1M', unitText: 'MONTH' }, url: 'https://aanloopai.nl/ai-vindbaarheid/', availability: 'https://schema.org/InStock' },
         { '@type': 'Offer', name: 'Emma Start — AI-telefoniste', itemOffered: { '@type': 'Service', name: 'Emma Start — AI Receptionist & AI Telefoniste', url: 'https://aanloopai.nl/diensten/emma/' , provider: { '@id': 'https://aanloopai.nl/#organization' }}, price: '149', priceCurrency: 'EUR', priceSpecification: { '@type': 'UnitPriceSpecification', price: '149', priceCurrency: 'EUR', billingDuration: 'P1M', unitText: 'MONTH' }, url: 'https://aanloopai.nl/tarieven/#start', availability: 'https://schema.org/InStock' },
         { '@type': 'Offer', name: 'Emma Groei — telefoon + WhatsApp', itemOffered: { '@type': 'Service', name: 'Emma Groei — AI Telefoon + WhatsApp', url: 'https://aanloopai.nl/diensten/emma/' , provider: { '@id': 'https://aanloopai.nl/#organization' }}, price: '299', priceCurrency: 'EUR', priceSpecification: { '@type': 'UnitPriceSpecification', price: '299', priceCurrency: 'EUR', billingDuration: 'P1M', unitText: 'MONTH' }, url: 'https://aanloopai.nl/tarieven/#groei', availability: 'https://schema.org/InStock' },
         { '@type': 'Offer', name: 'Emma Compleet — onbeperkt + workflows', itemOffered: { '@type': 'Service', name: 'Emma Compleet — omnichannel AI-agent', url: 'https://aanloopai.nl/diensten/emma/' , provider: { '@id': 'https://aanloopai.nl/#organization' }}, price: '497', priceCurrency: 'EUR', priceSpecification: { '@type': 'UnitPriceSpecification', price: '497', priceCurrency: 'EUR', billingDuration: 'P1M', unitText: 'MONTH' }, url: 'https://aanloopai.nl/tarieven/#compleet', availability: 'https://schema.org/InStock' },
@@ -110,8 +121,8 @@ const homeSchema = [
 ---
 
 <BaseLayout
-  title="AI Bureau Nederland voor het MKB — AI Automatisering"
-  description="AI-bureau voor het MKB: Emma AI-receptionist (telefoon + WhatsApp) en custom AI-workflows. Live in 7 werkdagen. Vanaf €149/mnd, geld-terug-garantie."
+  title="Websites met AI die klanten opleveren — Aanloop AI"
+  description="AI-bureau Rotterdam: wij bouwen websites met AI die klanten opleveren en zorgen dat ChatGPT, Gemini en Perplexity u noemen. Emma AI-receptionist inbegrepen. Gemeten resultaten van zeven sites, live."
   schema={homeSchema}
 >
   <!-- Hero: shadcn animated-hero (React island). Server-rendered H1 toont het
@@ -123,19 +134,17 @@ const homeSchema = [
     <div>
       <AnimatedHero
         client:idle
-        lead="AI bureau in Nederland dat"
-        titles={['écht werkt', '24/7 opneemt', 'klanten brengt', 'werk overneemt', 'afspraken plant']}
-        tail="voor het MKB."
-        badge="Vanaf €149/mnd · 14 dagen geld terug"
-        badgeHref="/tarieven/"
-        description="Wij bouwen de AI-receptionist die uw telefoon aanneemt, de website die klanten brengt en de AI automatisering die repetitief werk overneemt. Live in 7 werkdagen, vanaf €149 per maand — 14 dagen niet goed, geld terug."
+        lead="Wij bouwen websites met AI die"
+        titles={['klanten opleveren', 'door ChatGPT genoemd worden', 'uw telefoon opnemen', 'meetbaar groeien', 'écht werken']}
+        tail="— gemeten, niet beloofd."
+        badge={`AI-Website Bundel: ${euro(WEBSITE_BUNDEL.setup)} eenmalig · ${euro(WEBSITE_BUNDEL.maand)}/mnd all-in`}
+        badgeHref="/diensten/ai-website-bundel-mkb-nederland/"
+        description="Wij bouwen websites waar AI achter draait: Emma neemt uw telefoon en WhatsApp op, de site wordt genoemd door ChatGPT, Gemini en Perplexity, en een meetpaneel laat zien welk kanaal klanten oplevert. Onze eigen bedrijven draaien erop — de cijfers staan live op deze site."
         primaryLabel="Boek een gratis demo"
         primaryHref="/demo-aanvragen/"
-        secondaryLabel="WhatsApp ons"
-        secondaryHref="/whatsapp"
-        secondaryExternal
-        secondaryIcon="chat"
-        trust={['AVG-compliant · EU-data', 'Live binnen 7 werkdagen', 'Geen verborgen kosten', 'Rotterdam · heel Nederland']}
+        secondaryLabel="Bekijk de gemeten resultaten"
+        secondaryHref="/resultaten/"
+        trust={['Zeven sites, één meting', 'AVG-conform · cookieloos gemeten', 'Prijzen publiek, geen verrassingen', 'Rotterdam · heel Nederland']}
       />
     </div>
   </section>
@@ -178,6 +187,38 @@ const homeSchema = [
         ))}
         — <a href="/diensten/" class="text-brand-indigo font-semibold hover:underline underline-offset-4">alle diensten →</a>
       </p>
+    </div>
+  </section>
+
+  <!-- Bewijs: gemeten resultaten van sites die wij bouwden (src/data/resultaten.ts) -->
+  <section class="section" aria-labelledby="bewijs-heading">
+    <div class="container-page">
+      <div class="max-w-3xl mb-10">
+        <p class="eyebrow mb-3 reveal">Gemeten, niet beloofd</p>
+        <h2 id="bewijs-heading" class="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tighter text-navy text-balance reveal reveal-delay-1">
+          Wat onze AI-websites opleveren. Live, met de methode erbij.
+        </h2>
+        <p class="mt-4 text-slate-600 leading-relaxed reveal reveal-delay-2">
+          Wij bouwen onze eigen bedrijven op dezelfde websites die wij voor klanten maken, en meten op al die sites hetzelfde: bezoek via ChatGPT, Perplexity en Gemini, hoe vaak dat bezoek contact opneemt vergeleken met Google-bezoek, en hoeveel aanvragen er echt in de inbox landen. Momentopname {RESULTATEN_PEILDATUM}; de tabel op /resultaten/ ververst elk uur.
+        </p>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-5">
+        {KERNPUNTEN.map((k, i) => (
+          <a href="/resultaten/" class={`card hover:border-brand-indigo transition-colors reveal reveal-delay-${i + 1}`}>
+            <p class="text-3xl lg:text-4xl font-semibold tracking-tighter text-navy">{k.waarde}</p>
+            <p class="mt-1 text-sm font-medium text-slate-700 leading-snug">{k.label}</p>
+            <p class="mt-2 text-xs text-slate-500 leading-snug">{k.toelichting}</p>
+          </a>
+        ))}
+      </div>
+      <ul class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm reveal">
+        <li class="text-slate-500">Gebouwd door ons:</li>
+        {werk.map((s) => (
+          <li><a href={`/werk/${s.key}/`} class="font-medium text-navy underline-offset-4 hover:underline">{s.host}</a></li>
+        ))}
+        <li><a href="/werk/" class="font-semibold text-brand-indigo underline-offset-4 hover:underline">alle sites →</a></li>
+        <li><a href="/resultaten/" class="font-semibold text-brand-indigo underline-offset-4 hover:underline">live cijfers →</a></li>
+      </ul>
     </div>
   </section>
 

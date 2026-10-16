@@ -48,6 +48,7 @@ import { extractBusinessFacts, normalizeSiteUrl, isFetchableSiteUrl } from './li
 import { handleVoorstelClaim } from './lib/voorstel-claim.js';
 import { handleVoorstelVerify } from './lib/voorstel-verify.js';
 import { visibilityIngest, visibilityEvent, visibilitySummary, beaconScript, gbpSyncIfDue } from './lib/visibility.js';
+import { resultatenPublic } from './lib/resultaten-public.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -1456,6 +1457,11 @@ export default {
     // Machine-readable per-site summary for the AGA digest (HMAC over raw query).
     if (url.pathname === '/api/visibility/summary') {
       return visibilitySummary(request, env);
+    }
+    // Publiek resultatenbord (/resultaten/): alleen 28-dagentotalen per site,
+    // geen paden of verwijzers; 1 uur edge-cache.
+    if (url.pathname === '/api/resultaten') {
+      return resultatenPublic(request, env, ctx);
     }
     if (url.pathname === '/v.js') {
       return beaconScript();

@@ -114,11 +114,24 @@ describe('prijs- en claim-consistentie', () => {
     expect(code).not.toMatch(/(€|&euro;)\s?49(?![0-9.,])/);
   });
 
-  it('homepage-bundelclaim klopt met pricing.ts (€45/mnd voordeel)', async () => {
-    const { EMMA, WEBSITE_BUNDEL } = await import('../src/data/pricing.ts');
-    // Interne rekengrondslag van de bundel (website Groei-maandtarief). Niet
-    // publiek getoond — de site zegt "maandtarief op aanvraag".
-    const websiteGroeiMaand = 197;
-    expect(websiteGroeiMaand + EMMA.monthly - WEBSITE_BUNDEL.maand).toBe(45);
+  it('AI-Website Bundel (owner 2026-10-16): €4.500 + €1.000/mnd, boven elk los onderdeel en onder de som', async () => {
+    const { EMMA, GEO, WEBSITE_BUNDEL } = await import('../src/data/pricing.ts');
+    expect(WEBSITE_BUNDEL).toEqual({ setup: 4500, maand: 1000 });
+    // Niet goedkoper dan één van de eigen onderdelen (de fout van 2026-08),
+    // wél goedkoper dan Emma Compleet + GEO Maandelijks los.
+    expect(WEBSITE_BUNDEL.maand).toBeGreaterThan(EMMA.monthly);
+    expect(WEBSITE_BUNDEL.maand).toBeGreaterThan(GEO.maand);
+    expect(WEBSITE_BUNDEL.maand).toBeLessThan(EMMA.monthly + GEO.maand);
+  });
+
+  it('de oude bundelprijs (€649/mnd, €5.950 setup) staat nergens meer', () => {
+    const hits = [];
+    for (const file of pageFiles) {
+      readFileSync(file, 'utf8').split('\n').forEach((line, i) => {
+        if (isComment(line)) return;
+        if (/(€|EUR)\s?649(?![0-9.,])|\b649\s?euro\b|649\/mnd|5\.950/u.test(line)) hits.push(`${file.slice(ROOT.length + 1)}:${i + 1}`);
+      });
+    }
+    expect(hits, hits.join('\n')).toEqual([]);
   });
 });

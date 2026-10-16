@@ -1,0 +1,68 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { RESULTATEN, RESULTATEN_PEILDATUM } from '../../data/resultaten';
+import { WEBSITE_BUNDEL } from '../../data/pricing';
+
+const euro = (n: number) => `€${n.toLocaleString('nl-NL')}`;
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': 'https://aanloopai.nl/werk/',
+    name: 'Ons werk: websites met AI die klanten opleveren',
+    isPartOf: { '@id': 'https://aanloopai.nl/#website' },
+    inLanguage: 'nl-NL',
+    hasPart: RESULTATEN.map((s) => ({ '@type': 'WebSite', name: s.naam, url: s.url })),
+  },
+];
+---
+
+<BaseLayout
+  title="Ons werk: websites met AI die klanten opleveren"
+  description="Zeven websites die Aanloop AI bouwde, met wat erin zit (AI-laag, meting, datasets) en wat ze meetbaar opleveren. Eigen bedrijven en klanten, elk eerlijk gelabeld."
+  schema={schema}
+>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-20">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Ons werk</span></div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05]">Websites die wij met AI bouwden — en wat ze opleveren.</h1>
+        <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty" data-speakable>
+          Geen mockups. Elke site hieronder staat live, wordt door ons gebouwd en onderhouden, en meet met dezelfde beacon hoeveel bezoek via AI-assistenten binnenkomt en hoe vaak dat contact opneemt. Eigen bedrijven noemen we eigen bedrijven; klanten staan er met hun akkoord.
+        </p>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <a href="/resultaten/" class="btn-primary text-base px-6 py-3.5">Bekijk de live cijfers</a>
+          <a href="/diensten/ai-website-bundel-mkb-nederland/" class="btn-outline text-base px-6 py-3.5">AI-Website Bundel · {euro(WEBSITE_BUNDEL.setup)} + {euro(WEBSITE_BUNDEL.maand)}/mnd</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page">
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {RESULTATEN.map((s) => (
+          <article class="card flex flex-col overflow-hidden p-0">
+            {s.screenshot && (
+              <a href={`/werk/${s.key}/`} class="block aspect-[16/10] bg-slate-100 overflow-hidden border-b border-slate-200">
+                <img src={s.screenshot} alt={`Schermafbeelding van ${s.host}`} width="1440" height="900" loading="lazy" decoding="async" class="w-full h-full object-cover object-top" />
+              </a>
+            )}
+            <div class="p-6 flex flex-col flex-1">
+              <p class="text-xs text-slate-500">{s.eigenaar === 'eigen' ? 'Eigen bedrijf' : 'Klant'} · {s.sector}</p>
+              <h2 class="mt-1 text-xl font-bold text-navy"><a href={`/werk/${s.key}/`} class="hover:text-brand-indigo">{s.naam}</a></h2>
+              <p class="mt-3 text-sm text-slate-600 leading-relaxed flex-1">{s.samenvatting}</p>
+              {s.cijfers.length ? (
+                <p class="mt-4 text-sm"><strong class="text-navy">{s.cijfers[0].waarde}</strong> <span class="text-slate-600">{s.cijfers[0].label}</span> <span class="text-xs text-slate-400">({s.cijfers[0].periode})</span></p>
+              ) : (
+                <p class="mt-4 text-xs text-slate-500">Meting gestart {s.metingSinds} — cijfers volgen na 28 dagen.</p>
+              )}
+              <a href={`/werk/${s.key}/`} class="mt-4 text-sm font-semibold text-brand-indigo hover:underline">Bekijk de case →</a>
+            </div>
+          </article>
+        ))}
+      </div>
+      <p class="mt-8 text-xs text-slate-500">Momentopname {RESULTATEN_PEILDATUM}; de volledige meting met methode per cijfer staat op <a href="/resultaten/" class="underline">/resultaten/</a>.</p>
+    </div>
+  </section>
+</BaseLayout>

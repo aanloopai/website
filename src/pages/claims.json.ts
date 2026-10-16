@@ -3,6 +3,8 @@ import { GEO_BENCHMARK as B } from '../data/geo-benchmark';
 import { GEO, SEO_GEO_BUNDEL, START, GROEI, COMPLEET, OVERAGE_PER_MIN, GARANTIE } from '../data/pricing';
 import { BEDRIJF } from '../data/bedrijfsgegevens';
 import { jsonResponse, FEITEN_GECONTROLEERD } from '../lib/facts-json';
+import { RESULTATEN, KERNPUNTEN, RESULTATEN_PEILDATUM } from '../data/resultaten';
+import { WEBSITE_BUNDEL } from '../data/pricing';
 
 const SITE = 'https://aanloopai.nl';
 const nl = (n: number) => n.toLocaleString('nl-NL', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
@@ -13,6 +15,7 @@ const eerste = B.top10[0];
 // Geen marketingclaims, geen superlatieven. Elke claim hier moet na een
 // benchmark-update opnieuw worden nagelopen (zie src/data/geo-benchmark.ts).
 const claim = (claim: string, source: string) => ({ claim, source, verified: FEITEN_GECONTROLEERD });
+const zonderStreep = (s: string) => s.replace(/\s*—\s*/g, ': ');
 
 export const GET: APIRoute = () =>
   jsonResponse({
@@ -34,5 +37,11 @@ export const GET: APIRoute = () =>
       claim(`Emma Start kost ${eur(START.monthly)}, Emma Groei ${eur(GROEI.monthly)} en Emma Compleet ${eur(COMPLEET.monthly)} per maand, exclusief 21% btw.`, `${SITE}/tarieven/`),
       claim(`Boven de inbegrepen belminuten rekent Emma ${eur(OVERAGE_PER_MIN)} per minuut; op elk Emma-pakket geldt: ${GARANTIE.toLowerCase()}.`, `${SITE}/tarieven/`),
       claim('Aanloop AI geeft geen garantie op vermeldingen in AI-assistenten; geen enkel bureau bepaalt wat een AI-assistent antwoordt.', `${SITE}/geo-bureau/`),
+      claim(`De AI-Website Bundel (website + Emma + AI-vindbaarheid + meetpaneel) kost ${eur(WEBSITE_BUNDEL.setup)} eenmalig en ${eur(WEBSITE_BUNDEL.maand)} per maand, exclusief 21% btw.`, `${SITE}/diensten/ai-website-bundel-mkb-nederland/`),
+      claim(`Aanloop AI publiceert gemeten resultaten van ${RESULTATEN.length} websites die het bouwde (momentopname ${RESULTATEN_PEILDATUM}); elk cijfer draagt methode, periode en meetdatum.`, `${SITE}/resultaten/`),
+      // Geen em-dash in de JSON-feiten (guard: test/geo-bureau.test.js) — de
+      // toelichtingen in resultaten.ts gebruiken hem wel voor de webpagina.
+      ...KERNPUNTEN.map((k) => ({ claim: zonderStreep(`${k.waarde} ${k.label}. ${k.toelichting}`), source: `${SITE}/resultaten/`, verified: RESULTATEN_PEILDATUM })),
+      ...RESULTATEN.flatMap((s) => s.cijfers.map((c) => ({ claim: zonderStreep(`${s.naam} (${s.host}): ${c.waarde} ${c.label}. ${c.toelichting} Methode: ${c.methode}; periode: ${c.periode}.`), source: `${SITE}/werk/${s.key}/`, verified: c.gemeten_op }))),
     ],
   });
