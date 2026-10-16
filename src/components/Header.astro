@@ -2,11 +2,23 @@
 // Header — corporate-grade sticky header with mega-menu, SEO SiteNavigationElement schema,
 // glassmorphism, and accessible keyboard/touch interactions.
 
+// Owner-eis 2026-10-11 (alle sites): op ELKE publieke pagina staan bovenaan drie
+// manieren om contact op te nemen — formulier, WhatsApp, e-mail. Gegevens komen
+// uit bestaande bronnen: hello@aanloopai.nl (worker.js NOTIFICATION_EMAIL) en de
+// /whatsapp-doorstuurroute (worker.js WHATSAPP_NUMBER) met vooringevuld NL-bericht.
+const CONTACT_MAIL = 'hello@aanloopai.nl';
+const mailHref = `mailto:${CONTACT_MAIL}?subject=${encodeURIComponent('Vraag via aanloopai.nl')}&body=${encodeURIComponent('Hallo, ik kom via aanloopai.nl en heb een vraag over ')}`;
+// Op deze pagina's IS het formulier de pagina zelf: geen tweede formulier erbovenop.
+const pathNoPanel = new Set(['/contact/', '/demo-aanvragen/', '/aanvragen/']);
+const normPath = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
+const showQuickForm = !pathNoPanel.has(normPath);
+
 const dienstenGroups = [
   {
     title: 'Websites & Webshops',
     items: [
-      { label: 'AI-Website Bundel', href: '/diensten/ai-website-bundel-mkb-nederland/', desc: 'Website + Emma in 1 pakket', badge: 'Meest waardevol' },
+      { label: 'AI-Website Bundel', href: '/diensten/ai-website-bundel-mkb-nederland/', desc: 'Website die klanten oplevert: Emma + AI-vindbaarheid + meetpaneel', badge: 'Meest gekozen' },
+      { label: 'Resultaten (live)', href: '/resultaten/', desc: 'Gemeten cijfers van zeven sites die wij bouwden' },
       { label: 'Website laten maken', href: '/diensten/website-laten-maken-mkb-nederland-2026/', desc: 'AI-ready website, maandtarief op aanvraag' },
       { label: 'Webshop laten maken', href: '/diensten/webshop-laten-maken-shopify-woocommerce-nederland-2026/', desc: 'Shopify/WooCommerce/Lightspeed, iDeal+PostNL' },
       { label: 'AI Chatbot voor Website', href: '/diensten/ai-chatbot-website/', desc: 'Toevoegen aan bestaande website' },
@@ -38,6 +50,7 @@ const dienstenGroups = [
       { label: 'AI Social Media Agent', href: '/diensten/ai-social-media-agent/', desc: 'Posts, replies en planning' },
       { label: 'AI Influencer & Personas', href: '/diensten/ai-influencer-marketing/', desc: 'AI-personas voor je merk — Emma & meer', badge: 'Nieuw' },
       { label: 'AI-vindbaarheid (GEO)', href: '/ai-vindbaarheid/', desc: 'Gevonden worden in ChatGPT, Gemini & Claude' },
+      { label: 'GEO-bureau', href: '/geo-bureau/', desc: 'Per sector en regio, met openbare tarieven' },
     ],
   },
 ];
@@ -105,6 +118,7 @@ const kennisbank = [
 const overItems = [
   { label: 'Over Aanloop AI',  href: '/over/',          desc: 'Founder, missie, KvK 88606902' },
   { label: 'Werkwijze',        href: '/werkwijze/',     desc: 'Van adviesgesprek tot live in 7 werkdagen' },
+  { label: 'Ons werk',         href: '/werk/',          desc: 'Sites die wij bouwden, met gemeten resultaat' },
   { label: 'Cases',            href: '/cases/',         desc: 'Voorbeeldscenario per sector' },
   { label: 'Locaties',         href: '/locaties/',      desc: '18 steden in heel Nederland' },
   { label: 'Pers & nieuws',    href: '/pers/',          desc: 'Press kit en updates' },
@@ -193,7 +207,7 @@ const navSchema = {
           alt="Aanloop AI"
           width="200"
           height="62"
-          class="h-11 w-auto transition-opacity group-hover:opacity-80"
+          class="h-9 sm:h-11 w-auto transition-opacity group-hover:opacity-80"
           loading="eager"
           fetchpriority="high"
         />
@@ -346,17 +360,26 @@ const navSchema = {
       </nav>
 
       <!-- CTA group — direct contact options + primary CTA -->
-      <div class="flex items-center gap-1.5 flex-shrink-0">
-        <a href="tel:+31624741597" class="inline-flex items-center justify-center w-10 h-10 rounded-xl text-slate-600 hover:text-navy hover:bg-slate-100 transition-all" aria-label="Bel ons direct: +31 6 24 74 15 97" title="Bel +31 6 24 74 15 97">
+      <div class="flex items-center gap-1 sm:gap-1.5 flex-shrink-0">
+        <a href="tel:+31624741597" class="hidden sm:inline-flex lg:hidden items-center justify-center w-10 h-10 rounded-xl text-slate-600 hover:text-navy hover:bg-slate-100 transition-all" aria-label="Bel ons direct: +31 6 24 74 15 97" title="Bel +31 6 24 74 15 97">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
         </a>
-        <a href="/whatsapp" target="_blank" rel="nofollow noopener" class="inline-flex items-center justify-center w-10 h-10 rounded-xl text-slate-600 hover:text-green-700 hover:bg-green-50 transition-all" aria-label="Stuur ons een WhatsApp-bericht" title="WhatsApp +31 6 24 74 15 97">
+        <a href="/whatsapp" target="_blank" rel="nofollow noopener" id="header-whatsapp" class="inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-slate-600 hover:text-green-700 hover:bg-green-50 transition-all" aria-label="Stuur ons een WhatsApp-bericht" title="WhatsApp +31 6 24 74 15 97">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         </a>
-        <a href="/portal/login/" class="inline-flex items-center justify-center w-10 h-10 rounded-xl text-slate-600 hover:text-navy hover:bg-slate-100 transition-all" aria-label="Klantportaal — inloggen voor klanten" title="Klantportaal">
+        <a href={mailHref} id="header-mail" class="inline-flex items-center justify-center w-9 h-9 sm:w-10 sm:h-10 rounded-xl text-slate-600 hover:text-navy hover:bg-slate-100 transition-all" aria-label="Stuur ons een e-mail: {CONTACT_MAIL}" title={CONTACT_MAIL}>
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        </a>
+        <a href="/portal/login/" class="hidden sm:inline-flex items-center justify-center w-10 h-10 rounded-xl text-slate-600 hover:text-navy hover:bg-slate-100 transition-all" aria-label="Klantportaal — inloggen voor klanten" title="Klantportaal">
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
         </a>
-        <button type="button" class="js-emma-live-trigger btn-outline text-sm hidden lg:inline-flex items-center gap-1.5" id="header-emma-live" data-vis="demo" aria-label="Bel Emma nu — live demo van de AI-assistent">
+        {showQuickForm && (
+          <button type="button" id="qc-toggle" class="btn-primary text-sm !px-2.5 sm:!px-4 !py-2" aria-expanded="false" aria-controls="quick-contact">
+            <svg class="w-4 h-4 hidden sm:block" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h8M8 14h5M21 12a8 8 0 01-8 8H7l-4 3v-6.5A8 8 0 1121 12z"/></svg>
+            <span>Bericht</span>
+          </button>
+        )}
+        <button type="button" class="js-emma-live-trigger btn-outline text-sm hidden min-[1600px]:inline-flex items-center gap-1.5" id="header-emma-live" data-vis="demo" aria-label="Bel Emma nu — live demo van de AI-assistent">
           <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full rounded-full bg-brand-emerald opacity-75 animate-ping"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-brand-emerald"></span></span>
           Bel Emma nu
         </button>
@@ -366,13 +389,73 @@ const navSchema = {
         </a>
 
         <!-- Hamburger -->
-        <button id="mobile-menu-toggle" class="lg:hidden p-2 text-slate-700 hover:text-navy hover:bg-slate-100 rounded-lg transition-colors" aria-label="Menu openen" aria-expanded="false" aria-controls="mobile-menu">
+        <button id="mobile-menu-toggle" class="lg:hidden p-1.5 sm:p-2 text-slate-700 hover:text-navy hover:bg-slate-100 rounded-lg transition-colors" aria-label="Menu openen" aria-expanded="false" aria-controls="mobile-menu">
           <svg id="icon-menu" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
           <svg id="icon-close" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
     </div>
   </div>
+
+  {showQuickForm && (
+  <!-- Snel contactformulier — klapt open vanuit de "Bericht"-knop bovenin. Post naar
+       dezelfde /api/submit-pijplijn als alle andere formulieren (D1 inbound_leads,
+       Telegram, Brevo-notificatie naar hello@aanloopai.nl). -->
+  <div id="quick-contact" class="hidden absolute inset-x-0 top-full px-3 pt-2 lg:inset-x-auto lg:right-6 lg:w-[480px]" role="region" aria-label="Snel contact opnemen">
+    <div class="rounded-lg border border-slate-200 bg-white p-5 shadow-xl max-h-[calc(100vh-110px)] overflow-y-auto">
+      <form id="qc-form" novalidate class="space-y-3">
+        <input type="hidden" name="form_type" value="snel" />
+        <input type="hidden" name="subject" value="Nieuw snel contactverzoek — Aanloop AI" />
+        <input type="hidden" name="pagina" id="qc-page" value="" />
+        <input type="hidden" name="interesse" id="qc-interest" value="" />
+        <div class="absolute w-px h-px overflow-hidden -m-px p-0 border-0" style="clip:rect(0 0 0 0)" aria-hidden="true">
+          <label for="qc-botcheck">Laat dit veld leeg</label>
+          <input type="text" id="qc-botcheck" name="botcheck" tabindex="-1" autocomplete="off" />
+        </div>
+        <div class="flex items-baseline justify-between gap-3">
+          <p class="text-base font-bold text-navy">Laat uw gegevens achter, wij bellen of mailen u terug</p>
+          <button type="button" id="qc-close" class="text-slate-400 hover:text-navy p-1 -m-1" aria-label="Formulier sluiten">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="flex flex-wrap gap-2" role="group" aria-label="Waar gaat het over? (optioneel)">
+          {['AI-receptionist', 'WhatsApp-automatisering', 'Website'].map((chip) => (
+            <button type="button" data-qc-chip={chip} aria-pressed="false" class="qc-chip px-3 py-1.5 rounded-full border border-slate-200 text-xs font-medium text-slate-700 hover:border-navy transition-colors">{chip}</button>
+          ))}
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="qc-naam" class="block text-xs font-medium text-slate-700 mb-1">Naam *</label>
+            <input type="text" id="qc-naam" name="naam" required autocomplete="name" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+          </div>
+          <div>
+            <label for="qc-bedrijf" class="block text-xs font-medium text-slate-700 mb-1">Bedrijf <span class="text-slate-500 font-normal">(optioneel)</span></label>
+            <input type="text" id="qc-bedrijf" name="bedrijf" autocomplete="organization" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+          </div>
+          <div>
+            <label for="qc-tel" class="block text-xs font-medium text-slate-700 mb-1">Telefoon</label>
+            <input type="tel" id="qc-tel" name="telefoon" inputmode="tel" autocomplete="tel" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+          </div>
+          <div>
+            <label for="qc-email" class="block text-xs font-medium text-slate-700 mb-1">E-mail</label>
+            <input type="email" id="qc-email" name="email" autocomplete="email" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
+          </div>
+        </div>
+        <p class="text-xs text-slate-500 -mt-1">Telefoon of e-mail invullen is genoeg.</p>
+        <div>
+          <label for="qc-bericht" class="block text-xs font-medium text-slate-700 mb-1">Bericht <span class="text-slate-500 font-normal">(optioneel)</span></label>
+          <textarea id="qc-bericht" name="bericht" rows="2" maxlength="1000" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo resize-none"></textarea>
+        </div>
+        <p id="qc-error" class="hidden text-sm text-red-600" role="alert"></p>
+        <p id="qc-ok" class="hidden text-sm font-medium text-emerald-700" role="status">Bedankt! We hebben uw bericht ontvangen en nemen binnen 1 werkdag contact op.</p>
+        <div class="flex flex-wrap items-center gap-3">
+          <button type="submit" id="qc-submit" class="btn-primary text-sm">Verstuur</button>
+          <p class="text-xs text-slate-500">Door te versturen gaat u akkoord met onze <a href="/privacy/" class="underline">privacyverklaring</a>. Liever direct? Gebruik WhatsApp of e-mail bovenaan.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+  )}
 
   <!-- Mobile menu — accordion-style -->
   <div id="mobile-menu" class="hidden lg:hidden border-t border-slate-200 bg-white max-h-[calc(100vh-72px)] overflow-y-auto" aria-label="Mobiele navigatie">
@@ -436,6 +519,7 @@ const navSchema = {
         </div>
       </details>
 
+      <a href="/portal/login/" class="mobile-nav-link">Klantportaal (inloggen)</a>
       <!-- Trust strip -->
       <div class="mt-3 pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 text-xs text-slate-500 px-3 py-2">
         <a href="tel:+31624741597" class="flex items-center gap-1.5 hover:text-navy">
@@ -690,4 +774,75 @@ const navSchema = {
       iconClose?.classList.add('hidden');
     }
   });
+</script>
+
+<script>
+  // Snel contactformulier (zie #quick-contact). Eigen script-blok: raakt het
+  // hamburger-gedrag hierboven niet aan.
+  (() => {
+    const toggle = document.getElementById('qc-toggle') as HTMLButtonElement | null;
+    const panel = document.getElementById('quick-contact') as HTMLElement | null;
+    const form = document.getElementById('qc-form') as HTMLFormElement | null;
+    if (!toggle || !panel || !form) return;
+    const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+    const err = document.getElementById('qc-error') as HTMLElement;
+    const ok = document.getElementById('qc-ok') as HTMLElement;
+    const submit = document.getElementById('qc-submit') as HTMLButtonElement;
+    const chips = Array.from(panel.querySelectorAll<HTMLButtonElement>('[data-qc-chip]'));
+
+    function setOpen(open: boolean) {
+      panel!.classList.toggle('hidden', !open);
+      toggle!.setAttribute('aria-expanded', String(open));
+      if (open) {
+        $('qc-page').value = location.pathname;
+        (window as any)._track?.('quick_contact_open', { page: location.pathname });
+        setTimeout(() => $('qc-naam').focus(), 0);
+      }
+    }
+    toggle.addEventListener('click', () => setOpen(panel!.classList.contains('hidden')));
+    document.getElementById('qc-close')?.addEventListener('click', () => { setOpen(false); toggle!.focus(); });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !panel!.classList.contains('hidden')) { setOpen(false); toggle!.focus(); }
+    });
+    chips.forEach((c) => c.addEventListener('click', () => {
+      const on = c.getAttribute('aria-pressed') !== 'true';
+      c.setAttribute('aria-pressed', String(on));
+      c.classList.toggle('bg-navy', on); c.classList.toggle('text-white', on); c.classList.toggle('border-navy', on);
+      $('qc-interest').value = chips.filter((x) => x.getAttribute('aria-pressed') === 'true').map((x) => x.dataset.qcChip).join(', ');
+    }));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      err.classList.add('hidden'); ok.classList.add('hidden');
+      const naam = $('qc-naam').value.trim();
+      const tel = $('qc-tel').value.trim();
+      const mail = $('qc-email').value.trim();
+      const telOk = tel.replace(/\D/g, '').length >= 8;
+      const mailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail);
+      let msg = '';
+      if (!naam) msg = 'Vul uw naam in.';
+      else if (!telOk && !mailOk) msg = 'Vul een telefoonnummer of een geldig e-mailadres in.';
+      else if (mail && !mailOk) msg = 'Dit e-mailadres lijkt niet te kloppen.';
+      if (msg) { err.textContent = msg; err.classList.remove('hidden'); return; }
+      submit.disabled = true; submit.textContent = 'Verzenden...';
+      const ctrl = new AbortController();
+      const tid = setTimeout(() => ctrl.abort(), 30000);
+      try {
+        const res = await fetch('/api/submit', { method: 'POST', body: new FormData(form), signal: ctrl.signal });
+        clearTimeout(tid);
+        const json = await res.json().catch(() => ({} as any));
+        if (!res.ok || !json.success) throw new Error(json.message || 'HTTP ' + res.status);
+        (window as any)._track?.('generate_lead', { form_name: 'quick_contact' });
+        form.reset();
+        chips.forEach((c) => { c.setAttribute('aria-pressed', 'false'); c.classList.remove('bg-navy', 'text-white', 'border-navy'); });
+        ok.classList.remove('hidden');
+        submit.textContent = 'Verstuurd';
+      } catch (ex: any) {
+        clearTimeout(tid);
+        err.textContent = (ex?.name === 'AbortError' ? 'Het versturen duurt te lang.' : 'Versturen mislukt.') + ' Probeer het opnieuw, of gebruik WhatsApp of mail naar hello@aanloopai.nl.';
+        err.classList.remove('hidden');
+        submit.disabled = false; submit.textContent = 'Verstuur';
+      }
+    });
+  })();
 </script>

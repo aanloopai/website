@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import FaqSection from '../components/FaqSection.astro';
 
 const faqItems = [
   { question: 'Waar staat mijn data?', answer: 'Onze eigen server staat bij Hetzner in Duitsland (Neurenberg); website en portaal draaien op Cloudflare. Een deel van onze leveranciers is Amerikaans (onder meer Cloudflare, ElevenLabs en de taalmodellen). Doorgifte buiten de EU loopt via hun verwerkersovereenkomst. Het volledige sub-verwerkersregister staat op /beveiliging/.' },
@@ -76,6 +77,8 @@ const schema = {
           <p>We bouwen zoveel mogelijk op open technologie zoals n8n self-hosted. Bij beeindiging van de samenwerking ontvangt u een export van uw workflows en data — u blijft eigenaar.</p>
         </div>
       </div>
+
+      <FaqSection items={faqItems} bare />
 
       <div class="rounded-lg bg-navy text-white p-8 text-center mt-12 max-w-3xl mx-auto">
         <h2 class="text-xl font-bold">Vragen over privacy of compliance?</h2>

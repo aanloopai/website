@@ -1,5 +1,6 @@
 ---
 title: "AI-intake voor cliënten in het notariaat: zo werkt het in de praktijk"
+seoTitle: "AI-intake voor cliënten in het notariaat"
 description: "AI-intake voor cliënten in het notariaat: hoe een AI-telefoniste nieuwe aanvragen opvangt, afspraken plant en rekening houdt met AVG en geheimhouding."
 excerpt: "Een notariskantoor dat de telefoon niet opneemt, verliest nieuwe dossiers aan het kantoor verderop. Dit artikel legt uit wat AI-intake voor cliënten in het notariaat inhoudt, welke gegevens een AI-telefoniste veilig kan uitvragen, hoe dit past binnen de AVG, de geheimhoudingsplicht en de Wwft, en hoe u verantwoord begint."
 published: 2026-09-28
