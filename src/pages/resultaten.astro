@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FaqSection from '../components/FaqSection.astro';
-import { RESULTATEN, KERNPUNTEN, RESULTATEN_PEILDATUM } from '../data/resultaten';
+import MobileProof from '../components/MobileProof.astro';
+import { RESULTATEN, KERNPUNTEN, RESULTATEN_PEILDATUM, alleCijfers } from '../data/resultaten';
 import { WEBSITE_BUNDEL } from '../data/pricing';
 
 // Alle cijfers op deze pagina komen uit src/data/resultaten.ts (guard:
@@ -12,6 +13,11 @@ const euro = (n: number) => `€${n.toLocaleString('nl-NL')}`;
 const datum = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
 const gemeten = RESULTATEN.filter((s) => s.cijfers.length);
 const gestart = RESULTATEN.filter((s) => !s.cijfers.length);
+
+// Sterkste meetpunt bovenaan: lead-ratio AI- tegenover Google-bezoek op keukeninbeeld.nl
+// (zelfde bron-id's als KERNPUNTEN; datum komt uit het cijfer zelf).
+const kopKern = KERNPUNTEN.find((k) => k.id === 'kern-kib-lead')!;
+const kopCijfer = alleCijfers().find((c) => c.id === kopKern.bron[0])!;
 
 const faqItems = [
   { question: 'Zijn dit echte klanten of eigen projecten?', answer: 'Beide, en we zeggen per site welke het is. Keuken in Beeld, FleetTrack Holland, Alfa Reclame, Zoekeen en aanloopai.nl zijn eigen bedrijven en platforms uit dezelfde groep; Trip and Tick en Grynn Studio zijn klanten die akkoord zijn met publicatie. Juist omdat het eigen sites zijn, kunnen we de ruwe meting laten zien in plaats van een quote.' },
@@ -56,6 +62,10 @@ const schema = [
       <div class="max-w-3xl">
         <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Resultaten · gemeten, niet beloofd</span></div>
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05]">Wat onze AI-websites opleveren. In cijfers die u zelf kunt narekenen.</h1>
+        <p class="mt-6 text-2xl sm:text-3xl font-semibold tracking-tight text-brand-indigo leading-snug" data-kop-meting>
+          {kopKern.waarde} {kopKern.label}
+          <span class="block mt-1 text-sm font-normal text-slate-600">{kopKern.toelichting} Gemeten t/m {datum(kopCijfer.gemeten_op)}, methode: {kopCijfer.methode === 'site-analytics' ? 'serverstatistiek van de site' : kopCijfer.methode}.</span>
+        </p>
         <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty" data-speakable>
           Wij bouwen websites met AI voor onze eigen bedrijven en voor klanten, en meten op al die sites hetzelfde: hoeveel bezoek via ChatGPT, Perplexity en Gemini binnenkomt, hoe vaak dat bezoek contact opneemt vergeleken met Google-bezoek, en hoeveel aanvragen er echt in de inbox landen. Hieronder staat die meting — met de methode en de datum erbij, ook waar het cijfer klein is.
         </p>
@@ -63,6 +73,7 @@ const schema = [
           <a href="/diensten/ai-website-bundel-mkb-nederland/" class="btn-primary text-base px-6 py-3.5">Dit ook voor mijn site</a>
           <a href="/werk/" class="btn-outline text-base px-6 py-3.5">Bekijk de sites</a>
         </div>
+        <div class="mt-6"><MobileProof /></div>
         <p class="mt-5 text-sm text-slate-500">Peildatum snapshot: {datum(RESULTATEN_PEILDATUM)} · tabel ververst elk uur · <a href="/api/resultaten" class="underline underline-offset-2">JSON</a></p>
       </div>
     </div>
