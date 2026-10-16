@@ -159,7 +159,9 @@ describe('site/location matching', () => {
   it('seeds the portfolio sites with unique keys', () => {
     const keys = SEED_SITES.map((s) => s.key);
     expect(new Set(keys).size).toBe(keys.length);
-    for (const k of ['aanloop', 'alfa', 'fth', 'pasfoto', 'tripandtick', 'keukeninbeeld']) expect(keys).toContain(k);
+    for (const k of ['aanloop', 'alfa', 'fth', 'pasfoto', 'tripandtick', 'keukeninbeeld', 'grynnstudio']) expect(keys).toContain(k);
+    // grynnstudio.nl has no www: the beacon resolves the Origin host through bareHost
+    expect(bareHost(SEED_SITES.find((s) => s.key === 'grynnstudio').host)).toBe('grynnstudio.nl');
   });
 
   // klaasendaams: customer relationship ended 2026-09-09. Re-adding it to the

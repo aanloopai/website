@@ -29,6 +29,7 @@ import {
   handlePortalApi,
 } from './lib/portal-routes.js';
 import { handleAdminApi } from './lib/admin-routes.js';
+import { handleKlantApi } from './lib/discovery-klant.js';
 import { handleAgaChat, handleAgaModels } from './lib/aga-chat.js';
 import { handleMollieWebhook, reconcilePayments, billMonthlySubscriptions } from './lib/mollie.js';
 import { retryFailedProvisions } from './lib/activation.js';
@@ -46,7 +47,8 @@ import { tierForPlanSlug } from './data/funnel-map.ts';
 import { extractBusinessFacts, normalizeSiteUrl, isFetchableSiteUrl } from './lib/site-prefill.js';
 import { handleVoorstelClaim } from './lib/voorstel-claim.js';
 import { handleVoorstelVerify } from './lib/voorstel-verify.js';
-import { visibilityIngest, visibilityEvent, beaconScript, gbpSyncIfDue } from './lib/visibility.js';
+import { visibilityIngest, visibilityEvent, visibilitySummary, beaconScript, gbpSyncIfDue } from './lib/visibility.js';
+import { resultatenPublic } from './lib/resultaten-public.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -77,6 +79,13 @@ const AUTORESPONSE_TEMPLATES = {
     subject: 'Bedankt voor uw AI-scan aanvraag — Aanloop AI',
     intro: 'Bedankt voor uw aanvraag voor een gratis AI-scan bij Aanloop AI.',
     body: 'We nemen binnen 1 werkdag contact met u op om een 30-minuten remote sessie in te plannen. Hierin analyseren we uw bedrijfsprocessen en laten we zien waar AI concrete besparingen oplevert — met indicatieve cijfers voor uw situatie.',
+  },
+  // Snel contactformulier in de header (elke publieke pagina). Alleen de
+  // bezoekers die een e-mailadres opgeven krijgen deze bevestiging.
+  snel: {
+    subject: 'Bedankt voor uw bericht — Aanloop AI',
+    intro: 'Bedankt voor uw bericht bij Aanloop AI.',
+    body: 'We hebben uw gegevens goed ontvangen en nemen binnen 1 werkdag contact met u op.',
   },
   contact: {
     subject: 'Bedankt voor uw bericht — Aanloop AI',
@@ -732,7 +741,9 @@ async function storeInboundLead(env, { formType, fields, userEmail, fullName, cl
       id,
       Date.now(),
       cap(formType, 60),
-      cap(userEmail, 200),
+      // email is NOT NULL in inbound_leads: het snelle contactformulier mag
+      // alleen een telefoonnummer bevatten, dan staat hier een lege string.
+      cap(userEmail, 200) || '',
       cap(fullName, 200),
       cap(fields.bedrijf || fields.bedrijfsnaam || fields.company, 200),
       cap(fields.telefoon || fields.phone, 60),
@@ -786,7 +797,18 @@ async function handleSubmit(request, env) {
   const firstName = (fields.voornaam || fields.naam || fields.name || '').toString().split(' ')[0] || 'daar';
   const fullName = (fields.voornaam ? `${fields.voornaam} ${fields.achternaam || ''}`.trim() : (fields.naam || fields.name || userEmail)) || userEmail;
 
-  if (!isValidEmail(userEmail)) {
+  if (formType === 'snel') {
+    // Snel contactformulier (header): naam + telefoon óf e-mail. Eén van de twee
+    // volstaat, dus een lege e-mail is hier geldig.
+    const phoneDigits = (fields.telefoon || fields.phone || '').toString().replace(/\D/g, '');
+    const name = (fields.naam || '').toString().trim();
+    if (!name) {
+      return jsonResponse({ success: false, message: 'Vul uw naam in.' }, 400);
+    }
+    if (userEmail ? !isValidEmail(userEmail) : phoneDigits.length < 8) {
+      return jsonResponse({ success: false, message: 'Vul een telefoonnummer of een geldig e-mailadres in.' }, 400);
+    }
+  } else if (!isValidEmail(userEmail)) {
     return jsonResponse({ success: false, message: 'Ongeldig e-mailadres.' }, 400);
   }
 
@@ -840,10 +862,18 @@ async function handleSubmit(request, env) {
     await sendBrevoEmail(env.BREVO_API_KEY, {
       sender: { name: SENDER_NAME, email: SENDER_EMAIL },
       to: [{ email: NOTIFICATION_EMAIL, name: 'Aanloop AI' }],
-      replyTo: { email: userEmail, name: fullName },
+      // Zonder e-mailadres (alleen telefoon) is er niets om op te antwoorden.
+      ...(userEmail ? { replyTo: { email: userEmail, name: fullName } } : {}),
       subject,
       htmlContent: buildNotificationHtml(formType, fields, userEmail, fullName),
     }, 'notification');
+
+    // Alleen telefoon: geen autoresponder en geen CRM-upsert mogelijk. De lead
+    // staat in D1, Telegram en de notificatiemail; terugbellen doet sales.
+    if (!userEmail) {
+      await markLeadMail(env, leadId, 'verzonden', null);
+      return jsonResponse({ success: true, message: 'Verzonden' });
+    }
 
     // Demo-aanvraag (2026-09-19): één mail met "geen login nodig" + de
     // persoonlijke intake-link vervangt de generieke autoresponder — zie
@@ -1424,6 +1454,15 @@ export default {
     if (url.pathname === '/api/visibility/event') {
       return visibilityEvent(request, env);
     }
+    // Machine-readable per-site summary for the AGA digest (HMAC over raw query).
+    if (url.pathname === '/api/visibility/summary') {
+      return visibilitySummary(request, env);
+    }
+    // Publiek resultatenbord (/resultaten/): alleen 28-dagentotalen per site,
+    // geen paden of verwijzers; 1 uur edge-cache.
+    if (url.pathname === '/api/resultaten') {
+      return resultatenPublic(request, env, ctx);
+    }
     if (url.pathname === '/v.js') {
       return beaconScript();
     }
@@ -1474,9 +1513,29 @@ export default {
       if (request.method === 'OPTIONS') return new Response(null, { headers: PORTAL_CORS_HEADERS });
       return handlePortalApi(request, env);
     }
+    // Discovery — klant vult eigen vragenlijst in (persoonlijke link → cookie).
+    if (url.pathname.startsWith('/api/discovery-klant/')) {
+      if (request.method === 'OPTIONS') return new Response(null, { headers: PORTAL_CORS_HEADERS });
+      return handleKlantApi(request, env);
+    }
     if (url.pathname.startsWith('/api/admin/')) {
       if (request.method === 'OPTIONS') return new Response(null, { headers: PORTAL_CORS_HEADERS });
       return handleAdminApi(request, env);
+    }
+
+    // Klantenportaal: oude /klanten-URL's (spec) -> /portal (301, permanent).
+    if (url.pathname === '/klanten' || url.pathname === '/klanten/') {
+      return Response.redirect(new URL('/portal/login', url.origin).toString(), 301);
+    }
+    if (url.pathname === '/klanten/dashboard') {
+      return Response.redirect(new URL('/portal/', url.origin).toString(), 301);
+    }
+    if (url.pathname === '/klanten/aanleveren') {
+      return Response.redirect(new URL('/portal/aanleveren/', url.origin).toString(), 301);
+    }
+    const klantOvk = url.pathname.match(/^\/klanten\/overeenkomst\/([^/]+)\/?$/);
+    if (klantOvk) {
+      return Response.redirect(new URL('/portal/overeenkomst/?id=' + klantOvk[1], url.origin).toString(), 301);
     }
 
     if (env.ASSETS) {

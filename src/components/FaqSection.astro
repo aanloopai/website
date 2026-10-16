@@ -1,0 +1,36 @@
+---
+// Zichtbare FAQ uit dezelfde array als de FAQPage-JSON-LD (faqSchema in BaseLayout).
+// Accepteert { question, answer } of { q, a }. `bare` = zonder <section>-wrapper
+// (voor gebruik binnen een bestaande container).
+interface Item { question?: string; answer?: string; q?: string; a?: string }
+interface Props { items: Item[]; bare?: boolean }
+const { items, bare = false } = Astro.props;
+const faq = items.map((i) => ({ question: i.question ?? i.q ?? '', answer: i.answer ?? i.a ?? '' }));
+---
+{faq.length > 0 && (bare ? (
+  <div class="max-w-3xl mx-auto mt-12 mb-8">
+    <h2 class="text-2xl font-bold text-navy mb-6">Veelgestelde vragen</h2>
+    <div class="space-y-4">
+      {faq.map((item) => (
+        <div class="card">
+          <h3 class="font-semibold text-navy mb-2">{item.question}</h3>
+          <p class="text-slate-600 text-sm leading-relaxed">{item.answer}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+) : (
+  <section class="section">
+    <div class="container-page max-w-3xl mx-auto">
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-8">Veelgestelde vragen</h2>
+      <div class="space-y-4">
+        {faq.map((item) => (
+          <div class="card">
+            <h3 class="font-semibold text-navy mb-2">{item.question}</h3>
+            <p class="text-slate-600 text-sm leading-relaxed">{item.answer}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+))}

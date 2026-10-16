@@ -49,6 +49,8 @@ function isNoindex(content) {
 
 function priorityFor(url) {
   if (url === '/') return '1.0';
+  if (url === '/resultaten/' || url === '/werk/') return '0.9';
+  if (url.startsWith('/werk/')) return '0.85';
   if (url === '/diensten/' || url === '/cases/' || url === '/sectoren/') return '0.9';
   if (url.startsWith('/diensten/') && (url.includes('bundel') || url.includes('website-laten-maken') || url.includes('webshop-laten-maken'))) return '0.95';
   if (url.startsWith('/diensten/')) return '0.9';
@@ -60,6 +62,8 @@ function priorityFor(url) {
   if (url.startsWith('/locaties/')) return '0.75';
   if (url.startsWith('/vergelijk/')) return '0.75';
   if (url === '/glossarium/') return '0.75';
+  if (url === '/geo-bureau/') return '0.9';
+  if (url.startsWith('/geo-bureau/')) return '0.85';
   if (url.startsWith('/ai-')) return '0.85';
   return '0.7';
 }
@@ -142,6 +146,23 @@ for (const s of geoSlugs) {
   sourceByUrl.set(`/ai-vindbaarheid/voor-${s}/`, path.join(ROOT, 'src', 'data', 'geo-sectors.ts'));
 }
 
+// /geo-bureau/[regio] en /geo-bureau/sector/[sector] dynamic routes — slugs uit
+// geo-regios.ts en geo-sbi-sectoren.ts (zelfde indeling als de GEO Agency Index).
+for (const [file, prefix] of [['geo-regios.ts', '/geo-bureau/'], ['geo-sbi-sectoren.ts', '/geo-bureau/sector/']]) {
+  const src = fs.readFileSync(path.join(ROOT, 'src', 'data', file), 'utf8');
+  for (const m of src.matchAll(/slug:\s*'([^']+)'/g)) {
+    urls.push(`${prefix}${m[1]}/`);
+    sourceByUrl.set(`${prefix}${m[1]}/`, path.join(ROOT, 'src', 'data', file));
+  }
+}
+
+// /werk/[site] dynamic route — keys uit resultaten.ts (nieuwe sites auto-included).
+const resultatenSrc = fs.readFileSync(path.join(ROOT, 'src', 'data', 'resultaten.ts'), 'utf8');
+for (const m of resultatenSrc.matchAll(/^\s+key:\s*'([^']+)'/gm)) {
+  urls.push(`/werk/${m[1]}/`);
+  sourceByUrl.set(`/werk/${m[1]}/`, path.join(ROOT, 'src', 'data', 'resultaten.ts'));
+}
+
 // /leads-kopen/[sector] dynamic route — slugs uit lead-sectors.ts (nieuwe branches auto-included).
 const leadSectorsSrc = fs.readFileSync(path.join(ROOT, 'src', 'data', 'lead-sectors.ts'), 'utf8');
 const leadSlugs = Array.from(leadSectorsSrc.matchAll(/^\s+slug:\s*'([^']+)'/gm)).map((m) => m[1]);
@@ -179,7 +200,12 @@ if (fs.existsSync(KENNISBANK_CONTENT_DIR)) {
   }
 }
 
-const uniqueSorted = Array.from(new Set(urls)).sort();
+// Centrale noindex-lijst (src/data/noindex-paths.json) — zelfde bron als BaseLayout.
+const NOINDEX_LISTED = new Set(
+  JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'data', 'noindex-paths.json'), 'utf8')).groups.flatMap((g) => g.paths)
+);
+
+const uniqueSorted = Array.from(new Set(urls)).filter((u) => !NOINDEX_LISTED.has(u)).sort();
 
 // Preserve existing lastmod values where the URL was already present
 const existingXml = fs.existsSync(SITEMAP) ? fs.readFileSync(SITEMAP, 'utf8') : '';

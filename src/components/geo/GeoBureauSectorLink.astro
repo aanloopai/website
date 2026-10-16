@@ -1,0 +1,16 @@
+---
+// Contextuele link van een bestaande sectorpagina naar het GEO-bureau-cluster.
+// Koppeling in src/data/geo-bureau.ts (GEO_SECTOR_VOOR_SITESECTOR); zonder
+// koppeling rendert het blok niet. Guard: test/geo-bureau.test.js.
+import { GEO_SECTOR_VOOR_SITESECTOR } from '../../data/geo-bureau';
+interface Props { sector: string }
+const slug = GEO_SECTOR_VOOR_SITESECTOR[Astro.props.sector];
+---
+{slug && (
+  <section class="section-tight border-t border-slate-200">
+    <div class="container-page max-w-3xl mx-auto">
+      <p class="eyebrow mb-3">GEO-bureau</p>
+      <p class="text-slate-700 leading-relaxed">Wilt u in deze sector ook genoemd worden door ChatGPT, Claude, Perplexity en Google AI? Lees hoe ons <a href={`/geo-bureau/sector/${slug}/`} class="underline font-medium">GEO-bureau deze sector aanpakt</a>, <a href="/geo-bureau/wat-kost-geo/" class="underline">wat GEO kost</a> en <a href="/geo-bureau/kiezen/" class="underline">waar u op let bij het kiezen van een GEO-bureau</a>.</p>
+    </div>
+  </section>
+)}

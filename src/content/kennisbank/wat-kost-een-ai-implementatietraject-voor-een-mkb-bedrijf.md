@@ -1,5 +1,6 @@
 ---
 title: "Wat kost een AI-implementatietraject voor een mkb-bedrijf? Een eerlijk overzicht"
+seoTitle: "Wat kost een AI-implementatietraject voor het mkb?"
 description: "Wat kost een AI-implementatietraject voor een mkb-bedrijf? Ontdek welke kostenposten meetellen, wat de prijs bepaalt en hoe u het risico klein houdt."
 excerpt: "Wie een offerte voor een AI-traject ontvangt, wil vooral weten of het bedrag redelijk is. Dit artikel legt uit waaruit de kosten van een AI-implementatietraject voor een mkb-bedrijf bestaan, welke factoren de prijs bepalen en hoe praktijken, kapsalons en garages een traject kiezen dat zichzelf terugverdient."
 published: 2026-09-27

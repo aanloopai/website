@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FaqSection from '../../components/FaqSection.astro';
 import pageImage from '../../assets/images/pages/audit.jpg';
 
 const auditSchema = [
@@ -49,8 +50,8 @@ const auditFaq = [
 ---
 
 <BaseLayout
-  title="AI Audit voor MKB — vaste prijs, op aanvraag"
-  description="Productized AI-audit voor Nederlandse MKB: procesanalyse, ROI-prioritering en 90-dagen roadmap. Vaste prijs, op aanvraag — geen verrassingen."
+  title="AI-audit Nederland voor MKB — vaste prijs"
+  description="AI-audit Nederland voor het MKB: procesanalyse, ROI-prioritering en 90-dagen roadmap. Vaste prijs, op aanvraag — geen verrassingen."
   schema={auditSchema}
   faqSchema={auditFaq}
 >
@@ -159,7 +160,7 @@ const auditFaq = [
       <div class="grid md:grid-cols-3 gap-4">
         <a href="/diensten/ai-website-bundel-mkb-nederland/" class="card hover:border-brand-indigo transition-all">
           <h3 class="font-bold text-navy text-sm mb-2">AI-Website Bundel</h3>
-          <p class="text-xs text-slate-600 mb-3">Website + Emma in 1 pakket. Vanaf €649/mnd all-in — setup op aanvraag. Eén factuur, één SLA.</p>
+          <p class="text-xs text-slate-600 mb-3">Website + Emma + AI-vindbaarheid in 1 pakket. €1.000/mnd all-in, €4.500 eenmalig. Eén factuur, één SLA.</p>
           <span class="text-xs text-brand-indigo font-medium">Bekijk bundel →</span>
         </a>
         <a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="card hover:border-brand-indigo transition-all">
@@ -175,6 +176,8 @@ const auditFaq = [
       </div>
     </div>
   </section>
+
+  <FaqSection items={auditFaq} />
 
   <section class="section-tight bg-midnight text-pearl">
     <div class="container-page">
