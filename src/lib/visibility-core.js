@@ -16,6 +16,8 @@ export const SEED_SITES = [
   { key: 'keukeninbeeld', naam: 'Keuken in Beeld', host: 'www.keukeninbeeld.nl', eigenaar: 'eigen' },
   { key: 'pasfoto', naam: 'Pasfoto Rotterdam Zuid', host: 'www.pasfotorotterdamzuid.nl', eigenaar: 'klant' },
   { key: 'tripandtick', naam: 'Trip and Tick', host: 'www.tripandtick.com', eigenaar: 'klant' },
+  // grynnstudio.nl serves on the apex (no www); bareHost matches either way.
+  { key: 'grynnstudio', naam: 'GRYNN Studio', host: 'grynnstudio.nl', eigenaar: 'eigen' },
 ];
 
 // Former customers: never seeded, never ingested, and forced to actief=0 on
