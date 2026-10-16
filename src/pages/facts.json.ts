@@ -10,6 +10,9 @@ const SITE = 'https://aanloopai.nl';
 // Organisatiefeiten. Bewust zonder persoonsnamen (de oprichter wordt niet
 // gepubliceerd) en zonder niet-gepubliceerde prijzen (zie /pricing.json).
 const DIENSTEN = [
+  { naam: 'AI-Website Bundel: website die klanten oplevert (website + Emma + AI-vindbaarheid + meetpaneel)', url: `${SITE}/diensten/ai-website-bundel-mkb-nederland/` },
+  { naam: 'Website laten maken (AI-ready)', url: `${SITE}/diensten/website-laten-maken-mkb-nederland-2026/` },
+  { naam: 'Gemeten resultaten van websites die Aanloop AI bouwde', url: `${SITE}/resultaten/` },
   { naam: 'Emma, AI-receptionist (telefoon, WhatsApp bij Groei en Compleet)', url: `${SITE}/diensten/emma/` },
   { naam: 'AI telefoon-assistent', url: `${SITE}/diensten/telefoon-assistent/` },
   { naam: 'AI chatbot voor websites', url: `${SITE}/diensten/ai-chatbot-website/` },

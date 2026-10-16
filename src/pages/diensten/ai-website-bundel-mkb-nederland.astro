@@ -1,113 +1,93 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { EMMA, WEBSITE_BUNDEL, GARANTIE_KORT } from '../../data/pricing';
+import { EMMA, GEO, WEBSITE_BUNDEL, GARANTIE_KORT } from '../../data/pricing';
+import { KERNPUNTEN, RESULTATEN, RESULTATEN_PEILDATUM } from '../../data/resultaten';
 
-// Website-onderhoud bij losse afname (niet in pricing.ts — losse dienst, geen Emma-tier).
-const WEBSITE_ONDERHOUD_MND = 197;
-
+// Bundel per 2026-10-16 (owner): "een website waar AI achter draait en die écht
+// klanten oplevert". Website + Emma + AI-vindbaarheid + meetpaneel; €4.500
+// eenmalig en €1.000/mnd, beide publiek. Elk bewijscijfer op deze pagina komt
+// uit src/data/resultaten.ts (guard: test/resultaten.test.js).
 const euro = (n: number) => `€${n.toLocaleString('nl-NL')}`;
-
-const inhoud = [
-  { categorie: 'Website (Groei pakket)', items: ['Tot 30 paginas + CMS', 'Schema.org + Speakable + WCAG 2.2 AA', 'Astro/Next.js framework, GitHub bij u', 'Multilingual NL/EN/DE', 'Cloudflare Pages hosting'] },
-  { categorie: 'Emma AI-receptie (WhatsApp inbegrepen)', items: ['24/7 NL-telefoonbeantwoording', 'WhatsApp Business API — geen los abonnement', 'Agenda-koppeling Google/Outlook', 'CRM-integratie (HubSpot/Pipedrive/etc)', 'Menselijke handover bij complexe vragen', 'Live transcripts in dashboard'] },
-  { categorie: 'Operational tooling', items: ['ROI-calc widget op uw site', 'AI-scan formulier (lead-magnet)', 'GA4 + GrowthBook A/B-test setup', 'Maandelijkse performance-rapport', 'Prioriteit support binnen 4u werkdag'] },
-];
-
-// Wat u apart inkoopt vs. wat er in de bundel zit. Onze eigen listprijzen —
-// geen opgeblazen "marktprijzen", en geen jaar-1-optelsom: wie los inkoopt,
-// koopt niet alles tegelijk. Eén regel per post, en per post wat de bundel
-// ermee doet. WhatsApp staat er niet apart in: die zit al in Emma AI-receptie.
-// Eenmalige bedragen (website-bouw, Emma-setup, integratiewerk) staan hier
-// bewust NIET meer als getal — owner-besluit 2026-08-11: setup op aanvraag,
-// alleen maandprijzen zichtbaar op de site.
-const setupPosten = [
-  { item: 'Website Groei — eenmalige bouw', toelichting: 'Tot 30 paginas, CMS, multilingual NL/EN/DE', los: 'Op aanvraag', bundel: 'Op aanvraag' },
-  { item: 'Emma AI-receptie — eenmalige setup', toelichting: 'Belscript, stem-training, telefoonnummer, koppeling agenda en CRM', los: 'Op aanvraag', bundel: 'Inbegrepen' },
-  { item: 'Integratie tussen website, telefonie en WhatsApp', toelichting: 'Bij losse leveranciers doet niemand dit voor u', los: 'Op aanvraag', bundel: 'Inbegrepen' },
-];
-const maandPosten = [
-  { item: 'Website-onderhoud', toelichting: 'Hosting, updates, security, monitoring', los: 'Maandtarief op aanvraag', bundel: 'Inbegrepen' },
-  { item: 'Emma AI-receptie', toelichting: 'Neemt 24/7 uw telefoon op, plant de afspraak, stuurt de lead naar uw CRM. WhatsApp-agent inbegrepen', los: `${euro(EMMA.monthly)}/mnd`, bundel: `${euro(WEBSITE_BUNDEL.maand)}/mnd all-in` },
-];
+const datum = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
 
 const bundelPrijs = { setup: WEBSITE_BUNDEL.setup, mnd: WEBSITE_BUNDEL.maand };
+const losseMaandlast = EMMA.monthly + GEO.maand; // zonder website-onderhoud
+const jaarVoordeel = (losseMaandlast - bundelPrijs.mnd) * 12;
+const gemetenSites = RESULTATEN.filter((s) => s.cijfers.length);
 
-// Het pakketvoordeel, eerlijk gerekend: de setup-fee van Emma en het
-// integratiewerk vervallen, en het maandbedrag ligt onder de som van de twee
-// losse abonnementen. Geen jaar-1-optelsom, geen kunstmatig grote korting.
-// setupVoordeel (eenmalig) wordt bewust NIET getoond — owner-besluit
-// 2026-08-11: setup op aanvraag. Alleen de maandelijkse besparing is publiek.
-const losseMaandlast = WEBSITE_ONDERHOUD_MND + EMMA.monthly;
-const maandVoordeel = losseMaandlast - bundelPrijs.mnd;
-// Publiek tonen we het voordeel per jaar (owner 2026-09-10: geen bedragen < €497 op de site).
-const jaarVoordeel = maandVoordeel * 12;
+const inhoud = [
+  { categorie: 'Website die klanten oplevert', items: ['Tot 30 pagina\'s + CMS, Astro of Next.js, code in uw eigen GitHub', 'Eén rijk lead-formulier op elke pagina, ook in de header', 'Schema.org, Speakable, FAQ-schema, WCAG 2.2 AA, Core Web Vitals groen', 'Hosting, updates, back-ups en monitoring inbegrepen'] },
+  { categorie: 'Emma — AI-receptie (telefoon + WhatsApp)', items: ['Neemt 24/7 op in vloeiend Nederlands, plant afspraken in uw agenda', 'WhatsApp Business inbegrepen, geen los abonnement', 'Elke lead direct naar uw CRM of inbox, met transcript', 'Menselijke overdracht bij complexe vragen'] },
+  { categorie: 'AI-vindbaarheid (GEO Maandelijks inbegrepen)', items: ['llms.txt, AI-crawlertoegang, entiteiten en answer-first pagina\'s', 'Maandelijkse meting in ChatGPT, Claude, Perplexity en Gemini', 'Datasets en feitenpagina\'s die AI-assistenten letterlijk kunnen citeren', 'Bijsturing op wat wél geciteerd wordt'] },
+  { categorie: 'Meetpaneel en leadmotor', items: ['Cookieloze beacon: bezoek via AI-assistenten, contactacties, formulieren', 'Dezelfde meting als op /resultaten/, voor uw eigen site', 'Lead-notificaties geteld in de afleverstatistiek — geen schattingen', 'Maandelijkse rapportage en prioriteit support binnen 4 uur op werkdagen'] },
+];
+
+const setupPosten = [
+  { item: 'Website — bouw', toelichting: 'Tot 30 pagina\'s, CMS, formulier overal, schema', los: 'Op aanvraag', bundel: `${euro(bundelPrijs.setup)} eenmalig` },
+  { item: 'Emma — setup', toelichting: 'Belscript, stem, nummer, agenda- en CRM-koppeling', los: 'Op aanvraag', bundel: 'Inbegrepen' },
+  { item: 'GEO — setup', toelichting: 'llms.txt, schema, AI-crawlertoegang, nulmeting', los: 'Op aanvraag', bundel: 'Inbegrepen' },
+  { item: 'Integratie website ↔ telefonie ↔ WhatsApp ↔ meting', toelichting: 'Bij losse leveranciers doet niemand dit voor u', los: 'Op aanvraag', bundel: 'Inbegrepen' },
+];
+const maandPosten = [
+  { item: 'Website-onderhoud en hosting', toelichting: 'Updates, security, back-ups, monitoring', los: 'Op aanvraag', bundel: 'Inbegrepen' },
+  { item: 'Emma Compleet', toelichting: 'Onbeperkt volume, telefoon + WhatsApp, workflows', los: `${euro(EMMA.monthly)}/mnd`, bundel: 'Inbegrepen' },
+  { item: 'GEO Maandelijks', toelichting: 'Meting in vier AI-engines, content-bijsturing, rapportage', los: `${euro(GEO.maand)}/mnd`, bundel: 'Inbegrepen' },
+  { item: 'Meetpaneel', toelichting: 'AI-bezoek, contactacties, formulieren, leads', los: 'Niet los verkrijgbaar', bundel: 'Inbegrepen' },
+];
 
 const waaromUniek = [
-  { titel: 'Eén partner, één factuur, één SLA', body: 'Geen "verwijst u naar de webdeveloper" als de chatbot bug heeft. Wij leveren website + AI als één geïntegreerd systeem en zijn aanspreekpunt voor alles.' },
-  { titel: 'Architectuur is vanaf dag 1 AI-ready', body: 'Webbureaus bouwen meestal eerst de site, AI komt achteraf. Bij ons zijn de plug-in-slots, schema.org-markup en data-flows al ingebouwd op launch-dag — geen dure retrofit achteraf.' },
-  { titel: 'Een pakketkorting die klopt', body: `De setup-fee van Emma en het integratiewerk vervallen in de bundel — dat scheelt bij de start (exacte eenmalige bedragen bespreken we in het gesprek). Maandelijks betaalt u ${euro(bundelPrijs.mnd)} all-in in plaats van twee losse abonnementen — ${euro(jaarVoordeel)} per jaar lager. Geen dramatische kortingspercentages: onze losse prijzen zijn de echte prijzen, en de bundel is precies zoveel voordeliger als het scheelt om alles bij één partij te doen.` },
-  { titel: 'Time-to-revenue 6-8 weken ipv 12-20', body: 'Parallel design + AI-training in één traject. Concurrent-route (eerst webdev klaar, dan AI-agency briefen) duurt 3-5 maanden langer. U bent 2-4 maanden eerder live.' },
+  { titel: 'Wij laten de cijfers zien vóór u tekent', body: `Zeven sites die wij bouwden staan met hun meting op /resultaten/: bezoek via ChatGPT, Perplexity en Gemini, contactratio tegenover Google, afgeleverde leads. Met methode en meetdatum, ook waar het cijfer klein is. Geen bureau in de GEO Agency Index doet dat.` },
+  { titel: 'AI-bezoek neemt vaker contact op', body: `Op ${KERNPUNTEN[0].waarde} gemeten sites doet bezoek via AI-assistenten vaker een contactactie dan Google-bezoek; op keukeninbeeld.nl is de lead-ratio uit AI-bezoek ${KERNPUNTEN[1].waarde} hoger. Daarom bouwen we de site vanaf dag 1 voor AI-citatie, niet als retrofit.` },
+  { titel: 'Eén partner, één factuur, één meting', body: 'Website, telefoon, WhatsApp, AI-vindbaarheid en de meting zijn één systeem. Als de chatbot hapert, verwijst niemand u naar "de webbouwer". En u ziet in hetzelfde paneel als wij wat elk kanaal doet.' },
+  { titel: 'Een pakketprijs die klopt', body: `Emma Compleet (${euro(EMMA.monthly)}) en GEO Maandelijks (${euro(GEO.maand)}) kosten los al ${euro(losseMaandlast)} per maand, zonder website-onderhoud. De bundel is ${euro(bundelPrijs.mnd)} all-in: ${euro(jaarVoordeel)} per jaar lager dan die twee abonnementen, mét website, hosting en meetpaneel erbij. Geen opgeblazen kortingspercentages.` },
 ];
 
 const idealVoor = [
-  'ZZP/MKB die in 1 keer professioneel online wil komen met AI-eerstelijns-support',
-  'Bestaande bedrijven met een verouderde site die zowel design als AI-laag willen vernieuwen',
-  'Praktijken (zorg/juridisch/accountancy) die NEN 7510-conform website + AI-receptie nodig hebben',
-  'Webshop-eigenaren die ook een content-website willen met cart-recovery via WhatsApp',
-  'Multi-locatie ondernemers die 24/7 telefoon + chat over alle vestigingen willen centraliseren',
+  'MKB-bedrijven waarvan de website nu wel bezoek maar geen aanvragen oplevert',
+  'Dienstverleners die in ChatGPT, Gemini en Perplexity genoemd willen worden als een klant om een aanbieder vraagt',
+  'Bedrijven met een verouderde site die ontwerp, AI-laag en meting in één keer willen vernieuwen',
+  'Praktijken (zorg, juridisch, accountancy) die telefoon-intake en AVG-conforme opzet nodig hebben',
+  'Ondernemers die willen zien wat elk kanaal oplevert in plaats van een maandrapport met schattingen',
 ];
 
 const proces = [
-  { stap: '01', titel: 'Discovery (1 sessie, 90 min)', body: 'Business-model, doelgroep, bestaande systemen, telefoon-volume, FAQs, agenda-tools. We mappen direct in welke systemen Emma moeten koppelen en welke website-architectuur er omheen past.' },
-  { stap: '02', titel: 'Bouw (week 2-6)', body: 'Parallel-tracks: (a) website-build met AI-ready plug-in slots, (b) Emma-training met uw scripts/escalatie, (c) Emma-training met uw kennisbank. U keurt elke vrijdag voortgang goed in 30-min demo.' },
-  { stap: '03', titel: 'Launch + 30-dagen optimalisatie', body: 'Soft-launch week 7 (uw team test). Public-launch week 8. Daarna 30 dagen wekelijkse fine-tuning op basis van echte gespreks-/conversie-data. Bij maand 2 staat alles op auto-pilot.' },
+  { stap: '01', titel: 'Discovery en nulmeting (week 1)', body: 'Doelgroep, aanbod, bestaande systemen, telefoonvolume. We meten direct hoe vindbaar u nu bent in AI-assistenten en in Google, zodat we straks tegen een echte nulmeting kunnen afzetten.' },
+  { stap: '02', titel: 'Bouw in drie parallelle sporen (week 2-6)', body: 'Website met formulier overal en schema; Emma getraind op uw scripts en kennisbank; GEO-basis (llms.txt, entiteiten, datasets, answer-first pagina\'s). Elke vrijdag een demo van 30 minuten.' },
+  { stap: '03', titel: 'Live, meten, bijsturen (week 7 en verder)', body: 'Soft-launch, dan publiek. Vanaf dag 1 meet de beacon AI-bezoek, contactacties en formulieren; de AI-radar stelt elke week dezelfde vragen. Maandelijks sturen we content en techniek bij op wat gemeten wordt.' },
 ];
 
 const faqItems = [
-  { question: 'Wat zit er precies in de bundel?', answer: 'Website (Groei pakket: tot 30 paginas, CMS, multilingual NL/EN/DE) + Emma AI-receptionist (24/7 NL-telefoon, agenda, CRM-koppeling, WhatsApp inbegrepen) + alle koppelingen tussen de 2 systemen + ROI-calc/AI-scan widgets op uw site + GA4/GrowthBook setup + maandelijks onderhoud op alles. Eén factuur, één contract, één aanspreekpunt.' },
-  { question: 'Wat scheelt de bundel tegenover losse afname?', answer: `Eenmalig: de setup-fee van Emma en het integratiewerk vervallen in de bundel — de website-bouw kost hetzelfde als los. De exacte eenmalige bedragen bespreken we in het gesprek. Maandelijks: los betaalt u website-onderhoud (tarief op aanvraag) plus ${euro(EMMA.monthly)} Emma bij twee contracten; in de bundel ${euro(bundelPrijs.mnd)} all-in, dus ${euro(jaarVoordeel)} per jaar lager. We tellen die posten bewust niet op tot één jaarbedrag: wie los inkoopt, koopt niet alles op dezelfde dag, en zo'n optelsom laat de korting groter lijken dan hij is.` },
-  { question: 'Zit WhatsApp bij Emma inbegrepen, of betaal ik daar apart voor?', answer: 'Inbegrepen vanaf Emma Groei — er bestaat geen los WhatsApp-abonnement meer. Deze bundel gebruikt Emma Compleet (€497/mnd, onbeperkt), die écht uw telefoon opneemt (gesprek in het Nederlands, afspraak in de agenda, lead in het CRM) én beantwoordt WhatsApp-berichten — FAQ, offerte-aanvragen, lead-capture — in hetzelfde abonnement. U betaalt dus nooit twee keer voor hetzelfde kanaal. In deze bundel zit de volledige Emma AI-receptie, dus telefoon én WhatsApp.' },
-  { question: 'Kan ik bestaande website behouden en alleen Emma toevoegen?', answer: 'Ja, dat kan via een los Emma-abonnement (zie /diensten/emma/ — telefoon en WhatsApp zitten daar in één pakket). De bundel is voordeliger als u sowieso een nieuwe of vernieuwde site wilt. Als uw huidige site jonger dan 2 jaar is en al schema.org markup heeft, adviseren we losse AI-modules ipv bundel.' },
-  { question: 'Wat als ik later wil opzeggen?', answer: 'De setup-fee is eenmalig. Bij opzegging behoudt u: uw website-code (in eigen GitHub), uw domeinnaam, alle CRM-data van Emma. Emma stoppen we met doorschakelen, maar de transcripts/lead-data exporteren we naar u toe.' },
-  { question: 'Hoe lang duurt het tot we live zijn?', answer: 'Discovery week 1, design + AI-training parallel weken 2-6, soft-launch week 7, public-launch week 8. Bij complexe integraties (zoals zorg-EPD of advocaten-DMS koppeling) kan het 10-12 weken zijn. We werken in vaste sprints met wekelijkse demo-momenten.' },
-  { question: 'Krijg ik training om zelf updates te doen?', answer: 'Ja. Bij oplevering 2u Loom-video training over: CMS-bewerking (paginas/blogs aanpassen), Emma script-aanpassingen, Emma FAQ-uitbreiden, dashboard-rapporten lezen. Daarna 1u/maand telefonische support voor vragen over zelfbeheer. Wij doen de technische updates, u doet de content-updates.' },
-  { question: 'Is dit AVG- en NEN 7510-compliant?', answer: 'Ja. Standaard AVG/UAVG-conform: cookie-banner, DPA-template, EU-only hosting (Frankfurt/Amsterdam), encryptie at-rest en in-transit. Voor zorg/juridische klanten leveren we NEN 7510-compatibele opzet (DPIA-template, pseudonimiseringsbeleid, audit-logs). Aanloop AI is een Nederlandse eenmanszaak (KvK 88606902).' },
-  { question: 'Kan ik later upgraden naar Pro?', answer: 'Ja. Bundel Groei → Bundel Pro upgrade (vanaf €797/mnd, setup op aanvraag) voegt toe: Pro website-features (headless CMS, custom componenten, ERP-integratie), Emma AI-receptie zonder gespreks-cap (onbeperkt bellen), WhatsApp bij Emma uitgebreid naar meer kanalen (Instagram DM + Facebook Messenger + Telegram), dedicated DevOps SLA. Geen nieuwe setup-fee voor reeds gebouwde delen.' },
-  { question: 'Wat als ik alleen een webshop nodig heb (geen content-website)?', answer: 'Dan is de webshop-bouw service (maandtarief en setup op aanvraag) plus Emma AI-receptie (vanaf €149/mnd, WhatsApp inbegrepen vanaf Groei €299/mnd) een betere fit. De AI-Website Bundel is bedoeld voor content-websites met telefoon-intake en chat-support. Voor pure webshop-scenarios met cart-recovery is een aparte bundel logischer — vraag tijdens discovery.' },
+  { question: 'Wat zit er precies in de bundel?', answer: `Website (tot 30 pagina's, CMS, lead-formulier op elke pagina, schema, hosting en onderhoud) + Emma AI-receptionist (24/7 telefoon en WhatsApp, agenda- en CRM-koppeling) + AI-vindbaarheid (GEO Maandelijks: llms.txt, entiteiten, datasets, maandelijkse meting in ChatGPT, Claude, Perplexity en Gemini) + het meetpaneel (AI-bezoek, contactacties, formulieren, leads). Eén contract, één factuur, één aanspreekpunt.` },
+  { question: 'Wat kost het en wat is daar bijzonder aan?', answer: `${euro(bundelPrijs.setup)} eenmalig en ${euro(bundelPrijs.mnd)} per maand, exclusief 21% btw. We publiceren beide bedragen; de meeste bureaus noemen alleen "op aanvraag". Los kosten Emma Compleet en GEO Maandelijks samen ${euro(losseMaandlast)} per maand zonder website; in de bundel vervallen de Emma-setup, de GEO-setup en het integratiewerk.` },
+  { question: 'Garanderen jullie leads of vermeldingen in ChatGPT?', answer: 'Nee, en wie dat wel garandeert, moet u wantrouwen: geen enkel bureau bepaalt wat een AI-assistent antwoordt of hoeveel mensen bellen. Wat we wél garanderen is dat u elke maand ziet wat er gemeten is — dezelfde cijfers die wij op /resultaten/ over onze eigen sites publiceren — en dat we daarop bijsturen.' },
+  { question: 'Hoe weet ik dat jullie cijfers kloppen?', answer: `Elk cijfer op /resultaten/ draagt de meetmethode, de periode en de meetdatum (momentopname ${datum(RESULTATEN_PEILDATUM)}; de tabel ververst elk uur uit onze meting). Eigen bedrijven staan er als eigen bedrijven, klanten met hun akkoord. We tellen contactacties en afgeleverde leads apart en tellen ze nooit bij elkaar op.` },
+  { question: 'Zit WhatsApp bij Emma inbegrepen?', answer: 'Ja. De bundel gebruikt Emma Compleet: telefoon én WhatsApp in hetzelfde abonnement, onbeperkt volume. U betaalt nooit twee keer voor hetzelfde kanaal.' },
+  { question: 'Kan ik mijn bestaande website houden en alleen Emma of GEO afnemen?', answer: 'Ja, beide zijn los verkrijgbaar (zie /diensten/emma/ en /ai-vindbaarheid/). De bundel is bedoeld voor wie een nieuwe of vernieuwde site wil waarin de AI-laag en de meting vanaf dag 1 zitten; retrofit op een bestaande site is meestal duurder en meet minder.' },
+  { question: 'Wat als ik later wil opzeggen?', answer: 'U behoudt uw website-code (in uw eigen GitHub), uw domein en alle lead- en gespreksdata, die we naar u exporteren. Het maandabonnement stopt per maand na de eerste termijn; de eenmalige bouw is dan al van u.' },
+  { question: 'Hoe lang duurt het tot we live zijn?', answer: 'Discovery en nulmeting in week 1, bouw in drie parallelle sporen in week 2 tot 6, soft-launch in week 7 en publiek in week 8. Bij complexe koppelingen (EPD, DMS, ERP) kan het 10 tot 12 weken zijn.' },
+  { question: 'Is dit AVG-conform?', answer: 'Ja. Verwerkersovereenkomst bij elke samenwerking, cookieloze meting zonder persoonsgegevens, hosting op ISO 27001-gecertificeerde infrastructuur, openbaar sub-verwerkersregister. Aanloop AI heeft zelf geen SOC 2- of ISO-certificaat en zegt dat ook; zie /beveiliging/. Aanloop AI B.V., KvK 88606902.' },
 ];
 
 const serviceSchema = {
   '@context': 'https://schema.org',
   '@type': 'Service',
   '@id': 'https://aanloopai.nl/diensten/ai-website-bundel-mkb-nederland/#service',
-  name: 'AI-Website Bundel MKB Nederland — Website + Emma all-in-one',
-  serviceType: 'Integrated Web Development & AI Service Bundle',
-  description: 'Combo-pakket: AI-ready website (Groei) + Emma AI-receptie (WhatsApp inbegrepen) + integraties. Eén factuur, één SLA, vanaf €649/maand all-in — setup op aanvraag.',
+  name: 'AI-Website Bundel — website die klanten oplevert, met Emma en AI-vindbaarheid',
+  serviceType: 'Web Development, AI Receptionist and Generative Engine Optimization bundle',
+  description: `Website + Emma AI-receptie + AI-vindbaarheid (GEO) + meetpaneel in één contract. ${euro(bundelPrijs.setup)} eenmalig, ${euro(bundelPrijs.mnd)} per maand, exclusief btw. Gemeten resultaten op aanloopai.nl/resultaten/.`,
   url: 'https://aanloopai.nl/diensten/ai-website-bundel-mkb-nederland/',
   provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
   areaServed: { '@type': 'Country', name: 'Nederland' },
   audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
-  offers: {
-    '@type': 'Offer',
-    name: 'AI-Website Bundel',
-    priceCurrency: 'EUR',
-    price: String(bundelPrijs.mnd),
-    priceSpecification: {
-      '@type': 'UnitPriceSpecification',
-      price: bundelPrijs.mnd,
-      priceCurrency: 'EUR',
-      billingIncrement: 1,
-      unitCode: 'MON',
-    },
-    description: `€${bundelPrijs.mnd}/maand all-in onderhoud + AI-licentie. Eenmalige setup op aanvraag.`,
-    availability: 'https://schema.org/InStock',
-    seller: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
-  },
+  offers: [
+    { '@type': 'Offer', name: 'AI-Website Bundel — maandabonnement', priceCurrency: 'EUR', price: String(bundelPrijs.mnd), priceSpecification: { '@type': 'UnitPriceSpecification', price: bundelPrijs.mnd, priceCurrency: 'EUR', billingIncrement: 1, unitCode: 'MON', valueAddedTaxIncluded: false }, availability: 'https://schema.org/InStock', seller: { '@id': 'https://aanloopai.nl/#organization' } },
+    { '@type': 'Offer', name: 'AI-Website Bundel — eenmalige bouw', priceCurrency: 'EUR', price: String(bundelPrijs.setup), priceSpecification: { '@type': 'PriceSpecification', price: bundelPrijs.setup, priceCurrency: 'EUR', valueAddedTaxIncluded: false }, availability: 'https://schema.org/InStock', seller: { '@id': 'https://aanloopai.nl/#organization' } },
+  ],
 };
 
 const speakableSchema = {
   '@context': 'https://schema.org',
-  '@type': 'WebPage', name: 'AI-Website Bundel MKB Nederland — Website + Emma',
+  '@type': 'WebPage', name: 'AI-Website Bundel — website die klanten oplevert',
   speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
   url: 'https://aanloopai.nl/diensten/ai-website-bundel-mkb-nederland/',
   inLanguage: 'nl-NL',
@@ -115,8 +95,8 @@ const speakableSchema = {
 ---
 
 <BaseLayout
-  title="AI-Website Bundel MKB Nederland — Website + Emma"
-  description="AI-Website Bundel: AI-ready website + Emma AI-receptionist + WhatsApp-agent in één pakket. Vanaf €649 per maand all-in. Eén factuur, één SLA."
+  title="AI-Website Bundel: website die klanten oplevert"
+  description={`Website + Emma AI-receptionist + AI-vindbaarheid in ChatGPT en Gemini + meetpaneel. ${euro(bundelPrijs.setup)} eenmalig, ${euro(bundelPrijs.mnd)} per maand. Gemeten resultaten.`}
   schema={[serviceSchema, speakableSchema]}
   faqSchema={faqItems}
 >
@@ -125,18 +105,18 @@ const speakableSchema = {
       <div class="max-w-3xl">
         <div class="flex items-center gap-3 mb-6 reveal">
           <div class="accent-band"><span></span><span></span><span></span><span></span></div>
-          <span class="eyebrow">Diensten · Combo-bundel</span>
+          <span class="eyebrow">Diensten · AI-Website Bundel</span>
         </div>
-        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-brand-emerald/15 text-brand-emerald mb-4">Meest waardevol</span>
+        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-brand-emerald/15 text-brand-emerald mb-4">Meest gekozen</span>
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05] reveal reveal-delay-1">
-          AI-Website Bundel - Website + Emma in één pakket, één factuur.
+          Een website waar AI achter draait — en die écht klanten oplevert.
         </h1>
         <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
-          De meeste MKB-eigenaren tekenen meerdere contracten: een webbureau voor de site, een AI-leverancier voor de telefoon, een chat-tool voor WhatsApp. Meerdere facturen, meerdere aanspreekpunten, meerdere SLA's. Wij leveren alles als één integraal systeem: AI-ready website met Emma AI-receptie (telefoon én WhatsApp inbegrepen) direct ingebouwd. Eén partner, één SLA, structureel voordeliger op jaarbasis.
+          Website, Emma als AI-receptionist voor telefoon en WhatsApp, AI-vindbaarheid zodat ChatGPT, Gemini en Perplexity u noemen, en een meetpaneel dat laat zien wat elk kanaal oplevert. Eén partner, één contract: {euro(bundelPrijs.setup)} eenmalig en {euro(bundelPrijs.mnd)} per maand. Wat dat op onze eigen sites doet, staat gemeten op /resultaten/.
         </p>
         <div class="mt-8 flex gap-3 flex-wrap reveal reveal-delay-3">
-          <a href="/demo-aanvragen/" class="btn-primary text-base px-6 py-3.5">Gratis discovery-gesprek <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
-          <a href="#kosten" class="btn-outline text-base px-6 py-3.5">Bekijk kosten-overzicht</a>
+          <a href="/demo-aanvragen/" class="btn-primary text-base px-6 py-3.5">Plan een gesprek <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/resultaten/" class="btn-outline text-base px-6 py-3.5">Bekijk de gemeten resultaten</a>
         </div>
       </div>
     </div>
@@ -144,10 +124,10 @@ const speakableSchema = {
 
   <section class="section-tight bg-slate-50 border-b border-slate-200">
     <div class="container-page">
-      <p class="text-xs text-slate-400 text-center mb-4">Indicatieve cijfers · resultaten verschillen per situatie</p>
+      <p class="text-xs text-slate-500 text-center mb-4">Gemeten op sites die wij bouwden · momentopname {datum(RESULTATEN_PEILDATUM)} · methode per cijfer op <a href="/resultaten/" class="underline">/resultaten/</a></p>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-        {[{v:euro(bundelPrijs.mnd),l:'per maand all-in'},{v:`${euro(jaarVoordeel)}/jr`,l:'lager dan los'},{v:'op aanvraag',l:'eenmalige setup'},{v:'6-8 wk',l:'live na briefing'}].map(s=>(
-          <div class="reveal"><p class="text-2xl font-bold text-navy">{s.v}</p><p class="text-xs text-slate-500 mt-1">{s.l}</p></div>
+        {KERNPUNTEN.map((k) => (
+          <div class="reveal"><p class="text-2xl lg:text-3xl font-bold text-navy">{k.waarde}</p><p class="text-xs text-slate-600 mt-1 leading-snug">{k.label}</p></div>
         ))}
       </div>
     </div>
@@ -157,7 +137,7 @@ const speakableSchema = {
     <div class="container-page">
       <div class="max-w-3xl mb-12 reveal">
         <p class="eyebrow mb-3">Wat zit erin</p>
-        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">3 producten + integraties + tooling = 1 bundel.</h2>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Vier onderdelen, één systeem.</h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         {inhoud.map(g => (
@@ -177,12 +157,37 @@ const speakableSchema = {
     </div>
   </section>
 
-  <section id="kosten" class="section bg-slate-50/60 border-y border-slate-200">
+  <section class="section bg-slate-50/60 border-y border-slate-200">
+    <div class="container-page">
+      <div class="max-w-3xl mb-10 reveal">
+        <p class="eyebrow mb-3">Bewijs</p>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Sites die wij zo bouwden, en wat ze meten.</h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">Eigen bedrijven heten eigen bedrijven; klanten staan er met hun akkoord. Per site het eerste cijfer uit de meting; alle cijfers, met methode, op /resultaten/.</p>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {gemetenSites.map((s) => (
+          <a href={`/werk/${s.key}/`} class="card hover:border-brand-indigo transition-colors">
+            <p class="text-xs text-slate-500">{s.eigenaar === 'eigen' ? 'Eigen bedrijf' : 'Klant'} · {s.sector}</p>
+            <h3 class="mt-1 text-lg font-bold text-navy">{s.naam}</h3>
+            <p class="mt-3 text-2xl font-semibold tracking-tight text-navy">{s.cijfers[0].waarde}</p>
+            <p class="text-sm text-slate-600 leading-snug">{s.cijfers[0].label}</p>
+            <p class="mt-2 text-[11px] text-slate-400">{s.cijfers[0].methode} · {s.cijfers[0].periode}</p>
+          </a>
+        ))}
+      </div>
+      <div class="mt-6 flex flex-wrap gap-3">
+        <a href="/resultaten/" class="btn-primary text-sm">Alle live cijfers</a>
+        <a href="/werk/" class="btn-outline text-sm">Alle sites</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="kosten" class="section">
     <div class="container-page">
       <div class="max-w-3xl mb-12 reveal">
-        <p class="eyebrow mb-3">Kosten-vergelijking</p>
-        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Wat u los betaalt, en wat de bundel ermee doet.</h2>
-        <p class="mt-4 text-slate-600 leading-relaxed">Post voor post, tegen onze eigen listprijzen. Geen opgetelde jaartotalen — wie los inkoopt, koopt niet alles op dezelfde dag. Het verschil is wat het scheelt om alles bij één partij te doen, niet meer dan dat.</p>
+        <p class="eyebrow mb-3">Kosten</p>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">{euro(bundelPrijs.setup)} eenmalig, {euro(bundelPrijs.mnd)} per maand. Post voor post.</h2>
+        <p class="mt-4 text-slate-600 leading-relaxed">Tegen onze eigen listprijzen, exclusief 21% btw. Geen opgetelde jaartotalen — wie los inkoopt, koopt niet alles op dezelfde dag. Het verschil is wat het scheelt om alles bij één partij te doen.</p>
       </div>
 
       <div class="card overflow-x-auto">
@@ -198,50 +203,47 @@ const speakableSchema = {
             <tr><td colspan="3" class="pt-4 pb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">Eenmalig</td></tr>
             {setupPosten.map(p => (
               <tr class="border-b border-slate-100">
-                <td class="py-2.5 pr-4">
-                  <span class="font-medium text-slate-700">{p.item}</span>
-                  <p class="mt-0.5 text-xs text-slate-500 leading-snug">{p.toelichting}</p>
-                </td>
+                <td class="py-2.5 pr-4"><span class="font-medium text-slate-700">{p.item}</span><p class="mt-0.5 text-xs text-slate-500 leading-snug">{p.toelichting}</p></td>
                 <td class="py-2.5 px-4 text-right font-medium text-slate-700 whitespace-nowrap align-top">{p.los}</td>
-                <td class={`py-2.5 text-right font-medium whitespace-nowrap align-top ${p.bundel === 'Inbegrepen' ? 'text-brand-emerald' : 'text-slate-700'}`}>{p.bundel}</td>
+                <td class={`py-2.5 text-right font-medium whitespace-nowrap align-top ${p.bundel === 'Inbegrepen' ? 'text-brand-emerald' : 'text-navy'}`}>{p.bundel}</td>
               </tr>
             ))}
             <tr><td colspan="3" class="pt-5 pb-1 text-xs font-semibold uppercase tracking-wide text-slate-400">Per maand</td></tr>
             {maandPosten.map(p => (
               <tr class="border-b border-slate-100">
-                <td class="py-2.5 pr-4">
-                  <span class="font-medium text-slate-700">{p.item}</span>
-                  <p class="mt-0.5 text-xs text-slate-500 leading-snug">{p.toelichting}</p>
-                </td>
+                <td class="py-2.5 pr-4"><span class="font-medium text-slate-700">{p.item}</span><p class="mt-0.5 text-xs text-slate-500 leading-snug">{p.toelichting}</p></td>
                 <td class="py-2.5 px-4 text-right font-medium text-slate-700 whitespace-nowrap align-top">{p.los}</td>
-                <td class={`py-2.5 text-right font-medium whitespace-nowrap align-top ${p.bundel === 'Inbegrepen' ? 'text-brand-emerald' : 'text-slate-700'}`}>{p.bundel}</td>
+                <td class={`py-2.5 text-right font-medium whitespace-nowrap align-top ${p.bundel === 'Inbegrepen' ? 'text-brand-emerald' : 'text-navy'}`}>{p.bundel}</td>
               </tr>
             ))}
+            <tr class="border-t-2 border-slate-200">
+              <td class="py-3 pr-4 font-bold text-navy">Totaal per maand</td>
+              <td class="py-3 px-4 text-right font-medium text-slate-700 whitespace-nowrap">{euro(losseMaandlast)} + onderhoud</td>
+              <td class="py-3 text-right font-bold text-navy whitespace-nowrap">{euro(bundelPrijs.mnd)} all-in</td>
+            </tr>
           </tbody>
         </table>
 
         <div class="mt-6 grid sm:grid-cols-2 gap-4">
           <div class="p-4 rounded-lg bg-brand-emerald/10">
-            <p class="text-sm font-bold text-brand-emerald">Lager bij de start</p>
-            <p class="mt-1 text-xs text-slate-600 leading-relaxed">De Emma-setup en het integratiewerk vervallen. De bouw van de website kost hetzelfde als los. Exacte eenmalige bedragen bespreken we in het gesprek.</p>
+            <p class="text-sm font-bold text-brand-emerald">Eén eenmalig bedrag, publiek</p>
+            <p class="mt-1 text-xs text-slate-600 leading-relaxed">{euro(bundelPrijs.setup)} voor bouw, Emma-setup, GEO-setup en integratie samen. Geen "op aanvraag", geen verrassing in het gesprek.</p>
           </div>
           <div class="p-4 rounded-lg bg-brand-emerald/10">
             <p class="text-sm font-bold text-brand-emerald">{euro(jaarVoordeel)} per jaar lager</p>
-            <p class="mt-1 text-xs text-slate-600 leading-relaxed">{euro(bundelPrijs.mnd)} all-in in plaats van website-onderhoud + {euro(EMMA.monthly)} Emma bij twee losse contracten — {euro(jaarVoordeel)} per jaar minder.</p>
+            <p class="mt-1 text-xs text-slate-600 leading-relaxed">{euro(bundelPrijs.mnd)} all-in tegenover {euro(losseMaandlast)} voor Emma Compleet + GEO Maandelijks los — en dan zit het website-onderhoud er nog niet eens bij.</p>
           </div>
         </div>
-        <p class="mt-4 text-xs text-slate-500 leading-relaxed">Op het Emma-abonnementsdeel: {GARANTIE_KORT} (setup uitgezonderd).</p>
+        <p class="mt-4 text-xs text-slate-500 leading-relaxed">Op het Emma-abonnementsdeel: {GARANTIE_KORT} (eenmalige bouw uitgezonderd). Alle bedragen exclusief btw.</p>
       </div>
-
-      <p class="mt-6 text-xs text-slate-500 max-w-3xl">De WhatsApp-agent staat bewust <strong>niet</strong> als aparte regel: die zit al in het Emma-abonnement van {euro(EMMA.monthly)}/mnd. Hem er los bij optellen zou het voordeel kunstmatig opblazen. De maandprijzen zijn onze eigen listprijzen — dezelfde die op <a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="underline">de website-pagina</a> en <a href="/diensten/emma/" class="underline">de Emma-pagina</a> staan. Eenmalige setupkosten zijn van toepassing en worden in het gesprek besproken. Het integratiewerk is een vaste post voor het koppelen van website, telefonie en WhatsApp. Alle bedragen exclusief BTW.</p>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page">
       <div class="max-w-3xl mb-12 reveal">
-        <p class="eyebrow mb-3">Waarom uniek</p>
-        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">4 redenen waarom de bundel beter is dan losse afname.</h2>
+        <p class="eyebrow mb-3">Waarom deze bundel</p>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Vier redenen, allemaal controleerbaar.</h2>
       </div>
       <div class="grid md:grid-cols-2 gap-5">
         {waaromUniek.map((w, i) => (
@@ -255,11 +257,11 @@ const speakableSchema = {
     </div>
   </section>
 
-  <section class="section bg-slate-50/60 border-y border-slate-200">
+  <section class="section">
     <div class="container-page">
       <div class="max-w-3xl mb-12 reveal">
         <p class="eyebrow mb-3">Voor wie</p>
-        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Ideaal voor deze 5 profielen.</h2>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Past bij deze vijf situaties.</h2>
       </div>
       <ul class="grid md:grid-cols-2 gap-3 max-w-4xl">
         {idealVoor.map(p => (
@@ -272,11 +274,11 @@ const speakableSchema = {
     </div>
   </section>
 
-  <section class="section">
+  <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page">
       <div class="max-w-3xl mb-12 reveal">
         <p class="eyebrow mb-3">Hoe werkt het</p>
-        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">3 fases, 6-8 weken tot live.</h2>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Drie fases, 6-8 weken tot live — daarna meten en bijsturen.</h2>
       </div>
       <ol class="grid grid-cols-1 md:grid-cols-3 gap-6">
         {proces.map(p => (
@@ -290,11 +292,11 @@ const speakableSchema = {
     </div>
   </section>
 
-  <section class="section bg-slate-50/60 border-y border-slate-200">
+  <section class="section">
     <div class="container-page max-w-4xl">
       <div class="mb-10 reveal">
         <p class="eyebrow mb-3">Veelgestelde vragen</p>
-        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Wat klanten vragen vóór ze tekenen.</h2>
+        <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-navy text-balance">Wat ondernemers vragen vóór ze tekenen.</h2>
       </div>
       <div class="space-y-3">
         {faqItems.map(f => (
@@ -313,12 +315,13 @@ const speakableSchema = {
   <section class="section">
     <div class="container-page">
       <div class="bg-slate-50 border border-slate-200 rounded-xl p-6 max-w-3xl">
-        <p class="text-sm font-bold text-navy mb-3">Gerelateerde diensten</p>
+        <p class="text-sm font-bold text-navy mb-3">Gerelateerd</p>
         <ul class="flex flex-wrap gap-3">
-          <li><a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="text-sm text-brand-indigo hover:underline">Alleen website (Groei) →</a></li>
-          <li><a href="/diensten/webshop-laten-maken-shopify-woocommerce-nederland-2026/" class="text-sm text-brand-indigo hover:underline">Webshop laten maken →</a></li>
-          <li><a href="/diensten/emma/" class="text-sm text-brand-indigo hover:underline">Alleen Emma (telefoon + WhatsApp) →</a></li>
-          <li><a href="/ai-roi-calculator/" class="text-sm text-brand-indigo hover:underline">Bereken uw ROI →</a></li>
+          <li><a href="/resultaten/" class="text-sm text-brand-indigo hover:underline">Gemeten resultaten →</a></li>
+          <li><a href="/werk/" class="text-sm text-brand-indigo hover:underline">Sites die we bouwden →</a></li>
+          <li><a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="text-sm text-brand-indigo hover:underline">Alleen website →</a></li>
+          <li><a href="/diensten/emma/" class="text-sm text-brand-indigo hover:underline">Alleen Emma →</a></li>
+          <li><a href="/ai-vindbaarheid/" class="text-sm text-brand-indigo hover:underline">Alleen AI-vindbaarheid →</a></li>
         </ul>
       </div>
     </div>
@@ -326,10 +329,10 @@ const speakableSchema = {
 
   <section class="section-tight bg-midnight text-pearl">
     <div class="container-page max-w-3xl">
-      <h2 class="text-3xl font-bold text-pearl reveal">Klaar voor één partner voor uw hele digitale presentie?</h2>
-      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Gratis 90-min discovery-gesprek. We mappen uw site, telefoon en chat in één plan, en u krijgt een vaste-prijs offerte binnen 5 werkdagen.</p>
+      <h2 class="text-3xl font-bold text-pearl reveal">Klaar voor een website die klanten oplevert?</h2>
+      <p class="mt-4 text-slate-300 reveal reveal-delay-1">Gratis gesprek van 30 minuten met nulmeting: hoe vindbaar bent u nu in AI-assistenten en in Google, en wat zou de bundel daaraan veranderen. U krijgt een vaste-prijs voorstel binnen 5 werkdagen.</p>
       <div class="mt-6 flex gap-3 reveal reveal-delay-2">
-        <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Gratis discovery-gesprek</a>
+        <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">Plan een gesprek</a>
         <a href="/contact/" class="btn border border-slate-700 text-pearl hover:bg-slate-800 text-base px-6 py-3.5">Direct contact</a>
       </div>
     </div>

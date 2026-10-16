@@ -132,6 +132,13 @@ export const SEO_GEO_BUNDEL = 1195;
 // Marketing-tekst framet die €45/mnd als "€540 per jaar" — het kale bedrag €45
 // las op de homepage als een (veel te lage) prijs i.p.v. een korting.
 // Website Starter is per 2026-08-04 €3.450 setup + €129/mnd (was €2.950 + €97;
-// NL-benchmark: specialist-bureaus starten rond €3.400-€3.600). Groei en de
-// bundel-wiskunde hierboven zijn ongewijzigd.
-export const WEBSITE_BUNDEL = { setup: 5950, maand: 649 } as const;
+// NL-benchmark: specialist-bureaus starten rond €3.400-€3.600).
+//
+// 2026-10-16 (owner): de bundel is opnieuw samengesteld als "website die klanten
+// oplevert": website + Emma AI-receptie + AI-vindbaarheid (GEO maandelijks) +
+// het meetpaneel (/resultaten/). €4.500 eenmalig en €1.000/mnd, beide PUBLIEK
+// (uitzondering op "setup op aanvraag" — expliciet owner-besluit). Toets die
+// blijft gelden: het maandbedrag ligt boven elk los onderdeel (Emma Compleet
+// €497, GEO €595) en onder de som ervan (€1.092) — een pakketkorting die klopt.
+// Guard: test/prijs-consistentie.test.js.
+export const WEBSITE_BUNDEL = { setup: 4500, maand: 1000 } as const;

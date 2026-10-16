@@ -49,6 +49,8 @@ function isNoindex(content) {
 
 function priorityFor(url) {
   if (url === '/') return '1.0';
+  if (url === '/resultaten/' || url === '/werk/') return '0.9';
+  if (url.startsWith('/werk/')) return '0.85';
   if (url === '/diensten/' || url === '/cases/' || url === '/sectoren/') return '0.9';
   if (url.startsWith('/diensten/') && (url.includes('bundel') || url.includes('website-laten-maken') || url.includes('webshop-laten-maken'))) return '0.95';
   if (url.startsWith('/diensten/')) return '0.9';
@@ -152,6 +154,13 @@ for (const [file, prefix] of [['geo-regios.ts', '/geo-bureau/'], ['geo-sbi-secto
     urls.push(`${prefix}${m[1]}/`);
     sourceByUrl.set(`${prefix}${m[1]}/`, path.join(ROOT, 'src', 'data', file));
   }
+}
+
+// /werk/[site] dynamic route — keys uit resultaten.ts (nieuwe sites auto-included).
+const resultatenSrc = fs.readFileSync(path.join(ROOT, 'src', 'data', 'resultaten.ts'), 'utf8');
+for (const m of resultatenSrc.matchAll(/^\s+key:\s*'([^']+)'/gm)) {
+  urls.push(`/werk/${m[1]}/`);
+  sourceByUrl.set(`/werk/${m[1]}/`, path.join(ROOT, 'src', 'data', 'resultaten.ts'));
 }
 
 // /leads-kopen/[sector] dynamic route — slugs uit lead-sectors.ts (nieuwe branches auto-included).
