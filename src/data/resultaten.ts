@@ -35,6 +35,8 @@ export interface SiteResultaat {
   sector: string;
   live: string; // jaar of ISO-datum van livegang van de huidige site
   samenvatting: string;
+  /** Meta-description van /werk/<key>/ — 110–155 tekens (CI check-meta; guard test/resultaten.test.js). */
+  metaDescription: string;
   gebouwd: string[];
   ai: string[];
   cijfers: Cijfer[];
@@ -58,6 +60,7 @@ export const RESULTATEN: SiteResultaat[] = [
     sector: 'Keukenplatform voor consumenten',
     live: '2026',
     samenvatting: 'Onafhankelijk keukenplatform met AI-visualisatie, offertecheck en een open keukenprijs-index. Grotendeels gegenereerd uit data: merken, stijlen en regio\'s krijgen elk een eigen pagina.',
+    metaDescription: 'Keuken in Beeld: keukenplatform met AI-visualisatie, offertecheck en prijsindex, gebouwd door Aanloop AI. 102 AI-bezoeken en 3,9% lead-ratio in 30 dagen.',
     gebouwd: [
       'Statische site op Cloudflare Pages met Functions en D1',
       'Datagedreven generator: 25 merkpagina\'s, stijlen, kleuren, 57 regio\'s — circa 270 pagina\'s',
@@ -88,6 +91,7 @@ export const RESULTATEN: SiteResultaat[] = [
     sector: 'GPS-voertuigtracking (B2B SaaS)',
     live: '2025',
     samenvatting: 'Commercieel actieve SaaS: OBD-trackers en accu-trackers met ritregistratie. Website, offerteflow, contractportaal met e-handtekening en een AI-verkoopagent op de site.',
+    metaDescription: 'FleetTrack Holland: GPS-tracking SaaS met AI-verkoopagent, gebouwd door Aanloop AI. 14 leads in 30 dagen; AI-bezoek neemt vaker contact op dan Google.',
     gebouwd: [
       'React-site op Cloudflare Pages met prerendering en 301-beheer',
       'Offerte- en aanmeldflow met D1-opslag en Brevo-mailafhandeling',
@@ -116,6 +120,7 @@ export const RESULTATEN: SiteResultaat[] = [
     sector: 'Reclame, belettering en lichtreclame — Rotterdam',
     live: '2026',
     samenvatting: 'Herbouwde site van een reclamebureau: elke dienst een eigen pagina, één rijk offerteformulier op elke pagina, een prijsindicator en een kennisbank die uit meetdata wordt bijgestuurd.',
+    metaDescription: 'Alfa Reclame: site van een Rotterdams reclamebureau met formulier op elke pagina, gebouwd door Aanloop AI. 5 leads en 174 sessies in 28 dagen.',
     gebouwd: [
       'Next.js op Cloudflare Workers, Lighthouse-geoptimaliseerd',
       'Eén lead-formulier met foto-upload op elke pagina, formulier ook in de header',
@@ -144,6 +149,7 @@ export const RESULTATEN: SiteResultaat[] = [
     sector: 'Reizen en excursies, internationaal',
     live: '2026',
     samenvatting: 'Meertalige reissite (zeven geïndexeerde talen) met WhatsApp-boeking, cookieloze gedragsmeting en een admin-paneel voor prijzen en analyses.',
+    metaDescription: 'Trip and Tick: meertalige reissite met WhatsApp-boeking, gebouwd door Aanloop AI. 23% van het bezoek komt via AI-assistenten en neemt vaker contact op.',
     gebouwd: [
       'Next.js op Cloudflare Workers, zeventien talen waarvan zeven geïndexeerd',
       'WhatsApp-boekingsknop met verkoopattributie en Telegram-notificatie',
@@ -172,6 +178,7 @@ export const RESULTATEN: SiteResultaat[] = [
     sector: 'AI-bureau voor het MKB',
     live: '2026',
     samenvatting: 'Deze site: Astro op Cloudflare Workers, klantenportaal, Mollie-checkout, GEO-cluster met markdown-twins en machineleesbare feiten (facts.json, claims.json, pricing.json).',
+    metaDescription: 'Aanloop AI: onze eigen site met GEO-cluster, klantenportaal en machineleesbare feiten. Plaats 24 van 222 in de GEO Agency Index, techniek 90,6 van 100.',
     gebouwd: [
       'Astro + Cloudflare Workers, D1, portaal met magic-link login',
       'GEO-cluster: 28 pagina\'s per regio en sector, elk met een .md-twin',
@@ -199,6 +206,7 @@ export const RESULTATEN: SiteResultaat[] = [
     sector: 'Zoekplatform voor keukenzaken per stad',
     live: '2026-09-24',
     samenvatting: 'Vindt keukenzaken per stad en koppelt zoekers aan de keukenprijs-index. Zoekfunctie en herontwerp live sinds 14 oktober 2026; de meting loopt sinds 9 oktober.',
+    metaDescription: 'Zoekeen.nl: zoekplatform voor keukenzaken per stad met kort antwoord en prijsindex-koppeling, gebouwd door Aanloop AI. Meting gestart op 9 oktober 2026.',
     gebouwd: [
       'Astro op Cloudflare Pages, stadspagina\'s met FAQ-schema',
       'Zoekfunctie en herontwerp (conversiefunnel wordt gemeten vanaf 28 oktober)',
@@ -222,6 +230,7 @@ export const RESULTATEN: SiteResultaat[] = [
     sector: 'Keukens en interieur',
     live: '2026-10-14',
     samenvatting: 'Nieuwe site voor een keukenstudio: lichte stijl, vier categorieën en vijf materialen, projectenpagina en een lead-engine. Live sinds 14 oktober 2026; de meting start zodra de eerste 28 dagen vol zijn.',
+    metaDescription: 'Grynn Studio: site voor een keukenstudio in Wateringen met lead-engine en GEO-basis, gebouwd door Aanloop AI. Live sinds 14 oktober 2026, meting loopt.',
     gebouwd: [
       'Statische site met categorie-, materiaal- en projectpagina\'s',
       'Lead-engine met wekelijkse Telegram-samenvatting voor de eigenaar',

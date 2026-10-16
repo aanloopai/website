@@ -1,7 +1,7 @@
 ---
 title: "Hoe krijgt u bezoekers uit ChatGPT, Perplexity en Gemini op uw website? Wat wij meten op zeven sites"
 seoTitle: "Bezoekers uit ChatGPT en Gemini: wat werkt (gemeten)"
-description: "Wat op zeven Nederlandse sites meetbaar bezoek uit ChatGPT, Perplexity en Gemini oplevert: letterlijke antwoordpagina's, datasets met bron, llms.txt, crawlertoegang en een formulier op elke pagina."
+description: "Wat op zeven sites meetbaar bezoek uit ChatGPT, Perplexity en Gemini oplevert: antwoordpagina's, datasets met bron, llms.txt en contact op elke pagina."
 excerpt: "Bezoek uit AI-assistenten is klein in aantal maar neemt opvallend vaak contact op. Dit artikel beschrijft wat op zeven sites die Aanloop AI bouwt aantoonbaar werkt, met de cijfers en de methode erbij."
 published: 2026-10-16
 category: "AI-vindbaarheid"

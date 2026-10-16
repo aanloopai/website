@@ -37,6 +37,9 @@ describe('resultaten.ts — elk cijfer heeft een bron', () => {
   it('sites zonder cijfers melden sinds wanneer er gemeten wordt; pasfoto staat er niet in', () => {
     for (const s of RESULTATEN) {
       if (!s.cijfers.length) expect(s.metingSinds, s.key).toMatch(ISO);
+      // CI check-meta: description 110–155 tekens.
+      expect(s.metaDescription.length, `${s.key} metaDescription ${s.metaDescription.length}`).toBeGreaterThanOrEqual(110);
+      expect(s.metaDescription.length, `${s.key} metaDescription ${s.metaDescription.length}`).toBeLessThanOrEqual(155);
       expect(['eigen', 'klant']).toContain(s.eigenaar);
       expect(s.url.startsWith('https://')).toBe(true);
     }

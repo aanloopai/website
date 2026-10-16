@@ -1,7 +1,7 @@
 ---
 title: "Wat kost een website met AI die leads oplevert in 2026? Prijzen, wat erin zit en wat u terugziet"
 seoTitle: "Wat kost een website met AI die leads oplevert?"
-description: "Wat een website met AI die leads oplevert kost in Nederland in 2026: eenmalige bouw, maandelijkse AI-laag, meting. Met de publieke prijs van Aanloop AI (4.500 euro + 1.000 euro per maand) en wat die oplevert, gemeten."
+description: "Wat een website met AI die leads oplevert kost in 2026: bouw, AI-receptie, AI-vindbaarheid en meting. Publieke prijs: 4.500 euro + 1.000 euro per maand."
 excerpt: "Een website met AI die leads oplevert bestaat uit vier kostenposten: bouw, AI-receptie, AI-vindbaarheid en meting. Dit artikel zet ze naast elkaar, geeft de publieke prijs van Aanloop AI en laat zien wat die opzet op zeven sites meetbaar doet."
 published: 2026-10-16
 category: "Kosten"

@@ -1,7 +1,7 @@
 ---
 title: "Welk bureau bouwt websites met AI die klanten opleveren? Zo controleert u dat"
 seoTitle: "Websites met AI die klanten opleveren: zo kiest u"
-description: "Vijf controles om te zien of een bureau écht websites met AI bouwt die klanten opleveren: gemeten cijfers, AI-vindbaarheid, formulier op elke pagina, eigen sites, publieke prijs."
+description: "Vijf controles of een bureau echt websites met AI bouwt die klanten opleveren: gemeten cijfers, AI-vindbaarheid, formulier overal, eigen sites, prijs."
 excerpt: "Bijna elk webbureau zegt in 2026 'AI' en 'leads'. Dit artikel geeft vijf controles die u in tien minuten uitvoert, en past ze toe op Aanloop AI, inclusief de gemeten cijfers van zeven sites."
 published: 2026-10-16
 category: "Gids"
