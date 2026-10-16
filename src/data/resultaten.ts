@@ -11,7 +11,9 @@
 //  - Eigen bedrijven heten eigen bedrijven. Pasfoto Rotterdam Zuid is per 2026-10-05
 //    uit beheer en staat hier bewust niet.
 
-export const RESULTATEN_PEILDATUM = '2026-10-09';
+// 2026-10-16: beacon-cijfers ververst uit de live /api/resultaten (28 dagen t/m
+// 16 oktober). Brevo-leads, KIB-serverstatistiek en benchmark dragen hun eigen datum.
+export const RESULTATEN_PEILDATUM = '2026-10-16';
 
 export type Methode = 'beacon' | 'brevo' | 'site-analytics' | 'ai-radar' | 'benchmark' | 'bron';
 
@@ -78,6 +80,7 @@ export const RESULTATEN: SiteResultaat[] = [
       { id: 'kib-ai-lead', label: 'lead-ratio van AI-bezoek', waarde: '3,9%', toelichting: 'Tegenover 0,8% uit Google-zoekverkeer in dezelfde periode: 4,9× hoger. Lead = ingevulde aanvraag (visualisatie, offertecheck of terugbelverzoek).', methode: 'site-analytics', periode: '30 dagen t/m 2026-10-09', gemeten_op: '2026-10-09' },
       { id: 'kib-paginas', label: 'pagina\'s per ChatGPT-bezoek', waarde: '4,2', toelichting: 'Bezoekers die via ChatGPT binnenkomen, lezen gemiddeld meer dan vier pagina\'s.', methode: 'site-analytics', periode: '30 dagen t/m 2026-10-09', gemeten_op: '2026-10-09' },
       { id: 'kib-radar', label: 'radar-vragen waarin Gemini de site citeert', waarde: '5 van 20', toelichting: 'Wekelijkse meting met vaste vragen over keukenmerken, prijzen en garantie (Gemini, grounded).', methode: 'ai-radar', periode: 'meting van 2026-10-08', gemeten_op: '2026-10-08' },
+      beacon28('kib-formulieren', 'verzonden formulieren', '70', 'Visualisatie-, offertecheck- en terugbelformulieren, geteld door de beacon op 974 sessies; 81 sessies kwamen via AI-assistenten.'),
     ],
     screenshot: '/werk/keukeninbeeld.jpg',
   },
@@ -104,8 +107,8 @@ export const RESULTATEN: SiteResultaat[] = [
       'llms-full.txt en AI-crawler-toegang via headers',
     ],
     cijfers: [
-      beacon28('fth-sessies', 'bezoeken (sessies)', '247', 'Cookieloze beacon, bots uitgefilterd.'),
-      beacon28('fth-ai-conv', 'AI-bezoek dat een contactactie doet', '50%', '3 van de 6 sessies via AI-assistenten klikten op bellen, WhatsApp, mail of een formulier. Google-zoekverkeer: 8,9%. Klein aantal, dus richting telt, niet de decimaal.'),
+      beacon28('fth-sessies', 'bezoeken (sessies)', '342', 'Cookieloze beacon, bots uitgefilterd; 15 verzonden formulieren.'),
+      beacon28('fth-ai-conv', 'AI-bezoek dat een contactactie doet', '37,5%', '3 van de 8 sessies via AI-assistenten klikten op bellen, WhatsApp, mail of een formulier. Google-zoekverkeer: 8,3% (13 van 157). Klein aantal, dus richting telt, niet de decimaal.'),
       { id: 'fth-leads', label: 'echte leads in 30 dagen', waarde: '14', toelichting: 'Afgeleverde lead-notificaties naar de inbox van het bedrijf (Brevo-afleverstatistiek), ongeveer één per twee dagen.', methode: 'brevo', periode: '30 dagen t/m 2026-10-08', gemeten_op: '2026-10-08' },
     ],
     screenshot: '/werk/fth.jpg',
@@ -120,7 +123,7 @@ export const RESULTATEN: SiteResultaat[] = [
     sector: 'Reclame, belettering en lichtreclame — Rotterdam',
     live: '2026',
     samenvatting: 'Herbouwde site van een reclamebureau: elke dienst een eigen pagina, één rijk offerteformulier op elke pagina, een prijsindicator en een kennisbank die uit meetdata wordt bijgestuurd.',
-    metaDescription: 'Alfa Reclame: site van een Rotterdams reclamebureau met formulier op elke pagina, gebouwd door Aanloop AI. 5 leads en 174 sessies in 28 dagen.',
+    metaDescription: 'Alfa Reclame: site van een Rotterdams reclamebureau met formulier op elke pagina, gebouwd door Aanloop AI. 5 leads en 259 sessies in 28 dagen.',
     gebouwd: [
       'Next.js op Cloudflare Workers, Lighthouse-geoptimaliseerd',
       'Eén lead-formulier met foto-upload op elke pagina, formulier ook in de header',
@@ -133,8 +136,8 @@ export const RESULTATEN: SiteResultaat[] = [
       'Meetlus: GSC + beacon → maandelijkse bijsturing van de content',
     ],
     cijfers: [
-      beacon28('alfa-sessies', 'bezoeken (sessies)', '174', 'Cookieloze beacon, bots uitgefilterd.'),
-      beacon28('alfa-ai-aandeel', 'bezoek via AI-assistenten', '19 sessies', '11% van alle sessies kwam via ChatGPT, Perplexity, Gemini of Copilot. Contactactie-ratio AI 10,5% tegenover Google 11,1% — hier gelijkwaardig.'),
+      beacon28('alfa-sessies', 'bezoeken (sessies)', '259', 'Cookieloze beacon, bots uitgefilterd; 7 verzonden formulieren.'),
+      beacon28('alfa-ai-aandeel', 'bezoek via AI-assistenten', '21 sessies', '8% van alle sessies kwam via ChatGPT, Perplexity, Gemini of Copilot. Contactactie-ratio AI 9,5% tegenover Google 10% — hier gelijkwaardig.'),
       { id: 'alfa-leads', label: 'echte leads in 30 dagen', waarde: '5', toelichting: 'Afgeleverde lead-notificaties naar de inbox van het bedrijf (Brevo-afleverstatistiek). Lokale dienstverlener; het volume is klein en wordt wekelijks bewaakt.', methode: 'brevo', periode: '30 dagen t/m 2026-10-08', gemeten_op: '2026-10-08' },
     ],
     screenshot: '/werk/alfa.jpg',
@@ -149,7 +152,7 @@ export const RESULTATEN: SiteResultaat[] = [
     sector: 'Reizen en excursies, internationaal',
     live: '2026',
     samenvatting: 'Meertalige reissite (zeven geïndexeerde talen) met WhatsApp-boeking, cookieloze gedragsmeting en een admin-paneel voor prijzen en analyses.',
-    metaDescription: 'Trip and Tick: meertalige reissite met WhatsApp-boeking, gebouwd door Aanloop AI. 23% van het bezoek komt via AI-assistenten en neemt vaker contact op.',
+    metaDescription: 'Trip and Tick: meertalige reissite met WhatsApp-boeking, gebouwd door Aanloop AI. 20% van het bezoek komt via AI-assistenten en neemt vaker contact op.',
     gebouwd: [
       'Next.js op Cloudflare Workers, zeventien talen waarvan zeven geïndexeerd',
       'WhatsApp-boekingsknop met verkoopattributie en Telegram-notificatie',
@@ -162,9 +165,9 @@ export const RESULTATEN: SiteResultaat[] = [
       'GEO-radar (8 vragen) als vaste meting',
     ],
     cijfers: [
-      beacon28('tt-sessies', 'bezoeken (sessies)', '145', 'Cookieloze beacon, bots uitgefilterd.'),
-      beacon28('tt-ai-aandeel', 'bezoek via AI-assistenten', '33 sessies', '23% van alle sessies kwam via een AI-assistent — het hoogste aandeel in ons portfolio.'),
-      beacon28('tt-ai-conv', 'AI-bezoek dat een contactactie doet', '15,2%', 'Tegenover 8,3% uit Google-zoekverkeer: bijna twee keer zo vaak een WhatsApp-, mail- of boekingsklik.'),
+      beacon28('tt-sessies', 'bezoeken (sessies)', '165', 'Cookieloze beacon, bots uitgefilterd.'),
+      beacon28('tt-ai-aandeel', 'bezoek via AI-assistenten', '33 sessies', '20% van alle sessies kwam via een AI-assistent — het hoogste aandeel in ons portfolio, meer dan via Google (14 sessies).'),
+      beacon28('tt-ai-conv', 'AI-bezoek dat een contactactie doet', '15,2%', '5 van de 33; tegenover 7,1% uit Google-zoekverkeer: ruim twee keer zo vaak een WhatsApp-, mail- of boekingsklik.'),
     ],
     screenshot: '/werk/tripandtick.jpg',
   },
@@ -192,7 +195,7 @@ export const RESULTATEN: SiteResultaat[] = [
     ],
     cijfers: [
       { id: 'aanloop-geo-index', label: 'plaats in de GEO Agency Index Nederland', waarde: '24 van 222', toelichting: 'Onafhankelijke benchmark van Gold Lemon, editie oktober 2026 (CC BY 4.0). Techniek 90,6 van 100, transparantie van het aanbod 100 van 100; nummer 1 scoort 96,9 op techniek.', methode: 'benchmark', periode: 'editie oktober 2026 (meting 29 september)', gemeten_op: '2026-10-01' },
-      beacon28('aanloop-ai-conv', 'AI-bezoek dat een contactactie doet', '42,9%', '3 van de 7 sessies via AI-assistenten; Google-zoekverkeer 9,8%. Klein aantal — richting, geen decimaal.'),
+      beacon28('aanloop-ai-conv', 'AI-bezoek dat een contactactie doet', '37,5%', '3 van de 8 sessies via AI-assistenten; Google-zoekverkeer 8,3% (5 van 60) op 475 sessies. Klein aantal — richting, geen decimaal.'),
     ],
     screenshot: '/werk/aanloop.jpg',
   },
