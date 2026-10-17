@@ -1,0 +1,42 @@
+---
+// Stad-specifieke diepte-secties voor /locaties/<stad>/ (data: src/data/locaties-diepte.ts).
+import { LOCATIES_DIEPTE } from '../data/locaties-diepte';
+interface Props { slug: string }
+const d = LOCATIES_DIEPTE[Astro.props.slug];
+---
+{d && (
+  <section class="section">
+    <div class="container-page max-w-4xl mx-auto">
+      <h2 class="text-2xl font-bold text-navy mb-4">{d.marketingH2}</h2>
+      {d.marketing.map((p) => <p class="text-slate-600 leading-relaxed mb-4">{p}</p>)}
+      <p class="text-sm text-slate-600 mb-4">
+        Het volledige bureau-aanbod: <a href="/ai-marketing-bureau/" class="text-brand-indigo hover:underline">AI marketing bureau Nederland</a>.
+      </p>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">{d.geoH2}</h2>
+      {d.geo.map((p) => <p class="text-slate-600 leading-relaxed mb-4">{p}</p>)}
+      <p class="text-sm text-slate-600 mb-4">
+        Lees ook: <a href="/geo-bureau/" class="text-brand-indigo hover:underline">GEO-bureau Nederland</a>,
+        <a href="/resultaten/" class="text-brand-indigo hover:underline"> gemeten resultaten</a> en
+        <a href="/diensten/audit/" class="text-brand-indigo hover:underline"> de AI-audit</a>.
+      </p>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">{d.websiteH2}</h2>
+      {d.website.map((p) => <p class="text-slate-600 leading-relaxed mb-4">{p} <a href="/diensten/ai-website-bundel-mkb-nederland/" class="text-brand-indigo hover:underline">Bekijk de bundel</a>.</p>)}
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">{d.sectorenH2}</h2>
+      <div class="grid md:grid-cols-2 gap-4 mb-4">
+        {d.sectoren.map((s) => (
+          <div class="card">
+            <h3 class="font-bold text-navy text-sm mb-2">{s.naam}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{s.tekst}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">{d.werkwijzeH2}</h2>
+      {d.werkwijze.map((p) => <p class="text-slate-600 leading-relaxed mb-4">{p}</p>)}
+      <p class="text-sm text-slate-600">Prijzen: <a href="/tarieven/" class="text-brand-indigo hover:underline">alle tarieven</a>.</p>
+    </div>
+  </section>
+)}
