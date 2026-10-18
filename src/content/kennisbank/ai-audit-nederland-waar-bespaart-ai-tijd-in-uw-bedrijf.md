@@ -56,7 +56,7 @@ Dat sluit aan op wat de audit meestal laat zien: de telefoon is het knelpunt dat
 
 ### Wat kost een AI-audit?
 
-Dat verschilt per aanbieder en per omvang. Voor een kleine onderneming kunt u de basis zelf doen met de vijf stappen hierboven, zonder kosten. Laat u een externe partij meekijken, vraag dan vooraf wat er precies wordt geleverd: een rapport, een advies of een uitvoeringsplan.
+Dat verschilt per aanbieder en per omvang. Wilt u een uitgebreidere audit door een extern team, bekijk dan de [AI-audit voor het MKB](/diensten/audit/) met vaste prijs en oplevering in 14 werkdagen. Voor een kleine onderneming kunt u de basis zelf doen met de vijf stappen hierboven, zonder kosten. Laat u een externe partij meekijken, vraag dan vooraf wat er precies wordt geleverd: een rapport, een advies of een uitvoeringsplan.
 
 ### Heb ik technische kennis nodig voor een AI-audit?
 
