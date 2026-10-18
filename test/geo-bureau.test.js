@@ -132,8 +132,16 @@ describe('geo-bureau: sitemap, llms.txt en navigatie', () => {
     ...GEO_SBI_SECTOREN.map((s) => `/geo-bureau/sector/${s.slug}/`),
   ];
 
-  it('alle 28 geo-bureau-URLs staan in de sitemap', () => {
-    for (const u of verwachteUrls) expect(sitemap, u).toContain(`<loc>https://aanloopai.nl${u}</loc>`);
+  // Regio-/sectorpagina's staan sinds 2026-10-18 in src/data/noindex-paths.json (0 vertoningen,
+  // niet geindexeerd, sjabloon): bewust uit de sitemap. Alle overige geo-bureau-URLs moeten erin staan.
+  const noindex = JSON.parse(read('src/data/noindex-paths.json')).groups.flatMap((g) => g.paths);
+
+  it('alle geo-bureau-URLs staan in de sitemap, behalve die in noindex-paths.json', () => {
+    for (const u of verwachteUrls) {
+      if (noindex.includes(u)) expect(sitemap, u).not.toContain(`<loc>https://aanloopai.nl${u}</loc>`);
+      else expect(sitemap, u).toContain(`<loc>https://aanloopai.nl${u}</loc>`);
+    }
+    for (const u of ['/geo-bureau/', '/geo-bureau/kiezen/', '/geo-bureau/wat-kost-geo/', '/geo-bureau/vergelijken/']) expect(sitemap, u).toContain(`<loc>https://aanloopai.nl${u}</loc>`);
   });
 
   it('llms.txt en llms-full.txt linken naar alle 28 geo-bureau-URLs', () => {
