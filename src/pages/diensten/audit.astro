@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import FaqSection from '../../components/FaqSection.astro';
+import AiAdoptieCbs from '../../components/AiAdoptieCbs.astro';
 import pageImage from '../../assets/images/pages/audit.jpg';
 
 const auditSchema = [
@@ -38,6 +39,8 @@ const auditSchema = [
     },
   },
 ];
+
+auditSchema.push({ '@context': 'https://schema.org', '@type': 'WebPage', '@id': 'https://aanloopai.nl/diensten/audit/#webpage', url: 'https://aanloopai.nl/diensten/audit/', name: 'AI-audit Nederland voor het MKB', inLanguage: 'nl-NL', dateModified: '2026-10-19', isPartOf: { '@id': 'https://aanloopai.nl/#website' }, publisher: { '@id': 'https://aanloopai.nl/#organization' } });
 
 const auditFaq = [
   { question: 'Wat krijg ik bij de Basis Audit?', answer: 'Een grondige procesanalyse (5-10 processen), ROI-berekening per AI-automatiseringskans, prioriteringsmatrix (impact vs implementatiekosten), tech-stack advies en een concrete 90-dagen implementatieroadmap. Plus 1 presentatie aan uw managementteam. Oplevering binnen 14 werkdagen na intake.' },
@@ -110,6 +113,8 @@ const auditFaq = [
       </div>
     </div>
   </section>
+
+  <AiAdoptieCbs sector="zakelijk" heading="Waarom een AI-audit? Zo gebruiken Nederlandse bedrijven AI" />
 
   <section id="audit-detail" class="section scroll-mt-20">
     <div class="container-page">
