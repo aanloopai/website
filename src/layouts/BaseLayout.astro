@@ -25,6 +25,8 @@ export interface Props {
   ogTitle?: string;
   /** Zet dit op de pagina waar Hero.astro boven de vouw staat (nu alleen /). */
   preloadHero?: boolean;
+  /** Optioneel: echte wijzigingsdatum (YYYY-MM-DD); anders git-datum uit page-lastmod.json. */
+  dateModified?: string;
 }
 
 const {
@@ -38,6 +40,7 @@ const {
   canonicalOverride,
   ogTitle,
   preloadHero = false,
+  dateModified: dateModifiedProp,
 } = Astro.props;
 
 // LCP-preload van de hero-afbeelding. Opties komen uit data/hero-image.ts, net
@@ -50,6 +53,7 @@ const heroPreload = preloadHero
 // Centrale noindex-lijst (src/data/noindex-paths.json): pagina blijft online en
 // volgbaar (noindex, follow), maar verdwijnt uit de sitemap (build-sitemap.cjs).
 const noindexListed = noindexPaths.groups.some((g) => g.paths.includes(Astro.url.pathname.endsWith('/') ? Astro.url.pathname : Astro.url.pathname + '/'));
+
 
 const canonical = canonicalOverride ?? new URL(Astro.url.pathname, 'https://aanloopai.nl').toString();
 // Smart suffix: only append " · Aanloop AI" when total stays <=60 chars
@@ -106,6 +110,12 @@ const hideStickyCta = stickyCtaHidePaths.has(Astro.url.pathname);
 
 // ── Organization Schema ────────────────────────────────────────────
 import { OPRICHTER, ORGANISATIE_WIKIDATA, PERSON_ID } from '../data/oprichter';
+// Echte wijzigingsdatum: prop > git-commitdatum van het bronbestand (gegenereerd
+// door scripts/build-sitemap.cjs in prebuild). Ontbreekt beide, dan geen datum.
+const lastmodFiles = import.meta.glob('../data/page-lastmod.json', { eager: true });
+const lastmodMap = (Object.values(lastmodFiles)[0] ?? {}).default ?? {};
+const pathKey = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : Astro.url.pathname + '/';
+const pageDateModified = dateModifiedProp ?? lastmodMap[pathKey];
 
 const orgSchema = {
   '@context': 'https://schema.org',
@@ -258,6 +268,12 @@ const speakableSchema = {
   '@type': 'WebPage',
   name: fullTitle,
   url: canonical,
+  description,
+  inLanguage: 'nl-NL',
+  isPartOf: { '@id': 'https://aanloopai.nl/#website' },
+  publisher: { '@id': 'https://aanloopai.nl/#organization' },
+  author: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  ...(pageDateModified ? { dateModified: pageDateModified } : {}),
   speakable: {
     '@type': 'SpeakableSpecification',
     cssSelector: ['h1', 'main p:first-of-type', '.eyebrow + h2 + p', '[data-speakable]'],
@@ -480,6 +496,7 @@ const allSchemas = [
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Aanloop AI" />
+    {pageDateModified && <meta property="article:modified_time" content={pageDateModified} />}
     <meta property="og:title" content={ogTitle ?? fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />

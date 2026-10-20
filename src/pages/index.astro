@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EmmaLiveDemo from '../components/EmmaLiveDemo.astro';
+import FaqSection from '../components/FaqSection.astro';
 import { Hero as AnimatedHero } from '../components/ui/animated-hero';
 import MobileProof from '../components/MobileProof.astro';
 import AiAdoptieCbs from '../components/AiAdoptieCbs.astro';
@@ -122,6 +123,25 @@ const homeSchema = [
     },
   },
 ];
+
+const faqItems = [
+  {
+    question: 'Wat doet Aanloop AI?',
+    answer: 'Aanloop AI uit Rotterdam bouwt websites met AI die klanten opleveren voor het Nederlandse MKB: de website, Emma als AI-receptionist voor telefoon en WhatsApp, zichtbaarheid in ChatGPT, Gemini en Perplexity (GEO) en een meetpaneel dat laat zien wat elk kanaal oplevert.',
+  },
+  {
+    question: 'Wat kost een website met AI van Aanloop AI?',
+    answer: `De AI-Website Bundel kost ${euro(WEBSITE_BUNDEL.setup)} eenmalig plus ${euro(WEBSITE_BUNDEL.maand)} per maand, alles in één contract. Alle prijzen staan openbaar op de tarievenpagina.`,
+  },
+  {
+    question: 'Hoe zorgt u dat ChatGPT mijn bedrijf noemt?',
+    answer: 'Dat heet AI-vindbaarheid of GEO (Generative Engine Optimization). We maken uw gegevens overal consistent, structureren uw site met schema en llms.txt, openen hem voor AI-crawlers en meten daarna of u in de antwoorden staat. Een gratis GEO Quick Scan toont waar u nu staat; het maandelijkse traject kost €595 per maand. Een resultaat garanderen kan niemand: geen bureau bepaalt wat een AI-assistent antwoordt.',
+  },
+  {
+    question: 'Wat kost Emma, de AI-receptionist?',
+    answer: 'Emma start vanaf €149 per maand en heeft 14 dagen geld-terug-garantie op het abonnement. Zij neemt telefoon en WhatsApp 24/7 aan, plant afspraken in uw agenda en stuurt elke lead direct door.',
+  },
+];
 ---
 
 <BaseLayout
@@ -129,6 +149,7 @@ const homeSchema = [
   ogTitle="Aanloop AI | Websites met AI die klanten opleveren"
   description="Wij bouwen websites met AI die klanten opleveren en zorgen dat ChatGPT, Gemini en Perplexity u noemen. Emma inbegrepen. Gemeten resultaten, live."
   schema={homeSchema}
+  faqSchema={faqItems}
 >
   <!-- Hero: shadcn animated-hero (React island). Server-rendered H1 toont het
        eerste rotatiewoord al; client:idle hydrateert daarna en start de
@@ -322,6 +343,8 @@ const homeSchema = [
       </div>
     </div>
   </section>
+
+  <FaqSection items={faqItems} />
 
   <!-- xref-orphan-fix-2026-05-07: deze drie pagina's hebben verder weinig inkomende links -->
   <section class="border-t border-pearl/10 bg-midnight py-10" aria-labelledby="xref-orphan-heading">

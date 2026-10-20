@@ -57,6 +57,10 @@ function Hero({
   children,
 }: HeroProps) {
   const [titleNumber, setTitleNumber] = useState(0);
+  // Server-HTML bevat alleen het actieve woord: de overige roterende woorden
+  // zijn onzichtbaar (opacity 0) en horen niet als verborgen tekst in de HTML.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const reduceMotion = useReducedMotion();
   const titles = useMemo(() => titlesProp ?? DEFAULT_TITLES, [titlesProp]);
   const SecondaryIcon = secondaryIcon === "chat" ? MessageCircle : PhoneCall;
@@ -90,7 +94,7 @@ function Hero({
               <span>{lead}</span>
               <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
                 &nbsp;
-                {titles.map((title, index) => (
+                {titles.map((title, index) => (mounted || index === titleNumber) && (
                   <motion.span
                     key={index}
                     className="absolute font-semibold whitespace-nowrap"

@@ -231,6 +231,19 @@ for (const u of uniqueSorted) {
   );
 }
 
+// Echte wijzigingsdatum per pad voor BaseLayout (dateModified in JSON-LD): exact
+// dezelfde waarde als <lastmod> hierboven, dus de git-commitdatum van het
+// bronbestand — nooit "nu" voor ongewijzigde pagina's. Gegenereerd, niet in git.
+{
+  const pageLastmod = {};
+  for (const u of uniqueSorted) {
+    const src = sourceByUrl.get(u);
+    const d = (src && lastmodForSource(src)) || lastmodMap.get(u);
+    if (d) pageLastmod[u] = String(d).slice(0, 10);
+  }
+  fs.writeFileSync(path.join(ROOT, 'src', 'data', 'page-lastmod.json'), JSON.stringify(pageLastmod));
+}
+
 xmlLines.push('</urlset>');
 xmlLines.push('');
 
