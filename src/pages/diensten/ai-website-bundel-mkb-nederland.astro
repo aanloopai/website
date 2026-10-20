@@ -62,6 +62,8 @@ const faqItems = [
   { question: 'Wat kost het en wat is daar bijzonder aan?', answer: `${euro(bundelPrijs.setup)} eenmalig en ${euro(bundelPrijs.mnd)} per maand, exclusief 21% btw. We publiceren beide bedragen; de meeste bureaus noemen alleen "op aanvraag". Los kosten Emma Compleet en GEO Maandelijks samen ${euro(losseMaandlast)} per maand zonder website; in de bundel vervallen de Emma-setup, de GEO-setup en het integratiewerk.` },
   { question: 'Garanderen jullie leads of vermeldingen in ChatGPT?', answer: 'Nee, en wie dat wel garandeert, moet u wantrouwen: geen enkel bureau bepaalt wat een AI-assistent antwoordt of hoeveel mensen bellen. Wat we wél garanderen is dat u elke maand ziet wat er gemeten is — dezelfde cijfers die wij op /resultaten/ over onze eigen sites publiceren — en dat we daarop bijsturen.' },
   { question: 'Hoe weet ik dat jullie cijfers kloppen?', answer: `Elk cijfer op /resultaten/ draagt de meetmethode, de periode en de meetdatum (momentopname ${datum(RESULTATEN_PEILDATUM)}; de tabel ververst elk uur uit onze meting). Eigen bedrijven staan er als eigen bedrijven, klanten met hun akkoord. We tellen contactacties en afgeleverde leads apart en tellen ze nooit bij elkaar op.` },
+  { question: 'Wat is een AI-website en waarin verschilt die van een gewone website?', answer: 'Een AI-website is een website die niet alleen mensen, maar ook AI-assistenten als ChatGPT, Gemini en Perplexity kunnen lezen en citeren (schema.org, llms.txt, answer-first pagina\'s), en die een AI-receptionist als Emma en een meetpaneel meebrengt. Een gewone website heeft die laag niet vanzelf: zonder receptionist blijft een vraag buiten kantoortijd liggen en zonder meetpaneel ziet u niet via welk kanaal een aanvraag binnenkwam.' },
+  { question: 'Kan een bureau mijn website laten verschijnen in ChatGPT?', answer: 'Het kan de kans vergroten, niet afdwingen. Wij bouwen de website zo dat AI-crawlers hem mogen lezen en kunnen begrijpen, en we meten daarna maandelijks of u in de antwoorden staat. Wat een assistent antwoordt, bepaalt geen enkel bureau.' },
   { question: 'Zit WhatsApp bij Emma inbegrepen?', answer: 'Ja. De bundel gebruikt Emma Compleet: telefoon én WhatsApp in hetzelfde abonnement, onbeperkt volume. U betaalt nooit twee keer voor hetzelfde kanaal.' },
   { question: 'Kan ik mijn bestaande website houden en alleen Emma of GEO afnemen?', answer: 'Ja, beide zijn los verkrijgbaar (zie /diensten/emma/ en /ai-vindbaarheid/). De bundel is bedoeld voor wie een nieuwe of vernieuwde site wil waarin de AI-laag en de meting vanaf dag 1 zitten; retrofit op een bestaande site is meestal duurder en meet minder.' },
   { question: 'Wat als ik later wil opzeggen?', answer: 'U behoudt uw website-code (in uw eigen GitHub), uw domein en alle lead- en gespreksdata, die we naar u exporteren. Het maandabonnement stopt per maand na de eerste termijn; de eenmalige bouw is dan al van u.' },
@@ -96,7 +98,7 @@ const speakableSchema = {
 ---
 
 <BaseLayout
-  title="AI-Website Bundel: website die klanten oplevert"
+  title="AI-website laten maken: bundel met Emma en GEO"
   description={`Website + Emma AI-receptionist + AI-vindbaarheid in ChatGPT en Gemini + meetpaneel. ${euro(bundelPrijs.setup)} eenmalig, ${euro(bundelPrijs.mnd)} per maand. Gemeten resultaten.`}
   schema={[serviceSchema, speakableSchema]}
   faqSchema={faqItems}
