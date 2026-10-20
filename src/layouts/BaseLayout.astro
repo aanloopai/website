@@ -21,6 +21,8 @@ export interface Props {
   faqSchema?: { question: string; answer: string }[];
   videoSchema?: { name: string; description: string; thumbnailUrl: string; uploadDate: string; contentUrl?: string; embedUrl?: string; duration?: string };
   canonicalOverride?: string;
+  /** Optioneel: og:title los van <title> (merk-eerst, bv. 'Aanloop AI | ...'). */
+  ogTitle?: string;
   /** Zet dit op de pagina waar Hero.astro boven de vouw staat (nu alleen /). */
   preloadHero?: boolean;
 }
@@ -34,6 +36,7 @@ const {
   faqSchema,
   videoSchema,
   canonicalOverride,
+  ogTitle,
   preloadHero = false,
 } = Astro.props;
 
@@ -236,7 +239,8 @@ const websiteSchema = {
   '@id': 'https://aanloopai.nl/#website',
   url: 'https://aanloopai.nl',
   name: 'Aanloop AI',
-  description: 'AI-oplossingen voor het Nederlandse MKB',
+  // Homepage: gelijk aan de meta description (brand-entity coherentie).
+  description: Astro.url.pathname === '/' ? description : 'AI-oplossingen voor het Nederlandse MKB',
   publisher: { '@id': 'https://aanloopai.nl/#organization' },
   potentialAction: {
     '@type': 'SearchAction',
@@ -476,7 +480,7 @@ const allSchemas = [
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Aanloop AI" />
-    <meta property="og:title" content={fullTitle} />
+    <meta property="og:title" content={ogTitle ?? fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
