@@ -10,6 +10,7 @@ export interface ExtraInlink {
 }
 
 export const EXTRA_INLINKS: ExtraInlink[] = [
+  { target: '/diensten/website-beveiliging-onderhoud/', label: 'Website-beveiliging en onderhoud na het PHP-lek', sources: ['/diensten/website-laten-maken-mkb-nederland-2026/', '/diensten/webshop-laten-maken-shopify-woocommerce-nederland-2026/', '/zekerheden/'] },
   { target: '/kennisbank/ai-agent-microsoft-365-outlook-mkb-nederland/', label: 'AI-agent voor Microsoft 365 en Outlook', sources: ['/kennisbank/ai-agent-google-workspace-gmail-mkb-nederland/', '/diensten/ai-email-assistent/', '/kennisbank/ai-workflow-automation/'] },
   { target: '/kennisbank/ai-hypotheek-software-wat-het-doet-en-wanneer-het-past/', label: 'AI-hypotheeksoftware: wat het doet en wanneer het past', sources: ['/kennisbank/ai-voor-hypotheekadviseur-nederland-2026/', '/kennisbank/ai-hypotheeksoftware-uitleg-en-keuzehulp-voor-adviseurs/', '/kennisbank/ai-voor-verzekeringsmakelaar-financieel-adviseur/'] },
   { target: '/kennisbank/ai-intake-clienten-notariaat/', label: 'AI-intake voor cliënten in het notariaat', sources: ['/kennisbank/ai-voor-notariskantoor-nederland-2026/', '/kennisbank/ai-voor-advocatenkantoor-nederland-2026/', '/diensten/ai-document-processing/'] },

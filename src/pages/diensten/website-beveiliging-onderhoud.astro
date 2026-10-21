@@ -1,0 +1,89 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FaqSection from '../../components/FaqSection.astro';
+
+// Aanleiding: PHP-lekken CVE-2026-109618/-109619 van 21 oktober 2026.
+// Eerlijkheidsregels (zie /beveiliging/ en test/php-lek-pagina.test.js):
+// geen eigen certificering claimen, geen "100% veilig"-garantie, geen
+// verzonnen prijzen — tarief is op aanvraag, net als website-onderhoud.
+const faqItems = [
+  { question: 'Mijn website draait op WordPress. Moet ik iets doen na het PHP-lek?', answer: 'Ja. WordPress draait op PHP. Controleer of uw PHP-versie op 8.5.12, 8.4.27, 8.3.36 of 8.2.35 (of hoger binnen die tak) staat. Draait u op PHP 8.1 of ouder, dan is een upgrade nodig. Een onderhoudsmodus in WordPress beschermt niet tegen dit lek. Wij kunnen dit voor u controleren en uitvoeren.' },
+  { question: 'Kunnen jullie mijn website 100% veilig maken?', answer: 'Nee, en wie dat belooft is niet eerlijk. Geen enkele website is volledig veilig. Wat wel kan: updates snel doorvoeren zodra ze uitkomen, dagelijkse back-ups zodat u kunt terugzetten, monitoring zodat problemen opvallen, en minder aanvalsoppervlak door waar mogelijk geen PHP te gebruiken.' },
+  { question: 'Ik heb mijn website niet bij Aanloop AI laten bouwen. Kunnen jullie toch helpen?', answer: 'Ja. We beginnen met een controle: welk systeem, welke PHP-versie, wie de hosting beheert en of er sporen van misbruik zijn. Daarna hoort u wat er nodig is en wat het kost, voordat we iets doen.' },
+  { question: 'Wat is een website zonder PHP?', answer: 'Een statische website: de pagina\'s worden vooraf gebouwd en als kant-en-klare bestanden geserveerd, bijvoorbeeld via Cloudflare Pages. Er draait dan geen PHP of database op de server die een bezoeker kan aanspreken. Onze eigen website aanloopai.nl werkt zo en was daardoor niet geraakt door het PHP-lek van 21 oktober 2026. Voor een webshop is dit niet altijd mogelijk; dan kijken we samen naar een gehost platform of goed onderhouden PHP.' },
+  { question: 'Hebben jullie een SOC 2- of ISO 27001-certificaat?', answer: 'Nee. Aanloop AI heeft geen eigen SOC 2-, ISO 27001- of NEN 7510-certificaat. De leveranciers die wij gebruiken hebben soms wel certificaten, maar dat zijn hun certificaten, niet de onze. Zie onze pagina Beveiliging voor het volledige overzicht.' },
+  { question: 'Wat kost website-beveiliging en onderhoud?', answer: 'Op aanvraag. Het hangt af van het systeem (WordPress, WooCommerce, statisch), het aantal plugins en wie de hosting beheert. Na de eerste controle krijgt u een vaste prijs. Bij websites die wij zelf bouwen is maandelijks onderhoud met security-updates, back-ups en uptime-monitoring inbegrepen in het maandtarief.' },
+];
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  name: 'Website-beveiliging en onderhoud',
+  serviceType: 'Website security en onderhoud',
+  description: 'PHP-updates en security-patches, controle op misbruik, dagelijkse back-ups, uptime-monitoring en migratie naar een website zonder PHP. Voor MKB-websites op WordPress, WooCommerce en andere systemen. Tarief op aanvraag.',
+  provider: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization' },
+  areaServed: { '@type': 'Country', name: 'Nederland' },
+  audience: { '@type': 'BusinessAudience', audienceType: 'MKB Nederland' },
+  url: 'https://aanloopai.nl/diensten/website-beveiliging-onderhoud/',
+};
+
+const onderdelen = [
+  { titel: 'Spoedcontrole na het PHP-lek', tekst: 'We stellen vast of uw site op PHP draait, welke versie, wie de server beheert en of de gepatchte versie (8.5.12, 8.4.27, 8.3.36 of 8.2.35) actief is.' },
+  { titel: 'Update en upgrade', tekst: 'PHP bijwerken naar een veilige versie. Draait u op 8.1 of ouder, dan upgraden we en testen we eerst op een kopie of plugins en thema\'s blijven werken.' },
+  { titel: 'Controle op misbruik', tekst: 'Zoeken naar onbekende beheerders, vreemde of gewijzigde bestanden, spam-pagina\'s en bij webshops aanpassingen aan de afrekenpagina. Bij twijfel: terugzetten van een schone back-up en wachtwoorden en sleutels vervangen.' },
+  { titel: 'Doorlopend onderhoud', tekst: 'Security-updates van PHP, CMS en plugins zodra ze uitkomen, dagelijkse back-ups, uptime-monitoring (24/7 ping) en SSL-verlenging.' },
+  { titel: 'Overstap naar een website zonder PHP', tekst: 'Een statische website (Astro of Hugo) op Cloudflare Pages: geen PHP en geen database op de server die een bezoeker kan aanspreken. Zo is onze eigen site gebouwd.' },
+];
+---
+<BaseLayout title="Website-beveiliging & onderhoud na het PHP-lek" description="Draait uw website op WordPress of PHP? Wij controleren en updaten PHP na het lek van 21 oktober 2026, sporen misbruik op en verzorgen back-ups en onderhoud. Of: een website zonder PHP." schema={schema} faqSchema={faqItems}>
+  <section class="border-b border-slate-200 hero-gradient">
+    <div class="container-page py-16 lg:py-24">
+      <div class="max-w-3xl">
+        <div class="flex items-center gap-4 mb-6 reveal"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Websites · Beveiliging</span></div>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05] reveal reveal-delay-1">Website-beveiliging en onderhoud</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl reveal reveal-delay-2">Op 21 oktober 2026 gingen DigiD, MijnOverheid en honderden andere websites offline door twee kritieke lekken in PHP. Draait uw website of webshop op WordPress, WooCommerce of een ander PHP-systeem? Wij controleren of u veilig bent, voeren de update door en houden uw site daarna bij.</p>
+        <div class="mt-8 flex gap-3 flex-wrap reveal reveal-delay-3">
+          <a href="/contact/" class="btn-primary text-base px-6 py-3.5">Laat uw website controleren <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
+          <a href="/kennisbank/is-mijn-website-kwetsbaar-php-lek-checklist/" class="btn-outline text-base px-6 py-3.5">Zelf checken: checklist</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-page max-w-4xl">
+      <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-12 reveal">
+        <p class="font-semibold text-navy mb-2">Direct antwoord</p>
+        <p class="text-slate-700 leading-relaxed">Draait uw site op PHP, dan moet de PHP-versie nu op <strong>8.5.12, 8.4.27, 8.3.36 of 8.2.35</strong> staan. Een onderhoudsmodus in WordPress of Magento helpt niet tegen dit lek. Kunt u niet direct updaten, haal de site dan op serverniveau offline. Wat er precies gebeurde leest u in <a href="/kennisbank/php-lek-oktober-2026-websites-offline/" class="text-brand-indigo underline">ons artikel over het PHP-lek</a>.</p>
+      </div>
+
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-6">Wat wij doen</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        {onderdelen.map((o) => (
+          <div class="card reveal">
+            <h3 class="font-bold text-navy mb-2">{o.titel}</h3>
+            <p class="text-sm text-slate-600 leading-relaxed">{o.tekst}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mt-14 mb-4">Wat wij niet beloven</h2>
+      <ul class="list-disc pl-5 space-y-2 text-slate-700 leading-relaxed">
+        <li>Geen "100% veilig". Geen enkele website is dat. We verkleinen het risico en zorgen dat u kunt terugzetten als het misgaat.</li>
+        <li>Geen eigen certificaat. Aanloop AI heeft geen eigen SOC 2-, ISO 27001- of NEN 7510-certificering. Zie <a href="/beveiliging/" class="text-brand-indigo underline">Beveiliging</a>.</li>
+        <li>Geen werk zonder akkoord. Na de controle hoort u eerst wat er nodig is en wat het kost.</li>
+      </ul>
+
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mt-14 mb-4">Tarief</h2>
+      <p class="text-slate-700 leading-relaxed">Op aanvraag. De prijs hangt af van het systeem, het aantal plugins en wie de hosting beheert; na de eerste controle krijgt u een vaste prijs. Laat u een <a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="text-brand-indigo underline">website</a> of <a href="/diensten/webshop-laten-maken-shopify-woocommerce-nederland-2026/" class="text-brand-indigo underline">webshop</a> door ons bouwen, dan zitten security-updates, back-ups en monitoring al in het maandelijkse onderhoud.</p>
+
+      <FaqSection items={faqItems} bare />
+
+      <div class="rounded-lg bg-navy text-white p-8 text-center mt-12">
+        <h2 class="text-2xl font-bold mb-3">Twijfelt u of uw website veilig is?</h2>
+        <p class="text-slate-300 mb-6">Stuur ons uw domeinnaam. We kijken op welk systeem en welke PHP-versie uw site draait en laten weten wat er nodig is.</p>
+        <a href="/contact/" class="btn-primary">Neem contact op</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
