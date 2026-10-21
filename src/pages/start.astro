@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import EmailHint from '../components/EmailHint.astro';
 
 // Pre-sale intake wizard — evolution of gratis-ai-scan.astro (lead-gen quiz).
 // This page is the PURCHASE-INTENT intake: bezoeker koos al voor een dienst en
@@ -88,7 +89,7 @@ const toolSchema = {
   <!-- Wizard -->
   <section class="section bg-slate-50 border-b border-slate-200" id="start">
     <div class="container-page max-w-3xl mx-auto">
-      <form id="start-form" novalidate>
+      <form id="start-form" data-form-name="start_intake" novalidate>
         <div id="start-wizard" class="bg-white border border-slate-200 rounded-lg p-6 sm:p-8 shadow-sm reveal" aria-live="polite">
 
           <!-- Progress bar -->
@@ -149,7 +150,7 @@ const toolSchema = {
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
               <div>
                 <label for="start-email" class="block text-sm font-semibold text-navy mb-1.5">E-mailadres *</label>
-                <input type="email" id="start-email" name="email" required
+                <input type="email" id="start-email" name="email" required data-email-hint
                   class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-indigo focus:outline-none" />
               </div>
               <div>
@@ -198,7 +199,7 @@ const toolSchema = {
             </button>
             <button
               type="button"
-              id="start-submit-btn"
+              id="start-submit-btn" data-form-submit
               class="btn-primary text-sm justify-center px-6 py-3 hidden"
             >
               <span id="start-submit-label">Aanvraag versturen →</span>
@@ -252,6 +253,7 @@ const toolSchema = {
       </noscript>
     </div>
   </section>
+  <EmailHint />
 </BaseLayout>
 
 <script>
