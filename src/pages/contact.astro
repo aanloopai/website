@@ -1,6 +1,7 @@
 ---
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import EmailHint from '../components/EmailHint.astro';
 import pageImage from '../assets/images/pages/contact.jpg';
 
 const url = new URL(Astro.request.url);
@@ -39,7 +40,7 @@ const type = url.searchParams.get('type') || 'contact';
 
         <!-- Contact form -->
         <div class="lg:col-span-3">
-          <form id="contact-form" class="space-y-6" novalidate>
+          <form id="contact-form" data-form-name="contact" class="space-y-6" novalidate>
             <!-- Type selector -->
             <div>
               <label class="block text-sm font-medium text-navy mb-3">Waarmee kan ik u helpen?</label>
@@ -79,7 +80,7 @@ const type = url.searchParams.get('type') || 'contact';
             <div class="grid sm:grid-cols-2 gap-4">
               <div>
                 <label for="email" class="block text-sm font-medium text-navy mb-2">E-mailadres *</label>
-                <input type="email" id="email" name="email" required autocomplete="email"
+                <input type="email" id="email" name="email" required autocomplete="email" data-email-hint
                   aria-required="true" aria-describedby="email-hint err-email"
                   class="form-input" placeholder="jan@deboerbv.nl" />
                 <p id="err-email" class="hidden mt-1 text-xs text-brand-rose">Vul een geldig e-mailadres in.</p>
@@ -244,6 +245,7 @@ const type = url.searchParams.get('type') || 'contact';
       </div>
     </div>
   </section>
+  <EmailHint />
 </BaseLayout>
 
 <style>

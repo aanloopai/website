@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import EmailHint from '../components/EmailHint.astro';
 
 // Wizard-questions: 11 stappen totaal. Q1 = sector (context, geen score). Q2-Q11 = scoring (max 100pt totaal).
 const questions = [
@@ -360,7 +361,7 @@ const faqItems = [
             </div>
           </div>
 
-          <form id="scan-email-form" class="space-y-3" novalidate>
+          <form id="scan-email-form" data-form-name="gratis_ai_scan" class="space-y-3" novalidate>
             <input type="hidden" name="form_type" value="ai_readiness_scan" />
             <input type="hidden" name="subject" value="AI-Readiness Scan rapport via aanloopai.nl" />
             <input type="hidden" name="source" value="ai-readiness-scan" />
@@ -387,7 +388,7 @@ const faqItems = [
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <input type="text" name="voornaam" required placeholder="Voornaam"
                 class="px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-emerald focus:outline-none" />
-              <input type="email" name="email" required placeholder="E-mailadres"
+              <input type="email" name="email" required data-email-hint placeholder="E-mailadres"
                 class="px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-emerald focus:outline-none" />
             </div>
             <input type="text" name="bedrijf" placeholder="Bedrijfsnaam (optioneel)"
@@ -539,6 +540,7 @@ const faqItems = [
       </div>
     </div>
   </section>
+  <EmailHint />
 </BaseLayout>
 
 <script>
