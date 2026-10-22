@@ -1,7 +1,7 @@
 ---
 title: "PHP-lek 21 oktober 2026: waarom DigiD en honderden websites offline gingen"
 seoTitle: "PHP-lek oktober 2026: waarom websites offline gingen"
-description: "Twee kritieke lekken in PHP (CVE-2026-109618 en CVE-2026-109619) dwongen op 21 oktober 2026 DigiD, MijnOverheid en vele andere sites offline. Wat er gebeurde en wat het voor uw website betekent."
+description: "Door twee PHP-lekken gingen op 21 oktober 2026 DigiD, MijnOverheid en vele andere sites offline. Wat er gebeurde en wat het voor uw website betekent."
 excerpt: "Op woensdag 21 oktober 2026 gingen DigiD, MijnOverheid, de Tweede Kamer, RTL Nieuws en een lange rij andere Nederlandse websites uit voorzorg offline. Oorzaak: twee kritieke lekken in PHP, de programmeertaal onder een groot deel van het web. Een overzicht van wat er gebeurde, wie geraakt werd en wat u nu moet doen."
 published: 2026-10-22
 category: "Beveiliging"

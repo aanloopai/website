@@ -1,7 +1,7 @@
 ---
 title: "Is mijn website kwetsbaar voor het PHP-lek? Checklist in 7 stappen"
 seoTitle: "PHP-lek: is mijn website kwetsbaar? Checklist"
-description: "Checklist voor ondernemers na het PHP-lek van 21 oktober 2026: controleer of uw site PHP draait, welke versie veilig is, waarom onderhoudsmodus niet helpt en hoe u misbruik opspoort."
+description: "Checklist na het PHP-lek van 21 oktober 2026: draait uw site op PHP, welke versie is veilig, waarom onderhoudsmodus niet helpt en hoe u misbruik vindt."
 excerpt: "Na de PHP-lekken van 21 oktober 2026 (CVE-2026-109618 en CVE-2026-109619) wilt u maar één ding weten: loopt mijn website risico? Deze checklist helpt u in zeven stappen. Ook als u geen techneut bent."
 published: 2026-10-22
 category: "Beveiliging"
