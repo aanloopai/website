@@ -6,6 +6,9 @@
 // manieren om contact op te nemen — formulier, WhatsApp, e-mail. Gegevens komen
 // uit bestaande bronnen: hello@aanloopai.nl (worker.js NOTIFICATION_EMAIL) en de
 // /whatsapp-doorstuurroute (worker.js WHATSAPP_NUMBER) met vooringevuld NL-bericht.
+import { WEBSITE_BUNDEL } from '../data/pricing';
+const euro = (n: number) => `€${n.toLocaleString('nl-NL')}`;
+
 const CONTACT_MAIL = 'hello@aanloopai.nl';
 const mailHref = `mailto:${CONTACT_MAIL}?subject=${encodeURIComponent('Vraag via aanloopai.nl')}&body=${encodeURIComponent('Hallo, ik kom via aanloopai.nl en heb een vraag over ')}`;
 // Op deze pagina's IS het formulier de pagina zelf: geen tweede formulier erbovenop.
@@ -13,106 +16,24 @@ const pathNoPanel = new Set(['/contact/', '/demo-aanvragen/', '/aanvragen/']);
 const normPath = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : `${Astro.url.pathname}/`;
 const showQuickForm = !pathNoPanel.has(normPath);
 
+// Master plan Faz 3 (2026-10-25): "Vier diensten. Geen ruis." geldt ook voor het menu.
+// Alleen de vier hoofdproducten staan in de hoofdnavigatie; de overige diensten,
+// sectoren en de kennisbank zijn bereikbaar via /diensten/, /sectoren/ en de footer
+// (die pagina's blijven bestaan en staan in de sitemap).
 const dienstenGroups = [
   {
-    title: 'Websites & Webshops',
+    title: 'Vier diensten',
     items: [
-      { label: 'AI-Website Bundel', href: '/diensten/ai-website-bundel-mkb-nederland/', desc: 'Website die klanten oplevert: Emma + AI-vindbaarheid + meetpaneel', badge: 'Meest gekozen' },
-      { label: 'Resultaten (live)', href: '/resultaten/', desc: 'Gemeten cijfers van zeven sites die wij bouwden' },
-      { label: 'Website laten maken', href: '/diensten/website-laten-maken-mkb-nederland-2026/', desc: 'AI-ready website, maandtarief op aanvraag' },
-      { label: 'Webshop laten maken', href: '/diensten/webshop-laten-maken-shopify-woocommerce-nederland-2026/', desc: 'Shopify/WooCommerce/Lightspeed, iDeal+PostNL' },
-      { label: 'AI Chatbot voor Website', href: '/diensten/ai-chatbot-website/', desc: 'Toevoegen aan bestaande website' },
-    ],
-  },
-  {
-    title: 'Voice & telefonie',
-    items: [
-      { label: 'Emma — AI Receptionist', href: '/diensten/emma/', desc: '24/7 telefoon aanneemt, plant afspraken in — WhatsApp inbegrepen', badge: 'Meest gekozen' },
-      { label: 'AI Telefoon Assistent', href: '/diensten/telefoon-assistent/', desc: 'Inkomende calls automatisch verwerken' },
-      { label: 'AI Afspraken Inplannen', href: '/diensten/ai-afspraken-inplannen/', desc: 'Direct in Google / Outlook agenda' },
-      { label: 'AI Verkoopagent Outbound', href: '/diensten/ai-verkoopagent-outbound/', desc: 'Cold calling en lead-followup' },
-    ],
-  },
-  {
-    title: 'Chat & messaging',
-    items: [
-      { label: 'AI Klantenservice Omnichannel', href: '/diensten/ai-klantenservice-omnichannel/', desc: 'Telefoon, chat, WhatsApp én e-mail' },
-      { label: 'AI E-mail Assistent', href: '/diensten/ai-email-assistent/', desc: 'Auto-sortering en antwoorden Gmail/Outlook' },
-    ],
-  },
-  {
-    title: 'Workflow automatisering',
-    items: [
-      { label: 'AI Document Processing', href: '/diensten/ai-document-processing/', desc: 'Facturen + contracten automatisch uitlezen' },
-      { label: 'AI Lead Qualification', href: '/diensten/ai-lead-qualification/', desc: 'BANT-screening van elke aanvraag' },
-      { label: 'AI HR & Recruitment', href: '/diensten/ai-hr-recruitment/', desc: 'CV-screening en intake-gesprekken' },
-      { label: 'AI SEO Content Generator', href: '/diensten/ai-seo-content-generator/', desc: 'Nederlandse content op schaal' },
-      { label: 'AI Social Media Agent', href: '/diensten/ai-social-media-agent/', desc: 'Posts, replies en planning' },
-      { label: 'AI Influencer & Personas', href: '/diensten/ai-influencer-marketing/', desc: 'AI-personas voor je merk — Emma & meer', badge: 'Nieuw' },
-      { label: 'AI-vindbaarheid (GEO)', href: '/ai-vindbaarheid/', desc: 'Gevonden worden in ChatGPT, Gemini & Claude' },
-      { label: 'GEO-bureau', href: '/geo-bureau/', desc: 'Per sector en regio, met openbare tarieven' },
+      { label: 'AI-Website Bundel', href: '/diensten/ai-website-bundel-mkb-nederland/', desc: `Website die klanten oplevert: Emma + AI-vindbaarheid + meetpaneel. ${euro(WEBSITE_BUNDEL.setup)} eenmalig + ${euro(WEBSITE_BUNDEL.maand)}/mnd`, badge: 'Meest gekozen' },
+      { label: 'Emma — AI Receptionist', href: '/diensten/emma/', desc: 'Neemt telefoon en WhatsApp 24/7 aan en plant afspraken in. V.a. €149/mnd' },
+      { label: 'AI-vindbaarheid (GEO)', href: '/ai-vindbaarheid/', desc: 'Gevonden worden in ChatGPT, Gemini & Perplexity. Gratis scan, v.a. €595/mnd' },
+      { label: 'Leads kopen', href: '/leads-kopen/', desc: 'Exclusieve leads uit uw regio en branche. Betaal per lead', badge: 'Nieuw' },
     ],
   },
 ];
-
-const sectoren = [
-  { label: 'Horeca & restaurants',         href: '/sectoren/horeca/',           emoji: '🍽️' },
-  { label: 'Logistiek & Transport',        href: '/sectoren/logistiek/',        emoji: '🚚' },
-  { label: 'Vastgoed & Makelaars',         href: '/sectoren/vastgoed/',         emoji: '🏠' },
-  { label: 'Detailhandel & E-commerce',    href: '/sectoren/detailhandel/',     emoji: '🛍️' },
-  { label: 'Zakelijke dienstverlening',    href: '/sectoren/zakelijk/',         emoji: '💼' },
-  { label: 'Zorg & Welzijn',               href: '/sectoren/zorg/',             emoji: '🏥' },
-  { label: 'Accountancy & Financieel',     href: '/sectoren/accountancy/',      emoji: '📊' },
-  { label: 'Bouw & Aannemers',             href: '/sectoren/bouw/',             emoji: '🏗️' },
-  { label: 'Juridisch & Advocatuur',       href: '/sectoren/ai-voor-advocaten/', emoji: '⚖️' },
-  { label: 'ZZP & Freelancers',            href: '/sectoren/ai-voor-zzp/',      emoji: '👤' },
-  { label: 'Webshops & Online Retail',     href: '/sectoren/ai-voor-webshops/', emoji: '🛒' },
-  // Deze zes sectorpagina's bestonden al maar stonden niet in het mega-menu —
-  // alleen bereikbaar via /sectoren/. Het label "Bouw & Installatie" hierboven
-  // suggereerde bovendien dat installatie onder bouw viel, terwijl daar een
-  // eigen pagina voor is.
-  { label: 'Installatie & Loodgieters',    href: '/sectoren/installatie/',      emoji: '🔧' },
-  { label: 'Automotive & Garages',         href: '/sectoren/automotive/',       emoji: '🚗' },
-  { label: 'Fitness & Sportclubs',         href: '/sectoren/fitness/',          emoji: '🏋️' },
-  { label: 'Schoonheid & Kappers',         href: '/sectoren/schoonheid/',       emoji: '💇' },
-  { label: 'Onderwijs & Opleiders',        href: '/sectoren/onderwijs/',        emoji: '🎓' },
-  { label: 'Recruitment & Uitzenden',      href: '/sectoren/recruitment/',      emoji: '🧑‍💼' },
-];
-
-// Tellingen uit de arrays afleiden: de nav beweerde "11 sectoren" en
-// "16 diensten" terwijl het er inmiddels meer waren, en dat liep bij elke
-// nieuwe pagina verder uit de pas.
-const dienstenCount = dienstenGroups.reduce((n, g) => n + g.items.length, 0);
-const sectorenCount = sectoren.length;
-
-const kennisbank = [
-  {
-    title: 'Pillar gidsen',
-    items: [
-      { label: 'AI Receptionist Nederland',   href: '/ai-receptionist-nederland/' },
-      { label: 'AI Telefonie Compleet 2026',  href: '/ai-telefonie-compleet-gids-nederland-2026/' },
-      { label: 'AI voor Administratie',       href: '/ai-voor-administratie-boekhouding-mkb-nederland/' },
-      { label: 'AI voor Zorg MKB',            href: '/ai-voor-zorg-mkb-nederland/' },
-    ],
-  },
-  {
-    title: 'Vergelijkingen',
-    items: [
-      { label: 'Emma vs Voicelabs Robin',     href: '/vergelijk/aanloop-vs-voicelabs/' },
-      { label: 'Emma vs Trengo',              href: '/vergelijk/emma-vs-trengo/' },
-      { label: 'AI vs callcenter',            href: '/vergelijk/ai-receptionist-vs-callcenter/' },
-      { label: 'Emma vs Watermelon',          href: '/vergelijk/aanloop-vs-watermelon/' },
-    ],
-  },
-  {
-    title: 'Tools & resources',
-    items: [
-      { label: 'Glossarium · 80+ AI termen',   href: '/glossarium/' },
-      { label: 'AI ROI Calculator',            href: '/ai-roi-calculator/' },
-      { label: 'AVG-checklist AI MKB',         href: '/avg-checklist-ai-mkb/' },
-      { label: 'Veelgestelde vragen',          href: '/veelgestelde-vragen/' },
-    ],
-  },
+const alsoLinks = [
+  { label: 'GEO-bureau', href: '/geo-bureau/' },
+  { label: 'Resultaten (live)', href: '/resultaten/' },
 ];
 
 const overItems = [
@@ -132,16 +53,14 @@ const navSchema = {
   '@type': 'ItemList',
   '@id': 'https://aanloopai.nl/#primary-navigation',
   name: 'Hoofdnavigatie Aanloop AI',
-  numberOfItems: 8,
+  numberOfItems: 6,
   itemListElement: [
     { '@type': 'SiteNavigationElement', position: 1, name: 'Diensten', url: 'https://aanloopai.nl/diensten/' },
-    { '@type': 'SiteNavigationElement', position: 2, name: 'Sectoren', url: 'https://aanloopai.nl/sectoren/' },
-    { '@type': 'SiteNavigationElement', position: 3, name: 'Kennisbank', url: 'https://aanloopai.nl/kennisbank/' },
-    { '@type': 'SiteNavigationElement', position: 4, name: 'Leads kopen', url: 'https://aanloopai.nl/leads-kopen/' },
-    { '@type': 'SiteNavigationElement', position: 5, name: 'Tarieven', url: 'https://aanloopai.nl/tarieven/' },
-    { '@type': 'SiteNavigationElement', position: 6, name: 'Cases', url: 'https://aanloopai.nl/cases/' },
-    { '@type': 'SiteNavigationElement', position: 7, name: 'Over ons', url: 'https://aanloopai.nl/over/' },
-    { '@type': 'SiteNavigationElement', position: 8, name: 'Contact', url: 'https://aanloopai.nl/contact/' },
+    { '@type': 'SiteNavigationElement', position: 2, name: 'Resultaten', url: 'https://aanloopai.nl/resultaten/' },
+    { '@type': 'SiteNavigationElement', position: 3, name: 'Tarieven', url: 'https://aanloopai.nl/tarieven/' },
+    { '@type': 'SiteNavigationElement', position: 4, name: 'Cases', url: 'https://aanloopai.nl/cases/' },
+    { '@type': 'SiteNavigationElement', position: 5, name: 'Over ons', url: 'https://aanloopai.nl/over/' },
+    { '@type': 'SiteNavigationElement', position: 6, name: 'Contact', url: 'https://aanloopai.nl/contact/' },
   ],
 };
 ---
@@ -173,10 +92,6 @@ const navSchema = {
         <a href="/gratis-ai-scan/" class="hover:text-pearl transition-colors flex items-center gap-1.5">
           <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
           <span>Gratis AI-scan</span>
-        </a>
-        <a href="/start/" class="hover:text-pearl transition-colors flex items-center gap-1.5">
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          <span>Start direct</span>
         </a>
         <a href="/whatsapp" target="_blank" rel="nofollow noopener" class="hover:text-pearl transition-colors flex items-center gap-1.5">
           <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
@@ -224,7 +139,7 @@ const navSchema = {
           </button>
           <div id="megamenu-diensten" class="megamenu" aria-label="Diensten submenu">
             <div class="megamenu-inner grid lg:grid-cols-[2fr_1fr] gap-10">
-              <div class="grid grid-cols-3 gap-8">
+              <div class="grid grid-cols-1 gap-8 min-w-[420px]">
                 {dienstenGroups.map((group) => (
                   <div>
                     <p class="megamenu-eyebrow">{group.title}</p>
@@ -243,6 +158,9 @@ const navSchema = {
                     </ul>
                   </div>
                 ))}
+                <p class="text-xs text-slate-500 px-3">
+                  Ook: {alsoLinks.map((l, i) => (<><a href={l.href} class="font-medium text-navy hover:text-brand-indigo">{l.label}</a>{i < alsoLinks.length - 1 ? ' · ' : ''}</>))}
+                </p>
               </div>
               <aside class="bg-gradient-to-br from-navy to-midnight text-pearl rounded-xl p-6 flex flex-col">
                 <p class="text-[11px] font-semibold uppercase tracking-widest text-brand-indigo mb-2">Niet zeker welke?</p>
@@ -255,80 +173,15 @@ const navSchema = {
                 </ul>
                 <div class="mt-auto flex flex-col gap-2">
                   <a href="/gratis-ai-scan/" class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-lg bg-pearl text-navy text-sm font-semibold hover:bg-white transition-colors">Plan AI-scan →</a>
-                  <a href="/diensten/" class="text-center text-xs text-slate-300 hover:text-pearl transition-colors">Alle {dienstenCount} diensten bekijken →</a>
+                  <a href="/diensten/" class="text-center text-xs text-slate-300 hover:text-pearl transition-colors">Alle diensten bekijken →</a>
                 </div>
               </aside>
             </div>
           </div>
         </div>
 
-        <!-- Sectoren mega-menu -->
-        <div class="nav-group" data-nav-trigger>
-          <button class="nav-link with-arrow" aria-expanded="false" aria-haspopup="true" aria-controls="megamenu-sectoren">
-            Sectoren
-            <svg class="w-3.5 h-3.5 nav-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-          </button>
-          <div id="megamenu-sectoren" class="megamenu" aria-label="Sectoren submenu">
-            <div class="megamenu-inner grid lg:grid-cols-[2fr_1fr] gap-10">
-              <div>
-                <p class="megamenu-eyebrow">11 sectoren · Nederlandse MKB</p>
-                <div class="grid grid-cols-3 gap-x-6 gap-y-1">
-                  {sectoren.map((s) => (
-                    <a href={s.href} class="sector-tile group">
-                      <span class="text-xl flex-shrink-0" aria-hidden="true">{s.emoji}</span>
-                      <span class="font-medium text-navy text-sm group-hover:text-brand-indigo transition-colors">{s.label}</span>
-                    </a>
-                  ))}
-                </div>
-              </div>
-              <aside class="bg-slate-50 border border-slate-200 rounded-xl p-6 flex flex-col">
-                <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 mb-2">Uw branche staat er niet bij?</p>
-                <p class="text-base font-bold text-navy leading-tight mb-3">Custom AI workflows op maat</p>
-                <p class="text-sm text-slate-600 mb-5 leading-relaxed">We bouwen voor elke MKB-sector. n8n &amp; Make.com integraties, audit + roadmap inbegrepen.</p>
-                <div class="mt-auto flex flex-col gap-2">
-                  <a href="/diensten/custom/" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-navy text-white text-sm font-semibold hover:bg-midnight transition-colors">Custom AI →</a>
-                  <a href="/sectoren/" class="text-center text-xs text-slate-500 hover:text-navy transition-colors">Alle {sectorenCount} sectoren →</a>
-                </div>
-              </aside>
-            </div>
-          </div>
-        </div>
-
-        <!-- Kennisbank mega-menu -->
-        <div class="nav-group" data-nav-trigger>
-          <button class="nav-link with-arrow" aria-expanded="false" aria-haspopup="true" aria-controls="megamenu-kennisbank">
-            Kennisbank
-            <svg class="w-3.5 h-3.5 nav-chevron" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-          </button>
-          <div id="megamenu-kennisbank" class="megamenu" aria-label="Kennisbank submenu">
-            <div class="megamenu-inner grid lg:grid-cols-[2fr_1fr] gap-10">
-              <div class="grid grid-cols-3 gap-8">
-                {kennisbank.map((cat) => (
-                  <div>
-                    <p class="megamenu-eyebrow">{cat.title}</p>
-                    <ul class="space-y-1">
-                      {cat.items.map((item) => (
-                        <li><a href={item.href} class="megamenu-link-compact">{item.label}</a></li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-              <aside class="bg-slate-50 border border-slate-200 rounded-xl p-6 flex flex-col">
-                <p class="text-[11px] font-semibold uppercase tracking-widest text-slate-500 mb-2">54+ artikelen · 80+ termen</p>
-                <p class="text-base font-bold text-navy leading-tight mb-3">Alles over AI voor MKB</p>
-                <p class="text-sm text-slate-600 mb-5 leading-relaxed">Pillar-gidsen, vergelijkingen, EU AI Act, AVG-compliance — voor MKB-ondernemers en technische beslissers.</p>
-                <div class="mt-auto flex flex-col gap-2">
-                  <a href="/kennisbank/" class="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-lg bg-navy text-white text-sm font-semibold hover:bg-midnight transition-colors">Alle artikelen →</a>
-                  <a href="/glossarium/" class="text-center text-xs text-slate-500 hover:text-navy transition-colors">Glossarium openen →</a>
-                </div>
-              </aside>
-            </div>
-          </div>
-        </div>
-
-        <!-- Leads kopen (plain link) -->
-        <a href="/leads-kopen/" class="nav-link">Leads</a>
+        <!-- Resultaten (plain link) -->
+        <a href="/resultaten/" class="nav-link">Resultaten</a>
 
         <!-- Tarieven (plain link) -->
         <a href="/tarieven/" class="nav-link">Tarieven</a>
@@ -383,8 +236,8 @@ const navSchema = {
           <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full rounded-full bg-brand-emerald opacity-75 animate-ping"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-brand-emerald"></span></span>
           Bel Emma nu
         </button>
-        <a href="/demo-aanvragen/" class="btn-primary text-sm hidden sm:inline-flex" id="header-demo-cta">
-          Gratis demo
+        <a href="/gratis-ai-scan/" class="btn-primary text-sm hidden sm:inline-flex" id="header-demo-cta">
+          Gratis AI-scan
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </a>
 
@@ -472,42 +325,13 @@ const navSchema = {
               ))}
             </div>
           ))}
-          <a href="/diensten/" class="block px-3 py-2 text-sm font-semibold text-brand-indigo hover:bg-slate-50 rounded-lg">Alle {dienstenCount} diensten →</a>
+          <a href="/diensten/" class="block px-3 py-2 text-sm font-semibold text-brand-indigo hover:bg-slate-50 rounded-lg">Alle diensten →</a>
         </div>
       </details>
 
-      <!-- Sectoren accordion -->
-      <details class="mobile-accordion">
-        <summary class="mobile-accordion-summary">Sectoren<svg class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
-        <div class="pl-3 pb-2 pt-1 grid grid-cols-2 gap-1">
-          {sectoren.map((s) => (
-            <a href={s.href} class="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-slate-50 text-sm text-navy transition-colors">
-              <span aria-hidden="true">{s.emoji}</span><span class="truncate">{s.label}</span>
-            </a>
-          ))}
-        </div>
-      </details>
-
-      <!-- Kennisbank accordion -->
-      <details class="mobile-accordion">
-        <summary class="mobile-accordion-summary">Kennisbank<svg class="w-4 h-4 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
-        <div class="pl-3 pb-2 pt-1 space-y-3">
-          {kennisbank.map((cat) => (
-            <div>
-              <p class="text-[10px] font-semibold uppercase tracking-widest text-slate-400 px-3 mb-1">{cat.title}</p>
-              {cat.items.map((item) => (
-                <a href={item.href} class="mobile-sub-link">{item.label}</a>
-              ))}
-            </div>
-          ))}
-          <a href="/kennisbank/" class="block px-3 py-2 text-sm font-semibold text-brand-indigo hover:bg-slate-50 rounded-lg">Alle artikelen →</a>
-        </div>
-      </details>
-
-      <a href="/leads-kopen/" class="mobile-nav-link">Leads kopen</a>
+      <a href="/resultaten/" class="mobile-nav-link">Resultaten</a>
       <a href="/tarieven/" class="mobile-nav-link">Tarieven</a>
       <a href="/cases/" class="mobile-nav-link">Cases</a>
-      <a href="/start/" class="mobile-nav-link">Start direct</a>
 
       <!-- Over accordion -->
       <details class="mobile-accordion">
@@ -530,8 +354,8 @@ const navSchema = {
       </div>
 
       <div class="pt-3 border-t border-slate-100 mt-2">
-        <a href="/demo-aanvragen/" class="btn-primary w-full text-center justify-center">
-          Gratis demo aanvragen
+        <a href="/gratis-ai-scan/" class="btn-primary w-full text-center justify-center">
+          Gratis AI-scan
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
         </a>
       </div>
