@@ -81,7 +81,7 @@ export function collectAanleverlijst(sections) {
 
 export const MAIL_SUBJECT = 'Vervolg op ons gesprek — nog een paar gegevens';
 
-export const MAIL_SIGNATURE = ['Met vriendelijke groet,', 'Mustafa Dogan', 'AanloopAI / Alfa Reclame', '06 24741597'];
+export const MAIL_SIGNATURE = ['Met vriendelijke groet,', 'Mustafa Dogan', 'AanloopAI / Alfa Reclame'];
 
 export function buildAanleverMail({ aanhef, items, deadline }) {
   const lines = [

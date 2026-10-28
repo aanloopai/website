@@ -49,9 +49,8 @@ const knownUrls = new Set();
 for (const f of htmlFiles) knownUrls.add(SITE + urlForHtmlFile(f));
 
 // Routes die de Worker afhandelt en dus geen bestand in dist/ hebben.
-// /whatsapp is de 302-doorstuurroute naar wa.me (src/worker.js) — die staat
-// als CTA op elke pagina, dus zonder deze regel meldt de check 231 "broken"
-// links die in productie prima werken.
+// /whatsapp is een Worker-route (src/worker.js): sinds 2026-10-28 een 301 naar
+// /contact/ voor oude links/bookmarks. Geen bestand in dist/, dus hier bekend maken.
 for (const workerRoute of ['/whatsapp', '/whatsapp/']) knownUrls.add(SITE + workerRoute);
 
 const brokenLinks = new Map();

@@ -56,8 +56,6 @@ const SENDER_NAME = 'Aanloop AI';
 // Same value as SITE_ORIGIN in portal-routes.js — kept as a separate constant
 // here so worker.js stays self-contained (no cross-file import for a single string).
 const SITE_ORIGIN = 'https://aanloopai.nl';
-// Zakelijk WhatsApp-nummer achter de /whatsapp-doorstuurroute (zie fetch()).
-const WHATSAPP_NUMBER = '31624741597';
 
 const AUTORESPONSE_TEMPLATES = {
   demo: {
@@ -1303,29 +1301,14 @@ export default {
       });
     }
 
-    // WhatsApp-CTA loopt via deze eigen URL in plaats van rechtstreeks naar
-    // wa.me. Reden: wa.me rate-limit crawlers met HTTP 429, en omdat de knop in
-    // header, footer en sticky CTA staat, telde Semrush dat als 91 "broken
-    // external links" — één per pagina. Voor een bezoeker verandert er niets.
-    // 301 en geen 302 (Ahrefs 2026-08-24: 302 met 241 inlinks lekt equity):
-    // de bestemming is permanent zolang het nummer niet wijzigt, en de
-    // Cache-Control van één uur begrenst hoe lang browsers de 301 vasthouden
-    // — bij een nummerwissel is de oude bestemming dus binnen een uur weg.
-    // Alle interne links naar /whatsapp dragen rel="nofollow".
+    // Owner-eis 2026-10-28: nergens op de site een telefoonnummer; vragen
+    // lopen via formulier of e-mail. De oude /whatsapp-route (externe links,
+    // gecachte pagina's) stuurt daarom door naar het contactformulier.
     if (url.pathname === '/whatsapp' || url.pathname === '/whatsapp/') {
-      // Standaardtekst identificeert de herkomst: hetzelfde nummer wordt ook
-      // voor andere bedrijven gebruikt, dus zonder deze tag is niet te zien
-      // dat een binnenkomend gesprek van aanloopai.nl komt. Een expliciete
-      // ?text= op een specifieke pagina blijft voorgaan.
-      const text = url.searchParams.get('text')
-        || 'Hallo! Ik kom via aanloopai.nl en heb een vraag.';
-      const target = new URL('https://api.whatsapp.com/send');
-      target.searchParams.set('phone', WHATSAPP_NUMBER);
-      target.searchParams.set('text', text);
       return new Response(null, {
         status: 301,
         headers: {
-          Location: target.toString(),
+          Location: `${SITE_ORIGIN}/contact/`,
           'Cache-Control': 'public, max-age=3600',
           // Crawlers hoeven deze doorstuurhop niet te indexeren.
           'X-Robots-Tag': 'noindex, nofollow',

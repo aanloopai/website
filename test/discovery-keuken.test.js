@@ -93,7 +93,7 @@ describe('field-logica', () => {
     expect(body.startsWith('Beste Ron,\n\nBedankt voor het gesprek vandaag in de showroom.')).toBe(true);
     expect(body).toContain("1. Logo (vector)\n2. Foto's");
     expect(body).toContain('Graag uiterlijk vrijdag 9 oktober.');
-    expect(body.endsWith('Mustafa Dogan\nAanloopAI / Alfa Reclame\n06 24741597')).toBe(true);
+    expect(body.endsWith('Mustafa Dogan\nAanloopAI / Alfa Reclame')).toBe(true);
     expect(body).not.toMatch(/^>/m); // geen quoted original
   });
 

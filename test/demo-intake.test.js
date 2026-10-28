@@ -172,9 +172,10 @@ describe('sendIntakeInvite', () => {
     expect(sent).toHaveLength(0);
   });
 
-  it('mail-html bevat het echte telefoonnummer van de site, geen verzonnen nummer', () => {
+  it('mail-html bevat geen telefoonnummer (owner-eis 2026-10-28: alleen formulier/e-mail)', () => {
     const html = buildIntakeInviteHtml('Anass', 'https://x');
-    expect(html).toContain('tel:+31624741597');
+    expect(html).not.toContain('tel:');
+    expect(html).not.toMatch(/6\D{0,3}2\D{0,3}4\D{0,3}7\D{0,3}4\D{0,3}1\D{0,3}5\D{0,3}9\D{0,3}7/);
   });
 });
 
