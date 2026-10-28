@@ -1,7 +1,7 @@
 // Sprint E.3 — locaties schema upgrade.
 // Idempotent script (zoals scripts/cleanup-kennisbank-meta.cjs en scripts/add-sector-imagery.cjs):
 // - ProfessionalService -> LocalBusiness (P1 GEO-audit follow-up)
-// - voegt telephone toe waar ontbreekt
+// - GEEN telephone meer (owner-eis 2026-10-28: nergens een telefoonnummer op de site)
 // - voegt openingHoursSpecification toe waar ontbreekt
 // Na uitvoeren: handmatig `npm run build` + git diff inspectie + commit.
 
@@ -9,9 +9,7 @@ const fs = require('fs');
 const path = require('path');
 
 const LOC_DIR = path.join(__dirname, '..', 'src', 'pages', 'locaties');
-const PHONE = '+31624741597';
 const HOURS_FIELD = `  openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '17:00' },\n`;
-const PHONE_FIELD = `  telephone: '${PHONE}',\n`;
 
 function processFile(filePath) {
   const fileName = path.basename(filePath);
@@ -27,14 +25,14 @@ function processFile(filePath) {
     changes.push('@type->LocalBusiness');
   }
 
-  const hasTelephone = /\btelephone:\s*'/.test(content);
+  const hasTelephone = true; // telefoon wordt nooit meer toegevoegd
   const hasHours = /\bopeningHoursSpecification:/.test(content);
 
   // 2 + 3. Insert telephone and/or openingHoursSpecification after areaServed line.
   // CRLF-tolerant via \r?\n. Detect EOL per file zodat de inserted lines passen.
   if (!hasTelephone || !hasHours) {
     const eol = content.includes('\r\n') ? '\r\n' : '\n';
-    const phoneLine = `  telephone: '${PHONE}',${eol}`;
+    const phoneLine = '';
     const hoursLine = `  openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '17:00' },${eol}`;
 
     const areaServedRegex = /(areaServed: \{[^}]+\},\r?\n)/;

@@ -78,7 +78,7 @@ const EMMA_TELEFOON: IntakeSchema = {
       fields: [
         { name: 'taken', label: 'Emma mag', type: 'multiselect', required: true,
           options: ['Afspraken inplannen', 'Doorverbinden naar een medewerker', 'Een bericht aannemen', 'Veelgestelde vragen beantwoorden'] },
-        { name: 'doorverbind_nummers', label: 'Doorverbindnummers', type: 'textarea', placeholder: 'Verkoop — 010 123 4567\nSupport — 010 123 4568' },
+        { name: 'doorverbind_nummers', label: 'Doorverbindnummers', type: 'textarea', placeholder: 'Verkoop — nummer\nSupport — nummer' },
         { name: 'escalatie', label: 'Escalatiecontact', type: 'text', hint: 'Wie belt Emma bij een urgente situatie?' },
       ],
     },

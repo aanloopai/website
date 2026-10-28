@@ -68,7 +68,7 @@ const CRITICAL_STRINGS = [
   { path: '/', must: ['Aanloop AI'] },
   { path: '/tarieven/', must: REQUIRED_PRICES_TARIEVEN },
   { path: '/contact/', must: ['hello@aanloopai.nl'] },
-  { path: '/contact/', must: ['+31 6 24 74 15 97', '+31624741597', '+31 6 24741597'], anyOf: true },
+  { path: '/contact/', must: ['hello@aanloopai.nl'] },
 ];
 
 const failures = [];
