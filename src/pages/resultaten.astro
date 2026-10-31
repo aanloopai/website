@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import FaqSection from '../components/FaqSection.astro';
 import MobileProof from '../components/MobileProof.astro';
-import { RESULTATEN, KERNPUNTEN, RESULTATEN_PEILDATUM, alleCijfers } from '../data/resultaten';
+import { RESULTATEN, KERNPUNTEN, RESULTATEN_PEILDATUM, alleCijfers, gemetenSites } from '../data/resultaten';
 import { WEBSITE_BUNDEL } from '../data/pricing';
 
 // Alle cijfers op deze pagina komen uit src/data/resultaten.ts (guard:
@@ -12,7 +12,8 @@ import { WEBSITE_BUNDEL } from '../data/pricing';
 const euro = (n: number) => `€${n.toLocaleString('nl-NL')}`;
 const datum = (iso: string) => new Date(`${iso}T12:00:00Z`).toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
 const gemeten = RESULTATEN.filter((s) => s.cijfers.length);
-const gestart = RESULTATEN.filter((s) => !s.cijfers.length);
+const gestart = RESULTATEN.filter((s) => !s.cijfers.length && !s.geenMeting);
+const ongemeten = RESULTATEN.filter((s) => s.geenMeting);
 
 // Sterkste meetpunt bovenaan: lead-ratio AI- tegenover Google-bezoek op keukeninbeeld.nl
 // (zelfde bron-id's als KERNPUNTEN; datum komt uit het cijfer zelf).
@@ -20,7 +21,7 @@ const kopKern = KERNPUNTEN.find((k) => k.id === 'kern-kib-lead')!;
 const kopCijfer = alleCijfers().find((c) => c.id === kopKern.bron[0])!;
 
 const faqItems = [
-  { question: 'Zijn dit echte klanten of eigen projecten?', answer: 'Beide, en we zeggen per site welke het is. Keuken in Beeld, FleetTrack Holland, Alfa Reclame, Zoekeen en aanloopai.nl zijn eigen bedrijven en platforms uit dezelfde groep; Trip and Tick en Grynn Studio zijn klanten die akkoord zijn met publicatie. Juist omdat het eigen sites zijn, kunnen we de ruwe meting laten zien in plaats van een quote.' },
+  { question: 'Zijn dit echte klanten of eigen projecten?', answer: 'Beide, en we zeggen per site welke het is. Keuken in Beeld, FleetTrack Holland, Alfa Reclame, Zoekeen, aanloopai.nl, Alles in Renovatie en 4M Enterprise zijn eigen bedrijven en platforms uit dezelfde groep; Trip and Tick, Grynn Studio, Pasfoto Rotterdam Zuid en Zorg Advies Bureau zijn klanten. Op de sites zonder onze beacon staan geen meetcijfers. Juist omdat het eigen sites zijn, kunnen we de ruwe meting laten zien in plaats van een quote.' },
   { question: 'Wat is een "contactactie" en waarom is dat geen lead?', answer: 'Een contactactie is een klik op bellen, WhatsApp, e-mail, route of een verzonden formulier, gemeten door onze eigen cookieloze beacon. Het zegt of een bezoeker contact wilde. Een lead is een aanvraag die daadwerkelijk in de inbox van het bedrijf is afgeleverd; die tellen we apart via de afleverstatistiek van de mailprovider en noemen we alleen als die telling er is.' },
   { question: 'Waarom zijn sommige aantallen zo klein?', answer: 'Omdat het echte MKB-sites zijn, geen landelijke merken. Zes AI-sessies op een B2B-site in 28 dagen is weinig; dat drie daarvan contact opnemen, is het signaal. We tonen aantallen naast percentages, zodat u zelf kunt wegen hoe hard een cijfer is.' },
   { question: 'Hoe vaak worden de cijfers ververst?', answer: `De tabel haalt bij elk bezoek de laatste 28 dagen op uit onze meting (met een uur cache). De toelichtingen en de leadtellingen zijn een momentopname van ${datum(RESULTATEN_PEILDATUM)}; die werken we bij als we nieuwe tellingen hebben gedaan, met de datum erbij.` },
@@ -113,7 +114,7 @@ const schema = [
             </tr>
           </thead>
           <tbody>
-            {RESULTATEN.map((s) => (
+            {gemetenSites().map((s) => (
               <tr class="border-b border-slate-100" data-site={s.key}>
                 <td class="py-3 pr-4">
                   <a href={`/werk/${s.key}/`} class="font-semibold text-navy hover:text-brand-indigo">{s.naam}</a>
@@ -171,6 +172,21 @@ const schema = [
           </article>
         ))}
       </div>
+      {ongemeten.length > 0 && (
+        <div class="mt-12">
+          <h3 class="text-xl font-bold text-navy">Ook door ons gebouwd, zonder meting</h3>
+          <p class="mt-2 text-sm text-slate-600 max-w-3xl">Deze sites bouwden we wel, maar meten we niet met onze beacon. Daarom staan ze niet in de tabel en noemen we er geen cijfers bij.</p>
+          <ul class="mt-5 grid md:grid-cols-2 gap-4">
+            {ongemeten.map((s) => (
+              <li class="card border-dashed">
+                <a href={`/werk/${s.key}/`} class="font-semibold text-navy hover:text-brand-indigo">{s.naam}</a>
+                <span class="block text-xs text-slate-500 mt-0.5">{s.eigenaarLabel} · {s.host}</span>
+                <span class="block mt-2 text-xs text-slate-500">{s.geenMeting}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   </section>
 

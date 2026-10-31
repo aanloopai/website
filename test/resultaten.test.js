@@ -3,7 +3,7 @@
 // geen paden of verwijzers. Wie een cijfer zonder bron toevoegt, breekt de build.
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { RESULTATEN, KERNPUNTEN, RESULTATEN_PEILDATUM, alleCijfers } from '../src/data/resultaten.ts';
+import { RESULTATEN, KERNPUNTEN, RESULTATEN_PEILDATUM, alleCijfers, gemetenSites } from '../src/data/resultaten.ts';
 import { publicResultaat, resultatenPublic, PUBLIC_SITES } from '../src/lib/resultaten-public.js';
 import { summarizeHits } from '../src/lib/visibility-core.js';
 
@@ -34,17 +34,25 @@ describe('resultaten.ts — elk cijfer heeft een bron', () => {
     }
   });
 
-  it('sites zonder cijfers melden sinds wanneer er gemeten wordt; pasfoto staat er niet in', () => {
+  it('sites zonder cijfers melden sinds wanneer er gemeten wordt, of waarom er niet gemeten wordt', () => {
     for (const s of RESULTATEN) {
-      if (!s.cijfers.length) expect(s.metingSinds, s.key).toMatch(ISO);
+      if (s.geenMeting) {
+        expect(s.cijfers, `${s.key} geenMeting maar wel cijfers`).toEqual([]);
+        expect(s.metingSinds, `${s.key} geenMeting en metingSinds`).toBeUndefined();
+        expect(s.geenMeting.length, `${s.key} geenMeting reden`).toBeGreaterThan(20);
+      } else if (!s.cijfers.length) expect(s.metingSinds, s.key).toMatch(ISO);
       // CI check-meta: description 110–155 tekens.
       expect(s.metaDescription.length, `${s.key} metaDescription ${s.metaDescription.length}`).toBeGreaterThanOrEqual(110);
       expect(s.metaDescription.length, `${s.key} metaDescription ${s.metaDescription.length}`).toBeLessThanOrEqual(155);
       expect(['eigen', 'klant']).toContain(s.eigenaar);
       expect(s.url.startsWith('https://')).toBe(true);
     }
-    expect(RESULTATEN.some((s) => s.key === 'pasfoto')).toBe(false);
-    expect(PUBLIC_SITES.sort()).toEqual(RESULTATEN.map((s) => s.key).sort());
+    // Alle sites die we bouwden staan in het portfolio (owner 2026-11-01); alleen de
+    // beacon-gemeten sites gaan naar de live tabel en de publieke API.
+    for (const k of ['allesinrenovatie', 'grynnstudio', '4menterprise', 'pasfoto', 'zorgadviesbureau']) {
+      expect(RESULTATEN.some((s) => s.key === k), `${k} ontbreekt in het portfolio`).toBe(true);
+    }
+    expect([...PUBLIC_SITES].sort()).toEqual(gemetenSites().map((s) => s.key).sort());
   });
 
   it('beacon-cijfers heten "contactactie", nooit "lead"', () => {
