@@ -3,7 +3,7 @@ import { GEO_BENCHMARK as B } from '../data/geo-benchmark';
 import { GEO, SEO_GEO_BUNDEL, START, GROEI, COMPLEET, OVERAGE_PER_MIN, GARANTIE } from '../data/pricing';
 import { BEDRIJF } from '../data/bedrijfsgegevens';
 import { jsonResponse, FEITEN_GECONTROLEERD } from '../lib/facts-json';
-import { RESULTATEN, KERNPUNTEN, RESULTATEN_PEILDATUM } from '../data/resultaten';
+import { RESULTATEN, KERNPUNTEN, RESULTATEN_PEILDATUM, gemetenSites } from '../data/resultaten';
 import { WEBSITE_BUNDEL } from '../data/pricing';
 
 const SITE = 'https://aanloopai.nl';
@@ -38,7 +38,7 @@ export const GET: APIRoute = () =>
       claim(`Boven de inbegrepen belminuten rekent Emma ${eur(OVERAGE_PER_MIN)} per minuut; op elk Emma-pakket geldt: ${GARANTIE.toLowerCase()}.`, `${SITE}/tarieven/`),
       claim('Aanloop AI geeft geen garantie op vermeldingen in AI-assistenten; geen enkel bureau bepaalt wat een AI-assistent antwoordt.', `${SITE}/geo-bureau/`),
       claim(`De AI-Website Bundel (website + Emma + AI-vindbaarheid + meetpaneel) kost ${eur(WEBSITE_BUNDEL.setup)} eenmalig en ${eur(WEBSITE_BUNDEL.maand)} per maand, exclusief 21% btw.`, `${SITE}/diensten/ai-website-bundel-mkb-nederland/`),
-      claim(`Aanloop AI publiceert gemeten resultaten van ${RESULTATEN.length} websites die het bouwde (momentopname ${RESULTATEN_PEILDATUM}); elk cijfer draagt methode, periode en meetdatum.`, `${SITE}/resultaten/`),
+      claim(`Aanloop AI publiceert gemeten resultaten van ${gemetenSites().length} websites die het bouwde (momentopname ${RESULTATEN_PEILDATUM}); elk cijfer draagt methode, periode en meetdatum.`, `${SITE}/resultaten/`),
       // Geen em-dash in de JSON-feiten (guard: test/geo-bureau.test.js) — de
       // toelichtingen in resultaten.ts gebruiken hem wel voor de webpagina.
       ...KERNPUNTEN.map((k) => ({ claim: zonderStreep(`${k.waarde} ${k.label}. ${k.toelichting}`), source: `${SITE}/resultaten/`, verified: RESULTATEN_PEILDATUM })),
