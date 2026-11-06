@@ -11,7 +11,7 @@
 ### `IG_WEBHOOK_VERIFY_TOKEN`
 
 ```
-a3a0642fd9e85717d32d362ee39bd579cf456da080de4fd854219754f9db4855
+<IG_VERIFY_TOKEN — GitHub secret IG_VERIFY_TOKEN, niet in repo>
 ```
 
 Gebruik deze exacte string op **2 plaatsen**:
@@ -115,7 +115,7 @@ In Meta Developer Dashboard → Aanloop App → Instagram → Webhooks → **Con
 | Veld | Waarde |
 |------|--------|
 | Callback URL | `https://ig-dm.aanloopai.nl/webhook` |
-| Verify Token | `a3a0642fd9e85717d32d362ee39bd579cf456da080de4fd854219754f9db4855` |
+| Verify Token | `<IG_VERIFY_TOKEN — GitHub secret IG_VERIFY_TOKEN, niet in repo>` |
 
 Subscribe to fields (vink aan):
 
