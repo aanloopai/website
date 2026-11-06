@@ -6,6 +6,19 @@ published: 2026-10-20
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["cbs-ai-2025", "google-helpful", "google-ai-features"]
+faq:
+  - q: "Wat is het verschil tussen een AI chatbot en een gewone chatbot?"
+    a: "Een gewone chatbot volgt vaste keuzemenu's en scripts, terwijl een AI chatbot vragen in gewone taal begrijpt. Die formuleert zelf een antwoord op basis van de informatie die u aanlevert. Daardoor voelt het gesprek natuurlijker, maar het blijft belangrijk dat u de grenzen goed instelt."
+  - q: "Kan een AI chatbot ook telefoontjes opnemen?"
+    a: "Een chatbot werkt in tekst en neemt zelf geen telefoontjes op. Voor telefoongesprekken hebt u een AI-telefoniste nodig, zoals Emma. Zij neemt op via telefoon en WhatsApp, beantwoordt standaardvragen en legt aanvragen vast zodat u ze later kunt afhandelen."
+  - q: "Is een AI chatbot geschikt voor een klein bedrijf in Breda?"
+    a: "Ja, een AI chatbot kan juist voor kleine bedrijven helpen, omdat er vaak niemand is die continu de telefoon of chat in de gaten houdt. Begin met de vragen die u dagelijks hoort en breid pas daarna uit. Zo houdt u controle over wat de chatbot zegt."
+  - q: "Is een chatbot genoeg om klanten uit Breda te krijgen?"
+    a: "Nee, een chatbot beantwoordt alleen bezoekers die al op uw website zijn. Om nieuwe klanten uit Breda, Tilburg of Etten-Leur te bereiken moet u eerst gevonden worden, in Google maar ook in ChatGPT, Gemini en Perplexity. Website, AI-vindbaarheid en bereikbaarheid werken pas samen als één geheel."
+  - q: "Waar moet een goede AI chatbot aan voldoen?"
+    a: "Een goede chatbot geeft alleen antwoorden die kloppen met uw eigen informatie. Hij zegt eerlijk dat het een AI is en draagt over aan een mens wanneer het nodig is. Verder legt hij gegevens van geïnteresseerden vast, zodat u ze kunt opvolgen, en voldoet hij aan de AVG."
 ---
 
 Uw website krijgt 's avonds een vraag binnen: werken jullie ook in Teteringen, en kan iemand volgende week langskomen? Niemand reageert tot de volgende ochtend. Intussen heeft de bezoeker al contact gezocht met een concurrent in Breda.
@@ -62,20 +75,6 @@ Een paar praktische vragen helpen bij de keuze:
 - Spreekt de aanbieder Nederlands, kent hij het MKB en is hij bereikbaar als er iets misgaat?
 
 Een aanbieder die op die vragen een helder antwoord heeft, is meestal een betere keuze dan een tool met de meeste functies.
-
-## Veelgestelde vragen
-
-### Wat is het verschil tussen een AI chatbot en een gewone chatbot?
-
-Een gewone chatbot volgt vaste keuzemenu's en scripts. Een AI chatbot begrijpt vragen in gewone taal en formuleert zelf een antwoord op basis van de informatie die u aanlevert. Daardoor voelt het gesprek natuurlijker, maar het blijft belangrijk dat u de grenzen goed instelt.
-
-### Kan een AI chatbot ook telefoontjes opnemen?
-
-Een chatbot werkt in tekst. Voor telefoongesprekken heeft u een AI-telefoniste nodig, zoals Emma. Zij neemt op via telefoon en WhatsApp, beantwoordt standaardvragen en legt aanvragen vast zodat u ze later kunt afhandelen.
-
-### Is een AI chatbot geschikt voor een klein bedrijf in Breda?
-
-Ja, juist voor kleine bedrijven kan het helpen, omdat er vaak niemand is die continu de telefoon of chat in de gaten houdt. Begin met de vragen die u dagelijks hoort en breid pas daarna uit. Zo houdt u controle over wat de chatbot zegt.
 
 ## Wilt u klanten uit Breda die u ook echt bereiken?
 

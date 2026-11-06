@@ -7,6 +7,21 @@ published: 2026-10-16
 category: "Kosten"
 readingMinutes: 6
 draft: false
+updated: 2026-11-06
+bronnen: ["google-helpful", "cbs-ai-2025", "google-ai-features"]
+faq:
+  - q: "Wat kost een website met AI die leads oplevert?"
+    a: "Een website met AI die leads oplevert kost bij Aanloop AI 4.500 euro eenmalig en 1.000 euro per maand, exclusief 21% btw. Daarin zit de website tot 30 pagina's, Emma als AI-receptionist, AI-vindbaarheid met maandelijkse meting en het meetpaneel."
+  - q: "Welke kostenposten zitten er in een website met AI?"
+    a: "Een website met AI bestaat uit vier kostenposten: de bouw van de site, de AI-receptie, AI-vindbaarheid en meting met bijsturing. De bouw kost in Nederland tussen 3.400 en 6.000 euro voor een MKB-site van 10 tot 30 pagina's. Emma kost los 149 tot 497 euro per maand en GEO Maandelijks 595 euro per maand."
+  - q: "Kan ik beginnen met alleen de website?"
+    a: "Ja, u kunt beginnen met alleen de website. Website laten maken is los verkrijgbaar met een maandtarief op aanvraag. De AI-laag en de meting kunt u later toevoegen, maar een site die vanaf dag 1 voor AI-citatie is gebouwd, meet en levert sneller dan een retrofit."
+  - q: "Wat gebeurt er als ik stop?"
+    a: "Als u stopt, blijft de code in uw eigen GitHub staan en blijft het domein van u. Alle lead- en gespreksdata exporteert Aanloop AI naar u. Het maandabonnement stopt per maand na de eerste termijn."
+  - q: "Hoe lang duurt het tot de site live is?"
+    a: "Een website met AI is bij Aanloop AI in zes tot acht weken live. Week 1 is voor discovery en nulmeting, week 2 tot 6 voor de bouw in drie parallelle sporen en week 7 voor de soft-launch. Bij complexe koppelingen duurt het 10 tot 12 weken."
+  - q: "Wat dekt de prijs van de AI-Website Bundel niet?"
+    a: "De prijs dekt geen advertenties, geen garantie op aanvragen of vermeldingen en geen maatwerkkoppelingen. Aanloop AI bouwt geen betaalde campagnes, want de bundel is gebouwd op organisch en AI-verkeer. Maatwerkkoppelingen met EPD, DMS of ERP worden na de discovery apart begroot."
 ---
 
 **Kort antwoord:** een website met AI die leads oplevert kost bij Aanloop AI 4.500 euro eenmalig en 1.000 euro per maand, exclusief 21% btw. Daarin zit de website (tot 30 pagina's, formulier op elke pagina, hosting en onderhoud), Emma als AI-receptionist voor telefoon en WhatsApp, AI-vindbaarheid met maandelijkse meting in ChatGPT, Claude, Perplexity en Gemini, en het meetpaneel dat laat zien welk kanaal aanvragen oplevert. Wat die opzet doet, staat gemeten op [/resultaten/](/resultaten/).
@@ -45,14 +60,3 @@ De aantallen zijn klein, want het zijn echte MKB-sites. Daarom staan op [/result
 - Advertenties. Wij adviseren en bouwen geen betaalde campagnes; de bundel is gebouwd op organisch en AI-verkeer.
 - Een garantie op aanvragen of vermeldingen. Niemand bepaalt wat een AI-assistent antwoordt of hoeveel mensen bellen; wie dat garandeert, moet u wantrouwen.
 - Maatwerkkoppelingen met EPD, DMS of ERP; die begroten we apart na de discovery.
-
-## Veelgestelde vragen
-
-**Kan ik beginnen met alleen de website?**
-Ja. [Website laten maken](/diensten/website-laten-maken-mkb-nederland-2026/) is los verkrijgbaar met een maandtarief op aanvraag. De AI-laag en de meting kunt u later toevoegen, maar een site die vanaf dag 1 voor AI-citatie is gebouwd, meet en levert sneller dan een retrofit.
-
-**Wat gebeurt er als ik stop?**
-De code staat in uw eigen GitHub, het domein is van u, en alle lead- en gespreksdata exporteren we naar u. Het maandabonnement stopt per maand na de eerste termijn.
-
-**Hoe lang duurt het tot de site live is?**
-Zes tot acht weken: discovery en nulmeting in week 1, bouw in drie parallelle sporen in week 2 tot 6, soft-launch in week 7. Bij complexe koppelingen 10 tot 12 weken.

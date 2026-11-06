@@ -6,6 +6,21 @@ published: 2026-10-30
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["cbs-ai-2025", "google-helpful", "ap-avg"]
+faq:
+  - q: "Wat is de beste eerste stap om te starten met AI in de logistiek?"
+    a: "De beste eerste stap is één proces kiezen dat vaak voorkomt en duidelijke regels heeft, bijvoorbeeld statusvragen van klanten. Houd een week bij welke vragen binnenkomen en begin met de meest voorkomende. Zo is het doel klein, meetbaar en makkelijk te testen."
+  - q: "Moet ik eerst een volledig geordend TMS of datasysteem hebben?"
+    a: "Nee, u hoeft niet te wachten tot alle systemen perfect zijn. Wel moet de informatie die de AI nodig heeft op één plek beschikbaar en actueel zijn. Begin met een proces waarvoor dat al redelijk lukt en verbeter de rest gaandeweg."
+  - q: "Kan AI het werk van mijn planners overnemen?"
+    a: "In de praktijk neemt AI vooral herhaalwerk over van planners, zoals standaardvragen en administratie. Planners houden de beslissingen, uitzonderingen en klantcontacten waar vakkennis nodig is. Zo houden zij meer tijd over voor werk dat echt ertoe doet."
+  - q: "Welke AI-toepassingen passen bij logistiek MKB?"
+    a: "De meeste logistieke MKB-bedrijven beginnen met communicatie en administratie. Denk aan een AI-telefoniste voor statusvragen en terugbelverzoeken, automatische verwerking van vrachtbrieven en orders uit e-mail, en hulp bij routeplanning. Voorspellende toepassingen volgen meestal later, wanneer uw gegevens op orde zijn."
+  - q: "Hoe start u met een pilot van AI in de logistiek?"
+    a: "Een pilot is een proef van enkele weken met één proces, één team en een vooraf afgesproken doel. Laat de AI bijvoorbeeld alleen statusvragen en terugbelverzoeken afhandelen. Lees tijdens de pilot de gesprekken terug en stuur direct bij, voordat u het systeem voor alle klanten openzet."
+  - q: "Hoe meet u het resultaat van AI in de logistiek?"
+    a: "Meet na de pilot of het doel is gehaald aan de hand van concrete zaken. Kijk hoeveel gesprekken zonder hulp zijn afgehandeld, hoeveel tijd planners overhouden en hoe klanten reageren. Een eenvoudig meetpaneel met aantallen gesprekken, afgehandelde aanvragen en overdrachten aan een medewerker is vaak genoeg."
 ---
 
 Een transporteur bij Moerdijk, een expeditiebedrijf in de Rotterdamse haven en een opslagbedrijf in Venlo kennen hetzelfde dagelijkse beeld: de telefoon staat nooit stil. Klanten vragen waar hun zending blijft, willen een offerte of hebben een document nodig. Planners en medewerkers van de binnendienst zijn daar het grootste deel van de dag mee bezig.
@@ -47,22 +62,6 @@ Stel vooraf vast hoe u succes meet, anders blijft het een gevoel. Een eenvoudig 
 De meeste logistieke MKB-bedrijven beginnen met communicatie en administratie. Denk aan een AI-telefoniste die statusvragen en terugbelverzoeken afhandelt, automatische verwerking van vrachtbrieven en orders uit e-mail, en hulp bij routeplanning. Voorspellende toepassingen volgen meestal later, wanneer uw gegevens op orde zijn.
 
 Voor bedrijven die vooral last hebben van een volle telefoon is een AI-telefoniste vaak de snelste eerste stap. Die neemt op, beantwoordt standaardvragen met uw eigen informatie en zet aanvragen door naar de juiste collega. Complexe situaties, zoals schade of een spoedlevering, blijven bij een mens.
-
-## Veelgestelde vragen
-
-Hieronder vindt u antwoorden op drie vragen die logistieke ondernemers vaak stellen voordat ze beginnen. De antwoorden zijn bewust algemeen gehouden, omdat de uitkomst afhangt van uw processen, systemen en klantvragen.
-
-### Wat is de beste eerste stap om te starten met AI in de logistiek?
-
-Kies één proces dat vaak voorkomt en duidelijke regels heeft, bijvoorbeeld statusvragen van klanten. Houd een week bij welke vragen binnenkomen en begin met de meest voorkomende. Zo is het doel klein, meetbaar en makkelijk te testen.
-
-### Heb ik eerst een volledig geordend TMS of datasysteem nodig?
-
-Nee, u hoeft niet te wachten tot alle systemen perfect zijn. Wel moet de informatie die de AI nodig heeft op één plek beschikbaar en actueel zijn. Begin met een proces waarvoor dat al redelijk lukt en verbeter de rest gaandeweg.
-
-### Neemt AI het werk van mijn planners over?
-
-Niet in de praktijk. AI neemt vooral herhaalwerk over, zoals standaardvragen en administratie. Planners houden de beslissingen, uitzonderingen en klantcontacten waar vakkennis nodig is. Zo houden zij meer tijd over voor werk dat echt ertoe doet.
 
 ## Bespreek uw eerste stap met AGA
 

@@ -7,6 +7,21 @@ published: 2026-09-27
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["cbs-ai-2025", "ec-ai-act", "google-helpful"]
+faq:
+  - q: "Is een AI-implementatietraject voor een klein mkb-bedrijf wel betaalbaar?"
+    a: "Ja, een AI-implementatietraject is betaalbaar mits u klein begint. Kies één proces met een meetbare uitkomst en gebruik bij voorkeur een bestaande dienst in plaats van maatwerk. De kosten zijn dan vooraf bekend en u kunt stoppen als het niet oplevert wat u verwachtte."
+  - q: "Hoe lang duurt een AI-implementatietraject in het mkb?"
+    a: "Bij een kant-en-klare dienst duurt een AI-implementatietraject dagen tot enkele weken, vooral afhankelijk van hoe snel uw agenda of software gekoppeld kan worden. Bij maatwerk rekent u eerder in maanden, omdat analyse, bouw en testen elkaar opvolgen."
+  - q: "Welke vragen stelt u een leverancier over de kosten?"
+    a: "Vraag een leverancier om een splitsing van eenmalige en terugkerende kosten. Vraag ook wat er gebeurt bij meer gebruik dan verwacht, wie het beheer doet na de livegang en of u zonder hoge kosten kunt opzeggen. Vraag ten slotte hoe de transparantie richting klanten geregeld is."
+  - q: "Wat kost een AI-implementatietraject voor een mkb-bedrijf?"
+    a: "Er bestaat geen vaste prijslijst voor een AI-implementatietraject, want de kosten hangen af van de vorm. Bij maatwerk betaalt u vooral uren van specialisten, bij een standaardoplossing een abonnement. Een eerlijke offerte splitst eenmalige en terugkerende kosten altijd uit."
+  - q: "Wat zijn de kosten van een AI-implementatietraject?"
+    a: "Een AI-traject bestaat meestal uit vijf kostenposten. Dat zijn analyse en advies, bouw of configuratie, koppelingen met bestaande systemen, de gebruikskosten van het AI-model en beheer en bijsturing na de livegang. De laatste twee posten worden in offertes het vaakst onderschat."
+  - q: "Is maatwerk of een kant-en-klare AI-oplossing goedkoper voor het mkb?"
+    a: "Voor de meeste mkb-bedrijven is een kant-en-klare AI-dienst met een vast maandbedrag goedkoper en sneller dan maatwerk. U betaalt geen ontwikkeluren, de leverancier draagt het beheer en u kunt binnen weken live. Maatwerk loont pas als uw proces echt uniek is."
 ---
 
 Een tandartspraktijk in Utrecht wil dat gemiste oproepen niet langer in de voicemail verdwijnen. Een garage in Eindhoven overweegt de werkplaatsplanning slimmer te maken. Een installateur in Zwolle krijgt een offerte voor "een AI-traject" en schrikt van het bedrag. Alle drie typen ze dezelfde vraag in: wat kost een AI-implementatietraject voor een mkb-bedrijf?
@@ -54,19 +69,3 @@ Kijk ook naar regelingen. Via de Rijksdienst voor Ondernemend Nederland (RVO) vi
 Een AI-telefoniste zoals Emma van Aanloop AI is een kant-en-klare dienst, geen bouwtraject. De kosten zijn daardoor vooraf bekend en bestaan uit terugkerende gebruikskosten in plaats van ontwikkeluren. De inrichting bestaat uit het koppelen van uw agenda, het vastleggen van diensten en openingstijden en het bepalen wanneer een oproep alsnog naar een medewerker gaat.
 
 Voor afspraak-gedreven dienstverleners is dit vaak de goedkoopste manier om met AI te starten. Het proces is afgebakend, de koppeling is beperkt tot uw agenda en de winst is direct meetbaar: een gemiste oproep wordt een ingeplande afspraak, en een herinnering vooraf verkleint de kans op een no-show. U begint met één duidelijke uitkomst en breidt pas uit als dat aantoonbaar loont.
-
-## Veelgestelde vragen
-
-### Is een AI-implementatietraject voor een klein mkb-bedrijf wel betaalbaar?
-
-Ja, mits u klein begint. Kies één proces met een meetbare uitkomst en gebruik bij voorkeur een bestaande dienst in plaats van maatwerk. De kosten zijn dan vooraf bekend en u kunt stoppen als het niet oplevert wat u verwachtte.
-
-### Hoe lang duurt een AI-implementatietraject in het mkb?
-
-Bij een kant-en-klare dienst gaat het om dagen tot enkele weken, vooral afhankelijk van hoe snel uw agenda of software gekoppeld kan worden. Bij maatwerk rekent u eerder in maanden, omdat analyse, bouw en testen elkaar opvolgen.
-
-### Welke vragen stel ik een leverancier over de kosten?
-
-Vraag om een splitsing van eenmalige en terugkerende kosten, wat er gebeurt bij meer gebruik dan verwacht, wie het beheer doet na de livegang en of u zonder hoge kosten kunt opzeggen. Vraag ook hoe de transparantie richting klanten geregeld is.
-
-Wilt u weten wat een AI-telefoniste voor uw praktijk, salon, garage of installatiebedrijf betekent, zonder groot traject? [Plan een vrijblijvend kennismakingsgesprek met Aanloop AI](https://aanloopai.nl) en ontdek of Emma bij uw agenda en werkwijze past.

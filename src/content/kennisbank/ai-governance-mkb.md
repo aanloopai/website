@@ -7,6 +7,21 @@ published: 2026-10-18
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ec-ai-act", "ap-ai", "cbs-ai-2025"]
+faq:
+  - q: "Is AI governance echt nodig voor mijn kleine bedrijf?"
+    a: "Ja, AI governance is ook voor een klein bedrijf nodig, maar in een lichte vorm. Zodra u of uw medewerkers AI gebruiken, spelen de AVG en de verplichting tot AI-geletterdheid. Een overzicht van tools, een korte gebruiksregel en een verantwoordelijke zijn voor de meeste kleine bedrijven genoeg om te beginnen."
+  - q: "Kan een medewerker klantgegevens in ChatGPT plakken?"
+    a: "Alleen als daar een duidelijke grondslag en de juiste afspraken met de leverancier voor zijn, en liever niet. Maak een regel dat persoonsgegevens alleen in goedgekeurde tools mogen, of laat ze eerst anonimiseren. Leg deze afspraak het beste schriftelijk vast."
+  - q: "Wie is verantwoordelijk als AI een fout maakt?"
+    a: "Uw bedrijf blijft verantwoordelijk voor wat het aan klanten levert, ook als AI de tekst of het antwoord heeft gemaakt. Daarom hoort er altijd iemand te zijn die uitkomsten controleert en bij twijfel ingrijpt."
+  - q: "Wat is AI governance voor het MKB?"
+    a: "AI governance voor het MKB is het geheel van afspraken over wie welke AI-tools mag gebruiken, met welke gegevens en onder wiens verantwoordelijkheid. Het gaat niet om dikke beleidsstukken, maar om een korte set regels die risico's beperkt en klanten beschermt. Voor een bedrijf met vijf of vijftig medewerkers volstaat meestal een A4 met heldere afspraken."
+  - q: "Welke regels gelden voor AI in Nederlandse MKB-bedrijven?"
+    a: "Voor Nederlandse MKB-bedrijven gelden vooral de AVG en de Europese AI-verordening, ook wel AI Act genoemd. De AVG regelt hoe u persoonsgegevens verwerkt, ook in AI-tools. De AI Act verplicht onder meer dat medewerkers die met AI werken voldoende AI-geletterd zijn. Toezicht ligt onder meer bij de Autoriteit Persoonsgegevens."
+  - q: "Hoe begint u met AI governance in vijf stappen?"
+    a: "U begint met AI governance in vijf stappen: inventariseren, eigenaren aanwijzen, gegevensregels bepalen, een korte gebruiksregel schrijven en het team trainen en elk kwartaal evalueren. Zo houdt u grip zonder dat het een project van maanden wordt."
 ---
 
 Een bouwbedrijf in Eindhoven laat offertes schrijven met ChatGPT. Een accountantskantoor in Zwolle plakt klantgegevens in een gratis AI-tool om sneller samen te vatten. Een webshop in Utrecht zet een chatbot in zonder dat iemand weet wie de antwoorden controleert. Niemand heeft iets kwaads in de zin, maar niemand heeft ook afgesproken hoe het hoort.
@@ -67,20 +82,6 @@ Duidelijke, controleerbare bedrijfsinformatie maakt uw bedrijf betrouwbaarder vo
 Het verband is praktischer dan het lijkt. Dezelfde discipline die u nodig hebt voor governance, namelijk weten wat er over uw bedrijf wordt gezegd, wie de teksten beheert en dat ze kloppen, is ook de basis van AI-vindbaarheid. Een website met actuele diensten, een helder werkgebied en een zichtbare privacyverklaring wekt vertrouwen, bij mensen en bij AI.
 
 Ondernemers van Groningen tot Maastricht merken dat klanten steeds vaker eerst een AI-assistent om advies vragen. Wie dan consistent en betrouwbaar wordt beschreven, heeft een voorsprong.
-
-## Veelgestelde vragen
-
-### Heeft mijn kleine bedrijf echt AI governance nodig?
-
-Ja, maar in een lichte vorm. Zodra u of uw medewerkers AI gebruiken, spelen de AVG en de verplichting tot AI-geletterdheid. Een overzicht van tools, een korte gebruiksregel en een verantwoordelijke zijn voor de meeste kleine bedrijven genoeg om te beginnen.
-
-### Mogen medewerkers klantgegevens in ChatGPT plakken?
-
-Alleen als daar een duidelijke grondslag en de juiste afspraken met de leverancier voor zijn, en liever niet. Maak een regel dat persoonsgegevens alleen in goedgekeurde tools mogen, of laat ze eerst anonimiseren. Dit is een afspraak die u het beste schriftelijk vastlegt.
-
-### Wie is verantwoordelijk als AI een fout maakt?
-
-Uw bedrijf blijft verantwoordelijk voor wat het aan klanten levert, ook als AI de tekst of het antwoord heeft gemaakt. Daarom hoort er altijd iemand te zijn die uitkomsten controleert en bij twijfel ingrijpt.
 
 ## Zet AI in zonder zorgen over de regels
 

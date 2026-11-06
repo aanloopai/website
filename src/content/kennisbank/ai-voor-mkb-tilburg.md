@@ -6,6 +6,21 @@ published: 2026-10-17
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["cbs-ai-2025", "google-helpful", "google-ai-features"]
+faq:
+  - q: "Is AI ook geschikt voor een klein bedrijf in Tilburg?"
+    a: "Ja, AI is juist voor kleine bedrijven in Tilburg geschikt, omdat u zelf vaak niet kunt opnemen als u aan het werk bent. Een AI-telefoniste en een heldere website vragen geen groot team. Begin met één toepassing en kijk wat het oplevert."
+  - q: "Kan een AI-telefoniste het contact met mijn klanten overnemen?"
+    a: "Nee, een AI-telefoniste vangt vooral op wat anders gemist wordt. Ze beantwoordt standaardvragen, legt gegevens vast en plant afspraken of terugbelverzoeken. Gaat het om iets wat een mens moet beoordelen, dan blijft het contact bij u of uw team."
+  - q: "Kan ik garanderen dat ChatGPT mijn bedrijf noemt?"
+    a: "Nee, een vermelding door ChatGPT kan niemand eerlijk beloven, omdat de AI-assistenten zelf bepalen wat ze noemen. U vergroot de kans wel door een duidelijke website, concrete antwoorden op klantvragen en een eenduidige vermelding van uw vakgebied en werkgebied."
+  - q: "Welke AI-toepassingen werken het best voor MKB-bedrijven in Tilburg?"
+    a: "Voor de meeste MKB-bedrijven in Tilburg werken drie toepassingen het best: een website die gericht aanvragen oplevert, een AI-telefoniste die geen oproep mist en AI-vindbaarheid. Een meetpaneel laat zien wat het oplevert. Begin met de toepassing waar u nu het meeste mee mist."
+  - q: "Hoe voorkomt een AI-telefoniste gemiste oproepen?"
+    a: "Een AI-telefoniste neemt de telefoon of het WhatsApp-bericht direct aan, ook buiten kantooruren. Ze beantwoordt vragen, legt de wens van de beller vast en zet er een afspraak of terugbelverzoek van. Zo gaat een aanvraag niet naar de concurrent."
+  - q: "Hoe begint u met AI voor uw MKB-bedrijf in Tilburg?"
+    a: "Begin klein en meetbaar met het ene knelpunt dat u nu de meeste klanten kost, zoals gemiste telefoontjes of een site die niet overtuigt. Los dat op en meet het resultaat. Pas daarna breidt u uit. Zo houdt u grip op kosten."
 ---
 
 Een installateur in Tilburg staat de hele dag bij klanten en kan zijn telefoon niet opnemen. Een fysiotherapeut in Goirle heeft een goede website, maar krijgt er nauwelijks aanvragen van. Een adviesbureau in Oisterwijk merkt dat potentiële klanten tegenwoordig eerst aan ChatGPT vragen wie ze moeten bellen. Allemaal horen ze dat ze 'iets met AI' moeten doen, maar niemand vertelt wat dan precies.
@@ -70,20 +85,6 @@ Een werkbare aanpak in vier stappen:
 4. Kies op basis daarvan de eerste stap en spreek af welk cijfer moet verbeteren.
 
 Vraag een aanbieder altijd wat er wordt opgeleverd, hoe het resultaat wordt gemeten en wie er bij storingen helpt. Wie daar helder over is, denkt met u mee in plaats van tools te verkopen.
-
-## Veelgestelde vragen
-
-### Is AI ook geschikt voor een klein bedrijf in Tilburg?
-
-Ja, juist voor kleine bedrijven kan het veel opleveren, omdat u zelf vaak niet kunt opnemen als u aan het werk bent. Een AI-telefoniste en een heldere website vragen geen groot team. Begin met één toepassing en kijk wat het oplevert.
-
-### Neemt een AI-telefoniste het contact met mijn klanten over?
-
-Nee, ze vangt vooral op wat anders gemist wordt. Ze beantwoordt standaardvragen, legt gegevens vast en plant afspraken of terugbelverzoeken. Gaat het om iets wat een mens moet beoordelen, dan blijft het contact bij u of uw team.
-
-### Kan ik garanderen dat ChatGPT mijn bedrijf noemt?
-
-Nee, dat kan niemand eerlijk beloven, omdat de AI-assistenten zelf bepalen wat ze noemen. U vergroot de kans wel door een duidelijke website, concrete antwoorden op klantvragen en een eenduidige vermelding van uw vakgebied en werkgebied.
 
 ## Wilt u weten wat AI voor uw bedrijf kan opleveren?
 

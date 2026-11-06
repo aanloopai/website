@@ -7,6 +7,21 @@ published: 2026-10-27
 category: "AI-automatisering"
 readingMinutes: 4
 draft: false
+updated: 2026-11-06
+bronnen: ["cbs-ai-2025", "ap-avg", "ec-ai-act"]
+faq:
+  - q: "Kan een virtuele receptionist echt reserveringen aannemen?"
+    a: "Ja, een virtuele receptionist kan reserveringen aannemen. De AI vraagt naar datum, tijd, aantal personen en contactgegevens en zet de aanvraag door naar uw agenda of mailbox. Hoe ver de koppeling met uw bestaande reserveringssysteem gaat, verschilt per aanbieder, dus vraag dat vooraf na."
+  - q: "Kan een gast merken dat hij met een AI praat?"
+    a: "Een goede AI-telefoniste spreekt natuurlijk Nederlands en reageert direct. Het is verstandig om open te zijn dat het om een digitale assistent gaat. Wil een gast liever een mens spreken, dan hoort de AI het gesprek door te zetten."
+  - q: "Is een virtuele receptionist AVG-proof?"
+    a: "Of een virtuele receptionist AVG-proof is, hangt af van de aanbieder. Vraag naar een verwerkersovereenkomst, naar waar gespreksdata wordt opgeslagen en hoe lang. Als verwerkingsverantwoordelijke blijft u zelf verantwoordelijk, dus leg die afspraken schriftelijk vast."
+  - q: "Wat is een virtuele receptionist voor restaurants?"
+    a: "Een virtuele receptionist voor restaurants is een AI-telefoniste die telefoontjes en WhatsApp-berichten van gasten beantwoordt. Ze geeft openingstijden door, beantwoordt vragen over de kaart en allergenen en neemt reserveringen op. Zo hoeft uw team tijdens de service niet meer naar de telefoon te rennen."
+  - q: "Waarom kosten gemiste telefoontjes een restaurant geld?"
+    a: "Een gast die geen gehoor krijgt, belt zelden een tweede keer en boekt vaak bij een ander restaurant. Juist op vrijdagavond en zaterdag, wanneer de keuken en de bediening vol bezet zijn, blijft de telefoon liggen. Een virtuele receptionist neemt dan wel op, ook buiten openingstijden."
+  - q: "Waar let u op bij het kiezen van een virtuele receptionist?"
+    a: "Let op vier dingen: koppeling met uw reserveringssysteem, de kwaliteit van het Nederlands, een duidelijke overdracht naar een mens en privacy volgens de AVG. Vraag ook of u gemeten resultaten kunt zien en of teksten en gegevens van u blijven als u later stopt."
 ---
 
 Vrijdagavond, half zeven. De keuken draait op volle toeren, de bediening loopt heen en weer en de telefoon op de bar gaat over. Niemand kan opnemen. Voor een restaurant in Amsterdam, Utrecht of Rotterdam is dat een bekend beeld, en elke gemiste oproep kan een gemiste reservering zijn.
@@ -60,19 +75,3 @@ Een praktische checklist voor uw eerste gesprek:
 - **Privacy:** is er een verwerkersovereenkomst en weet u waar gespreksdata wordt opgeslagen?
 - **Kosten:** weet u vooraf wat u betaalt voor inrichting en voor gebruik, en wat er verandert als u meer gesprekken krijgt?
 - **Bijsturen:** worden gesprekken teruggelezen en de antwoorden verbeterd, bijvoorbeeld als uw kaart of seizoensmenu wijzigt?
-
-## Veelgestelde vragen
-
-### Kan een virtuele receptionist echt reserveringen aannemen?
-
-Ja. De AI vraagt naar datum, tijd, aantal personen en contactgegevens en zet de aanvraag door naar uw agenda of mailbox. Hoe ver de koppeling met uw bestaande reserveringssysteem gaat, verschilt per aanbieder, dus vraag dat vooraf na.
-
-### Merken gasten dat ze met een AI praten?
-
-Een goede AI-telefoniste spreekt natuurlijk Nederlands en reageert direct. Het is verstandig om open te zijn dat het om een digitale assistent gaat. Wil een gast liever een mens spreken, dan hoort de AI het gesprek door te zetten.
-
-### Is een virtuele receptionist AVG-proof?
-
-Dat hangt af van de aanbieder. Vraag naar een verwerkersovereenkomst, naar waar gespreksdata wordt opgeslagen en hoe lang. Als verwerkingsverantwoordelijke blijft u zelf verantwoordelijk, dus leg die afspraken schriftelijk vast.
-
-Wilt u weten hoe Emma de telefoon van uw restaurant kan opnemen? Plan via aanloopai.nl een vrijblijvend gesprek met Aanloop AI.

@@ -6,6 +6,21 @@ published: 2026-10-23
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["google-ai-features", "google-helpful", "arxiv-geo"]
+faq:
+  - q: "Is SEO nog nodig nu mensen ChatGPT gebruiken?"
+    a: "Ja, SEO is nog steeds nodig. Veel mensen zoeken nog in Google, en AI-assistenten gebruiken vaak dezelfde soort bronnen: goed opgebouwde websites en betrouwbare bedrijfsgegevens. Goede SEO is daarom ook een stevige basis voor AI-vindbaarheid."
+  - q: "Kan ik garanderen dat ChatGPT mijn bedrijf noemt?"
+    a: "Nee, een vermelding door ChatGPT kan niemand eerlijk beloven. U kunt de kans wel vergroten met duidelijke pagina's, consistente bedrijfsgegevens, reviews en antwoorden op concrete klantvragen. Test regelmatig zelf welke vragen uw bedrijf wel en niet opleveren."
+  - q: "Hoe lang duurt het voordat SEO resultaat geeft?"
+    a: "Hoe lang SEO duurt, verschilt per branche, concurrentie en de uitgangssituatie van uw website. Technische verbeteringen en een compleet bedrijfsprofiel werken vaak eerder dan nieuwe content. Reken in elk geval op een periode van maanden, niet dagen."
+  - q: "Wat is SEO en AI-optimalisatie voor bedrijven in Eindhoven?"
+    a: "SEO zorgt dat uw website hoog staat in zoekmachines zoals Google. AI-optimalisatie zorgt dat assistenten zoals ChatGPT, Gemini en Perplexity uw bedrijf begrijpen en noemen als antwoord op een vraag. Voor een Eindhovens bedrijf betekent dat: duidelijk zijn over wat u doet, waar en voor wie."
+  - q: "Hoe wordt uw bedrijf gevonden in ChatGPT, Gemini en Perplexity?"
+    a: "Niemand kan een vermelding afdwingen, maar u kunt uw informatie wel makkelijk vindbaar en citeerbaar maken. Beantwoord echte klantvragen, wees concreet over diensten en werkgebied, gebruik schema-markup, zorg voor toegankelijke techniek en bouw vermeldingen op in branchegidsen en lokale media."
+  - q: "Waar begint u met SEO voor een MKB-bedrijf in Eindhoven?"
+    a: "Begin met de basis: een snelle website met aparte pagina's per dienst, een volledig Google Bedrijfsprofiel en duidelijke contactgegevens. Pas daarna loont het om te investeren in extra content en AI-vindbaarheid. Controleer ook de mobiele weergave en meet hoeveel bezoekers en aanvragen er binnenkomen."
 ---
 
 Een installateur in Woensel, een tandartspraktijk in Strijp-S en een adviesbureau op de Brainport-campus hebben dezelfde zorg: mensen oriënteren zich anders dan vijf jaar geleden. Ze typen een zoekopdracht in Google, maar ze stellen ook een vraag aan ChatGPT of Perplexity en krijgen daar één antwoord met een paar bedrijfsnamen.
@@ -57,17 +72,6 @@ Een werkbare volgorde voor de eerste maanden:
 Vindbaarheid levert alleen iets op als aanvragen ook worden opgepakt. Een bezoeker die belt terwijl u op een klus staat of in een gesprek zit, belt vaak daarna de volgende aanbieder. Daarom hoort een snelle reactie op telefoon en WhatsApp bij een goede aanpak, naast SEO en AI-optimalisatie.
 
 Bij Aanloop AI combineren we daarom een website met Emma, een AI-telefoniste die oproepen en WhatsApp-berichten beantwoordt, vragen uitvraagt en aanvragen doorgeeft. Met een meetpaneel ziet u wat dit oplevert. Gemeten resultaten staan op aanloopai.nl/resultaten/.
-
-## Veelgestelde vragen
-
-**Is SEO nog nodig nu mensen ChatGPT gebruiken?**
-Ja. Veel mensen zoeken nog steeds in Google, en AI-assistenten gebruiken vaak dezelfde soort bronnen: goed opgebouwde websites en betrouwbare bedrijfsgegevens. Goede SEO is daarom ook een stevige basis voor AI-vindbaarheid.
-
-**Kan ik garanderen dat ChatGPT mijn bedrijf noemt?**
-Nee, dat kan niemand eerlijk beloven. U kunt wel de kans vergroten door duidelijke pagina's, consistente bedrijfsgegevens, reviews en antwoorden op concrete klantvragen. Test regelmatig zelf welke vragen uw bedrijf wel en niet opleveren.
-
-**Hoe lang duurt het voordat SEO resultaat geeft?**
-Dat verschilt per branche, concurrentie en de uitgangssituatie van uw website. Technische verbeteringen en een compleet bedrijfsprofiel werken vaak eerder dan nieuwe content. Reken in elk geval op een periode van maanden, niet dagen.
 
 ## Wilt u gevonden worden in Eindhoven, en ook gebeld worden?
 

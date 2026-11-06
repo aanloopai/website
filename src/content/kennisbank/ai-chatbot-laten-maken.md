@@ -6,6 +6,19 @@ published: 2026-07-15
 category: "AI-automatisering"
 readingMinutes: 6
 draft: false
+updated: 2026-11-06
+bronnen: ["cbs-ai-2025", "google-helpful"]
+faq:
+  - q: "Wanneer loont het om een AI-chatbot te laten maken?"
+    a: "Een AI-chatbot loont vooral bij terugkerende vragen. Ook loont hij als vragen buiten kantooruren blijven liggen of als uw team veel tijd verliest aan routinewerk. Ontbreken deze signalen, dan is een chatbot vaak een oplossing voor een probleem dat er niet is."
+  - q: "Wat kost het om een AI-chatbot te laten maken?"
+    a: "Er bestaat geen vaste prijs voor een AI-chatbot, omdat de kosten sterk afhangen van de omvang. Een chatbot die enkel veelgestelde vragen beantwoordt vraagt minder werk dan een chatbot die gekoppeld is aan uw agenda, voorraad of klantsysteem. De grootste variabele is zelden de techniek, maar de voorbereiding."
+  - q: "Waar let u op bij het laten maken van een AI-chatbot?"
+    a: "Let vooral op goede bronnen, duidelijke grenzen, de juiste toon en een leerperiode. Een AI-chatbot is zo goed als de informatie waaruit hij put. Bepaal ook wat de chatbot niet doet en wanneer hij het gesprek aan een mens doorgeeft."
+  - q: "Wat doet een AI-chatbot bij een klacht of twijfelgeval?"
+    a: "Bij een klacht, een complexe situatie of een twijfelgeval hoort een goede chatbot het gesprek soepel door te geven aan een mens. Duidelijke overdrachtsmomenten voorkomen dat een klant vastloopt in een gesprek dat nergens heen gaat."
+  - q: "Waarom is een leerperiode nodig bij een AI-chatbot?"
+    a: "Geen enkele chatbot is vanaf dag één af, daarom is een leerperiode nodig. De eerste weken laten zien welke vragen binnenkomen die u niet had voorzien en waar de antwoorden bijgeslepen moeten worden. Reken daarop in plaats van te verwachten dat het in één keer perfect staat."
 ---
 
 Steeds meer ondernemers in het Nederlandse MKB overwegen om een AI-chatbot te laten maken. De belofte is aantrekkelijk: vragen van klanten worden dag en nacht beantwoord, uw team houdt tijd over voor het echte werk, en een aanvraag die 's avonds binnenkomt blijft niet tot de volgende ochtend liggen. Maar tussen dat idee en een chatbot die daadwerkelijk waarde levert, zit een aantal keuzes dat bepaalt of het traject slaagt of stilletjes doodbloedt.
