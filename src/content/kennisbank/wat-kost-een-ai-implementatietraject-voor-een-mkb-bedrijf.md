@@ -17,9 +17,7 @@ faq:
   - q: "Welke vragen stelt u een leverancier over de kosten?"
     a: "Vraag een leverancier om een splitsing van eenmalige en terugkerende kosten. Vraag ook wat er gebeurt bij meer gebruik dan verwacht, wie het beheer doet na de livegang en of u zonder hoge kosten kunt opzeggen. Vraag ten slotte hoe de transparantie richting klanten geregeld is."
   - q: "Wat kost een AI-implementatietraject voor een mkb-bedrijf?"
-    a: "Er bestaat geen vaste prijslijst voor een AI-implementatietraject, want de kosten hangen af van de vorm. Bij maatwerk betaalt u vooral uren van specialisten, bij een standaardoplossing een abonnement. Een eerlijke offerte splitst eenmalige en terugkerende kosten altijd uit."
-  - q: "Wat zijn de kosten van een AI-implementatietraject?"
-    a: "Een AI-traject bestaat meestal uit vijf kostenposten. Dat zijn analyse en advies, bouw of configuratie, koppelingen met bestaande systemen, de gebruikskosten van het AI-model en beheer en bijsturing na de livegang. De laatste twee posten worden in offertes het vaakst onderschat."
+    a: "Er bestaat geen vaste prijslijst voor een AI-implementatietraject, want de kosten hangen af van de vorm. Bij maatwerk betaalt u vooral uren van specialisten, bij een standaardoplossing een abonnement. Een AI-traject bestaat meestal uit vijf kostenposten: analyse en advies, bouw of configuratie, koppelingen met bestaande systemen, de gebruikskosten van het AI-model en beheer en bijsturing na de livegang. De laatste twee posten worden in offertes het vaakst onderschat, en een eerlijke offerte splitst eenmalige en terugkerende kosten altijd uit."
   - q: "Is maatwerk of een kant-en-klare AI-oplossing goedkoper voor het mkb?"
     a: "Voor de meeste mkb-bedrijven is een kant-en-klare AI-dienst met een vast maandbedrag goedkoper en sneller dan maatwerk. U betaalt geen ontwikkeluren, de leverancier draagt het beheer en u kunt binnen weken live. Maatwerk loont pas als uw proces echt uniek is."
 ---
