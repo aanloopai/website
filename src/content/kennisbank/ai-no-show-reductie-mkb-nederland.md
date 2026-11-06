@@ -6,6 +6,19 @@ published: 2026-09-15
 category: "AI-automatisering"
 readingMinutes: 7
 draft: false
+updated: 2026-11-06
+bronnen: ["google-helpful", "cbs-ai-2025"]
+faq:
+  - q: "Is een WhatsApp-herinnering echt beter dan sms of e-mail?"
+    a: "Een apart bewezen WhatsApp-percentage bestaat niet. Vergelijkende studies tussen WhatsApp en sms zijn schaars; de genoemde onderzoeken zijn met sms of telefonisch contact uitgevoerd. Het mechanisme van tijdig, persoonlijk en makkelijk te beantwoorden is bij WhatsApp hetzelfde of sterker."
+  - q: "Is een tweede herinnering 2 uur vooraf echt beter dan alleen de reminder van een dag ervoor?"
+    a: "Ja, een aanvullende sms-herinnering verlaagde de no-show-kans met nog eens 7% bij reguliere afspraken en 11% bij ggz-afspraken. Dat blijkt uit onderzoek van Nelson en collega's uit 2022. Het is de basis voor de combinatie van een herinnering 24 uur en 2 uur van tevoren."
+  - q: "Kan ik als garage of kapsalon een no-show-tarief rekenen?"
+    a: "Buiten de zorg gelden geen aparte wettelijke beperkingen voor een no-show-tarief. Communiceer het tarief vooraf, bijvoorbeeld in de bevestiging of voorwaarden. In de zorg mag een gemiste afspraak niet bij de verzekeraar worden gedeclareerd en moet het tarief rechtstreeks aan de patiënt."
+  - q: "Is er één landelijk no-show-percentage voor Nederlandse MKB-bedrijven?"
+    a: "Nee, er is geen gepubliceerd sectorbreed no-show-percentage gevonden bij NZa, Nivel of CBS. Cijfers die circuleren, zoals 10 tot 30%, zijn praktijkindicaties en geen meting. Reken met uw eigen cijfers via de no-show calculator."
+  - q: "Kan een AI-telefoniste alle vijf oorzaken van no-shows aanpakken?"
+    a: "Een AI-telefoniste pakt grotendeels drie van de vijf oorzaken aan. Reminders, laagdrempelig verzetten en kanaalverwarring lost ze rechtstreeks op door telefoon en WhatsApp samen te voegen. Boekingshorizon en no-show-beleid zijn eigen keuzes: zij voert het beleid uit, maar bepaalt het niet voor u."
 ---
 
 Een gemiste afspraak kost meer dan de omzet van dat ene tijdslot: iemand anders had die plek kunnen krijgen, een medewerker heeft zich erop voorbereid, en bij een klein team is een leeg uur zonder aankondiging vaak niet meer te vullen. No-shows verminderen is geen kwestie van één trucje, maar van een combinatie die elkaar versterkt: op tijd herinneren, makkelijk laten verzetten, en een duidelijk beleid voor wie toch wegblijft. Dit artikel zet op een rij wat daarvan aantoonbaar werkt, met bronnen, en wat dat betekent voor een fysiopraktijk, een kapsalon, een garage of een installatiebedrijf.
@@ -49,20 +62,3 @@ Een gemiste afspraak kost meer dan de omzet van dat ene tijdslot: iemand anders 
 De maatregelen hierboven zijn stuk voor stuk uitvoerbaar met losse tools — het omslagpunt naar tijdverlies is de optelsom: een apart reminder-tool, een apart WhatsApp-nummer, een balie die alsnog moet bellen bij twijfel. [Emma](/diensten/emma/), de omnichannel AI-agent van Aanloop AI, voegt dit samen: ze neemt de telefoon 24/7 aan, plant afspraken direct in de agenda, en verstuurt WhatsApp-bevestigingen en -reminders zonder handmatig werk.
 
 Concreet: **Emma Start** (€149/mnd) neemt de telefoon aan en plant afspraken in, zelf in 10 minuten live — maar zonder WhatsApp. Voor de reminder-combinatie met het meeste aantoonbare effect is **Emma Groei** (€299/mnd) de eerste tier die dat afdekt: telefoon + WhatsApp inbegrepen, CRM-koppeling, onboarding binnen 7 werkdagen. **Emma Compleet** (€497/mnd) voegt onbeperkt volume, meerdere nummers en maatwerk-workflows toe. Elk pakket heeft 14 dagen niet-goed-geld-terug op het abonnement. Reken uit wat een lager no-show-percentage voor uw cijfers betekent met de [no-show calculator](/no-show-calculator/), of bekijk uw sector: [zorg & fysio](/sectoren/zorg/), [kapsalons & schoonheid](/sectoren/schoonheid/), [garages & automotive](/sectoren/automotive/) of [installateurs](/sectoren/installatie/).
-
-## Veelgestelde vragen
-
-**Helpt een WhatsApp-herinnering echt beter dan sms of e-mail?**
-Vergelijkende studies tussen WhatsApp specifiek en sms zijn schaars; de onderzoeken hierboven zijn met sms of telefonisch contact uitgevoerd. Het mechanisme — tijdig, persoonlijk, makkelijk te beantwoorden — is bij WhatsApp hetzelfde of sterker, maar een apart bewezen WhatsApp-percentage bestaat niet.
-
-**Werkt een tweede herinnering (2 uur vooraf) echt beter dan alleen de reminder van een dag ervoor?**
-Ja: een aanvullende sms-herinnering bovenop een eerste bericht verlaagde de no-show-kans met nog eens 7% bij reguliere afspraken en 11% bij ggz-afspraken ([Nelson et al., 2022](https://pmc.ncbi.nlm.nih.gov/articles/PMC9126539/)) — de basis voor de 24u + 2u-combinatie.
-
-**Mag ik als garage of kapsalon een no-show-tarief rekenen?**
-Buiten de zorg gelden geen aparte wettelijke beperkingen. Communiceer het tarief vooraf, bijvoorbeeld in de bevestiging of voorwaarden. In de zorg mag het nooit bij de verzekeraar worden gedeclareerd en moet het rechtstreeks aan de patiënt ([NZa](https://www.nza.nl/vraag-en-antwoord/paramedische-zorg/mag-er-een-no-show-in-rekening-gebracht-worden-als-de-patient-niet-is-geweest)).
-
-**Is er één landelijk no-show-percentage voor Nederlandse MKB-bedrijven?**
-Nee — een gepubliceerd, sectorbreed benchmarkcijfer (NZa, Nivel, CBS) is niet gevonden. Cijfers die circuleren (10-30%) zijn praktijkindicaties, geen meting. Reken met uw eigen cijfers via de [no-show calculator](/no-show-calculator/).
-
-**Kan een AI-telefoniste alle vijf oorzaken aanpakken?**
-Grotendeels: reminders, laagdrempelig verzetten en kanaalverwarring (oorzaak 2, 3, 5) lost ze rechtstreeks op door telefoon en WhatsApp samen te voegen. Boekingshorizon (1) en beleid (4) zijn eigen keuzes — een AI-telefoniste voert het beleid uit, maar bepaalt het niet voor u.

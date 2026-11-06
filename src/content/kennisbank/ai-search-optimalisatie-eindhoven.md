@@ -7,6 +7,21 @@ published: 2026-10-03
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["google-ai-features", "arxiv-geo", "google-helpful"]
+faq:
+  - q: "Is gewone SEO nog nodig naast AI search optimalisatie?"
+    a: "Ja, gewone SEO is nog nodig naast AI search optimalisatie. AI-zoekmachines halen hun informatie grotendeels uit dezelfde webpagina's die ook in Google goed scoren. Een snelle, overzichtelijke website met duidelijke pagina's per dienst is de basis voor allebei."
+  - q: "Hoe snel ziet u resultaat van AI search optimalisatie?"
+    a: "Dat verschilt per zoekmachine en per branche, en niemand kan u een termijn garanderen. Wijzigingen in uw Google Bedrijfsprofiel worden meestal sneller opgepikt dan nieuwe pagina's op uw website. Reken op maanden, niet op dagen."
+  - q: "Kan ik AI search optimalisatie zelf doen of heb ik een bureau nodig?"
+    a: "U kunt uw Bedrijfsprofiel, reviews en duidelijke teksten over uw diensten prima zelf regelen. Voor gestructureerde gegevens en technische verbeteringen aan uw website gaat het vaak sneller met een webbouwer of SEO-specialist uit Eindhoven."
+  - q: "Wat is AI search optimalisatie en waarom telt het in Eindhoven?"
+    a: "AI search optimalisatie, ook wel GEO genoemd, betekent dat u uw website en online vermeldingen zo inricht dat AI-zoekmachines uw bedrijf begrijpen, vertrouwen en noemen. Het telt omdat klanten steeds vaker een AI-assistent om een concrete aanbeveling vragen, en die noemt meestal maar een handvol bedrijven."
+  - q: "Welke vijf stappen kunt u zetten voor AI search optimalisatie?"
+    a: "U zet vijf stappen voor AI search optimalisatie. Breng uw Google Bedrijfsprofiel op orde, maak per dienst een pagina met directe antwoorden, noem uw werkgebied concreet, verzamel en beantwoord reviews en voeg gestructureerde gegevens toe. Deze stappen kosten vooral tijd, geen groot budget."
+  - q: "Waarom hoort bereikbaarheid bij AI search optimalisatie?"
+    a: "Een aanbeveling levert pas iets op als de klant u daarna ook bereikt. Wie via ChatGPT of een AI-overzicht bij uw bedrijf uitkomt, belt vaak meteen. Neemt niemand op, dan probeert die klant gewoon het volgende bedrijf uit hetzelfde antwoord."
 ---
 
 Een tandarts in Woensel, een kapsalon in Stratum of een garage aan de rand van Eindhoven: een nieuwe klant begint steeds vaker niet met tien blauwe links in Google, maar met een vraag aan ChatGPT, Perplexity of het AI-overzicht bovenaan de zoekresultaten. 'Welke fysiotherapeut in Eindhoven heeft deze week nog plek?' Het antwoord noemt een paar namen. Staat uw bedrijf daar niet bij, dan bestaat u voor die klant niet.
@@ -42,21 +57,3 @@ Ook een pagina met veelgestelde vragen helpt. Zet daar de vragen op die klanten 
 Bereikbaarheid hoort bij AI search optimalisatie, omdat een aanbeveling pas iets oplevert als de klant u daarna ook bereikt. Wie via ChatGPT of een AI-overzicht bij uw bedrijf uitkomt, belt vaak meteen. Neemt niemand op, dan probeert die klant gewoon het volgende bedrijf uit hetzelfde antwoord.
 
 Daar zit het zwakke punt van veel kleine bedrijven. De tandartsassistente staat aan de stoel, de kapper heeft de schaar in de hand en de monteur ligt onder een auto. AI-zoekmachines tonen bovendien vaak direct een telefoonnummer, dus klanten bellen ook 's avonds en in het weekend. Een AI-telefoniste zoals Emma van AanloopAI neemt die oproepen aan, beantwoordt veelgestelde vragen en plant de afspraak meteen in uw agenda. Zo wordt de zichtbaarheid die u opbouwt ook echt een afspraak, en met herinneringen vooraf verkleint u de kans op no-shows.
-
-## Veelgestelde vragen
-
-Hieronder staan antwoorden op drie vragen die ondernemers in Eindhoven en omgeving vaak stellen over AI search optimalisatie: of gewone SEO nog nodig is, hoe snel resultaat zichtbaar wordt en of u het zelf kunt doen of beter een bureau inschakelt. De antwoorden zijn bewust kort en praktisch gehouden.
-
-### Is gewone SEO nog nodig naast AI search optimalisatie?
-
-Ja. AI-zoekmachines halen hun informatie grotendeels uit dezelfde webpagina's die ook in Google goed scoren. Een snelle, overzichtelijke website met duidelijke pagina's per dienst is de basis voor allebei.
-
-### Hoe snel ziet u resultaat van AI search optimalisatie?
-
-Dat verschilt per zoekmachine en per branche, en niemand kan u een termijn garanderen. Wijzigingen in uw Google Bedrijfsprofiel worden meestal sneller opgepikt dan nieuwe pagina's op uw website. Reken op maanden, niet op dagen.
-
-### Kan ik AI search optimalisatie zelf doen of heb ik een bureau nodig?
-
-Uw Bedrijfsprofiel, reviews en duidelijke teksten over uw diensten kunt u prima zelf regelen. Voor gestructureerde gegevens en technische verbeteringen aan uw website gaat het vaak sneller met een webbouwer of SEO-specialist uit Eindhoven.
-
-**Wordt u straks vaker gevonden? Zorg dan dat elke beller ook een afspraak krijgt.** Vraag via [aanloopai.nl](https://aanloopai.nl) een vrijblijvende demo aan van Emma, de AI-telefoniste van AanloopAI.

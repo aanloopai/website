@@ -7,6 +7,21 @@ published: 2026-09-28
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-avg", "ec-ai-act", "ro-privacy"]
+faq:
+  - q: "Is het voor cliënten vervelend om met een AI te praten?"
+    a: "Dat hangt vooral af van de inrichting van de AI-intake. Meld aan het begin dat de beller een digitale assistent spreekt en bied altijd de mogelijkheid om een medewerker te spreken of teruggebeld te worden. Een beller die direct een afspraak heeft, hoeft in elk geval niet opnieuw te bellen."
+  - q: "Kan een AI-telefoniste juridisch advies geven?"
+    a: "Nee, een AI-telefoniste geeft geen juridisch advies en hoort dat ook niet te doen. Zij neemt de aanvraag op, geeft praktische informatie en plant een gesprek in. Inhoudelijke vragen over akten, erfrecht of fiscale gevolgen verwijst zij door naar de notaris of kandidaat-notaris."
+  - q: "Kan AI-intake werken met onze bestaande agenda en software?"
+    a: "Afspraken kunnen worden ingepland in een gekoppelde agenda. Welke koppelingen met uw dossiersysteem mogelijk zijn, verschilt per pakket, dus vraag dat vooraf na. Waar geen directe koppeling bestaat, kan de intake als overzichtelijke samenvatting naar het kantoor worden gestuurd."
+  - q: "Wat is AI-intake voor cliënten in het notariaat?"
+    a: "AI-intake betekent dat een AI-telefoniste inkomende oproepen aanneemt en vaststelt waarvoor iemand belt. Ze vraagt de basisgegevens voor een nieuw dossier uit en plant een intakegesprek of terugbelmoment in. Het juridische werk, de identificatie en het advies blijven volledig bij de notaris en de kandidaat-notarissen."
+  - q: "Welke gegevens kan een AI-intake bij een notariskantoor uitvragen?"
+    a: "Een AI-intake vraagt vooral praktische gegevens uit, zoals het soort akte of zaak, naam en contactgegevens en betrokken partijen. Bij vastgoed gaat het ook om de makelaar, geldverstrekker en gewenste passeerdatum. Gevoelige inhoud, zoals vermogen of familieverhoudingen, hoort thuis in het gesprek met de notaris."
+  - q: "Hoe past AI-intake binnen AVG, geheimhouding en de Wwft?"
+    a: "AI-intake past binnen de AVG en de geheimhoudingsplicht als het kantoor een verwerkersovereenkomst sluit en alleen noodzakelijke gegevens laat uitvragen. Gegevens worden bij voorkeur binnen de EU verwerkt en er zijn duidelijke bewaartermijnen. Het cliëntenonderzoek en de identificatie onder de Wwft kan een AI-telefoniste niet overnemen."
 ---
 
 Een notariskantoor in Amersfoort heeft op maandagochtend tegelijk een makelaar aan de lijn, een stel dat een samenlevingscontract wil laten opstellen en een erfgenaam met vragen over een nalatenschap. De receptie kan maar één gesprek tegelijk voeren. Wie op de voicemail uitkomt, belt vaak gewoon het volgende kantoor. Daarom verdiepen steeds meer notarissen zich in AI-intake voor cliënten.
@@ -55,21 +70,3 @@ Een praktische volgorde:
 3. **Koppel de agenda**: laat de AI alleen plannen in tijdsblokken die u daarvoor vrijgeeft.
 4. **Informeer bellers**: vermeld op uw website en in het welkomstbericht dat u met een digitale assistent werkt.
 5. **Evalueer en breid uit**: werkt de eerste stroom goed, voeg dan het volgende rechtsgebied toe.
-
-## Veelgestelde vragen
-
-Notarissen die AI-intake overwegen, stellen vaak dezelfde vragen over de reactie van cliënten, de grenzen van wat een AI-telefoniste mag doen en de koppeling met bestaande systemen. Hieronder vindt u korte, eerlijke antwoorden op drie vragen die bij vrijwel elk kantoor opkomen.
-
-### Vinden cliënten het vervelend om met een AI te praten?
-
-Dat hangt vooral af van de inrichting. Meld aan het begin dat de beller een digitale assistent spreekt en bied altijd de mogelijkheid om een medewerker te spreken of teruggebeld te worden. Een beller die direct een afspraak heeft, hoeft in elk geval niet opnieuw te bellen.
-
-### Kan een AI-telefoniste juridisch advies geven?
-
-Nee, en dat hoort ze ook niet te doen. Zij neemt de aanvraag op, geeft praktische informatie en plant een gesprek in. Inhoudelijke vragen over akten, erfrecht of fiscale gevolgen verwijst zij altijd door naar de notaris of kandidaat-notaris.
-
-### Werkt AI-intake met onze bestaande agenda en software?
-
-Afspraken kunnen worden ingepland in een gekoppelde agenda. Welke koppelingen met uw dossiersysteem mogelijk zijn, verschilt per pakket, dus vraag dat vooraf na. Waar geen directe koppeling bestaat, kan de intake als overzichtelijke samenvatting naar het kantoor worden gestuurd.
-
-Wilt u weten hoe Emma de telefonische intake voor uw notariskantoor kan opvangen? Plan een vrijblijvende kennismaking via [aanloopai.nl](https://aanloopai.nl) en ontdek hoe u geen nieuwe cliënt meer mist.

@@ -6,6 +6,21 @@ published: 2026-10-06
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["cbs-ai-2025", "ap-ai", "ec-ai-act", "ap-avg"]
+faq:
+  - q: "Is artificial intelligence niet alleen iets voor grote bedrijven?"
+    a: "Nee, artificial intelligence is niet alleen voor grote bedrijven. De meeste AI-diensten worden tegenwoordig als abonnement aangeboden, zonder eigen IT-afdeling of programmeerwerk. Juist een zzp'er, die alles alleen doet, heeft het meeste baat bij een systeem dat telefoon en planning overneemt."
+  - q: "Kan ik als zzp'er zomaar een AI-telefoniste klantgesprekken laten voeren?"
+    a: "Ja, een zzp'er mag een AI-telefoniste klantgesprekken laten voeren, mits u de AVG naleeft en bellers kunnen weten dat ze met een AI-systeem spreken. Sluit een verwerkersovereenkomst met de leverancier, neem het gebruik op in uw privacyverklaring en controleer dat de begroeting duidelijk is."
+  - q: "Kan AI het persoonlijke contact met mijn klanten vervangen?"
+    a: "Nee, AI vervangt het persoonlijke contact met uw klanten niet. De AI neemt het werk rondom de afspraak over: opnemen, inplannen, herinneren en bevestigen. Het vakwerk en het gesprek tijdens de afspraak blijven van u."
+  - q: "Wat betekent artificial intelligence voor een zzp'er?"
+    a: "Artificial intelligence betekent voor een zzp'er software die taken overneemt waarvoor tot voor kort menselijk begrip nodig was. Denk aan een telefoongesprek voeren, een e-mail samenvatten, een offerte opstellen of een afspraak inplannen. U hoeft niets te programmeren en bepaalt zelf welke taken u uit handen geeft."
+  - q: "Waar moet u als zzp'er op letten bij artificial intelligence?"
+    a: "Als zzp'er blijft u zelf verantwoordelijk voor wat een AI-systeem namens u doet. Let op drie dingen: de bescherming van klantgegevens onder de AVG, de verplichtingen uit de Europese AI-verordening en de kwaliteit van de antwoorden die klanten krijgen."
+  - q: "Hoe begint u als zzp'er met artificial intelligence?"
+    a: "Begin klein en meetbaar: kies één taak die u nu laat liggen, zoals gemiste telefoontjes of afspraakherinneringen, en zet daar één AI-toepassing voor in. Controleer de eerste weken actief wat er gebeurt en breid pas uit als die ene taak goed loopt."
 ---
 
 Een zelfstandig installateur in Eindhoven staat met beide handen in een cv-ketel als zijn telefoon gaat. Een kapster met een eigen salon in Groningen heeft een klant in de stoel en hoort de voicemail vollopen. En een zelfstandig fysiotherapeut in Utrecht doet 's avonds aan de keukentafel de administratie die overdag is blijven liggen.
@@ -62,17 +77,6 @@ Een praktische volgorde:
 3. **Kies een dienst die koppelt**: aan uw bestaande agenda, zodat afspraken niet handmatig overgetypt hoeven te worden.
 4. **Regel het papierwerk**: verwerkersovereenkomst, duidelijke melding richting klanten, en een tekst voor uw privacyverklaring.
 5. **Evalueer na een maand**: hoeveel oproepen zijn opgevangen, hoeveel afspraken zijn ingepland, hoeveel tijd heeft u teruggewonnen?
-
-## Veelgestelde vragen
-
-**Is artificial intelligence niet alleen iets voor grote bedrijven?**
-Nee. De meeste AI-diensten worden tegenwoordig als abonnement aangeboden, zonder eigen IT-afdeling of programmeerwerk. Juist een zzp'er, die alles alleen doet, heeft het meeste baat bij een systeem dat telefoon en planning overneemt.
-
-**Mag ik als zzp'er zomaar een AI-telefoniste klantgesprekken laten voeren?**
-Ja, mits u de AVG naleeft en bellers kunnen weten dat ze met een AI-systeem spreken. Sluit een verwerkersovereenkomst met de leverancier, neem het gebruik op in uw privacyverklaring en controleer dat de begroeting duidelijk is.
-
-**Vervangt AI het persoonlijke contact met mijn klanten?**
-Nee. De AI neemt het werk rondom de afspraak over: opnemen, inplannen, herinneren en bevestigen. Het vakwerk en het gesprek tijdens de afspraak blijven van u. Veel klanten ervaren het juist als persoonlijker dat ze direct iemand aan de lijn krijgen in plaats van een voicemail.
 
 ## Laat Emma uw telefoon opnemen terwijl u werkt
 

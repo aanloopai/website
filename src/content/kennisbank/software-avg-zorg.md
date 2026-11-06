@@ -6,6 +6,21 @@ published: 2026-10-22
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-avg", "ro-privacy"]
+faq:
+  - q: "Is er een softwarepakket dat de AVG voor mij regelt?"
+    a: "Nee, geen enkel softwarepakket regelt de AVG voor u. Software helpt bij beveiliging, toegangsbeheer en documentatie, maar de verantwoordelijkheid blijft bij u als zorgverlener. U moet zelf beleid, afspraken en aantoonbare maatregelen op orde hebben."
+  - q: "Moet ik altijd een verwerkersovereenkomst hebben?"
+    a: "Ja, u hebt een verwerkersovereenkomst nodig zodra een externe partij namens u persoonsgegevens verwerkt, bijvoorbeeld uw dossiersysteem, hostingpartij of telefoonoplossing. De AVG verplicht u dat schriftelijk vast te leggen."
+  - q: "Moet mijn software NEN 7510-gecertificeerd zijn?"
+    a: "De AVG eist NEN 7510 niet letterlijk, maar het is in de zorg een veelgebruikte manier om passende beveiliging aan te tonen. Vraag bij uw leverancier naar het certificaat en de reikwijdte ervan."
+  - q: "Welke software helpt een zorgpraktijk bij de AVG?"
+    a: "Een zorgpraktijk heeft vooral software nodig die gegevens afschermt, toegang vastlegt en veilig communiceert. Denk aan een elektronisch patiëntendossier met toegangsbeheer en logging, beveiligde communicatie, een register van verwerkingsactiviteiten en betrouwbare back-ups."
+  - q: "Waar let u op bij een softwareleverancier in de zorg?"
+    a: "Controleer eerst of er een verwerkersovereenkomst is, waar de gegevens worden opgeslagen en welke beveiligingsmaatregelen gelden. Vraag ook naar certificeringen, de melding van datalekken en wat er met uw gegevens gebeurt als u het contract beëindigt."
+  - q: "Wat regelt software niet voor een zorgverlener?"
+    a: "Software regelt niet uw organisatie. Een verwerkingsregister, een protocol voor datalekken, scholing van medewerkers en een gegevensbeschermingseffectbeoordeling bij risicovolle verwerkingen blijven eigen werk. Een datalek met risico voor betrokkenen moet u binnen 72 uur melden bij de Autoriteit Persoonsgegevens."
 ---
 
 Een huisartsenpraktijk in Breda stapt over op een nieuw agendasysteem. Een fysiotherapeut in Tilburg laat patiënten voortaan online een intakeformulier invullen. Beide keuzes zijn handig, maar beide raken aan dezelfde vraag: waar staan de gegevens, wie kan erbij en wat is er afgesproken met de leverancier?
@@ -60,17 +75,6 @@ Voor een website betekent dat: een formulier zonder medische details waar het ni
 Software regelt niet uw organisatie. Een verwerkingsregister, een protocol voor datalekken, scholing van medewerkers en een gegevensbeschermingseffectbeoordeling (DPIA) bij risicovolle verwerkingen blijven eigen werk. Veel zorgverleners moeten bovendien een functionaris gegevensbescherming aanwijzen.
 
 De meeste fouten ontstaan niet door ontbrekende software, maar door gewoonte: een dossier dat te breed wordt gedeeld, een bijlage die per gewone e-mail verdwijnt of een oud account van iemand die al weg is. Zet daarom naast uw software ook vaste afspraken en een jaarlijkse controle op.
-
-## Veelgestelde vragen
-
-**Is er een softwarepakket dat de AVG voor mij regelt?**
-Nee. Software helpt bij beveiliging, toegangsbeheer en documentatie, maar de verantwoordelijkheid blijft bij u als zorgverlener. U moet zelf beleid, afspraken en aantoonbare maatregelen op orde hebben.
-
-**Heb ik altijd een verwerkersovereenkomst nodig?**
-Ja, zodra een externe partij namens u persoonsgegevens verwerkt, bijvoorbeeld uw dossiersysteem, hostingpartij of telefoonoplossing. De AVG verplicht u dat schriftelijk vast te leggen.
-
-**Moet mijn software NEN 7510-gecertificeerd zijn?**
-De AVG eist dat niet letterlijk, maar het is in de zorg een veelgebruikte manier om passende beveiliging aan te tonen. Vraag bij uw leverancier naar het certificaat en de reikwijdte ervan.
 
 ## Wilt u weten wat een website en AI-telefoniste voor uw praktijk kunnen betekenen?
 

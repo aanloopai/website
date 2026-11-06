@@ -6,6 +6,19 @@ published: 2026-07-09
 category: "AI-automatisering"
 readingMinutes: 6
 draft: false
+updated: 2026-11-06
+bronnen: ["cbs-ai-2025", "google-helpful"]
+faq:
+  - q: "Welke processen automatiseert u als eerste?"
+    a: "Het proces dat zowel veel tijd of gemiste kansen kost als voorspelbaar en afgebakend is, is meestal de logische eerste stap. Zet de processen die in aanmerking komen naast elkaar en beoordeel ze op deze twee assen, niet op wat het meest opvalt."
+  - q: "Welke processen komen in aanmerking voor AI-automatisering?"
+    a: "Een proces is een goede kandidaat als het herhaalbaar en voorspelbaar is. Het heeft een duidelijk begin en eind en kost nu merkbaar tijd of mist kansen. Daarnaast moet er al een handmatig proces zijn dat werkt, want automatiseren van chaos levert geautomatiseerde chaos op."
+  - q: "Wat meet u vooraf bij AI-automatisering?"
+    a: "U legt minimaal vast hoe vaak het proces voorkomt, hoeveel tijd het gemiddeld kost en waar het misgaat. Een week handmatig bijhouden is vaak al genoeg. Na implementatie herhaalt u dezelfde metingen om te zien of het proces echt beter is geworden."
+  - q: "Welke valkuilen vertragen een AI-automatiseringstraject?"
+    a: "Vier valkuilen komen vaak terug bij AI-automatisering. U begint bij het proces met de meeste zichtbaarheid in plaats van de meeste waarde, automatiseert een proces voordat het is uitgedacht, begint te breed of heeft verwachtingen die niet aansluiten bij de praktijk."
+  - q: "Waarom begint u klein bij AI-automatisering?"
+    a: "Een smal, goed afgebakend eerste project met een duidelijk begin, eind en eigenaar is makkelijker te beoordelen en bij te sturen. Een eerste traject dat meteen meerdere afdelingen en systemen combineert is moeilijk te overzien en geeft minder snel een leerpunt voor het volgende proces."
 ---
 
 Veel MKB-ondernemers die met AI-automatisering willen beginnen, lopen vast op dezelfde vraag: waar begin ik? Er zijn tientallen processen die in aanmerking lijken te komen — klantcontact, planning, facturering, orderverwerking — en zonder een duidelijk afwegingskader is de verleiding groot om te starten bij het proces dat toevallig het meest irriteert, in plaats van het proces dat de meeste waarde oplevert.
