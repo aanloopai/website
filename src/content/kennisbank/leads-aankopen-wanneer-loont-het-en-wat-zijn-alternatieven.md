@@ -8,14 +8,16 @@ category: "AI-automatisering"
 readingMinutes: 5
 draft: false
 updated: 2026-11-06
-bronnen: ["ap-verwerker"]
+bronnen: ["ap-verwerker", "acm-spam", "ondernemersplein-telemarketing", "ro-bel-me-niet"]
 faq:
   - q: "Is het legaal om leads te kopen?"
-    a: "Ja, mits de leads rechtmatig zijn verzameld. Bij consumenten is vaak toestemming nodig voor bellen, e-mailen of appen, en het Bel-me-niet-register geldt voor koude telefoonwerving. Vraag de leverancier hoe en wanneer die toestemming is vastgelegd."
+    a: "Ja, mits de leads rechtmatig zijn verzameld. Telefonische verkoop zonder toestemming is verboden, en de ACM schrijft dat u elektronische berichten mag sturen naar ontvangers die vooraf toestemming gaven. Vraag de leverancier hoe en wanneer die toestemming is vastgelegd."
   - q: "Is een gedeelde lead of een exclusieve lead beter?"
     a: "Een exclusieve lead gaat naar u alleen en heeft doorgaans een hogere kans op een opdracht, maar kost meer. Een gedeelde lead is goedkoper, maar u concurreert met andere bedrijven en wint vooral door snelheid van reageren."
   - q: "Wat is het alternatief voor leads aankopen?"
-    a: "Bouw eigen kanalen op: een website die aanvragen oplevert, goede vindbaarheid in Google en AI-zoekmachines, en een telefoniste die elke beller en WhatsApp-bericht direct beantwoordt. Zo zijn de leads van u en betaalt u niet per doorverwezen aanvraag."
+    a: "Bouw eigen kanalen op: een website die aanvragen oplevert, goede vindbaarheid in Google en AI-zoekmachines, en een telefoniste die elke beller direct beantwoordt. Zo zijn de leads van u en betaalt u niet per doorverwezen aanvraag."
+  - q: "Wat moet ik regelen als ik gekochte leads laat verwerken door een partij?"
+    a: "Sluit een verwerkersovereenkomst. De Autoriteit Persoonsgegevens schrijft: u moet een verwerkersovereenkomst sluiten met uw verwerker. Leg ook vast waar de gegevens vandaan komen en hoe toestemming is vastgelegd."
 ---
 
 Een installateur in Eindhoven koopt elke maand aanvragen in via een leadplatform en baalt als drie concurrenten dezelfde klant al hebben gebeld. Een schildersbedrijf in Utrecht krijgt een lijst met contactgegevens en ontdekt dat de helft niet meer klopt. En een adviseur in Groningen mist gewoon de telefoon, terwijl hij net betaald heeft voor die lead.
@@ -36,9 +38,9 @@ Een voorbeeld in woorden: als u voor een lead een bedrag betaalt, maar slechts e
 
 ## Wat zijn de risico's van leads kopen (AVG en kwaliteit)?
 
-De grootste risico's zijn kwaliteit en regelgeving. Gekochte lijsten bevatten vaak verouderde of niet-geïnteresseerde contacten. Daarnaast gelden de AVG, de Telecommunicatiewet en het Bel-me-niet-register: zonder geldige toestemming mag u consumenten niet zomaar bellen of mailen. De Autoriteit Persoonsgegevens en de ACM houden hier toezicht op.
+De grootste risico's zijn kwaliteit en regelgeving. Gekochte lijsten bevatten vaak verouderde of niet-geïnteresseerde contacten. Daarnaast geldt voor contact met consumenten het toestemmingsvereiste. Volgens Ondernemersplein is telefonische verkoop zonder toestemming verboden. Het Bel-me-niet-register is volgens de Rijksoverheid opgeheven, juist omdat bedrijven nu alleen mogen bellen met toestemming. De ACM schrijft dat u elektronische berichten mag sturen naar ontvangers die vooraf toestemming gaven.
 
-Geef bij elke leverancier aandacht aan drie punten. Eén: hoe is de toestemming van de betrokkene vastgelegd en kunt u dat aantonen? Twee: wie is verwerkingsverantwoordelijke en is er een verwerkersovereenkomst waar nodig? Drie: hoe actueel zijn de gegevens? Een lead zonder aantoonbare herkomst is een risico, hoe goedkoop ook.
+Geef bij elke leverancier aandacht aan drie punten. Eén: hoe is de toestemming van de betrokkene vastgelegd en kunt u dat aantonen? Twee: wie is verwerkingsverantwoordelijke en is er een verwerkersovereenkomst waar nodig? De Autoriteit Persoonsgegevens schrijft dat u een verwerkersovereenkomst moet sluiten met uw verwerker. Drie: hoe actueel zijn de gegevens? Een lead zonder aantoonbare herkomst is een risico, hoe goedkoop ook.
 
 ## Wanneer loont leads kopen wel?
 
@@ -54,7 +56,7 @@ Steeds meer mensen stellen hun vraag aan een AI-assistent in plaats van aan een 
 
 ## Hoe zorgt u dat leads niet verloren gaan?
 
-Een lead is pas waardevol als iemand opneemt. Wie de telefoon of een WhatsApp-bericht te laat beantwoordt, verliest de aanvraag vaak aan de concurrent. Een AI-telefoniste als Emma beantwoordt oproepen en WhatsApp-berichten direct, ook buiten kantoortijden, en legt de afspraak of terugbelvraag vast.
+Een lead is pas waardevol als iemand opneemt. Wie de telefoon te laat beantwoordt, verliest de aanvraag vaak aan de concurrent. Een AI-telefoniste als Emma beantwoordt oproepen direct, ook buiten kantoortijden, en legt de afspraak of terugbelvraag vast.
 
 Dat geldt voor gekochte én eigen leads. Wie veel betaalt voor aanvragen en ze vervolgens laat liggen omdat u op de bouwplaats staat of in gesprek bent, gooit geld weg. Snelle opvolging is de goedkoopste manier om uw conversie te verhogen.
 
@@ -64,20 +66,6 @@ Bereken de kosten per gewonnen klant: totale leadkosten gedeeld door het aantal 
 
 Een meetpaneel helpt hierbij: u ziet per bron hoeveel aanvragen binnenkomen, hoeveel gesprekken zijn beantwoord en wat het oplevert. Zo stuurt u uw budget bij op basis van feiten in plaats van onderbuikgevoel.
 
-## Veelgestelde vragen
-
-### Is het legaal om leads te kopen?
-
-Ja, mits de leads rechtmatig zijn verzameld. Bij consumenten is vaak toestemming nodig voor bellen, e-mailen of appen, en het Bel-me-niet-register geldt voor koude telefoonwerving. Vraag de leverancier hoe en wanneer die toestemming is vastgelegd.
-
-### Is een gedeelde lead of een exclusieve lead beter?
-
-Een exclusieve lead gaat naar u alleen en heeft doorgaans een hogere kans op een opdracht, maar kost meer. Een gedeelde lead is goedkoper, maar u concurreert met andere bedrijven en wint vooral door snelheid van reageren.
-
-### Wat is het alternatief voor leads aankopen?
-
-Bouw eigen kanalen op: een website die aanvragen oplevert, goede vindbaarheid in Google en AI-zoekmachines, en een telefoniste die elke beller en WhatsApp-bericht direct beantwoordt. Zo zijn de leads van u en betaalt u niet per doorverwezen aanvraag.
-
 ## Liever eigen leads dan gekochte?
 
-Aanloop AI bouwt websites die klanten opleveren voor het Nederlandse MKB, met Emma als AI-telefoniste voor telefoon en WhatsApp, vindbaarheid in ChatGPT, Gemini en Perplexity en een meetpaneel. Bekijk de gemeten resultaten op [aanloopai.nl/resultaten](https://aanloopai.nl/resultaten/) en plan een kennismaking om te zien wat dit voor uw bedrijf kan opleveren.
+Aanloop AI bouwt websites die klanten opleveren voor het Nederlandse MKB, met Emma als AI-telefoniste, vindbaarheid in ChatGPT, Gemini en Perplexity en een meetpaneel. Bekijk de gemeten resultaten op [aanloopai.nl/resultaten](https://aanloopai.nl/resultaten/) en plan een kennismaking om te zien wat dit voor uw bedrijf kan opleveren.
