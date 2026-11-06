@@ -10,7 +10,7 @@ updated: 2026-11-06
 bronnen: ["cbs-ai-2025", "google-helpful"]
 faq:
   - q: "Welke processen automatiseert u als eerste?"
-    a: "Het proces dat zowel veel tijd of gemiste kansen kost als voorspelbaar en afgebakend is, is meestal de logische eerste stap. Zet de processen die in aanmerking komen naast elkaar en beoordeel ze op deze twee assen, niet op wat het meest opvalt."
+    a: "Het proces dat veel tijd of gemiste kansen kost en tegelijk voorspelbaar en afgebakend is, is meestal de logische eerste stap. Zet de processen die in aanmerking komen naast elkaar en beoordeel ze op deze twee assen, niet op wat het meest opvalt."
   - q: "Welke processen komen in aanmerking voor AI-automatisering?"
     a: "Een proces is een goede kandidaat als het herhaalbaar en voorspelbaar is. Het heeft een duidelijk begin en eind en kost nu merkbaar tijd of mist kansen. Daarnaast moet er al een handmatig proces zijn dat werkt, want automatiseren van chaos levert geautomatiseerde chaos op."
   - q: "Wat meet u vooraf bij AI-automatisering?"
