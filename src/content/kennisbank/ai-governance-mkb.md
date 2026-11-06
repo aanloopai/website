@@ -13,7 +13,7 @@ faq:
   - q: "Is AI governance echt nodig voor mijn kleine bedrijf?"
     a: "Ja, AI governance is ook voor een klein bedrijf nodig, maar in een lichte vorm. Zodra u of uw medewerkers AI gebruiken, spelen de AVG en de verplichting tot AI-geletterdheid. Een overzicht van tools, een korte gebruiksregel en een verantwoordelijke zijn voor de meeste kleine bedrijven genoeg om te beginnen."
   - q: "Kan een medewerker klantgegevens in ChatGPT plakken?"
-    a: "Alleen met een duidelijke grondslag en de juiste afspraken met de leverancier, en liever niet. Maak een regel dat persoonsgegevens alleen in goedgekeurde tools mogen, of laat ze eerst anonimiseren. Leg deze afspraak het beste schriftelijk vast."
+    a: "Alleen als daar een duidelijke grondslag en de juiste afspraken met de leverancier voor zijn, en liever niet. Maak een regel dat persoonsgegevens alleen in goedgekeurde tools mogen, of laat ze eerst anonimiseren. Leg deze afspraak het beste schriftelijk vast."
   - q: "Wie is verantwoordelijk als AI een fout maakt?"
     a: "Uw bedrijf blijft verantwoordelijk voor wat het aan klanten levert, ook als AI de tekst of het antwoord heeft gemaakt. Daarom hoort er altijd iemand te zijn die uitkomsten controleert en bij twijfel ingrijpt."
   - q: "Wat is AI governance voor het MKB?"
