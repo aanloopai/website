@@ -267,10 +267,19 @@ const SCOPES = [
   'https://www.googleapis.com/auth/calendar.freebusy',
 ];
 
+// Constant-time compare for the admin key (no WebCrypto timingSafeEqual in Workers).
+function adminKeyEqual(a, b) {
+  const ab = new TextEncoder().encode(a || '');
+  const bb = new TextEncoder().encode(b || '');
+  let diff = ab.length ^ bb.length;
+  for (let i = 0; i < Math.max(ab.length, bb.length, 1); i++) diff |= (ab[i] || 0) ^ (bb[i] || 0);
+  return diff === 0;
+}
+
 export async function handleGoogleInitiate(request, env) {
   const url = new URL(request.url);
   const adminKey = url.searchParams.get('key');
-  if (!env.GOOGLE_OAUTH_INIT_KEY || adminKey !== env.GOOGLE_OAUTH_INIT_KEY) {
+  if (!env.GOOGLE_OAUTH_INIT_KEY || !adminKeyEqual(adminKey, env.GOOGLE_OAUTH_INIT_KEY)) {
     return new Response('Forbidden — admin key required', { status: 403 });
   }
   if (!env.GOOGLE_CLIENT_ID) {
