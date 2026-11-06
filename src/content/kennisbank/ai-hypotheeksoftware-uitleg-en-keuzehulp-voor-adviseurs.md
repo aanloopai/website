@@ -6,6 +6,17 @@ published: 2026-09-17
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["afm-adviseren", "ai-act-annex3", "ap-verwerker", "ro-privacy"]
+faq:
+  - q: "Kan AI hypotheeksoftware de hypotheekadviseur vervangen?"
+    a: "Nee. Advies over hypotheken is in Nederland vergunningplichtig onder de Wft en de adviseur blijft verantwoordelijk voor de inhoud. De software bereidt voor, controleert en schrijft concepten; de adviseur beoordeelt, bespreekt en tekent."
+  - q: "Kan een advieskantoor AI-software gebruiken onder de AVG en de AI Act?"
+    a: "Ja, mits u een verwerkersovereenkomst sluit en gegevens alleen gebruikt voor het doel waarvoor de klant ze heeft aangeleverd. Software die kredietwaardigheid van personen beoordeelt, valt onder de hoog-risicocategorie van de AI Act Vraag de leverancier hoe hij met die categorie omgaat."
+  - q: "Is dit ook iets voor een klein kantoor met één of twee adviseurs?"
+    a: "Juist kleine kantoren merken het verschil, omdat daar niemand de telefoon opneemt tijdens een adviesgesprek. Begin met één onderdeel, bijvoorbeeld de telefoon of de documentverwerking, en breid pas uit als dat goed loopt. Wilt u weten hoeveel oproepen uw kantoor nu mist tijdens adviesgesprekken? Plan een vrijblijvende demo van Emma via aanloopai.nl en hoor hoe zij uw telefoon opneemt terwijl u adviseert."
+  - q: "Welke bronnen moet ik raadplegen over de regels voor hypotheekadvies en AI?"
+    a: "De AFM houdt toezicht op de naleving van onder meer de Wft en het BGfo, en de AI Act noemt kredietbeoordeling van personen als hoog-risicotoepassing. Voor persoonsgegevens is de Autoriteit Persoonsgegevens het aanspreekpunt."
 ---
 
 Een hypotheekadviseur in Utrecht krijgt per aanvraag tientallen documenten binnen: loonstroken, werkgeversverklaringen, taxatierapporten en bankafschriften. Een kantoor in Eindhoven belt klanten na over ontbrekende stukken, terwijl de telefoon voor nieuwe oriëntatiegesprekken onbeantwoord blijft. En in Groningen zit een adviseur 's avonds nog rekenwerk te controleren dat overdag niet af kwam.
@@ -33,7 +44,7 @@ Per taak ziet dat er zo uit:
 - **Teksten voorbereiden**: een eerste opzet van het adviesrapport, een samenvatting van het klantgesprek of een mail met de vervolgstappen, die u naleest en aanpast.
 - **Klantcontact**: vragen over benodigde documenten, de status van een aanvraag of het inplannen van een gesprek, via chat of telefoon.
 
-Eén taak vraagt extra aandacht. De Europese AI-verordening (AI Act) merkt AI-systemen die de kredietwaardigheid van natuurlijke personen beoordelen aan als hoog risico. Software die zelfstandig bepaalt of iemand een hypotheek kan krijgen, valt daarmee onder zwaardere eisen rond menselijk toezicht en documentatie. Software die alleen documenten uitleest of afspraken inplant, valt daar niet onder. Dat verschil is belangrijk bij de keuze.
+Eén taak vraagt extra aandacht. De Europese AI-verordening (AI Act) merkt AI-systemen die de kredietwaardigheid van natuurlijke personen beoordelen aan als hoog risico. Software die zelfstandig bepaalt of iemand een hypotheek kan krijgen, valt daarmee in de hoog-risicocategorie. Software die alleen documenten uitleest of afspraken inplant, valt daar niet onder. Dat verschil is belangrijk bij de keuze.
 
 ## Hoe past AI hypotheeksoftware bij een AI-telefoniste?
 
@@ -58,19 +69,3 @@ Een nuchter stappenplan voor een kantoor in de Randstad of daarbuiten:
 5. **Meet voor en na.** Noteer de doorlooptijd van aanvraag tot getekend advies en het aantal gemiste oproepen per week, en kijk na een paar maanden wat er is veranderd.
 
 Wees terughoudend bij leveranciers die beloven dat de software 'het advies doet'. Het advies is en blijft van u, en uw klant belt u ook als er iets misgaat.
-
-## Veelgestelde vragen
-
-**Vervangt AI hypotheeksoftware de hypotheekadviseur?**
-
-Nee. Advies over hypotheken is in Nederland vergunningplichtig onder de Wft en de adviseur blijft verantwoordelijk voor de inhoud. De software bereidt voor, controleert en schrijft concepten; de adviseur beoordeelt, bespreekt en tekent.
-
-**Mag een advieskantoor AI-software gebruiken onder de AVG en de AI Act?**
-
-Ja, mits u een verwerkersovereenkomst sluit en gegevens alleen gebruikt voor het doel waarvoor de klant ze heeft aangeleverd. Software die kredietwaardigheid van personen beoordeelt, valt onder de hoog-risicocategorie van de AI Act en moet aan extra eisen voldoen. Vraag de leverancier hoe hij daaraan invulling geeft.
-
-**Is dit ook iets voor een klein kantoor met één of twee adviseurs?**
-
-Juist kleine kantoren merken het verschil, omdat daar niemand de telefoon opneemt tijdens een adviesgesprek. Begin met één onderdeel, bijvoorbeeld de telefoon of de documentverwerking, en breid pas uit als dat goed loopt.
-
-Wilt u weten hoeveel oproepen uw kantoor nu mist tijdens adviesgesprekken? Plan een vrijblijvende demo van Emma via aanloopai.nl en hoor hoe zij uw telefoon opneemt terwijl u adviseert.

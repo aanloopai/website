@@ -6,6 +6,17 @@ published: 2026-10-31
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["afm-adviseren", "ai-act-annex3", "ap-verwerker", "ro-privacy"]
+faq:
+  - q: "Kan AI mijn hypotheekaanvraag goedkeuren?"
+    a: "Nee. Geldverstrekkers hanteren vaste acceptatienormen en nemen zelf de beslissing. Een AI-telefoniste of chatbot kan een aanvraag niet goedkeuren of afwijzen. Zij kan wel informatie verzamelen en doorgeven aan uw adviseur, die verantwoordelijk blijft voor het advies."
+  - q: "Is het veilig om klantgegevens met AI te verwerken?"
+    a: "Dat kan, mits u de AVG naleeft. Sluit een verwerkersovereenkomst af, vraag waar gegevens worden opgeslagen en verwerk niet meer gegevens dan nodig is. Een AI-telefoniste voor de eerste intake heeft doorgaans genoeg aan naam, contactgegevens en het onderwerp van de vraag."
+  - q: "Wat kan een hypotheekadviseur als eerste automatiseren?"
+    a: "Begin met wat vaak terugkomt: telefoon aannemen buiten kantoortijd, standaardvragen over documenten beantwoorden en afspraken inplannen. Die onderdelen hebben duidelijke regels en weinig uitzonderingen, waardoor ze zich goed laten testen in een korte pilot."
+  - q: "Welke regels gelden voor persoonsgegevens bij een AI-hypotheekassistent?"
+    a: "In de AVG staat wat organisaties en bedrijven met persoonsgegevens mogen, ook bij een AI-assistent. Laat u een leverancier gegevens verwerken, dan moet u een verwerkersovereenkomst met hem sluiten."
 ---
 
 Een hypotheekadviseur in Utrecht, een kantoor in Eindhoven en een financieel adviseur in Zwolle kennen hetzelfde probleem: aanvragers bellen met dezelfde vragen, vaak buiten kantoortijd. Welke stukken zijn nodig? Hoe ver is mijn dossier? Kan ik een afspraak maken? Wie zoekt naar AI hypotheekacceptatie, wil meestal weten wat AI hierin echt kan overnemen.
@@ -26,7 +37,7 @@ Denk aan een aanvrager die zaterdagavond een WhatsApp-bericht stuurt met de vraa
 
 ## Wat mag AI niet beslissen bij een hypotheekaanvraag?
 
-AI mag een hypotheekaanvraag voorbereiden, maar de acceptatiebeslissing en het advies moeten onder menselijke verantwoordelijkheid blijven. Dat komt door de Wft, de zorgplicht van de adviseur en de AVG, die beperkingen stelt aan volledig geautomatiseerde besluiten over personen. Ook de Europese AI-verordening ziet kredietbeoordeling van consumenten als hoog risico.
+AI mag een hypotheekaanvraag voorbereiden, maar de acceptatiebeslissing en het advies moeten onder menselijke verantwoordelijkheid blijven. Dat komt door de Wft, de zorgplicht van de adviseur. De AVG stelt daarnaast eisen aan het gebruik van persoonsgegevens. Ook de Europese AI-verordening ziet kredietbeoordeling van consumenten als hoog risico.
 
 Concreet: een AI-assistent geeft geen hypotheekadvies, doet geen toezegging over maximale leenbedragen en wijst geen aanvraag af. Wie hier wel op vertrouwt, loopt risico op onjuiste informatie én op problemen met de AFM. Leg daarom vast dat de AI bij vragen over bedragen, rente of afwijzing altijd doorverwijst. Controleer ook of de leverancier een verwerkersovereenkomst afsluit en gegevens binnen de EU verwerkt.
 
@@ -41,22 +52,6 @@ Een werkbare volgorde: noteer een week lang welke vragen binnenkomen, kies de dr
 Emma is de AI-telefoniste van Aanloop AI en beantwoordt telefoon en WhatsApp. Voor een hypotheekkantoor neemt ze de eerste vragen aan, verzamelt contactgegevens en plant een afspraak. Ze geeft geen advies en neemt geen acceptatiebeslissing; complexe vragen gaan naar uw adviseur.
 
 Een website die goed is ingericht, helpt aanvragers bovendien om uw kantoor te vinden, ook wanneer ze in ChatGPT, Gemini of Perplexity naar een adviseur in hun regio zoeken. Via het meetpaneel ziet u hoeveel gesprekken en afspraken er binnenkomen. Gemeten resultaten van andere MKB-bedrijven staan op aanloopai.nl/resultaten/.
-
-## Veelgestelde vragen
-
-Hieronder beantwoorden we drie vragen over AI bij hypotheekacceptatie. De antwoorden zijn algemeen bedoeld; voor uw eigen situatie blijft een gesprek met een erkend adviseur of uw geldverstrekker nodig. Zo weet u snel waar u in de praktijk aan toe bent.
-
-### Kan AI mijn hypotheekaanvraag goedkeuren?
-
-Nee. Geldverstrekkers hanteren vaste acceptatienormen en nemen zelf de beslissing. Een AI-telefoniste of chatbot kan een aanvraag niet goedkeuren of afwijzen. Zij kan wel informatie verzamelen en doorgeven aan uw adviseur, die verantwoordelijk blijft voor het advies.
-
-### Is het veilig om klantgegevens met AI te verwerken?
-
-Dat kan, mits u de AVG naleeft. Sluit een verwerkersovereenkomst af, vraag waar gegevens worden opgeslagen en verwerk niet meer gegevens dan nodig is. Een AI-telefoniste voor de eerste intake heeft doorgaans genoeg aan naam, contactgegevens en het onderwerp van de vraag.
-
-### Wat kan een hypotheekadviseur als eerste automatiseren?
-
-Begin met wat vaak terugkomt: telefoon aannemen buiten kantoortijd, standaardvragen over documenten beantwoorden en afspraken inplannen. Die onderdelen hebben duidelijke regels en weinig uitzonderingen, waardoor ze zich goed laten testen in een korte pilot.
 
 ## Plan een kennismaking
 

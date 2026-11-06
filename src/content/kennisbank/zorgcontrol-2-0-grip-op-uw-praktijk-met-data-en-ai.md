@@ -6,6 +6,17 @@ published: 2026-09-18
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["nen-7510", "ap-verwerker"]
+faq:
+  - q: "Is zorgcontrol 2.0 alleen iets voor grote zorgorganisaties?"
+    a: "Nee. Grote instellingen hebben een afdeling control, maar juist een kleine praktijk mist snel omzet door een onbeantwoorde telefoon of een lege behandelstoel. Met een gekoppelde agenda en een AI-telefoniste heeft een solopraktijk dezelfde kengetallen zonder extra personeel."
+  - q: "Kan zorgcontrol 2.0 de accountant of de zorgcontroller vervangen?"
+    a: "Nee. De jaarrekening, de jaarverantwoording en de afstemming met zorgverzekeraars blijven werk voor de accountant of controller. Zorgcontrol 2.0 geeft die specialisten actuelere en vollediger gegevens en helpt de praktijkhouder om tussen de rapportages door bij te sturen."
+  - q: "Hoe zit het met de privacy van patiënten?"
+    a: "Kengetallen als bereikbaarheid en no-shows kunt u meten zonder medische inhoud te delen. Sluit met elke leverancier een verwerkersovereenkomst, vraag naar opslag binnen de EU en naar de omgang met NEN 7510, en laat een AI-telefoniste alleen vastleggen wat nodig is voor de afspraak."
+  - q: "Wat is NEN 7510 en waarom is het relevant?"
+    a: "NEN 7510 is de norm voor informatiebeveiliging in de zorg. Volgens NEN is hij onmisbaar voor zorginstellingen, ICT-leveranciers, zorgverzekeraars en andere organisaties in de zorgketen. Vraag een leverancier hoe hij ermee omgaat."
 ---
 
 Een huisartsenpraktijk in Zwolle ziet aan het eind van de maand pas hoeveel patiënten niet zijn komen opdagen. Een fysiotherapiepraktijk in Rotterdam weet niet hoeveel bellers tijdens de ochtendspits de voicemail kregen. En een tandartspraktijk in Nijmegen levert keurig kwartaalcijfers aan de accountant, maar stuurt de dagelijkse planning nog op gevoel.
@@ -16,7 +27,7 @@ Zorgcontrol 2.0 is de term die steeds vaker valt voor een andere manier van stur
 
 Zorgcontrol 2.0 is een verzamelnaam voor het sturen van een zorgorganisatie op actuele, automatisch verzamelde gegevens in plaats van op periodieke rapportages achteraf. Financiën, bezetting, bereikbaarheid en kwaliteit worden doorlopend gemeten en aan elkaar gekoppeld, zodat een praktijkhouder of manager bijstuurt op het moment dat het er nog toe doet.
 
-Klassieke zorgcontrol is vooral financiële control: begroting, declaraties, jaarrekening en de verantwoording richting zorgverzekeraars en, sinds de Wet toetreding zorgaanbieders (Wtza), de openbare jaarverantwoording. Dat werk blijft nodig. Zorgcontrol 2.0 voegt er een operationele laag aan toe: hoe goed is de praktijk bereikbaar, hoe vol zit de agenda, hoeveel afspraken gaan niet door en hoe lang wacht een patiënt op een plek.
+Klassieke zorgcontrol is vooral financiële control: begroting, declaraties, jaarrekening en de verantwoording richting zorgverzekeraars en de jaarverantwoording. Dat werk blijft nodig. Zorgcontrol 2.0 voegt er een operationele laag aan toe: hoe goed is de praktijk bereikbaar, hoe vol zit de agenda, hoeveel afspraken gaan niet door en hoe lang wacht een patiënt op een plek.
 
 De term wordt in Nederland ruim gebruikt. Adviesbureaus gebruiken hem voor een werkwijze, softwareleveranciers voor een dashboard en sommige zorggroepen voor een functieprofiel van de moderne zorgcontroller. Vraag daarom altijd door wat iemand er precies mee bedoelt voordat u een traject of pakket aanschaft.
 
@@ -60,20 +71,6 @@ Een praktische checklist:
 - **Eigenaarschap**: de gegevens over uw patiënten en uw planning blijven van uw praktijk, ook bij een overstap naar een andere leverancier.
 - **Meetbaar doel**: spreek vooraf af wat u wilt verbeteren, bijvoorbeeld minder gemiste oproepen in de ochtend, en meet dat voor en na de invoering.
 - **Team meenemen**: assistenten zien dagelijks waar het knelt. Betrek hen bij de keuze van kengetallen, anders blijft het dashboard ongebruikt.
-
-## Veelgestelde vragen
-
-**Is zorgcontrol 2.0 alleen iets voor grote zorgorganisaties?**
-
-Nee. Grote instellingen hebben een afdeling control, maar juist een kleine praktijk mist snel omzet door een onbeantwoorde telefoon of een lege behandelstoel. Met een gekoppelde agenda en een AI-telefoniste heeft een solopraktijk dezelfde kengetallen zonder extra personeel.
-
-**Vervangt zorgcontrol 2.0 de accountant of de zorgcontroller?**
-
-Nee. De jaarrekening, de Wtza-jaarverantwoording en de afstemming met zorgverzekeraars blijven werk voor de accountant of controller. Zorgcontrol 2.0 geeft die specialisten actuelere en vollediger gegevens en helpt de praktijkhouder om tussen de rapportages door bij te sturen.
-
-**Hoe zit het met de privacy van patiënten?**
-
-Kengetallen als bereikbaarheid en no-shows kunt u meten zonder medische inhoud te delen. Sluit met elke leverancier een verwerkersovereenkomst, vraag naar opslag binnen de EU en naar de omgang met NEN 7510, en laat een AI-telefoniste alleen vastleggen wat nodig is voor de afspraak.
 
 ## Zelf zien wat Emma voor uw praktijk registreert?
 

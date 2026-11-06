@@ -6,6 +6,17 @@ published: 2026-10-19
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-verwerker", "ro-privacy"]
+faq:
+  - q: "Wat kost een alles-in-één horeca platform?"
+    a: "Dat verschilt per aanbieder en per pakket. Vraag altijd om een overzicht van maandelijkse kosten, eenmalige opzetkosten en de opzegtermijn, zodat u het vergelijkt met wat u nu apart betaalt voor website, telefoon en vindbaarheid."
+  - q: "Kan een AI-telefoniste echt reserveringen aannemen?"
+    a: "Een AI-telefoniste kan gesprekken opnemen, vragen beantwoorden en reserveringsaanvragen vastleggen. Wilt u dat er altijd een mens meekijkt bij bijzondere verzoeken, zoals grote groepen of allergieën, dan kunt u dat vooraf afspreken."
+  - q: "Hoe zorg ik dat mijn restaurant in ChatGPT of Gemini wordt genoemd?"
+    a: "Zorg dat uw gegevens overal kloppen en actueel zijn: website, Google-bedrijfsprofiel en andere vermeldingen. Beschrijf duidelijk wat u serveert en voor wie. Een volledige garantie op vermelding bestaat niet, maar eenduidige informatie helpt."
+  - q: "Welke regels gelden voor persoonsgegevens bij een horeca platform?"
+    a: "In de AVG staat wat organisaties en bedrijven met persoonsgegevens mogen, ook als gasten bellen of reserveren. Laat u een leverancier gegevens verwerken, dan moet u een verwerkersovereenkomst met hem sluiten."
 ---
 
 Het is vrijdag, kwart over zes, de keuken draait op volle toeren. De telefoon gaat drie keer over en niemand neemt op. Misschien was het een tafel voor acht in Utrecht, misschien een vraag over allergenen. U weet het niet, want de beller hing op en boekte bij de buurman.
@@ -38,7 +49,7 @@ Een terugbelbriefje na sluitingstijd lost dat niet op. De gast heeft dan allang 
 
 ## Vindbaar zijn in ChatGPT, Gemini en Perplexity
 
-Steeds meer mensen vragen een AI-assistent om een tip, bijvoorbeeld naar een goed restaurant met vegetarische opties in Eindhoven. Dat noemen we AI-vindbaarheid: ervoor zorgen dat uw zaak met correcte gegevens wordt genoemd in de antwoorden van ChatGPT, Gemini en Perplexity.
+Mensen kunnen een AI-assistent om een tip vragen, bijvoorbeeld naar een goed restaurant met vegetarische opties in Eindhoven. Dat noemen we AI-vindbaarheid: ervoor zorgen dat uw zaak met correcte gegevens wordt genoemd in de antwoorden van ChatGPT, Gemini en Perplexity.
 
 Daarvoor zijn duidelijke, actuele en consistente gegevens nodig. Denk aan uw adres, openingstijden, keuken, prijsklasse en dieetopties, op uw eigen site en in uw bedrijfsprofielen. Een platform dat deze informatie centraal beheert, voorkomt dat de ene bron een andere sluitingsdag noemt dan de andere. Garanties over de exacte plek in een AI-antwoord bestaan niet; goede, eenduidige informatie vergroot wel de kans dat u genoemd wordt.
 
@@ -65,17 +76,6 @@ Het is vooral waardevol als u zelf in de zaak staat. Wie koken, bedienen en admi
 U kunt een platform alleen goed beoordelen als u ziet wat het doet. Meet daarom het aantal aanvragen, het aantal opgevangen gesprekken en de herkomst van bezoekers. Zo ziet u na enkele maanden of de investering terugkomt en waar u bij moet sturen.
 
 Gemeten resultaten van AanloopAI staan op aanloopai.nl/resultaten/. Kijk ook bij elke andere aanbieder naar cijfers die u zelf kunt controleren, en wees terughoudend bij beloftes zonder meetmethode.
-
-## Veelgestelde vragen
-
-**Wat kost een alles-in-één horeca platform?**
-Dat verschilt per aanbieder en per pakket. Vraag altijd om een overzicht van maandelijkse kosten, eenmalige opzetkosten en de opzegtermijn, zodat u het vergelijkt met wat u nu apart betaalt voor website, telefoon en vindbaarheid.
-
-**Kan een AI-telefoniste echt reserveringen aannemen?**
-Een AI-telefoniste kan gesprekken opnemen, vragen beantwoorden en reserveringsaanvragen vastleggen. Wilt u dat er altijd een mens meekijkt bij bijzondere verzoeken, zoals grote groepen of allergieën, dan kunt u dat vooraf afspreken.
-
-**Hoe zorg ik dat mijn restaurant in ChatGPT of Gemini wordt genoemd?**
-Zorg dat uw gegevens overal kloppen en actueel zijn: website, Google-bedrijfsprofiel en andere vermeldingen. Beschrijf duidelijk wat u serveert en voor wie. Een volledige garantie op vermelding bestaat niet, maar eenduidige informatie helpt.
 
 ## Volgende stap
 

@@ -18,7 +18,7 @@ faq:
   - q: "Wat doet een AI-chatbot bij een klacht of twijfelgeval?"
     a: "Bij een klacht, een complexe situatie of een twijfelgeval hoort een goede chatbot het gesprek soepel door te geven aan een mens. Duidelijke overdrachtsmomenten voorkomen dat een klant vastloopt in een gesprek dat nergens heen gaat."
   - q: "Waarom is een leerperiode nodig bij een AI-chatbot?"
-    a: "Geen enkele chatbot is vanaf dag één af, daarom is een leerperiode nodig. De eerste weken laten zien welke vragen binnenkomen die u niet had voorzien en waar de antwoorden bijgeslepen moeten worden. Reken daarop in plaats van te verwachten dat het in één keer perfect staat."
+    a: "Geen enkele chatbot is vanaf dag één af, daarom is een leerperiode nodig. De eerste weken laten zien welke vragen binnenkomen die u niet had voorzien en waar de antwoorden bijgesteld moeten worden. Reken daarop in plaats van te verwachten dat het in één keer perfect staat."
 ---
 
 Steeds meer ondernemers in het Nederlandse MKB overwegen om een AI-chatbot te laten maken. De belofte is aantrekkelijk: vragen van klanten worden dag en nacht beantwoord, uw team houdt tijd over voor het echte werk, en een aanvraag die 's avonds binnenkomt blijft niet tot de volgende ochtend liggen. Maar tussen dat idee en een chatbot die daadwerkelijk waarde levert, zit een aantal keuzes dat bepaalt of het traject slaagt of stilletjes doodbloedt.
@@ -53,7 +53,7 @@ Het bouwen zelf is tegenwoordig zelden de bottleneck. De kwaliteit zit in de keu
 
 **Denk na over de toon.** De chatbot is een verlengstuk van uw bedrijf. Praat u met klanten formeel of juist toegankelijk? Die stijl hoort terug te komen in de antwoorden, anders voelt het contact vreemd aan.
 
-**Plan een leerperiode in.** Geen enkele chatbot is vanaf dag één af. De eerste weken laten zien welke vragen binnenkomen die u niet had voorzien, en waar de antwoorden bijgeslepen moeten worden. Reken daarop, in plaats van te verwachten dat het in één keer perfect staat.
+**Plan een leerperiode in.** Geen enkele chatbot is vanaf dag één af. De eerste weken laten zien welke vragen binnenkomen die u niet had voorzien, en waar de antwoorden bijgesteld moeten worden. Reken daarop, in plaats van te verwachten dat het in één keer perfect staat.
 
 ## Wat bepaalt de kosten?
 

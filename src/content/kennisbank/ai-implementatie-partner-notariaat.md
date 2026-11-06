@@ -6,6 +6,17 @@ published: 2026-11-05
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["knb-geheimhouding", "ap-verwerker"]
+faq:
+  - q: "Kan een notariskantoor AI gebruiken?"
+    a: "Ja, mits de AVG en het beroepsgeheim gewaarborgd blijven. Begin met toepassingen zonder inzage in dossiers, zoals telefoon en afspraken, en leg vast welke gegevens worden verwerkt. Laat afspraken met de partner schriftelijk vastleggen in een verwerkersovereenkomst."
+  - q: "Kan AI een akte opstellen?"
+    a: "AI kan teksten voorbereiden, maar de notaris blijft verantwoordelijk voor de inhoud, het advies en het passeren van de akte. Gebruik AI daarom voor ondersteunend werk en niet als vervanger van de notaris of de juridische controle."
+  - q: "Waar begint een klein notariskantoor met AI?"
+    a: "Begin bij het probleem dat u nu het meest tijd kost, meestal gemiste telefoontjes en terugkerende vragen. Een AI-telefoniste en een duidelijke website zijn een overzichtelijke eerste stap, waarvan u de resultaten direct kunt meten."
+  - q: "Hoe zit het met het beroepsgeheim van de notaris bij AI?"
+    a: "Volgens de KNB heeft de notaris een geheimhoudingsplicht en een verschoningsrecht. Zet daarom geen dossierinhoud in een AI-tool zonder te controleren wat de leverancier met die gegevens doet."
 ---
 
 Een notariskantoor in Utrecht, een kantoor in Zwolle en een praktijk in Eindhoven hebben vaak dezelfde zorg: de telefoon staat nooit stil, cliënten willen snel antwoord en de tijd van de notaris en de medewerkers is schaars. Wie zoekt naar een AI implementatie partner voor het notariaat, wil meestal geen experiment, maar een oplossing die past bij een beroep waar zorgvuldigheid voorop staat.
@@ -30,9 +41,9 @@ In de praktijk zijn er drie gebieden waar kantoren in bijvoorbeeld Amersfoort, D
 
 Wat u niet moet verwachten, is dat AI de inhoud van uw werk overneemt. Een partner die dat wel belooft, is een waarschuwingssignaal.
 
-## Beroepsgeheim, AVG en Wwft: wat moet een AI partner weten?
+## Beroepsgeheim en AVG: wat moet een AI partner weten?
 
-Een notaris heeft een beroepsgeheim en verwerkt persoonsgegevens, dus de AVG en de Wwft spelen altijd mee. Een betrouwbare partner maakt duidelijk welke gegevens het systeem ziet, waar die staan, wie er toegang toe heeft en tekent een verwerkersovereenkomst. Vertrouwelijke dossiers horen niet zomaar in een openbare AI-chat.
+Een notaris heeft een beroepsgeheim en verwerkt persoonsgegevens, dus de AVG speelt altijd mee. Een betrouwbare partner maakt duidelijk welke gegevens het systeem ziet, waar die staan, wie er toegang toe heeft en tekent een verwerkersovereenkomst. Vertrouwelijke dossiers horen niet zomaar in een openbare AI-chat.
 
 Daarom is het verstandig om vooraf een paar vragen te stellen:
 
@@ -61,17 +72,6 @@ Bij Aanloop AI richten we ons op het deel van het kantoor dat cliënten als eers
 Steeds meer mensen vragen een AI-assistent naar een notaris in hun buurt. Die assistenten halen hun antwoord van websites met duidelijke, feitelijke en goed gestructureerde informatie. Met heldere pagina's per dienst, vaste gegevens over uw kantoor en veelgestelde vragen vergroot u de kans dat uw kantoor wordt genoemd.
 
 Denk aan aparte pagina's voor een woning kopen, een testament laten opmaken of een samenlevingscontract, elk met een kort en direct antwoord bovenaan. Zet uw adres, openingstijden en werkgebied op een vaste plek en houd ze actueel. Garanties bestaan hier niet, want AI-assistenten bepalen zelf wat ze noemen. Maar een kantoor met onduidelijke of verouderde informatie wordt vrijwel zeker overgeslagen.
-
-## Veelgestelde vragen
-
-**Mag een notariskantoor AI gebruiken?**
-Ja, mits de AVG en het beroepsgeheim gewaarborgd blijven. Begin met toepassingen zonder inzage in dossiers, zoals telefoon en afspraken, en leg vast welke gegevens worden verwerkt. Laat afspraken met de partner schriftelijk vastleggen in een verwerkersovereenkomst.
-
-**Kan AI een akte opstellen?**
-AI kan teksten voorbereiden, maar de notaris blijft verantwoordelijk voor de inhoud, het advies en het passeren van de akte. Gebruik AI daarom voor ondersteunend werk en niet als vervanger van de notaris of de juridische controle.
-
-**Waar begint een klein notariskantoor met AI?**
-Begin bij het probleem dat u nu het meest tijd kost, meestal gemiste telefoontjes en terugkerende vragen. Een AI-telefoniste en een duidelijke website zijn een overzichtelijke eerste stap, waarvan u de resultaten direct kunt meten.
 
 ## Een gesprek over AI voor uw notariskantoor
 

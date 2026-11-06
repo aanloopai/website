@@ -7,6 +7,17 @@ published: 2026-10-14
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-sollicitanten", "ai-act-annex3", "ro-privacy"]
+faq:
+  - q: "Kan ik AI gebruiken om sollicitanten te selecteren?"
+    a: "Ja, maar met voorwaarden. De AI-verordening ziet selectiesystemen als hoog-risico. Gebruik AI om te ordenen en samen te vatten, laat een mens beslissen en vertel kandidaten dat u dit doet."
+  - q: "Is AI-recruitment alleen iets voor grote bedrijven in Groningen?"
+    a: "Nee. Juist kleine werkgevers hebben weinig tijd voor werving en hebben baat bij hulp bij losse taken, zoals vacatureteksten, standaardvragen en planning. U hoeft geen groot wervingsplatform aan te schaffen om te beginnen."
+  - q: "Kan een AI-telefoniste ook telefoontjes over een vacature aannemen?"
+    a: "Ja. Een AI-telefoniste kan basisvragen over de functie beantwoorden, contactgegevens noteren en een gesprek inplannen. Complexe of gevoelige vragen laat u doorsturen naar uzelf, zodat de beoordeling van de kandidaat bij u blijft."
+  - q: "Hoe lang mag ik gegevens van sollicitanten bewaren?"
+    a: "Volgens de Autoriteit Persoonsgegevens is het gebruikelijk de gegevens uiterlijk 4 weken na het einde van de sollicitatieprocedure te verwijderen. Met toestemming van de sollicitant is een termijn van maximaal 1 jaar redelijk."
 ---
 
 Een garagehouder in Hoogezand zoekt een monteur. Een tandartspraktijk in Haren heeft een nieuwe assistente nodig. Een kapsalon in de binnenstad van Groningen wil een stylist voor drie dagen per week. Alle drie hebben hetzelfde probleem: werven kost uren, en die uren gaan af van het werk waar ze hun geld mee verdienen.
@@ -40,7 +51,7 @@ Laat de beoordeling van kandidaten zelf bij uzelf. Een samenvatting is een hulpm
 
 ## Wat zeggen de AVG en de AI-verordening over AI bij werving?
 
-Sollicitantgegevens zijn persoonsgegevens, dus de AVG geldt. Volledig geautomatiseerde besluiten met grote gevolgen zijn beperkt. De Europese AI-verordening rekent AI-systemen voor werving en selectie bovendien tot hoog-risico. Houd een mens in de beslissing, informeer kandidaten en bewaar gegevens niet langer dan nodig.
+Sollicitantgegevens zijn persoonsgegevens, dus de AVG geldt.  De Europese AI-verordening rekent AI-systemen voor werving en selectie bovendien tot hoog-risico. Houd een mens in de beslissing, informeer kandidaten en bewaar gegevens niet langer dan nodig.
 
 De Autoriteit Persoonsgegevens noemt als richtlijn een bewaartermijn van vier weken na afloop van de sollicitatieprocedure, of maximaal een jaar als de kandidaat daar toestemming voor geeft. Let verder op drie punten:
 
@@ -68,20 +79,6 @@ Vermijd tools die kandidaten automatisch afwijzen of een score geven zonder uitl
 Een kandidaat die belt en niemand bereikt, solliciteert misschien elders. Een AI-telefoniste zoals Emma van Aanloop AI neemt op, beantwoordt basisvragen en plant een belafspraak of kennismaking in uw agenda. Zo mist u geen kandidaat terwijl u met klanten bezig bent.
 
 Voor praktijken, kapsalons, garages en installateurs in Groningen is dit extra relevant. U staat achter de stoel, onder een auto of bij een klant en kunt de telefoon niet opnemen. Dezelfde oplossing die gemiste klantoproepen opvangt en afspraken inplant, kan ook de telefoontjes over uw vacature afhandelen. Zo krijgen kandidaten direct een antwoord en houdt u zelf de regie over wie u uitnodigt.
-
-## Veelgestelde vragen
-
-### Mag ik AI gebruiken om sollicitanten te selecteren?
-
-Ja, maar met voorwaarden. De AVG beperkt volledig geautomatiseerde besluiten met grote gevolgen en de AI-verordening ziet selectiesystemen als hoog-risico. Gebruik AI om te ordenen en samen te vatten, laat een mens beslissen en vertel kandidaten dat u dit doet.
-
-### Is AI-recruitment alleen iets voor grote bedrijven in Groningen?
-
-Nee. Juist kleine werkgevers hebben weinig tijd voor werving en hebben baat bij hulp bij losse taken, zoals vacatureteksten, standaardvragen en planning. U hoeft geen groot wervingsplatform aan te schaffen om te beginnen.
-
-### Kan een AI-telefoniste ook telefoontjes over een vacature aannemen?
-
-Ja. Een AI-telefoniste kan basisvragen over de functie beantwoorden, contactgegevens noteren en een gesprek inplannen. Complexe of gevoelige vragen laat u doorsturen naar uzelf, zodat de beoordeling van de kandidaat bij u blijft.
 
 ## Bespreek het vrijblijvend
 

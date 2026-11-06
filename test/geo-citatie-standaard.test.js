@@ -6,7 +6,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-const MIN_PAGES = 25;
+const MIN_PAGES = 57;
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
 const kbDir = path.join(root, 'src', 'content', 'kennisbank');

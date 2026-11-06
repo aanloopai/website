@@ -6,6 +6,17 @@ published: 2026-10-26
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-verwerker", "ro-privacy"]
+faq:
+  - q: "Wat kost een conversational AI-consultant?"
+    a: "Dat verschilt sterk per aanbieder en per project. Sommige bureaus werken met een uurtarief of projectprijs, anderen met een vast maandbedrag. Vraag altijd om een offerte met inrichting en gebruikskosten apart, zodat u kunt vergelijken."
+  - q: "Is conversational AI toegestaan onder de AVG?"
+    a: "Ja, mits u het zorgvuldig inricht. U sluit een verwerkersovereenkomst met de aanbieder, vermeldt het gebruik in uw privacyverklaring en beperkt welke gegevens de AI vastlegt. De Autoriteit Persoonsgegevens publiceert hierover algemene richtlijnen."
+  - q: "Kan een AI-telefoniste een medewerker vervangen?"
+    a: "Ze neemt vooral herhalend werk over, zoals vragen beantwoorden en afspraken inplannen. Voor lastige of gevoelige gesprekken blijft een medewerker nodig. Een goede oplossing herkent die situaties en geeft het gesprek op tijd door."
+  - q: "Wat gebeurt er als de AI een vraag niet begrijpt?"
+    a: "Een goede oplossing draagt het gesprek dan over aan een medewerker of neemt een terugbelverzoek aan. Vraag de leverancier vooraf hoe dit is ingericht en laat het in een proefperiode zien."
 ---
 
 Een tandartspraktijk in Amsterdam-Zuid, een loodgieter in Haarlem en een webshop in Almere hebben vaak hetzelfde probleem: klanten bellen en appen op momenten dat niemand kan opnemen. Conversational AI kan dat oplossen, maar de markt is onoverzichtelijk. Wie zoekt naar een consultant, krijgt grote adviesbureaus, freelancers en softwareleveranciers door elkaar.
@@ -54,20 +65,6 @@ Een maatwerktraject kost meer tijd en budget, en dat is niet altijd nodig. Als u
 Aanloop AI bouwt websites die klanten opleveren voor het Nederlandse MKB. Emma, onze AI-telefoniste, beantwoordt telefoon en WhatsApp, legt aanvragen vast en plant afspraken. Daarnaast zorgen we dat uw bedrijf vindbaar is in ChatGPT, Gemini en Perplexity, en volgt een meetpaneel wat het oplevert.
 
 Het idee is dat gesprekken niet los staan van de rest. Een bezoeker vindt u via zoeken of een AI-assistent, komt op een website die is gebouwd om aanvragen te krijgen, en wordt telefonisch of via WhatsApp meteen geholpen. Wat dat in de praktijk oplevert, laten we zien op aanloopai.nl/resultaten/, zodat u niet hoeft af te gaan op beloftes.
-
-## Veelgestelde vragen
-
-### Wat kost een conversational AI-consultant?
-
-Dat verschilt sterk per aanbieder en per project. Sommige bureaus werken met een uurtarief of projectprijs, anderen met een vast maandbedrag. Vraag altijd om een offerte met inrichting en gebruikskosten apart, zodat u kunt vergelijken.
-
-### Is conversational AI toegestaan onder de AVG?
-
-Ja, mits u het zorgvuldig inricht. U sluit een verwerkersovereenkomst met de aanbieder, vermeldt het gebruik in uw privacyverklaring en beperkt welke gegevens de AI vastlegt. De Autoriteit Persoonsgegevens publiceert hierover algemene richtlijnen.
-
-### Kan een AI-telefoniste een medewerker vervangen?
-
-Ze neemt vooral herhalend werk over, zoals vragen beantwoorden en afspraken inplannen. Voor lastige of gevoelige gesprekken blijft een medewerker nodig. Een goede oplossing herkent die situaties en geeft het gesprek op tijd door.
 
 ## Wilt u zien wat het uw bedrijf kan opleveren?
 

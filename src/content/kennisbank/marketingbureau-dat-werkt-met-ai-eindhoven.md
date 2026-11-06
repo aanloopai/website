@@ -7,6 +7,17 @@ published: 2026-10-01
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-verwerker", "ro-privacy"]
+faq:
+  - q: "Is een marketingbureau nodig of kan ik AI-tools zelf gebruiken?"
+    a: "Veel AI-tools voor teksten en afbeeldingen zijn gratis of goedkoop te gebruiken, dus u kunt zelf beginnen. Een bureau voegt vooral strategie, consistentie en tijd toe: het weet welke kanalen in Eindhoven werken voor uw branche en houdt de campagnes bij terwijl u met klanten bezig bent. Als u zelf geen uren per week overhoudt, is een bureau meestal de betere keuze."
+  - q: "Kan een AI-marketingbureau uit Eindhoven ook werken voor bedrijven in Veldhoven, Best of Helmond?"
+    a: "Ja. De meeste bureaus in Eindhoven werken voor de hele Brainport-regio en daarbuiten. Belangrijker dan de vestigingsplaats is of het bureau uw lokale markt begrijpt: een garage in Helmond heeft een ander verzorgingsgebied dan een salon in het centrum van Eindhoven, en een goed bureau stemt zoekwoorden en advertenties daarop af."
+  - q: "Kan een AI-telefoniste mijn marketingbureau vervangen?"
+    a: "Nee, ze vullen elkaar aan. Het bureau zorgt dat mensen u vinden en bellen. De AI-telefoniste zorgt dat die oproepen worden opgenomen en in afspraken worden omgezet, ook als uw team niet kan opnemen. Zonder het een blijft de telefoon stil, zonder het ander gaat een deel van de bellers verloren."
+  - q: "Welke regels gelden voor persoonsgegevens bij AI-marketing?"
+    a: "In de AVG staat wat organisaties en bedrijven met persoonsgegevens mogen, ook als een bureau uw klantgegevens gebruikt. Laat u een leverancier gegevens verwerken, dan moet u een verwerkersovereenkomst met hem sluiten."
 ---
 
 Een tandartspraktijk in Woensel wil meer nieuwe patiënten. Een garage in Veldhoven heeft net een nieuwe website, maar de telefoon blijft stil. Een kapsalon op Strijp-S ziet dat concurrenten adverteren met video's die door AI zijn gemaakt. Alle drie zoeken ze hetzelfde: een marketingbureau dat werkt met AI in Eindhoven en begrijpt hoe een klein bedrijf zonder eigen marketingafdeling draait.
@@ -46,20 +57,6 @@ Een campagne van een AI-marketingbureau zorgt dat meer mensen bellen, maar een k
 Dit is het punt dat veel bureaus overslaan. Het bureau levert bellers, maar wie neemt op? De tandarts in Woensel staat bij een patiënt. De monteur in Veldhoven ligt onder een auto. De kapper op Strijp-S heeft een klant in de stoel. Wie dan belt, krijgt een voicemail en belt meestal de volgende praktijk of garage in de buurt. Zo lekt een deel van het marketingbudget weg via de telefoon.
 
 Een AI-telefoniste zoals Emma van Aanloop AI sluit dat gat. Emma neemt op als uw team bezig is, beantwoordt vragen over openingstijden of parkeren bij uw pand, plant de afspraak direct in uw bestaande agenda en stuurt een bevestiging. Herinneringen vooraf verminderen no-shows, zodat de afspraak die uw marketing heeft opgeleverd ook echt doorgaat. Het marketingbureau brengt de beller, Emma maakt er een afspraak van. Vraag uw bureau daarom om het aantal ingeplande afspraken als maatstaf te gebruiken, niet het aantal bezoekers.
-
-## Veelgestelde vragen
-
-### Heb ik een marketingbureau nodig of kan ik AI-tools zelf gebruiken?
-
-Veel AI-tools voor teksten en afbeeldingen zijn gratis of goedkoop te gebruiken, dus u kunt zelf beginnen. Een bureau voegt vooral strategie, consistentie en tijd toe: het weet welke kanalen in Eindhoven werken voor uw branche en houdt de campagnes bij terwijl u met klanten bezig bent. Als u zelf geen uren per week overhoudt, is een bureau meestal de betere keuze.
-
-### Werkt een AI-marketingbureau uit Eindhoven ook voor bedrijven in Veldhoven, Best of Helmond?
-
-Ja. De meeste bureaus in Eindhoven werken voor de hele Brainport-regio en daarbuiten. Belangrijker dan de vestigingsplaats is of het bureau uw lokale markt begrijpt: een garage in Helmond heeft een ander verzorgingsgebied dan een salon in het centrum van Eindhoven, en een goed bureau stemt zoekwoorden en advertenties daarop af.
-
-### Vervangt een AI-telefoniste mijn marketingbureau?
-
-Nee, ze vullen elkaar aan. Het bureau zorgt dat mensen u vinden en bellen. De AI-telefoniste zorgt dat die oproepen worden opgenomen en in afspraken worden omgezet, ook als uw team niet kan opnemen. Zonder het een blijft de telefoon stil, zonder het ander gaat een deel van de bellers verloren.
 
 ## Elke beller een afspraak
 

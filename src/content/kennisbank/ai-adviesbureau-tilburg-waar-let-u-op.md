@@ -6,6 +6,17 @@ published: 2026-10-14
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-verwerker", "ro-privacy", "ec-ai-act"]
+faq:
+  - q: "Wat kost een AI-adviesbureau in Tilburg?"
+    a: "Dat verschilt per bureau en per opdracht, en vaste richtprijzen bestaan niet. Vraag altijd een schriftelijke offerte met een duidelijke scope, een eerste stap en een opzegmogelijkheid, zodat u de kosten kunt afzetten tegen de omzet die u nu misloopt."
+  - q: "Moet het bureau in Tilburg gevestigd zijn?"
+    a: "Nee. Veel adviesen implementatie gebeuren op afstand. Een lokale partij kan handig zijn voor een gesprek ter plekke, maar kennis van uw branche en heldere afspraken over gegevens zijn belangrijker dan het postcodegebied."
+  - q: "Kan ik ook zonder adviesbureau met AI beginnen?"
+    a: "Ja. Heeft u een helder probleem, zoals gemiste oproepen, dan kunt u een kant-en-klare dienst proberen en de resultaten zelf meten. Een adviseur is vooral nuttig als u niet weet waar u moet beginnen of meerdere processen wilt aanpakken."
+  - q: "Welke regels gelden voor persoonsgegevens bij een AI-adviesbureau?"
+    a: "In de AVG staat wat organisaties en bedrijven met persoonsgegevens mogen, ook als een adviesbureau met uw klantgegevens werkt. Laat u een leverancier gegevens verwerken, dan moet u een verwerkersovereenkomst met hem sluiten."
 ---
 
 Een tandarts in Tilburg staat de hele ochtend achter de stoel en mist onderwijl vier telefoontjes. Een garagehouder in Breda ligt onder een auto terwijl de telefoon overgaat. Een kapster in Den Bosch knipt door en ziet later een gemiste oproep staan. Zulke bedrijven horen vaak dat ze ‘iets met AI’ moeten doen, maar weten niet waar ze moeten beginnen. Dan komt een AI-adviesbureau in beeld.
@@ -82,17 +93,6 @@ Een werkbaar stappenplan:
 5. Besluit op basis van uw eigen cijfers of u doorgaat.
 
 Zo voorkomt u dat u een groot traject start voor een probleem dat kleiner blijkt dan gedacht, of juist een kans mist die al jaren onder uw neus ligt.
-
-## Veelgestelde vragen
-
-**Wat kost een AI-adviesbureau in Tilburg?**
-Dat verschilt per bureau en per opdracht, en vaste richtprijzen bestaan niet. Vraag altijd een schriftelijke offerte met een duidelijke scope, een eerste stap en een opzegmogelijkheid, zodat u de kosten kunt afzetten tegen de omzet die u nu misloopt.
-
-**Moet het bureau in Tilburg gevestigd zijn?**
-Nee. Veel adviesen implementatie gebeuren op afstand. Een lokale partij kan handig zijn voor een gesprek ter plekke, maar kennis van uw branche en heldere afspraken over gegevens zijn belangrijker dan het postcodegebied.
-
-**Kan ik ook zonder adviesbureau met AI beginnen?**
-Ja. Heeft u een helder probleem, zoals gemiste oproepen, dan kunt u een kant-en-klare dienst proberen en de resultaten zelf meten. Een adviseur is vooral nuttig als u niet weet waar u moet beginnen of meerdere processen wilt aanpakken.
 
 ## Wilt u weten wat gemiste oproepen u kosten?
 

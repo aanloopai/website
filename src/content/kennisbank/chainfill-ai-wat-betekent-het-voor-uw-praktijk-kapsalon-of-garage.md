@@ -6,6 +6,17 @@ published: 2026-09-23
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-verwerker", "ro-privacy"]
+faq:
+  - q: "Is Chainfill AI hetzelfde als een AI-telefoniste?"
+    a: "Nee, niet per definitie. Chainfill AI beschrijft het bredere idee van AI die gaten in de klantketen dicht. Een AI-telefoniste zoals Emma is een concrete uitwerking daarvan, gericht op telefoon, agenda en herinneringen. Wat een aanbieder onder de naam Chainfill precies levert, leest u op diens eigen website."
+  - q: "Kan een AI-tool mijn bestaande agenda gebruiken?"
+    a: "Dat hangt af van de aanbieder en van uw software. Vraag altijd expliciet naar een koppeling met het systeem dat u nu gebruikt, en laat die koppeling in de proefperiode werken voordat u tekent. Een AI die naast uw agenda werkt in plaats van erin, creëert juist extra overtypwerk."
+  - q: "Wat gebeurt er met de gesprekken die de AI voert?"
+    a: "Een serieuze aanbieder legt vast waar gesprekken en klantgegevens worden opgeslagen en hoe lang, en sluit een verwerkersovereenkomst met u af zoals de AVG voorschrijft. Vraag ook of u gesprekken zelf kunt teruglezen. Dat is niet alleen een privacykwestie, maar ook de manier waarop u de assistent beter maakt."
+  - q: "Wat gebeurt er als de AI een vraag niet begrijpt?"
+    a: "Een goede oplossing draagt het gesprek dan over aan een medewerker of neemt een terugbelverzoek aan. Vraag de leverancier vooraf hoe dit is ingericht en laat het in een proefperiode zien."
 ---
 
 Een tandartspraktijk in Utrecht zoekt op "chainfill ai" omdat een collega de term liet vallen. Een garagehouder in Tilburg ziet hem voorbijkomen in een advertentie. En een installateur uit Zwolle wil vooral weten of dit iets is wat de acht gemiste oproepen per dag oplost. De zoekterm komt steeds vaker voor, maar wat erachter zit is voor de meeste dienstverleners vaag.
@@ -51,19 +62,9 @@ Concreet stelt u een aanbieder deze vragen:
 - **Koppelingen**: sluit hij aan op de agenda- of praktijksoftware die u nu gebruikt, of moet u overstappen?
 - **Overdracht naar een mens**: wat gebeurt er bij een klacht, een spoedgeval of een vraag die de assistent niet begrijpt? Wordt er doorverbonden, of belt iemand terug?
 - **Inzicht en controle**: kunt u gesprekken teruglezen en de antwoorden bijsturen zonder een ontwikkelaar in te schakelen?
-- **Gegevens en AVG**: waar worden opnames en klantgegevens opgeslagen, hoe lang, en is er een verwerkersovereenkomst? De Autoriteit Persoonsgegevens verwacht dat u als ondernemer deze vragen kunt beantwoorden, ook als een leverancier het werk uitvoert.
+- **Gegevens en AVG**: waar worden opnames en klantgegevens opgeslagen, hoe lang, en is er een verwerkersovereenkomst? Beantwoord deze vragen zelf voordat u tekent, ook als een leverancier het werk uitvoert.
 
 Vraag daarnaast om een proefperiode met uw eigen nummer. Een demo met een geoefende stem zegt weinig; een week echte oproepen van echte klanten zegt alles.
 
-## Veelgestelde vragen
-
-**Is Chainfill AI hetzelfde als een AI-telefoniste?**
-Nee, niet per definitie. Chainfill AI beschrijft het bredere idee van AI die gaten in de klantketen dicht. Een AI-telefoniste zoals Emma is een concrete uitwerking daarvan, gericht op telefoon, agenda en herinneringen. Wat een aanbieder onder de naam Chainfill precies levert, leest u op diens eigen website.
-
-**Kan een AI-tool mijn bestaande agenda gebruiken?**
-Dat hangt af van de aanbieder en van uw software. Vraag altijd expliciet naar een koppeling met het systeem dat u nu gebruikt, en laat die koppeling in de proefperiode werken voordat u tekent. Een AI die naast uw agenda werkt in plaats van erin, creëert juist extra overtypwerk.
-
-**Wat gebeurt er met de gesprekken die de AI voert?**
-Een serieuze aanbieder legt vast waar gesprekken en klantgegevens worden opgeslagen en hoe lang, en sluit een verwerkersovereenkomst met u af zoals de AVG voorschrijft. Vraag ook of u gesprekken zelf kunt teruglezen. Dat is niet alleen een privacykwestie, maar ook de manier waarop u de assistent beter maakt.
 
 Wilt u weten of Emma de gaten in uw keten dichtmaakt? Plan een vrijblijvende kennismaking via [aanloopai.nl](https://aanloopai.nl) en luister mee hoe ze uw eerste oproep afhandelt.

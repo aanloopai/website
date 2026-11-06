@@ -6,6 +6,17 @@ published: 2026-11-02
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-verwerker", "ro-privacy"]
+faq:
+  - q: "Moet een AI-bureau in Noord-Holland gevestigd zijn?"
+    a: "Nee, dat is geen vereiste. Belangrijker is dat het bureau uw regio en doelgroep begrijpt en op afstand goed bereikbaar is. Veel werk, van website tot AI-telefoniste, laat zich prima online afstemmen, met een gesprek op uw locatie als dat nodig is."
+  - q: "Wat kost een AI-bureau voor het mkb?"
+    a: "Dat hangt af van wat u nodig heeft: alleen een website, of ook een AI-telefoniste en AI-vindbaarheid. Vraag altijd om een offerte waarin staat wat is inbegrepen, wat maandelijks terugkomt en wat er extra kost. Mijd bureaus die pas na een lang traject iets over prijs zeggen."
+  - q: "Is een AI-telefoniste veilig voor mijn klantgegevens?"
+    a: "Dat hangt af van hoe het systeem is ingericht. Vraag welke gegevens worden opgeslagen, waar dat gebeurt en hoe lang. Een betrouwbare partner kan dit uitleggen en rekent op de AVG, zodat u weet dat gesprekken met uw klanten zorgvuldig worden behandeld."
+  - q: "Hoe weet ik of een AI-bureau betrouwbaar is?"
+    a: "Vraag om voorbeelden met gemeten resultaten, een heldere offerte en duidelijke afspraken over wie de gegevens beheert. Een bureau dat alleen beloftes geeft en geen cijfers laat zien, is geen betrouwbare keuze."
 ---
 
 Een aannemer in Zaanstad, een tandartspraktijk in Haarlem en een adviesbureau in Amsterdam-Zuid hebben vaak dezelfde zorg: er komt van alles op ons af over AI, maar wie kunnen we nu echt vertrouwen? Wie zoekt naar een betrouwbaar AI-bureau in Noord-Holland, wil meestal geen experiment. Men wil meer aanvragen, minder gemiste telefoontjes en een partner die uitlegt wat er gebeurt.
@@ -43,7 +54,7 @@ Het gaat dus niet om AI om de AI. Het gaat om de vraag: hoe komt een nieuwe klan
 
 - **Website:** de plek waar klanten uw aanbod begrijpen en contact opnemen. Een trage of onduidelijke site kost aanvragen, hoe goed uw dienstverlening ook is.
 - **AI-telefoniste:** Emma van Aanloop AI neemt telefoon en WhatsApp aan, ook buiten kantooruren. Voor een installateur in Alkmaar of een kapper in Haarlem scheelt dat gemiste aanvragen op momenten dat u zelf onder een auto, achter een klant of al thuis bent.
-- **AI-vindbaarheid:** steeds meer mensen stellen hun vraag aan ChatGPT, Gemini of Perplexity in plaats van aan Google. Wie daar wordt genoemd, wordt eerder gebeld.
+- **AI-vindbaarheid:** mensen kunnen hun vraag ook aan ChatGPT, Gemini of Perplexity stellen. Wie daar wordt genoemd, wordt eerder gebeld.
 - **Meetpaneel:** één overzicht met bezoekers, gesprekken en aanvragen, zodat u niet hoeft te gokken.
 
 Heeft u een ander probleem, bijvoorbeeld een interne planning of koppeling met uw boekhouding, dan is een ander type partner soms beter. Een bureau dat dat eerlijk zegt, verdient meer vertrouwen dan een bureau dat voor alles een AI-oplossing heeft.
@@ -60,17 +71,6 @@ Een paar manieren om dat in de praktijk te toetsen:
 4. Controleer of de uitleg klopt met wat u ziet, ook als het resultaat minder spectaculair is dan verwacht.
 
 Bij Aanloop AI zijn gemeten resultaten openbaar te vinden op [aanloopai.nl/resultaten](https://aanloopai.nl/resultaten/). Zo kunt u zelf beoordelen wat er is bereikt voordat u een afspraak maakt. Dat is de maatstaf die u bij elk bureau mag aanleggen.
-
-## Veelgestelde vragen
-
-**Moet een AI-bureau in Noord-Holland gevestigd zijn?**
-Nee, dat is geen vereiste. Belangrijker is dat het bureau uw regio en doelgroep begrijpt en op afstand goed bereikbaar is. Veel werk, van website tot AI-telefoniste, laat zich prima online afstemmen, met een gesprek op uw locatie als dat nodig is.
-
-**Wat kost een AI-bureau voor het mkb?**
-Dat hangt af van wat u nodig heeft: alleen een website, of ook een AI-telefoniste en AI-vindbaarheid. Vraag altijd om een offerte waarin staat wat is inbegrepen, wat maandelijks terugkomt en wat er extra kost. Mijd bureaus die pas na een lang traject iets over prijs zeggen.
-
-**Is een AI-telefoniste veilig voor mijn klantgegevens?**
-Dat hangt af van hoe het systeem is ingericht. Vraag welke gegevens worden opgeslagen, waar dat gebeurt en hoe lang. Een betrouwbare partner kan dit uitleggen en rekent op de AVG, zodat u weet dat gesprekken met uw klanten zorgvuldig worden behandeld.
 
 ## Wilt u weten wat dit voor uw bedrijf oplevert?
 
