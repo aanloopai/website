@@ -6,6 +6,17 @@ published: 2026-11-03
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-verwerker", "ro-privacy"]
+faq:
+  - q: "Is AI-marketing alleen geschikt voor grote bedrijven?"
+    a: "Nee. Juist voor kleine en middelgrote bedrijven kan AI veel opleveren, omdat het routinewerk overneemt, zoals telefoontjes opnemen en vragen beantwoorden. U hoeft geen eigen techniekteam te hebben. Het gaat erom dat de oplossing past bij uw bedrijf en dat u het resultaat kunt controleren."
+  - q: "Moet mijn marketingbureau in Eindhoven zitten?"
+    a: "Nee, dat is niet nodig. Belangrijker is dat het bureau de regionale zoekopdrachten van uw klanten serieus neemt en uw werkgebied helder in uw website verwerkt. Kies op basis van concrete voorbeelden, duidelijke afspraken en meetbare resultaten, niet op basis van de vestigingsplaats."
+  - q: "Hoe snel zie ik resultaat van een marketingstrategie met AI?"
+    a: "Dat hangt af van het onderdeel. Een AI-telefoniste kan direct gemiste oproepen opvangen, terwijl zichtbaarheid in zoekmachines en AI-assistenten meestal meer tijd kost. Spreek vooraf af welke cijfers u volgt, zodat u na enkele weken kunt beoordelen of de aanpak werkt."
+  - q: "Welke regels gelden voor persoonsgegevens bij AI-marketing?"
+    a: "In de AVG staat wat organisaties en bedrijven met persoonsgegevens mogen, ook in een marketingstrategie met AI. Laat u een leverancier gegevens verwerken, dan moet u een verwerkersovereenkomst met hem sluiten."
 ---
 
 Een installatiebedrijf in Woensel, een tandartspraktijk in Strijp-S en een adviesbureau bij de High Tech Campus hebben vaak dezelfde vraag: hoe komen we aan meer klanten zonder er een fulltime marketingafdeling bij te nemen? In de Brainportregio is technologie dichtbij, maar voor het mkb blijft de praktijk lastig. Tijd is schaars, de telefoon gaat tijdens het werk en een website die niets oplevert is een kostenpost.
@@ -71,22 +82,6 @@ Een werkbare route ziet er zo uit:
 4. Voeg het volgende onderdeel toe zodra het eerste aantoonbaar werkt.
 
 Zo houdt u de controle en voorkomt u dat u betaalt voor onderdelen die u niet gebruikt.
-
-## Veelgestelde vragen
-
-Hieronder vindt u antwoorden op de vragen die ondernemers in de regio Eindhoven het vaakst stellen over marketing met AI. De antwoorden zijn praktisch bedoeld en helpen u te bepalen waar u het beste kunt beginnen, zonder dat u vooraf technische kennis nodig hebt.
-
-### Is AI-marketing alleen geschikt voor grote bedrijven?
-
-Nee. Juist voor kleine en middelgrote bedrijven kan AI veel opleveren, omdat het routinewerk overneemt, zoals telefoontjes opnemen en vragen beantwoorden. U hoeft geen eigen techniekteam te hebben. Het gaat erom dat de oplossing past bij uw bedrijf en dat u het resultaat kunt controleren.
-
-### Moet mijn marketingbureau in Eindhoven zitten?
-
-Nee, dat is niet nodig. Belangrijker is dat het bureau de regionale zoekopdrachten van uw klanten serieus neemt en uw werkgebied helder in uw website verwerkt. Kies op basis van concrete voorbeelden, duidelijke afspraken en meetbare resultaten, niet op basis van de vestigingsplaats.
-
-### Hoe snel zie ik resultaat van een marketingstrategie met AI?
-
-Dat hangt af van het onderdeel. Een AI-telefoniste kan direct gemiste oproepen opvangen, terwijl zichtbaarheid in zoekmachines en AI-assistenten meestal meer tijd kost. Spreek vooraf af welke cijfers u volgt, zodat u na enkele weken kunt beoordelen of de aanpak werkt.
 
 ## Wilt u weten waar uw kansen liggen?
 

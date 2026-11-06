@@ -6,6 +6,17 @@ published: 2026-10-28
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-verwerker", "ro-privacy", "ec-ai-act"]
+faq:
+  - q: "Wat is het verschil tussen een chatbot en conversational AI?"
+    a: "Een klassieke chatbot volgt vaste scripts en loopt vast bij onverwachte vragen. Conversational AI begrijpt natuurlijke taal, kan op uw eigen informatie antwoorden en werkt ook via spraak, bijvoorbeeld aan de telefoon. Bij vragen die de AI niet kan beantwoorden, hoort een nette overdracht naar een mens."
+  - q: "Is conversational AI toegestaan onder de AVG?"
+    a: "Ja, mits u de gegevens van klanten zorgvuldig verwerkt. Sluit een verwerkersovereenkomst af, vraag waar gespreksdata wordt opgeslagen en laat bellers weten dat zij met een AI spreken. De Autoriteit Persoonsgegevens geeft op haar website uitleg over de regels voor persoonsgegevens."
+  - q: "Hoe snel kan een AI-telefoniste in gebruik worden genomen?"
+    a: "Dat hangt af van hoeveel informatie en koppelingen nodig zijn. Een eenvoudige opzet met openingstijden, veelgestelde vragen en een agenda-koppeling is doorgaans sneller klaar dan een traject met meerdere systemen. Vraag de aanbieder altijd om een concrete planning vooraf."
+  - q: "Wat gebeurt er als de AI een vraag niet begrijpt?"
+    a: "Een goede oplossing draagt het gesprek dan over aan een medewerker of neemt een terugbelverzoek aan. Vraag de leverancier vooraf hoe dit is ingericht en laat het in een proefperiode zien."
 ---
 
 Een installatiebedrijf in Veldhoven, een tandartspraktijk in Eindhoven-Centrum en een webshop in Helmond hebben vaak hetzelfde probleem: klanten bellen en appen op momenten dat niemand kan opnemen. Conversational AI kan dat oplossen, maar de markt is onoverzichtelijk. Wie zoekt naar een consultant, krijgt grote adviesbureaus, freelancers en softwareleveranciers door elkaar.
@@ -52,22 +63,6 @@ Een praktische checklist voor uw eerste gesprek:
 Voor de meeste MKB-bedrijven in Eindhoven en omgeving volstaat een kant-en-klare AI-telefoniste. Een los adviestraject loont vooral bij complexe processen, veel systemen of strenge eisen. Heeft u vooral gemiste telefoontjes, terugkerende vragen en afspraken die in een agenda moeten, dan is een kant-en-klare oplossing sneller en overzichtelijker.
 
 Bij Aanloop AI werkt dat zo: Emma is onze AI-telefoniste voor telefoon en WhatsApp. Zij is onderdeel van een geheel met een website en met vindbaarheid in ChatGPT, Gemini en Perplexity, plus een meetpaneel waarin u ziet wat het oplevert. U hoeft dus niet zelf losse partijen aan elkaar te knopen.
-
-## Veelgestelde vragen
-
-Hieronder staan de vragen die ondernemers in Eindhoven en de regio het vaakst stellen over conversational AI en het inhuren van een consultant. De antwoorden zijn bewust praktisch gehouden, zodat u direct weet wat u kunt verwachten en waar u in een eerste gesprek op kunt letten.
-
-### Wat is het verschil tussen een chatbot en conversational AI?
-
-Een klassieke chatbot volgt vaste scripts en loopt vast bij onverwachte vragen. Conversational AI begrijpt natuurlijke taal, kan op uw eigen informatie antwoorden en werkt ook via spraak, bijvoorbeeld aan de telefoon. Bij vragen die de AI niet kan beantwoorden, hoort een nette overdracht naar een mens.
-
-### Is conversational AI toegestaan onder de AVG?
-
-Ja, mits u de gegevens van klanten zorgvuldig verwerkt. Sluit een verwerkersovereenkomst af, vraag waar gespreksdata wordt opgeslagen en laat bellers weten dat zij met een AI spreken. De Autoriteit Persoonsgegevens geeft op haar website uitleg over de regels voor persoonsgegevens.
-
-### Hoe snel kan een AI-telefoniste in gebruik worden genomen?
-
-Dat hangt af van hoeveel informatie en koppelingen nodig zijn. Een eenvoudige opzet met openingstijden, veelgestelde vragen en een agenda-koppeling is doorgaans sneller klaar dan een traject met meerdere systemen. Vraag de aanbieder altijd om een concrete planning vooraf.
 
 ## Volgende stap
 

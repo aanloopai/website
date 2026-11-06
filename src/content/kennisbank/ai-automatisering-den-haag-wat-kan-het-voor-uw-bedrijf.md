@@ -6,6 +6,17 @@ published: 2026-10-11
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-verwerker", "ro-privacy", "ec-ai-act"]
+faq:
+  - q: "Is AI-automatisering ook geschikt voor een kleine zaak in Den Haag?"
+    a: "Ja. Juist kleine bedrijven zonder baliemedewerker hebben er baat bij, omdat de eigenaar zelf het vakwerk doet. Begin met één terugkerende taak, zoals het opvangen van oproepen, en breid pas uit als het werkt."
+  - q: "Kan een klant merken dat hij met een AI-telefoniste praat?"
+    a: "De AI-verordening kent transparantieverplichtingen, zodat mensen worden geïnformeerd wanneer dat nodig is om vertrouwen te behouden. Het is dus verstandig dat open te zeggen. Veel klanten vinden dat prima, zolang ze snel geholpen worden en bij een lastige vraag een mens kunnen terugvragen."
+  - q: "Moet ik mijn bestaande agenda vervangen?"
+    a: "Niet per se. Een goede oplossing werkt met de agenda die u al gebruikt. Vraag vooraf aan de leverancier met welke agendasystemen een koppeling mogelijk is, zodat u niet dubbel hoeft te werken."
+  - q: "Welke regels gelden voor persoonsgegevens bij AI-automatisering?"
+    a: "In de AVG staat wat organisaties en bedrijven met persoonsgegevens mogen, ook in een kleine zaak in Den Haag. Laat u een leverancier gegevens verwerken, dan moet u een verwerkersovereenkomst met hem sluiten."
 ---
 
 Een fysiotherapeut in Scheveningen staat de hele ochtend naast de behandeltafel en ziet tussen de middag vijf gemiste oproepen. Een garagehouder in Laak ligt onder een auto terwijl de telefoon overgaat. Een kapper in het centrum heeft handen vol haar en kan niet opnemen. Allemaal weten ze dat er werk en omzet wegglipt, maar niet precies waar.
@@ -45,7 +56,7 @@ Voor een Haagse installateur betekent dat bijvoorbeeld dat een storingsmelding o
 
 ## Regels en privacy: AVG en AI-verordening
 
-Bij AI-automatisering in Nederland gelden de AVG en de Europese AI-verordening. U moet weten welke persoonsgegevens worden verwerkt, een verwerkersovereenkomst afsluiten met de leverancier en klanten duidelijk laten weten dat ze met AI praten. Voor gezondheidsgegevens gelden extra strenge eisen; toezichthouder is de Autoriteit Persoonsgegevens.
+Bij AI-automatisering in Nederland gelden de AVG en de Europese AI-verordening. U moet weten welke persoonsgegevens worden verwerkt, een verwerkersovereenkomst afsluiten met de leverancier en klanten duidelijk laten weten dat ze met AI praten. Wees extra terughoudend met gezondheidsgegevens.
 
 Vraag een leverancier daarom altijd waar gegevens worden opgeslagen, hoe lang ze bewaard blijven en wie er toegang toe heeft. Een goede aanbieder beantwoordt die vragen zonder omwegen. Werkt u in de zorg, laat dan zeker een privacyadviseur of uw beroepsvereniging meekijken, want de regels voor patiëntgegevens zijn strenger dan voor een afspraak bij de kapper.
 
@@ -54,19 +65,6 @@ Vraag een leverancier daarom altijd waar gegevens worden opgeslagen, hoe lang ze
 Begin klein: tel een week lang uw gemiste oproepen en no-shows, kies één taak met het meeste verlies en test daarvoor een oplossing gedurende enkele weken. Meet daarna of er meer afspraken zijn ingepland. Pas als dat werkt, breidt u uit naar andere taken in uw bedrijf.
 
 Houd het eenvoudig. Schrijf op wat u nu mist, wat een gemiste afspraak gemiddeld oplevert en hoeveel tijd u kwijt bent aan terugbellen. Dat geeft u een eerlijke nulmeting. Blijkt na een proef dat de winst klein is, dan weet u dat ook, en heeft u weinig geld of tijd verloren.
-
-## Veelgestelde vragen
-
-Hieronder vindt u antwoorden op drie vragen die Haagse ondernemers regelmatig stellen over AI-automatisering. De antwoorden zijn algemeen bedoeld; voor uw eigen situatie, vooral bij medische of gevoelige gegevens, laat u de afspraken met uw leverancier en uw privacyverplichtingen apart controleren.
-
-**Is AI-automatisering ook geschikt voor een kleine zaak in Den Haag?**
-Ja. Juist kleine bedrijven zonder baliemedewerker hebben er baat bij, omdat de eigenaar zelf het vakwerk doet. Begin met één terugkerende taak, zoals het opvangen van oproepen, en breid pas uit als het werkt.
-
-**Merken klanten dat ze met een AI-telefoniste praten?**
-De AI-verordening verlangt dat mensen weten dat ze met een AI-systeem communiceren. Het is dus verstandig dat open te zeggen. Veel klanten vinden dat prima, zolang ze snel geholpen worden en bij een lastige vraag een mens kunnen terugvragen.
-
-**Moet ik mijn bestaande agenda vervangen?**
-Niet per se. Een goede oplossing werkt met de agenda die u al gebruikt. Vraag vooraf aan de leverancier met welke agendasystemen een koppeling mogelijk is, zodat u niet dubbel hoeft te werken.
 
 ## Gemiste oproepen in Den Haag opvangen
 

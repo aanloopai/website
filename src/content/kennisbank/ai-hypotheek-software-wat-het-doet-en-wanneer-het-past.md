@@ -6,6 +6,17 @@ published: 2026-09-10
 category: "AI-automatisering"
 readingMinutes: 6
 draft: false
+updated: 2026-11-06
+bronnen: ["afm-adviseren", "ai-act-annex3", "ap-verwerker", "ro-privacy"]
+faq:
+  - q: "Kan AI hypotheek software de hypotheekadviseur vervangen?"
+    a: "Nee. Het advies zelf, de afweging van de persoonlijke situatie en de verantwoordelijkheid voor het dossier blijven bij de adviseur met Wft-vergunning. AI neemt het voorbereidende werk over: uitlezen, controleren, concepten schrijven en standaardvragen beantwoorden."
+  - q: "Moet een kantoor zijn huidige adviessoftware vervangen?"
+    a: "Meestal niet. De meeste automatiseringen worden gebouwd naast het bestaande pakket, via koppelingen of via de mailbox en documentenmap die het kantoor al gebruikt. Vervangen is alleen zinvol als het huidige pakket zelf het knelpunt is."
+  - q: "Is het veilig om klantdocumenten door AI te laten verwerken?"
+    a: "Dat hangt af van de inrichting. Verwerking binnen de EU, een verwerkersovereenkomst, toegangsbeperking en logging van wat het systeem doet zijn de basisvoorwaarden. Onder die voorwaarden is geautomatiseerde documentverwerking niet minder veilig dan handmatig doorsturen per e-mail, en vaak beter controleerbaar."
+  - q: "Welke regels gelden voor klantgegevens bij AI hypotheek software?"
+    a: "In de AVG staat wat organisaties en bedrijven met persoonsgegevens mogen, en dat geldt ook voor hypotheekdossiers. Verwerkt een leverancier gegevens namens uw kantoor, dan moet u een verwerkersovereenkomst met hem sluiten."
 ---
 
 Hypotheekadviseurs besteden een groot deel van hun week niet aan adviseren, maar aan dossierwerk: documenten opvragen, controleren, nabellen en overtypen. AI hypotheek software belooft dat werk te verlichten. Maar wat doet zo'n systeem precies, waar houdt het op, en wanneer is het zinvol voor een klein adviseurskantoor in Rotterdam of elders in Nederland? Dit artikel geeft een nuchter overzicht, zonder verkooppraat.
@@ -45,22 +56,6 @@ AI mag het advies voorbereiden, maar niet geven. Hypotheekadvies valt in Nederla
 In de praktijk betekent dit een aantal harde regels. De adviseur beoordeelt en ondertekent; AI levert voorbereiding, nooit een eindoordeel. Klantgegevens gaan niet naar publieke chattools waarvan onduidelijk is waar de data wordt opgeslagen of waarvoor die wordt gebruikt. Er wordt gekozen voor verwerking binnen de EU en er ligt een verwerkersovereenkomst met elke leverancier die persoonsgegevens ziet.
 
 Daarnaast is er de technische kant. Taalmodellen kunnen zelfverzekerd iets opschrijven dat niet klopt. Bij een adviesrapport of een inkomensberekening is dat onaanvaardbaar. Goede AI hypotheek software laat daarom altijd zien waar een gegeven vandaan komt, bijvoorbeeld door het bronveld op de loonstrook te markeren, en legt de laatste controle bij een mens.
-
-## Veelgestelde vragen
-
-Hieronder staan de vragen die adviseurskantoren het vaakst stellen als ze AI hypotheek software overwegen. De antwoorden gaan over de rol van de adviseur, de bestaande software en de veiligheid van klantgegevens. Voor vragen over een specifieke situatie of een specifiek pakket is een gesprek met een specialist de betere route.
-
-**Vervangt AI hypotheek software de hypotheekadviseur?**
-
-Nee. Het advies zelf, de afweging van de persoonlijke situatie en de verantwoordelijkheid voor het dossier blijven bij de adviseur met Wft-vergunning. AI neemt het voorbereidende werk over: uitlezen, controleren, concepten schrijven en standaardvragen beantwoorden.
-
-**Moet een kantoor zijn huidige adviessoftware vervangen?**
-
-Meestal niet. De meeste automatiseringen worden gebouwd naast het bestaande pakket, via koppelingen of via de mailbox en documentenmap die het kantoor al gebruikt. Vervangen is alleen zinvol als het huidige pakket zelf het knelpunt is.
-
-**Is het veilig om klantdocumenten door AI te laten verwerken?**
-
-Dat hangt af van de inrichting. Verwerking binnen de EU, een verwerkersovereenkomst, toegangsbeperking en logging van wat het systeem doet zijn de basisvoorwaarden. Onder die voorwaarden is geautomatiseerde documentverwerking niet minder veilig dan handmatig doorsturen per e-mail, en vaak beter controleerbaar.
 
 ## Zelf beginnen met AI in het hypotheekproces
 

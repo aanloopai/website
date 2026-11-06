@@ -7,6 +7,17 @@ published: 2026-10-08
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ec-ai-act", "acm-spam", "ap-verwerker"]
+faq:
+  - q: "Is AI-tooling voor marketing geschikt voor een kleine zaak in Eindhoven?"
+    a: "Ja, mits u klein begint. Veel tools zijn zonder technische kennis te gebruiken en koppelen aan een agenda of mailbox. Kies één tool voor één concreet probleem, zoals gemiste oproepen, en breid pas uit als het resultaat zichtbaar is."
+  - q: "Moet ik klanten vertellen dat ze met een AI praten?"
+    a: "Dat is verstandig en onder de Europese AI-verordening gelden transparantieplichten voor systemen die met mensen communiceren. Een korte, eerlijke opening in het gesprek volstaat meestal en klanten waarderen duidelijkheid. Controleer de actuele regels bij de overheid of uw leverancier."
+  - q: "Kan een AI-telefoniste mijn eigen contact met klanten vervangen?"
+    a: "Nee. Ze vangt de oproepen op die u niet kunt aannemen, beantwoordt standaardvragen en plant afspraken in. Gesprekken die persoonlijke aandacht vragen, blijven bij u. Zo houdt u tijd over voor het vakwerk."
+  - q: "Kan ik klanten mailen met AI-geschreven berichten?"
+    a: "Volgens de ACM mag u elektronische berichten sturen naar ontvangers die vooraf toestemming gaven. De regel gaat over het versturen van het bericht, niet over wie het schrijft. Controleer de uitzonderingen op de website van de ACM."
 ---
 
 Een garagehouder in Woensel ligt onder een auto als de telefoon gaat. Een kapster op Strijp-S heeft een klant in de stoel. Een installateur in Veldhoven zit op een dak. Alle drie hebben dezelfde marketingvraag: hoe zorg ik dat de aanvragen die al binnenkomen niet verloren gaan, en waar kan AI mij daarbij helpen?
@@ -61,17 +72,6 @@ Een werkbare volgorde is:
 3. Laat een taalmodel conceptteksten schrijven die u zelf controleert.
 4. Zet een AI-telefoniste in voor de gesprekken die u nu mist.
 5. Evalueer na een maand: meer afspraken, minder administratie?
-
-## Veelgestelde vragen
-
-**Zijn AI-tools voor marketing geschikt voor een kleine zaak in Eindhoven?**
-Ja, mits u klein begint. Veel tools zijn zonder technische kennis te gebruiken en koppelen aan een agenda of mailbox. Kies één tool voor één concreet probleem, zoals gemiste oproepen, en breid pas uit als het resultaat zichtbaar is.
-
-**Moet ik klanten vertellen dat ze met een AI praten?**
-Dat is verstandig en onder de Europese AI-verordening gelden transparantieplichten voor systemen die met mensen communiceren. Een korte, eerlijke opening in het gesprek volstaat meestal en klanten waarderen duidelijkheid. Controleer de actuele regels bij de overheid of uw leverancier.
-
-**Vervangt een AI-telefoniste mijn eigen contact met klanten?**
-Nee. Ze vangt de oproepen op die u niet kunt aannemen, beantwoordt standaardvragen en plant afspraken in. Gesprekken die persoonlijke aandacht vragen, blijven bij u. Zo houdt u tijd over voor het vakwerk.
 
 ## Probeer Emma voor uw bedrijf in Eindhoven
 
