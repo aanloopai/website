@@ -8,7 +8,7 @@ import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { LEADPARTNER_TEMPLATE, LEADPARTNER_SEED, LEADPARTNER_PREFILL } from '../src/lib/discovery-seed-leadpartner.js';
+import { LEADPARTNER_TEMPLATE, LEADPARTNER_SEED, LEADPARTNER_PREFILL, LEADPARTNER_SEED_VIOLA, VIOLA_PREFILL } from '../src/lib/discovery-seed-leadpartner.js';
 import { KEUKEN_SEED } from '../src/lib/discovery-seed-keuken.js';
 import { ANSWER_TYPES, PRIORITIES } from '../src/lib/discovery-fields.js';
 import { mergeKlantValue } from '../src/lib/discovery-klant.js';
@@ -135,6 +135,26 @@ describe.skipIf(!sqlite)('leadpartner-seed op SQLite', async () => {
        JOIN disc_doc_sections s ON q.doc_section_id = s.id WHERE s.doc_id = ? AND a.answered = 1`,
     ).get(det.doc.id).n;
     expect(n).toBe(Object.keys(LEADPARTNER_PREFILL).length);
+  });
+
+  it('Viola Natuursteen: eigen klant + document, zelfde 40 vragen; Erik blijft één document', async () => {
+    const env = { PORTAL_DB: makeD1() };
+    const ov = await overview(env);
+    const viola = ov.clients.find((c) => c.name === LEADPARTNER_SEED_VIOLA.client.name);
+    expect(viola.docs.length).toBe(1);
+    expect(viola.docs[0].title).toBe('Leadpartner - Viola Natuursteen');
+    expect(ov.clients.find((c) => c.name === CLIENT).docs.length).toBe(1);
+    const det = await detail(env, viola.docs[0].id);
+    const byQid = Object.fromEntries(fieldsOf(det).map((q) => [q.config.qid, q]));
+    expect(Object.keys(byQid).length).toBe(40);
+    expect(byQid.P09.value.v).toMatch(/^Amsterdam, Haarlem, Hoofddorp.*Hilversum$/);
+    expect(byQid.P27.value.v).toBe('ja');
+    // Erik-prefill lekt niet naar Viola
+    expect(byQid.P16.value == null || !byQid.P16.value.v).toBe(true);
+    for (const qid of ['P01', 'P02', 'P03', 'P04', 'P05', 'P33', 'P34']) {
+      expect(VIOLA_PREFILL[qid]).toBeUndefined();
+      expect(byQid[qid].value == null || !byQid[qid].value.v, qid).toBe(true);
+    }
   });
 
   it('idempotent: tweede aanroep maakt niets dubbel', async () => {

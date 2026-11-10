@@ -25,7 +25,7 @@ const SECTIONS = [
     rows: [
       ['P01', S, 'Officiële bedrijfsnaam, handelsnaam, KvK-nummer, btw-nummer?', 'Resmi şirket adı, ticari ad, KvK, btw?', 'tekst'],
       ['P02', S, 'Rechtsvorm (eenmanszaak / VOF / BV) — wie is tekenbevoegd?', 'Şirket türü — imza yetkilisi kim?', 'keuze', ['eenmanszaak', 'VOF', 'BV', 'anders']],
-      ['P03', S, 'Adres(sen) van de winkel(s) waar leads naartoe mogen komen (beide vestigingen)?', 'Lead yönlendirilecek mağaza adres(ler)i (iki şube)?', 'tekst'],
+      ['P03', S, 'Adres(sen) van de winkel(s) / vestiging(en) waar leads naartoe mogen komen?', 'Lead yönlendirilecek mağaza/şube adres(ler)i?', 'tekst'],
       ['P04', S, 'Contactpersoon voor leads: naam, functie, mobiel nummer?', 'Lead muhatabı: isim, görev, cep?', 'tekst'],
       ['P05', S, 'E-mailadres waarop de leads binnenkomen (eventueel apart leads-adres)?', "Lead'lerin geleceği e-posta (ayrı adres olabilir)?", 'tekst'],
       ['P06', N, 'Website en Google Business Profile (link) van de winkel?', 'Mağaza web sitesi ve Google Business Profile linki?', 'url'],
@@ -223,5 +223,32 @@ export const LEADPARTNER_SEED = {
     name: 'Erik (Keukenstunter Amsterdam Westpoort)',
     contact: 'aanmelding via keukeninbeeld.nl, 5 okt 2026 — eigenaar Keukenstunter + Sanistunter Westpoort',
     notes: 'Mail 5–6 okt 2026 + telefonisch. Wacht op ons formulier. Nalan plant kennismaking (model + tarieven). Verwerkersovereenkomst vóór eerste lead.',
+  },
+};
+
+// İkinci leadpartner: Viola Natuursteen (maatwerk natuursteen — keukenbladen,
+// marmer, keramiek). Aanmelding via keukeninbeeld.nl 9 nov 2026, model
+// "Exclusief (1 partner per lead)". Aynı şablon; prefill yalnız aanmelding'deki
+// İŞ-cevapları (kişisel veri / KvK YOK — partner P01–P05 kendisi yazar).
+const AANMELDING_NOTE = 'Uit aanmelding keukeninbeeld.nl 9 nov 2026 — partner bevestigt/corrigeert in formulier.';
+
+export const VIOLA_PREFILL = {
+  P09: {
+    v: 'Amsterdam, Haarlem, Hoofddorp, Bloemendaal, Almere, Utrecht, Leiden, Badhoevedorp, Aerdenhout, Heemstede, Lisse, Wassenaar, Naarden, Huizen, Laren, Hilversum',
+    t: '', bron: 'mail', note: AANMELDING_NOTE,
+  },
+  P27: { v: 'ja', t: 'aanmelding: Exclusief (1 partner per lead)', bron: 'mail', note: AANMELDING_NOTE },
+};
+
+export const LEADPARTNER_SEED_VIOLA = {
+  key: 'seed_leadpartner_viola',
+  version: 1,
+  template: LEADPARTNER_TEMPLATE,
+  doc_title: 'Leadpartner - Viola Natuursteen',
+  prefill: VIOLA_PREFILL,
+  client: {
+    name: 'Ufuk (Viola Natuursteen)',
+    contact: 'aanmelding via keukeninbeeld.nl, 9 nov 2026 — maatwerk natuursteen (keukenbladen, marmer, keramiek)',
+    notes: 'Interesse: exclusief (1 partner per lead). Werkgebied 16 plaatsen (Amsterdam–Utrecht–Leiden–Gooi). Formulier → Nalan-gesprek (model + tarieven) → verwerkersovereenkomst vóór eerste lead.',
   },
 };
