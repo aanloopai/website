@@ -34,7 +34,7 @@ Het probleem voor een ondernemer: alle drie klinken hetzelfde in een offerte. Da
 
 ### 1. Staan er gemeten cijfers op de site van het bureau?
 
-Niet "gemiddeld 40% meer leads", maar: welke site, welke periode, welke meetmethode, welke datum. Een bureau dat meet, heeft die cijfers. Een bureau dat niet meet, heeft alleen percentages zonder noemer. Vraag door: hoeveel sessies zaten er achter dat percentage?
+Niet een los percentage zonder bron, maar: welke site, welke periode, welke meetmethode, welke datum. Een bureau dat meet, heeft die cijfers. Een bureau dat niet meet, heeft alleen percentages zonder noemer. Vraag door: hoeveel sessies zaten er achter dat percentage?
 
 ### 2. Wordt het bureau zelf genoemd door AI-assistenten?
 

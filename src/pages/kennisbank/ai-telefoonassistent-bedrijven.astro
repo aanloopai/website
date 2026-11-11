@@ -3,7 +3,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const faqItems = [
   { question: 'Wat is een AI telefoonassistent?', answer: 'Een AI telefoonassistent is een geautomatiseerd systeem dat inkomende telefoongesprekken beantwoordt, begrijpt en afhandelt — zonder tussenkomst van een mens. Het systeem spreekt vloeiend Nederlands, begrijpt uw diensten en kan afspraken inplannen, vragen beantwoorden en leads doorsturen.' },
-  { question: 'Hoeveel kost een AI telefoniste voor mijn bedrijf?', answer: 'Een AI telefoniste bij Aanloop AI kost vanaf €149 per maand voor het Start-pakket (300 belminuten). Het Groei-pakket met WhatsApp en CRM-integratie kost €299 per maand. Voor onbeperkte gesprekken is er het Compleet-pakket voor €497 per maand. Vergeleken met een parttime receptioniste (€1.500–€2.500/maand exclusief werkgeverslasten) bespaart u direct. Training en support zijn inbegrepen; bij Groei en Compleet geldt een eenmalige setup (bedrag op aanvraag). Op elk pakket: 14 dagen niet goed, geld terug.' },
+  { question: 'Hoeveel kost een AI telefoniste voor mijn bedrijf?', answer: 'Een AI telefoniste bij Aanloop AI kost vanaf €149 per maand voor het Start-pakket (300 belminuten). Het Groei-pakket met WhatsApp en CRM-integratie kost €299 per maand. Voor onbeperkte gesprekken is er het Compleet-pakket voor €497 per maand. Zet dat naast de loonkosten van een parttime receptioniste (inclusief werkgeverslasten) om te zien wat het u scheelt. Training en support zijn inbegrepen; bij Groei en Compleet geldt een eenmalige setup (bedrag op aanvraag). Op elk pakket: 14 dagen niet goed, geld terug.' },
   { question: 'Kan een AI telefoonassistent ook buiten kantooruren werken?', answer: 'Ja, dat is juist het grote voordeel. Een AI telefoonassistent werkt 24/7 — weekenden, avonden en feestdagen inbegrepen. Zo mist u nooit een lead, ook niet buiten kantoortijd. Oproepen buiten kantooruren of tijdens drukte worden bij veel bedrijven niet teruggebeld.' },
   { question: 'Spreekt de AI telefoniste Nederlands?', answer: 'Ja, onze AI telefoonassistenten spreken vloeiend Nederlands — inclusief regionale accenten en informele spreektaal. We gebruiken geavanceerde voice AI technologie (ElevenLabs) voor een natuurlijke, menselijke stem. De AI kan ook automatisch overschakelen naar Engels, Duits of andere talen wanneer de beller een andere taal spreekt.' },
   { question: 'Hoe lang duurt het om een AI telefoonassistent live te zetten?', answer: 'Bij Aanloop AI configureren we het systeem, trainen we het op uw diensten en testen we voor go-live. De doorlooptijd hangt af van uw kennisbank en koppelingen.' },
@@ -131,7 +131,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             {[
               { icon: '📞', title: '24/7 bereikbaar', desc: 'Nooit meer een gemiste call — ook avonden, weekenden en feestdagen.' },
-              { icon: '💶', title: 'Kostenbesparing', desc: 'Goedkoper dan een parttimekracht. Gemiddeld €8.000–€15.000 besparing per jaar.' },
+              { icon: '💶', title: 'Kostenbesparing', desc: 'Vaak goedkoper dan een parttimekracht; reken het na met uw eigen loonkosten.' },
               { icon: '📅', title: 'Directe afspraakplanning', desc: 'De AI plant afspraken direct in uw agenda — zonder handmatige stap.' },
               { icon: '📊', title: 'Leadregistratie', desc: 'Elke inkomende lead wordt gelogd en doorgestuurd naar uw CRM of inbox.' },
               { icon: '🔒', title: 'AVG-compliant', desc: 'Uw gespreksdata blijft in Nederland. Wij werken met GDPR-conforme oplossingen.' },
@@ -207,7 +207,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
               </thead>
               <tbody class="divide-y divide-slate-100">
                 {[
-                  ['Voicemail', '€0', 'Altijd', 'Neemt alleen op, handelt niets af; ~70% belt niet terug'],
+                  ['Voicemail', '€0', 'Altijd', 'Neemt alleen op, handelt niets af; veel bellers bellen niet terug'],
                   ['Eigen receptionist (parttime)', '€1.500–€2.500', 'Kantooruren', 'Geen avond/weekend, ziekte, vakantie, inwerktijd'],
                   ['Telefonisch antwoordservice', '€0,80–€1,50 per call', '24/7', 'Geen kennis van uw bedrijf, alleen berichten aannemen'],
                   ['IVR-keuzemenu', '€20–€80', '24/7', 'Frustrerende menus, geen echte afhandeling'],
@@ -239,9 +239,9 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
               </thead>
               <tbody class="divide-y divide-slate-100">
                 {[
-                  ['Answer rate', 'Percentage opgenomen oproepen', '> 98%'],
-                  ['Containment rate', 'Gesprekken afgehandeld zonder escalatie', '70–85%'],
-                  ['Escalatieratio', 'Doorverbonden naar mens', '15–25% (dalend)'],
+                  ['Answer rate', 'Percentage opgenomen oproepen', 'Zo hoog mogelijk'],
+                  ['Containment rate', 'Gesprekken afgehandeld zonder escalatie', 'Eigen doel na nulmeting'],
+                  ['Escalatieratio', 'Doorverbonden naar mens', 'Hoger in het begin, dalend'],
                   ['Afspraak-conversie', 'Calls die tot een boeking leiden', 'Branchegebonden, meet baseline'],
                   ['Gemiddelde latency', 'Reactietijd AI per beurt', '< 1,5 sec'],
                 ].map(([k, w, s]) => (
@@ -254,7 +254,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
               </tbody>
             </table>
           </div>
-          <p class="text-slate-700 leading-relaxed mb-4">Reken de ROI concreet door. Stel: uw bedrijf mist 40 calls per maand. Met een conservatieve conversiekans van 20% en een gemiddelde klantwaarde van €900 vertegenwoordigt dat €7.200 aan misgelopen omzet. Een AI telefoonassistent die de helft van die calls converteert, levert €3.600 extra omzet per maand — ruim boven de abonnementskosten. Tel daar de bespaarde personeelskosten bij op en de terugverdientijd ligt voor de meeste MKB-bedrijven onder de twee maanden.</p>
+          <p class="text-slate-700 leading-relaxed mb-4">Reken de ROI concreet door. Stel: uw bedrijf mist 40 calls per maand. Met een conservatieve conversiekans van 20% en een gemiddelde klantwaarde van €900 vertegenwoordigt dat €7.200 aan misgelopen omzet. Een AI telefoonassistent die de helft van die calls converteert, levert €3.600 extra omzet per maand — ruim boven de abonnementskosten. Tel daar de bespaarde personeelskosten bij op en reken uit wanneer het zich terugverdient; dat hangt af van uw eigen cijfers.</p>
           <p class="text-slate-700 leading-relaxed mb-8">Belangrijk: meet eerst uw <strong>baseline</strong>. Hoeveel calls krijgt u nu, hoeveel mist u, en wat is uw huidige conversie? Veel bedrijven onderschatten het aantal gemiste oproepen omdat die simpelweg niet zichtbaar zijn in hun systeem. Een eenvoudige call-log-analyse over één maand maakt het lek meetbaar.</p>
 
           <h2 id="avg" class="text-2xl font-bold text-navy mt-10 mb-4">8. AVG, Gespreksopname en de EU AI Act</h2>
