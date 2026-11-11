@@ -10,7 +10,7 @@ const schema = {
   provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
   areaServed: 'NL',
   mainEntity: [
-    { '@type': 'Question', name: 'Welke zakelijke dienstverleners profiteren het meest van AI?', acceptedAnswer: { '@type': 'Answer', text: 'Adviesbureaus, consultants, interim-bureaus en zakelijke dienstverleners die veel telefonisch contact hebben of repetitieve administratieve taken uitvoeren. AI bespaart gemiddeld 8-12 uur per week per medewerker.' } },
+    { '@type': 'Question', name: 'Welke zakelijke dienstverleners profiteren het meest van AI?', acceptedAnswer: { '@type': 'Answer', text: 'Adviesbureaus, consultants, interim-bureaus en zakelijke dienstverleners die veel telefonisch contact hebben of repetitieve administratieve taken uitvoeren. Hoeveel tijd het scheelt hangt af van uw situatie; meet het zelf met uw eigen cijfers.' } },
   ],
 };
 ---
@@ -35,9 +35,9 @@ const schema = {
   </section>
   <section class="section-tight bg-slate-50 border-b border-slate-200">
     <div class="container-page">
-      <p class="text-xs text-slate-400 text-center mb-4">Indicatieve cijfers · resultaten verschillen per situatie</p>
+      <p class="text-xs text-slate-400 text-center mb-4">Geen gemeten cijfers · resultaten verschillen per situatie</p>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-        {[{v:'8–12 uur',l:'bespaard per week'},{v:'−70%',l:'tijd aan e-mailbeheer'},{v:'3×',l:'snellere offertes'},{v:'7 dgn',l:'time-to-live'}].map(s=>(
+        {[{v:'Minder',l:'tijd aan e-mailbeheer'},{v:'Sneller',l:'offertes'},{v:'Meer',l:'tijd voor advies'},{v:'7 dgn',l:'time-to-live'}].map(s=>(
           <div class="reveal"><p class="text-2xl font-bold text-navy">{s.v}</p><p class="text-xs text-slate-500 mt-1">{s.l}</p></div>
         ))}
       </div>
@@ -49,12 +49,12 @@ const schema = {
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">Uitdagingen in zakelijke dienstverlening</p>
         <h2 class="text-2xl font-bold text-navy mb-6">Waarom adviesbureaus en consultants vastlopen op administratie</h2>
-        <p class="text-slate-600 leading-relaxed mb-6">Zakelijke dienstverleners — adviesbureaus, consultants, interim-bureaus, accountants en juristen — hebben één ding gemeen: hun omzet hangt af van billable uren, maar gemiddeld 35–45% van de werkweek gaat op aan niet-factureerbare activiteiten. E-mails beantwoorden, offertes samenstellen, afspraken inplannen en rapportages produceren. AI lost precies dat op.</p>
+        <p class="text-slate-600 leading-relaxed mb-6">Zakelijke dienstverleners — adviesbureaus, consultants, interim-bureaus, accountants en juristen — hebben één ding gemeen: hun omzet hangt af van billable uren, maar een groot deel van de werkweek gaat op aan niet-factureerbare activiteiten. E-mails beantwoorden, offertes samenstellen, afspraken inplannen en rapportages produceren. AI lost precies dat op.</p>
       </div>
       <div class="space-y-5 reveal">
         {[
-          { title: 'E-mailbeheer kost consultants dagelijks 1,5–2 uur', body: 'Een gemiddeld adviesbureau ontvangt 60–120 e-mails per dag. De helft zijn statusvragen, vergaderverzoeken of informatieverzoeken die via een standaard antwoord beantwoord kunnen worden. AI verwerkt inkomende e-mails, categoriseert ze op prioriteit en stelt antwoorden op ter goedkeuring — of beantwoordt ze direct voor routinevragen.' },
-          { title: 'Offertes samenstellen duurt te lang voor het resultaat', body: 'Een offerte voor een standaard consultancyproject kost gemiddeld 2–4 uur per voorstel. Met AI worden offertes automatisch samengesteld op basis van het klantprofiel, scope en urentarief — inclusief standaard voorwaarden, deliverables en betalingstermijnen. Goedkeuring door de consultant is één klik.' },
+          { title: 'E-mailbeheer kost consultants dagelijks veel tijd', body: 'Een adviesbureau ontvangt dagelijks veel e-mails. Een groot deel zijn statusvragen, vergaderverzoeken of informatieverzoeken die via een standaard antwoord beantwoord kunnen worden. AI verwerkt inkomende e-mails, categoriseert ze op prioriteit en stelt antwoorden op ter goedkeuring — of beantwoordt ze direct voor routinevragen.' },
+          { title: 'Offertes samenstellen duurt te lang voor het resultaat', body: 'Een offerte voor een standaard consultancyproject kost vaak uren per voorstel. Met AI worden offertes automatisch samengesteld op basis van het klantprofiel, scope en urentarief — inclusief standaard voorwaarden, deliverables en betalingstermijnen. Goedkeuring door de consultant is één klik.' },
           { title: 'Rapportages en presentaties zijn repetitief maar tijdrovend', body: 'Maandelijkse statusrapportages, kwartaalpresentaties en voortgangsoverzichten worden bij veel bureaus handmatig samengesteld vanuit spreadsheets en projectdata. AI automatiseert het genereren van rapportages uit uw bestaande databronnen, inclusief grafieken en managementsamenvatting.' },
           { title: 'Klantopvolging en follow-up valt tussen de wal en het schip', body: 'In drukke projectfasen worden follow-up e-mails na offertes, kennismakingsgesprekken en afgeronde opdrachten vergeten. AI beheert automatisch een follow-up schema: na 3 werkdagen een herinnering, na 7 werkdagen een alternatief voorstel. Nooit meer een warme lead verloren door te late opvolging.' },
         ].map(item => (
@@ -111,7 +111,7 @@ const schema = {
             <p class="text-xs text-slate-500 mt-3 font-medium">— Voorbeeldscenario, zakelijke dienstverlening</p>
           </div>
           <div class="grid grid-cols-2 gap-3">
-            {[{v:'−60%',l:'admin-tijd'},{v:'3×',l:'sneller offertes'},{v:'+35%',l:'klanttevredenheid'},{v:'€62.000',l:'jaarlijkse besparing'}].map(s=>(
+            {[{v:'Minder',l:'admin-tijd'},{v:'Sneller',l:'offertes'},{v:'Hoger',l:'servicegevoel'},{v:'Eigen cijfers',l:'bereken uw besparing'}].map(s=>(
               <div class="bg-white border border-slate-200 rounded-xl p-4 text-center"><p class="text-xl font-bold text-brand-indigo">{s.v}</p><p class="text-xs text-slate-500 mt-1">{s.l}</p></div>
             ))}
           </div>

@@ -3,9 +3,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const faqItems = [
   { question: 'Kan AI echt mijn facturen verwerken?', answer: 'Ja. Moderne AI (met name LLM-modellen in combinatie met OCR) kan facturen lezen, leveranciersnamen extraheren, bedragen herkennen, btw-percentages berekenen en data importeren in uw boekhoudpakket. Aanloop AI bouwt dit met n8n en AI-extracitetools.' },
   { question: 'Met welke boekhoudpakketten werkt AI factuurautomatisering?', answer: 'Aanloop AI koppelt AI factuurverwerking met Exact Online, Snelstart, Moneybird, Twinfield, AFAS, QuickBooks en Xero. Via een API-koppeling of n8n-integratie.' },
-  { question: 'Hoe nauwkeurig is AI bij factuurverwerking?', answer: 'Moderne AI factuurverwerking haalt 97-99% nauwkeurigheid op gestructureerde facturen. Ongestructureerde facturen (handgeschreven of slecht opgemaakt) scoren iets lager. Twijfelgevallen worden automatisch geflagd voor menselijke review.' },
+  { question: 'Hoe nauwkeurig is AI bij factuurverwerking?', answer: 'Moderne AI factuurverwerking haalt op gestructureerde facturen de beste nauwkeurigheid. Ongestructureerde facturen (handgeschreven of slecht opgemaakt) scoren lager; meet dit met uw eigen facturen. Twijfelgevallen worden automatisch geflagd voor menselijke review.' },
   { question: 'Is AI factuurverwerking AVG-compliant?', answer: 'Ja, mits correct geconfigureerd. Aanloop AI gebruikt n8n self-hosted, waardoor factuurdata uitsluitend op uw eigen server wordt verwerkt — in Nederland. Er worden geen gegevens naar buitenlandse AI-providers gestuurd.' },
-  { question: 'Hoeveel kost AI factuurautomatisering?', answer: 'AI factuurautomatisering is onderdeel van een custom workflow via Aanloop AI. Kosten starten vanaf €4.500 eenmalig voor implementatie + €497/maand voor beheer en monitoring. De terugverdientijd is typisch 2-4 maanden.' }];
+  { question: 'Hoeveel kost AI factuurautomatisering?', answer: 'AI factuurautomatisering is onderdeel van een custom workflow via Aanloop AI. Kosten starten vanaf €4.500 eenmalig voor implementatie + €497/maand voor beheer en monitoring. Of en wanneer dat zich terugverdient hangt af van uw factuurvolume; reken het na met uw eigen cijfers.' }];
 const schema = { '@context': 'https://schema.org', '@type': 'Article', headline: 'Hoe Automatiseer je Je Facturering met AI? (Stap-voor-Stap Gids)', author: { '@id': 'https://aanloopai.nl/#organization' }, publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } }, datePublished: '2025-12-21', dateModified: '2026-05-21', inLanguage: 'nl-NL', articleSection: 'Finance & AI' };
 ---
 <BaseLayout title="Hoe Automatiseer je Je Facturering met AI? (Stap-voor-Stap)" description="Leer hoe u uw factuurverwerking automatiseert met AI en n8n. Van PDF-extractie tot automatisch boeken in Exact Online, stap-voor-stap uitgelegd." schema={[schema]} faqSchema={faqItems}>
@@ -49,12 +49,12 @@ const schema = { '@context': 'https://schema.org', '@type': 'Article', headline:
         ))}
       </div>
 
-      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Resultaten bij Nederlandse Bedrijven</h2>
+      <h2 class="text-2xl font-bold text-navy mt-10 mb-4">Wat u kunt verwachten</h2>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {[
-          { n: '85%', l: 'Tijdsbesparing', d: 'op factuurverwerking' },
-          { n: '< 0.5%', l: 'Foutenpercentage', d: 'vs 5-10% handmatig' },
-          { n: '€1.800', l: 'Besparing/maand', d: 'gemiddeld bij MKB' }].map(s => (
+                    { n: 'Minder', l: 'Handmatig werk', d: 'invoer en controle door AI voorbereid' },
+                    { n: 'Review', l: 'Twijfelgevallen', d: 'geflagd voor menselijke controle' },
+                    { n: 'Eigen cijfers', l: 'Besparing', d: 'uren x uurtarief, meet het zelf' }].map(s => (
           <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 text-center">
             <p class="text-3xl font-bold text-navy mb-1">{s.n}</p>
             <p class="text-sm font-medium text-slate-600">{s.l}</p>

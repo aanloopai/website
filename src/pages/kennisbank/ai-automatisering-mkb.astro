@@ -8,7 +8,7 @@ const faqItems = [
   { question: 'Hoe lang duurt het voordat AI automatisering live is?', answer: 'Afhankelijk van de complexiteit. Een standaard AI-agent (telefoon of WhatsApp) is bij Aanloop AI snel live: Emma Start zet u zelf op, Groei en Compleet gaan met begeleide opzet live. Een complexere workflow automatisering (meerdere systemen koppelen, branche-specifieke flows) duurt langer en hangt af van het aantal koppelingen. We adviseren altijd een gefaseerde aanpak: eerst één kanaal stabiel, daarna pas uitbreiden.' },
   { question: 'Is AI automatisering AVG-compliant?', answer: 'Aanloop AI werkt AVG-conform en sluit een verwerkersovereenkomst (art. 28 AVG) met u. Een deel van onze leveranciers zit buiten de EU (onder meer Cloudflare, ElevenLabs, OpenAI en Anthropic); doorgifte loopt via hun verwerkersovereenkomst (standaardcontractbepalingen en/of het EU-VS Data Privacy Framework). Per leverancier staat de locatie in het sub-verwerkersregister op /beveiliging/. Aanloop AI zelf heeft geen ISO 27001-, SOC 2- of NEN 7510-certificaat. De Autoriteit Persoonsgegevens publiceert hierover praktische richtlijnen voor het inzetten van algoritmes en AI.' },
   { question: 'Heb ik technische kennis nodig voor AI automatisering?', answer: 'Nee. Aanloop AI ontzorgt u volledig. Wij zorgen voor de technische implementatie, koppeling aan uw systemen en training van het AI-systeem. U hoeft alleen uw bedrijfsprocessen en wensen met ons te delen. Wel relevant: sinds februari 2025 verplicht de EU AI Act dat medewerkers die met AI werken een basis AI-geletterdheid hebben — een korte e-learning die wij standaard meeleveren.' },
-  { question: 'Wat is het verschil tussen AI automatisering en RPA (robotic process automation)?', answer: 'RPA volgt vaste, deterministische scripts — bijvoorbeeld bij elke e-mail met onderwerp factuur een veld kopiëren. AI automatisering begrijpt natuurlijke taal, intentie en context: een klant kan op meerdere manieren een afspraak vragen en de AI agent herkent dat. Voor MKB betekent dit dat AI automatisering 70-80% van de gevallen oplost, RPA slechts 30-40%. Wij combineren beide waar logisch: AI voor begrip, RPA-stappen voor harde regels.' },
+  { question: 'Wat is het verschil tussen AI automatisering en RPA (robotic process automation)?', answer: 'RPA volgt vaste, deterministische scripts — bijvoorbeeld bij elke e-mail met onderwerp factuur een veld kopiëren. AI automatisering begrijpt natuurlijke taal, intentie en context: een klant kan op meerdere manieren een afspraak vragen en de AI agent herkent dat. Voor MKB betekent dit dat AI automatisering een groter deel van de variabele gevallen oplost, terwijl RPA vooral geschikt is voor vaste, voorspelbare stappen. Wij combineren beide waar logisch: AI voor begrip, RPA-stappen voor harde regels.' },
   { question: 'Welke ROI mag ik verwachten van AI automatisering bij een MKB?', answer: 'De terugverdientijd verschilt per bedrijf en hangt af van het aantal gemiste telefoontjes, de uren die nu aan routinewerk opgaan en uw uurtarief. Reken het zo uit: wat kost een gemist telefoontje of een uur administratie u nu, en leg dat naast het abonnement (Emma Start €149/mnd, Groei €299/mnd, Compleet €497/mnd). 14 dagen niet goed betekent geld terug.' },
   { question: 'Vervangt AI automatisering mijn medewerkers?', answer: 'Nee, in de praktijk verschuift AI automatisering werk in plaats van het te schrappen. AI neemt de repetitieve, laagwaardige taken over — calls aannemen, facturen overtypen, standaardvragen beantwoorden — zodat uw medewerkers tijd overhouden voor advieswerk, complexe klantvragen en groei. Bij MKB-bedrijven met personeelskrapte is dit vaak het hoofdmotief: niet besparen op fte, maar bestaande mensen ontlasten en groeien zonder extra te werven.' },
   { question: 'Waarom mislukken AI-automatiseringsprojecten in het MKB?', answer: 'De drie meest voorkomende oorzaken zijn: (1) te veel tegelijk willen automatiseren in plaats van te beginnen met één proces; (2) een te dunne of verouderde kennisbank waardoor de AI onnauwkeurige antwoorden geeft; (3) geen meetbare KPI\'s vooraf, waardoor het project niet objectief beoordeeld kan worden. Onderzoek wijst uit dat een aanzienlijk deel van AI-projecten in het eerste jaar strandt — bijna altijd door implementatie-aanpak, zelden door de technologie zelf.' },
@@ -103,10 +103,10 @@ const speakableSchema = {
           <div class="bg-brand-indigo/5 border-l-4 border-brand-indigo rounded-r-xl p-6 mb-10">
             <p class="text-sm font-bold text-brand-indigo uppercase tracking-wide mb-3">Key Takeaways</p>
             <ul class="space-y-2 text-sm text-slate-700">
-              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> AI automatisering bespaart MKB-bedrijven gemiddeld 12 uur per week</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> AI automatisering kan routinewerk uit handen nemen; meet de tijdwinst met uw eigen cijfers</li>
               <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Meest geschikte processen: telefonie, e-mail, facturatie, afspraken</li>
               <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Geen technische kennis vereist — Aanloop AI ontzorgt volledig</li>
-              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Terugverdientijd gemiddeld 3–6 maanden</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Terugverdientijd hangt af van uw volume en kosten; reken het na</li>
               <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Start met een gratis AI scan om uw beste kansen te ontdekken</li>
             </ul>
           </div>
@@ -128,12 +128,12 @@ const speakableSchema = {
           </ul>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             {[
-              { icon: '📞', title: 'Telefonische klantenservice', desc: 'AI neemt inkomende calls aan, beantwoordt standaardvragen en plant afspraken in. 24/7, vloeiend Nederlands.', besparing: '15–25 uur/week' },
-              { icon: '📧', title: 'E-mail afhandeling', desc: 'Inkomende e-mails worden automatisch gecategoriseerd, geprioriteerd en beantwoord of doorgestuurd.', besparing: '5–10 uur/week' },
-              { icon: '📄', title: 'Factuurverwerking', desc: 'Inkomende facturen automatisch uitlezen, controleren en verwerken in uw boekhoudpakket (Exact, Twinfield).', besparing: '3–8 uur/week' },
-              { icon: '📅', title: 'Afsprakenbeheer', desc: 'Afspraken plannen, bevestigen, herinneren en herplannen — volledig automatisch via uw agenda.', besparing: '4–8 uur/week' },
-              { icon: '💬', title: 'WhatsApp klantenservice', desc: 'Directe antwoorden op veelgestelde vragen via WhatsApp. Geen wachttijd voor uw klanten.', besparing: '6–12 uur/week' },
-              { icon: '📊', title: 'Rapportage & data-invoer', desc: 'Automatisch rapporten genereren en data verwerken vanuit meerdere bronnen naar één systeem.', besparing: '3–6 uur/week' }].map(p => (
+              { icon: '📞', title: 'Telefonische klantenservice', desc: 'AI neemt inkomende calls aan, beantwoordt standaardvragen en plant afspraken in. 24/7, vloeiend Nederlands.', besparing: 'meet de tijdwinst zelf' },
+              { icon: '📧', title: 'E-mail afhandeling', desc: 'Inkomende e-mails worden automatisch gecategoriseerd, geprioriteerd en beantwoord of doorgestuurd.', besparing: 'meet de tijdwinst zelf' },
+              { icon: '📄', title: 'Factuurverwerking', desc: 'Inkomende facturen automatisch uitlezen, controleren en verwerken in uw boekhoudpakket (Exact, Twinfield).', besparing: 'meet de tijdwinst zelf' },
+              { icon: '📅', title: 'Afsprakenbeheer', desc: 'Afspraken plannen, bevestigen, herinneren en herplannen — volledig automatisch via uw agenda.', besparing: 'meet de tijdwinst zelf' },
+              { icon: '💬', title: 'WhatsApp klantenservice', desc: 'Directe antwoorden op veelgestelde vragen via WhatsApp. Geen wachttijd voor uw klanten.', besparing: 'meet de tijdwinst zelf' },
+              { icon: '📊', title: 'Rapportage & data-invoer', desc: 'Automatisch rapporten genereren en data verwerken vanuit meerdere bronnen naar één systeem.', besparing: 'meet de tijdwinst zelf' }].map(p => (
               <div class="bg-white border border-slate-200 rounded-xl p-5">
                 <div class="text-2xl mb-2">{p.icon}</div>
                 <p class="font-bold text-navy text-sm mb-1">{p.title}</p>
@@ -146,7 +146,7 @@ const speakableSchema = {
           </div>
 
           <h2 id="voordelen" class="text-2xl font-bold text-navy mt-10 mb-4">3. Voordelen & ROI van AI Automatisering</h2>
-          <p class="text-slate-700 leading-relaxed mb-6">Typische benchmarks voor AI-automatisering in het Nederlandse MKB:</p>
+          <p class="text-slate-700 leading-relaxed mb-6">Waar u op let bij AI-automatisering; de cijfers hangen af van uw eigen situatie:</p>
           <div class="overflow-x-auto mb-8">
             <table class="w-full text-sm border-collapse">
               <thead>
@@ -158,11 +158,11 @@ const speakableSchema = {
               </thead>
               <tbody class="divide-y divide-slate-100">
                 {[
-                  ['Gemiste calls', '23% van calls', '< 2% van calls'],
-                  ['Reactietijd e-mail', '4–24 uur', '< 5 minuten'],
-                  ['Factuurtijd per stuk', '8–12 minuten', '< 1 minuut (automatisch)'],
+                                    ['Gemiste calls', 'Hangt af van bezetting', 'Minder gemiste calls buiten kantooruren'],
+                                    ['Reactietijd e-mail', 'Afhankelijk van drukte', 'Directe eerste reactie mogelijk'],
+                                    ['Factuurtijd per stuk', 'Handmatig invoeren', 'Automatisch uitgelezen en voorgesteld'],
                   ['Bereikbaarheid', 'Ma–vr 9–17u', '24/7 · 365 dagen'],
-                  ['Kostenstructuur', '€2.000–€4.000/maand personeel', '€149–€497/maand AI']].map(([k, v, a]) => (
+                                    ['Kostenstructuur', 'Loonkosten personeel', '€149–€497/maand AI']].map(([k, v, a]) => (
                   <tr>
                     <td class="py-3 pr-4 font-medium text-slate-700">{k}</td>
                     <td class="py-3 px-4 text-slate-500">{v}</td>
@@ -213,13 +213,13 @@ const speakableSchema = {
           </div>
 
           <h2 id="voorbeelden" class="text-2xl font-bold text-navy mt-10 mb-4">6. Voorbeeld-impact per sector (illustratieve berekeningen)</h2>
-          <p class="text-sm text-slate-500 italic mb-4">Onderstaande cijfers zijn typische sector-benchmarks op basis van uurtarieven en gemiddeld inkomend volume in het Nederlandse MKB — geen specifieke klant-cases. Echte klantresultaten verschijnen wanneer reviews via Google Bedrijfsprofiel beschikbaar zijn.</p>
+          <p class="text-sm text-slate-500 italic mb-4">Onderstaande voorbeelden zijn indicatieve profielen, geen gemeten resultaten en geen specifieke klant-cases. Echte klantresultaten verschijnen wanneer reviews via Google Bedrijfsprofiel beschikbaar zijn.</p>
           <div class="space-y-4 mb-8">
             {[
-              { titel: 'Installatiebedrijven (typisch profiel)', resultaat: 'AI-telefoonassistent kan circa 70% van inkomende routine-calls overnemen (offerte-aanvragen, monteur-planning). Indicatieve besparing: 20-25 uur per week aan administratief telefoonwerk.', link: '/sectoren/bouw/' },
-              { titel: 'Makelaars en vastgoedbureaus (typisch profiel)', resultaat: 'AI-agent plant bezichtigingen en doet eerste lead-kwalificatie (BANT-vragen). Indicatie: 60-70% minder gemiste calls buiten kantooruren, 10-15 extra warme leads per maand.', link: '/sectoren/vastgoed/' },
-              { titel: 'Restaurants en horeca (typisch profiel)', resultaat: 'WhatsApp-AI voor reserveringen kan 80-90% van boekingen autonoom afhandelen, met directe agenda-blokkering om dubbele boekingen te voorkomen.', link: '/sectoren/horeca/' },
-              { titel: 'Logistiek en transport (typisch profiel)', resultaat: 'Automatische track-and-trace updates via WhatsApp reduceren inkomende status-vragen typisch met 35-45%.', link: '/sectoren/logistiek/' }].map(ex => (
+              { titel: 'Installatiebedrijven (typisch profiel)', resultaat: 'AI-telefoonassistent kan een deel van de inkomende routine-calls overnemen (offerte-aanvragen, monteur-planning); meet de tijdwinst zelf met een nulmeting.', link: '/sectoren/bouw/' },
+              { titel: 'Makelaars en vastgoedbureaus (typisch profiel)', resultaat: 'AI-agent plant bezichtigingen en doet eerste lead-kwalificatie (BANT-vragen). Indicatie: minder gemiste calls buiten kantooruren en meer warme leads; meet het effect zelf met een nulmeting.', link: '/sectoren/vastgoed/' },
+              { titel: 'Restaurants en horeca (typisch profiel)', resultaat: 'WhatsApp-AI voor reserveringen kan een groot deel van de boekingen autonoom afhandelen, met directe agenda-blokkering om dubbele boekingen te voorkomen.', link: '/sectoren/horeca/' },
+              { titel: 'Logistiek en transport (typisch profiel)', resultaat: 'Automatische track-and-trace updates via WhatsApp kunnen het aantal inkomende status-vragen verminderen; meet het effect zelf.', link: '/sectoren/logistiek/' }].map(ex => (
               <div class="bg-white border border-slate-200 rounded-xl p-5">
                 <p class="font-bold text-navy text-sm mb-2">{ex.titel}</p>
                 <p class="text-sm text-slate-600 mb-3">{ex.resultaat}</p>
@@ -254,7 +254,7 @@ const speakableSchema = {
               </tbody>
             </table>
           </div>
-          <p class="text-slate-700 leading-relaxed mb-4">De kosten worden pas betekenisvol naast de baten. Hieronder een illustratief rekenvoorbeeld voor een MKB-bedrijf dat een AI-receptionist inzet op het Compleet-pakket, €497/maand (onbeperkt volume). De cijfers zijn sector-benchmarks op basis van gangbare uurtarieven — geen specifieke klant-case.</p>
+          <p class="text-slate-700 leading-relaxed mb-4">De kosten worden pas betekenisvol naast de baten. Hieronder een illustratief rekenvoorbeeld voor een MKB-bedrijf dat een AI-receptionist inzet op het Compleet-pakket, €497/maand (onbeperkt volume). De tabel noemt geen gemeten cijfers en is geen specifieke klant-case; vul uw eigen cijfers in.</p>
           <div class="overflow-x-auto mb-6">
             <table class="w-full text-sm border-collapse">
               <thead>
@@ -266,12 +266,12 @@ const speakableSchema = {
               </thead>
               <tbody class="divide-y divide-slate-100">
                 {[
-                  ['Inkomende calls afgehandeld', '~60% (rest gemist)', '~95%'],
-                  ['Tijd aan telefoon-administratie', '15–25 uur/week', '3–6 uur/week'],
-                  ['Loonkosten 1 fte receptie (indicatief)', '€2.800–€3.800/mnd', '€497/mnd abonnement (Compleet)'],
+                                    ['Inkomende calls afgehandeld', 'Buiten kantooruren gemist', 'Ook buiten kantooruren opgenomen'],
+                                    ['Tijd aan telefoon-administratie', 'Handmatig noteren en terugbellen', 'Samenvattingen automatisch'],
+                                    ['Loonkosten 1 fte receptie', 'Afhankelijk van cao en uren', '€497/mnd abonnement (Compleet)'],
                   ['Beschikbaarheid', 'Ma–vr 9–17u', '24/7 · 365 dagen'],
-                  ['Geschatte netto besparing', '—', '€1.800–€3.000/mnd'],
-                  ['Terugverdientijd', '—', '3–6 maanden']].map(([p, z, m]) => (
+                                    ['Netto besparing', '—', 'Hangt af van uw eigen cijfers'],
+                                    ['Terugverdientijd', '—', 'Reken na met uw eigen cijfers']].map(([p, z, m]) => (
                   <tr>
                     <td class="py-3 pr-4 font-medium text-slate-700">{p}</td>
                     <td class="py-3 px-4 text-slate-500">{z}</td>
@@ -282,7 +282,7 @@ const speakableSchema = {
             </table>
           </div>
           <p class="text-slate-700 leading-relaxed mb-4">De ROI zit zelden alleen in directe loonkostenbesparing. Drie indirecte effecten wegen vaak zwaarder: <strong>minder gemiste omzet</strong> (een gemiste call is een gemiste opdracht), <strong>snellere reactietijden</strong> die de conversie verhogen, en <strong>ontlasting van bestaand personeel</strong> waardoor u kunt groeien zonder extra te werven — relevant op de krappe Nederlandse arbeidsmarkt. De Kamer van Koophandel biedt MKB-ondernemers <a href="https://www.kvk.nl/digitalisering/" target="_blank" rel="external" class="text-brand-indigo underline hover:text-navy">praktische handvatten voor digitalisering</a> die helpen bij het opbouwen van zo'n businesscase.</p>
-          <p class="text-slate-700 leading-relaxed mb-8">Een gezonde vuistregel: als een proces u meer dan 12–15 uur per maand kost, is de break-even op een Compleet-abonnement (€497/mnd) realistisch binnen het eerste kwartaal. Op een lichter Groei- (€299/mnd) of Start-abonnement (€149/mnd) ligt die drempel nog lager. Elk pakket: 14 dagen niet goed, geld terug.</p>
+          <p class="text-slate-700 leading-relaxed mb-8">Een gezonde vuistregel: reken uit wat het proces u per maand kost (uren x uurtarief) en zet dat naast het abonnement: Compleet €497/mnd, Groei €299/mnd of Start €149/mnd. Op een lichter abonnement ligt die drempel lager. Elk pakket: 14 dagen niet goed, geld terug.</p>
 
           <h2 id="valkuilen" class="text-2xl font-bold text-navy mt-10 mb-4">8. De Vier Grootste Valkuilen — en Hoe u ze Vermijdt</h2>
           <p class="text-slate-700 leading-relaxed mb-6">AI-technologie faalt zelden; AI-projecten wél. Onderzoek naar AI-adoptie in het MKB laat consistent zien dat een aanzienlijk deel van de trajecten binnen het eerste jaar strandt — bijna altijd door implementatiekeuzes, niet door de techniek. Dit zijn de vier valkuilen die wij het vaakst tegenkomen.</p>
