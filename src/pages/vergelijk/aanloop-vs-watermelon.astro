@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { EMMA_MND, EMMA_TELEFOON_NAAM, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../../data/pricing';
+import { START_MND, GROEI_MND, EMMA_TELEFOON_NAAM, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../../data/pricing';
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -24,20 +24,20 @@ const comparison = [
   { feature: 'Type oplossing', a: 'Full-service AI-bureau (build + run)', b: 'Self-service chatbot-platform' },
   { feature: 'Kanalen', a: `${EMMA_TELEFOON_NAAM} (WhatsApp inbegrepen), web-chat, e-mail, SMS`, b: 'Web-chat, WhatsApp, Facebook, Instagram' },
   { feature: 'Telefoon-AI (voice)', a: 'Ja - Emma met natuurlijk Nederlands accent', b: 'Nee (alleen tekst-kanalen)' },
-  { feature: 'Startprijs per maand', a: `${EMMA_MND} (${EMMA_TELEFOON_NAAM}, incl. WhatsApp — geen chat-only instap meer)`, b: 'Vanaf circa 250 euro (Starter pakket, chat-only)' },
-  { feature: 'Doorlooptijd live-gang', a: '7 werkdagen, volledig opgezet', b: 'Self-service: snel; met expert-hulp 4-6 weken' },
+  { feature: 'Startprijs per maand', a: `Vanaf ${START_MND} (telefoon); WhatsApp vanaf ${GROEI_MND}`, b: 'Vanaf circa 250 euro (Starter pakket, chat-only)' },
+  { feature: 'Doorlooptijd live-gang', a: 'Groei en Compleet: opzet door ons team; Start is self-serve', b: 'Self-service: snel; met expert-hulp 4-6 weken' },
   { feature: 'Nederlands NLU', a: 'Native NL-tuning per sector', b: 'NL-ondersteund, generiek getraind' },
   { feature: 'Custom workflows', a: 'Onbeperkt (n8n + Make.com onder de motorkap)', b: 'Beperkt tot platform-templates en flow-builder' },
   { feature: 'CRM-integraties standaard', a: 'HubSpot, Salesforce, Pipedrive, AFAS, Exact, Twinfield', b: 'HubSpot, Salesforce, Pipedrive (basis)' },
-  { feature: 'Datalokatie', a: 'EU-only (Hetzner/AWS Frankfurt)', b: 'EU-region beschikbaar (op aanvraag)' },
-  { feature: 'AVG/GDPR-conform out-of-the-box', a: 'Ja, verwerkersovereenkomst standaard', b: 'Ja' },
-  { feature: 'NEN 7510 (zorg)', a: 'Ja (zorg-add-on)', b: 'Niet standaard, maatwerk vereist' },
+  { feature: 'Datalokatie', a: 'Hetzner (Nuremberg), Cloudflare (VS); sub-verwerkers op /beveiliging/', b: 'EU-region beschikbaar (op aanvraag)' },
+  { feature: 'AVG/GDPR-conform out-of-the-box', a: 'Verwerkersovereenkomst (art. 28); transfers buiten EU via SCC/DPF', b: 'Ja' },
+  { feature: 'NEN 7510 (zorg)', a: 'Geen certificaat; NEN 7510-bewuste opzet op verzoek', b: 'Niet standaard, maatwerk vereist' },
   { feature: 'Setup-hulp', a: 'Volledig done-for-you door specialist', b: 'Self-service met optionele consultancy' },
   { feature: 'Beste voor', a: 'MKB dat snel resultaat wil zonder zelf te bouwen', b: 'Bedrijven met eigen tech-team en tijd voor self-build' },
 ];
 
 const useCases = [
-  { sector: 'Huisartsenpraktijk', kies: 'Aanloop AI', reden: 'Telefoon (Emma) is het primaire kanaal voor patienten. Watermelon biedt geen voice. Aanloop levert NEN 7510-conforme zorg-implementatie.' },
+  { sector: 'Huisartsenpraktijk', kies: 'Aanloop AI', reden: 'Telefoon (Emma) is het primaire kanaal voor patienten. Watermelon biedt geen voice. Aanloop biedt op verzoek een NEN 7510-bewuste opzet (certificering ligt bij uw eigen praktijk).' },
   { sector: 'E-commerce / webshop', kies: 'Beide kunnen', reden: 'Watermelon werkt goed voor pure web-chat. Aanloop wint bij hoge volumes WhatsApp + telefoon-combinatie.' },
   { sector: 'Installatiebedrijf', kies: 'Aanloop AI', reden: 'Spoed komt via telefoon - Emma beantwoordt 24/7. Watermelon mist dit kanaal volledig.' },
   { sector: 'Reisbureau', kies: 'Aanloop AI', reden: 'Itinerary-vragen en boekingsstatus via WhatsApp + telefoon-spoed. Done-for-you implementatie scheelt weken.' },
@@ -58,15 +58,15 @@ const faqs = [
   },
   {
     q: 'Welke kost minder per maand?',
-    a: `Voor pure chat is Watermelon Starter (circa 250 euro/maand) goedkoper. Aanloop AI verkoopt WhatsApp niet meer als los, goedkoper instapabonnement — ${EMMA_TELEFOON_NAAM} start vanaf ${EMMA_MND} en levert daarvoor telefoon + WhatsApp samen. Heeft u alléén chat nodig, dan is Watermelon op prijs de logische keuze; wilt u ook de telefoon opgenomen, dan is Aanloop AI all-in goedkoper dan losse telefonie + chatbot naast elkaar.`,
+    a: `Voor pure chat is Watermelon Starter (circa 250 euro/maand) goedkoper. Aanloop AI verkoopt WhatsApp niet meer als los, goedkoper instapabonnement — ${EMMA_TELEFOON_NAAM} start vanaf ${START_MND} (WhatsApp vanaf ${GROEI_MND}) en levert daarvoor telefoon + WhatsApp samen. Heeft u alléén chat nodig, dan is Watermelon op prijs de logische keuze; wilt u ook de telefoon opgenomen, dan is Aanloop AI all-in goedkoper dan losse telefonie + chatbot naast elkaar.`,
   },
   {
     q: 'Welke is sneller live?',
-    a: 'Watermelon kan in een paar dagen self-service live, mits u de tijd heeft om zelf te bouwen. Aanloop AI levert volledig opgezet binnen 7 werkdagen - zonder eigen werk.',
+    a: 'Watermelon kan in een paar dagen self-service live, mits u de tijd heeft om zelf te bouwen. Bij Aanloop AI doet ons team in Groei en Compleet de opzet - zonder eigen werk.',
   },
   {
     q: 'Welke is AVG-proof voor zorg?',
-    a: 'Aanloop AI heeft NEN 7510-conforme zorg-add-on standaard. Watermelon is AVG-conform maar NEN 7510 vereist maatwerk-overeenkomsten.',
+    a: 'Aanloop AI heeft geen NEN 7510-certificaat; we bieden op verzoek een NEN 7510-bewuste opzet en een verwerkersovereenkomst. Vraag bij Watermelon zelf na wat zij voor zorg bieden.',
   },
 ];
 
@@ -159,8 +159,8 @@ const combinedSchema = [articleSchema, faqSchema];
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-6">Wanneer Aanloop AI, wanneer Watermelon?</h2>
       <p class="text-slate-700 leading-relaxed mb-4">Watermelon is een sterke keuze als u al een eigen technisch team heeft en de tijd om zelf een chatbot in te richten - vooral voor pure web-chat use-cases. Hun flow-builder en template-bibliotheek zijn solide.</p>
-      <p class="text-slate-700 leading-relaxed mb-4">Aanloop AI is sterker als u (a) telefoon-AI nodig heeft naast chat, (b) snel resultaat wilt zonder zelf te bouwen, of (c) sector-specifieke compliance vereist (NEN 7510 voor zorg, Wwft voor advocatuur).</p>
-      <p class="text-slate-700 leading-relaxed mb-4">In de praktijk: Watermelon dekt 60-70 procent van een MKB-klantcontact-flow goed. Aanloop AI dekt 95 procent inclusief telefoon, voice, en custom workflows.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Aanloop AI is sterker als u (a) telefoon-AI nodig heeft naast chat, (b) snel resultaat wilt zonder zelf te bouwen, of (c) sector-specifieke compliance vereist (NEN 7510-bewuste opzet voor zorg op verzoek, Wwft voor advocatuur).</p>
+      <p class="text-slate-700 leading-relaxed mb-4">In de praktijk: Watermelon richt zich op chat; Aanloop AI voegt telefoon, voice en workflows op maat toe.</p>
       <div class="mt-8 flex flex-wrap gap-3">
         <a href={EMMA_TELEFOON_URL} class="btn-secondary">Meer over Emma (telefoon-AI)</a>
         <a href={EMMA_WHATSAPP_URL} class="btn-secondary">Meer over Emma (WhatsApp inbegrepen)</a>

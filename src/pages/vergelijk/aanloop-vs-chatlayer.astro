@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { EMMA_MND, EMMA_TELEFOON_NAAM, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../../data/pricing';
+import { START_MND, GROEI_MND, EMMA_TELEFOON_NAAM, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../../data/pricing';
 
 const articleSchema = {
   '@context': 'https://schema.org',
@@ -27,22 +27,22 @@ const comparison = [
   { feature: 'Telefoon-AI (voice)', a: 'Ja - Emma', b: 'Beperkt; Sinch-voice apart product' },
   { feature: 'WhatsApp Business', a: `Ja - inbegrepen bij ${EMMA_TELEFOON_NAAM}`, b: 'Ja - via Sinch-channels' },
   { feature: 'Web-chat', a: 'Ja, snel deploybaar widget', b: 'Ja, geavanceerde flow-builder' },
-  { feature: 'Startprijs', a: `${EMMA_MND} (${EMMA_TELEFOON_NAAM}, incl. WhatsApp)`, b: 'Vanaf circa 1.500 euro/maand (enterprise tier)' },
-  { feature: 'Doorlooptijd', a: '7 werkdagen', b: '6-12 weken (enterprise project)' },
+  { feature: 'Startprijs', a: `Vanaf ${START_MND} (telefoon); WhatsApp vanaf ${GROEI_MND}`, b: 'Vanaf circa 1.500 euro/maand (enterprise tier)' },
+  { feature: 'Doorlooptijd', a: 'Productized; planning vooraf', b: '6-12 weken (enterprise project)' },
   { feature: 'Nederlands NLU', a: 'Native NL, sector-tuned', b: 'NL-ondersteund, vereist eigen training' },
   { feature: 'Integraties', a: 'HubSpot, Salesforce, Pipedrive, AFAS, Exact, Twinfield', b: 'API-first, werkt met alles maar vereist build' },
-  { feature: 'EU-data', a: 'EU-only standaard (Hetzner/AWS Frankfurt)', b: 'EU-region beschikbaar' },
+  { feature: 'EU-data', a: 'Verwerkersovereenkomst; leveranciers en locatie openbaar op /beveiliging/', b: 'EU-region beschikbaar' },
   { feature: 'Beste voor', a: 'MKB met snelheid + budget < 1.500/mnd', b: 'Enterprise met eigen IT-team en complex architectuur' },
 ];
 
 const useCases = [
-  { sector: 'MKB e-commerce (10-50 mensen)', kies: 'Aanloop AI', reden: 'Chatlayer is overkill qua functionaliteit en budget. Emma dekken 90 procent van de behoefte voor een fractie van de prijs.' },
+  { sector: 'MKB e-commerce (10-50 mensen)', kies: 'Aanloop AI', reden: 'Chatlayer is overkill qua functionaliteit en budget. Emma dekt de meeste behoeften voor een fractie van de prijs.' },
   { sector: 'Multinational (1000+ FTE)', kies: 'Chatlayer', reden: 'Enterprise IT-stack, multi-land, eigen developers - Chatlayer is gebouwd voor deze schaal en complexiteit.' },
-  { sector: 'Huisartsenpraktijk', kies: 'Aanloop AI', reden: 'NEN 7510-zorg-add-on standaard. Chatlayer vereist maatwerk-architectuur voor zorgcompliance.' },
+  { sector: 'Huisartsenpraktijk', kies: 'Aanloop AI', reden: 'NEN 7510-bewuste opzet op verzoek (certificering bij uw eigen praktijk). Chatlayer vereist maatwerk-architectuur voor zorgcompliance.' },
   { sector: 'B2B SaaS startup', kies: 'Beide opties', reden: 'Met eigen developers kunt u Chatlayer als bouwblok gebruiken. Voor snelle GTM is Aanloop sneller.' },
   { sector: 'Retailketen 50+ vestigingen', kies: 'Chatlayer', reden: 'Multi-store routing, complex agent-handover, 24/7 callcenter-integratie - enterprise-grade.' },
   { sector: 'Restaurant met 1-3 vestigingen', kies: 'Aanloop AI', reden: 'Eenvoudige reservering + WhatsApp. Chatlayer is overengineering.' },
-  { sector: 'Notariskantoor', kies: 'Aanloop AI', reden: 'Vertrouwelijke intake via Emma-telefoon, AVG-conform out-of-the-box.' },
+  { sector: 'Notariskantoor', kies: 'Aanloop AI', reden: 'Vertrouwelijke intake via Emma-telefoon, AVG-conform werken met verwerkersovereenkomst.' },
   { sector: 'Telecom of bank', kies: 'Chatlayer', reden: 'Compliance-frameworks, audit-trails, multi-channel governance - enterprise vereist.' },
 ];
 
@@ -57,11 +57,11 @@ const faqs = [
   },
   {
     q: 'Wat is het prijsverschil concreet?',
-    a: `${EMMA_TELEFOON_NAAM} (incl. WhatsApp) start vanaf ${EMMA_MND}, geen los WhatsApp-tarief. Chatlayer enterprise contracten beginnen rond 1.500 euro/maand exclusief implementatie-budget van 20-50K eenmalig.`,
+    a: `${EMMA_TELEFOON_NAAM} start vanaf ${START_MND} (telefoon); WhatsApp zit in Groei (${GROEI_MND}) en Compleet, geen los WhatsApp-tarief. Chatlayer enterprise contracten beginnen rond 1.500 euro/maand exclusief implementatie-budget van 20-50K eenmalig.`,
   },
   {
     q: 'Welke is sneller live?',
-    a: 'Aanloop levert in 7 werkdagen. Chatlayer enterprise-implementaties duren typisch 6-12 weken vanwege scope en governance.',
+    a: 'Aanloop AI werkt productized en geeft vooraf een planning. Chatlayer enterprise-implementaties duren typisch 6-12 weken vanwege scope en governance.',
   },
   {
     q: 'Welke heeft betere Nederlandstalige ondersteuning?',
@@ -157,8 +157,8 @@ const combinedSchema = [articleSchema, faqSchema];
   <section class="section">
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy mb-6">Wanneer Aanloop AI, wanneer Chatlayer?</h2>
-      <p class="text-slate-700 leading-relaxed mb-4">Chatlayer is gebouwd voor enterprise-schaal: multi-land, multi-channel, complexe governance, integraties met SAP/Oracle/Salesforce-stacks. Een MKB-bedrijf gebruikt typisch 10-15 procent van de functionaliteit en betaalt 5-10x meer.</p>
-      <p class="text-slate-700 leading-relaxed mb-4">Aanloop AI is gebouwd voor Nederlands MKB: snelle implementatie, sector-specifieke templates, voorspelbare maandprijs. Voor 95 procent van de MKB-bedrijven is dit de juiste keuze.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Chatlayer is gebouwd voor enterprise-schaal: multi-land, multi-channel, complexe governance, integraties met SAP/Oracle/Salesforce-stacks. Een MKB-bedrijf gebruikt doorgaans maar een deel van de functionaliteit en betaalt er veel voor.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Aanloop AI is gebouwd voor Nederlands MKB: snelle implementatie, sector-specifieke templates, voorspelbare maandprijs. Voor de meeste MKB-bedrijven is dit de juiste keuze.</p>
       <p class="text-slate-700 leading-relaxed mb-4">Vuistregel: heeft u een eigen IT-afdeling van 5+ FTE en budget van 20K+ voor implementatie? Overweeg Chatlayer. Anders: Aanloop AI.</p>
       <div class="mt-8 flex flex-wrap gap-3">
         <a href={EMMA_TELEFOON_URL} class="btn-secondary">Emma - telefoon-AI</a>
