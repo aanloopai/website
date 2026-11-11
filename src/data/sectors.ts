@@ -55,7 +55,7 @@ export const sectors: Sector[] = [
       { title: 'Voorraadprognose', description: 'Custom AI die uw historische data analyseert en wekelijkse inkoop-suggesties geeft per ingrediënt.' },
     ],
     caseExample: {
-      company: 'Voorbeeldscenario',
+      company: 'Fictief voorbeeld',
       location: 'Scheveningen',
       quote: 'In een druk restaurant worden avondreserveringen vaak gemist tijdens piekuren. Een AI-receptionist neemt ze aan terwijl het team serveert.',
       metrics: [
@@ -90,7 +90,7 @@ export const sectors: Sector[] = [
       { title: 'Route-suggesties via AI', description: 'Custom workflow die historische data + verkeer + werkdrukte combineert voor dagelijkse routesuggesties.' },
     ],
     caseExample: {
-      company: 'Voorbeeldscenario',
+      company: 'Fictief voorbeeld',
       location: 'Vlaardingen',
       quote: 'Logistieke bedrijven krijgen veel "waar is mijn zending?"-vragen. Een WhatsApp-AI handelt die direct af, zodat de planner tijd houdt om te plannen.',
       metrics: [
@@ -125,7 +125,7 @@ export const sectors: Sector[] = [
       { title: 'Telefoon screening', description: 'Emma vangt cold-callers van verkopende makelaars af, registreert details voor terugbel-batch.' },
     ],
     caseExample: {
-      company: 'Voorbeeldscenario',
+      company: 'Fictief voorbeeld',
       location: 'Utrecht',
       quote: 'Snelheid bepaalt de conversie op vastgoed-leads. Een AI-receptionist belt nieuwe leads direct terug, ook tijdens andere gesprekken.',
       metrics: [
@@ -160,7 +160,7 @@ export const sectors: Sector[] = [
       { title: 'Multi-platform inbox', description: 'Vragen van Bol, Marktplaats, eigen shop, Instagram en e-mail komen in één AI-beheerde inbox.' },
     ],
     caseExample: {
-      company: 'Voorbeeldscenario',
+      company: 'Fictief voorbeeld',
       location: 'Rotterdam',
       quote: 'Klantenservice-teams verwerken veel repetitieve tickets. Een WhatsApp-AI vangt de standaardvragen op, zodat mensen zich op de complexe richten.',
       metrics: [
@@ -195,7 +195,7 @@ export const sectors: Sector[] = [
       { title: 'Emma voor inbound calls', description: 'Emma filtert sales-calls weg en plant alleen serieuze cliënt-calls in uw agenda.' },
     ],
     caseExample: {
-      company: 'Voorbeeldscenario',
+      company: 'Fictief voorbeeld',
       location: 'Den Haag',
       quote: 'Niet-declarabele intakes kosten zakelijke dienstverleners tijd. Een AI doet de intake en levert een samenvatting, zodat partners declarabel blijven.',
       metrics: [
@@ -230,7 +230,7 @@ export const sectors: Sector[] = [
       { title: 'Beveiligde EU-verwerking', description: 'Alle data binnen EU (Frankfurt of Amsterdam), NEN 7510 add-on indien van toepassing, verwerkersovereenkomst beschikbaar.' },
     ],
     caseExample: {
-      company: 'Voorbeeldscenario',
+      company: 'Fictief voorbeeld',
       location: 'Rotterdam',
       quote: 'In de ochtendpiek staat de telefoon roodgloeiend. Een AI-receptionist neemt niet-spoedvragen af, zodat de assistent de wachtkamer kan bedienen.',
       metrics: [
@@ -266,7 +266,7 @@ export const sectors: Sector[] = [
       { title: 'Offerte-intake', description: 'Aanvragen voor banden, reparatie of inruil worden gestructureerd vastgelegd en naar uw systeem gerouteerd.' },
     ],
     caseExample: {
-      company: 'Voorbeeldscenario',
+      company: 'Fictief voorbeeld',
       location: 'Apeldoorn',
       quote: 'Een garage met 6 bruggen mist op drukke dagen telefoontjes omdat iedereen in de werkplaats staat. Een AI-receptionist vangt ze op en houdt de planning vol.',
       metrics: [
@@ -302,7 +302,7 @@ export const sectors: Sector[] = [
       { title: 'Offerte-intake', description: 'Aanvragen onder een drempelbedrag automatisch gestructureerd vastgelegd voor snelle opvolging.' },
     ],
     caseExample: {
-      company: 'Voorbeeldscenario',
+      company: 'Fictief voorbeeld',
       location: 'Utrecht',
       quote: 'Een installatiebedrijf verliest avond- en weekendspoed omdat niemand opneemt. Emma filtert spoed en zet die direct door naar de monteur van dienst.',
       metrics: [
@@ -338,7 +338,7 @@ export const sectors: Sector[] = [
       { title: 'Multi-channel afspraken', description: 'Telefoon, WhatsApp en Instagram-DM komen samen — geen gemiste boeking meer.' },
     ],
     caseExample: {
-      company: 'Voorbeeldscenario',
+      company: 'Fictief voorbeeld',
       location: 'Haarlem',
       quote: 'Een drukke salon mist telefoontjes tijdens behandelingen. Emma neemt ze aan en boekt direct, Emma stuurt reminders zodat stoelen niet leeg blijven.',
       metrics: [
@@ -373,7 +373,7 @@ export const sectors: Sector[] = [
       { title: 'Administratie-automatisering', description: 'Opzeg-, pauze- en wijzigingsverzoeken gestructureerd naar uw systeem.' },
     ],
     caseExample: {
-      company: 'Voorbeeldscenario',
+      company: 'Fictief voorbeeld',
       location: 'Eindhoven',
       quote: 'Een sportschool mist proefles-aanvragen die ’s avonds binnenkomen. Emma beantwoordt vragen en plant proeflessen in, ook als de balie dicht is.',
       metrics: [
@@ -408,7 +408,7 @@ export const sectors: Sector[] = [
       { title: 'Vacaturevragen 24/7', description: 'Veelgestelde vragen over functies, uren en voorwaarden automatisch beantwoord.' },
     ],
     caseExample: {
-      company: 'Voorbeeldscenario',
+      company: 'Fictief voorbeeld',
       location: 'Rotterdam',
       quote: 'Een uitzendbureau verliest kandidaten doordat recruiters in gesprek zijn. Emma staat elke beller te woord, screent voor en plant intakes in.',
       metrics: [
@@ -443,7 +443,7 @@ export const sectors: Sector[] = [
       { title: 'Vragen 24/7', description: 'Standaardvragen over pakketten, prijzen en voorwaarden automatisch beantwoord.' },
     ],
     caseExample: {
-      company: 'Voorbeeldscenario',
+      company: 'Fictief voorbeeld',
       location: 'Groningen',
       quote: 'Een rijschool mist aanmeldingen tijdens lessen. Emma neemt ze aan en plant proeflessen in, Emma stuurt lesherinneringen tegen no-shows.',
       metrics: [
