@@ -14,6 +14,7 @@ export const PATTERNS = [
   ['pct-van-volume', new RegExp(String.raw`(?<![\d.,])${PCT}\s+van\s+de\s+(?:oproepen|telefoontjes|vragen|gesprekken|calls|aanvragen|tickets|leads|bellers|berichten|e-?mails|afspraken|klantvragen|routinevragen|no-shows|bezoekers)\b`, 'gi')],
   ['x-meer', new RegExp(String.raw`(?<![\d.,])${NUM}(?:\s?[-–]\s?${NUM})?\s?x\s+(?:meer|beter|sneller|vaker|zo)\b`, 'gi')],
   ['roi-van', /\bROI\s+(?:van|of)\s+(?:ca\.?\s*)?[\d€]/gi],
+  ['roi-multiple', /\bROI\b[^.<>\n]{0,40}?:\s*\d+(?:[.,]\d+)?\s?x\b/gi],
   ['roi-pct', new RegExp(String.raw`${PCT}\s+ROI\b`, 'gi')],
   ['terugverdientijd', /\bterugverdientijd\s+(?:van\s+)?(?:ca\.?\s*|circa\s+)?\d/gi],
   ['besparing-euro', /\bbespaar\w*\s+(?:u\s+)?(?:ca\.?\s*|circa\s+)?€\s?\d/gi],
