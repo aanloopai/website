@@ -38,11 +38,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Unit + guard tests
-        run: npm test
-
+      # 2026-11-11: build VOOR de tests. Guards die dist/ lezen (geo-citatie-
+      # standaard, faq-schema-visible, noindex-paths, discovery-*) skippen
+      # stilletjes als dist/ ontbreekt - zo bleef regressie in CI onzichtbaar.
       - name: Build site
         run: npm run build
+
+      - name: Unit + guard tests (dist/ aanwezig)
+        run: npm test
 
       - name: Metadata guard (title ≤ 60, description 110–155, één H1)
         run: node scripts/check-meta.mjs

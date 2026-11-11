@@ -6,15 +6,19 @@ published: 2026-11-09
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
-updated: 2026-11-09
-bronnen: []
+updated: 2026-11-11
+bronnen: ["afm-adviseren", "ap-avg", "ec-ai-literacy"]
 faq:
-  - q: "Wat is AI adviessoftware?"
+  - q: "Wat is AI adviessoftware precies en wat doet het?"
     a: "AI adviessoftware is software die met kunstmatige intelligentie adviseurs ondersteunt bij het voorbereiden, onderbouwen en vastleggen van advies. De adviseur blijft verantwoordelijk voor de inhoud en het eindadvies."
   - q: "Is AI adviessoftware toegestaan voor financieel advies?"
     a: "Ja, maar de regels voor advies blijven gelden. Financiële adviseurs vallen onder de Wft en het toezicht van de AFM, en persoonsgegevens vallen onder de AVG. Laat uw inrichting en werkwijze daarom vooraf toetsen."
   - q: "Hoe begin ik met AI adviessoftware in een klein bedrijf?"
     a: "Kies één terugkerend proces, zoals het uitwerken van gesprekken. Test één tool met een klein team, leg vast wie de uitkomst controleert en evalueer na enkele weken of het echt tijd bespaart."
+  - q: "Is het nodig dat mijn medewerkers weten hoe ze AI veilig gebruiken?"
+    a: "Ja. De Europese AI-verordening vraagt organisaties die AI inzetten om te zorgen voor voldoende AI-geletterdheid van hun personeel, sinds 2 februari 2025. Leg vast wat medewerkers wel en niet in een AI-tool mogen invoeren."
+  - q: "Wie is verantwoordelijk voor de uitkomst van AI adviessoftware?"
+    a: "De adviseur blijft verantwoordelijk voor het eindadvies. Een taalmodel kan overtuigend klinken en toch ongelijk hebben, dus controleer cijfers, regels en feiten voordat ze naar een klant gaan."
 ---
 
 Veel adviseurs en ondernemers in Nederland besteden een groot deel van de week aan werk rondom het advies in plaats van aan het advies zelf: gesprekken uitwerken, dossiers bijwerken, vragen beantwoorden. AI adviessoftware belooft een deel daarvan over te nemen. Dat klopt, mits u het verstandig kiest en inricht.
@@ -56,7 +60,7 @@ Praktisch betekent dit: sluit een verwerkersovereenkomst af, vermeld in uw priva
 
 Software die intern tijd bespaart levert pas klanten op als mensen u ook vinden en bereiken. Daarom combineren veel adviseurs hun interne tools met een snelle website, een AI-telefoniste die gemiste oproepen opvangt en zichtbaarheid in ChatGPT, Gemini en Perplexity. Zo werkt AI aan beide kanten van uw bedrijf: intern en richting klanten.
 
-Steeds meer mensen stellen hun vraag eerst aan een AI-assistent in plaats van aan een zoekmachine. Een adviespraktijk in Utrecht of Rotterdam die daar niet genoemd wordt, mist aanvragen die nooit in een zoekrapportage verschijnen. Duidelijke, feitelijke pagina's met antwoorden op echte klantvragen helpen daarbij.
+Mensen stellen hun vraag inmiddels ook aan een AI-assistent in plaats van alleen aan een zoekmachine. Een adviespraktijk in Utrecht of Rotterdam die daar niet genoemd wordt, mist aanvragen die nooit in een zoekrapportage verschijnen. Duidelijke, feitelijke pagina's met antwoorden op echte klantvragen helpen daarbij.
 
 ## Een aanpak in vijf stappen
 
@@ -67,22 +71,6 @@ Begin klein: kies één proces, meet de huidige doorlooptijd, test een tool met 
 3. **Test met een klein team.** Twee of drie mensen, een paar weken.
 4. **Leg de controle vast.** Wie leest wat na, voordat het naar de klant gaat?
 5. **Evalueer en schaal op.** Houd wat werkt, stop met de rest.
-
-## Veelgestelde vragen
-
-Hieronder staan de drie vragen die ondernemers en adviseurs het vaakst stellen over AI adviessoftware, met korte en praktische antwoorden. Ze helpen u bepalen of dit past bij uw praktijk en welke eerste stap het meest logisch is voor uw situatie.
-
-### Wat is AI adviessoftware?
-
-AI adviessoftware is software die met kunstmatige intelligentie adviseurs ondersteunt bij het voorbereiden, onderbouwen en vastleggen van advies. De adviseur blijft verantwoordelijk voor de inhoud en het eindadvies.
-
-### Is AI adviessoftware toegestaan voor financieel advies?
-
-Ja, maar de regels voor advies blijven gelden. Financiële adviseurs vallen onder de Wft en het toezicht van de AFM, en persoonsgegevens vallen onder de AVG. Laat uw inrichting en werkwijze daarom vooraf toetsen.
-
-### Hoe begin ik met AI adviessoftware in een klein bedrijf?
-
-Kies één terugkerend proces, zoals het uitwerken van gesprekken. Test één tool met een klein team, leg vast wie de uitkomst controleert en evalueer na enkele weken of het echt tijd bespaart.
 
 ## Volgende stap
 

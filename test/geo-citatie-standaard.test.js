@@ -1,6 +1,7 @@
 // Guard: GEO-citatiestandaard v1 (S1, S2, S5, S6, S7, S8, S10) op gebouwde kennisbank-pagina's (dist/).
 // MUST_PASS = elk markdown-artikel met `bronnen:` in de frontmatter. Ratchet: MIN_PAGES alleen verhogen.
-// Draait alleen als dist/ bestaat (na `npm run build`). S3/S4/S9/S11/S12 niet machine-gecontroleerd (zie PR).
+// Lokaal: draait alleen als dist/ bestaat (na `npm run build`). In CI (process.env.CI) NOOIT skippen: ci.yml bouwt vóór de tests,
+// ontbreekt dist/ dan faalt de test (check() meldt 'dist-pagina ontbreekt'). S3/S4/S9/S11/S12 niet machine-gecontroleerd (zie PR).
 import { describe, it, expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -91,7 +92,7 @@ describe('geo-citatie-standaard (kennisbank)', () => {
       expect(b.url).toMatch(/^https:\/\//);
     }
   });
-  it.skipIf(!fs.existsSync(dist))('S1/S2/S5-S8/S10 op alle MUST_PASS-pagina\'s', () => {
+  it.skipIf(!fs.existsSync(dist) && !process.env.CI)('S1/S2/S5-S8/S10 op alle MUST_PASS-pagina\'s', () => {
     const violations = slugs.flatMap(check);
     expect(violations).toEqual([]);
   });
