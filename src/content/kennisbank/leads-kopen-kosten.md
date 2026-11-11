@@ -6,8 +6,8 @@ published: 2026-11-10
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
-updated: 2026-11-10
-bronnen: []
+updated: 2026-11-11
+bronnen: ["ondernemersplein-telemarketing", "ro-bel-me-niet", "ap-avg"]
 faq:
   - q: "Wat kost het om leads te kopen?"
     a: "Er is geen vaste prijs. De kosten hangen af van uw branche, regio, het prijsmodel en of de lead exclusief is. Vraag offertes op bij meerdere aanbieders en vergelijk op kosten per klant, niet op prijs per lead."
@@ -15,6 +15,10 @@ faq:
     a: "Soms wel, vooral als u snel aanvragen nodig heeft. Houd wel rekening met concurrentie bij gedeelde leads en met afhankelijkheid van één platform. Test daarom eerst met een klein budget en meet wat een klant u werkelijk kost."
   - q: "Wat is het alternatief voor leads kopen?"
     a: "Zelf leads genereren met een website die aanvragen oplevert, snelle opvolging van telefoontjes en berichten, en vindbaarheid in Google en AI-zoekmachines. Dat kost meer opbouwtijd, maar de aanvragen zijn van uzelf."
+  - q: "Hoe rekent u de kosten per klant van gekochte leads uit?"
+    a: "Deel het totale bedrag dat u betaalt door het aantal opdrachten dat u binnenhaalt. Betaalt u bijvoorbeeld voor tien leads en haalt u er twee binnen, dan is dat vijf keer de leadprijs per klant."
+  - q: "Welke regels gelden voor het benaderen van gekochte leads?"
+    a: "Bel alleen mensen die daar vooraf toestemming voor gaven. Telefonische verkoop zonder toestemming is verboden en het Bel-me-niet-register is opgeheven. Laat de aanbieder aantonen dat die toestemming er is."
 ---
 
 Wie sneller nieuwe klanten wil, denkt al snel aan leads kopen. Een aanbieder levert aanvragen, u belt terug en hoopt op een opdracht. Dat klinkt eenvoudig, maar wat het werkelijk kost, is lastiger te zeggen dan de prijslijst doet vermoeden.
@@ -67,22 +71,6 @@ Aanloop AI bouwt precies die combinatie voor het Nederlandse MKB: een website di
 
 Kies een leadaanbieder op transparantie. Vraag hoe leads worden verzameld, of ze exclusief zijn, hoe u een onbruikbare lead terugvordert en of u maandelijks kunt opzeggen. Test eerst met een klein budget en meet na enkele weken wat het per klant kost voordat u opschaalt.
 
-Controleer ook de wettelijke kant. Persoonsgegevens vallen onder de AVG, dus de aanbieder moet kunnen aantonen dat mensen toestemming gaven om benaderd te worden. Bel daarnaast niemand die in het Bel-me-niet-register staat, tenzij de wet dat toestaat.
-
-## Veelgestelde vragen
-
-Hieronder vindt u korte antwoorden op de meest gestelde vragen over leads kopen en wat het kost. Voor een exacte prijs hangt het altijd af van uw branche, regio en gekozen aanbieder, dus vraag meerdere offertes op en vergelijk op kosten per klant.
-
-### Wat kost het om leads te kopen?
-
-Er is geen vaste prijs. De kosten hangen af van uw branche, regio, het prijsmodel en of de lead exclusief is. Vraag offertes op bij meerdere aanbieders en vergelijk op kosten per klant, niet op prijs per lead.
-
-### Is leads kopen de moeite waard voor het MKB?
-
-Soms wel, vooral als u snel aanvragen nodig heeft. Houd wel rekening met concurrentie bij gedeelde leads en met afhankelijkheid van één platform. Test daarom eerst met een klein budget en meet wat een klant u werkelijk kost.
-
-### Wat is het alternatief voor leads kopen?
-
-Zelf leads genereren met een website die aanvragen oplevert, snelle opvolging van telefoontjes en berichten, en vindbaarheid in Google en AI-zoekmachines. Dat kost meer opbouwtijd, maar de aanvragen zijn van uzelf.
+Controleer ook de wettelijke kant. Persoonsgegevens vallen onder de AVG, dus de aanbieder moet kunnen aantonen dat mensen toestemming gaven om benaderd te worden. Bel daarnaast alleen mensen die daar vooraf toestemming voor gaven: telefonische verkoop zonder toestemming is verboden en het Bel-me-niet-register is opgeheven.
 
 Wilt u liever eigen aanvragen dan afhankelijk zijn van gekochte leads? Bekijk op [aanloopai.nl/resultaten](https://aanloopai.nl/resultaten/) wat websites met Emma en AI-vindbaarheid voor andere Nederlandse MKB-bedrijven hebben opgeleverd.
