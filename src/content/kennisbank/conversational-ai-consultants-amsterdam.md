@@ -1,6 +1,6 @@
 ---
 title: "Conversational AI-consultants in Amsterdam: waar let u op?"
-description: "Conversational AI-consultants in Amsterdam vergelijken: prijsmodellen, offertes, internationale klanten en wanneer een AI-telefoniste beter past dan een adviesbureau."
+description: "Conversational AI-consultants in Amsterdam vergelijken: prijsmodellen, offertes, internationale klanten en wanneer een AI-telefoniste beter past."
 excerpt: "De Amsterdamse markt voor conversational AI-consultants is groot en prijzen lopen sterk uiteen. Zo vergelijkt u offertes, wat u moet vragen en wanneer een kant-en-klare AI-telefoniste voor uw MKB-bedrijf genoeg is."
 published: 2026-10-26
 category: "AI-automatisering"

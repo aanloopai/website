@@ -1,6 +1,6 @@
 ---
 title: "Conversational AI-consultant in Eindhoven: zo kiest u goed"
-description: "Conversational AI voor technische en zakelijke MKB-bedrijven rond Eindhoven: storingsmeldingen, offerteaanvragen en Engelstalige klanten. Wanneer volstaat een AI-telefoniste?"
+description: "Conversational AI voor technisch MKB rond Eindhoven: storingsmeldingen, offerteaanvragen en Engelstalige klanten. Wanneer volstaat een AI-telefoniste?"
 excerpt: "Technische MKB-bedrijven rond Eindhoven hebben andere gesprekken dan een kapper of tandarts: storingen, offerteaanvragen, vakjargon en Engelstalige klanten. Zo kiest u een conversational AI-aanpak die daarbij past."
 published: 2026-10-28
 category: "AI-automatisering"
