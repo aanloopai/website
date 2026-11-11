@@ -49,6 +49,7 @@ import { handleVoorstelClaim } from './lib/voorstel-claim.js';
 import { handleVoorstelVerify } from './lib/voorstel-verify.js';
 import { visibilityIngest, visibilityEvent, visibilitySummary, beaconScript, gbpSyncIfDue } from './lib/visibility.js';
 import { resultatenPublic } from './lib/resultaten-public.js';
+import { handleHomeMarkdown } from './lib/markdown-home.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -1520,6 +1521,9 @@ export default {
     if (klantOvk) {
       return Response.redirect(new URL('/portal/overeenkomst/?id=' + klantOvk[1], url.origin).toString(), 301);
     }
+
+    const homeMd = await handleHomeMarkdown(request, env, url);
+    if (homeMd) return homeMd;
 
     if (env.ASSETS) {
       const assetResponse = await env.ASSETS.fetch(request);
