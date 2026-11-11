@@ -67,7 +67,7 @@ const faqSchema = {
       name: 'Welke past bij MKB-bedrijven met sector-specifieke compliance (zorg, juridisch, overheid)?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Aanloop AI vermeldt expliciet EU-only datalocaties (Frankfurt en Amsterdam), AVG-conforme verwerkers­overeenkomst standaard, en NEN 7510 op aanvraag voor zorginstellingen. Voor MIKE365 is de exacte datalocatie en NEN-conformiteit niet expliciet publiek vermeld op de homepage of tarievenpagina per mei 2026 — vraag dit op tijdens uw evaluatie als sector-specifieke compliance kritisch is. Aanloop AI heeft daarnaast 67 kennisbank-artikelen waaronder gespecialiseerde gidsen voor huisartsenpraktijken, fysiotherapie, advocatenkantoren en notariaten.',
+        text: 'Aanloop AI werkt met een AVG-verwerkersovereenkomst (art. 28) en publiceert op /beveiliging/ een register van sub-verwerkers; die zitten deels buiten de EU (o.a. Cloudflare, ElevenLabs en OpenAI/Anthropic in de VS) en zijn gedekt via standaardcontractbepalingen en/of het EU-US Data Privacy Framework. Aanloop AI heeft geen SOC 2-, ISO 27001- of NEN 7510-certificaat; voor zorg bieden we op verzoek een NEN 7510-bewuste opzet, certificering ligt bij uw eigen organisatie. Voor MIKE365 is de exacte datalocatie niet expliciet publiek vermeld op de homepage of tarievenpagina per mei 2026 — vraag dit op tijdens uw evaluatie als sector-specifieke compliance kritisch is. Aanloop AI heeft daarnaast een kennisbank met gidsen voor onder meer huisartsenpraktijken, fysiotherapie, advocatenkantoren en notariaten.',
       },
     },
     {
@@ -75,7 +75,7 @@ const faqSchema = {
       name: 'Wie doet de implementatie en het onderhoud?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Bij MIKE365 configureert u zelf flows, prompts en knowledge base via het platform — typische DIY-setup van 2 tot 8 uur eigen werk. Bij Aanloop AI Emma doet ons implementatie-team de volledige opzet binnen 7 werkdagen, inclusief script-tuning, agenda-koppeling, CRM-integratie en maandelijkse optimalisatie. Dit verklaart het prijsverschil (managed service versus self-service tool). Voor ZZPers met technische affiniteit en laag belvolume is DIY voldoende; voor MKB-organisaties die binnen twee weken live willen zonder eigen werk is managed structureel sneller.',
+        text: 'Bij MIKE365 configureert u zelf flows, prompts en knowledge base via het platform — typische DIY-setup van 2 tot 8 uur eigen werk. Bij Aanloop AI Emma doet ons team in de pakketten Groei en Compleet de opzet, inclusief script-tuning, agenda-koppeling, CRM-integratie en maandelijkse optimalisatie. Dit verklaart het prijsverschil (managed service versus self-service tool). Voor ZZPers met technische affiniteit en laag belvolume is DIY voldoende; voor MKB-organisaties die de opzet liever uit handen geven is managed sneller.',
       },
     },
   ],
@@ -91,23 +91,23 @@ const comparison = [
   { feature: 'Per-gesprek bijbetaling',          aanloop: 'Geen — extra belminuten €0,25/min boven het pakket',                 mike365: '€0,55-€0,65 per extra gesprek' },
   { feature: 'Setup-kosten',                     aanloop: 'Start: geen setup. Groei/Compleet: eenmalig, op aanvraag',  mike365: 'Geen setup-fee genoemd op website' },
   { feature: 'Gratis trial',                     aanloop: 'Gratis 30-min AI-scan (geconsulteerd gesprek)',        mike365: '14 dagen gratis trial zonder creditcard' },
-  { feature: 'Implementatie',                    aanloop: 'Volledig door Aanloop-team (7 werkdagen)',          mike365: 'Self-service via platform (DIY 2-8 uur)' },
+  { feature: 'Implementatie',                    aanloop: 'Door Aanloop-team (Groei en Compleet)',          mike365: 'Self-service via platform (DIY 2-8 uur)' },
   { feature: 'Nederlandstalige voice',           aanloop: 'ElevenLabs NL (expliciet vermeld)',                    mike365: '10+ voice options (NL onderdeel)' },
   { feature: 'WhatsApp-agent inbegrepen',        aanloop: `Vanaf Groei ${GROEI_MND} (WhatsApp inbegrepen)`,                   mike365: 'Niet expliciet als WhatsApp-product vermeld' },
   { feature: 'CRM-integratie',                   aanloop: 'HubSpot, Pipedrive (vanaf Groei inbegrepen)',          mike365: 'Beperkt — niet prominent op website' },
-  { feature: 'Datalocatie',                      aanloop: 'EU-only (Frankfurt, Amsterdam) expliciet',             mike365: 'Niet expliciet publiek vermeld' },
-  { feature: 'AVG-verwerkers­overeenkomst',     aanloop: 'Standaard inbegrepen, NEN 7510 op aanvraag',           mike365: 'Vraag op bij evaluatie' },
-  { feature: 'Sector-specifieke kennis',         aanloop: '11 sectorpages + 67 kennisbank-artikelen',             mike365: 'Generiek — geen sectorpages op website' },
+  { feature: 'Datalocatie',                      aanloop: 'Hetzner (Nuremberg), Cloudflare (VS); sub-verwerkers op /beveiliging/',             mike365: 'Niet expliciet publiek vermeld' },
+  { feature: 'AVG-verwerkers­overeenkomst',     aanloop: 'Verwerkersovereenkomst; NEN 7510-bewuste opzet op verzoek',           mike365: 'Vraag op bij evaluatie' },
+  { feature: 'Sector-specifieke kennis',         aanloop: 'Sectorpagina’s en kennisbank',             mike365: 'Generiek — geen sectorpages op website' },
   { feature: 'Transparantie',    aanloop: 'Transparant team, KvK-geregistreerd, Organization-schema',      mike365: 'MIKE365 als merk; geen prominent founder-profiel' },
   { feature: 'Doelgroep best fit',               aanloop: 'MKB en ZZP die ontzorgd willen zijn, AVG-strict, CRM-koppeling vanaf Groei', mike365: 'ZZP en micro-shops met laag belvolume, budget-DIY' },
 ];
 
 const whenAanloop = [
   'U wilt een Nederlandstalige AI-telefoniste zonder per-gesprek-bijbetaling, van laag volume (Start, 300 belminuten) tot onbeperkt (Compleet)',
-  'AVG-conformiteit is wettelijk vereist (zorg, juridisch, overheid, financieel) — onze EU-only is expliciet',
+  'AVG-conformiteit is wettelijk vereist (zorg, juridisch, overheid, financieel) — wij leveren een verwerkersovereenkomst en publiceren onze sub-verwerkers',
   'CRM-integratie (HubSpot, Pipedrive) moet vanaf dag 1 werken',
-  'U wilt binnen 7 werkdagen live zonder zelf flows te configureren',
-  'Sector-specifieke kennis (11 sectoren, 67 kennisbank-artikelen) past bij uw branche',
+  'U wilt de opzet van flows niet zelf doen',
+  'Sector-specifieke kennis (sectorpagina’s en kennisbank) past bij uw branche',
   'Maandelijkse optimalisatie op uw eigen conversatiedata is gewenst',
 ];
 

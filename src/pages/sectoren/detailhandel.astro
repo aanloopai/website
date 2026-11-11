@@ -11,7 +11,7 @@ const schema = {
   areaServed: 'NL',
   mainEntity: [
     { '@type': 'Question', name: 'Kan AI mijn webshop klantenservice overnemen?', acceptedAnswer: { '@type': 'Answer', text: 'Ja. De AI beantwoordt vragen over bestellingen, verzending en retouren, en escaleert naar een medewerker bij complexe klachten.' } },
-    { '@type': 'Question', name: 'Integreert de AI met Shopify, WooCommerce of Lightspeed?', acceptedAnswer: { '@type': 'Answer', text: 'Ja, we ondersteunen koppelingen met de meeste e-commerceplatformen via API. Bestelstatus, voorraadinformatie en klantgegevens zijn real-time beschikbaar voor de AI.' } },
+    { '@type': 'Question', name: 'Integreert de AI met Shopify, WooCommerce of Lightspeed?', acceptedAnswer: { '@type': 'Answer', text: 'Koppelingen met e-commerceplatformen zijn mogelijk via API, afhankelijk van uw platform en pakket. Bespreek vooraf welke gegevens de AI mag inzien, zoals bestelstatus of voorraad.' } },
   ],
 };
 ---
@@ -22,7 +22,7 @@ const schema = {
       <div class="max-w-3xl">
         <div class="flex items-center gap-4 mb-6 reveal"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Sector: Detailhandel & E-commerce</span></div>
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05] reveal reveal-delay-1">AI voor retailers en webshops</h1>
-        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl reveal reveal-delay-2">Meer omzet, minder klantenservice-kosten. AI beantwoordt vragen over bestellingen en retouren, doet persoonlijke productaanbevelingen en verhoogt uw gemiddelde orderwaarde.</p>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl reveal reveal-delay-2">Meer omzet, minder klantenservice-kosten. AI beantwoordt vragen over bestellingen en retouren, doet persoonlijke productaanbevelingen.</p>
         <div class="mt-8 flex gap-3 flex-wrap reveal reveal-delay-3">
           <a href="/demo-aanvragen/" class="btn-primary text-base px-6 py-3.5">Gratis demo aanvragen <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
           <a href="/sectoren/ai-voor-webshops/" class="btn-outline text-base px-6 py-3.5">Webshop specifiek</a>
@@ -36,9 +36,9 @@ const schema = {
   </section>
   <section class="section-tight bg-slate-50 border-b border-slate-200">
     <div class="container-page">
-      <p class="text-xs text-slate-400 text-center mb-4">Indicatieve cijfers · resultaten verschillen per situatie</p>
+      <p class="text-xs text-slate-400 text-center mb-4">Wat u kunt verwachten · resultaten verschillen per situatie</p>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-        {[{v:'+18%',l:'gemiddelde orderwaarde'},{v:'−65%',l:'klantenservice tickets'},{v:'24/7',l:'beschikbaar'},{v:'Shopify/WooCommerce',l:'integratie'}].map(s=>(
+        {[{v:'Minder',l:'standaardvragen voor uw team'},{v:'Meer',l:'ruimte voor complexe klachten'},{v:'24/7',l:'beschikbaar'},{v:'Webshop',l:'koppeling mogelijk via API'}].map(s=>(
           <div class="reveal"><p class="text-2xl font-bold text-navy">{s.v}</p><p class="text-xs text-slate-500 mt-1">{s.l}</p></div>
         ))}
       </div>
@@ -58,11 +58,10 @@ const schema = {
         <div class="reveal reveal-delay-2">
           <h2 class="text-2xl font-bold text-navy mb-4">Voorbeeldscenario: webshop</h2>
           <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-6">
-            <p class="text-sm text-slate-700 italic">"Webshops verwerken vaak tientallen klantenservice-e-mails per dag. Een AI-agent handelt de standaardvragen automatisch af, zodat het team zich op complexe gevallen richt."</p>
-            <p class="text-xs text-slate-500 mt-3 font-medium">— E-commerce manager, damesmodewinkel met 3 locaties</p>
+            <p class="text-sm text-slate-700">Webshops verwerken vaak tientallen klantenservice-e-mails per dag. Een AI-agent handelt de standaardvragen automatisch af, zodat het team zich op complexe gevallen richt. Dit is een voorbeeldscenario, geen klantresultaat.</p>
           </div>
           <div class="grid grid-cols-2 gap-3">
-            {[{v:'85%',l:'vragen automatisch opgelost'},{v:'24/7',l:'beschikbaar'},{v:'−55%',l:'klantenservice kosten'},{v:'+22%',l:'herhaalaankopen'}].map(s=>(
+            {[{v:'Standaard',l:'vragen automatisch beantwoord'},{v:'24/7',l:'beschikbaar'},{v:'Lagere',l:'werkdruk klantenservice'},{v:'Sneller',l:'antwoord voor de klant'}].map(s=>(
               <div class="bg-white border border-slate-200 rounded-xl p-4 text-center"><p class="text-xl font-bold text-brand-indigo">{s.v}</p><p class="text-xs text-slate-500 mt-1">{s.l}</p></div>
             ))}
           </div>

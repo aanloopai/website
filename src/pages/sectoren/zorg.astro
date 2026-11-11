@@ -10,36 +10,36 @@ const schema = {
   provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
   areaServed: 'NL',
   mainEntity: [
-    { '@type': 'Question', name: 'Is de AI-oplossing AVG- en NEN 7510-compliant?', acceptedAnswer: { '@type': 'Answer', text: 'Ja. Alle data blijft binnen de EU. We leveren een verwerkersovereenkomst en onze systemen voldoen aan de NEN 7510-norm voor informatiebeveiliging in de zorg.' } },
+    { '@type': 'Question', name: 'Is de AI-oplossing AVG-conform en NEN 7510-gecertificeerd?', acceptedAnswer: { '@type': 'Answer', text: 'Aanloop AI werkt AVG-conform met een verwerkersovereenkomst (art. 28 AVG) en publiceert op /beveiliging/ welke leveranciers gegevens verwerken, inclusief locatie. Aanloop AI heeft zelf geen NEN 7510-certificaat; op verzoek denken we mee over een NEN 7510-bewuste opzet, de certificering ligt bij uw eigen organisatie.' } },
     { '@type': 'Question', name: 'Kan de AI patiëntgegevens verwerken?', acceptedAnswer: { '@type': 'Answer', text: 'De AI verwerkt minimale persoonsgegevens (naam, afspraakdetails). Medische dossiers worden nooit opgeslagen in het AI-systeem.' } },
-    { '@type': 'Question', name: 'Hoe snel is de implementatie?', acceptedAnswer: { '@type': 'Answer', text: 'Voor een huisartsenpraktijk of kleine zorginstelling gemiddeld 10–14 werkdagen, inclusief intake, koppeling aan uw agendapakket en testfase.' } },
+    { '@type': 'Question', name: 'Hoe snel is de implementatie?', acceptedAnswer: { '@type': 'Answer', text: 'Dat hangt af van uw agendapakket en het aantal kanalen. De route bestaat uit intake, koppeling aan uw agendapakket en een testfase; we geven vooraf een planning.' } },
   ],
 };
 ---
-<BaseLayout title="AI voor Zorg Nederland — Afspraken, Intake & No-Show" description="AI voor de zorg: AVG-conforme assistent die afspraken 24/7 inplant, intakevragenlijsten afneemt en no-shows met 30-50% reduceert. NEN 7510-bewust." schema={schema}>
+<BaseLayout title="AI voor Zorg Nederland — Afspraken, Intake & No-Show" description="AI voor de zorg: AVG-conforme assistent die afspraken 24/7 inplant, intakevragenlijsten afneemt en no-shows helpt verminderen. NEN 7510-bewuste opzet op verzoek." schema={schema}>
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">
       <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
       <div class="max-w-3xl">
         <div class="flex items-center gap-4 mb-6 reveal"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Sector: Zorg & Welzijn</span></div>
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05] reveal reveal-delay-1">AI voor zorgverleners — veilig en compliant</h1>
-        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl reveal reveal-delay-2">Minder telefoondrukte, minder no-shows, meer tijd voor uw patiënten. Onze AI-oplossingen zijn AVG-conform en NEN 7510-compatibel; data blijft altijd binnen de EU.</p>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl reveal reveal-delay-2">Minder telefoondrukte, minder no-shows, meer tijd voor uw patiënten. Aanloop AI werkt AVG-conform met een verwerkersovereenkomst en denkt op verzoek mee over een NEN 7510-bewuste opzet.</p>
         <div class="mt-8 flex gap-3 flex-wrap reveal reveal-delay-3">
           <a href="/demo-aanvragen/" class="btn-primary text-base px-6 py-3.5">Gratis demo aanvragen <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
           <a href="/gratis-ai-scan/" class="btn-outline text-base px-6 py-3.5">Gratis AI scan</a>
         </div>
       </div>
       <div class="reveal reveal-delay-2">
-        <Image src={sectorImage} alt="Rustige praktijkreceptie met tablet met AI-afsprakenoverzicht — AI voor zorgverleners, NEN 7510 compliant" class="w-full rounded-lg shadow-xl object-cover aspect-[4/3]" loading="eager" decoding="async" fetchpriority="high" widths={[480, 800, 1200, 1400]} sizes="(min-width: 1024px) 600px, 100vw" format="webp" quality={82} />
+        <Image src={sectorImage} alt="Rustige praktijkreceptie met tablet met AI-afsprakenoverzicht — AI voor zorgverleners" class="w-full rounded-lg shadow-xl object-cover aspect-[4/3]" loading="eager" decoding="async" fetchpriority="high" widths={[480, 800, 1200, 1400]} sizes="(min-width: 1024px) 600px, 100vw" format="webp" quality={82} />
       </div>
       </div>
     </div>
   </section>
   <section class="section-tight bg-slate-50 border-b border-slate-200">
     <div class="container-page">
-      <p class="text-xs text-slate-400 text-center mb-4">Indicatieve cijfers · resultaten verschillen per situatie</p>
+      <p class="text-xs text-slate-400 text-center mb-4">Wat u kunt verwachten · resultaten verschillen per situatie</p>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-        {[{v:'−30%',l:'no-show percentage'},{v:'2 uur/dag',l:'bespaard op telefonische afspraken'},{v:'24/7',l:'bereikbaar voor patiënten'},{v:'100%',l:'EU data-verwerking'}].map(s=>(
+        {[{v:'Minder',l:'no-shows met herinneringen'},{v:'Minder',l:'telefonische afspraken voor de balie'},{v:'24/7',l:'bereikbaar voor patiënten'},{v:'Art. 28',l:'verwerkersovereenkomst AVG'}].map(s=>(
           <div class="reveal"><p class="text-2xl font-bold text-navy">{s.v}</p><p class="text-xs text-slate-500 mt-1">{s.l}</p></div>
         ))}
       </div>
@@ -56,9 +56,9 @@ const schema = {
       <div class="space-y-5 reveal">
         {[
           { title: 'Telefoondrukte in de ochtend belemmert patiëntenzorg', body: 'Tussen 08:00 en 09:30 piekert de telefonie in elke praktijk. Assistenten zijn bezet met afsprakenbeheer terwijl de wachtkamer vol zit. AI agent Emma neemt routinegesprekken automatisch aan — ook buiten kantoortijden. Zo kunnen assistenten zich richten op de patiënt die voor hen staat.' },
-          { title: 'No-show percentage loopt op tot 15–20% zonder herinneringen', body: 'Zorgorganisaties verliezen jaarlijks duizenden euro\'s aan geen-verschijn-consulten. Een geautomatiseerde herinnering 24 uur en 2 uur voor de afspraak — via SMS, WhatsApp of telefoon — verlaagt no-shows gemiddeld met 30%. Dit vereist een AVG-conforme verwerking van minimale persoonsgegevens.' },
+          { title: 'No-show percentage loopt op tot 15–20% zonder herinneringen', body: 'Zorgorganisaties verliezen jaarlijks duizenden euro\'s aan geen-verschijn-consulten. Een geautomatiseerde herinnering 24 uur en 2 uur voor de afspraak — via SMS, WhatsApp of telefoon — helpt no-shows te verlagen. Dit vereist een AVG-conforme verwerking van minimale persoonsgegevens.' },
           { title: 'Wachtlijstbeheer is handmatig en foutgevoelig', body: 'Bij annulering vrijgekomen plekken worden handmatig ingevuld, wat resulteert in lege slots en onnodige wachttijd. AI beheert automatisch een wachtlijst: bij annulering wordt de eerstvolgende beschikbare patiënt op de wachtlijst proactief benaderd en uitgenodigd voor het vrijgekomen slot.' },
-          { title: 'NEN 7510 en AVG vereisen zorgvuldige dataverwerking', body: 'In de zorg gelden strengere eisen dan in andere sectoren: NEN 7510 voor informatiebeveiliging en de AVG voor persoonsgegevens. Aanloop AI verwerkt minimale persoonsdata (naam, afspraakdetails) op Nederlandse servers via n8n self-hosted. Medische dossiers worden nooit opgeslagen in het AI-systeem. Verwerkersovereenkomst inbegrepen.' },
+          { title: 'NEN 7510 en AVG vereisen zorgvuldige dataverwerking', body: 'In de zorg gelden strengere eisen dan in andere sectoren: NEN 7510 voor informatiebeveiliging en de AVG voor persoonsgegevens. Aanloop AI verwerkt minimale persoonsdata (naam, afspraakdetails). Medische dossiers worden nooit opgeslagen in het AI-systeem. Verwerkersovereenkomst inbegrepen; op /beveiliging/ staat welke leveranciers gegevens verwerken.' },
         ].map(item => (
           <div class="border border-slate-200 rounded-xl p-5 bg-white">
             <h3 class="font-semibold text-navy mb-2 text-sm">{item.title}</h3>
@@ -78,10 +78,10 @@ const schema = {
       </div>
       <div class="grid md:grid-cols-2 gap-4 reveal">
         {[
-          { icon: '🔒', title: 'NEN 7510 informatiebeveiliging', body: 'Onze AI-implementaties voor de zorg voldoen aan NEN 7510 — de Nederlandse norm voor informatiebeveiliging in de zorg. Alle communicatiestromen worden versleuteld en opgeslagen op EU-servers. We leveren een verwerkersovereenkomst conform AVG artikel 28.' },
+          { icon: '🔒', title: 'NEN 7510-bewuste opzet', body: 'NEN 7510 is de Nederlandse norm voor informatiebeveiliging in de zorg. Aanloop AI heeft zelf geen NEN 7510-certificaat; op verzoek denken we mee over een NEN 7510-bewuste opzet, de certificering ligt bij uw eigen organisatie. We leveren een verwerkersovereenkomst conform AVG artikel 28.' },
           { icon: '📋', title: 'Medicom, Nexus & HIS-koppelingen', body: 'Koppeling met gangbare huisartspakketten (Medicom, Nexus, Promedico) voor directe agenda-integratie. Afspraken worden rechtstreeks in uw HIS-agenda gezet zonder handmatige overdracht — AVG-conform via geauthenticeerde API.' },
           { icon: '🏥', title: 'Triage zonder medisch advies', body: 'De AI agent plant afspraken in op basis van urgentie-indicaties (spoed / zelfde dag / regulier) maar geeft nooit medisch advies of diagnoses. De triage blijft altijd bij de zorgprofessional. Dit is contractueel vastgelegd in onze verwerkersovereenkomst.' },
-          { icon: '🌐', title: '100% EU data-verwerking via n8n', body: 'Patiëntdata verlaat nooit de EU. We gebruiken n8n self-hosted op een Nederlandse Hetzner-server. Geen doorgifte aan Amerikaanse AI-providers voor persoonsgegevens. Volledig auditeerbaar met transactielogboek.' },
+          { icon: '🌐', title: 'Transparant over leveranciers en locatie', body: 'Welke leveranciers gegevens verwerken (o.a. Hetzner in Duitsland, Cloudflare, ElevenLabs en AI-modelleveranciers in de VS) en waar, staat op /beveiliging/. Doorgifte buiten de EU loopt via de verwerkersovereenkomst met de leverancier (standaardcontractbepalingen en/of EU-US Data Privacy Framework). Voor zorg minimaliseren we de persoonsgegevens die de AI te zien krijgt.' },
         ].map(t => (
           <div class="flex gap-4 p-4 rounded-xl border border-slate-200 bg-slate-50">
             <span class="text-2xl">{t.icon}</span>
@@ -102,20 +102,20 @@ const schema = {
           <p class="eyebrow mb-2">Toepassingen</p>
           <h2 class="text-2xl font-bold text-navy mb-6">AI-use cases voor de zorg</h2>
           <ul class="space-y-4">
-            {['Afspraken plannen en bevestigen via telefoon of WhatsApp','Intake-vragenlijsten automatisch afnemen vóór consult','Herinneringen sturen 24u en 2u voor afspraak (−30% no-show)','Basisvragen beantwoorden (openingstijden, locatie, verwijzingen)','Wachtlijstbeheer en urgentie-triage op basis van klachten','Herhaalrecepten-verzoeken registreren en doorsturen','Nazorg-communicatie na behandeling automatiseren'].map(f=>(
+            {['Afspraken plannen en bevestigen via telefoon of WhatsApp','Intake-vragenlijsten automatisch afnemen vóór consult','Herinneringen sturen 24u en 2u voor afspraak','Basisvragen beantwoorden (openingstijden, locatie, verwijzingen)','Wachtlijstbeheer en urgentie-triage op basis van klachten','Herhaalrecepten-verzoeken registreren en doorsturen','Nazorg-communicatie na behandeling automatiseren'].map(f=>(
               <li class="flex items-start gap-3 text-sm text-slate-700"><svg class="w-5 h-5 mt-0.5 flex-shrink-0 text-brand-emerald" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>{f}</li>
             ))}
           </ul>
           <div class="mt-6 p-4 rounded-xl bg-brand-emerald/10 border border-brand-emerald/20">
-            <p class="text-sm font-bold text-brand-emerald mb-1">🔒 Compliance-garantie</p>
-            <p class="text-xs text-slate-600">AVG-conform · NEN 7510 · Data uitsluitend binnen EU · Verwerkersovereenkomst inbegrepen</p>
+            <p class="text-sm font-bold text-brand-emerald mb-1">🔒 Privacy en AVG</p>
+            <p class="text-xs text-slate-600">AVG-conform · NEN 7510-bewuste opzet op verzoek · Leveranciers en locatie op /beveiliging/ · Verwerkersovereenkomst inbegrepen</p>
           </div>
         </div>
         <div class="reveal reveal-delay-2">
           <p class="eyebrow mb-2">Voorbeeldscenario</p>
-          <h2 class="text-2xl font-bold text-navy mb-4">Huisartsenpraktijk vermindert no-shows met 31%</h2>
+          <h2 class="text-2xl font-bold text-navy mb-4">Voorbeeldscenario: huisartsenpraktijk met herinneringen</h2>
           <div class="grid grid-cols-2 gap-3">
-            {[{v:'−31%',l:'no-shows'},{v:'3 uur/dag',l:'bespaard op telefonie'},{v:'98%',l:'patiënttevredenheid'},{v:'10 dgn',l:'implementatietijd'}].map(s=>(
+            {[{v:'Minder',l:'no-shows'},{v:'Minder',l:'telefonie voor de balie'},{v:'24/7',l:'bereikbaar'},{v:'Gekoppeld',l:'aan uw agendapakket'}].map(s=>(
               <div class="bg-white border border-slate-200 rounded-xl p-4 text-center"><p class="text-xl font-bold text-brand-indigo">{s.v}</p><p class="text-xs text-slate-500 mt-1">{s.l}</p></div>
             ))}
           </div>
@@ -125,9 +125,9 @@ const schema = {
         <h2 class="text-2xl font-bold text-navy mb-6 reveal">Veelgestelde vragen — AI in de zorg</h2>
         <div class="space-y-4 reveal">
           {[
-            { v: 'Is de AI-oplossing AVG- en NEN 7510-compliant?', a: 'Ja. Alle data blijft binnen de EU. We leveren een verwerkersovereenkomst en onze systemen voldoen aan de NEN 7510-norm voor informatiebeveiliging in de zorg.' },
+            { v: 'Is de AI-oplossing AVG-conform en NEN 7510-gecertificeerd?', a: 'Aanloop AI werkt AVG-conform met een verwerkersovereenkomst (art. 28 AVG) en publiceert op /beveiliging/ welke leveranciers gegevens verwerken, inclusief locatie. Aanloop AI heeft zelf geen NEN 7510-certificaat; op verzoek denken we mee over een NEN 7510-bewuste opzet, de certificering ligt bij uw eigen organisatie.' },
             { v: 'Kan de AI patiëntgegevens verwerken?', a: 'De AI verwerkt minimale persoonsgegevens (naam, afspraakdetails). Medische dossiers worden nooit opgeslagen in het AI-systeem.' },
-            { v: 'Hoe snel is de implementatie?', a: 'Voor een huisartsenpraktijk of kleine zorginstelling gemiddeld 10–14 werkdagen, inclusief intake, koppeling aan uw agendapakket en testfase.' },
+            { v: 'Hoe snel is de implementatie?', a: 'Dat hangt af van uw agendapakket en het aantal kanalen. De route bestaat uit intake, koppeling aan uw agendapakket en een testfase; we geven vooraf een planning.' },
             { v: 'Werkt de AI met mijn agendapakket (Medicom, Nexus)?', a: 'We ondersteunen koppeling met de meeste gangbare zorgpakketten via API. Neem contact op voor uw specifieke situatie.' },
           ].map(faq=>(
             <details class="group border border-slate-200 rounded-xl overflow-hidden">
@@ -151,7 +151,7 @@ const schema = {
       </h2>
       <p class="text-slate-600 leading-relaxed mb-6 max-w-2xl">
         Aanloop AI bedient zorgpraktijken in heel Nederland — huisartsen, fysiotherapie, tandartsen,
-        GGZ-instellingen. AVG-compliant met optionele NEN 7510-opzet voor extra-gevoelige patiëntdata.
+        GGZ-instellingen. AVG-conform werken, met op verzoek een NEN 7510-bewuste opzet voor extra-gevoelige patiëntdata.
       </p>
       <div class="flex flex-wrap gap-2">
         <a href="/locaties/rotterdam/" class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 hover:border-slate-300 rounded-lg text-xs font-medium text-navy transition-all">AI zorg Rotterdam →</a>
@@ -203,12 +203,12 @@ const schema = {
   <section class="section bg-slate-50 border-y border-slate-200">
     <div class="container-page max-w-4xl">
       <p class="eyebrow text-brand-indigo mb-2">Website + AI = 1 partner</p>
-      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-4">Praktijk-website nodig? Wij bouwen 'm AI-ready met NEN 7510 + AVG ingebouwd</h2>
-      <p class="text-slate-600 mb-8 leading-relaxed">Veel zorgpraktijken hebben een verouderde website van een lokaal bureau, en sluiten apart een AI-leverancier aan voor de telefoon of intake-formulieren. Bij Aanloop AI is dat één traject: een AI-ready praktijk-website met online afspraken, no-show reductie en Emma (24/7 telefoon-AI) ingebouwd vanaf dag één — inclusief NEN 7510 + AVG-toets.</p>
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-4">Praktijk-website nodig? Wij bouwen 'm AI-ready met AVG-conform ontwerp</h2>
+      <p class="text-slate-600 mb-8 leading-relaxed">Veel zorgpraktijken hebben een verouderde website van een lokaal bureau, en sluiten apart een AI-leverancier aan voor de telefoon of intake-formulieren. Bij Aanloop AI is dat één traject: een AI-ready praktijk-website met online afspraken, no-show reductie en Emma (24/7 telefoon-AI) ingebouwd vanaf dag één — inclusief AVG-toets en op verzoek een NEN 7510-bewuste opzet.</p>
       <div class="grid md:grid-cols-3 gap-4">
         <a href="/diensten/website-laten-maken-mkb-nederland-2026/" class="card hover:border-brand-indigo transition-all">
           <h3 class="font-bold text-navy text-sm mb-2">Praktijk-website laten maken</h3>
-          <p class="text-xs text-slate-600 mb-3">Astro/Next/WordPress AI-ready. Schema.org + Speakable + WCAG 2.2 AA + AVG/NEN 7510-checks.</p>
+          <p class="text-xs text-slate-600 mb-3">Astro/Next/WordPress AI-ready. Schema.org + Speakable + WCAG 2.2 AA + AVG-checks.</p>
           <span class="text-xs text-brand-indigo font-medium">Bekijk pakketten →</span>
         </a>
         <a href="/diensten/ai-website-bundel-mkb-nederland/" class="card hover:border-brand-indigo transition-all">
@@ -242,7 +242,7 @@ const schema = {
     <ul class="grid gap-3 sm:grid-cols-2 text-sm text-pearl/80">
         <li><a href="/kennisbank/ai-voor-fysiotherapiepraktijk-nederland-2026/" class="text-brand-indigo hover:text-brand-indigo/80 underline-offset-4 hover:underline">AI voor fysiotherapiepraktijk: KNGF-bewust en agenda 24/7</a></li>
         <li><a href="/kennisbank/ai-voor-paardenarts-nederland-2026/" class="text-brand-indigo hover:text-brand-indigo/80 underline-offset-4 hover:underline">AI voor paardenarts: KNMvD, koliek-spoed 24/7</a></li>
-        <li><a href="/kennisbank/ai-voor-pedicure-praktijk-nederland-2026/" class="text-brand-indigo hover:text-brand-indigo/80 underline-offset-4 hover:underline">AI voor pedicure-praktijk: ProVoet-bewust, no-show 75% omlaag</a></li>
+        <li><a href="/kennisbank/ai-voor-pedicure-praktijk-nederland-2026/" class="text-brand-indigo hover:text-brand-indigo/80 underline-offset-4 hover:underline">AI voor pedicure-praktijk: ProVoet-bewust, minder no-shows</a></li>
         <li><a href="/kennisbank/ai-agency-kiezen-mkb-nederland-2026/" class="text-brand-indigo hover:text-brand-indigo/80 underline-offset-4 hover:underline">AI Agency kiezen in Nederland 2026 — 12 selectiecriteria voor MKB</a></li>
         <li><a href="/ai-voor-zorg-mkb-nederland/" class="text-brand-indigo hover:text-brand-indigo/80 underline-offset-4 hover:underline">AI voor de zorg — MKB Nederland</a></li>
     </ul>
