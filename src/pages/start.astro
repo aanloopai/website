@@ -668,7 +668,7 @@ const toolSchema = {
 
         if (res.ok && data.success) {
           trackEvent('intake_submitted', { service_id: selectedService });
-          trackEvent('generate_lead', { form_name: 'start_intake', currency: 'EUR', value: 150 });
+          ((window as any)._track || trackEvent)('generate_lead', { form_name: 'start_intake', currency: 'EUR', value: 150 });
           if (data.voorstel_token) {
             window.location.href = `/start/voorstel/?t=${encodeURIComponent(data.voorstel_token)}`;
             return;
