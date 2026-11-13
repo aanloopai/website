@@ -1,6 +1,6 @@
 // Admin panel routes (schema v2) — wired into src/worker.js as /api/admin/*.
 // Staff-only: manage customers, services, requests, tickets, invoices.
-import { listLedger } from './lead-ledger.js';
+import { listLedger, markLedgerAnswered } from './lead-ledger.js';
 import { jsonResponse, errorResponse } from './google-auth.js';
 import { randomId, getSessionUser } from './auth.js';
 import { escapeHtml } from './escape.js';
@@ -107,6 +107,7 @@ export async function handleAdminApi(request, env) {
     }
     if (path === '/api/admin/leads') return await listLeads(env, url);
     if (path === '/api/admin/ledger') return await listLedger(env, url);
+    if (path === '/api/admin/ledger/answered' && method === 'POST') return await markLedgerAnswered(request, env);
     if (path === '/api/admin/lead' && method === 'PATCH') return await updateLead(request, env);
     if (path === '/api/admin/lead-intake-invite' && method === 'POST') return await leadIntakeInvite(request, env);
     if (path === '/api/admin/leadgen/leads') return await leadgenLeads(env);

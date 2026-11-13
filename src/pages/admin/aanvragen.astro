@@ -297,11 +297,25 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
               return '<div class="pcard"><div class="pcard-b flex flex-wrap items-center justify-between gap-2 text-sm">' +
                 '<span><b>' + esc(l.site) + '</b> · ' + esc(l.form) + ' · ' + esc(l.landing) + '</span>' +
                 '<span class="text-xs" style="color:var(--p-ink-4)">' + new Date(l.received_at).toLocaleString("nl-NL") +
-                ' · ' + esc(l.status) + '</span></div></div>';
+                ' · ' + esc(l.status) + '</span>' +
+                (l.answered_at ? '' : '<button type="button" class="lg-ans pbtn pbtn--subtle pbtn--sm" data-site="' + esc(l.site) + '" data-id="' + esc(l.lead_id) + '">Beantwoord</button>') +
+                '</div></div>';
             }).join("");
           })
           .catch(function (err) { window.adminFout.vangRest(err, "Ledger"); });
       }
+      document.getElementById("lg-list").addEventListener("click", function (e) {
+        var btn = e.target.closest && e.target.closest(".lg-ans");
+        if (!btn) return;
+        btn.disabled = true;
+        fetch("/api/admin/ledger/answered", {
+          method: "POST", credentials: "same-origin", headers: { "content-type": "application/json" },
+          body: JSON.stringify({ site: btn.getAttribute("data-site"), lead_id: btn.getAttribute("data-id") }),
+        })
+          .then(function (r) { if (window.adminFout.http(r, "Ledger")) { throw 0; } return r.json(); })
+          .then(function () { loadLedger(); })
+          .catch(function (err) { btn.disabled = false; window.adminFout.vangRest(err, "Ledger"); });
+      });
       document.getElementById("lg-site").addEventListener("change", loadLedger);
       loadLedger();
 

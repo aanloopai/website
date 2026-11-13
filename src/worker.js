@@ -47,7 +47,7 @@ import { tierForPlanSlug } from './data/funnel-map.ts';
 import { extractBusinessFacts, normalizeSiteUrl, isFetchableSiteUrl } from './lib/site-prefill.js';
 import { handleVoorstelClaim } from './lib/voorstel-claim.js';
 import { handleVoorstelVerify } from './lib/voorstel-verify.js';
-import { ledgerIngest, recordOwnLead } from './lib/lead-ledger.js';
+import { ledgerIngest, ledgerRead, recordOwnLead } from './lib/lead-ledger.js';
 import { visibilityIngest, visibilityEvent, visibilitySummary, beaconScript, gbpSyncIfDue } from './lib/visibility.js';
 import { resultatenPublic } from './lib/resultaten-public.js';
 import { handleHomeMarkdown } from './lib/markdown-home.js';
@@ -1448,6 +1448,10 @@ export default {
     // Lead-ledger (LEAD-1): server-to-server, per-site HMAC (X-Ledger-*), no session.
     if (url.pathname === '/api/leads/ingest') {
       return ledgerIngest(request, env);
+    }
+    // LEAD-2: AGA read API, Bearer LEDGER_READ_TOKEN.
+    if (url.pathname === '/api/leads/ledger') {
+      return ledgerRead(request, env, url);
     }
     // Site-acties beacon: public, cross-origin, no auth (counts only).
     if (url.pathname === '/api/visibility/event') {

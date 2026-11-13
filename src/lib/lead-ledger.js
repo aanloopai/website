@@ -120,3 +120,50 @@ export async function listLedger(env, url) {
     return json({ ok: false, error: 'db_error' }, 503);
   }
 }
+
+// LEAD-2 — AGA read API (server-to-server). Bearer LEDGER_READ_TOKEN, no session, no CORS.
+// Both sides are HMAC'd first so the compare is fixed-length (no token-length leak).
+async function bearerOk(request, token) {
+  if (!token) return false;
+  const m = /^Bearer (.+)$/.exec(request.headers.get('authorization') || '');
+  if (!m) return false;
+  return safeEqual(await hmacHex('ledger-read', m[1].trim()), await hmacHex('ledger-read', token));
+}
+
+export async function ledgerRead(request, env, url) {
+  if (request.method !== 'GET') return json({ ok: false, error: 'Use GET' }, 405);
+  if (!(await bearerOk(request, env.LEDGER_READ_TOKEN))) return json({ ok: false, error: 'unauthorized' }, 401);
+  if (!env.PORTAL_DB) return json({ ok: false, error: 'no_db' }, 503);
+  const h = Number(url.searchParams.get('hours'));
+  const hours = Number.isFinite(h) && h > 0 ? Math.min(720, Math.max(1, Math.floor(h))) : 168;
+  const since = Date.now() - hours * 3600 * 1000;
+  try {
+    const res = await env.PORTAL_DB.prepare(
+      `SELECT site, lead_id, form, landing, utm_source, ts, status, received_at, answered_at
+       FROM leads_all WHERE received_at >= ? ORDER BY received_at DESC LIMIT 500`,
+    ).bind(since).all();
+    return json({ ok: true, leads: res.results || [] });
+  } catch (err) {
+    console.error('[ledger] read failed:', err?.message || err);
+    return json({ ok: false, error: 'db_error' }, 503);
+  }
+}
+
+// Staff-only (handleAdminApi enforced the session): mark a lead answered, idempotent.
+export async function markLedgerAnswered(request, env) {
+  if (!env.PORTAL_DB) return json({ ok: false, error: 'no_db' }, 503);
+  const b = await request.json().catch(() => null);
+  const site = typeof b?.site === 'string' ? b.site.trim().toLowerCase() : '';
+  const leadId = typeof b?.lead_id === 'string' ? b.lead_id.trim() : '';
+  if (!LEDGER_SITES.includes(site)) return json({ ok: false, error: 'bad_site' }, 400);
+  if (!leadId || leadId.length > MAX_LEN) return json({ ok: false, error: 'bad_lead_id' }, 400);
+  try {
+    const res = await env.PORTAL_DB.prepare(
+      'UPDATE leads_all SET answered_at = ? WHERE site = ? AND lead_id = ? AND answered_at IS NULL',
+    ).bind(Date.now(), site, leadId).run();
+    return json({ ok: true, updated: res?.meta?.changes ?? 0 });
+  } catch (err) {
+    console.error('[ledger] answered failed:', err?.message || err);
+    return json({ ok: false, error: 'db_error' }, 503);
+  }
+}

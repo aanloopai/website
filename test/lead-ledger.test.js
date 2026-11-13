@@ -3,7 +3,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
-import { ledgerIngest, recordOwnLead, listLedger } from '../src/lib/lead-ledger.js';
+import { ledgerIngest, recordOwnLead, listLedger, ledgerRead, markLedgerAnswered } from '../src/lib/lead-ledger.js';
 import { hmacHex } from '../src/lib/visibility-core.js';
 
 const { DatabaseSync } = createRequire(import.meta.url)('node:sqlite');
@@ -169,5 +169,96 @@ describe('wiring', () => {
   });
   it('admin API exposes /api/admin/ledger behind the staff session', () => {
     expect(read('src/lib/admin-routes.js')).toContain("path === '/api/admin/ledger'");
+  });
+});
+
+describe('LEAD-2 ledgerRead (Bearer)', () => {
+  const TOKEN = 'read-token-test';
+  const req = (qs = '', auth = `Bearer ${TOKEN}`) => new Request(`https://aanloopai.nl/api/leads/ledger${qs}`, {
+    headers: auth ? { authorization: auth } : {},
+  });
+  const call = (r, e = { ...env, LEDGER_READ_TOKEN: TOKEN }) => ledgerRead(r, e, new URL(r.url));
+  const seed = (id, ageH, extra = '') => env.PORTAL_DB.raw.prepare(
+    'INSERT INTO leads_all (site, lead_id, form, landing, utm_source, ts, status, received_at) VALUES (?,?,?,?,?,?,?,?)',
+  ).run('fth', id, 'contact', '/x/', 'g', 't', 'received', Date.now() - ageH * 3600 * 1000);
+
+  it('401 without token, wrong token, wrong scheme, or env unset', async () => {
+    for (const r of [req('', null), req('', 'Bearer nope'), req('', TOKEN)]) {
+      const res = await call(r);
+      expect(res.status).toBe(401);
+      expect(await res.json()).toEqual({ ok: false, error: 'unauthorized' });
+    }
+    expect((await call(req(), { ...env })).status).toBe(401);
+    expect((await call(req('', 'Bearer '), { ...env, LEDGER_READ_TOKEN: '' })).status).toBe(401);
+  });
+
+  it('503 without PORTAL_DB (valid token)', async () => {
+    expect((await call(req(), { LEDGER_READ_TOKEN: TOKEN })).status).toBe(503);
+  });
+
+  it('200 shape, newest first, PII-free columns only', async () => {
+    seed('old', 2); seed('new', 1);
+    const res = await call(req());
+    expect(res.status).toBe(200);
+    const d = await res.json();
+    expect(d.ok).toBe(true);
+    expect(d.leads.map((l) => l.lead_id)).toEqual(['new', 'old']);
+    expect(Object.keys(d.leads[0]).sort()).toEqual(
+      ['answered_at', 'form', 'landing', 'lead_id', 'received_at', 'site', 'status', 'ts', 'utm_source']);
+  });
+
+  it('hours: default 168, clamped to 1..720', async () => {
+    seed('h2', 2); seed('d3', 72); seed('d10', 240); seed('d40', 960);
+    const ids = async (qs) => (await (await call(req(qs))).json()).leads.map((l) => l.lead_id).sort();
+    expect(await ids('')).toEqual(['d3', 'h2']);
+    expect(await ids('?hours=0')).toEqual(['d3', 'h2']);      // invalid -> default
+    expect(await ids('?hours=-5')).toEqual(['d3', 'h2']);
+    expect(await ids('?hours=abc')).toEqual(['d3', 'h2']);
+    expect(await ids('?hours=1')).toEqual([]);                  // min 1h
+    expect(await ids('?hours=24')).toEqual(['h2']);
+    expect(await ids('?hours=99999')).toEqual(['d10', 'd3', 'h2']); // clamp 720h = 30d
+  });
+
+  it('non-GET -> 405 before anything else', async () => {
+    const r = new Request('https://aanloopai.nl/api/leads/ledger', { method: 'POST' });
+    expect((await call(r)).status).toBe(405);
+  });
+});
+
+describe('LEAD-2 markLedgerAnswered', () => {
+  const post = (b) => markLedgerAnswered(new Request('https://aanloopai.nl/api/admin/ledger/answered', {
+    method: 'POST', body: typeof b === 'string' ? b : JSON.stringify(b),
+  }), env);
+
+  it('sets answered_at once; repeat is idempotent (updated:0, timestamp kept)', async () => {
+    await ledgerIngest(await signed(payload()), env);
+    const r1 = await (await post({ site: 'fth', lead_id: 'L-1' })).json();
+    expect(r1).toEqual({ ok: true, updated: 1 });
+    const t1 = rows()[0].answered_at;
+    expect(t1).toBeGreaterThan(0);
+    const r2 = await (await post({ site: 'fth', lead_id: 'L-1' })).json();
+    expect(r2).toEqual({ ok: true, updated: 0 });
+    expect(rows()[0].answered_at).toBe(t1);
+  });
+
+  it('unknown lead -> updated:0; other site/lead untouched', async () => {
+    await ledgerIngest(await signed(payload()), env);
+    expect(await (await post({ site: 'kib', lead_id: 'L-1' })).json()).toEqual({ ok: true, updated: 0 });
+    expect(rows()[0].answered_at).toBeNull();
+  });
+
+  it('validates site, lead_id, body', async () => {
+    expect((await post({ site: 'evil', lead_id: 'a' })).status).toBe(400);
+    expect((await post({ site: 'fth', lead_id: '' })).status).toBe(400);
+    expect((await post({ site: 'fth', lead_id: 'x'.repeat(201) })).status).toBe(400);
+    expect((await post('not json')).status).toBe(400);
+  });
+});
+
+describe('LEAD-2 wiring', () => {
+  const read = (p) => readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
+  it('worker routes /api/leads/ledger to ledgerRead; admin answered route is POST behind session', () => {
+    expect(read('src/worker.js')).toMatch(/pathname === '\/api\/leads\/ledger'[\s\S]{0,80}ledgerRead\(request, env, url\)/);
+    expect(read('src/lib/admin-routes.js')).toContain("path === '/api/admin/ledger/answered' && method === 'POST'");
   });
 });
