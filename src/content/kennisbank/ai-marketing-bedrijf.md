@@ -7,7 +7,7 @@ category: "AI-automatisering"
 readingMinutes: 5
 draft: false
 updated: 2026-11-11
-bronnen: ["ap-avg"]
+bronnen: ["ap-avg", "cbs-ai-2025"]
 faq:
   - q: "Wat doet een AI marketing bedrijf?"
     a: "Een AI marketing bedrijf zet AI in om klanten te werven en te behouden. Denk aan een website die aanvragen oplevert, een AI-telefoniste die gesprekken aanneemt, zichtbaarheid in AI-zoekmachines en een meetpaneel dat laat zien wat het oplevert."
@@ -15,6 +15,8 @@ faq:
     a: "Steeds meer mensen vragen ChatGPT, Gemini of Perplexity om een aanbeveling. Als uw bedrijf daar niet wordt genoemd, mist u aanvragen die u via Google nog wel zou krijgen. Duidelijke, feitelijke pagina's vergroten de kans dat u wordt genoemd."
   - q: "Hoe controleer ik of een AI marketing bedrijf echt resultaat levert?"
     a: "Vraag naar gemeten resultaten en een meetpaneel waarin u zelf telefoontjes, berichten en formulieren ziet. Laat u niet afleiden door bezoekersaantallen alleen. Een betrouwbaar bedrijf legt uit hoe het meet en wat het wel en niet kan beloven."
+  - q: "Hoe kies ik een AI marketing bedrijf?"
+    a: "Kies een bedrijf dat meetbare resultaten laat zien, helder is over wat het levert en uw gegevens volgens de AVG behandelt. Vraag naar concrete cases, een meetpaneel en wie er na oplevering verantwoordelijk blijft."
 ---
 
 Veel ondernemers in Nederland horen dat ze 'iets met AI' moeten doen voor hun marketing. Maar wat betekent dat concreet? En hoe herkent u een AI marketing bedrijf dat klanten oplevert, in plaats van alleen mooie woorden?
@@ -31,7 +33,7 @@ Het doel blijft hetzelfde als bij elke marketing: meer aanvragen van de juiste k
 
 Het Nederlandse MKB gebruikt AI marketing vooral voor drie dingen: gevonden worden, bereikbaar zijn en meten. Dat betekent een website die aanvragen oplevert, een telefoniste die ook buiten kantooruren opneemt en inzicht in wat dit oplevert. Zo verliest een loodgieter in Utrecht of een kapper in Zwolle minder aanvragen.
 
-Voor een kleine ondernemer is dit vaak waardevoller dan een grote advertentiecampagne. U heeft meestal geen marketingafdeling, dus alles wat werk uit handen neemt en meetbaar is, telt dubbel. Dat geldt in Amsterdam en Rotterdam net zo goed als in Eindhoven of een kleiner dorp.
+Dat past bij het landelijke beeld: volgens het CBS zetten Nederlandse bedrijven AI het vaakst in voor marketing of verkoop. Voor een kleine ondernemer is dit vaak waardevoller dan een grote advertentiecampagne. U heeft meestal geen marketingafdeling, dus alles wat werk uit handen neemt en meetbaar is, telt dubbel. Dat geldt in Amsterdam en Rotterdam net zo goed als in Eindhoven of een kleiner dorp.
 
 ## Website als basis: AI marketing begint bij een site die converteert
 
@@ -67,16 +69,5 @@ Gebruik deze controlelijst:
 Meet bij AI marketing altijd het aantal echte aanvragen: telefoontjes, WhatsApp-berichten, formulieren en afspraken. Bezoekersaantallen alleen zeggen weinig. Een meetpaneel koppelt deze acties aan de bron, zodat u ziet wat werkt. Aanloop AI publiceert gemeten resultaten op aanloopai.nl/resultaten/. Dat is ook de maatstaf voor elk bureau.
 
 Zonder meting weet u niet of uw investering loont. Met een meetpaneel kunt u bijsturen: meer inzetten op wat aanvragen oplevert en stoppen met wat niet werkt. Een bedrijf dat niet wil laten zien wat het meet, is een waarschuwingssignaal.
-
-## Veelgestelde vragen
-
-**Wat doet een AI marketing bedrijf?**
-Een AI marketing bedrijf zet AI in om klanten te werven en te behouden. Denk aan een website die aanvragen oplevert, een AI-telefoniste die gesprekken aanneemt, zichtbaarheid in AI-zoekmachines en een meetpaneel dat laat zien wat het oplevert.
-
-**Waarom is AI-vindbaarheid belangrijk voor mijn bedrijf?**
-Steeds meer mensen vragen ChatGPT, Gemini of Perplexity om een aanbeveling. Als uw bedrijf daar niet wordt genoemd, mist u aanvragen die u via Google nog wel zou krijgen. Duidelijke, feitelijke pagina's vergroten de kans dat u wordt genoemd.
-
-**Hoe controleer ik of een AI marketing bedrijf echt resultaat levert?**
-Vraag naar gemeten resultaten en een meetpaneel waarin u zelf telefoontjes, berichten en formulieren ziet. Laat u niet afleiden door bezoekersaantallen alleen. Een betrouwbaar bedrijf legt uit hoe het meet en wat het wel en niet kan beloven.
 
 Wilt u zien hoe dit er in de praktijk uitziet? Bekijk de gemeten resultaten op [aanloopai.nl/resultaten](https://aanloopai.nl/resultaten/) en ontdek wat een website met Emma, AI-vindbaarheid en een meetpaneel voor uw bedrijf kan betekenen.
