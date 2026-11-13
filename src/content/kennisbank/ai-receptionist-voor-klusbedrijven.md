@@ -8,14 +8,16 @@ category: "AI-automatisering"
 readingMinutes: 5
 draft: false
 updated: 2026-11-07
-bronnen: []
+bronnen: ["ap-avg", "ec-ai-act"]
 faq:
   - q: "Kan een AI receptionist een offerte geven aan mijn klant?"
-  a: "Een AI receptionist kan de aanvraag vastleggen: wat er moet gebeuren, waar en hoe snel. Een prijs afspreken doet u zelf, want u beoordeelt de klus. Wel kan ze afspreken dat u terugbelt of een opname inplant."
-  - q: "Werkt een AI telefoniste ook buiten kantooruren?"
+    a: "Een AI receptionist kan de aanvraag vastleggen: wat er moet gebeuren, waar en hoe snel. Een prijs afspreken doet u zelf, want u beoordeelt de klus. Wel kan ze afspreken dat u terugbelt of een opname inplant."
+  - q: "Is een AI telefoniste ook buiten kantooruren bereikbaar?"
     a: "Ja, een AI telefoniste is altijd bereikbaar, ook in de avond en het weekend. Voor spoed kunt u instellen dat ze direct een bericht stuurt of het gesprek doorzet naar uw eigen telefoon."
   - q: "Is een AI receptionist alleen iets voor grote klusbedrijven?"
     a: "Nee, juist kleine bedrijven en eenmanszaken missen vaak oproepen omdat niemand op kantoor zit. Een AI receptionist vervangt dan geen personeel, maar vult de plek die nu leeg is."
+  - q: "Moet ik rekening houden met de AVG bij een AI receptionist?"
+    a: "Ja, want de receptionist legt persoonsgegevens vast, zoals naam, adres en telefoonnummer. Verzamel alleen wat u nodig heeft voor de offerte en vertel de beller dat hij met een digitale assistent praat."
 ---
 
 Uw telefoon gaat terwijl u op een ladder staat, in een kruipruimte ligt of een tegelvloer legt. U neemt niet op, en de beller zoekt het volgende klusbedrijf in de buurt. Zo verdwijnt werk dat u eigenlijk al had kunnen binnenhalen.
@@ -71,21 +73,9 @@ Twee praktische tips:
 1. **Vertel de beller dat hij met een digitale assistent praat.** Dat is eerlijk en voorkomt verrassingen. De meeste mensen willen vooral snel geholpen worden.
 2. **Bepaal wat spoed is.** Een lekkage of een storing is iets anders dan een verbouwing over een half jaar. Als u dat vooraf vastlegt, weet de telefoniste wanneer ze u direct moet waarschuwen.
 
+Een AI receptionist legt persoonsgegevens vast, zoals naam en adres, dus de AVG is van toepassing: de belangrijkste wet over de bescherming van persoonsgegevens, die in de hele EU geldt. De Europese AI-verordening kent bovendien meldplichten, bedoeld om mensen te informeren wanneer dat nodig is. Verzamel daarom alleen wat u nodig heeft voor een offerte.
+
 Luister de eerste weken zelf een aantal gesprekken terug. Zo ziet u snel of de vragen goed aansluiten bij uw werk en kunt u bijsturen.
-
-## Veelgestelde vragen
-
-### Kan een AI receptionist een offerte geven aan mijn klant?
-
-Een AI receptionist kan de aanvraag vastleggen: wat er moet gebeuren, waar en hoe snel. Een prijs afspreken doet u zelf, want u beoordeelt de klus. Wel kan ze afspreken dat u terugbelt of een opname inplant.
-
-### Werkt een AI telefoniste ook buiten kantooruren?
-
-Ja, een AI telefoniste is altijd bereikbaar, ook in de avond en het weekend. Voor spoed kunt u instellen dat ze direct een bericht stuurt of het gesprek doorzet naar uw eigen telefoon.
-
-### Is een AI receptionist alleen iets voor grote klusbedrijven?
-
-Nee, juist kleine bedrijven en eenmanszaken missen vaak oproepen omdat niemand op kantoor zit. Een AI receptionist vervangt dan geen personeel, maar vult de plek die nu leeg is.
 
 ## Laat Emma uw telefoon opnemen
 
