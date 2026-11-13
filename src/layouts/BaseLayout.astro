@@ -21,8 +21,12 @@ export interface Props {
   faqSchema?: { question: string; answer: string }[];
   videoSchema?: { name: string; description: string; thumbnailUrl: string; uploadDate: string; contentUrl?: string; embedUrl?: string; duration?: string };
   canonicalOverride?: string;
+  /** Optioneel: og:title los van <title> (merk-eerst, bv. 'Aanloop AI | ...'). */
+  ogTitle?: string;
   /** Zet dit op de pagina waar Hero.astro boven de vouw staat (nu alleen /). */
   preloadHero?: boolean;
+  /** Optioneel: echte wijzigingsdatum (YYYY-MM-DD); anders git-datum uit page-lastmod.json. */
+  dateModified?: string;
 }
 
 const {
@@ -34,7 +38,9 @@ const {
   faqSchema,
   videoSchema,
   canonicalOverride,
+  ogTitle,
   preloadHero = false,
+  dateModified: dateModifiedProp,
 } = Astro.props;
 
 // LCP-preload van de hero-afbeelding. Opties komen uit data/hero-image.ts, net
@@ -47,6 +53,7 @@ const heroPreload = preloadHero
 // Centrale noindex-lijst (src/data/noindex-paths.json): pagina blijft online en
 // volgbaar (noindex, follow), maar verdwijnt uit de sitemap (build-sitemap.cjs).
 const noindexListed = noindexPaths.groups.some((g) => g.paths.includes(Astro.url.pathname.endsWith('/') ? Astro.url.pathname : Astro.url.pathname + '/'));
+
 
 const canonical = canonicalOverride ?? new URL(Astro.url.pathname, 'https://aanloopai.nl').toString();
 // Smart suffix: only append " · Aanloop AI" when total stays <=60 chars
@@ -103,6 +110,12 @@ const hideStickyCta = stickyCtaHidePaths.has(Astro.url.pathname);
 
 // ── Organization Schema ────────────────────────────────────────────
 import { OPRICHTER, ORGANISATIE_WIKIDATA, PERSON_ID } from '../data/oprichter';
+// Echte wijzigingsdatum: prop > git-commitdatum van het bronbestand (gegenereerd
+// door scripts/build-sitemap.cjs in prebuild). Ontbreekt beide, dan geen datum.
+const lastmodFiles = import.meta.glob('../data/page-lastmod.json', { eager: true });
+const lastmodMap = (Object.values(lastmodFiles)[0] ?? {}).default ?? {};
+const pathKey = Astro.url.pathname.endsWith('/') ? Astro.url.pathname : Astro.url.pathname + '/';
+const pageDateModified = dateModifiedProp ?? lastmodMap[pathKey];
 
 const orgSchema = {
   '@context': 'https://schema.org',
@@ -110,7 +123,7 @@ const orgSchema = {
   '@id': 'https://aanloopai.nl/#organization',
   name: 'Aanloop AI',
   legalName: 'Aanloop AI',
-  alternateName: 'AanloopAI',
+  alternateName: ['AanloopAI', 'aanloopai.nl'],
   url: 'https://aanloopai.nl',
   logo: {
     '@type': 'ImageObject',
@@ -118,7 +131,7 @@ const orgSchema = {
     width: 1024,
     height: 1024,
   },
-  description: 'Aanloop AI levert AI agents, voice AI en workflow automation voor het Nederlandse MKB. Van AI-receptionist tot custom n8n workflows — live in 7 werkdagen. KVK: 88606902.',
+  description: 'Aanloop AI uit Rotterdam helpt het Nederlandse MKB met een AI-ready website, de AI-receptionist Emma en zichtbaarheid in AI-assistenten (GEO), plus AI-audits met een 90-dagenroadmap. Prijzen openbaar. KVK: 88606902.',
   slogan: 'AI die echt werkt voor uw bedrijf',
   foundingDate: '2023', // /over/, llms.txt en facts.json: opgericht 2023
   identifier: {
@@ -150,7 +163,6 @@ const orgSchema = {
     '@type': 'ContactPoint',
     contactType: 'sales',
     email: 'hello@aanloopai.nl',
-    telephone: '+31624741597',
     areaServed: 'NL',
     availableLanguage: ['Dutch', 'English'],
     hoursAvailable: {
@@ -236,7 +248,9 @@ const websiteSchema = {
   '@id': 'https://aanloopai.nl/#website',
   url: 'https://aanloopai.nl',
   name: 'Aanloop AI',
-  description: 'AI-oplossingen voor het Nederlandse MKB',
+  alternateName: ['AanloopAI', 'aanloopai.nl'],
+  // Homepage: gelijk aan de meta description (brand-entity coherentie).
+  description: Astro.url.pathname === '/' ? description : 'AI-oplossingen voor het Nederlandse MKB',
   publisher: { '@id': 'https://aanloopai.nl/#organization' },
   potentialAction: {
     '@type': 'SearchAction',
@@ -254,6 +268,12 @@ const speakableSchema = {
   '@type': 'WebPage',
   name: fullTitle,
   url: canonical,
+  description,
+  inLanguage: 'nl-NL',
+  isPartOf: { '@id': 'https://aanloopai.nl/#website' },
+  publisher: { '@id': 'https://aanloopai.nl/#organization' },
+  author: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
+  ...(pageDateModified ? { dateModified: pageDateModified } : {}),
   speakable: {
     '@type': 'SpeakableSpecification',
     cssSelector: ['h1', 'main p:first-of-type', '.eyebrow + h2 + p', '[data-speakable]'],
@@ -420,6 +440,21 @@ const allSchemas = [
       } catch (e) {}
       gtag('config', 'G-VS8SZZ6W45', { anonymize_ip: true, transport_type: 'beacon', page_location: _gaPageLocation });
       window._track = function(name, params) {
+        // Eerste-partij lead-hit (cookieloos, niet consent-gated) via /v.js: de bron
+        // van waarheid voor lead-tellingen. Honeypot (botcheck gevuld) = de server
+        // antwoordt nep-succes zonder lead, dus dan geen hit. v.js is defer: nog niet
+        // geladen -> wachtrij die v.js bij laden leegt.
+        if (name === 'generate_lead') {
+          try {
+            var _bc = document.querySelectorAll('input[name="botcheck"]'), _bot = false;
+            for (var _i = 0; _i < _bc.length; _i++) { if (_bc[_i].type === 'checkbox' ? _bc[_i].checked : _bc[_i].value) _bot = true; }
+            if (!_bot) {
+              var _fn = (params && (params.form_name || params.form_type)) || '';
+              if (window.aanloopTrack) window.aanloopTrack('lead', _fn);
+              else (window.__visQ = window.__visQ || []).push(['lead', _fn]);
+            }
+          } catch (e) {}
+        }
         try {
           if (window.gtag) window.gtag('event', name, params || {});
           if (Array.isArray(window.dataLayer)) window.dataLayer.push(Object.assign({ event: name }, params || {}));
@@ -476,7 +511,8 @@ const allSchemas = [
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Aanloop AI" />
-    <meta property="og:title" content={fullTitle} />
+    {pageDateModified && <meta property="article:modified_time" content={pageDateModified} />}
+    <meta property="og:title" content={ogTitle ?? fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />
     <meta property="og:image" content={ogImage} />
@@ -720,13 +756,9 @@ const allSchemas = [
         aria-label="Snel contact opnemen met Aanloop AI"
         class="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-slate-200 px-4 py-3 flex gap-2 shadow-2xl"
       >
-        <a href="/whatsapp" target="_blank" rel="noopener nofollow" class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-slate-200 text-navy font-semibold text-sm hover:bg-slate-50 transition-all" aria-label="WhatsApp Aanloop AI op +31 6 24 74 15 97">
-          <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-          WhatsApp
-        </a>
-        <a href="/demo-aanvragen/" class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-brand-indigo text-white font-semibold text-sm hover:bg-indigo-700 transition-all" aria-label="Vraag een gratis demo aan">
+        <a href="/gratis-ai-scan/" class="flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-brand-indigo text-white font-semibold text-sm hover:bg-indigo-700 transition-all" aria-label="Start de gratis AI-scan">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-          Gratis demo
+          Gratis AI-scan
         </a>
       </div>
     )}
@@ -743,7 +775,7 @@ const allSchemas = [
          deze knop (dan is het gesprek zelf de door de bezoeker gevraagde dienst).
          Zo houden bezoekers die alleen noodzakelijke cookies kiezen wél toegang
          tot support, zonder dat er vooraf iets van hen wordt vastgelegd. -->
-    <button type="button" id="emma-launcher" class="emma-launcher" aria-label="Chat starten met Emma, de AI-assistent">
+    <button type="button" id="emma-launcher" class="emma-launcher emma-launcher--pre" aria-label="Chat starten met Emma, de AI-assistent">
       <svg class="emma-launcher-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">
         <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h8M8 14h5M21 12a8 8 0 01-8 8H7l-4 3v-6.5A8 8 0 1121 12z" />
       </svg>
@@ -764,8 +796,16 @@ const allSchemas = [
       .emma-launcher:focus-visible{outline:2px solid #4f46e5;outline-offset:2px}
       .emma-launcher-icon{width:1.15rem;height:1.15rem;color:#4f46e5}
       .emma-launcher[hidden]{display:none}
-      @media (max-width:1023px){.emma-launcher{bottom:5.25rem;right:.75rem}}
+      @media (max-width:1023px){.emma-launcher{bottom:5.25rem;right:.75rem}
+        /* Mobiel: pas tonen na de hero, zodat de bubbel de hero-CTA's niet bedekt. */
+        .emma-launcher--pre{opacity:0;visibility:hidden;pointer-events:none}}
     </style>
+    <script is:inline>
+      (function(){var b=document.getElementById('emma-launcher');if(!b)return;
+        function show(){b.classList.remove('emma-launcher--pre');removeEventListener('scroll',chk);}
+        function chk(){if(scrollY>Math.max(400,innerHeight*0.7))show();}
+        addEventListener('scroll',chk,{passive:true});setTimeout(show,20000);chk();})();
+    </script>
 
 
     <!-- Branding hidden via attachShadow intercept above -->

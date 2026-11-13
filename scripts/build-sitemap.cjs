@@ -4,7 +4,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const ROOT = path.join(__dirname, '..');
+const ROOT = process.env.SITEMAP_ROOT ? path.resolve(process.env.SITEMAP_ROOT) : path.join(__dirname, '..');
 const PAGES_DIR = path.join(ROOT, 'src', 'pages');
 const SITEMAP = path.join(ROOT, 'public', 'sitemap.xml');
 const SITE = 'https://aanloopai.nl';
@@ -83,7 +83,16 @@ const today = new Date().toISOString().slice(0, 10);
 // Nieuwste commit eerst; de eerste keer dat een pad voorbijkomt wint.
 const { execSync } = require('child_process');
 const gitDateByFile = new Map();
+// Shallow clone: git ziet alleen de gegraafde top-commit, dus elk bestand lijkt
+// vandaag gewijzigd (de oorzaak van 253x 2026-11-11 in PR #281). Dan géén
+// git-datums gebruiken; val terug op de bestaande sitemapwaarden.
+let isShallow = false;
 try {
+  isShallow = execSync('git rev-parse --is-shallow-repository', { cwd: ROOT, encoding: 'utf8' }).trim() === 'true';
+} catch (_) { /* geen git: gitDateByFile blijft leeg */ }
+if (isShallow) console.warn('lastmod: shallow clone - git-historie genegeerd, bestaande sitemapwaarden blijven staan.');
+try {
+  if (isShallow) throw new Error('shallow clone');
   // --no-merges: een merge-commit toont zonder -m geen bestandslijst, maar
   // uitsluiten maakt dat expliciet. De datum wordt via Date() naar UTC
   // genormaliseerd: %cI staat in de tijdzone van de committer, waardoor een
@@ -110,6 +119,63 @@ try {
 function lastmodForSource(absFile) {
   const rel = path.relative(ROOT, absFile).replace(/\\/g, '/');
   return gitDateByFile.get(rel) || null;
+}
+
+// ── lastmod voor pagina's die uit een gedeeld data-bestand komen ────────────
+// /sectoren/<x>/, /leads-kopen/<x>/, /werk/<x>/ enz. hebben één bronbestand
+// voor alle slugs. De bestandsdatum zou élke wijziging aan één entry naar alle
+// pagina's laten doorsijpelen (nepvers-signaal, PR #281). Daarom: datum van de
+// laatste commit waarin het tekstblok van DIE entry (van zijn sleutelregel tot
+// de volgende sleutelregel) veranderde. Geen git/shallow: null (fallback).
+const entryVersionCache = new Map(); // relFile -> [{date, text}] nieuwste eerst
+function fileVersions(rel) {
+  if (entryVersionCache.has(rel)) return entryVersionCache.get(rel);
+  const versions = [];
+  if (!isShallow) {
+    try {
+      const out = execSync(`git log --no-merges --format=%H%x09%cI -- ${rel}`, { cwd: ROOT, encoding: 'utf8' });
+      for (const l of out.split('\n').filter(Boolean)) {
+        const [hash, iso] = l.split('\t');
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) continue;
+        let text = '';
+        try { text = execSync(`git show ${hash}:${rel}`, { cwd: ROOT, encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 }); } catch (_) { /* bestand bestond niet */ }
+        versions.push({ date: d.toISOString().slice(0, 10), text });
+      }
+    } catch (_) { versions.length = 0; }
+  }
+  entryVersionCache.set(rel, versions);
+  return versions;
+}
+function entryBlock(text, keyRe, slug) {
+  const starts = [...text.matchAll(keyRe)];
+  const i = starts.findIndex((m) => m[1] === slug);
+  if (i < 0) return '';
+  const end = i + 1 < starts.length ? starts[i + 1].index : text.length;
+  return text.slice(starts[i].index, end).replace(/\r\n/g, '\n');
+}
+function lastmodForEntry(absFile, keyRe, slug) {
+  const rel = path.relative(ROOT, absFile).split(path.sep).join('/');
+  const v = fileVersions(rel);
+  if (!v.length) return null;
+  const blocks = v.map((x) => entryBlock(x.text, keyRe, slug));
+  for (let i = 0; i < v.length - 1; i++) {
+    if (blocks[i] !== blocks[i + 1]) return blocks[i] ? v[i].date : null;
+  }
+  return blocks[v.length - 1] ? v[v.length - 1].date : null;
+}
+const entryKeyByUrl = new Map(); // URL -> { re, slug }
+function lastmodForUrl(u) {
+  const src = sourceByUrl.get(u);
+  if (!src) return null;
+  const e = entryKeyByUrl.get(u);
+  return (e ? lastmodForEntry(src, e.re, e.slug) : lastmodForSource(src)) || null;
+}
+const KEY_SLUG = /^[ \t]*slug:\s*'([^']+)'/gm;
+const KEY_KEY = /^[ \t]*key:\s*'([^']+)'/gm;
+function setEntry(url, file, re, slug) {
+  sourceByUrl.set(url, file);
+  entryKeyByUrl.set(url, { re, slug });
 }
 
 const files = walk(PAGES_DIR);
@@ -143,7 +209,7 @@ const geoSectorsSrc = fs.readFileSync(path.join(ROOT, 'src', 'data', 'geo-sector
 const geoSlugs = Array.from(geoSectorsSrc.matchAll(/slug:\s*'([^']+)'/g)).map((m) => m[1]);
 for (const s of geoSlugs) {
   urls.push(`/ai-vindbaarheid/voor-${s}/`);
-  sourceByUrl.set(`/ai-vindbaarheid/voor-${s}/`, path.join(ROOT, 'src', 'data', 'geo-sectors.ts'));
+  setEntry(`/ai-vindbaarheid/voor-${s}/`, path.join(ROOT, 'src', 'data', 'geo-sectors.ts'), KEY_SLUG, s);
 }
 
 // /geo-bureau/[regio] en /geo-bureau/sector/[sector] dynamic routes — slugs uit
@@ -152,7 +218,7 @@ for (const [file, prefix] of [['geo-regios.ts', '/geo-bureau/'], ['geo-sbi-secto
   const src = fs.readFileSync(path.join(ROOT, 'src', 'data', file), 'utf8');
   for (const m of src.matchAll(/slug:\s*'([^']+)'/g)) {
     urls.push(`${prefix}${m[1]}/`);
-    sourceByUrl.set(`${prefix}${m[1]}/`, path.join(ROOT, 'src', 'data', file));
+    setEntry(`${prefix}${m[1]}/`, path.join(ROOT, 'src', 'data', file), KEY_SLUG, m[1]);
   }
 }
 
@@ -160,7 +226,7 @@ for (const [file, prefix] of [['geo-regios.ts', '/geo-bureau/'], ['geo-sbi-secto
 const resultatenSrc = fs.readFileSync(path.join(ROOT, 'src', 'data', 'resultaten.ts'), 'utf8');
 for (const m of resultatenSrc.matchAll(/^\s+key:\s*'([^']+)'/gm)) {
   urls.push(`/werk/${m[1]}/`);
-  sourceByUrl.set(`/werk/${m[1]}/`, path.join(ROOT, 'src', 'data', 'resultaten.ts'));
+  setEntry(`/werk/${m[1]}/`, path.join(ROOT, 'src', 'data', 'resultaten.ts'), KEY_KEY, m[1]);
 }
 
 // /leads-kopen/[sector] dynamic route — slugs uit lead-sectors.ts (nieuwe branches auto-included).
@@ -168,7 +234,7 @@ const leadSectorsSrc = fs.readFileSync(path.join(ROOT, 'src', 'data', 'lead-sect
 const leadSlugs = Array.from(leadSectorsSrc.matchAll(/^\s+slug:\s*'([^']+)'/gm)).map((m) => m[1]);
 for (const s of leadSlugs) {
   urls.push(`/leads-kopen/${s}/`);
-  sourceByUrl.set(`/leads-kopen/${s}/`, path.join(ROOT, 'src', 'data', 'lead-sectors.ts'));
+  setEntry(`/leads-kopen/${s}/`, path.join(ROOT, 'src', 'data', 'lead-sectors.ts'), KEY_SLUG, s);
 }
 
 // /sectoren/[sector] dynamic route — slugs uit sectors.ts (nieuwe sectoren auto-included).
@@ -176,7 +242,7 @@ const sectorsSrc = fs.readFileSync(path.join(ROOT, 'src', 'data', 'sectors.ts'),
 const sectorSlugs = Array.from(sectorsSrc.matchAll(/slug:\s*'([^']+)'/g)).map((m) => m[1]);
 for (const s of sectorSlugs) {
   urls.push(`/sectoren/${s}/`);
-  sourceByUrl.set(`/sectoren/${s}/`, path.join(ROOT, 'src', 'data', 'sectors.ts'));
+  setEntry(`/sectoren/${s}/`, path.join(ROOT, 'src', 'data', 'sectors.ts'), KEY_SLUG, s);
 }
 
 // /kennisbank/[slug] dynamic route — one markdown file per article in
@@ -224,11 +290,22 @@ for (const u of uniqueSorted) {
   const loc = SITE + u;
   // Voorkeursvolgorde: git-commitdatum van het bronbestand → eerder
   // gepubliceerde waarde → vandaag (alleen voor URL's zonder git-spoor).
-  const src = sourceByUrl.get(u);
-  const lastmod = (src && lastmodForSource(src)) || lastmodMap.get(u) || today;
+  const lastmod = lastmodForUrl(u) || lastmodMap.get(u) || today;
   xmlLines.push(
     `  <url><loc>${loc}</loc><lastmod>${lastmod}</lastmod><changefreq>${changefreqFor(u)}</changefreq><priority>${priorityFor(u)}</priority></url>`
   );
+}
+
+// Echte wijzigingsdatum per pad voor BaseLayout (dateModified in JSON-LD): exact
+// dezelfde waarde als <lastmod> hierboven, dus de git-commitdatum van het
+// bronbestand — nooit "nu" voor ongewijzigde pagina's. Gegenereerd, niet in git.
+{
+  const pageLastmod = {};
+  for (const u of uniqueSorted) {
+    const d = lastmodForUrl(u) || lastmodMap.get(u);
+    if (d) pageLastmod[u] = String(d).slice(0, 10);
+  }
+  fs.writeFileSync(path.join(ROOT, 'src', 'data', 'page-lastmod.json'), JSON.stringify(pageLastmod));
 }
 
 xmlLines.push('</urlset>');
@@ -243,8 +320,7 @@ console.log(`Wrote ${uniqueSorted.length} URLs to public/sitemap.xml`);
 {
   const hist = {};
   for (const u of uniqueSorted) {
-    const src = sourceByUrl.get(u);
-    const d = (src && lastmodForSource(src)) || lastmodMap.get(u) || today;
+    const d = lastmodForUrl(u) || lastmodMap.get(u) || today;
     hist[d] = (hist[d] || 0) + 1;
   }
   const dates = Object.keys(hist).sort();

@@ -6,6 +6,17 @@ published: 2026-09-06
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-verwerker", "ro-privacy", "ec-ai-act"]
+faq:
+  - q: "Wat kost samenwerken met een AI marketing bureau?"
+    a: "Er bestaat geen marktprijs; bureaus werken met uurtarieven, vaste projectbedragen of een maandelijkse retainer. Vraag bij elke offerte wat er precies wordt opgeleverd en wie het uitvoert. Beoordeel de kosten niet per uur, maar tegenover de uren die uw eigen team wekelijks kwijt is aan het werk dat wordt overgenomen."
+  - q: "Is mijn klantdata veilig bij een AI-marketingbureau?"
+    a: "Dat hangt af van de afspraken, niet van de techniek. Zorg voor een verwerkersovereenkomst, vraag waar gegevens worden opgeslagen en verwerkt, en laat schriftelijk vastleggen dat uw data niet wordt gebruikt om modellen van derden te trainen. Voor gevoelige gegevens kunt u afspreken dat deze het eigen systeem niet verlaten."
+  - q: "Moet ik kiezen voor een bureau in Amsterdam of dichter bij Rotterdam?"
+    a: "Kies op basis van aantoonbare ervaring met bedrijven zoals dat van u, niet op postcode. Amsterdam biedt meer keuze, een bureau in de regio Rotterdam kent vaker de lokale B2B- en industriemarkt. Spreek in beide gevallen af dat de start en de evaluaties op locatie plaatsvinden."
+  - q: "Hoe beoordeel ik of een AI-aanbieder echt resultaat levert?"
+    a: "Spreek vooraf af welke cijfers u volgt, zoals het aantal opgevangen gesprekken en binnengekomen aanvragen, en vraag de aanbieder die cijfers periodiek te laten zien. Beloftes zonder meetbare uitkomsten zijn geen basis voor een contract."
 ---
 
 Wie zoekt op "ai marketing bureau amsterdam" krijgt binnen een paar klikken drie heel verschillende soorten aanbieders te zien: klassieke reclamebureaus die er een AI-blokje bij hebben gezet, performance-marketeers die generatieve tools in hun bestaande workflow hebben geschoven, en automatiseringspartijen die vanuit techniek en data werken. Ze presenteren zich onder dezelfde noemer, maar leveren volstrekt verschillend werk.
@@ -43,17 +54,7 @@ Het snelst rendeert AI op werk dat vaak terugkeert en een duidelijke uitkomst he
 
 Een goed AI-marketingbureau begint bij uw proces, niet bij de tool. Het vraagt naar uw verkoopcyclus, uw CRM en uw datastromen voordat er iets over modellen wordt gezegd, maakt afspraken over wie het werk uitvoert, en legt vast hoe klantgegevens worden verwerkt en bewaard.
 
-Stel op dat laatste punt door. Onder de AVG heeft u een verwerkersovereenkomst nodig zodra een bureau persoonsgegevens namens u verwerkt, en met de Europese AI-verordening (de AI Act, verordening 2024/1689) komen daar gefaseerd verplichtingen bij, waaronder transparantie over AI-gegenereerde inhoud. Vraag concreet: waar worden onze gegevens verwerkt, worden ze gebruikt om modellen te trainen, en van wie zijn de opgebouwde workflows en prompts als we stoppen? Vraag ten slotte om een betaalde pilot op één proces in plaats van een jaarcontract. Een partij die zeker is van haar zaak, laat zich op één afgebakend resultaat beoordelen.
+Stel op dat laatste punt door. Onder de AVG heeft u een verwerkersovereenkomst nodig zodra een bureau persoonsgegevens namens u verwerkt, en met de Europese AI-verordening (de AI Act) komen daar verplichtingen bij, waaronder transparantie wanneer mensen met AI te maken krijgen. Vraag concreet: waar worden onze gegevens verwerkt, worden ze gebruikt om modellen te trainen, en van wie zijn de opgebouwde workflows en prompts als we stoppen? Vraag ten slotte om een betaalde pilot op één proces in plaats van een jaarcontract. Een partij die zeker is van haar zaak, laat zich op één afgebakend resultaat beoordelen.
 
-## Veelgestelde vragen
-
-**Wat kost samenwerken met een AI marketing bureau?**
-Er bestaat geen marktprijs; bureaus werken met uurtarieven, vaste projectbedragen of een maandelijkse retainer. Vraag bij elke offerte wat er precies wordt opgeleverd en wie het uitvoert. Beoordeel de kosten niet per uur, maar tegenover de uren die uw eigen team wekelijks kwijt is aan het werk dat wordt overgenomen.
-
-**Is mijn klantdata veilig bij een AI-marketingbureau?**
-Dat hangt af van de afspraken, niet van de techniek. Zorg voor een verwerkersovereenkomst, vraag waar gegevens worden opgeslagen en verwerkt, en laat schriftelijk vastleggen dat uw data niet wordt gebruikt om modellen van derden te trainen. Voor gevoelige gegevens kunt u afspreken dat deze het eigen systeem niet verlaten.
-
-**Moet ik kiezen voor een bureau in Amsterdam of dichter bij Rotterdam?**
-Kies op basis van aantoonbare ervaring met bedrijven zoals dat van u, niet op postcode. Amsterdam biedt meer keuze, een bureau in de regio Rotterdam kent vaker de lokale B2B- en industriemarkt. Spreek in beide gevallen af dat de start en de evaluaties op locatie plaatsvinden.
 
 Wilt u weten welk deel van uw marketing zich in uw situatie laat automatiseren? Plan een vrijblijvend gesprek met Aanloop AI: we nemen uw huidige proces door en laten zien welke stap in uw bedrijf het snelst iets oplevert.

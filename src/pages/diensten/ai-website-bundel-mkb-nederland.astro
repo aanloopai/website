@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import MobileProof from '../../components/MobileProof.astro';
 import { EMMA, GEO, WEBSITE_BUNDEL, GARANTIE_KORT } from '../../data/pricing';
 import { KERNPUNTEN, RESULTATEN, RESULTATEN_PEILDATUM } from '../../data/resultaten';
 
@@ -61,11 +62,13 @@ const faqItems = [
   { question: 'Wat kost het en wat is daar bijzonder aan?', answer: `${euro(bundelPrijs.setup)} eenmalig en ${euro(bundelPrijs.mnd)} per maand, exclusief 21% btw. We publiceren beide bedragen; de meeste bureaus noemen alleen "op aanvraag". Los kosten Emma Compleet en GEO Maandelijks samen ${euro(losseMaandlast)} per maand zonder website; in de bundel vervallen de Emma-setup, de GEO-setup en het integratiewerk.` },
   { question: 'Garanderen jullie leads of vermeldingen in ChatGPT?', answer: 'Nee, en wie dat wel garandeert, moet u wantrouwen: geen enkel bureau bepaalt wat een AI-assistent antwoordt of hoeveel mensen bellen. Wat we wél garanderen is dat u elke maand ziet wat er gemeten is — dezelfde cijfers die wij op /resultaten/ over onze eigen sites publiceren — en dat we daarop bijsturen.' },
   { question: 'Hoe weet ik dat jullie cijfers kloppen?', answer: `Elk cijfer op /resultaten/ draagt de meetmethode, de periode en de meetdatum (momentopname ${datum(RESULTATEN_PEILDATUM)}; de tabel ververst elk uur uit onze meting). Eigen bedrijven staan er als eigen bedrijven, klanten met hun akkoord. We tellen contactacties en afgeleverde leads apart en tellen ze nooit bij elkaar op.` },
+  { question: 'Wat is een AI-website en waarin verschilt die van een gewone website?', answer: 'Een AI-website is een website die niet alleen mensen, maar ook AI-assistenten als ChatGPT, Gemini en Perplexity kunnen lezen en citeren (schema.org, llms.txt, answer-first pagina\'s), en die een AI-receptionist als Emma en een meetpaneel meebrengt. Een gewone website heeft die laag niet vanzelf: zonder receptionist blijft een vraag buiten kantoortijd liggen en zonder meetpaneel ziet u niet via welk kanaal een aanvraag binnenkwam.' },
+  { question: 'Kan een bureau mijn website laten verschijnen in ChatGPT?', answer: 'Het kan de kans vergroten, niet afdwingen. Wij bouwen de website zo dat AI-crawlers hem mogen lezen en kunnen begrijpen, en we meten daarna maandelijks of u in de antwoorden staat. Wat een assistent antwoordt, bepaalt geen enkel bureau.' },
   { question: 'Zit WhatsApp bij Emma inbegrepen?', answer: 'Ja. De bundel gebruikt Emma Compleet: telefoon én WhatsApp in hetzelfde abonnement, onbeperkt volume. U betaalt nooit twee keer voor hetzelfde kanaal.' },
   { question: 'Kan ik mijn bestaande website houden en alleen Emma of GEO afnemen?', answer: 'Ja, beide zijn los verkrijgbaar (zie /diensten/emma/ en /ai-vindbaarheid/). De bundel is bedoeld voor wie een nieuwe of vernieuwde site wil waarin de AI-laag en de meting vanaf dag 1 zitten; retrofit op een bestaande site is meestal duurder en meet minder.' },
   { question: 'Wat als ik later wil opzeggen?', answer: 'U behoudt uw website-code (in uw eigen GitHub), uw domein en alle lead- en gespreksdata, die we naar u exporteren. Het maandabonnement stopt per maand na de eerste termijn; de eenmalige bouw is dan al van u.' },
   { question: 'Hoe lang duurt het tot we live zijn?', answer: 'Discovery en nulmeting in week 1, bouw in drie parallelle sporen in week 2 tot 6, soft-launch in week 7 en publiek in week 8. Bij complexe koppelingen (EPD, DMS, ERP) kan het 10 tot 12 weken zijn.' },
-  { question: 'Is dit AVG-conform?', answer: 'Ja. Verwerkersovereenkomst bij elke samenwerking, cookieloze meting zonder persoonsgegevens, hosting op ISO 27001-gecertificeerde infrastructuur, openbaar sub-verwerkersregister. Aanloop AI heeft zelf geen SOC 2- of ISO-certificaat en zegt dat ook; zie /beveiliging/. Aanloop AI B.V., KvK 88606902.' },
+  { question: 'Is dit AVG-conform?', answer: 'Ja. Verwerkersovereenkomst bij elke samenwerking, cookieloze meting zonder persoonsgegevens, een server bij Hetzner (door Hetzner zelf ISO/IEC 27001:2022-gecertificeerd; Aanloop AI zelf niet), openbaar sub-verwerkersregister. Aanloop AI heeft zelf geen SOC 2- of ISO-certificaat en zegt dat ook; zie /beveiliging/. Aanloop AI B.V., KvK 88606902.' },
 ];
 
 const serviceSchema = {
@@ -95,7 +98,7 @@ const speakableSchema = {
 ---
 
 <BaseLayout
-  title="AI-Website Bundel: website die klanten oplevert"
+  title="AI-website laten maken: bundel met Emma en GEO"
   description={`Website + Emma AI-receptionist + AI-vindbaarheid in ChatGPT en Gemini + meetpaneel. ${euro(bundelPrijs.setup)} eenmalig, ${euro(bundelPrijs.mnd)} per maand. Gemeten resultaten.`}
   schema={[serviceSchema, speakableSchema]}
   faqSchema={faqItems}
@@ -118,6 +121,7 @@ const speakableSchema = {
           <a href="/demo-aanvragen/" class="btn-primary text-base px-6 py-3.5">Plan een gesprek <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
           <a href="/resultaten/" class="btn-outline text-base px-6 py-3.5">Bekijk de gemeten resultaten</a>
         </div>
+        <div class="mt-6"><MobileProof visual /></div>
       </div>
     </div>
   </section>

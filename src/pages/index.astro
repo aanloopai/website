@@ -1,7 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EmmaLiveDemo from '../components/EmmaLiveDemo.astro';
+import FaqSection from '../components/FaqSection.astro';
 import { Hero as AnimatedHero } from '../components/ui/animated-hero';
+import MobileProof from '../components/MobileProof.astro';
+import AiAdoptieCbs from '../components/AiAdoptieCbs.astro';
 import { WEBSITE_BUNDEL } from '../data/pricing';
 import { KERNPUNTEN, RESULTATEN, RESULTATEN_PEILDATUM } from '../data/resultaten';
 
@@ -50,6 +53,10 @@ const services = [
 ];
 
 const moreServices = [
+  { href: '/diensten/audit/', label: 'AI-audit Nederland' },
+  { href: '/ai-marketing-bureau/', label: 'AI marketing bureau' },
+  { href: '/ai-agency-nederland/', label: 'AI bureau Nederland' },
+  { href: '/sectoren/accountancy/', label: 'AI voor accountants' },
   { href: '/diensten/custom/', label: 'AI-automatisering op maat' },
   { href: '/diensten/website-laten-maken-mkb-nederland-2026/', label: 'Alleen een website' },
   { href: '/diensten/ai-chatbot-website/', label: 'AI-chatbot voor uw website' },
@@ -90,6 +97,7 @@ const homeSchema = [
     name: 'Aanloop AI — websites met AI die klanten opleveren',
     description: 'Aanloop AI bouwt websites met AI voor het Nederlandse MKB: website + Emma AI-receptionist + AI-vindbaarheid in ChatGPT, Gemini en Perplexity + meetpaneel. Gemeten resultaten op /resultaten/.',
     inLanguage: 'nl-NL',
+    dateModified: '2026-10-19',
     isPartOf: { '@type': 'WebSite', '@id': 'https://aanloopai.nl/#website' },
     about: { '@type': 'Organization', '@id': 'https://aanloopai.nl/#organization' },
     primaryImageOfPage: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' },
@@ -118,12 +126,57 @@ const homeSchema = [
     },
   },
 ];
+
+const faqItems = [
+  {
+    question: 'Wat doet Aanloop AI?',
+    answer: 'Aanloop AI uit Rotterdam bouwt websites met AI die klanten opleveren voor het Nederlandse MKB: de website, Emma als AI-receptionist voor telefoon en WhatsApp, zichtbaarheid in ChatGPT, Gemini en Perplexity (GEO) en een meetpaneel dat laat zien wat elk kanaal oplevert.',
+  },
+  {
+    question: 'Wat kost een website met AI van Aanloop AI?',
+    answer: `De AI-Website Bundel kost ${euro(WEBSITE_BUNDEL.setup)} eenmalig plus ${euro(WEBSITE_BUNDEL.maand)} per maand, alles in één contract. Alle prijzen staan openbaar op de tarievenpagina.`,
+  },
+  {
+    question: 'Hoe zorgt u dat ChatGPT mijn bedrijf noemt?',
+    answer: 'Dat heet AI-vindbaarheid of GEO (Generative Engine Optimization). We maken uw gegevens overal consistent, structureren uw site met schema en llms.txt, openen hem voor AI-crawlers en meten daarna of u in de antwoorden staat. Een gratis GEO Quick Scan toont waar u nu staat; het maandelijkse traject kost €595 per maand. Een resultaat garanderen kan niemand: geen bureau bepaalt wat een AI-assistent antwoordt.',
+  },
+  {
+    question: 'Wat kost Emma, de AI-receptionist?',
+    answer: 'Emma start vanaf €149 per maand en heeft 14 dagen geld-terug-garantie op het abonnement. Zij neemt telefoon en WhatsApp 24/7 aan, plant afspraken in uw agenda en stuurt elke lead direct door.',
+  },
+  {
+    question: 'Hoe lang duurt het voordat ChatGPT of Perplexity mijn bedrijf gaat noemen?',
+    answer: 'Dat verschilt per bedrijf en is niet vooraf exact te voorspellen. Taalmodellen en AI-zoekmachines nemen nieuwe informatie in de praktijk meestal pas na weken tot enkele maanden op. Het hangt af van hoe duidelijk uw website uw diensten beschrijft, hoeveel betrouwbare bronnen naar u verwijzen en hoe concurrerend uw branche is.',
+  },
+  {
+    question: 'Kan een AI-telefoniste ook via WhatsApp met mijn klanten praten?',
+    answer: 'Ja, Emma werkt zowel aan de telefoon als via WhatsApp. Klanten kunnen dus kiezen hoe ze contact opnemen, en de AI-telefoniste beantwoordt vragen en kan gegevens van de aanvraag vastleggen, ook wanneer u zelf met een klant bezig bent of het kantoor gesloten is.',
+  },
+  {
+    question: 'Hoe meet ik of mijn website daadwerkelijk klanten oplevert?',
+    answer: 'U meet dit met een meetpaneel dat bezoekers, telefoontjes, WhatsApp-berichten en aanvragen op één plek bij elkaar brengt. Een goede norm is het aantal aanvragen per maand te vergelijken met de situatie vóór de nieuwe website. Gemeten resultaten van Aanloop AI staan op aanloopai.nl/resultaten.',
+  },
+  {
+    question: 'Wat is het verschil tussen een AI-bureau en een gewoon webbureau?',
+    answer: 'Een AI-bureau bouwt naast de website ook AI-onderdelen, zoals een telefoniste en vindbaarheid in AI-zoekmachines. Een gewoon webbureau levert meestal alleen het ontwerp en de techniek. Voor het MKB scheelt dat in de praktijk één partij in plaats van drie, en een website die aanvragen ook echt opvangt en meet.',
+  },
+  {
+    question: 'Is een AI-telefoniste toegestaan volgens de AVG?',
+    answer: 'Ja, dat mag, mits u de AVG naleeft. Informeer de beller dat hij met een AI spreekt, leg alleen vast wat nodig is, bewaar gegevens niet langer dan nodig en sluit een verwerkersovereenkomst met de leverancier. De Autoriteit Persoonsgegevens is de toezichthouder en publiceert richtlijnen over het gebruik van persoonsgegevens.',
+  },
+  {
+    question: 'Voor welke soorten bedrijven is een website met AI en een AI-telefoniste geschikt?',
+    answer: 'Vooral voor MKB-bedrijven die veel telefonische of digitale aanvragen krijgen en die niet altijd kunnen opnemen, zoals ambachtelijke bedrijven, zorgpraktijken, adviseurs en dienstverleners. Minder geschikt is een bedrijf dat vrijwel geen klantcontact via telefoon of website heeft, omdat de investering dan weinig oplevert.',
+  },
+];
 ---
 
 <BaseLayout
-  title="Websites met AI die klanten opleveren — Aanloop AI"
+  title="Aanloop AI — Websites met AI die klanten opleveren"
+  ogTitle="Aanloop AI | Websites met AI die klanten opleveren"
   description="Wij bouwen websites met AI die klanten opleveren en zorgen dat ChatGPT, Gemini en Perplexity u noemen. Emma inbegrepen. Gemeten resultaten, live."
   schema={homeSchema}
+  faqSchema={faqItems}
 >
   <!-- Hero: shadcn animated-hero (React island). Server-rendered H1 toont het
        eerste rotatiewoord al; client:idle hydrateert daarna en start de
@@ -140,14 +193,16 @@ const homeSchema = [
         badge={`AI-Website Bundel: ${euro(WEBSITE_BUNDEL.setup)} eenmalig · ${euro(WEBSITE_BUNDEL.maand)}/mnd all-in`}
         badgeHref="/diensten/ai-website-bundel-mkb-nederland/"
         description="Wij bouwen websites waar AI achter draait: Emma neemt uw telefoon en WhatsApp op, de site wordt genoemd door ChatGPT, Gemini en Perplexity, en een meetpaneel laat zien welk kanaal klanten oplevert. Onze eigen bedrijven draaien erop — de cijfers staan live op deze site."
-        primaryLabel="Boek een gratis demo"
-        primaryHref="/demo-aanvragen/"
+        primaryLabel="Gratis AI-scan"
+        primaryHref="/gratis-ai-scan/"
         secondaryLabel="Bekijk de gemeten resultaten"
         secondaryHref="/resultaten/"
         trust={['Zeven sites, één meting', 'AVG-conform · cookieloos gemeten', 'Prijzen publiek, geen verrassingen', 'Rotterdam · heel Nederland']}
-      />
+      ><MobileProof visual /></AnimatedHero>
     </div>
   </section>
+
+  <AiAdoptieCbs sector="zakelijk" />
 
   <!-- Diensten: vier, genummerd, één zin per dienst -->
   <section class="section bg-slate-50 border-y border-slate-200">
@@ -256,13 +311,13 @@ const homeSchema = [
             Eerlijk over certificering.
           </h2>
           <p class="mt-3 text-sm text-slate-600 leading-relaxed reveal reveal-delay-2">
-            Aanloop AI heeft zelf geen SOC 2- of ISO 27001-certificaat, en HIPAA geldt niet in Nederland. Wel draaien we op gecertificeerde infrastructuur en werken we AVG-conform.
+            Aanloop AI heeft zelf geen SOC 2- of ISO 27001-certificaat, en HIPAA geldt niet in Nederland. Onze server staat bij Hetzner, dat zelf ISO/IEC 27001:2022-gecertificeerd is, en we werken AVG-conform.
           </p>
           <a href="/beveiliging/" class="mt-4 inline-block text-sm font-semibold text-brand-indigo hover:underline underline-offset-4 reveal reveal-delay-2">Bekijk het volledige overzicht →</a>
         </div>
         <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3 reveal reveal-delay-2">
           <li class="rounded-lg border border-slate-200 bg-white p-4 text-sm"><strong class="block text-navy">AVG-verwerkersovereenkomst</strong><span class="text-slate-600">Bij elke samenwerking, conform art. 28 AVG.</span></li>
-          <li class="rounded-lg border border-slate-200 bg-white p-4 text-sm"><strong class="block text-navy">ISO 27001-gecertificeerde hosting</strong><span class="text-slate-600">Hetzner (Duitsland) en Cloudflare.</span></li>
+          <li class="rounded-lg border border-slate-200 bg-white p-4 text-sm"><strong class="block text-navy">Server bij Hetzner (Duitsland)</strong><span class="text-slate-600">Hetzner is zelf ISO/IEC 27001:2022-gecertificeerd; Aanloop AI zelf niet.</span></li>
           <li class="rounded-lg border border-slate-200 bg-white p-4 text-sm"><strong class="block text-navy">Betalingen via Mollie</strong><span class="text-slate-600">PCI DSS Level 1; wij zien geen kaartgegevens.</span></li>
           <li class="rounded-lg border border-slate-200 bg-white p-4 text-sm"><strong class="block text-navy">Openbaar sub-verwerkersregister</strong><span class="text-slate-600">Per leverancier: waarvoor, waar en welk certificaat.</span></li>
         </ul>
@@ -315,6 +370,8 @@ const homeSchema = [
       </div>
     </div>
   </section>
+
+  <FaqSection items={faqItems} />
 
   <!-- xref-orphan-fix-2026-05-07: deze drie pagina's hebben verder weinig inkomende links -->
   <section class="border-t border-pearl/10 bg-midnight py-10" aria-labelledby="xref-orphan-heading">

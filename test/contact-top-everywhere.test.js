@@ -18,10 +18,10 @@ describe('Contact-trio bovenaan elke publieke pagina', () => {
     expect(read('src/layouts/PortalLayout.astro')).not.toMatch(/components\/Header/);
   });
 
-  it('WhatsApp-icoon in de header via de /whatsapp-route (vooringevuld NL-bericht)', () => {
-    expect(header).toMatch(/<a href="\/whatsapp"[^>]*id="header-whatsapp"/);
-    // Ongemoeid: de route zelf zet de standaardtekst "Hallo! Ik kom via aanloopai.nl…"
-    expect(read('src/worker.js')).toContain("'Hallo! Ik kom via aanloopai.nl en heb een vraag.'");
+  it('geen WhatsApp/telefoon in de header (owner-eis 2026-10-28); /whatsapp stuurt door naar /contact/', () => {
+    expect(header).not.toContain('header-whatsapp');
+    expect(header).not.toMatch(/href="(\/whatsapp|tel:)/);
+    expect(read('src/worker.js')).toMatch(/\/whatsapp[\s\S]{0,600}\/contact\//);
   });
 
   it('e-mailicoon in de header: mailto naar hello@aanloopai.nl, zichtbaar op mobiel', () => {
@@ -42,8 +42,8 @@ describe('Contact-trio bovenaan elke publieke pagina', () => {
     expect(header).toContain("new Set(['/contact/', '/demo-aanvragen/', '/aanvragen/'])");
   });
 
-  it('WhatsApp en e-mail zijn op mobiel zichtbaar zonder menu (geen hidden-klasse)', () => {
-    for (const id of ['header-whatsapp', 'header-mail']) {
+  it('e-mail is op mobiel zichtbaar zonder menu (geen hidden-klasse)', () => {
+    for (const id of ['header-mail']) {
       const tag = header.match(new RegExp(`id="${id}" class="([^"]*)"`));
       expect(tag, id).not.toBeNull();
       expect(tag[1]).not.toMatch(/(^|\s)hidden(\s|$)/);

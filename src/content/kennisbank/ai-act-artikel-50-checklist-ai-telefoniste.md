@@ -6,6 +6,21 @@ published: 2026-09-15
 category: "AI-automatisering"
 readingMinutes: 9
 draft: false
+updated: 2026-11-06
+bronnen: ["ec-ai-act", "ap-ai", "ap-avg"]
+faq:
+  - q: "Wanneer geldt artikel 50 voor mijn AI-telefoniste of chatbot?"
+    a: "Artikel 50 geldt sinds 2 augustus 2026 voor uw AI-telefoniste of chatbot. Dat is de algemene toepassingsdatum uit artikel 113 van de AI-verordening; artikel 50 staat niet tussen de artikelen met een afwijkende, eerdere of latere datum."
+  - q: "Moet mijn voicebot altijd expliciet zeggen dat het een AI is?"
+    a: "In vrijwel alle praktijksituaties met klantcontact moet uw voicebot expliciet zeggen dat het een AI is. De wet kent een uitzondering wanneer dit duidelijk is vanuit het oogpunt van een normaal geïnformeerde en redelijk omzichtige en oplettende persoon, maar bij een telefoongesprek of chatbericht met een klant is dat zelden zo vanzelfsprekend dat u er blind op kunt vertrouwen. Expliciet melden is de veilige route."
+  - q: "Wat kost het als ik artikel 50 niet naleef?"
+    a: "Een overtreding van artikel 50 kost tot 15.000.000 euro of 3% van de wereldwijde jaaromzet. Dat staat in artikel 99, lid 4, en het hoogste bedrag geldt. Voor kmo's en start-ups geldt op grond van lid 6 het laagste van het percentage of het vaste bedrag, dus niet automatisch het maximum."
+  - q: "Wie controleert de AI-verordening in Nederland, de AP of de RDI?"
+    a: "Wie het toezicht op de AI-verordening in Nederland krijgt, ligt nog niet definitief vast. De Autoriteit Persoonsgegevens en de RDI hebben samen geadviseerd over de inrichting van het toezicht, maar de uiteindelijke taakverdeling moet nog worden vastgelegd. De AP is in elk geval al toezichthouder op de verwerking van persoonsgegevens door algoritmes."
+  - q: "Moet ik ook een verwerkersovereenkomst hebben met mijn AI-leverancier?"
+    a: "Ja, u hebt een verwerkersovereenkomst nodig zodra een leverancier namens u persoonsgegevens verwerkt. Een AI-telefoniste of chatbot die klantgesprekken voert doet dat vrijwel altijd. Die verplichting komt uit AVG artikel 28 en staat los van wat de AI-verordening zelf voorschrijft."
+  - q: "Wanneer moet mijn AI aan de beller melden dat het een AI is?"
+    a: "Uw AI meldt dit bij het eerste contact, dus aan het begin van het gesprek. Lid 5 van artikel 50 bepaalt dat de informatie uiterlijk op het moment van de eerste interactie op duidelijke en te onderscheiden wijze wordt gegeven, niet pas als iemand ernaar vraagt."
 ---
 
 Uw AI-telefoniste neemt op. Of uw chatbot beantwoordt een WhatsApp-bericht. In beide gevallen praat iemand met software, niet met een mens — en sinds 2 augustus 2026 schrijft de EU AI-verordening (Verordening (EU) 2024/1689, ook wel de "AI Act") voor dat die persoon dat moet weten. Dit artikel legt uit wat artikel 50 precies eist, sinds wanneer, wat het kost als u het niet regelt, en geeft een checklist van tien punten voor een MKB-bedrijf met een voicebot of chatbot.
@@ -83,28 +98,11 @@ Die regel wordt in de code toegepast op beide varianten van Emma:
 
 Een geautomatiseerde test in de codebase bewaakt dat deze disclosure-regel aanwezig blijft in elke nieuwe versie van de agentconfiguratie — dit is dus geen eenmalige belofte, maar een technische controle die bij elke wijziging opnieuw draait.
 
-Op de vertrouwenspagina van Aanloop AI staat aanvullend beschreven: vraagt een beller of hij een mens spreekt, dan bevestigt Emma eerlijk dat ze een AI is; wil de beller alsnog een mens, dan verbindt Emma door of legt een terugbelverzoek vast, met regels die de klant zelf instelt. Op diezelfde pagina staat ook wat er geregeld is rond de andere checklist-punten: gegevens worden verwerkt en bewaard in EU-datacenters (Amsterdam/Frankfurt), versleuteld zowel bij opslag als onderweg, met een standaard bewaartermijn van 90 dagen die instelbaar is tussen 7 en 365 dagen en een verwijderrecht dat binnen 24 uur wordt uitgevoerd. Aanloop AI treedt op als verwerker (de klant blijft verwerkingsverantwoordelijke) en levert een verwerkersovereenkomst conform AVG artikel 28; de genoemde sub-verwerkers zijn ElevenLabs (spraak), Meta (WhatsApp Business API), Cloudflare (hosting/opslag), Mollie (betalingen) en Brevo (e-mail).
+Op de vertrouwenspagina van Aanloop AI staat aanvullend beschreven: vraagt een beller of hij een mens spreekt, dan bevestigt Emma eerlijk dat ze een AI is; wil de beller alsnog een mens, dan verbindt Emma door of legt een terugbelverzoek vast, met regels die de klant zelf instelt. Op diezelfde pagina staat ook wat er geregeld is rond de andere checklist-punten: welke leveranciers gegevens verwerken staat er per leverancier met locatie in het sub-verwerkersregister, en doorgifte buiten de EU loopt via de verwerkersovereenkomst van die leverancier. Aanloop AI treedt op als verwerker (de klant blijft verwerkingsverantwoordelijke) en levert een verwerkersovereenkomst conform AVG artikel 28; het volledige overzicht van sub-verwerkers staat op [/beveiliging/](/beveiliging/). Aanloop AI heeft zelf geen ISO 27001-, SOC 2- of NEN 7510-certificaat.
 
 Zie ook: de bredere gids <a href="/kennisbank/eu-ai-act-mkb-nederland-2026/">EU AI Act voor het MKB</a> (risicocategorieën, AI-literacy, deadlines) en de <a href="/avg-checklist-ai-mkb/">AVG-checklist voor AI</a>. Hoe Emma dit in de praktijk doet, staat op <a href="/vertrouwen/">Vertrouwen &amp; AVG</a>.
 
-## Veelgestelde vragen
-
-**Vanaf wanneer geldt artikel 50 voor mijn AI-telefoniste of chatbot?**
-Sinds 2 augustus 2026. Dat is de algemene toepassingsdatum uit artikel 113 van de AI-verordening; artikel 50 staat niet tussen de artikelen met een afwijkende (eerdere of latere) datum.
-
-**Moet mijn voicebot altijd expliciet zeggen dat het een AI is?**
-In vrijwel alle praktijksituaties met klantcontact: ja. De wet kent een uitzondering wanneer dit "duidelijk is vanuit het oogpunt van een normaal geïnformeerde en redelijk omzichtige en oplettende natuurlijke persoon" — maar bij een telefoongesprek of chatbericht met een klant is dat zelden zo vanzelfsprekend dat u er blind op kunt vertrouwen. Expliciet melden is de veilige route.
-
-**Wat kost het als ik dit niet regel?**
-Voor overtreding van artikel 50 geldt op grond van artikel 99, lid 4 een boete tot €15.000.000 of tot 3% van de wereldwijde jaaromzet van het voorafgaande boekjaar, wat hoger is. Voor kmo's en start-ups geldt op grond van lid 6 het laagste van het percentage of het vaste bedrag — niet automatisch het maximum.
-
-**Wie controleert dit in Nederland — de Autoriteit Persoonsgegevens of de RDI?**
-Dat ligt nog niet definitief vast. De AP en de RDI hebben samen geadviseerd over de inrichting van het AI-toezicht, maar de uiteindelijke taakverdeling moet nog in Nederlandse wetgeving worden vastgelegd. De AP is in elk geval al toezichthouder op de verwerking van persoonsgegevens door algoritmes.
-
-**Moet ik ook een verwerkersovereenkomst hebben met mijn AI-leverancier?**
-Ja. Zodra een leverancier namens u persoonsgegevens verwerkt — en een AI-telefoniste of chatbot die klantgesprekken voert doet dat vrijwel altijd — is een verwerkersovereenkomst op grond van AVG artikel 28 verplicht, los van wat de AI-verordening zelf voorschrijft.
-
-## Bronnen
+## Wettekst en toezichthouder
 
 - Verordening (EU) 2024/1689 (AI-verordening), officiële Nederlandse tekst op EUR-Lex: https://eur-lex.europa.eu/legal-content/NL/TXT/?uri=CELEX%3A32024R1689
 - Artikel 50 (transparantieverplichtingen), artikel 99 (sancties) en artikel 113 (inwerkingtreding en toepassing) — geciteerd uit dezelfde EUR-Lex-tekst.

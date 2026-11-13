@@ -6,6 +6,21 @@ published: 2026-10-15
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["google-helpful", "google-ai-features", "arxiv-geo"]
+faq:
+  - q: "Kan AI mijn website hoger in Google krijgen?"
+    a: "AI kan helpen bij teksten, structuur en technische controles, maar garandeert geen hogere positie. Resultaat hangt af van de kwaliteit van uw pagina's, uw reputatie en de concurrentie in Eindhoven. Gebruik AI als hulpmiddel en controleer de uitkomst altijd zelf."
+  - q: "Is door AI geschreven tekst slecht voor SEO?"
+    a: "Door AI geschreven tekst is niet automatisch slecht voor SEO. Zoekmachines kijken vooral naar of een pagina nuttig, juist en betrouwbaar is. Teksten die u niet controleert en die algemeen blijven, scoren meestal slecht. Teksten met eigen ervaring en lokale details kunnen prima presteren."
+  - q: "Wat heb ik aan meer bezoekers als ik niet kan opnemen?"
+    a: "Aan meer bezoekers heeft u weinig als niemand opneemt. Veel bezoekers bellen direct en kiezen een andere aanbieder als niemand opneemt. Een AI-telefoniste vangt die oproepen op en plant afspraken in, zodat de extra zichtbaarheid ook echt klanten oplevert."
+  - q: "Wat kan AI voor SEO in Eindhoven betekenen?"
+    a: "AI kan een Eindhovens bedrijf helpen bij zoekwoorden, teksten, veelgestelde vragen en het controleren van pagina's op fouten. Het versnelt het werk, maar vervangt geen kennis van uw vak, uw buurt en uw klanten. Controle door een mens blijft nodig."
+  - q: "Waar helpt AI bij SEO niet bij?"
+    a: "AI helpt bij SEO niet bij het beoordelen of een tekst klopt voor uw bedrijf. Ze bouwt zelf geen vertrouwen op en levert geen garantie op een hoge positie. Wees voorzichtig met verzonnen feiten, algemene teksten en beloftes van snelle resultaten."
+  - q: "Hoe gebruikt u AI voor lokale vindbaarheid in Eindhoven?"
+    a: "Begin met een volledig en actueel Google-bedrijfsprofiel, een pagina per dienst en duidelijke informatie over uw werkgebied. Gebruik AI om teksten te ordenen en vragen van klanten te verzamelen. Voeg zelf de lokale details toe, zoals wijken, bereikbaarheid, openingstijden en hoe een afspraak werkt."
 ---
 
 Een installateur in Eindhoven laat zijn website verbeteren en krijgt ineens meer bezoekers. Een tandarts in Veldhoven past haar teksten aan met behulp van AI en staat hoger in Google. Maar beiden merken iets vervelends: wie belt, krijgt tijdens het werk vaak geen gehoor. Dan heeft al die vindbaarheid weinig opgeleverd.
@@ -57,20 +72,6 @@ Dat is een veelvoorkomend gat. Een bedrijf investeert in SEO, maar de eigenaar s
 Een AI-telefoniste als Emma van AanloopAI vangt zulke oproepen op. Ze neemt op wanneer u het druk heeft, stelt de belangrijkste vragen, plant een afspraak in uw agenda en helpt no-shows te verminderen met herinneringen. Zo hoeft u uw werk niet te onderbreken en gaat een nieuwe klant niet naar de concurrent.
 
 Denk dus in één keten: gevonden worden, een duidelijke pagina, een bereikbaar bedrijf en een afspraak in de agenda. Een zwakke schakel verlaagt het resultaat van de rest.
-
-## Veelgestelde vragen
-
-### Kan AI mijn website hoger in Google krijgen?
-
-AI kan helpen bij het voorbereiden van teksten, structuur en technische controles, maar garandeert geen hogere positie. Resultaat hangt af van de kwaliteit van uw pagina's, uw reputatie en de concurrentie in Eindhoven. Gebruik AI als hulpmiddel en controleer de uitkomst altijd zelf.
-
-### Is door AI geschreven tekst slecht voor SEO?
-
-Niet automatisch. Zoekmachines kijken vooral naar of een pagina nuttig, juist en betrouwbaar is. Teksten die u niet controleert en die algemeen blijven, scoren meestal slecht. Teksten die u aanvult met eigen ervaring en lokale details kunnen prima presteren.
-
-### Wat heb ik aan meer bezoekers als ik niet kan opnemen?
-
-Weinig. Veel bezoekers bellen direct en kiezen een andere aanbieder als niemand opneemt. Een AI-telefoniste vangt die oproepen op en plant afspraken in, zodat de extra zichtbaarheid ook echt klanten oplevert.
 
 ## Zorg dat uw nieuwe klanten ook een antwoord krijgen
 

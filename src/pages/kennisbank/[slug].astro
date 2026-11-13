@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import FaqSection from '../../components/FaqSection.astro';
+import Bronnen from '../../components/Bronnen.astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
 
 // Markdown kennisbank articles — one .md file in src/content/kennisbank/ per
@@ -29,6 +31,8 @@ const dienstLink = slugStr.includes('automatisering')
   ? { href: '/diensten/ai-chatbot-website/', label: 'AI-chatbot voor uw website' }
   : slugStr.includes('chatgpt') || slugStr.includes('geo') || slugStr.includes('vindbaar')
   ? { href: '/ai-vindbaarheid/', label: 'AI-vindbaarheid (GEO)' }
+  : slugStr.includes('php-lek')
+  ? { href: '/diensten/website-beveiliging-onderhoud/', label: 'Website-beveiliging en onderhoud' }
   : { href: '/diensten/', label: 'Bekijk onze diensten' };
 
 const dateFmt = (d: Date) => d.toLocaleDateString('nl-NL', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -55,7 +59,7 @@ const articleSchema = {
 };
 ---
 
-<BaseLayout title={post.data.seoTitle ?? post.data.title} description={post.data.description} schema={[articleSchema]}>
+<BaseLayout title={post.data.seoTitle ?? post.data.title} description={post.data.description} schema={[articleSchema]} dateModified={post.data.updated?.toISOString().slice(0, 10)} faqSchema={post.data.faq?.map((f) => ({ question: f.q, answer: f.a }))}>
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-20">
       <div class="max-w-3xl">
@@ -83,6 +87,8 @@ const articleSchema = {
       <article class="max-w-3xl mx-auto prose-blog">
         <Content />
       </article>
+      {post.data.faq && <FaqSection items={post.data.faq} bare />}
+      {post.data.bronnen && <Bronnen ids={post.data.bronnen} />}
       <div class="max-w-3xl mx-auto mt-12 pt-8 border-t border-slate-200 flex flex-wrap items-center gap-x-6 gap-y-2">
         <a href="/kennisbank/" class="text-sm font-medium text-brand-indigo hover:underline">← Terug naar kennisbank</a>
         <a href={dienstLink.href} class="text-sm font-medium text-brand-indigo hover:underline">{dienstLink.label}</a>

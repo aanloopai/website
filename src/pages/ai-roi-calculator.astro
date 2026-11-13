@@ -26,7 +26,7 @@ const toolSchema = {
   '@type': 'WebPage',
   '@id': 'https://aanloopai.nl/ai-roi-calculator/#tool',
   name: 'AI ROI Calculator — Bereken uw besparing met AI automatisering',
-  description: 'Gratis online calculator om de ROI van AI automatisering voor uw MKB-bedrijf te berekenen. Bereken hoeveel tijd en geld u bespaart op basis van sector-benchmarks en MKB-praktijkcijfers.',
+  description: 'Gratis online calculator om de ROI van AI automatisering voor uw MKB-bedrijf te berekenen. Bereken wat een AI-telefonist voor uw bedrijf kan opleveren, op basis van uw eigen cijfers en uw eigen aannames.',
   url: 'https://aanloopai.nl/ai-roi-calculator/',
   inLanguage: 'nl-NL',
   isAccessibleForFree: true,
@@ -34,9 +34,9 @@ const toolSchema = {
   about: [
     { '@type': 'Thing', name: 'Realtime ROI-berekening op 5 inputs' },
     { '@type': 'Thing', name: 'Aanbevolen Aanloop AI pakket op basis van dagvolume' },
-    { '@type': 'Thing', name: 'Sector-specifieke multipliers voor 8 branches' },
+    { '@type': 'Thing', name: 'Aanpasbare aannames voor terugwinning, conversie en tijdwinst' },
     { '@type': 'Thing', name: 'FTE-equivalent en terugverdientijd in maanden' },
-    { '@type': 'Thing', name: 'Methodologie en sector-benchmarks transparant' },
+    { '@type': 'Thing', name: 'Transparante rekenmethode zonder verborgen benchmarks' },
   ],
   // Google Assistant + spraak-zoekassistenten kunnen deze elementen voorlezen
   speakable: {
@@ -59,8 +59,8 @@ const presetProfiles = [
 
 
 const faqItems = [
-  { question: 'Hoe nauwkeurig is de AI ROI calculator?', answer: 'De calculator gebruikt gemiddelden gebaseerd op sector-benchmarks en gangbare MKB-cijfers in Nederland. De werkelijke besparing is afhankelijk van uw specifieke situatie. Onze gratis AI scan geeft een nauwkeurig, op maat gemaakt beeld.' },
-  { question: 'Hoe snel verdient mijn investering zich terug?', answer: 'De terugverdientijd ligt doorgaans rond enkele maanden, afhankelijk van uw belvolume. Een gratis AI-scan geeft een realistische inschatting voor uw situatie.' },
+  { question: 'Hoe nauwkeurig is de AI ROI calculator?', answer: 'De calculator rekent met uw eigen invoer en met drie aannames die u zelf instelt: welk deel van de gemiste telefoontjes AI opvangt, welk deel daarvan een klant wordt en hoeveel handmatig werk AI overneemt. Die aannames zijn geen meting. De uitkomst is dus een rekenvoorbeeld, geen voorspelling. Onze gratis AI-scan kijkt naar uw eigen belgegevens.' },
+  { question: 'Hoe snel verdient mijn investering zich terug?', answer: 'Dat hangt af van uw belvolume, de waarde van een klant en uw aannames. De calculator deelt de jaarkosten van het aanbevolen pakket door de besparing die uit uw invoer volgt. Zijn uw aannames te rooskleurig, dan is de uitkomst dat ook. Een gratis AI-scan geeft een inschatting op basis van uw eigen cijfers.' },
   { question: 'Wat is inbegrepen in de berekende besparing?', answer: 'De calculator rekent met directe kostenbesparingen (minder personeel voor routinetaken), omzetgroei door minder gemiste leads, en tijdsbesparing. Indirecte voordelen zoals hogere klanttevredenheid zijn niet meegenomen.' },
 ];
 ---
@@ -82,7 +82,7 @@ const faqItems = [
           Hoeveel bespaart<br />AI voor uw bedrijf?
         </h1>
         <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">
-          Vul uw huidige situatie in en bereken in 60 seconden uw geschatte jaarlijkse besparing met AI automatisering. Gebaseerd op sector-benchmarks.
+          Vul uw huidige situatie in en bereken in 60 seconden uw geschatte jaarlijkse besparing met AI automatisering. Gebaseerd op uw eigen invoer en aannames.
         </p>
       </div>
     </div>
@@ -181,16 +181,35 @@ const faqItems = [
               <label for="sector" class="block text-sm font-semibold text-navy mb-2">Sector</label>
               <select id="sector" class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-indigo focus:outline-none" onchange="onSectorChange()">
                 <option value="1.0" data-cv="2500">Zakelijke dienstverlening</option>
-                <option value="1.2" data-cv="3500">Bouw & Installatie</option>
-                <option value="0.9" data-cv="150">Horeca</option>
-                <option value="1.3" data-cv="5000">Vastgoed & Makelaars</option>
-                <option value="1.1" data-cv="4000">Logistiek & Transport</option>
+                <option value="1.0" data-cv="3500">Bouw & Installatie</option>
+                <option value="1.0" data-cv="150">Horeca</option>
+                <option value="1.0" data-cv="5000">Vastgoed & Makelaars</option>
+                <option value="1.0" data-cv="4000">Logistiek & Transport</option>
                 <option value="1.0" data-cv="1200">Zorg & Welzijn</option>
-                <option value="1.2" data-cv="2800">Accountancy & Financieel</option>
-                <option value="1.1" data-cv="180">E-commerce & Retail</option>
+                <option value="1.0" data-cv="2800">Accountancy & Financieel</option>
+                <option value="1.0" data-cv="180">E-commerce & Retail</option>
               </select>
-              <p class="text-xs text-slate-500 mt-1">Sectorkeuze stelt automatisch een typische klantwaarde in — u kunt de slider daarna handmatig overschrijven.</p>
+              <p class="text-xs text-slate-500 mt-1">Sectorkeuze stelt een voorbeeld-klantwaarde in — u kunt de slider daarna handmatig overschrijven.</p>
             </div>
+
+            <fieldset class="border border-slate-200 rounded-xl p-4">
+              <legend class="px-2 text-sm font-semibold text-navy">Uw aannames (geen meting)</legend>
+              <p class="text-xs text-slate-500 mb-3">Deze drie percentages zijn voorbeeldwaarden, geen gemeten resultaten. Pas ze aan op wat u zelf realistisch vindt.</p>
+              <div class="grid grid-cols-3 gap-3">
+                <div>
+                  <label for="assume-recovery" class="block text-xs font-semibold text-navy mb-1">Opgevangen van gemist (%)</label>
+                  <input type="number" id="assume-recovery" min="0" max="100" step="5" value="50" class="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm" oninput="updateCalc()">
+                </div>
+                <div>
+                  <label for="assume-conversion" class="block text-xs font-semibold text-navy mb-1">Daarvan klant (%)</label>
+                  <input type="number" id="assume-conversion" min="0" max="100" step="5" value="10" class="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm" oninput="updateCalc()">
+                </div>
+                <div>
+                  <label for="assume-time" class="block text-xs font-semibold text-navy mb-1">Handwerk overgenomen (%)</label>
+                  <input type="number" id="assume-time" min="0" max="100" step="5" value="25" class="w-full px-2 py-1.5 border border-slate-200 rounded-lg text-sm" oninput="updateCalc()">
+                </div>
+              </div>
+            </fieldset>
 
           </div>
         </div>
@@ -326,7 +345,7 @@ const faqItems = [
             </a>
           </div>
 
-          <p class="text-xs text-slate-400 text-center">Berekeningen zijn schattingen op basis van sector-benchmarks en gemiddelden.<br>Werkelijke resultaten kunnen afwijken.</p>
+          <p class="text-xs text-slate-400 text-center">Uitkomsten zijn rekenvoorbeelden op basis van uw invoer en aannames.<br>Werkelijke resultaten kunnen afwijken.</p>
         </div>
       </div>
 
@@ -346,46 +365,18 @@ const faqItems = [
         </div>
       </div>
 
-      <!-- Sector benchmarks -->
-      <div class="mt-16 max-w-5xl mx-auto">
-        <h2 class="text-2xl font-bold text-navy mb-2">Sector-benchmarks 2026</h2>
-        <p class="text-sm text-slate-600 mb-6">Gemiddelde ROI-multiplier en typische terugverdientijd op basis van sector-benchmarks per sector.</p>
-        <div class="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
-          <table class="w-full text-sm">
-            <thead class="bg-slate-50">
-              <tr>
-                <th class="text-left p-4 font-semibold text-navy">Sector</th>
-                <th class="text-left p-4 font-semibold text-navy">ROI-multiplier</th>
-                <th class="text-left p-4 font-semibold text-navy">Terugverdientijd</th>
-                <th class="text-left p-4 font-semibold text-navy">Aanbevolen pakket</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td class="p-4 font-medium text-navy">Rijschool</td><td class="p-4 text-slate-700">25-50x</td><td class="p-4 text-slate-700">3-6 weken</td><td class="p-4 text-slate-700">Compleet €497 (Emma WhatsApp)</td></tr>
-              <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Huisartsenpraktijk</td><td class="p-4 text-slate-700">10-20x</td><td class="p-4 text-slate-700">1-2 maanden</td><td class="p-4 text-slate-700">Compleet €497 (onbeperkt)</td></tr>
-              <tr><td class="p-4 font-medium text-navy">Installatiebedrijf</td><td class="p-4 text-slate-700">5-12x</td><td class="p-4 text-slate-700">2-4 maanden</td><td class="p-4 text-slate-700">Compleet €497 (Emma)</td></tr>
-              <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Notariskantoor</td><td class="p-4 text-slate-700">8-18x</td><td class="p-4 text-slate-700">2-3 maanden</td><td class="p-4 text-slate-700">Groei €299 (1.000 belminuten)</td></tr>
-              <tr><td class="p-4 font-medium text-navy">Webshop / e-commerce</td><td class="p-4 text-slate-700">6-15x</td><td class="p-4 text-slate-700">1-3 maanden</td><td class="p-4 text-slate-700">Compleet €497 (Emma)</td></tr>
-              <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Schoonheidssalon / kapper</td><td class="p-4 text-slate-700">8-15x</td><td class="p-4 text-slate-700">1-2 maanden</td><td class="p-4 text-slate-700">Compleet €497 (Emma WhatsApp)</td></tr>
-              <tr><td class="p-4 font-medium text-navy">Dierenartspraktijk</td><td class="p-4 text-slate-700">12-20x</td><td class="p-4 text-slate-700">1-2 maanden</td><td class="p-4 text-slate-700">Compleet €497 (24/7 spoedlijn)</td></tr>
-              <tr class="bg-slate-50/40"><td class="p-4 font-medium text-navy">Restaurant</td><td class="p-4 text-slate-700">4-10x</td><td class="p-4 text-slate-700">2-4 maanden</td><td class="p-4 text-slate-700">Compleet €497 (reserveringen)</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
       <!-- Methodology -->
       <div class="mt-16 max-w-3xl mx-auto">
-        <h2 class="text-2xl font-bold text-navy mb-4">Methodologie — waar komen deze cijfers vandaan?</h2>
+        <h2 class="text-2xl font-bold text-navy mb-4">Methodologie — hoe rekent de calculator?</h2>
         <div class="space-y-4 text-sm text-slate-700 leading-relaxed">
-          <p>Onze ROI-calculator gebruikt vier gemeten parameters uit sector-benchmarks en MKB-praktijkcijfers:</p>
+          <p>De calculator gebruikt uw invoer en drie aannames die u zelf instelt. Er zijn geen verborgen sector-benchmarks. De aannames zijn voorbeeldwaarden, geen gemeten resultaten.</p>
           <ul class="space-y-2 list-disc pl-5">
-            <li><strong class="text-navy">AI recovery rate (68 procent):</strong> percentage gemiste oproepen dat door Emma wordt opgevangen tijdens en buiten kantooruren. Gemeten over 12 maanden.</li>
-            <li><strong class="text-navy">Lead conversion rate (15 procent):</strong> percentage van opgevangen oproepen dat tot een afspraak of offerte leidt. Sector-onafhankelijk gemiddelde.</li>
-            <li><strong class="text-navy">AI time-saving (45 procent):</strong> reductie van handmatig administratief werk dat door AI workflow automation wordt overgenomen (factuur-OCR, agenda-sync, FAQ-deflection).</li>
-            <li><strong class="text-navy">Sector-multiplier (0.9-1.3x):</strong> aanpassing voor verschillen in lead-waarde, conversiesnelheid en seizoensvolatiliteit per sector.</li>
+            <li><strong class="text-navy">Opgevangen van gemist (uw aanname):</strong> welk deel van de gemiste telefoontjes AI volgens u opvangt, ook buiten kantooruren.</li>
+            <li><strong class="text-navy">Daarvan klant (uw aanname):</strong> welk deel van die opgevangen gesprekken een afspraak of opdracht wordt.</li>
+            <li><strong class="text-navy">Handwerk overgenomen (uw aanname):</strong> welk deel van uw handmatige routinewerk een AI-workflow overneemt.</li>
+            <li><strong class="text-navy">Overig:</strong> werkdagen per jaar (250), weken per jaar (52) en de maandprijs van het aanbevolen pakket. Het FTE-equivalent rekent met een eigen aanname van €4.000 per maand loonkosten.</li>
           </ul>
-          <p>Conservatief: extremen (top en bottom 20 procent) zijn weggelaten uit gemiddelden. Werkelijke resultaten kunnen afwijken — een gratis 30-minuten <a href="/gratis-ai-scan/" class="text-brand-indigo hover:underline">AI-scan</a> levert een op-maat berekening voor uw bedrijf.</p>
+          <p>De uitkomst is een rekenvoorbeeld. Een gratis 30-minuten <a href="/gratis-ai-scan/" class="text-brand-indigo hover:underline">AI-scan</a> kijkt naar uw eigen belgegevens in plaats van naar aannames.</p>
         </div>
       </div>
 
@@ -404,8 +395,8 @@ const faqItems = [
           <p class="text-xs text-slate-600 mt-1">AVG datalokatie</p>
         </div>
         <div class="card p-5">
-          <p class="text-3xl font-bold text-navy">68%</p>
-          <p class="text-xs text-slate-600 mt-1">AI deflection rate</p>
+          <p class="text-3xl font-bold text-navy">Uw cijfers</p>
+          <p class="text-xs text-slate-600 mt-1">Aannames zelf instelbaar</p>
         </div>
       </div>
 
@@ -463,13 +454,18 @@ const faqItems = [
     // Calculations
     const missedCallsPerDay = calls * missedPct;
     const workDaysPerYear = 250;
-    const aiRecoveryRate = 0.68; // AI recovers 68% of missed calls
-    const leadConversionRate = 0.15; // 15% of recovered calls convert
+    // Aannames zijn door de gebruiker instelbaar (voorbeeldwaarden, geen meting).
+    const readPct = (id: string, fallback: number): number => {
+      const v = parseFloat((document.getElementById(id) as HTMLInputElement | null)?.value ?? '');
+      return Number.isFinite(v) ? Math.min(100, Math.max(0, v)) / 100 : fallback;
+    };
+    const aiRecoveryRate = readPct('assume-recovery', 0.5);
+    const leadConversionRate = readPct('assume-conversion', 0.1);
 
     const recoveredLeadsPerYear = missedCallsPerDay * workDaysPerYear * aiRecoveryRate * leadConversionRate;
     const leadsValue = recoveredLeadsPerYear * clientValue * sectorMult;
 
-    const aiTimeSaving = 0.45; // AI handles 45% of manual work
+    const aiTimeSaving = readPct('assume-time', 0.25);
     const timeSavingPerYear = manualHours * 52 * aiTimeSaving * hourlyRate;
 
     const totalSaving = leadsValue + timeSavingPerYear;
@@ -697,7 +693,7 @@ const faqItems = [
       doc.setTextColor(100, 116, 139);
       doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
-      const disclaimer = 'Berekeningen zijn schattingen op basis van sector-benchmarks en gemiddelden. Werkelijke resultaten kunnen afwijken. Een gratis AI-scan levert een nauwkeurige op-maat berekening.';
+      const disclaimer = 'Uitkomsten zijn rekenvoorbeelden op basis van uw eigen invoer en aannames, geen voorspelling. Werkelijke resultaten kunnen afwijken. Een gratis AI-scan kijkt naar uw eigen belgegevens.';
       const wrapped = doc.splitTextToSize(disclaimer, 180);
       doc.text(wrapped, 15, y + 25);
 

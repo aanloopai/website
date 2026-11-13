@@ -89,10 +89,10 @@ export const PORTAL_CATALOG: CatalogProduct[] = [
     naam: 'SEO + GEO Bundel',
     categorie: 'Groei',
     omschrijving:
-      'SEO Maandelijks en GEO Maandelijks gecombineerd — bespaart €195/mnd. Geïntegreerde SERP- én AI-strategie.',
+      'SEO Maandelijks en GEO Maandelijks gecombineerd — €195/mnd voordeliger dan beide los (€795 + €595). Geïntegreerde SERP- én AI-strategie.',
     meerInfoUrl: 'https://aanloopai.nl/tarieven/',
     tiers: [
-      { naam: 'Maandelijks', prijs: '€1.195/mnd', prijsCent: 119500, setupCent: 0, betaling: 'maandelijks', kenmerken: ['SEO Maandelijks volledig', 'GEO Maandelijks volledig', 'Bespaart €195/mnd', 'Eén strategiecall'] },
+      { naam: 'Maandelijks', prijs: '€1.195/mnd', prijsCent: 119500, setupCent: 0, betaling: 'maandelijks', kenmerken: ['SEO Maandelijks volledig', 'GEO Maandelijks volledig', '€195/mnd voordeliger dan los', 'Eén strategiecall'] },
     ],
   },
   {

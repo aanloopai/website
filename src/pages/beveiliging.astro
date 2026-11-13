@@ -18,7 +18,7 @@ const status = [
   {
     norm: 'ISO/IEC 27001',
     wij: 'Nee',
-    uitleg: 'Aanloop AI heeft zelf geen ISO 27001-certificaat. Onze hosting en de meeste leveranciers zijn wel ISO 27001-gecertificeerd.',
+    uitleg: 'Aanloop AI heeft zelf geen ISO 27001-certificaat. Onze serverleverancier Hetzner is zelf wel ISO/IEC 27001:2022-gecertificeerd.',
   },
   {
     norm: 'HIPAA',
@@ -104,7 +104,7 @@ const subverwerkers = [
 
 const faqItems = [
   { question: 'Is Aanloop AI SOC 2-gecertificeerd?', answer: 'Nee. Aanloop AI heeft geen SOC 2-audit laten uitvoeren. Een aantal van onze leveranciers (zoals Cloudflare, ElevenLabs, OpenAI en Anthropic) heeft wel een SOC 2 Type II-rapport, maar dat is hun certificaat, niet het onze.' },
-  { question: 'Is Aanloop AI ISO 27001-gecertificeerd?', answer: 'Nee. Aanloop AI heeft geen eigen ISO 27001-certificaat. Onze hosting (Cloudflare en Hetzner) en de meeste andere leveranciers zijn wel ISO 27001-gecertificeerd.' },
+  { question: 'Is Aanloop AI ISO 27001-gecertificeerd?', answer: 'Nee. Aanloop AI heeft geen eigen ISO 27001-certificaat. Onze serverleverancier Hetzner is zelf wel ISO/IEC 27001:2022-gecertificeerd (zie de bron bij Hetzner in het sub-verwerkersregister hieronder).' },
   { question: 'Voldoet Aanloop AI aan HIPAA?', answer: 'HIPAA is Amerikaanse zorgwetgeving en is niet van toepassing op Nederlandse bedrijven. Voor u gelden de AVG en in de zorg NEN 7510. Aanloop AI werkt AVG-conform met een verwerkersovereenkomst.' },
   { question: 'Gaan mijn gegevens buiten de EU?', answer: 'Een deel van onze leveranciers is Amerikaans (Cloudflare, ElevenLabs, OpenAI, Anthropic, Google). Doorgifte buiten de EU loopt via de verwerkersovereenkomst van die leverancier, op basis van standaardcontractbepalingen en/of het EU-VS Data Privacy Framework. Het volledige overzicht staat op deze pagina.' },
 ];
@@ -161,7 +161,7 @@ const schema = {
       <div class="max-w-3xl mt-12 space-y-10 text-slate-700 leading-relaxed">
         <div>
           <h2 class="text-2xl font-bold text-navy mb-3">Waarom het certificaat van een leverancier niet het onze is</h2>
-          <p>Een ISO 27001-certificaat of SOC 2-rapport gaat over de organisatie die is geaudit: haar processen, mensen en systemen. Dat Cloudflare of Hetzner gecertificeerd is, zegt dat hún datacenters en beheer goed geregeld zijn. Het zegt niets over hoe Aanloop AI zelf met toegang, wachtwoorden of incidenten omgaat. Daarom zeggen we: <strong>gehost op ISO 27001-gecertificeerde infrastructuur</strong>, en niet: ISO 27001-gecertificeerd.</p>
+          <p>Een ISO 27001-certificaat of SOC 2-rapport gaat over de organisatie die is geaudit: haar processen, mensen en systemen. Dat Cloudflare of Hetzner gecertificeerd is, zegt dat hún datacenters en beheer goed geregeld zijn. Het zegt niets over hoe Aanloop AI zelf met toegang, wachtwoorden of incidenten omgaat. Daarom zeggen we: <strong>onze server staat bij Hetzner, dat zelf ISO/IEC 27001:2022-gecertificeerd is</strong>, en niet dat wijzelf gecertificeerd zijn.</p>
         </div>
       </div>
 
@@ -196,6 +196,10 @@ const schema = {
       <p class="max-w-3xl mt-4 text-sm text-slate-500 leading-relaxed">Leveranciers buiten de EU: doorgifte loopt via hun verwerkersovereenkomst, op basis van standaardcontractbepalingen en/of het EU-VS Data Privacy Framework. Certificeringen gecontroleerd op {LAATST_BIJGEWERKT} via de links hierboven.</p>
 
       <div class="max-w-3xl mt-14 space-y-10 text-slate-700 leading-relaxed">
+        <div>
+          <h2 class="text-2xl font-bold text-navy mb-3">PHP-lek 21 oktober 2026: was Aanloop AI geraakt?</h2>
+          <p>Nee. Op 21 oktober 2026 gingen veel Nederlandse websites offline door twee kritieke lekken in PHP (CVE-2026-109618 en CVE-2026-109619). Onze website aanloopai.nl draait niet op PHP: het zijn statische pagina's die via Cloudflare worden geserveerd, en er staat geen PHP-code in onze broncode. Draait uw eigen website op WordPress, WooCommerce of een ander PHP-systeem? Lees <a href="/kennisbank/php-lek-oktober-2026-websites-offline/" class="text-brand-indigo font-semibold hover:underline underline-offset-4">wat er gebeurde</a>, loop de <a href="/kennisbank/is-mijn-website-kwetsbaar-php-lek-checklist/" class="text-brand-indigo font-semibold hover:underline underline-offset-4">checklist</a> door, of laat ons helpen met <a href="/diensten/website-beveiliging-onderhoud/" class="text-brand-indigo font-semibold hover:underline underline-offset-4">website-beveiliging en onderhoud</a>.</p>
+        </div>
         <div>
           <h2 class="text-2xl font-bold text-navy mb-3">Wat we zelf doen</h2>
           <ul class="list-disc pl-5 space-y-2">

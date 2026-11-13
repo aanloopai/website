@@ -148,7 +148,7 @@ ${fileContent ? `## Current file content\n\n\`\`\`\n${fileContent}\n\`\`\`` : ''
 1. Determine if a code fix can resolve this within the ALLOWED scope.
 2. If YES: produce a unified git-diff that:
    - Touches ONLY files in the ALLOWED scope
-   - Does NOT remove preserved strings (KvK 88606902, hello@aanloopai.nl, +31624741597, brand names)
+   - Does NOT remove preserved strings (KvK 88606902, hello@aanloopai.nl, brand names) and NEVER adds a phone number or WhatsApp link
    - Does NOT introduce stale prices (€297/€397/€497/€697/€797/€897)
    - Is minimal (≤50 lines per file, ≤5 files total)
 3. If NO: set requires_user=true with explanation.

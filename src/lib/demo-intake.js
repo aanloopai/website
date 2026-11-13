@@ -145,7 +145,7 @@ export function buildIntakeInviteHtml(firstName, link) {
     <p>Om die demo goed voor te bereiden hebben we nog vijf korte vragen (2 minuten): welke dienst u wilt zien, wat u ermee wilt bereiken en welke vorm van demo u past.</p>
     <p style="margin:28px 0"><a href="${safeLink}" style="display:inline-block;background:#4f46e5;color:#fff;padding:13px 22px;border-radius:10px;text-decoration:none;font-weight:600">Vragen beantwoorden (2 min)</a></p>
     <p style="font-size:13px;color:#64748b">Werkt de knop niet? Kopieer deze link naar uw browser:<br><span style="word-break:break-all">${safeLink}</span></p>
-    <p>Liever direct bellen of een moment kiezen? Antwoord op deze mail of bel <a href="tel:+31624741597">+31 6 24 74 15 97</a>. Na uw antwoorden nemen wij binnen 1 werkdag contact op om de demo in te plannen.</p>
+    <p>Liever direct bellen of een moment kiezen? Antwoord op deze mail. Na uw antwoorden nemen wij binnen 1 werkdag contact op om de demo in te plannen.</p>
     <p>Met vriendelijke groet,<br>Het team van Aanloop AI</p>`;
 }
 

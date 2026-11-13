@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { Check, MessageCircle, MoveRight, PhoneCall } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -24,6 +24,8 @@ export interface HeroProps {
   secondaryIcon?: "phone" | "chat";
   /** Short trust claims rendered under the buttons. */
   trust?: string[];
+  /** Extra content rendered under the buttons/trust list. */
+  children?: ReactNode;
 }
 
 const ROTATE_MS = 2000;
@@ -52,8 +54,13 @@ function Hero({
   secondaryExternal = false,
   secondaryIcon = "phone",
   trust,
+  children,
 }: HeroProps) {
   const [titleNumber, setTitleNumber] = useState(0);
+  // Server-HTML bevat alleen het actieve woord: de overige roterende woorden
+  // zijn onzichtbaar (opacity 0) en horen niet als verborgen tekst in de HTML.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const reduceMotion = useReducedMotion();
   const titles = useMemo(() => titlesProp ?? DEFAULT_TITLES, [titlesProp]);
   const SecondaryIcon = secondaryIcon === "chat" ? MessageCircle : PhoneCall;
@@ -76,7 +83,7 @@ function Hero({
       <div className="container mx-auto">
         <div className="flex gap-8 py-20 lg:py-40 items-center justify-center flex-col">
           <div>
-            <Button variant="secondary" size="sm" className="gap-4" asChild>
+            <Button variant="secondary" size="sm" className="gap-4 h-auto min-h-9 py-1.5 whitespace-normal text-center" asChild>
               <a href={badgeHref}>
                 {badge} <MoveRight className="w-4 h-4" />
               </a>
@@ -87,7 +94,7 @@ function Hero({
               <span>{lead}</span>
               <span className="relative flex w-full justify-center overflow-hidden text-center md:pb-4 md:pt-1">
                 &nbsp;
-                {titles.map((title, index) => (
+                {titles.map((title, index) => (mounted || index === titleNumber) && (
                   <motion.span
                     key={index}
                     className="absolute font-semibold whitespace-nowrap"
@@ -147,6 +154,7 @@ function Hero({
               ))}
             </ul>
           ) : null}
+          {children}
         </div>
       </div>
     </div>

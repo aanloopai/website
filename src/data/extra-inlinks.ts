@@ -10,6 +10,7 @@ export interface ExtraInlink {
 }
 
 export const EXTRA_INLINKS: ExtraInlink[] = [
+  { target: '/diensten/website-beveiliging-onderhoud/', label: 'Website-beveiliging en onderhoud na het PHP-lek', sources: ['/diensten/website-laten-maken-mkb-nederland-2026/', '/diensten/webshop-laten-maken-shopify-woocommerce-nederland-2026/', '/zekerheden/'] },
   { target: '/kennisbank/ai-agent-microsoft-365-outlook-mkb-nederland/', label: 'AI-agent voor Microsoft 365 en Outlook', sources: ['/kennisbank/ai-agent-google-workspace-gmail-mkb-nederland/', '/diensten/ai-email-assistent/', '/kennisbank/ai-workflow-automation/'] },
   { target: '/kennisbank/ai-hypotheek-software-wat-het-doet-en-wanneer-het-past/', label: 'AI-hypotheeksoftware: wat het doet en wanneer het past', sources: ['/kennisbank/ai-voor-hypotheekadviseur-nederland-2026/', '/kennisbank/ai-hypotheeksoftware-uitleg-en-keuzehulp-voor-adviseurs/', '/kennisbank/ai-voor-verzekeringsmakelaar-financieel-adviseur/'] },
   { target: '/kennisbank/ai-intake-clienten-notariaat/', label: 'AI-intake voor cliënten in het notariaat', sources: ['/kennisbank/ai-voor-notariskantoor-nederland-2026/', '/kennisbank/ai-voor-advocatenkantoor-nederland-2026/', '/diensten/ai-document-processing/'] },
@@ -36,6 +37,9 @@ export const EXTRA_INLINKS: ExtraInlink[] = [
   { target: '/onderzoek/ai-adoption-mkb-nederland-2026/methodologie/', label: 'Methodologie van het AI-adoptieonderzoek MKB 2026', sources: ['/branche-statistieken-mkb-ai-nederland/', '/pers/'] },
   { target: '/ai-voor-ecommerce-webshops-nederland/', label: 'AI voor e-commerce en webshops in Nederland', sources: ['/kennisbank/ai-voor-shopify-webshop-nederland/', '/diensten/webshop-laten-maken-shopify-woocommerce-nederland-2026/', '/ai-voor-administratie-boekhouding-mkb-nederland/'] },
   { target: '/ai-agents-voor-bedrijven/', label: 'AI-agents voor bedrijven', sources: ['/kennisbank/ai-agent-voorbeelden/', '/kennisbank/wat-is-een-ai-agent/', '/diensten/'] },
+  { target: '/ai-vindbaarheid/', label: 'GEO-audit: noemen ChatGPT, Gemini en Perplexity uw bedrijf?', sources: ['/diensten/audit/', '/ai-marketing-bureau/', '/kennisbank/ai-agency-kiezen-mkb-nederland-2026/'] },
+  { target: '/diensten/ai-website-bundel-mkb-nederland/', label: 'AI-website laten maken: website, Emma en AI-vindbaarheid in één contract', sources: ['/diensten/website-laten-maken-mkb-nederland-2026/', '/ai-agency-nederland/', '/ai-vindbaarheid/'] },
+  { target: '/diensten/audit/', label: 'AI-audit voor het MKB: procesanalyse en 90-dagenroadmap', sources: ['/ai-agency-nederland/', '/ai-marketing-bureau/', '/locaties/eindhoven/'] },
   { target: '/ai-marketing-bureau/', label: 'AI-marketingbureau voor het MKB', sources: ['/diensten/ai-social-media-agent/', '/diensten/ai-seo-content-generator/', '/kennisbank/ai-voor-marketingbureau-nederland-2026/'] },
   { target: '/diensten/ai-influencer-marketing/', label: 'AI-influencer en persona-marketing', sources: ['/diensten/ai-social-media-agent/', '/ai-marketing-bureau/'] },
   { target: '/pilot/', label: 'Emma-pilot: 60 dagen tegen kostprijs', sources: ['/tarieven/', '/diensten/emma/', '/werkwijze/'] },
@@ -53,6 +57,8 @@ export const EXTRA_INLINKS: ExtraInlink[] = [
   { target: '/sectoren/onderwijs/', label: 'Onderwijs en opleidingen: AI in de praktijk', sources: ['/kennisbank/ai-voor-coach-trainer-zelfstandige-nederland/', '/kennisbank/ai-voor-rijschool-lesplanning-nederland/'] },
   { target: '/sectoren/recruitment/', label: 'Recruitment: AI voor uitzend- en wervingsbureaus', sources: ['/kennisbank/ai-voor-uitzendbureau-recruitment-nederland/', '/kennisbank/ai-lead-scoring-b2b-sales-mkb-nederland-2026/'] },
   { target: '/sectoren/schoonheid/', label: 'Schoonheid: AI voor salons en praktijken', sources: ['/kennisbank/ai-voor-schoonheidssalon-kapsalon-nederland-2026/', '/kennisbank/ai-voor-pedicure-praktijk-nederland-2026/'] },
+  { target: '/sectoren/accountancy/', label: 'AI voor accountants: assistent voor accountantskantoren', sources: ['/kennisbank/ai-voor-accountantskantoor-nederland-2026/', '/ai-voor-administratie-boekhouding-mkb-nederland/', '/sectoren/ai-voor-zzp/'] },
+  { target: '/ai-agency-nederland/', label: 'AI bureau in Nederland: wat doet een AI agency?', sources: ['/locaties/amsterdam/', '/locaties/eindhoven/', '/diensten/audit/'] },
 ];
 
 /** Bronpad naar de extra links die daar gerenderd worden. */

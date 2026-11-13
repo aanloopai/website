@@ -1,0 +1,15 @@
+---
+// Mobiele tegenhanger van de trustbalk in Header.astro (die is lg+ only):
+// zelfde claims, zelfde bronzinnen. Optioneel het meetpaneel van /resultaten/
+// als beeld (alleen < md).
+interface Props { visual?: boolean }
+const { visual = false } = Astro.props;
+---
+<div class="lg:hidden w-full text-center">
+  <p class="text-xs text-slate-600 leading-relaxed" data-mobile-trust>KvK 88606902 · Rotterdam · Live in 7 werkdagen · AVG-compliant, EU-only data</p>
+  {visual && (
+    <a href="/resultaten/" class="md:hidden mt-5 block mx-auto max-w-sm">
+      <img src="/visuals/resultaten-paneel-mobiel.webp" alt="Gemeten resultaten van 7 live websites" width="517" height="684" loading="lazy" decoding="async" class="w-full h-auto rounded-xl border border-slate-200 shadow-sm" />
+    </a>
+  )}
+</div>

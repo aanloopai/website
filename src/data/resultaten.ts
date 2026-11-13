@@ -8,8 +8,11 @@
 //    Dat is géén lead; leads tellen we apart (Brevo-afleverstatistiek).
 //  - De peildatum is de laatste gemeten dag van het 28-dagenvenster. Verversen =
 //    dit bestand bijwerken met de output van de summary-API (win=28), niet schatten.
-//  - Eigen bedrijven heten eigen bedrijven. Pasfoto Rotterdam Zuid is per 2026-10-05
-//    uit beheer en staat hier bewust niet.
+//  - Eigen bedrijven heten eigen bedrijven.
+//  - Sites die we bouwden maar niet met de beacon meten, dragen `geenMeting` (reden).
+//    Die staan op /werk/, maar niet in de live meettabel of /api/resultaten.
+//    Pasfoto Rotterdam Zuid is per 2026-10-05 uit beheer; op verzoek van de eigenaar
+//    (2026-11-01) staat de site weer in het portfolio, zonder cijfers.
 
 // 2026-10-16: beacon-cijfers ververst uit de live /api/resultaten (28 dagen t/m
 // 16 oktober). Brevo-leads, KIB-serverstatistiek en benchmark dragen hun eigen datum.
@@ -28,14 +31,16 @@ export interface Cijfer {
 }
 
 export interface SiteResultaat {
-  key: 'keukeninbeeld' | 'alfa' | 'fth' | 'tripandtick' | 'aanloop' | 'zoekeen' | 'grynnstudio';
+  key:
+    | 'keukeninbeeld' | 'alfa' | 'fth' | 'tripandtick' | 'aanloop' | 'zoekeen' | 'grynnstudio'
+    | 'allesinrenovatie' | '4menterprise' | 'pasfoto' | 'zorgadviesbureau';
   naam: string;
   host: string;
   url: string;
   eigenaar: 'eigen' | 'klant';
   eigenaarLabel: string;
   sector: string;
-  live: string; // jaar of ISO-datum van livegang van de huidige site
+  live: string; // jaar, ISO-datum of korte status ("livegang gepland") van de huidige site
   samenvatting: string;
   /** Meta-description van /werk/<key>/ — 110–155 tekens (CI check-meta; guard test/resultaten.test.js). */
   metaDescription: string;
@@ -44,6 +49,8 @@ export interface SiteResultaat {
   cijfers: Cijfer[];
   /** Beacon-meting gestart op; alleen gevuld als er nog geen 28-dagenvenster vol is. */
   metingSinds?: string;
+  /** Gebouwd, maar niet in de beacon-meting: korte reden. Exclusief met metingSinds. */
+  geenMeting?: string;
   screenshot?: string; // pad onder /public
 }
 
@@ -247,6 +254,103 @@ export const RESULTATEN: SiteResultaat[] = [
     metingSinds: '2026-10-15',
     screenshot: '/werk/grynnstudio.jpg',
   },
+  {
+    key: 'allesinrenovatie',
+    naam: 'Alles in Renovatie',
+    host: 'allesinrenovatie.nl',
+    url: 'https://allesinrenovatie.nl',
+    eigenaar: 'eigen',
+    eigenaarLabel: 'Eigen bedrijf uit dezelfde groep',
+    sector: 'Renovatie en verbouwing — Rotterdam en omgeving',
+    live: 'livegang gepland',
+    samenvatting: 'Nieuwe site voor een renovatiebedrijf op dezelfde motor als Keuken in Beeld: dienst-, kosten- en stadspagina\'s uit data, een aanvraagwizard en een eigen beheerpaneel. De site staat klaar; op het domein draait nog de vorige site tot de overstap.',
+    metaDescription: 'Alles in Renovatie: renovatiesite met aanvraagwizard, kosten- en stadspagina\'s uit data, gebouwd door Aanloop AI op de motor van Keuken in Beeld.',
+    gebouwd: [
+      'Statische site op Cloudflare Pages met Functions en D1, gegenereerd uit paginadata',
+      'Dienst-, kosten- en stadspagina\'s (Rotterdam, Schiedam, Vlaardingen, Capelle, Barendrecht, Spijkenisse)',
+      'Aanvraagwizard met huurder-check, spamfilter en eigen beheerpaneel',
+      '301-plan voor de oude WordPress-URL\'s, zodat bestaande vindbaarheid meegaat',
+    ],
+    ai: [
+      'llms.txt, FAQ-schema en answer-first pagina\'s voor AI-assistenten',
+      'Robots en Content-Signal headers die AI-crawlers expliciet toelaten',
+      'Content wordt bijgestuurd door onze AI-contentmotor, met drift-controle in de build',
+    ],
+    cijfers: [],
+    geenMeting: 'De nieuwe site is nog niet live; de meting start bij de overstap van het domein.',
+    screenshot: '/werk/allesinrenovatie.jpg',
+  },
+  {
+    key: '4menterprise',
+    naam: '4M Enterprise',
+    host: '4menterprise.nl',
+    url: 'https://4menterprise.nl',
+    eigenaar: 'eigen',
+    eigenaarLabel: 'Moederbedrijf van de groep',
+    sector: 'Ondernemersgroep — Rotterdam',
+    live: '2026-10-14',
+    samenvatting: 'Holdingsite van de Rotterdamse ondernemersgroep achter Alfa Reclame, Aanloop AI, FleetTrack Holland, Keuken in Beeld, Alles in Renovatie, Zoekeen en Trip and Tick: zes divisies, één aanspreekpunt.',
+    metaDescription: '4M Enterprise: holdingsite van een Rotterdamse ondernemersgroep met zes divisies en zeven bedrijven, gebouwd door Aanloop AI met feitencheck in de build.',
+    gebouwd: [
+      'Next.js static export met Tailwind op Cloudflare Pages',
+      'Eén bron voor alle groepsbedrijven; de build faalt als een bedrijf van de homepage of footer verdwijnt',
+      'Organisatieschema met subOrganization per groepsbedrijf',
+    ],
+    ai: [
+      'llms.txt met de structuur van de groep voor AI-assistenten',
+      'Feiten per bedrijf gecontroleerd tegen de eigen live site, geen losse cijfers',
+    ],
+    cijfers: [],
+    geenMeting: 'Holdingsite zonder aanvraagfunnel; contact loopt via de sites van de groepsbedrijven.',
+    screenshot: '/werk/4menterprise.jpg',
+  },
+  {
+    key: 'pasfoto',
+    naam: 'Pasfoto Rotterdam Zuid',
+    host: 'pasfotorotterdamzuid.nl',
+    url: 'https://www.pasfotorotterdamzuid.nl',
+    eigenaar: 'klant',
+    eigenaarLabel: 'Klant (fotostudio, Rotterdam-Zuid)',
+    sector: 'Pasfoto\'s en fotoservice',
+    live: '2026',
+    samenvatting: 'Site met online afspraken, foto-upload en betaling voor een fotostudio: biometrische pasfoto\'s voor paspoort, rijbewijs en ID. Gebouwd door Aanloop AI en tot oktober 2026 door ons beheerd.',
+    metaDescription: 'Pasfoto Rotterdam Zuid: site met online afspraken, foto-upload en betaling voor een fotostudio, gebouwd door Aanloop AI voor biometrische pasfoto\'s.',
+    gebouwd: [
+      'Next.js op Vercel met database, online afspraken en tijdslot-capaciteit',
+      'Betaling via myPOS met handtekeningcontrole op de betaalnotificatie',
+      'Foto-upload met automatische oriëntatiecorrectie en productcatalogus',
+      'Snelheidsronde: layout-verschuiving van 0,41 naar 0,01 en productpagina\'s van seconden naar milliseconden',
+    ],
+    ai: [
+      'Automatische achtergrondverwijdering bij geüploade foto\'s',
+    ],
+    cijfers: [],
+    geenMeting: 'Beheer is per oktober 2026 overgedragen; we publiceren voor deze site geen meetcijfers.',
+    screenshot: '/werk/pasfoto.jpg',
+  },
+  {
+    key: 'zorgadviesbureau',
+    naam: 'Zorg Advies Bureau',
+    host: 'zorgadviesbureau.com',
+    url: 'https://zorgadviesbureau.com',
+    eigenaar: 'klant',
+    eigenaarLabel: 'Klant (thuiszorgaanbieder, Rotterdam)',
+    sector: 'Thuiszorg en begeleiding',
+    live: '2026',
+    samenvatting: 'Site voor een Rotterdamse thuiszorgaanbieder: persoonlijke verzorging, wijkverpleging, dagbesteding en huishoudelijke hulp, met uitleg over PGB, VPT en MPT en de verplichte regelingen openbaar op de site.',
+    metaDescription: 'Zorg Advies Bureau: site voor een Rotterdamse thuiszorgaanbieder met zorgvormen, werkgebied en Wkkgz-regelingen, gebouwd door Aanloop AI.',
+    gebouwd: [
+      'Snelle statische site: diensten, zorgvormen, werkgebied, over ons en contact',
+      'Uitleg over PGB, VPT en MPT in begrijpelijke taal',
+      'Klachtenregeling (Wkkgz), privacybeleid en kwaliteitskeurmerk zichtbaar op de site',
+    ],
+    ai: [
+      'Site en teksten opgesteld met AI-ondersteuning, op basis van de eigen documenten van de zorgaanbieder',
+    ],
+    cijfers: [],
+    geenMeting: 'Klantsite zonder onze beacon; we publiceren hier geen meetcijfers.',
+    screenshot: '/werk/zorgadviesbureau.jpg',
+  },
 ];
 
 // Portfolio-brede kernpunten voor homepage en bundelpagina. Elk punt wijst naar
@@ -285,4 +389,6 @@ export const KERNPUNTEN: Kernpunt[] = [
 ];
 
 export const alleCijfers = (): Cijfer[] => RESULTATEN.flatMap((s) => s.cijfers);
+/** Sites in de beacon-meting (live tabel, /api/resultaten). */
+export const gemetenSites = (): SiteResultaat[] => RESULTATEN.filter((s) => !s.geenMeting);
 export const siteByKey = (key: string): SiteResultaat | undefined => RESULTATEN.find((s) => s.key === key);

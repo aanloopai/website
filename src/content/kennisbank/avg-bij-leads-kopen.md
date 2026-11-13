@@ -6,6 +6,21 @@ published: 2026-09-10
 category: "Leads kopen"
 readingMinutes: 7
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-avg", "ro-privacy"]
+faq:
+  - q: "Welke toestemming is nodig bij leads kopen onder de AVG?"
+    a: "De basis van elke rechtmatige lead is toestemming van de aanvrager. Die toestemming moet vrijwillig, specifiek, geïnformeerd en ondubbelzinnig zijn, en een vooraf aangevinkt akkoordvakje volstaat niet. De toestemming is beperkt tot het doel waarvoor ze gegeven is, namelijk het doorzetten van de aanvraag naar één passende partij."
+  - q: "Wie is verantwoordelijk voor de gegevens na levering van een lead?"
+    a: "Na levering gaat de verantwoordelijkheid voor de verdere verwerking over naar de afnemer. De afnemer bepaalt zelf hoe hij de gegevens opslaat, wie er intern toegang toe heeft en hoe lang hij ze bewaart. De verzamelende partij blijft verantwoordelijk voor de verzameling, het intakeformulier en de geïnformeerde toestemming."
+  - q: "Kan een lead worden doorverkocht aan een ander bedrijf?"
+    a: "Nee, een aanvraag wordt eenmalig en exclusief geleverd aan het bedrijf waarvoor de aanvrager toestemming heeft gegeven. De gegevens worden niet nogmaals doorverkocht en ook niet gedeeld met derden buiten het doel waarvoor de aanvrager toestemming gaf."
+  - q: "Hoe lang mogen gegevens van een lead worden bewaard?"
+    a: "De AVG vraagt om een bewaartermijn die niet langer is dan noodzakelijk voor het doel van de verwerking. De gegevens van een aanvrager die geen klant is geworden, horen niet zonder reden jarenlang in een CRM te blijven staan."
+  - q: "Wat moet de afnemer zelf regelen na levering van een lead?"
+    a: "De afnemer moet drie dingen zelf regelen: een eigen privacyverklaring, de aanvrager alleen benaderen over de aanvraag en verwijderverzoeken opvolgen. Gegevens gebruiken voor een ander doel, zoals een algemene nieuwsbrief, vraagt een aparte toestemming."
+  - q: "Kan een lead gezondheidsgegevens bevatten?"
+    a: "Nee, bijzondere persoonsgegevens zoals gegevens over gezondheid horen niet in een gewoon intakeformulier voor een lead. Artikel 9 AVG stelt strengere eisen aan zulke gegevens. Een lead beperkt zich tot gewone contact- en projectgegevens die nodig zijn om de aanvraag te beoordelen en op te volgen."
 ---
 
 Leads kopen betekent werken met persoonsgegevens: een naam, een telefoonnummer, een adres, soms een indicatie van budget of situatie. Dat maakt de Algemene Verordening Gegevensbescherming (AVG) rechtstreeks van toepassing, zowel op de partij die de aanvraag opvangt als op het bedrijf dat de lead ontvangt. Dit artikel zet op een rij wat daarvoor geregeld moet zijn — generiek en zonder verzonnen jurisprudentie of boetebedragen.

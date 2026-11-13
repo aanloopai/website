@@ -75,8 +75,6 @@ const PRESERVE_STRINGS = [
   'KvK 88606902',
   '88606902',
   'hello@aanloopai.nl',
-  '+31624741597',
-  '+31 6 24 74 15 97',
   'Aanloop AI',
   'Mustafa Agah Dogan',
 ];

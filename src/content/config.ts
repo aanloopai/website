@@ -19,6 +19,10 @@ const kennisbank = defineCollection({
     readingMinutes: z.number().optional(),
     updated: z.coerce.date().optional(),
     draft: z.boolean().default(false),
+    // GEO-citatiestandaard v1: zichtbare FAQ (4-8, natuurlijke vragen) + bronnen-ids uit
+    // src/data/bronnen.json. Beide optioneel; guard: test/geo-citatie-standaard.test.js.
+    faq: z.array(z.object({ q: z.string(), a: z.string() })).optional(),
+    bronnen: z.array(z.string()).optional(),
   }),
 });
 

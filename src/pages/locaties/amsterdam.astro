@@ -1,5 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import LocatieDiepte from '../../components/LocatieDiepte.astro';
+import AiAdoptieCbs from '../../components/AiAdoptieCbs.astro';
 
 const localSchema = {
   '@context': 'https://schema.org',
@@ -10,7 +12,6 @@ const localSchema = {
   address: { '@type': 'PostalAddress', addressLocality: 'Amsterdam', addressRegion: 'Noord-Holland', addressCountry: 'NL' },
   geo: { '@type': 'GeoCoordinates', latitude: '52.3676', longitude: '4.9041' },
   areaServed: { '@type': 'City', name: 'Amsterdam' },
-  telephone: '+31624741597',
   priceRange: '€€',
   openingHoursSpecification: { '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '17:00' },
 };
@@ -21,13 +22,18 @@ const faqItems = [
   { question: 'Hoe snel kan Aanloop AI een AI agent implementeren voor een Amsterdams bedrijf?', answer: 'Voor Amsterdamse klanten geldt dezelfde implementatietijd: standaard 7 werkdagen. We plannen een intake-gesprek (remote of op locatie), waarna we direct aan de slag gaan.' },
   { question: 'Wat kost een AI agent voor een Amsterdams MKB-bedrijf?', answer: 'Onze prijzen zijn voor heel Nederland gelijk: Start €149/maand, Groei €299/maand, Compleet €497/maand. Er zijn geen toeslag voor Amsterdam. Elk pakket: 14 dagen niet goed, geld terug. Meer details op onze prijzen pagina.' },
   { question: 'Biedt Aanloop AI ook AI consultancy aan voor Amsterdamse bedrijven?', answer: 'Ja. Via onze gratis AI scan bieden we Amsterdamse bedrijven een vrijblijvend adviesgesprek. We analyseren uw processen en geven concrete aanbevelingen voor AI-implementaties.' },
+  { question: 'Kan een AI-telefoniste gemiste oproepen opvangen buiten openingstijden?', answer: 'Ja, een AI-telefoniste kan oproepen ook buiten openingstijden aannemen, omdat ze niet aan werktijden gebonden is. In de praktijk noteert ze de reden van het gesprek, vraagt ze naar naam en telefoonnummer en plant ze waar mogelijk direct een afspraak in. Zo gaat een beller \'s avonds of in het weekend minder vaak naar een concurrent.' },
+  { question: 'Hoeveel gemiste oproepen leiden echt tot verloren klanten bij een kapsalon of praktijk?', answer: 'Een groot deel van de bellers probeert het meestal niet opnieuw, maar belt direct een andere aanbieder. Hoeveel het er bij u zijn, hangt af van uw drukte, de tijdstippen waarop u onbereikbaar bent en het type klant. Houd een week lang bij hoeveel oproepen u mist, dan ziet u het werkelijke verlies.' },
+  { question: 'Kan een AI-telefoniste afspraken direct in mijn agenda inplannen?', answer: 'Ja, dat kan als de telefoniste gekoppeld is aan uw agendasysteem, zodat ze alleen vrije tijdsloten aanbiedt. Of dat lukt, hangt af van het systeem dat u gebruikt en van de koppelingsmogelijkheden. In de praktijk voorkomt een koppeling dubbele boekingen, omdat de agenda tijdens het gesprek wordt gecontroleerd.' },
+  { question: 'Hoe helpt een AI-telefoniste om no-shows te verminderen?', answer: 'Ze helpt vooral door afspraken te bevestigen en bellers vooraf te herinneren, waardoor vergeten afspraken minder vaak voorkomen. Een herinnering een dag van tevoren werkt in de praktijk goed, omdat klanten dan nog eenvoudig kunnen verzetten. Het vrijgekomen tijdslot kan dan opnieuw worden gevuld in plaats van leeg te blijven.' },
+  { question: 'Merken bellers dat ze met een AI-telefoniste praten en is dat een probleem?', answer: 'Veel bellers merken het, zeker als de stem of de antwoorden niet natuurlijk klinken. Binnen de Europese AI-verordening geldt een transparantieplicht: mensen moeten weten dat ze met een AI communiceren. In de praktijk accepteren de meeste bellers dit prima, zolang ze snel geholpen worden en bij een complexe vraag kunnen worden doorverbonden.' },
 ];
 ---
 
 <BaseLayout
-  title="AI Agency Amsterdam — AI Bureau & Automatisering MKB"
+  title="AI Marketing Bureau Amsterdam — GEO en AI-website"
   description="AI bureau Amsterdam: Aanloop AI helpt het MKB met AI-agents en automatisering. AI agency Amsterdam — gratis AI-scan, live in 7 werkdagen."
-  schema={localSchema}
+  schema={[localSchema, { '@context': 'https://schema.org', '@type': 'WebPage', '@id': 'https://aanloopai.nl/locaties/amsterdam/#webpage', url: 'https://aanloopai.nl/locaties/amsterdam/', name: 'AI Agency Amsterdam', inLanguage: 'nl-NL', dateModified: '2026-10-19', isPartOf: { '@id': 'https://aanloopai.nl/#website' }, publisher: { '@id': 'https://aanloopai.nl/#organization' } }]}
   faqSchema={faqItems}
 >
   <section class="border-b border-slate-200 hero-gradient">
@@ -35,7 +41,7 @@ const faqItems = [
       <div class="max-w-3xl">
         <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Locatie · Amsterdam</span></div>
         <h1 class="text-4xl sm:text-5xl font-semibold tracking-tighter text-navy text-balance leading-[1.08] reveal reveal-delay-1">AI Agency Amsterdam:<br/>AI Agents & Automation voor Amsterdamse Bedrijven</h1>
-        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Aanloop AI helpt Amsterdamse MKB-bedrijven met AI agents, voice AI en workflow automation. Transparante prijzen, live in 7 werkdagen, AVG-compliant.</p>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed reveal reveal-delay-2">Aanloop AI helpt Amsterdamse MKB-bedrijven met AI agents, voice AI en workflow automation, plus zichtbaarheid in ChatGPT, Gemini en Perplexity. Wij werken remote of op locatie in Amsterdam, met openbare prijzen (Emma vanaf €149 per maand), live in 7 werkdagen en AVG-conform.</p>
         <div class="mt-8 flex flex-col sm:flex-row gap-3 reveal reveal-delay-3">
           <a href="/gratis-ai-scan/" class="btn-primary">Gratis AI Scan voor Amsterdam<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
           <a href="/tarieven/" class="btn-outline">Bekijk tarieven</a>
@@ -43,6 +49,8 @@ const faqItems = [
       </div>
     </div>
   </section>
+  <AiAdoptieCbs sector="zakelijk" heading="Hoeveel bedrijven in Amsterdam en de rest van Nederland gebruiken AI?" />
+  <LocatieDiepte slug="amsterdam" />
 
   <section class="section">
     <div class="container-page max-w-4xl mx-auto">
@@ -55,9 +63,9 @@ const faqItems = [
           { icon: '🏠', sector: 'Makelaars Amsterdam', desc: 'AI receptionist voor bezichtigingsafspraken. 24/7 bereikbaar, leads automatisch in uw CRM.', link: '/sectoren/vastgoed/' },
           { icon: '🍽️', sector: 'Horeca Amsterdam', desc: 'WhatsApp AI agent voor reserveringen. Geen overboeking, automatische bevestiging.', link: '/sectoren/horeca/' },
           { icon: '⚖️', sector: 'Advocatenkantoren Zuidas', desc: 'AI intake-screening voor efficiëntere cliëntopname. Bespaar 12+ uur per week.', link: '/sectoren/ai-voor-advocaten/' },
-          { icon: '🛒', sector: 'E-commerce Amsterdam', desc: 'AI klantenservice voor webshops. 70% van vragen automatisch afgehandeld.', link: '/sectoren/ai-voor-webshops/' },
+          { icon: '🛒', sector: 'E-commerce Amsterdam', desc: 'AI klantenservice voor webshops. Standaardvragen automatisch afgehandeld.', link: '/sectoren/ai-voor-webshops/' },
           { icon: '💼', sector: 'ZZP Amsterdam', desc: 'Betaalbare AI-oplossingen speciaal voor Amsterdamse ZZP\'ers. Emma vanaf €149/maand.', link: '/sectoren/ai-voor-zzp/' },
-          { icon: '📊', sector: 'Accountants Amsterdam', desc: 'Automatische factuurverwerking, 85% tijdsbesparing op administratie.', link: '/sectoren/accountancy/' },
+          { icon: '📊', sector: 'Accountants Amsterdam', desc: 'Automatische factuurverwerking, minder handmatig administratiewerk.', link: '/sectoren/accountancy/' },
         ].map(s => (
           <div class="card reveal">
             <div class="text-2xl mb-3">{s.icon}</div>

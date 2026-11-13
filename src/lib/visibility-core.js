@@ -215,6 +215,7 @@ export const EVENT_TYPES = {
   route: 'Route (Maps-link)',
   mail: 'E-mail (mailto)',
   form: 'Formulier verzonden',
+  lead: 'Lead (server accepteerde formulier)',
   demo: 'Emma live-demo gestart',
 };
 
@@ -266,7 +267,7 @@ export function summarizeEvents(rows, today, windowDays = 28) {
 // beacon (v.js) sends; 'view'/'leave' bracket a page visit, the rest mirror
 // the click/form/custom events. sid/seq come from sessionStorage on the
 // client so a session is reconstructible without any personal data.
-export const HIT_TYPES = new Set(['view', 'leave', 'tel', 'whatsapp', 'route', 'mail', 'form', 'form_start', 'form_view', 'demo', 'custom']);
+export const HIT_TYPES = new Set(['view', 'leave', 'tel', 'whatsapp', 'route', 'mail', 'form', 'lead', 'form_start', 'form_view', 'demo', 'custom']);
 const SID_RE = /^[a-z0-9]{8,32}$/;
 const MAX_SEQ = 500;
 

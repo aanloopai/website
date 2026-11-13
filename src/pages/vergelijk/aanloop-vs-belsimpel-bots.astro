@@ -1,12 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { EMMA_MND, EMMA_TELEFOON_NAAM, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../../data/pricing';
+import { START_MND, GROEI_MND, EMMA_TELEFOON_NAAM, EMMA_TELEFOON_URL, EMMA_WHATSAPP_URL } from '../../data/pricing';
 
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
   headline: 'Aanloop AI vs Belsimpel/Toing-bots: welke AI-oplossing past bij MKB Nederland?',
-  description: 'Vergelijking Aanloop AI (Emma, AI-document) versus Belsimpel-bots / Toing voor MKB Nederland: scope, eigenaarschap, EU-data, prijs en doorlooptijd vergeleken.',
+  description: 'Vergelijking Aanloop AI (Emma, AI-document) versus Belsimpel-bots / Toing voor MKB Nederland: scope, eigenaarschap, datalokatie, prijs en doorlooptijd vergeleken.',
   author: { '@id': 'https://aanloopai.nl/#organization' },
   publisher: {
     '@type': 'Organization',
@@ -37,7 +37,7 @@ const faqSchema = {
       name: 'Wie is eigenaar van het AI-model en de gespreksdata?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Bij Aanloop AI blijft de klant eigenaar van transcripts en metadata; data staat in EU-regio (Frankfurt/Amsterdam) met DPA. Telecom-bots zijn vaak onderdeel van een groter call-platform; controleer de DPA en datalokatie expliciet in jouw offerte.',
+        text: 'Bij Aanloop AI blijft de klant eigenaar van transcripts en metadata. Aanloop AI werkt met een verwerkersovereenkomst en publiceert op /beveiliging/ welke leveranciers gegevens verwerken, inclusief locatie. Telecom-bots zijn vaak onderdeel van een groter call-platform; controleer de DPA en datalokatie expliciet in jouw offerte.',
       },
     },
     {
@@ -45,7 +45,7 @@ const faqSchema = {
       name: 'Wat zijn de prijsstructuren?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: `Aanloop AI: ${EMMA_TELEFOON_NAAM} vanaf ${EMMA_MND} all-in — telefoon + WhatsApp in één abonnement, geen los WhatsApp-tarief. Telecom-bots zijn meestal een add-on bovenop een zakelijk telefonie-abonnement met variabele per-minuut kosten. Vergelijk altijd de all-in prijs over 12 maanden inclusief implementatie en onderhoud.`,
+        text: `Aanloop AI: ${EMMA_TELEFOON_NAAM} vanaf ${START_MND} (telefoon); WhatsApp zit in Groei (${GROEI_MND}) en Compleet, geen los WhatsApp-tarief. Telecom-bots zijn meestal een add-on bovenop een zakelijk telefonie-abonnement met variabele per-minuut kosten. Vergelijk altijd de all-in prijs over 12 maanden inclusief implementatie en onderhoud.`,
       },
     },
     {
@@ -71,11 +71,11 @@ const comparison = [
   { feature: 'Type bedrijf', aanloop: 'AI-bureau (operator-as-a-service)', belsimpel: 'Telecom-aanbieder met bot add-on' },
   { feature: 'Productpalet AI', aanloop: `${EMMA_TELEFOON_NAAM} (WhatsApp inbegrepen), AI-document`, belsimpel: 'Bel/chat-bot binnen telefonie-pakket' },
   { feature: 'Onafhankelijk van telecom-aanbieder', aanloop: 'Ja — werkt met elke SIP/Provider', belsimpel: 'Doorgaans gekoppeld aan eigen pakket' },
-  { feature: 'Datalokatie', aanloop: 'EU-only (Frankfurt/Amsterdam)', belsimpel: 'Afhankelijk van pakket — controleren in DPA' },
-  { feature: 'AVG-DPA', aanloop: 'NL-DPA, signing in 1 dag', belsimpel: 'Onderdeel van bredere telecom-DPA' },
-  { feature: 'NEN 7510 zorg-add-on', aanloop: 'Beschikbaar', belsimpel: 'Doorgaans niet als losse module' },
-  { feature: 'Doorlooptijd live-gang', aanloop: '5-7 werkdagen', belsimpel: 'Variabel; afhankelijk van pakket-onboarding' },
-  { feature: 'Startprijs per maand', aanloop: `Vanaf ${EMMA_MND} (${EMMA_TELEFOON_NAAM}, incl. WhatsApp)`, belsimpel: 'Bot-add-on bovenop telecom-pakket' },
+  { feature: 'Datalokatie', aanloop: 'Sub-verwerkers met locatie openbaar op /beveiliging/ (o.a. Hetzner Duitsland; enkele VS-leveranciers via SCC/DPF)', belsimpel: 'Afhankelijk van pakket — controleren in DPA' },
+  { feature: 'AVG-DPA', aanloop: 'Verwerkersovereenkomst (art. 28 AVG)', belsimpel: 'Onderdeel van bredere telecom-DPA' },
+  { feature: 'NEN 7510 (zorg)', aanloop: 'Geen certificaat; NEN 7510-bewuste opzet op verzoek (certificering bij uw organisatie)', belsimpel: 'Doorgaans niet als losse module' },
+  { feature: 'Doorlooptijd live-gang', aanloop: 'Snel; productized, planning vooraf', belsimpel: 'Variabel; afhankelijk van pakket-onboarding' },
+  { feature: 'Startprijs per maand', aanloop: `Vanaf ${START_MND} (telefoon); WhatsApp vanaf ${GROEI_MND}`, belsimpel: 'Bot-add-on bovenop telecom-pakket' },
   { feature: 'Eigenaarschap transcripts', aanloop: 'Klant', belsimpel: 'Variabel — controleer voorwaarden' },
   { feature: 'Native NL-spraak', aanloop: 'Ja', belsimpel: 'Ja' },
   { feature: 'CRM-integraties', aanloop: 'HubSpot, Salesforce, Pipedrive, AFAS native', belsimpel: 'Variabel per pakket' },
@@ -87,11 +87,11 @@ const comparison = [
 const useCases = [
   { sector: 'Onderneming met bestaande telecom-contract', kies: 'Aanloop AI', reden: 'Behoud uw telefoniecontract, voeg AI toe via SIP-trunk. Geen vendor-lock-in.' },
   { sector: 'Startup zonder vast telefonie-pakket', kies: 'Belsimpel', reden: 'Bundel telefoon + bot bij 1 aanbieder voor administratief gemak.' },
-  { sector: 'Huisartsenpraktijk', kies: 'Aanloop AI', reden: 'NEN 7510 zorg-add-on en NL-DPA expliciet — telecom-bots dekken zorgcompliance niet uit de doos.' },
+  { sector: 'Huisartsenpraktijk', kies: 'Aanloop AI', reden: 'Verwerkersovereenkomst en NEN 7510-bewuste opzet op verzoek — vraag bij telecom-bots expliciet naar zorgcompliance.' },
   { sector: 'Webshop met support-team', kies: 'Aanloop AI (Emma)', reden: 'WhatsApp Business AI met Shopify/WooCommerce-koppeling — telecom-bots zijn voice-georiënteerd.' },
   { sector: 'Klein installatiebedrijf', kies: 'Belsimpel', reden: 'Eenvoud: 1 factuur voor telefonie + bot, beperkt volume.' },
-  { sector: 'Notariskantoor', kies: 'Aanloop AI', reden: 'Eigenaarschap transcripts en EU-only data zwaarder dan administratief gemak.' },
-  { sector: 'Thuiszorg-organisatie', kies: 'Aanloop AI', reden: 'NEN 7510 + AVG-DPA met named processor; telecom-bot mist deze depth.' },
+  { sector: 'Notariskantoor', kies: 'Aanloop AI', reden: 'Eigenaarschap transcripts en transparantie over leveranciers en datalokatie zwaarder dan administratief gemak.' },
+  { sector: 'Thuiszorg-organisatie', kies: 'Aanloop AI', reden: 'AVG-verwerkersovereenkomst en NEN 7510-bewuste opzet op verzoek; check of een telecom-bot dit biedt.' },
   { sector: 'Tandartsketen', kies: 'Aanloop AI', reden: 'Agenda-koppeling Google/Outlook/Calendly out-of-the-box, sentiment-detectie + escalatie.' },
 ];
 ---

@@ -47,8 +47,10 @@ import { tierForPlanSlug } from './data/funnel-map.ts';
 import { extractBusinessFacts, normalizeSiteUrl, isFetchableSiteUrl } from './lib/site-prefill.js';
 import { handleVoorstelClaim } from './lib/voorstel-claim.js';
 import { handleVoorstelVerify } from './lib/voorstel-verify.js';
+import { ledgerIngest, ledgerRead, recordOwnLead } from './lib/lead-ledger.js';
 import { visibilityIngest, visibilityEvent, visibilitySummary, beaconScript, gbpSyncIfDue } from './lib/visibility.js';
 import { resultatenPublic } from './lib/resultaten-public.js';
+import { handleHomeMarkdown } from './lib/markdown-home.js';
 
 const NOTIFICATION_EMAIL = 'hello@aanloopai.nl';
 const SENDER_EMAIL = 'hello@aanloopai.nl';
@@ -56,8 +58,6 @@ const SENDER_NAME = 'Aanloop AI';
 // Same value as SITE_ORIGIN in portal-routes.js — kept as a separate constant
 // here so worker.js stays self-contained (no cross-file import for a single string).
 const SITE_ORIGIN = 'https://aanloopai.nl';
-// Zakelijk WhatsApp-nummer achter de /whatsapp-doorstuurroute (zie fetch()).
-const WHATSAPP_NUMBER = '31624741597';
 
 const AUTORESPONSE_TEMPLATES = {
   demo: {
@@ -841,6 +841,16 @@ async function handleSubmit(request, env) {
 
   // System of record first — everything below this line is best-effort delivery.
   const leadId = await storeInboundLead(env, { formType, fields, userEmail, fullName, clientIp });
+  // Lead-ledger (PII-minimal). Best-effort: recordOwnLead never throws.
+  if (leadId && formType !== 'newsletter' && formType !== 'survey_ai_adoption') {
+    const referer = request.headers.get('Referer') || '';
+    let landing = '';
+    try { landing = new URL(referer).pathname; } catch { /* no referer */ }
+    await recordOwnLead(env, {
+      leadId, form: formType, landing, referrer: referer,
+      utm: { source: fields.utm_source, medium: fields.utm_medium, campaign: fields.utm_campaign },
+    });
+  }
 
   // Owner-besluit 2026-09-10: élke inzending (contact, demo, aanvraag, scan,
   // leads, newsletter, roi, readiness, survey) direct op Telegram — vóór de
@@ -1303,29 +1313,14 @@ export default {
       });
     }
 
-    // WhatsApp-CTA loopt via deze eigen URL in plaats van rechtstreeks naar
-    // wa.me. Reden: wa.me rate-limit crawlers met HTTP 429, en omdat de knop in
-    // header, footer en sticky CTA staat, telde Semrush dat als 91 "broken
-    // external links" — één per pagina. Voor een bezoeker verandert er niets.
-    // 301 en geen 302 (Ahrefs 2026-08-24: 302 met 241 inlinks lekt equity):
-    // de bestemming is permanent zolang het nummer niet wijzigt, en de
-    // Cache-Control van één uur begrenst hoe lang browsers de 301 vasthouden
-    // — bij een nummerwissel is de oude bestemming dus binnen een uur weg.
-    // Alle interne links naar /whatsapp dragen rel="nofollow".
+    // Owner-eis 2026-10-28: nergens op de site een telefoonnummer; vragen
+    // lopen via formulier of e-mail. De oude /whatsapp-route (externe links,
+    // gecachte pagina's) stuurt daarom door naar het contactformulier.
     if (url.pathname === '/whatsapp' || url.pathname === '/whatsapp/') {
-      // Standaardtekst identificeert de herkomst: hetzelfde nummer wordt ook
-      // voor andere bedrijven gebruikt, dus zonder deze tag is niet te zien
-      // dat een binnenkomend gesprek van aanloopai.nl komt. Een expliciete
-      // ?text= op een specifieke pagina blijft voorgaan.
-      const text = url.searchParams.get('text')
-        || 'Hallo! Ik kom via aanloopai.nl en heb een vraag.';
-      const target = new URL('https://api.whatsapp.com/send');
-      target.searchParams.set('phone', WHATSAPP_NUMBER);
-      target.searchParams.set('text', text);
       return new Response(null, {
         status: 301,
         headers: {
-          Location: target.toString(),
+          Location: `${SITE_ORIGIN}/contact/`,
           'Cache-Control': 'public, max-age=3600',
           // Crawlers hoeven deze doorstuurhop niet te indexeren.
           'X-Robots-Tag': 'noindex, nofollow',
@@ -1450,6 +1445,14 @@ export default {
     if (url.pathname === '/api/visibility/ingest') {
       return visibilityIngest(request, env);
     }
+    // Lead-ledger (LEAD-1): server-to-server, per-site HMAC (X-Ledger-*), no session.
+    if (url.pathname === '/api/leads/ingest') {
+      return ledgerIngest(request, env);
+    }
+    // LEAD-2: AGA read API, Bearer LEDGER_READ_TOKEN.
+    if (url.pathname === '/api/leads/ledger') {
+      return ledgerRead(request, env, url);
+    }
     // Site-acties beacon: public, cross-origin, no auth (counts only).
     if (url.pathname === '/api/visibility/event') {
       return visibilityEvent(request, env);
@@ -1537,6 +1540,9 @@ export default {
     if (klantOvk) {
       return Response.redirect(new URL('/portal/overeenkomst/?id=' + klantOvk[1], url.origin).toString(), 301);
     }
+
+    const homeMd = await handleHomeMarkdown(request, env, url);
+    if (homeMd) return homeMd;
 
     if (env.ASSETS) {
       const assetResponse = await env.ASSETS.fetch(request);
