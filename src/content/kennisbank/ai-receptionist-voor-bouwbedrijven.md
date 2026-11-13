@@ -7,14 +7,16 @@ category: "AI-automatisering"
 readingMinutes: 5
 draft: false
 updated: 2026-11-13
-bronnen: ["ap-avg"]
+bronnen: ["ap-avg", "ap-verwerker", "ec-ai-act"]
 faq:
-  - q: "Voor welke bouwbedrijven is een AI receptionist geschikt?"
+  - q: "Is een AI receptionist geschikt voor mijn bouwbedrijf?"
     a: "Voor vrijwel elk bouwbedrijf dat vaak buiten kantoor werkt: aannemers, dakdekkers, schilders, installateurs en verbouwers. Zeker als u geen vaste kantoormedewerker heeft, voorkomt een AI receptionist dat aanvragen blijven liggen."
-  - q: "Weten klanten dat ze met een AI praten?"
-    a: "Het is verstandig en eerlijk om dat direct te melden. Een korte openingszin is genoeg. Klanten waarderen vooral dat er meteen iemand opneemt en dat hun vraag goed wordt vastgelegd."
+  - q: "Moet ik klanten vertellen dat ze met een AI praten?"
+    a: "Ja, vertel bellers direct dat ze met een digitale assistent spreken. Een korte openingszin is genoeg. Klanten waarderen vooral dat er meteen iemand opneemt en dat hun vraag goed wordt vastgelegd."
   - q: "Kan de AI receptionist ook een offerte maken?"
     a: "Nee, de offerte blijft uw werk. De receptionist verzamelt de gegevens die u daarvoor nodig heeft, zoals soort werk, adres en gewenste startdatum, en stuurt die gestructureerd naar u door."
+  - q: "Wat moet ik regelen voor de AVG bij een AI receptionist?"
+    a: "Een AI receptionist verwerkt persoonsgegevens, zoals namen en telefoonnummers, dus de AVG geldt. Leg uit waarvoor u de gegevens gebruikt, bewaar ze niet langer dan nodig en sluit een verwerkersovereenkomst met de leverancier af."
 ---
 
 Uw dag begint op de bouwplaats, niet achter een bureau. Tussen het zagen, metselen en overleggen met de klant gaat de telefoon over. U neemt niet op, de beller probeert het bij een ander. Een AI receptionist voor bouwbedrijven lost precies dat probleem op.
@@ -55,7 +57,7 @@ Bij Aanloop AI heet de AI-telefoniste Emma. Ze werkt via telefoon en WhatsApp en
 
 Een AI receptionist verwerkt persoonsgegevens, zoals namen en telefoonnummers. Daarom geldt de AVG. Vertel bellers dat ze met een digitale assistent spreken, leg uit waarvoor u hun gegevens gebruikt, bewaar ze niet langer dan nodig en sluit een verwerkersovereenkomst met de leverancier af.
 
-Controleer ook of gespreksopnames nodig zijn. Wilt u alleen een tekstsamenvatting bewaren, dan beperkt u het aantal gegevens dat u opslaat. Minder verzamelen is veiliger en eenvoudiger uit te leggen. Twijfelt u over uw inrichting, laat die dan toetsen.
+De Europese AI-verordening kent bovendien meldplichten, bedoeld om mensen te informeren wanneer dat nodig is. Melden dat de beller met een digitale assistent spreekt past daarbij. Controleer ook of gespreksopnames nodig zijn. Wilt u alleen een tekstsamenvatting bewaren, dan beperkt u het aantal gegevens dat u opslaat. Minder verzamelen is veiliger en eenvoudiger uit te leggen. Twijfelt u over uw inrichting, laat die dan toetsen.
 
 ## Een AI receptionist voor aannemers in Nederland: regio en vindbaarheid
 
@@ -68,20 +70,6 @@ Mensen vragen steeds vaker aan AI-zoekmachines naar een aannemer in hun buurt. E
 Begin klein: bepaal welke diensten en werkgebieden u aanneemt, welke vragen de receptionist moet stellen en wanneer ze u moet doorverbinden. Laat daarna de website, telefoonnummer en WhatsApp koppelen, test met proefgesprekken en pas de antwoorden aan. Zo staat het binnen korte tijd live zonder dat uw werk stilvalt.
 
 Meet daarna wat het oplevert: hoeveel aanvragen komen binnen, hoeveel zijn serieus en hoeveel leiden tot een offerte. Met een meetpaneel ziet u dat zonder zelf cijfers te zoeken. Gemeten resultaten van andere bedrijven vindt u op aanloopai.nl/resultaten/.
-
-## Veelgestelde vragen
-
-### Voor welke bouwbedrijven is een AI receptionist geschikt?
-
-Voor vrijwel elk bouwbedrijf dat vaak buiten kantoor werkt: aannemers, dakdekkers, schilders, installateurs en verbouwers. Zeker als u geen vaste kantoormedewerker heeft, voorkomt een AI receptionist dat aanvragen blijven liggen.
-
-### Weten klanten dat ze met een AI praten?
-
-Het is verstandig en eerlijk om dat direct te melden. Een korte openingszin is genoeg. Klanten waarderen vooral dat er meteen iemand opneemt en dat hun vraag goed wordt vastgelegd.
-
-### Kan de AI receptionist ook een offerte maken?
-
-Nee, de offerte blijft uw werk. De receptionist verzamelt de gegevens die u daarvoor nodig heeft, zoals soort werk, adres en gewenste startdatum, en stuurt die gestructureerd naar u door.
 
 ## Laat Emma uw telefoon opnemen
 
