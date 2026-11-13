@@ -47,6 +47,7 @@ import { tierForPlanSlug } from './data/funnel-map.ts';
 import { extractBusinessFacts, normalizeSiteUrl, isFetchableSiteUrl } from './lib/site-prefill.js';
 import { handleVoorstelClaim } from './lib/voorstel-claim.js';
 import { handleVoorstelVerify } from './lib/voorstel-verify.js';
+import { ledgerIngest, ledgerRead, recordOwnLead } from './lib/lead-ledger.js';
 import { visibilityIngest, visibilityEvent, visibilitySummary, beaconScript, gbpSyncIfDue } from './lib/visibility.js';
 import { resultatenPublic } from './lib/resultaten-public.js';
 import { handleHomeMarkdown } from './lib/markdown-home.js';
@@ -840,6 +841,16 @@ async function handleSubmit(request, env) {
 
   // System of record first — everything below this line is best-effort delivery.
   const leadId = await storeInboundLead(env, { formType, fields, userEmail, fullName, clientIp });
+  // Lead-ledger (PII-minimal). Best-effort: recordOwnLead never throws.
+  if (leadId && formType !== 'newsletter' && formType !== 'survey_ai_adoption') {
+    const referer = request.headers.get('Referer') || '';
+    let landing = '';
+    try { landing = new URL(referer).pathname; } catch { /* no referer */ }
+    await recordOwnLead(env, {
+      leadId, form: formType, landing, referrer: referer,
+      utm: { source: fields.utm_source, medium: fields.utm_medium, campaign: fields.utm_campaign },
+    });
+  }
 
   // Owner-besluit 2026-09-10: élke inzending (contact, demo, aanvraag, scan,
   // leads, newsletter, roi, readiness, survey) direct op Telegram — vóór de
@@ -1433,6 +1444,14 @@ export default {
     // by the staff session, hence outside /api/admin/*.
     if (url.pathname === '/api/visibility/ingest') {
       return visibilityIngest(request, env);
+    }
+    // Lead-ledger (LEAD-1): server-to-server, per-site HMAC (X-Ledger-*), no session.
+    if (url.pathname === '/api/leads/ingest') {
+      return ledgerIngest(request, env);
+    }
+    // LEAD-2: AGA read API, Bearer LEDGER_READ_TOKEN.
+    if (url.pathname === '/api/leads/ledger') {
+      return ledgerRead(request, env, url);
     }
     // Site-acties beacon: public, cross-origin, no auth (counts only).
     if (url.pathname === '/api/visibility/event') {
