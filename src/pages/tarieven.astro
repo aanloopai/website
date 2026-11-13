@@ -193,8 +193,8 @@ const seoGeoPlans = [
     type: 'Maand',
     price: '€1.195',
     unit: '/maand',
-    desc: 'SEO Maandelijks + GEO Maandelijks gecombineerd. Bespaart €2.340 per jaar vs losse afname. Eén strategie, één team.',
-    features: ['Alles van SEO Maandelijks', 'Alles van GEO Maandelijks', 'Geintegreerde traditioneel + AI strategie', 'Eén maandelijks rapport (SERP + AI-citations)', 'Bespaart €2.340 per jaar vs losse afname', 'Prioriteit support (binnen 4 uur)'],
+    desc: 'SEO Maandelijks + GEO Maandelijks gecombineerd. Bundelprijs €1.195 per maand in plaats van €1.390 voor beide los. Eén strategie, één team.',
+    features: ['Alles van SEO Maandelijks', 'Alles van GEO Maandelijks', 'Geintegreerde traditioneel + AI strategie', 'Eén maandelijks rapport (SERP + AI-citations)', 'Bundelprijs €1.195 per maand in plaats van €1.390 voor beide los', 'Prioriteit support (binnen 4 uur)'],
     cta: 'Bundel starten',
     href: '/start/',
   },
@@ -401,7 +401,7 @@ const productOfferGraph = {
       '@id': 'https://aanloopai.nl/tarieven/#seo-geo-bundel',
       name: 'SEO + GEO Maandelijkse Bundel Nederland',
       serviceType: 'SEO + GEO Combined',
-      description: 'Maandelijkse SEO + GEO bundel voor Nederlandse MKB: traditioneel SERP + AI-citation tracking gecombineerd. Bespaart €2.340 per jaar vs losse afname. Eén strategie, één team, één rapportage.',
+      description: 'Maandelijkse SEO + GEO bundel voor Nederlandse MKB: traditioneel SERP + AI-citation tracking gecombineerd. Bundelprijs €1.195 per maand in plaats van €1.390 voor beide los. Eén strategie, één team, één rapportage.',
       provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' },
       areaServed: { '@type': 'Country', name: 'Nederland' },
       offers: { '@type': 'Offer', price: '1195', priceCurrency: 'EUR', priceSpecification: { '@type': 'UnitPriceSpecification', price: '1195', priceCurrency: 'EUR', unitText: 'maand' }, availability: 'https://schema.org/InStock', url: 'https://aanloopai.nl/start/', priceValidUntil: '2026-12-31' },
@@ -884,18 +884,18 @@ const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 :
           </div>
 
           <div>
-            <label for="tco-salary" class="text-xs font-semibold text-slate-600 uppercase tracking-wide block mb-1.5">FTE jaarsalaris (incl. werkgeverslasten)</label>
+            <label for="tco-salary" class="text-xs font-semibold text-slate-600 uppercase tracking-wide block mb-1.5">FTE jaarsalaris (incl. werkgeverslasten) <span class="normal-case font-normal">(aanname, pas aan)</span></label>
             <div class="flex items-center gap-2">
               <span class="text-slate-500">€</span>
               <input id="tco-salary" type="number" min="30000" max="120000" step="500" value="47520" class="flex-1 border border-slate-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-indigo" />
             </div>
-            <p class="text-[11px] text-slate-500 mt-1">CBS gem. 0,5 FTE receptionist 2026: €47.520. Pas aan naar uw situatie.</p>
+            <p class="text-[11px] text-slate-500 mt-1">Aanname, pas aan: €47.520 is een rekenvoorbeeld, geen gepubliceerd gemiddelde. Vul het werkelijke salaris van uw situatie in.</p>
           </div>
         </div>
 
         <!-- Outputs -->
         <div class="lg:col-span-3 bg-gradient-to-br from-brand-indigo/5 via-white to-brand-emerald/5 border border-slate-200 rounded-lg p-6" aria-live="polite" aria-atomic="true">
-          <h3 class="text-base font-bold text-navy mb-4">Uw 5-jaars TCO</h3>
+          <h3 class="text-base font-bold text-navy mb-4">Rekenvoorbeeld: 5-jaars TCO op basis van uw invoer</h3>
 
           <div class="grid grid-cols-2 gap-4 mb-6">
             <div>
@@ -911,9 +911,9 @@ const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 :
           </div>
 
           <div class="bg-brand-emerald/10 border border-brand-emerald/30 rounded-xl p-4 mb-4">
-            <p class="text-xs text-brand-emerald uppercase tracking-widest font-bold mb-1">Uw besparing 5 jaar</p>
+            <p class="text-xs text-brand-emerald uppercase tracking-widest font-bold mb-1">Voorbeeldberekening besparing 5 jaar (geen belofte)</p>
             <p id="tco-saving" class="text-3xl font-bold text-brand-emerald tabular-nums">{fmtEUR(tcoSaving)}</p>
-            <p id="tco-saving-pct" class="text-xs text-slate-600 mt-1">ROI: {tcoSavingPct.toFixed(1).replace('.', ',')}% over 5 jaar</p>
+            <p id="tco-saving-pct" class="text-xs text-slate-600 mt-1">Rekenvoorbeeld op basis van de ingevulde aannames, geen belofte: {tcoSavingPct.toFixed(1).replace('.', ',')}% verschil over 5 jaar</p>
           </div>
 
           <div class="grid grid-cols-2 gap-3 text-sm">
@@ -927,7 +927,7 @@ const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 :
             </div>
           </div>
 
-          <p class="text-[11px] text-slate-500 mt-4">Exclusief 21% btw. Salaris-aanname incl. werkgeverslasten + secundaire (CAO ProTie 2026). Aanloop-pakket houdt geen rekening met gecapte vs hoog-volume gesprekken — voor &gt;1500 calls/mnd is Emma Enterprise realistischer. *Terugverdientijd hangt af van de eenmalige setup — die bespreken we in het gesprek.</p>
+          <p class="text-[11px] text-slate-500 mt-4">Exclusief 21% btw. Het salaris is een aanname die u zelf aanpast; het is geen gepubliceerd cijfer. Aanloop-pakket houdt geen rekening met gecapte vs hoog-volume gesprekken — voor &gt;1500 calls/mnd is Emma Enterprise realistischer. *Terugverdientijd hangt af van de eenmalige setup — die bespreken we in het gesprek.</p>
         </div>
       </div>
 
@@ -976,7 +976,7 @@ const tcoSavingPct = tcoAanloopTotal > 0 ? (tcoSaving / tcoAanloopTotal) * 100 :
             saving.textContent = fmt(savingAbs);
             saving.classList.remove('text-rose-600');
             saving.classList.add('text-brand-emerald');
-            savingPct.textContent = 'ROI: ' + savingPctVal.toFixed(1).replace('.', ',') + '% over 5 jaar';
+            savingPct.textContent = 'Rekenvoorbeeld op basis van de ingevulde aannames, geen belofte: ' + savingPctVal.toFixed(1).replace('.', ',') + '% verschil over 5 jaar';
           } else {
             saving.textContent = fmt(savingAbs);
             saving.classList.add('text-rose-600');

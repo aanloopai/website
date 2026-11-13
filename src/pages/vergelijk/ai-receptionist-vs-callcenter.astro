@@ -20,27 +20,26 @@ const articleSchema = {
 };
 
 const comparison = [
-  { feature: 'Maandelijkse kosten basis', ai: '149-497 euro', callcenter: '1.500-4.500 euro (afhankelijk van uren)' },
-  { feature: 'Kosten per gesprek', ai: 'Inbegrepen tot 1.500 gesprekken/maand', callcenter: '1,50-3,50 euro per gesprek' },
-  { feature: 'Doorlooptijd live-gang', ai: '7 werkdagen', callcenter: '4-8 weken (training + script)' },
-  { feature: 'Beschikbaarheid', ai: '24/7/365 zonder meerprijs', callcenter: '24/7 mogelijk maar 1,5-2x premium' },
-  { feature: 'Talen standaard', ai: 'Nederlands, Engels (extra op aanvraag)', callcenter: 'Nederlands; meertalig 25-40 procent duurder' },
-  { feature: 'Schaalbaarheid bij piek', ai: 'Onbeperkt — geen wachttijd', callcenter: 'Wachtrij 30s-3 min bij piek' },
-  { feature: 'Antwoordsnelheid', ai: 'Onmiddellijk (binnen 2 sec)', callcenter: 'Gemiddeld 30-90 seconden wachttijd' },
-  { feature: 'Consistentie van antwoord', ai: '100 procent — zelfde script', callcenter: 'Variabel per agent en moment' },
-  { feature: 'Maatwerk-script wijziging', ai: 'Direct (binnen 1 dag)', callcenter: '1-2 weken (re-training agents)' },
-  { feature: 'Doorzettrouten naar mens', ai: 'Live doorverbinden naar uw team', callcenter: 'Standaard onderdeel' },
-  { feature: 'Sentiment-detectie', ai: 'Ja — escalatie binnen 1 minuut', callcenter: 'Afhankelijk van agent-ervaring' },
-  { feature: 'CRM-integratie', ai: 'HubSpot, Salesforce, Pipedrive, AFAS', callcenter: 'Op aanvraag (vaak meerprijs)' },
-  { feature: 'Rapportage en KPIs', ai: 'Live dashboard met deflection, CSAT', callcenter: 'Maandelijkse rapportage (vaak basic)' },
-  { feature: 'AVG/EU-data', ai: 'EU-only datalokatie, NEN 7510 mogelijk', callcenter: 'Afhankelijk — vaak buiten EU bij budget-aanbieders' },
+  { feature: 'Maandelijkse kosten basis', ai: 'Emma vanaf 149 euro per maand (Start), 299 euro (Groei), 497 euro (Compleet)', callcenter: 'Op offertebasis; meestal afhankelijk van uren en volume' },
+  { feature: 'Kosten per gesprek', ai: 'Inbegrepen belminuten per pakket; extra minuten 0,25 euro', callcenter: 'Vaak per gesprek of per minuut; vraag de tarieven vooraf schriftelijk' },
+  { feature: 'Doorlooptijd live-gang', ai: 'Start is self-serve; Groei en Compleet met begeleide onboarding', callcenter: 'Training en script vergen doorgaans enkele weken' },
+  { feature: 'Beschikbaarheid', ai: '24/7, ook buiten kantooruren', callcenter: '24/7 is mogelijk, vaak tegen een toeslag voor avond en nacht' },
+  { feature: 'Talen', ai: 'Nederlands; andere talen in overleg', callcenter: 'Nederlands standaard; meertalig vaak tegen meerprijs' },
+  { feature: 'Schaalbaarheid bij piek', ai: 'Meerdere gesprekken tegelijk, geen wachtrij', callcenter: 'Wachtrij of piektoeslag bij drukte' },
+  { feature: 'Antwoordsnelheid', ai: 'De AI neemt direct op', callcenter: 'Afhankelijk van bezetting en wachtrij' },
+  { feature: 'Consistentie van antwoord', ai: 'Zelfde kennisbasis bij elk gesprek, mits goed ingericht', callcenter: 'Variabel per agent en moment' },
+  { feature: 'Aanpassen van antwoorden', ai: 'Aan te passen via Aanloop AI', callcenter: 'Meestal via nieuwe instructie en training van agents' },
+  { feature: 'Doorzettrouten naar mens', ai: 'Doorschakelen of terugbelverzoek naar uw team', callcenter: 'Standaard onderdeel' },
+  { feature: 'CRM-koppeling', ai: 'Beschikbaar vanaf Groei; zie de pakketpagina voor de actuele lijst', callcenter: 'Op aanvraag, soms met meerprijs' },
+  { feature: 'Rapportage', ai: 'Overzicht van gesprekken en aanvragen in uw paneel', callcenter: 'Periodieke rapportage, omvang verschilt per aanbieder' },
+  { feature: 'AVG en dataverwerking', ai: 'Verwerkersovereenkomst; leveranciers en locaties staan op /beveiliging/', callcenter: 'Verschilt per aanbieder; vraag naar verwerkersovereenkomst en locatie van de data' },
 ];
 
 const scenarios = [
-  { situatie: 'Huisartsenpraktijk met 80 oproepen per dag', ai: 'Emma 397-697 euro/maand', callcenter: '2.800-3.800 euro/maand', verschil: '4-6x goedkoper' },
-  { situatie: 'Webshop met seizoenspieken (kerstperiode 5x volume)', ai: 'Geen extra kosten — onbeperkt schaalbaar', callcenter: 'Premium-fee bij piek (2-3x basis)', verschil: 'Geen piek-fee' },
-  { situatie: 'Installatiebedrijf met 24/7 storingsdienst', ai: '24/7 inbegrepen', callcenter: 'Nachturen 50-100 procent duurder', verschil: '2-3x goedkoper avond/nacht' },
-  { situatie: 'B2B-zakelijk met complexe technische intake', ai: 'Custom-getraind op uw productcatalogus', callcenter: 'Algemeen — beperkte productkennis', verschil: 'Hogere kwalificatie' },
+  { situatie: 'Praktijk of kantoor met veel terugkerende oproepen', ai: 'Vast maandbedrag per pakket, extra minuten 0,25 euro', callcenter: 'Kosten lopen mee met uren en volume', verschil: 'Vergelijk het totaal per maand bij uw volume' },
+  { situatie: 'Webshop met seizoenspieken', ai: 'Geen wachtrij; let op de belminuten in uw pakket', callcenter: 'Vaak piektoeslag of extra capaciteit nodig', verschil: 'Piekgedrag staat vooraf in de offerte' },
+  { situatie: 'Installatiebedrijf met storingsdienst', ai: 'Ook buiten kantooruren bereikbaar; spoed gaat naar een mens', callcenter: 'Avond en nacht vaak met toeslag', verschil: 'Vraag naar toeslagen buiten kantooruren' },
+  { situatie: 'B2B met technische intake', ai: 'Ingericht op uw eigen productinformatie', callcenter: 'Agents hebben meestal beperkte productkennis', verschil: 'Kwaliteit hangt af van de aangeleverde kennis' },
 ];
 ---
 
@@ -60,7 +59,7 @@ const scenarios = [
           AI-receptionist of extern callcenter?
         </h1>
         <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty">
-          Voor Nederlandse MKB-bedrijven die overwegen telefonische klantenservice uit te besteden: een eerlijke vergelijking. AI-receptionist (Emma van Aanloop AI) versus traditioneel extern callcenter. Wij vergelijken 15 features, 4 realistische scenarios en geven aan wanneer welke keuze logisch is.
+          Voor Nederlandse MKB-bedrijven die overwegen telefonische klantenservice uit te besteden: een eerlijke vergelijking. AI-receptionist (Emma van Aanloop AI) versus traditioneel extern callcenter. Wij vergelijken 13 punten, 4 scenario's en geven aan wanneer welke keuze logisch is.
         </p>
         <div class="mt-8 flex flex-wrap gap-3">
           <a href="/aanvragen/" class="btn-primary">Gratis adviesgesprek</a>
@@ -132,7 +131,7 @@ const scenarios = [
         <li><strong class="text-navy">Crisis-situaties met emotionele begeleiding.</strong> Lichaamstaal-substituut, compassie en spontane improvisatie zijn menselijke sterkten.</li>
         <li><strong class="text-navy">Hoog-vertrouwelijke intake (notariaat, advocatuur).</strong> Wanneer de klant verwacht een mens te spreken voor het contract zelf — al kan de AI prima doorzetten naar uw partner.</li>
       </ul>
-      <p class="text-slate-700 leading-relaxed">Voor 80 procent van MKB-klantenservice (orderstatus, afspraken plannen, FAQ, no-show preventie) is AI sneller, goedkoper en consistenter.</p>
+      <p class="text-slate-700 leading-relaxed">Voor veel terugkerend MKB-werk (orderstatus, afspraken plannen, veelgestelde vragen) is een AI-telefoniste een snelle en voorspelbare optie. Reken wel met uw eigen volume door.</p>
     </div>
   </section>
 

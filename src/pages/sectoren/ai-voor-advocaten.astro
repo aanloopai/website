@@ -9,11 +9,11 @@ const faqItems = [
   { question: 'Is AI voor advocaten AVG/GDPR-compliant?', answer: 'Ja, mits correct geconfigureerd. Aanloop AI gebruikt n8n self-hosted, waardoor alle cliëntdata op een Nederlandse server wordt verwerkt. Er worden geen persoonsgegevens naar buitenlandse clouddiensten gestuurd. We leveren documentatie voor uw verwerkingsregister (AVG Art. 30).' },
   { question: 'Vervangt een AI agent mijn secretaresse?', answer: 'Niet volledig — maar het vermindert wel de werklast significant. Een AI agent verwerkt routinetaken (afspraken, FAQ, intake-screening) zodat uw secretaresse zich kan richten op meer complexe taken die menselijke aanwezigheid vereisen.' },
   { question: 'Kan de AI agent vertrouwelijke cliëntinformatie verwerken?', answer: 'Ja, veilig. Met n8n self-hosted draait alle data op uw eigen server. We configureren de AI agent zo dat vertrouwelijke informatie nooit gedeeld wordt met derden. Advocatengeheim wordt technisch geborgd door strikte data-isolatie.' },
-  { question: 'Hoeveel uur per week bespaart een AI agent voor een advocatenkantoor?', answer: 'Gemiddeld 10-20 uur per week op intake-gesprekken, telefonische vragen en agendabeheer. Een kantoor met 4 advocaten bespaard zo circa €6.000-12.000 per maand aan niet-factureerbaar werk.' },
+  { question: 'Hoeveel tijd bespaart een AI agent voor een advocatenkantoor?', answer: 'Dat hangt af van uw situatie: hoeveel intake-gesprekken, telefonische vragen en agendabeheer uw kantoor nu handmatig doet. Meet het zelf met uw eigen cijfers: tel een paar weken hoeveel uur niet-factureerbaar werk dit kost en vergelijk dat met de situatie na livegang.' },
 ];
 const schema = { '@context': 'https://schema.org', '@type': 'Service', name: 'AI voor Advocatenkantoren', serviceType: 'AI voor Advocatenkantoren', provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' }, areaServed: { '@type': 'Country', name: 'Nederland' }, description: 'AI agents en workflow automation voor advocatenkantoren in Nederland. AVG-compliant, intake-screening, agendabeheer.' };
 ---
-<BaseLayout title="AI voor Advocatenkantoor Nederland — Intake & Agenda" description="AI voor advocatenkantoren: AI-agent voor intake, agendabeheer en documentverwerking. AVG-compliant en geheimhoudingsveilig. Bespaar 10-20 uur/week." schema={schema} faqSchema={faqItems}>
+<BaseLayout title="AI voor Advocatenkantoor Nederland — Intake & Agenda" description="AI voor advocatenkantoren: AI-agent voor intake, agendabeheer en documentverwerking. AVG-compliant en geheimhoudingsveilig. Meet het effect zelf." schema={schema} faqSchema={faqItems}>
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-20">
       <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -35,11 +35,11 @@ const schema = { '@context': 'https://schema.org', '@type': 'Service', name: 'AI
 
   <section class="section bg-slate-50 border-b border-slate-200">
     <div class="container-page">
-      <p class="text-xs text-slate-400 text-center mb-4">Indicatieve cijfers · resultaten verschillen per situatie</p>
+      <p class="text-xs text-slate-400 text-center mb-4">Geen gemeten cijfers · resultaten verschillen per situatie</p>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
         {[
-          { n: '10-20u', l: 'bespaard/week', d: 'op niet-factureerbaar werk' },
-          { n: '40%', l: 'hogere cliëntkwaliteit', d: 'door AI intake-screening' },
+          { n: 'Intake', l: 'eerste screening door AI', d: 'minder niet-factureerbaar werk' },
+          { n: 'Cliënten', l: 'gerichter gefilterd', d: 'door AI intake-screening' },
           { n: '24/7', l: 'bereikbaar', d: 'ook buiten kantooruren' },
           { n: '100%', l: 'AVG-compliant', d: 'data op NL server' },
         ].map(s => (
@@ -61,7 +61,7 @@ const schema = { '@context': 'https://schema.org', '@type': 'Service', name: 'AI
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
         {[
-          { icon: '📋', t: 'Intake-screening', d: 'De AI agent stelt kwalificerende vragen aan potentiële cliënten via telefoon of formulier. Alleen relevante dossiers worden doorgezet naar de advocaat. Besparing: 8-12 uur per week op niet-factureerbare intakegesprekken.' },
+          { icon: '📋', t: 'Intake-screening', d: 'De AI agent stelt kwalificerende vragen aan potentiële cliënten via telefoon of formulier. Alleen relevante dossiers worden doorgezet naar de advocaat. Minder tijd kwijt aan niet-factureerbare intakegesprekken.' },
           { icon: '📅', t: 'Agendabeheer & Afspraken', d: 'Cliënten kunnen 24/7 een consult inplannen via telefoon of WhatsApp. De agent controleert beschikbaarheid, plant in en stuurt automatisch een bevestiging en herinnering.' },
           { icon: '📞', t: '24/7 Bereikbaarheid', d: 'Buiten kantooruren neemt de AI agent calls aan, beantwoordt basale vragen en legt urgentie vast. U start elke ochtend met een overzicht van alle gemiste calls.' },
           { icon: '📄', t: 'Documentintake', d: 'Nieuwe cliënten kunnen documenten uploaden. De AI agent indexeert, categoriseert en koppelt aan het juiste dossier — klaar voor de behandelend advocaat.' },
@@ -78,19 +78,19 @@ const schema = { '@context': 'https://schema.org', '@type': 'Service', name: 'AI
 
       <div class="bg-slate-50 border border-slate-200 rounded-lg p-8 mb-12 reveal">
         <p class="eyebrow mb-2">Voorbeeldscenario</p>
-        <h3 class="text-xl font-bold text-navy mb-4">Advocatenkantoor: 12 uur/week bespaard op intake</h3>
+        <h3 class="text-xl font-bold text-navy mb-4">Advocatenkantoor: minder tijd kwijt aan intake</h3>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
           <div>
             <p class="font-semibold text-slate-700 mb-2">Situatie</p>
-            <p class="text-slate-600">Een advocatenkantoor met 6 advocaten ontving wekelijks 40+ telefoontjes van potentiële cliënten. 70% was niet gekwalificeerd. De advocaten verloren 15 uur per week aan ongeschikt intakewerk.</p>
+            <p class="text-slate-600">Een advocatenkantoor ontvangt wekelijks veel telefoontjes van potentiële cliënten, waarvan een deel niet past bij het kantoor. De advocaten verliezen tijd aan ongeschikt intakewerk. Fictief scenario zonder gemeten cijfers.</p>
           </div>
           <div>
-            <p class="font-semibold text-slate-700 mb-2">Oplossing & Resultaat</p>
+            <p class="font-semibold text-slate-700 mb-2">Oplossing & verwachting</p>
             <ul class="space-y-1 text-slate-600">
               <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span> AI intake-agent kwalificeert alle inkomende calls</li>
-              <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span> 12 uur/week bespaard op intake</li>
-              <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span> 40% hogere kwaliteit van nieuwe cliënten</li>
-              <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span> €7.200/maand meer factureerbaar werk</li>
+              <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span> Minder tijd kwijt aan intake</li>
+              <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span> Gerichtere nieuwe cliënten</li>
+              <li class="flex items-start gap-2"><span class="text-brand-emerald mt-0.5">✓</span> Meer ruimte voor factureerbaar werk</li>
             </ul>
           </div>
         </div>

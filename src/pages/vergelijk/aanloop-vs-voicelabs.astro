@@ -52,7 +52,7 @@ const faqSchema = {
       name: 'Waar staat de spraakdata bij elk platform opgeslagen?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Aanloop AI hanteert standaard EU-only datacenters (Frankfurt, Amsterdam) met AVG-conforme verwerkersovereenkomst en NEN 7510 op aanvraag voor zorg. Voor Voicelabs Robin is de exacte datalocatie niet expliciet publiek vermeld op de website per mei 2026 — vraag dit op tijdens uw evaluatie als AVG-conformiteit wettelijk vereist is in uw sector (zorg, juridisch, overheid, financieel).',
+        text: 'Aanloop AI werkt met een AVG-verwerkersovereenkomst (art. 28) en publiceert op /beveiliging/ een register van sub-verwerkers. Die zitten deels buiten de EU (o.a. Cloudflare, ElevenLabs en OpenAI/Anthropic in de VS), gedekt via standaardcontractbepalingen en/of het EU-US Data Privacy Framework. Er is geen SOC 2-, ISO 27001- of NEN 7510-certificaat; voor zorg bieden we op verzoek een NEN 7510-bewuste opzet. Voor Voicelabs Robin is de exacte datalocatie niet expliciet publiek vermeld op de website per mei 2026 — vraag dit op tijdens uw evaluatie als AVG-conformiteit wettelijk vereist is in uw sector (zorg, juridisch, overheid, financieel).',
       },
     },
     {
@@ -76,7 +76,7 @@ const faqSchema = {
       name: 'Wie doet de implementatie en het onderhoud?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Bij Voicelabs Robin Zelf Starten configureert u zelf flows, prompts en knowledge base via het platform — typische eigen investering van 10-30 uur voor eerste opzet plus doorlopend beheer. Bij Aanloop AI doet het implementatie-team de volledige opzet binnen 7 werkdagen, inclusief script-tuning, agenda-koppeling, CRM-integratie en maandelijkse optimalisatie op uw eigen conversatiedata. Dit verklaart het hogere maandtarief bij Aanloop AI.',
+        text: 'Bij Voicelabs Robin Zelf Starten configureert u zelf flows, prompts en knowledge base via het platform — eigen tijdsinvestering voor de eerste opzet plus doorlopend beheer. Bij Aanloop AI doet het team in de pakketten Groei en Compleet de opzet, inclusief script-tuning, agenda-koppeling, CRM-integratie en maandelijkse optimalisatie op uw eigen conversatiedata. Dit verklaart het hogere maandtarief bij Aanloop AI.',
       },
     },
     {
@@ -84,7 +84,7 @@ const faqSchema = {
       name: 'Welke past bij MKB-bedrijven met sector-specifieke compliance (zorg, juridisch, Wft)?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Aanloop AI beschikt over 67 kennisbank-artikelen met sector-specifieke gidsen voor huisartsenpraktijken, fysiotherapie, advocatenkantoren, notariaten en Wft-plichtige financieel dienstverleners. EU-only datalocatie en NEN 7510 op aanvraag zijn expliciet publiek vermeld. Voicelabs heeft industrie-paginas op de website maar vermeldt geen specifieke NEN of Wft-compliance per mei 2026 — vraag dit op bij uw evaluatie.',
+        text: 'Aanloop AI heeft een kennisbank met sector-specifieke gidsen voor huisartsenpraktijken, fysiotherapie, advocatenkantoren, notariaten en Wft-plichtige financieel dienstverleners. Verwerkersovereenkomst en sub-verwerkers zijn publiek vermeld op /beveiliging/; NEN 7510-bewuste opzet is op verzoek mogelijk (geen certificaat). Voicelabs heeft industrie-paginas op de website maar vermeldt geen specifieke NEN of Wft-compliance per mei 2026 — vraag dit op bij uw evaluatie.',
       },
     },
     {
@@ -92,7 +92,7 @@ const faqSchema = {
       name: 'Kan ik later overstappen van Voicelabs naar Aanloop AI?',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: 'Ja. Aanloop AI ondersteunt migratie van andere voice-platformen als onderdeel van de eenmalige setup-fee. De migratie bestaat doorgaans uit het overhevelen van uw knowledge base, flows en telefoonlijn naar de Aanloop AI-infrastructuur, wat ons team binnen de standaard 7 werkdagen onboarding verwerkt.',
+        text: 'Ja. Aanloop AI ondersteunt migratie van andere voice-platformen bij de pakketten Groei en Compleet, waar ons team de opzet doet. De migratie bestaat doorgaans uit het overhevelen van uw knowledge base, flows en telefoonlijn naar de Aanloop AI-infrastructuur; de doorlooptijd bespreken we in het kennismakingsgesprek.',
       },
     },
   ],
@@ -108,13 +108,13 @@ const comparison = [
   { feature: 'Prijstransparantie',              aanloop: 'Publieke tarieven op website (alle tiers)',            voicelabs: '€299 zelf starten; hogere tiers op offerte' },
   { feature: 'Website + AI-bundel',             aanloop: 'AI-Website Bundel (WordPress + Emma in 1 pakket)',    voicelabs: 'Niet beschikbaar — puur voice/WhatsApp platform' },
   { feature: 'Setup-kosten',                    aanloop: 'Eenmalig, op aanvraag (incl. training)', voicelabs: 'Niet expliciet vermeld op homepage per mei 2026' },
-  { feature: 'Implementatie',                   aanloop: 'Volledig door Aanloop-team (7 werkdagen)',          voicelabs: 'Zelf opzetten via platform (eigen tijdsinvestering)' },
+  { feature: 'Implementatie',                   aanloop: 'Door Aanloop-team (Groei en Compleet)',          voicelabs: 'Zelf opzetten via platform (eigen tijdsinvestering)' },
   { feature: 'Maandelijkse optimalisatie',      aanloop: 'Inbegrepen — wij tunen op uw conversatiedata',        voicelabs: 'Zelf doen via platform' },
   { feature: 'Nederlandstalige voice',          aanloop: 'ElevenLabs NL (expliciet vermeld)',                    voicelabs: 'Dutch-native voices (vendor niet publiek)' },
   { feature: 'CRM-integratie',                  aanloop: 'HubSpot, Pipedrive (vanaf Groei inbegrepen)',          voicelabs: 'Niet expliciet op homepage (mei 2026)' },
-  { feature: 'EU-only datalocatie',             aanloop: 'Frankfurt + Amsterdam, expliciet publiek vermeld',     voicelabs: 'Niet expliciet publiek vermeld — vraag op' },
-  { feature: 'AVG-verwerkersovereenkomst',      aanloop: 'Standaard inbegrepen, NEN 7510 op aanvraag',           voicelabs: 'Vraag op bij evaluatie' },
-  { feature: 'Sector-specifieke compliance',    aanloop: 'Wft, AVG-strict zorg/juridisch, EU AI Act (67 artikelen)', voicelabs: 'Industrie-pages; specifieke compliance niet publiek vermeld' },
+  { feature: 'Datalocatie en sub-verwerkers',  aanloop: 'Hetzner (Nuremberg), Cloudflare (VS); register op /beveiliging/',     voicelabs: 'Niet expliciet publiek vermeld — vraag op' },
+  { feature: 'AVG-verwerkersovereenkomst',      aanloop: 'Verwerkersovereenkomst; NEN 7510-bewuste opzet op verzoek',           voicelabs: 'Vraag op bij evaluatie' },
+  { feature: 'Sector-specifieke compliance',    aanloop: 'Kennisbank over Wft, AVG en EU AI Act', voicelabs: 'Industrie-pages; specifieke compliance niet publiek vermeld' },
   { feature: 'llms.txt (AI-vindbaarheid)',       aanloop: 'Aanwezig — aanloopai.nl/llms.txt',                    voicelabs: 'Niet aanwezig per mei 2026 (audit)' },
   { feature: 'FAQPage-schema (SEO/GEO)',        aanloop: 'Aanwezig op elke relevante pagina',                    voicelabs: 'Niet aanwezig per mei 2026 (audit)' },
   { feature: 'Auteur / founder transparantie', aanloop: 'Transparant team, KvK-geregistreerd, Organization-schema',     voicelabs: 'Voicelabs als merk; geen prominent founder-profiel' },
@@ -128,10 +128,10 @@ const whenAanloop = [
   'U heeft geen eigen AI- of voice-engineer in huis en wilt volledig ontzorgd worden',
   'AVG-conformiteit is wettelijk vereist (zorg, juridisch, Wft-financieel, overheid)',
   'U wilt tegelijk een professionele website en AI-receptionist in één pakket',
-  'U wilt binnen 7 werkdagen live, zonder zelf scripts of flows te bouwen',
+  'U wilt zonder zelf scripts of flows te bouwen starten',
   'CRM-integratie (HubSpot, Pipedrive) moet vanaf dag 1 werken',
   'Maandelijkse optimalisatie op uw eigen conversatiedata is gewenst',
-  'Sector-specifieke kennis (11 sectoren, 67 kennisbank-artikelen) sluit aan op uw branche',
+  'Sector-specifieke kennis (sectorpagina’s en kennisbank) sluit aan op uw branche',
 ];
 
 const whenVoicelabs = [
@@ -172,7 +172,7 @@ const whenVoicelabs = [
 
         <div class="mt-4 p-4 bg-indigo-50/50 border border-indigo-200 rounded-xl text-sm text-slate-700 reveal reveal-delay-3">
           <p class="font-semibold text-brand-indigo mb-1">Liever een diepere analyse?</p>
-          <p>Voor een uitgebreide deep-dive op de vier pijlers (prijstransparantie, EU-datasovereiniteit, MKB-fit, stack-coverage) &mdash; met TCO-rekensom, sector-specifieke compliance-context en evaluatie-checklist &mdash; lees de kennisbank-pillar: <a href="/kennisbank/aanloop-ai-vs-voicelabs/" class="font-semibold text-brand-indigo underline underline-offset-2 hover:text-navy">Aanloop AI vs Voicelabs &mdash; vier pijlers, &eacute;&eacute;n keuze</a>.</p>
+          <p>Voor een uitgebreide deep-dive op de vier pijlers (prijstransparantie, datalocatie en AVG, MKB-fit, stack-coverage) &mdash; met TCO-rekensom, sector-specifieke compliance-context en evaluatie-checklist &mdash; lees de kennisbank-pillar: <a href="/kennisbank/aanloop-ai-vs-voicelabs/" class="font-semibold text-brand-indigo underline underline-offset-2 hover:text-navy">Aanloop AI vs Voicelabs &mdash; vier pijlers, &eacute;&eacute;n keuze</a>.</p>
         </div>
       </div>
     </div>
@@ -224,13 +224,13 @@ const whenVoicelabs = [
             href: '/diensten/ai-website-bundel-mkb-nederland/',
           },
           {
-            title: 'EU-only datalocatie (expliciet)',
-            desc: 'Frankfurt + Amsterdam als standaard, publiek vermeld. Voicelabs vermeldt geen specifieke datacenters op de website per mei 2026.',
+            title: 'Datalocatie en sub-verwerkers',
+            desc: 'Verwerkersovereenkomst en sub-verwerkerregister op /beveiliging/. Voicelabs vermeldt geen specifieke datacenters op de website per mei 2026.',
             href: '/over/',
           },
           {
             title: 'Sector-compliance (Wft, NEN 7510)',
-            desc: '67 kennisbank-artikelen voor zorg, juridisch, financieel. NEN 7510 op aanvraag. Voicelabs vermeldt dit niet expliciet.',
+            desc: 'Kennisbank voor zorg, juridisch, financieel. NEN 7510-bewuste opzet op verzoek (geen certificaat). Voicelabs vermeldt dit niet expliciet.',
             href: '/kennisbank/',
           },
           {

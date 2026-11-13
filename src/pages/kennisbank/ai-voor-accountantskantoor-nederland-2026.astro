@@ -47,13 +47,13 @@ const speakableSchema = {
 
 const faqItems = [
   { question: 'Mag een accountantskantoor AI inzetten onder NBA-gedragsregels?', answer: 'Ja, voor administratieve intake, statusvragen en routinematig cliëntcontact. NBA-gedragsregels (VGBA, ViO en VVGGB) verplichten onafhankelijkheid, deskundigheid, integriteit en geheimhouding — geen van deze worden geraakt door AI die pre-juridisch intake doet. Adviezen, beoordelingen en controleopdrachten blijven uitsluitend voorbehouden aan de accountant zelf. Aanloop AI configureert prompt-restricties zodat de AI nooit fiscaal of accounting advies kan geven.' },
-  { question: 'Hoe gaat AI om met de fundamentele beginselen van geheimhouding?', answer: 'Alle data wordt EU-only verwerkt op ISO 27001-gecertificeerde cloud-infrastructuur in Frankfurt of Amsterdam, geen modeltraining op cliëntendata, encrypted data-at-rest en in transit, en een audit-trail die voldoet aan toezichtseisen van AFM en NBA. De verwerkersovereenkomst onder AVG artikel 28 is standaard inbegrepen, plus indien gewenst NEN 7510-bewuste configuratie voor accountantskantoren met zorgcliënten.' },
+  { question: 'Hoe gaat AI om met de fundamentele beginselen van geheimhouding?', answer: 'Op /beveiliging/ staat per leverancier waar gegevens worden verwerkt; geen modeltraining op cliëntendata, encrypted data-at-rest en in transit, en een audit-trail die voldoet aan toezichtseisen van AFM en NBA. De verwerkersovereenkomst onder AVG artikel 28 is standaard inbegrepen, plus indien gewenst NEN 7510-bewuste configuratie voor accountantskantoren met zorgcliënten.' },
   { question: 'Werkt dit met onze Yuki, Twinfield, AFAS of Exact?', answer: 'Ja, via directe API-koppelingen voor Yuki, Twinfield, AFAS Online, Exact Online, Visma eAccounting en Snelstart. Voor Caseware en specifieke audit-software werken we via webhooks of beveiligde IMAP-mail-routing. Onboarding 7 werkdagen voor één-pakket integratie, 14-21 dagen voor multi-pakket configuratie.' },
   { question: 'Wat als een cliënt een Wwft-vraag stelt aan de AI?', answer: 'AI escaleert direct naar de verantwoordelijke accountant of compliance-officer. Cliëntenonderzoek (Customer Due Diligence) en risicobeoordelingen onder Wwft zijn altijd mensenwerk vanwege de wettelijke meldplicht bij FIU-Nederland en aansprakelijkheid van de accountantsorganisatie als poortwachter.' },
   { question: 'Kan de AI ook jaarrekeningen opstellen of controleren?', answer: 'Nee. Het samenstellen, beoordelen of controleren van jaarrekeningen is voorbehouden aan accountants en accountants-administratieconsulenten onder de Wta. AI ondersteunt uitsluitend administratief: cliëntintake, status-updates over lopende dossiers, document-checklists opvragen, afspraken plannen, en standaard-vragen over bijvoorbeeld factuur-uploadprocedures beantwoorden.' },
-  { question: 'Hoe gaat AI om met de jaarrekening-piek in januari-april?', answer: 'Dit is precies waar AI het meest oplevert: in piekperiodes (jan-april voor jaarrekeningen, kwartaal-pieken voor btw, januari voor loonbelasting/jaaropgaven) verviervoudigt het belvolume bij accountantskantoren. AI vangt 60-75 procent van routinevragen autonoom af (waar staat mijn jaarrekening, kan ik aanvullende facturen aanleveren, wanneer is mijn afspraak, hoe upload ik documenten in Yuki) zodat menselijke medewerkers focus houden op inhoudelijke advies-vragen die echt mensenwerk vereisen.' },
+  { question: 'Hoe gaat AI om met de jaarrekening-piek in januari-april?', answer: 'Dit is precies waar AI het meest oplevert: in piekperiodes (jan-april voor jaarrekeningen, kwartaal-pieken voor btw, januari voor loonbelasting/jaaropgaven) neemt het belvolume bij accountantskantoren sterk toe. AI vangt een groot deel van de routinevragen autonoom af (waar staat mijn jaarrekening, kan ik aanvullende facturen aanleveren, wanneer is mijn afspraak, hoe upload ik documenten in Yuki) zodat menselijke medewerkers focus houden op inhoudelijke advies-vragen die echt mensenwerk vereisen.' },
   { question: 'Is een DPIA verplicht bij implementatie van AI in onze praktijk?', answer: 'Voor een AI die persoonsgegevens van cliënten verwerkt (BSN, financiële gegevens, KvK-relaties, persoonlijke fiscale situatie) is een Data Protection Impact Assessment volgens artikel 35 AVG vaak wettelijk verplicht. Aanloop AI levert standaard een DPIA-template plus beoordelingsleidraad voor accountantskantoren mee. De definitieve DPIA-vaststelling blijft verantwoordelijkheid van uw functionaris voor gegevensbescherming of bestuur.' },
-  { question: 'Wat is de gemiddelde ROI voor een MKB-accountantskantoor?', answer: 'Voor een gemiddeld accountantskantoor met 5-15 FTE en 200-500 cliënten ligt de ROI op 6-15 keer op 12-maand basis. Concreet: 40-80 uur secretariaat-tijd per maand vrijgespeeld (waarde 2.400-4.800 euro), 24/7-bereikbaarheid voorkomt no-show op intake-afspraken (waarde 1.000-3.000 euro/mnd), snellere status-vragen-respons verhoogt cliënttevredenheid en retentie (waarde moeilijker te becijferen maar significant in seizoens-contracten).' },
+  { question: 'Hoe bereken ik de ROI voor mijn accountantskantoor?', answer: 'Dat verschilt per kantoor; een betrouwbaar gemiddelde is er niet. Meet het met uw eigen cijfers: de secretariaat-uren die nu naar routinevragen gaan, gemiste intake-afspraken en leads in piekperiodes, en cliënttevredenheid en retentie (lastiger te becijferen, maar relevant bij seizoens-contracten). Zet dat af tegen de maandprijs van Emma (€149-€497/mnd).' },
 ];
 
 const automatableProcesses = [
@@ -63,7 +63,7 @@ const automatableProcesses = [
   },
   {
     title: 'Status-vragen lopende dossiers',
-    body: 'Bestaande cliënt vraagt: "is mijn jaarrekening al af, wanneer is mijn afspraak, hoe upload ik aanvullende facturen". AI haalt realtime status uit Yuki/Twinfield/AFAS, geeft accurate status terug en wijst naar de juiste upload-procedure. 60-75 procent van piek-volume opgelost zonder menselijke tussenkomst.',
+    body: 'Bestaande cliënt vraagt: "is mijn jaarrekening al af, wanneer is mijn afspraak, hoe upload ik aanvullende facturen". AI haalt realtime status uit Yuki/Twinfield/AFAS, geeft accurate status terug en wijst naar de juiste upload-procedure. Routine-statusvragen worden opgelost zonder menselijke tussenkomst.',
   },
   {
     title: 'Afspraken inplannen + documenten opvragen',
@@ -79,7 +79,7 @@ const automatableProcesses = [
   },
   {
     title: 'Document-uploads herinneren',
-    body: 'Bij naderende deadlines: AI checkt welke documenten nog ontbreken in het cliëntdossier en stuurt gepersonaliseerde herinneringen ("u moet nog een bankafschrift Q3 plus huurovereenkomst kantoor uploaden voor we de jaarrekening kunnen samenstellen"). Vermindert no-go-deadlines met 60-80 procent.',
+    body: 'Bij naderende deadlines: AI checkt welke documenten nog ontbreken in het cliëntdossier en stuurt gepersonaliseerde herinneringen ("u moet nog een bankafschrift Q3 plus huurovereenkomst kantoor uploaden voor we de jaarrekening kunnen samenstellen"). Vermindert het aantal gemiste deadlines.',
   },
 ];
 
@@ -106,11 +106,11 @@ const integrations = [
 ];
 
 const roiBreakdown = [
-  { post: 'Setup-verlies door piekperiode-overload',                  before: '€2.500-€5.000/jr',           after: '€500-€1.500/jr (75% reductie)' },
-  { post: 'Secretariaat-tijd routine-vragen',                          before: '40-80u/mnd',                  after: '10-20u/mnd (75% reductie)' },
-  { post: 'Niet-aangenomen bel-momenten in piek (jan-apr)',            before: '8-15% gemiste leads',         after: '<2% gemiste leads' },
-  { post: 'Document-deadline misses cliëntenkant',                     before: '15-25% deadlines met escalatie', after: '3-7% met escalatie' },
-  { post: 'Cliënttevredenheid status-vragen (interne NPS)',            before: '40-55 punten',                after: '70-85 punten (+30 NPS)' },
+  { post: 'Setup-verlies door piekperiode-overload',                  before: 'Meet uw huidige niveau',     after: 'Meetbaar lager' },
+  { post: 'Secretariaat-tijd routine-vragen',                          before: 'Meet uw huidige uren',         after: 'Meetbaar lager' },
+  { post: 'Niet-aangenomen bel-momenten in piek (jan-apr)',            before: 'Meet uw huidige niveau',     after: 'Meetbaar lager' },
+  { post: 'Document-deadline misses cliëntenkant',                     before: 'Meet uw huidige niveau',     after: 'Meetbaar lager' },
+  { post: 'Cliënttevredenheid status-vragen (interne NPS)',            before: 'Meet uw huidige score',      after: 'Meetbaar hoger' },
   { post: 'Maandelijkse Aanloop-investering',                         before: '—',                          after: '€149-€497/mnd Emma' },
 ];
 ---
@@ -132,7 +132,7 @@ const roiBreakdown = [
           AI voor accountantskantoor — NBA-bewust en Wwft-respecterend
         </h1>
         <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
-          Nederlandse accountantskantoren werken in een seizoen-gedreven cyclus: jaarrekening-pieken in januari-april, kwartaal-btw-pieken, jaaropgave-pieken in januari. Tegelijk zijn de regels strikt: NBA-gedragsregels (VGBA/ViO/VVGGB), Wta-toezicht door AFM, Wwft-poortwachterschap, AVG voor financiële persoonsgegevens. Een AI receptionist plus WhatsApp-agent kan 60-75 procent van eerstelijns cliëntvragen autonoom afhandelen — mits goed geconfigureerd. Hieronder: precies welke processen automatiseerbaar zijn, hoe AI binnen NBA-regels blijft, en welke ROI Nederlandse MKB-accountantskantoren halen.
+          Nederlandse accountantskantoren werken in een seizoen-gedreven cyclus: jaarrekening-pieken in januari-april, kwartaal-btw-pieken, jaaropgave-pieken in januari. Tegelijk zijn de regels strikt: NBA-gedragsregels (VGBA/ViO/VVGGB), Wta-toezicht door AFM, Wwft-poortwachterschap, AVG voor financiële persoonsgegevens. Een AI receptionist plus WhatsApp-agent kan een groot deel van de eerstelijns cliëntvragen autonoom afhandelen — mits goed geconfigureerd. Hieronder: precies welke processen automatiseerbaar zijn, hoe AI binnen NBA-regels blijft, en hoe u de ROI voor uw eigen kantoor meet.
         </p>
       </div>
     </div>
@@ -142,7 +142,7 @@ const roiBreakdown = [
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6 reveal">Welke processen automatiseerbaar zijn</h2>
       <p class="text-slate-600 leading-relaxed mb-4">Een AI assistent voor een accountantskantoor neemt vooral de pre-juridische intake over: telefoongesprekken aannemen waarbij prospects naar diensten vragen (samenstelling jaarrekening, btw-aangifte, loonadministratie, fiscaal advies), benodigde documenten opvragen, klantgegevens registreren in uw boekhoud-software en een afspraak plannen met de juiste accountant. De AI registreert geen fiscale adviezen, geeft geen advies, en signaleert direct wanneer er sprake is van complexere casussen die menselijke expertise vereisen.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Voor lopende cliënten handelt de AI status-vragen af (is mijn jaarrekening al klaar, kan ik nog aanvullende facturen aanleveren, wanneer is mijn btw-deadline) door realtime te kijken in uw kantoorsysteem (Yuki, Twinfield, AFAS Online, Exact Online of een eigen tool). Dit ontlast secretaresses voor 60-75 procent van inkomende routine-contacten zodat zij meer tijd hebben voor complexer werk en advies-coördinatie.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor lopende cliënten handelt de AI status-vragen af (is mijn jaarrekening al klaar, kan ik nog aanvullende facturen aanleveren, wanneer is mijn btw-deadline) door realtime te kijken in uw kantoorsysteem (Yuki, Twinfield, AFAS Online, Exact Online of een eigen tool). Dit ontlast secretaresses bij inkomende routine-contacten zodat zij meer tijd hebben voor complexer werk en advies-coördinatie.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Belangrijk: de AI vervangt nooit de adviesfunctie. Bij elke escalatie naar een advies-vraag schakelt de AI direct door naar mens. Voor Wwft-vragen (cliëntonderzoek, ongebruikelijke transacties) blokkeert de AI volledig — die moeten altijd door een accountant zelf worden afgehandeld vanwege de wettelijke meldplicht aan FIU-Nederland.</p>
     </div>
   </section>
@@ -224,9 +224,9 @@ const roiBreakdown = [
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">Voorbeeldgesprek: AI handelt jaarrekening-statusvraag af</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Cliënt belt op 14 maart om 10:30: "ik wil weten hoe het staat met onze jaarrekening over 2025". De AI antwoordt: "een moment, ik kijk in uw dossier — uw jaarrekening 2025 is in concept klaar — ze ligt momenteel ter beoordeling bij accountant Pieter de Wit. Verwachte oplevering: 28 maart. Wilt u alvast een afspraak inplannen voor het concept-bespreken". Cliënt: "ja graag". AI plant afspraak in voor 30 maart 14:00 met Pieter, stuurt agenda-uitnodiging plus link naar de concept-jaarrekening die in Yuki klaar staat. Total tijd: 3 minuten.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Cliënt belt op 14 maart om 10:30: "ik wil weten hoe het staat met onze jaarrekening over 2025". De AI antwoordt: "een moment, ik kijk in uw dossier — uw jaarrekening 2025 is in concept klaar — ze ligt momenteel ter beoordeling bij accountant Pieter de Wit. Verwachte oplevering: 28 maart. Wilt u alvast een afspraak inplannen voor het concept-bespreken". Cliënt: "ja graag". AI plant afspraak in voor 30 maart 14:00 met Pieter, stuurt agenda-uitnodiging plus link naar de concept-jaarrekening die in Yuki klaar staat.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Belangrijk wat de AI niet doet: geen uitspraak over de cijfers ("klopt de winst van 142.000 euro"), geen duiding van de eindafrekening btw, geen schatting van successierechten of andere fiscale gevolgen — al deze vragen worden geescaleerd naar Pieter voor de afspraak. De AI zegt expliciet: "voor inhoudelijke vragen over uw cijfers is Pieter de aangewezen persoon. Tijdens uw afspraak van 30 maart komt dat aan bod."</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Voor cliëntervaring: 88 procent van bellers waardeert directe respons (geen wachttijd, geen voicemail) en accurate status (geen "ik kijk het uit en bel terug"). NPS bij accountantskantoren met AI-intake stijgt typisch met +25-30 punten ten opzichte van traditionele secretariaat-belasting in piekperiodes.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor cliëntervaring tellen directe respons (geen wachttijd, geen voicemail) en accurate status (geen "ik kijk het uit en bel terug"). Meet de cliënttevredenheid vóór en na de start om het effect bij uw kantoor te zien.</p>
     </div>
   </section>
 
@@ -234,8 +234,8 @@ const roiBreakdown = [
     <div class="container-page max-w-4xl mx-auto">
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">Concrete ROI</p>
-        <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy">Voor een MKB-kantoor met 8 FTE en 320 cliënten.</h2>
-        <p class="mt-3 text-slate-600 max-w-2xl">Realistische cijfers per maand, gebaseerd op interviews met Aanloop-cliënten en Nederlandse benchmark-data. Uw eigen ROI varieert per kantoor-grootte, sector-mix en piek-intensiteit.</p>
+        <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy">Zo meet u het zelf voor uw kantoor.</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Dit zijn de posten die u vóór en na de start zelf meet; we noemen geen benchmark-cijfers. Uw eigen ROI varieert per kantoor-grootte, sector-mix en piek-intensiteit.</p>
       </div>
       <div class="overflow-x-auto reveal reveal-delay-1">
         <table class="w-full text-sm border-collapse bg-white rounded-lg overflow-hidden border border-slate-200">
@@ -257,7 +257,7 @@ const roiBreakdown = [
           </tbody>
         </table>
       </div>
-      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Bottom-line voor 8-FTE accountantskantoor: gemiddelde ROI 6-15 keer op 12-maand basis, payback-periode 6-10 weken. Vooral interessant: minder secretariaat-stress en lager personeelsverloop in piek — strategisch waardevol in een schaarse arbeidsmarkt voor accounting-talent.</p>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Bottom-line voor een accountantskantoor: ROI en terugverdientijd verschillen per kantoor; meet de posten hierboven vóór en na de start. Vooral interessant: minder secretariaat-stress en lager personeelsverloop in piek — strategisch waardevol in een schaarse arbeidsmarkt voor accounting-talent.</p>
     </div>
   </section>
 

@@ -7,11 +7,12 @@
 import { jsonResponse, errorResponse } from './google-auth.js';
 import { SEED_TEMPLATE, SEED_CLIENTS, SEED_VERSION } from './discovery-seed.js';
 import { KEUKEN_SEED } from './discovery-seed-keuken.js';
-import { LEADPARTNER_SEED } from './discovery-seed-leadpartner.js';
+import { LEADPARTNER_SEED, LEADPARTNER_SEED_VIOLA } from './discovery-seed-leadpartner.js';
+import { ALGEMEEN_SEED_FRANKO } from './discovery-seed-algemeen.js';
 import { fieldAnswered } from './discovery-fields.js';
 
 // Ek şablon+müşteri seed'leri (SoleHome seed'inden bağımsız sürümlenir).
-const EXTRA_SEEDS = [KEUKEN_SEED, LEADPARTNER_SEED];
+const EXTRA_SEEDS = [KEUKEN_SEED, LEADPARTNER_SEED, LEADPARTNER_SEED_VIOLA, ALGEMEEN_SEED_FRANKO];
 
 const SECTION_NOTES_LABEL = 'Bölüm notları';
 

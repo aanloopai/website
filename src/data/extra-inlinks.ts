@@ -57,6 +57,8 @@ export const EXTRA_INLINKS: ExtraInlink[] = [
   { target: '/sectoren/onderwijs/', label: 'Onderwijs en opleidingen: AI in de praktijk', sources: ['/kennisbank/ai-voor-coach-trainer-zelfstandige-nederland/', '/kennisbank/ai-voor-rijschool-lesplanning-nederland/'] },
   { target: '/sectoren/recruitment/', label: 'Recruitment: AI voor uitzend- en wervingsbureaus', sources: ['/kennisbank/ai-voor-uitzendbureau-recruitment-nederland/', '/kennisbank/ai-lead-scoring-b2b-sales-mkb-nederland-2026/'] },
   { target: '/sectoren/schoonheid/', label: 'Schoonheid: AI voor salons en praktijken', sources: ['/kennisbank/ai-voor-schoonheidssalon-kapsalon-nederland-2026/', '/kennisbank/ai-voor-pedicure-praktijk-nederland-2026/'] },
+  { target: '/sectoren/accountancy/', label: 'AI voor accountants: assistent voor accountantskantoren', sources: ['/kennisbank/ai-voor-accountantskantoor-nederland-2026/', '/ai-voor-administratie-boekhouding-mkb-nederland/', '/sectoren/ai-voor-zzp/'] },
+  { target: '/ai-agency-nederland/', label: 'AI bureau in Nederland: wat doet een AI agency?', sources: ['/locaties/amsterdam/', '/locaties/eindhoven/', '/diensten/audit/'] },
 ];
 
 /** Bronpad naar de extra links die daar gerenderd worden. */

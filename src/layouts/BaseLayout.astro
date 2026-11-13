@@ -123,7 +123,7 @@ const orgSchema = {
   '@id': 'https://aanloopai.nl/#organization',
   name: 'Aanloop AI',
   legalName: 'Aanloop AI',
-  alternateName: 'AanloopAI',
+  alternateName: ['AanloopAI', 'aanloopai.nl'],
   url: 'https://aanloopai.nl',
   logo: {
     '@type': 'ImageObject',
@@ -248,6 +248,7 @@ const websiteSchema = {
   '@id': 'https://aanloopai.nl/#website',
   url: 'https://aanloopai.nl',
   name: 'Aanloop AI',
+  alternateName: ['AanloopAI', 'aanloopai.nl'],
   // Homepage: gelijk aan de meta description (brand-entity coherentie).
   description: Astro.url.pathname === '/' ? description : 'AI-oplossingen voor het Nederlandse MKB',
   publisher: { '@id': 'https://aanloopai.nl/#organization' },
@@ -439,6 +440,21 @@ const allSchemas = [
       } catch (e) {}
       gtag('config', 'G-VS8SZZ6W45', { anonymize_ip: true, transport_type: 'beacon', page_location: _gaPageLocation });
       window._track = function(name, params) {
+        // Eerste-partij lead-hit (cookieloos, niet consent-gated) via /v.js: de bron
+        // van waarheid voor lead-tellingen. Honeypot (botcheck gevuld) = de server
+        // antwoordt nep-succes zonder lead, dus dan geen hit. v.js is defer: nog niet
+        // geladen -> wachtrij die v.js bij laden leegt.
+        if (name === 'generate_lead') {
+          try {
+            var _bc = document.querySelectorAll('input[name="botcheck"]'), _bot = false;
+            for (var _i = 0; _i < _bc.length; _i++) { if (_bc[_i].type === 'checkbox' ? _bc[_i].checked : _bc[_i].value) _bot = true; }
+            if (!_bot) {
+              var _fn = (params && (params.form_name || params.form_type)) || '';
+              if (window.aanloopTrack) window.aanloopTrack('lead', _fn);
+              else (window.__visQ = window.__visQ || []).push(['lead', _fn]);
+            }
+          } catch (e) {}
+        }
         try {
           if (window.gtag) window.gtag('event', name, params || {});
           if (Array.isArray(window.dataLayer)) window.dataLayer.push(Object.assign({ event: name }, params || {}));
