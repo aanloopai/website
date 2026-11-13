@@ -7,14 +7,16 @@ category: "AI-automatisering"
 readingMinutes: 5
 draft: false
 updated: 2026-11-12
-bronnen: ["ap-avg"]
+bronnen: ["ap-avg", "ec-ai-act"]
 faq:
   - q: "Wat kosten AI agents voor een bedrijf in Eindhoven?"
     a: "De kosten hangen af van het aantal taken, de kanalen en de koppelingen met uw systemen. Een vast bedrag noemen zonder uw situatie te kennen is niet eerlijk. Vraag daarom een voorstel op maat en let op wat er per maand inbegrepen is."
-  - q: "Neemt een AI agent mijn medewerkers over?"
+  - q: "Kan een AI agent mijn medewerkers vervangen?"
     a: "Nee, een AI agent neemt vooral routinewerk over, zoals telefoon aannemen en afspraken vastleggen. Uw medewerkers houden tijd over voor werk waar menselijk contact en vakkennis nodig zijn, zoals advies, offertes en klachten."
   - q: "Is een AI agent veilig voor klantgegevens?"
     a: "Dat kan, mits u het goed inricht. Verzamel alleen wat nodig is, informeer bellers dat ze met een AI praten en maak afspraken met uw leverancier over de verwerking van persoonsgegevens volgens de AVG."
+  - q: "Hoe begin ik met AI agents in mijn bedrijf?"
+    a: "Begin klein: kies één terugkerende taak, schrijf op welke vragen klanten stellen en bepaal wanneer de agent moet doorverbinden. Laat de agent een paar weken meedraaien, lees de gesprekken terug en pas aan voordat u uitbreidt."
 ---
 
 In Eindhoven en de rest van Brainport draait veel om techniek en slimme oplossingen. Toch merken veel MKB-ondernemers dat hun eigen bedrijf nog volop op handwerk draait: de telefoon die niemand opneemt, de WhatsApp-berichten die blijven liggen, de aanvragen die pas na twee dagen een antwoord krijgen.
@@ -71,21 +73,7 @@ De meting is belangrijk. Zonder cijfers weet u niet of de agent geld oplevert of
 
 Een AI agent verwerkt persoonsgegevens, zoals namen, telefoonnummers en wat een beller vertelt. Daarom geldt de AVG. U hoort bellers duidelijk te informeren dat ze met een AI praten, alleen te verzamelen wat nodig is en afspraken te maken met uw leverancier over de verwerking van gegevens.
 
-Vraag uw leverancier waar gegevens worden opgeslagen, hoe lang gesprekken bewaard blijven en hoe u gegevens kunt laten verwijderen. Neem dit op in uw privacyverklaring. Een zorgvuldige inrichting is ook goed voor het vertrouwen van uw klanten.
-
-## Veelgestelde vragen
-
-### Wat kosten AI agents voor een bedrijf in Eindhoven?
-
-De kosten hangen af van het aantal taken, de kanalen en de koppelingen met uw systemen. Een vast bedrag noemen zonder uw situatie te kennen is niet eerlijk. Vraag daarom een voorstel op maat en let op wat er per maand inbegrepen is.
-
-### Neemt een AI agent mijn medewerkers over?
-
-Nee, een AI agent neemt vooral routinewerk over, zoals telefoon aannemen en afspraken vastleggen. Uw medewerkers houden tijd over voor werk waar menselijk contact en vakkennis nodig zijn, zoals advies, offertes en klachten.
-
-### Is een AI agent veilig voor klantgegevens?
-
-Dat kan, mits u het goed inricht. Verzamel alleen wat nodig is, informeer bellers dat ze met een AI praten en maak afspraken met uw leverancier over de verwerking van persoonsgegevens volgens de AVG.
+De Europese AI-verordening kent bovendien meldplichten, bedoeld om mensen te informeren wanneer dat nodig is. Vraag uw leverancier waar gegevens worden opgeslagen, hoe lang gesprekken bewaard blijven en hoe u gegevens kunt laten verwijderen. Neem dit op in uw privacyverklaring. Een zorgvuldige inrichting is ook goed voor het vertrouwen van uw klanten.
 
 ## Plan een gesprek met Aanloop AI
 
