@@ -5,7 +5,7 @@ import GeoBureauSectorLink from '../../components/geo/GeoBureauSectorLink.astro'
 import horecaRestaurant from '../../assets/images/sectoren/horeca.jpg';
 
 const faqItems = [
-  { question: 'Hoe helpt AI bij het reduceren van no-shows in de horeca?', answer: 'Een AI agent stuurt automatisch herinneringen via WhatsApp of SMS 24 uur en 2 uur voor de reservering. Bij geen reactie stelt de agent een wachtlijstgast voor. Horeca-ondernemers rapporteren een gemiddelde no-show reductie van 35-50%.' },
+  { question: 'Hoe helpt AI bij het reduceren van no-shows in de horeca?', answer: 'Een AI agent stuurt automatisch herinneringen via WhatsApp of SMS 24 uur en 2 uur voor de reservering. Bij geen reactie stelt de agent een wachtlijstgast voor. Tijdige herinneringen kunnen no-shows verminderen; hoeveel dat scheelt verschilt per zaak, dus vergelijk uw no-showpercentage voor en na.' },
   { question: 'Kan een AI agent reserveringen verwerken via WhatsApp?', answer: 'Ja. De AI agent is volledig geïntegreerd met WhatsApp Business API. Gasten kunnen reserveringen maken, wijzigen en annuleren via WhatsApp — alsof ze met een medewerker chatten. U ontvangt een overzicht in uw reserveringssysteem.' },
   { question: 'Werkt een AI agent ook buiten openingstijden?', answer: 'Absoluut. De AI agent werkt 24/7, ook \'s nachts en in het weekend. Gasten die buiten openingstijden bellen of WhatsApp sturen, krijgen direct antwoord en kunnen een reservering plaatsen.' },
   { question: 'Kan de AI vragen over allergieën en menu beantwoorden?', answer: 'Ja. U voedt de AI agent met uw menukaart en allergie-informatie. De agent kan specifieke vragen beantwoorden over ingrediënten, allergenen en dieetwensen. Complexe vragen worden doorgezet naar uw keuken.' },
@@ -13,7 +13,7 @@ const faqItems = [
 ];
 const schema = { '@context': 'https://schema.org', '@type': 'Service', name: 'AI voor Horeca', serviceType: 'AI voor Horeca', provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' }, areaServed: { '@type': 'Country', name: 'Nederland' }, description: 'AI agents voor horeca: reserveringen, no-show reductie, WhatsApp klantenservice. 24/7 bereikbaar.' };
 ---
-<BaseLayout title="AI voor Horeca Nederland — Reserveringen & No-Show" description="AI voor de horeca: AI-agent voor restaurants, hotels en cateraars. Automatische reserveringen via WhatsApp, 35% minder no-shows, 24/7 bereikbaar." schema={schema} faqSchema={faqItems}>
+<BaseLayout title="AI voor Horeca Nederland — Reserveringen & No-Show" description="AI voor de horeca: AI-agent voor restaurants, hotels en cateraars. Automatische reserveringen via WhatsApp en 24/7 bereikbaar." schema={schema} faqSchema={faqItems}>
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">
       <div class="grid lg:grid-cols-2 gap-16 items-center">
@@ -46,11 +46,11 @@ const schema = { '@context': 'https://schema.org', '@type': 'Service', name: 'AI
 
   <section class="section-tight bg-slate-50 border-b border-slate-200">
     <div class="container-page">
-      <p class="text-xs text-slate-400 text-center mb-4">Indicatieve cijfers · resultaten verschillen per situatie</p>
+      <p class="text-xs text-slate-400 text-center mb-4">Geen gemeten cijfers · resultaten verschillen per situatie</p>
       <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
         {[
-          { v: '−35%', l: 'no-show rate' },
-          { v: '+28%', l: 'online reserveringen' },
+          { v: 'Herinnering', l: 'bij elke reservering' },
+          { v: 'Online', l: 'reserveren via WhatsApp' },
           { v: '24/7', l: 'bereikbaar voor gasten' },
           { v: '7 dgn', l: 'time-to-live' },
         ].map(s => (
@@ -87,9 +87,9 @@ const schema = { '@context': 'https://schema.org', '@type': 'Service', name: 'AI
           </div>
           <div class="card bg-slate-50">
             <p class="eyebrow mb-4">Voorbeeldscenario: horeca</p>
-            <p class="text-sm text-slate-600 mb-4">Een restaurant met 80 covers ontving wekelijks 60+ telefoontjes voor reserveringen, waarvan 30% buiten openingstijd. 25% resulteerde in no-show.</p>
+            <p class="text-sm text-slate-600 mb-4">Een restaurant krijgt reserveringsvragen ook buiten openingstijd en kampt met no-shows. Dit is een illustratief scenario zonder gemeten cijfers.</p>
             <ul class="space-y-2 text-sm">
-              {['100% van reserveringen via AI afgehandeld', '35% minder no-shows door WhatsApp herinneringen', '18% meer covers per week door wachtlijst-AI', '3,5 uur/week bespaard op telefoneren'].map(r => (
+              {['Reserveringen via WhatsApp en telefoon afgehandeld', 'WhatsApp-herinneringen tegen no-shows', 'Wachtlijst-AI vult vrijgekomen tafels', 'Minder tijd kwijt aan telefoneren'].map(r => (
                 <li class="flex items-start gap-2"><span class="text-brand-emerald">✓</span>{r}</li>
               ))}
             </ul>

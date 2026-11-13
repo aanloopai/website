@@ -5,7 +5,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 // Pattern parallel aan tandarts/huisarts maar specifiek op KNGF-richtlijnen +
 // DTF (Directe Toegankelijkheid Fysiotherapie) + vrije-prijsvorming sinds 2017 +
 // EPD-koppeling (Intramed, FysioRoadmap, James Software, Pluvo, Mediaccount) +
-// no-show patroon (10-25% vooral op 1e-2e afspraak) + DTF-rode-vlag escalatie.
+// no-show patroon (vooral op 1e-2e afspraak) + DTF-rode-vlag escalatie.
 //
 // Sources:
 // - KNGF (Koninklijk Nederlands Genootschap voor Fysiotherapie) — kngf.nl
@@ -20,8 +20,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 const articleSchema = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: 'AI voor fysiotherapiepraktijk Nederland 2026 — KNGF-bewust, DTF-screening, no-show 65% omlaag',
-  description: 'Hoe AI receptionist en WhatsApp-agent intake, DTF-screening, no-show preventie en behandelplan-recall automatiseren voor Nederlandse fysiotherapiepraktijken. KNGF-richtlijnen, NEN 7510 zorg-IT, EPD-integratie Intramed/FysioRoadmap/James Software/Pluvo/Mediaccount, DTF-rode-vlag escalatie.',
+  headline: 'AI voor fysiotherapiepraktijk Nederland 2026 — KNGF-bewust, DTF-screening, minder no-shows',
+  description: 'Hoe AI receptionist en WhatsApp-agent intake, DTF-screening, no-show preventie en behandelplan-recall automatiseren voor Nederlandse fysiotherapiepraktijken. KNGF-richtlijnen, zorg-IT, EPD-integratie Intramed/FysioRoadmap/James Software/Pluvo/Mediaccount, DTF-rode-vlag escalatie.',
   author: { '@id': 'https://aanloopai.nl/#organization' },
   publisher: {
     '@type': 'Organization',
@@ -46,7 +46,7 @@ const articleSchema = {
 
 const speakableSchema = {
   '@context': 'https://schema.org',
-  '@type': 'WebPage', name: 'AI voor fysiotherapiepraktijk Nederland 2026 — KNGF-bewust, DTF-screening, no-show 65% omlaag',
+  '@type': 'WebPage', name: 'AI voor fysiotherapiepraktijk Nederland 2026 — KNGF-bewust, DTF-screening, minder no-shows',
   speakable: { '@type': 'SpeakableSpecification', cssSelector: ['h1', '.hero-gradient .max-w-3xl > p'] },
   url: 'https://aanloopai.nl/kennisbank/ai-voor-fysiotherapiepraktijk-nederland-2026/',
   inLanguage: 'nl-NL',
@@ -55,11 +55,11 @@ const speakableSchema = {
 const faqItems = [
   { question: 'Mag een fysiotherapiepraktijk AI inzetten onder KNGF-richtlijnen?', answer: 'Ja, voor administratieve intake, afspraakplanning, no-show preventie, behandelplan-recall en routinematig patiëntcontact. KNGF-gedragscode en de Wet BIG eisen patiëntveiligheid, WGBO-respect en geheimhouding — geen van deze worden geraakt door AI die afspraken plant en standaard-vragen beantwoordt. Klinische beoordeling, DTF-screening (rode-vlaggen-detectie volgens KNGF-richtlijn DTF), behandelplan-keuze en hands-on therapie blijven uitsluitend voorbehouden aan de geregistreerde fysiotherapeut. Aanloop AI configureert prompt-restricties zodat de AI nooit klinische conclusies trekt en bij rode-vlag-symptomen direct doorschakelt.' },
   { question: 'Hoe gaat AI om met DTF-screening en rode vlaggen?', answer: 'Sinds 2006 mogen patiënten zonder huisartsverwijzing rechtstreeks naar de fysiotherapeut (DTF). KNGF-richtlijn DTF schrijft een vooraf-screening voor op rode vlaggen (red flags zoals onbedoeld gewichtsverlies, nachtelijke pijn, krachtsverlies, cauda-equina-symptomen). AI doet GEEN klinische screening — die blijft 100 procent fysiotherapeut-werk. Wel kan AI tijdens de eerste-contact-intake patiënten met rode-vlag-keywords (uitstraling been, krachtsverlies plotseling, zadel-anesthesie, plotse continentie-problemen) direct doorschakelen naar de fysiotherapeut of bij levensbedreigend naar 112, in plaats van automatisch een afspraak in te plannen.' },
-  { question: 'Werkt dit met onze Intramed, FysioRoadmap of James Software?', answer: 'Ja, via directe API-koppelingen voor Intramed (meest gebruikte EPD in NL fysiotherapie), FysioRoadmap, James Software, Pluvo en Mediaccount. Voor SpotOnMedics, Therapieland en eigen-built EPD via secure REST-webhooks of beveiligde HL7-routing. Onboarding 7 werkdagen voor één-EPD integratie inclusief afspraakflow, behandelplan-recall, declaratie-koppeling en DBC/prestatiecode-mapping voor zorgverzekeraars-claims.' },
+  { question: 'Werkt dit met onze Intramed, FysioRoadmap of James Software?', answer: 'Ja, via directe API-koppelingen voor Intramed (veelgebruikte EPD in NL fysiotherapie), FysioRoadmap, James Software, Pluvo en Mediaccount. Voor SpotOnMedics, Therapieland en eigen-built EPD via secure REST-webhooks of beveiligde HL7-routing. De doorlooptijd hangt af van uw EPD en welke flows u wilt (afspraakflow, behandelplan-recall, declaratie-koppeling, DBC/prestatiecode-mapping); die stemmen we in een intake met u af.' },
   { question: 'Hoe gaat AI om met vrije-prijsvorming en zorgverzekeraars?', answer: 'Sinds 2017 geldt vrije-prijsvorming voor fysiotherapie (<a href="https://www.nza.nl/" rel="external" target="_blank" class="text-brand-indigo hover:underline">NZa</a>-beleidsregel) — uw praktijk onderhandelt zelf tarieven met zorgverzekeraars (gecontracteerd) of patiënten betalen zelf en declareren via aanvullende verzekering (niet-gecontracteerd). AI antwoordt op tarief-vragen op basis van uw eigen tarievenlijst en gecontracteerde verzekeraars. Voor patiëntspecifieke vergoedings-vragen ("krijg ik dit vergoed via mijn aanvullende") verwijst AI consequent naar de zorgverzekeraar van de patiënt of biedt aan een terugbel-afspraak met uw secretariaat. Geen vergoedings-zekerheid zonder verifieerbare polisinformatie.' },
-  { question: 'Hoe verwacht no-show reductie eruit te zien?', answer: 'Fysiotherapiepraktijken zien typisch 10-25 procent no-show, met piek op 1e-2e afspraak (nieuwe patiënten 25-35 procent) en op late doordeweekse afspraken. Met AI-WhatsApp herinneringen 48u en 4u vooraf plus optionele bevestigings-actie zakt no-show naar 4-9 procent — een reductie van 60-70 procent. Voor een 4-FTE fysiotherapiepraktijk betekent dit 8-16 extra productieve uren per week, of 30.000-70.000 euro extra omzet per jaar afhankelijk van behandel-mix en gecontracteerde tarieven.' },
+  { question: 'Hoe verwacht no-show reductie eruit te zien?', answer: 'No-shows komen vooral voor bij de 1e-2e afspraak en op late doordeweekse afspraken. Met AI-WhatsApp herinneringen 48u en 4u vooraf plus optionele bevestigings-actie vallen er minder afspraken weg. Wat dat in uren en omzet oplevert hangt af van uw huidige no-show-percentage, behandel-mix en gecontracteerde tarieven.' },
   { question: 'Werkt dit ook voor manueel-therapeuten of bekken-fysiotherapeuten?', answer: 'Ja. Voor specialisaties (manuele therapie, bekkenfysiotherapie, sportfysiotherapie, oedeemtherapie, kinderfysiotherapie, geriatriefysiotherapie, oncologie-fysiotherapie) configureren we de AI om onderscheid te maken tussen specialisatie-afspraken en algemene fysiotherapie. Voor 1FB-/OK4FB-/KIK-V-geregistreerde specialisten wordt het juiste behandeltype, prestatiecode en agenda-slot automatisch geselecteerd. Voor multi-FTE praktijken met diverse specialisaties: routering op specialisme én patiënt-voorkeur (man/vrouw, ervaring met bepaalde aandoening).' },
-  { question: 'Wat is de gemiddelde ROI voor een MKB-fysiotherapiepraktijk?', answer: 'Voor een gemiddelde 3-5-FTE fysiotherapiepraktijk met 2-3 fysiotherapeuten plus 1-2 specialisten ligt de ROI op 10-22 keer op 12-maand basis. Drie hoofdwinsten: (1) no-show reductie van 10-25 procent naar 4-9 procent levert 30.000-70.000 euro/jr extra omzet, (2) secretariaat-tijd op routine-vragen daalt 70 procent (waarde 25-50u/mnd of 1.500-3.000 euro), (3) behandelplan-recall (oefenprogramma-follow-up, langlopende trajecten zoals chronische lage rugpijn of post-op revalidatie) stijgt van 50 naar 75 procent voltooiing — wat extra DBC-omzet oplevert plus betere patiëntuitkomsten.' },
+  { question: 'Wat is de gemiddelde ROI voor een MKB-fysiotherapiepraktijk?', answer: 'Dat verschilt per praktijk; Aanloop AI publiceert hier geen algemene ROI-percentages. Drie plekken waar de winst zit: (1) minder no-shows, dus meer productieve uren, (2) minder secretariaat-tijd op routine-vragen, (3) betere opvolging van behandelplannen (oefenprogramma-follow-up, langlopende trajecten zoals chronische lage rugpijn of post-op revalidatie), wat extra declareerbare behandelingen kan opleveren. Reken het door met uw eigen no-show-percentage en tarieven.' },
   { question: 'Hoe veilig is AI bij chronische pijn-trajecten en oefentherapie?', answer: 'AI handelt enkel administratieve aspecten af van langlopende trajecten: afspraak-bevestiging, oefenprogramma-reminders ("denk eraan om uw thuisoefeningen 3x deze week te doen"), bevestiging dat oefen-app gebruikt wordt, en intake voor follow-up consult. AI geeft GEEN inhoudelijke oefen-aanwijzingen, doet GEEN voortgangs-evaluatie en stelt GEEN behandelplan-aanpassingen voor. Bij vragen over toename pijn, nieuwe klachten of niet-vooruitgang escaleert AI direct naar de fysiotherapeut voor evaluatie tijdens consult of telefonisch.' },
 ];
 
@@ -70,7 +70,7 @@ const automatableProcesses = [
   },
   {
     title: 'No-show reductie via WhatsApp',
-    body: 'Volledig automatisch: 7 dagen vooraf agenda-bevestiging, 48u vooraf herinnering met optie om te verzetten, 4u vooraf laatste herinnering met locatie. Voor risico-patiënten (eerste of tweede afspraak, eerder no-show, late doordeweekse afspraak) extra bevestigings-vraag op T-24u: "antwoord JA om te bevestigen, NEE om te verzetten". No-show daalt structureel van 10-25 procent naar 4-9 procent — direct door te rekenen naar 30.000-70.000 euro/jr extra omzet voor 4-FTE praktijk.',
+    body: 'Volledig automatisch: 7 dagen vooraf agenda-bevestiging, 48u vooraf herinnering met optie om te verzetten, 4u vooraf laatste herinnering met locatie. Voor risico-patiënten (eerste of tweede afspraak, eerder no-show, late doordeweekse afspraak) extra bevestigings-vraag op T-24u: "antwoord JA om te bevestigen, NEE om te verzetten". Elke teruggewonnen plek is omzet; hoeveel dat bij u scheelt hangt af van uw huidige no-show-percentage.',
   },
   {
     title: 'Tarief- en vergoedings-vragen',
@@ -82,7 +82,7 @@ const automatableProcesses = [
   },
   {
     title: 'Behandelplan-recall en oefen-reminders',
-    body: 'Voor langlopende trajecten (chronische lage rugpijn, post-op revalidatie, COPD-oefentherapie): AI stuurt automatisch via WhatsApp behandelplan-bevestigingen ("u heeft donderdag om 14:00 uw vervolgafspraak met fysiotherapeut Lisa") plus oefen-reminders tussen sessies door ("denk aan uw thuisoefeningen 3x deze week — antwoord GEDAAN als u ze gedaan heeft"). Voltooiingspercentage van behandelplan stijgt van 50 naar 75 procent — betere klinische uitkomsten plus volledig declareerbare DBCs.',
+    body: 'Voor langlopende trajecten (chronische lage rugpijn, post-op revalidatie, COPD-oefentherapie): AI stuurt automatisch via WhatsApp behandelplan-bevestigingen ("u heeft donderdag om 14:00 uw vervolgafspraak met fysiotherapeut Lisa") plus oefen-reminders tussen sessies door ("denk aan uw thuisoefeningen 3x deze week — antwoord GEDAAN als u ze gedaan heeft"). Zo blijven patiënten vaker in hun traject, met volledig declareerbare DBCs.',
   },
   {
     title: 'Status-vragen en afspraak-management',
@@ -90,7 +90,7 @@ const automatableProcesses = [
   },
   {
     title: 'Recall na afgesloten behandeltraject',
-    body: '6 maanden na afsluiting van een behandeltraject: AI stuurt automatisch via WhatsApp een follow-up: "hoe gaat het inmiddels met uw rug, heeft u behoefte aan een controle of nieuwe behandeling, denkt u eraan uw oefenprogramma vol te houden". Patiënten die daadwerkelijk klachten ervaren keren makkelijker terug naar uw praktijk in plaats van naar concurrentie. Recall-rate stijgt van 30 procent typisch naar 55-65 procent.',
+    body: '6 maanden na afsluiting van een behandeltraject: AI stuurt automatisch via WhatsApp een follow-up: "hoe gaat het inmiddels met uw rug, heeft u behoefte aan een controle of nieuwe behandeling, denkt u eraan uw oefenprogramma vol te houden". Patiënten die daadwerkelijk klachten ervaren keren makkelijker terug naar uw praktijk in plaats van naar concurrentie. Een persoonlijk bericht werkt doorgaans beter dan geen opvolging.',
   },
 ];
 
@@ -108,7 +108,7 @@ const escalationKeywords = [
 ];
 
 const integrations = [
-  { name: 'Intramed',                        type: 'EPD fysiotherapie',           integratie: 'Native API — meest-gebruikt in NL, agenda + dossier + declaratie' },
+  { name: 'Intramed',                        type: 'EPD fysiotherapie',           integratie: 'Native API — veelgebruikt in NL, agenda + dossier + declaratie' },
   { name: 'FysioRoadmap',                    type: 'EPD fysiotherapie',           integratie: 'Native API — populair bij multi-FTE, behandelplan-templates' },
   { name: 'James Software',                  type: 'EPD fysiotherapie',           integratie: 'Native API — agenda, dossier, oefenapp-koppeling' },
   { name: 'Pluvo',                           type: 'EPD fysiotherapie',           integratie: 'Native API — moderne cloud-EPD, REST-koppeling' },
@@ -119,13 +119,13 @@ const integrations = [
 ];
 
 const roiBreakdown = [
-  { post: 'No-show op afspraken (jaarlijkse omzetderving)',           before: '€30.000-€70.000/jr',          after: '€8.000-€20.000/jr (70% reductie)' },
-  { post: 'Secretariaat-tijd routine-vragen',                          before: '30-60u/mnd',                  after: '8-15u/mnd (75% reductie)' },
-  { post: 'Niet-aangenomen bel-momenten in piek',                      before: '15-25% gemiste leads',        after: '<3% gemiste leads' },
-  { post: 'Behandelplan-voltooiingspercentage',                        before: '45-55% voltooid',             after: '70-80% voltooid' },
-  { post: 'Recall-conversie 6-mnd na afsluiting traject',              before: '25-35% recall-rate',          after: '55-65% recall-rate' },
-  { post: 'Verloren leads door piek-onbereikbaarheid',                 before: '€1.500-€3.500/mnd',           after: '<€400/mnd' },
-  { post: 'Maandelijkse Aanloop-investering',                         before: '—',                          after: '€149-€497/mnd Emma' },
+  { post: 'No-show op afspraken (jaarlijkse omzetderving)',           before: 'Lege plekken in de agenda',          after: 'Herinneringen plus bevestiging' },
+  { post: 'Secretariaat-tijd routine-vragen',                          before: 'Handmatig door secretariaat',                  after: 'Routine door de AI' },
+  { post: 'Niet-aangenomen bel-momenten in piek',                      before: 'Voicemail',        after: 'Elk gesprek wordt aangenomen' },
+  { post: 'Behandelplan-voltooiingspercentage',                        before: 'Geen opvolging tussen sessies',             after: 'Oefen-reminders via WhatsApp' },
+  { post: 'Recall-conversie 6-mnd na afsluiting traject',              before: 'Geen recall',          after: 'Persoonlijke WhatsApp-recall' },
+  { post: 'Verloren leads door piek-onbereikbaarheid',                 before: 'Onbereikbaar in piekuren',           after: 'Elk gesprek wordt aangenomen' },
+  { post: 'Maandelijkse Aanloop-investering',                         before: '—',                          after: '€149-€497/mnd Emma (plus eenmalige setup bij Groei en Compleet)' },
 ];
 ---
 
@@ -143,10 +143,10 @@ const roiBreakdown = [
           <span class="eyebrow">Kennisbank · Sector — Fysiotherapiepraktijk</span>
         </div>
         <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05] reveal reveal-delay-1">
-          AI voor fysiotherapiepraktijk — KNGF-bewust, no-show 65 procent omlaag
+          AI voor fysiotherapiepraktijk — KNGF-bewust, minder no-shows
         </h1>
         <p class="mt-6 text-lg lg:text-xl text-slate-600 leading-relaxed text-pretty reveal reveal-delay-2">
-          Nederlandse fysiotherapiepraktijken staan onder druk: 10-25 procent no-show op afspraken (piek op 1e-2e afspraak nieuwe patiënten), schaarse fysiotherapeuten, vrije-prijsvorming sinds 2017, KNGF-richtlijnen voor DTF-screening, NEN 7510 zorginformatie-eisen en patiënten die 24/7-bereikbaarheid verwachten. Een AI receptionist plus WhatsApp-agent kan 60-70 procent van eerstelijns patiëntvragen autonoom afhandelen én no-show reduceren tot 4-9 procent — mits goed geconfigureerd op uw EPD, KNGF-DTF-protocol en behandelmix. Hieronder: precies welke processen automatiseerbaar zijn, hoe AI binnen zorgstandaarden blijft, en welke ROI Nederlandse MKB-fysiotherapiepraktijken halen.
+          Nederlandse fysiotherapiepraktijken staan onder druk: no-shows op afspraken (piek op 1e-2e afspraak nieuwe patiënten), schaarse fysiotherapeuten, vrije-prijsvorming sinds 2017, KNGF-richtlijnen voor DTF-screening, NEN 7510 zorginformatie-eisen en patiënten die 24/7-bereikbaarheid verwachten. Een AI receptionist plus WhatsApp-agent kan een groot deel van de eerstelijns patiëntvragen afhandelen én no-shows verminderen — mits goed geconfigureerd op uw EPD, KNGF-DTF-protocol en behandelmix. Hieronder: precies welke processen automatiseerbaar zijn, hoe AI binnen zorgstandaarden blijft, en hoe u de ROI voor uw eigen praktijk berekent.
         </p>
       </div>
     </div>
@@ -156,7 +156,7 @@ const roiBreakdown = [
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6 reveal">Welke processen automatiseerbaar zijn</h2>
       <p class="text-slate-600 leading-relaxed mb-4">Een AI assistent voor een fysiotherapiepraktijk neemt vooral de eerstelijns patiëntvragen over: telefoongesprekken aannemen waarbij prospects of patiënten naar diensten vragen (algemene fysiotherapie, manuele therapie, bekkenfysiotherapie, sportfysiotherapie, oedeemtherapie, kinderfysiotherapie), benodigde informatie vragen (klacht-omschrijving, huisartsverwijzing of DTF, zorgverzekering, eerdere fysiotherapie), klantgegevens registreren in uw EPD en een afspraak plannen bij de juiste fysiotherapeut of specialist. De AI geeft geen klinische adviezen, doet geen DTF-screening, en signaleert direct wanneer er sprake is van rode-vlag-symptomen.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Voor lopende patiënten handelt de AI status-vragen af (wanneer is mijn volgende afspraak, kan ik verzetten, hoe lang duurt mijn traject nog, ben ik op de juiste behandelplan-track) door realtime te kijken in uw EPD (Intramed, FysioRoadmap, James Software, Pluvo, Mediaccount). Daarnaast stuurt AI automatisch oefen-reminders tussen sessies en behandelplan-recall na 6 maanden voor afgesloten trajecten. Dit ontlast secretariaat voor 60-70 procent van inkomende routine-contacten zodat fysiotherapeuten meer tijd hebben voor patiëntcontact aan de behandeltafel.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor lopende patiënten handelt de AI status-vragen af (wanneer is mijn volgende afspraak, kan ik verzetten, hoe lang duurt mijn traject nog, ben ik op de juiste behandelplan-track) door realtime te kijken in uw EPD (Intramed, FysioRoadmap, James Software, Pluvo, Mediaccount). Daarnaast stuurt AI automatisch oefen-reminders tussen sessies en behandelplan-recall na 6 maanden voor afgesloten trajecten. Dit ontlast het secretariaat bij routine-contacten zodat fysiotherapeuten meer tijd hebben voor patiëntcontact aan de behandeltafel.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Belangrijk: de AI vervangt nooit de klinische beoordelings- of therapeutische functie. KNGF-richtlijn DTF-screening (rode-vlaggen-detectie) blijft 100 procent fysiotherapeut-werk. Bij elke escalatie naar pijn-toename, krachtsverlies, uitstraling of klinische zorg schakelt de AI direct door naar de fysiotherapeut. WGBO-verplichtingen rond informed consent en patiëntdossier blijven volledig mensenwerk.</p>
     </div>
   </section>
@@ -181,7 +181,7 @@ const roiBreakdown = [
   <section class="section">
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">KNGF en AI: wat mag en wat niet</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Het <a href="https://www.kngf.nl/" rel="external" target="_blank" class="text-brand-indigo hover:underline">Koninklijk Nederlands Genootschap voor Fysiotherapie (KNGF)</a> heeft geen specifieke AI-richtlijnen, maar de algemene gedragscode, KNGF-richtlijn DTF en patiëntveiligheidseisen onder de Wet BIG gelden onverminderd. Belangrijkste: WGBO-respect (informatieplicht en informed consent), zorgvuldigheidsverplichting onder Wet BIG, geheimhouding onder artikel 7:457 BW, en KNGF-richtlijn DTF voor rode-vlaggen-screening bij directe toegankelijkheid. Voor AI betekent dit: alle data EU-only verwerkt op NEN 7510-bewuste cloud (zie <a href="https://www.nen.nl/" rel="external" target="_blank" class="text-brand-indigo hover:underline">NEN</a>), geen modeltraining op patiëntdata, expliciete vermelding aan patiënt dat AI eerstelijns intake doet, en escalatie naar mens bij elke klinische of rode-vlag-vraag.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Het <a href="https://www.kngf.nl/" rel="external" target="_blank" class="text-brand-indigo hover:underline">Koninklijk Nederlands Genootschap voor Fysiotherapie (KNGF)</a> heeft geen specifieke AI-richtlijnen, maar de algemene gedragscode, KNGF-richtlijn DTF en patiëntveiligheidseisen onder de Wet BIG gelden onverminderd. Belangrijkste: WGBO-respect (informatieplicht en informed consent), zorgvuldigheidsverplichting onder Wet BIG, geheimhouding onder artikel 7:457 BW, en KNGF-richtlijn DTF voor rode-vlaggen-screening bij directe toegankelijkheid. Voor AI betekent dit: een verwerkersovereenkomst en DPIA-template, en op verzoek een NEN 7510-bewuste opzet (zie <a href="https://www.nen.nl/" rel="external" target="_blank" class="text-brand-indigo hover:underline">NEN</a>); certificering ligt bij uw eigen organisatie. Sub-verwerkers en hun locaties staan op /beveiliging/; een deel zit buiten de EU. Verder: geen modeltraining op patiëntdata, expliciete vermelding aan patiënt dat AI eerstelijns intake doet, en escalatie naar mens bij elke klinische of rode-vlag-vraag.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Aanloop AI levert specifiek voor fysiotherapiepraktijken een KNGF-bewuste implementatie: vooraf-gescripte prompt-restricties die de AI verhinderen klinische adviezen te geven (wat denkt u dat het is, hoe ernstig is het, moet ik mij zorgen maken), automatische escalatie bij 10 rode-vlag-keywords (zie volgende sectie), DTF-screening-flow die patiënten bij rode-vlag-signaal direct naar fysiotherapeut routeert in plaats van automatisch in te plannen, en logging-trail die voldoet aan KIK-V-audits, IGJ-toezichtsverplichtingen plus uw kwaliteitsregister-eisen (1FB, OK4FB).</p>
       <p class="text-slate-600 leading-relaxed mb-4">Voor Wkkgz-compliance (Wet kwaliteit, klachten en geschillen zorg): AI mag patiëntklachten over de organisatie (bijvoorbeeld wachttijd, parkeren, factuur) afhandelen volgens uw klachtenprocedure, maar klachten over behandeling, bejegening of klinische uitkomst escaleert AI altijd naar de praktijkhouder of klachtenfunctionaris. WGBO-informatie over behandelopties blijft volledig voorbehouden aan de fysiotherapeut tijdens consult. Voor vrije-prijsvorming: AI mag uw eigen tarievenlijst delen, maar geen vergoedings-zekerheid geven zonder geverifieerde polisinformatie.</p>
     </div>
@@ -192,7 +192,7 @@ const roiBreakdown = [
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">Escalatie-protocol</p>
         <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy">10 rode-vlag-keywords die AI direct doorzet.</h2>
-        <p class="mt-3 text-slate-600">Voor fysiotherapiepraktijken configureren we strikte rode-vlag-detection conform KNGF-richtlijn DTF: zodra de patiënt iets klinisch-urgent of neurologisch-alarmerend zegt, escaleert de AI binnen seconden naar de fysiotherapeut voor pre-screening of bij levensbedreigend direct naar 112. Geen kans op onveilige automatisering binnen het DTF-pad.</p>
+        <p class="mt-3 text-slate-600">Voor fysiotherapiepraktijken configureren we strikte rode-vlag-detection conform KNGF-richtlijn DTF: zodra de patiënt iets klinisch-urgent of neurologisch-alarmerend zegt, escaleert de AI direct naar de fysiotherapeut voor pre-screening of bij levensbedreigend direct naar 112. Geen kans op onveilige automatisering binnen het DTF-pad.</p>
       </div>
       <ul class="space-y-2 reveal reveal-delay-1">
         {escalationKeywords.map((k) => (
@@ -210,7 +210,7 @@ const roiBreakdown = [
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">Integraties</p>
         <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy">Werkt met uw bestaande EPD.</h2>
-        <p class="mt-3 text-slate-600 max-w-2xl">8 native of webhook-koppelingen voor de meest gebruikte Nederlandse fysiotherapie-EPDs plus WhatsApp Business API. Eigen-built dossier-systemen via secure REST-routing of HL7-mail.</p>
+        <p class="mt-3 text-slate-600 max-w-2xl">8 native of webhook-koppelingen voor veelgebruikte Nederlandse fysiotherapie-EPDs plus WhatsApp Business API. Eigen-built dossier-systemen via secure REST-routing of HL7-mail.</p>
       </div>
       <div class="overflow-x-auto reveal reveal-delay-1">
         <table class="w-full text-sm border-collapse bg-white rounded-lg overflow-hidden border border-slate-200">
@@ -238,8 +238,8 @@ const roiBreakdown = [
   <section class="section bg-slate-50/60 border-y border-slate-200">
     <div class="container-page max-w-3xl">
       <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6">Voorbeeldgesprek: AI handelt no-show preventie af</h2>
-      <p class="text-slate-600 leading-relaxed mb-4">Patiënt heeft een 1e behandelafspraak op vrijdag 14:00 (hoogste no-show risico-categorie: nieuwe patiënt, late doordeweekse afspraak). Maandag stuurt AI via WhatsApp: "Hallo Stijn, herinnering: u heeft vrijdag 7 mei om 14:00 uw eerste behandelafspraak met fysiotherapeut Lisa Bakker op de praktijk Hofstraat 12. Antwoord JA om te bevestigen, NEE om te verzetten of bel ons als u vragen heeft". Stijn antwoordt: "kan ik vrijdag een uur eerder komen". AI reageert: "even kijken — vrijdag 13:00 is mogelijk bij Lisa. Antwoord JA om te bevestigen". Stijn: "ja". AI: "afspraak verzet naar vrijdag 7 mei 13:00 bij Lisa Bakker. Tot vrijdag!". EPD bijgewerkt, oude slot vrij voor wachtlijst, nieuwe bevestiging in agenda. Total tijd: 90 seconden, geen secretariaat-tijd.</p>
-      <p class="text-slate-600 leading-relaxed mb-4">Voor T-48u en T-4u opnieuw automatische herinneringen. Bij niet-reactie binnen 6u op T-24u: tweede herinnering met expliciete bevestigings-vraag plus reschedule-opties. Bij niet-reactie op T-4u: AI logt de no-show waarschuwing in EPD voor de receptie zodat zij eventueel kunnen bellen voor een spoed-vervanging via wachtlijst. No-show wordt zo van 10-25 procent naar 4-9 procent — concrete waarde voor 4-FTE praktijk: 30.000-70.000 euro extra omzet per jaar.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Patiënt heeft een 1e behandelafspraak op vrijdag 14:00 (verhoogd no-show risico: nieuwe patiënt, late doordeweekse afspraak). Maandag stuurt AI via WhatsApp: "Hallo Stijn, herinnering: u heeft vrijdag 7 mei om 14:00 uw eerste behandelafspraak met fysiotherapeut Lisa Bakker op de praktijk Hofstraat 12. Antwoord JA om te bevestigen, NEE om te verzetten of bel ons als u vragen heeft". Stijn antwoordt: "kan ik vrijdag een uur eerder komen". AI reageert: "even kijken — vrijdag 13:00 is mogelijk bij Lisa. Antwoord JA om te bevestigen". Stijn: "ja". AI: "afspraak verzet naar vrijdag 7 mei 13:00 bij Lisa Bakker. Tot vrijdag!". EPD bijgewerkt, oude slot vrij voor wachtlijst, nieuwe bevestiging in agenda. Geen secretariaat-tijd nodig.</p>
+      <p class="text-slate-600 leading-relaxed mb-4">Voor T-48u en T-4u opnieuw automatische herinneringen. Bij niet-reactie binnen 6u op T-24u: tweede herinnering met expliciete bevestigings-vraag plus reschedule-opties. Bij niet-reactie op T-4u: AI logt de no-show waarschuwing in EPD voor de receptie zodat zij eventueel kunnen bellen voor een spoed-vervanging via wachtlijst. Zo vallen er minder afspraken weg, en dat is directe omzet voor de praktijk.</p>
       <p class="text-slate-600 leading-relaxed mb-4">Belangrijk wat de AI niet doet: geen advies over of de afspraak nog nodig is, geen klinische pre-screening ("is uw rug inmiddels niet meer pijnlijk"), geen oefen-aanwijzingen. Bij vragen over toename pijn, krachtsverlies of nieuwe klachten: directe escalatie naar fysiotherapeut via terugbel-verzoek voor pre-screening voor afspraak.</p>
     </div>
   </section>
@@ -249,7 +249,7 @@ const roiBreakdown = [
       <div class="mb-10 reveal">
         <p class="eyebrow mb-2">Concrete ROI</p>
         <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy">Voor een 4-FTE fysiotherapiepraktijk met 800 actieve patiënten.</h2>
-        <p class="mt-3 text-slate-600 max-w-2xl">Realistische cijfers per maand voor een gemiddelde Nederlandse fysiotherapiepraktijk (3-4 fysiotherapeuten plus eventueel 1-2 specialisten zoals manuele therapie of bekkenfysio). Uw eigen ROI varieert per FTE-aantal, behandel-mix en zorgverzekeraar-contract-portfolio.</p>
+        <p class="mt-3 text-slate-600 max-w-2xl">Rekenvoorbeeld zonder resultaatcijfers voor een Nederlandse fysiotherapiepraktijk (3-4 fysiotherapeuten plus eventueel 1-2 specialisten zoals manuele therapie of bekkenfysio). Uw eigen ROI varieert per FTE-aantal, behandel-mix en zorgverzekeraar-contract-portfolio.</p>
       </div>
       <div class="overflow-x-auto reveal reveal-delay-1">
         <table class="w-full text-sm border-collapse bg-white rounded-lg overflow-hidden border border-slate-200">
@@ -271,7 +271,7 @@ const roiBreakdown = [
           </tbody>
         </table>
       </div>
-      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Bottom-line voor 4-FTE praktijk: gemiddelde ROI 10-22 keer op 12-maand basis, payback-periode 3-6 weken. Het no-show effect alleen al rechtvaardigt vrijwel direct de Aanloop-investering — alle andere winst (behandelplan-voltooiing, recall, secretariaat-tijd, piek-bereikbaarheid) is bovenop. En patiënt-satisfaction stijgt structureel omdat ze sneller een afspraak kunnen krijgen of verzetten in plaats van wachten op terugbel.</p>
+      <p class="mt-6 text-sm text-slate-600 max-w-2xl reveal reveal-delay-2">Bottom-line: de maandprijs (149 tot 497 euro) staat tegenover minder no-shows, betere opvolging van behandelplannen, minder secretariaat-tijd en betere bereikbaarheid in piekuren. Patiënten kunnen bovendien sneller een afspraak maken of verzetten in plaats van te wachten op terugbel. Reken het door met uw eigen cijfers.</p>
     </div>
   </section>
 
@@ -279,8 +279,8 @@ const roiBreakdown = [
     <div class="container-page max-w-3xl mx-auto">
       <h2 class="text-2xl lg:text-3xl font-semibold tracking-tighter text-navy text-balance mb-6 reveal">Implementatie roadmap voor fysiotherapiepraktijken</h2>
       <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-1">Een succesvolle AI-implementatie in een fysiotherapiepraktijk verloopt in drie fasen. Fase 1 (week 1-2) is discovery en design: we analyseren 100 historische patiëntcontacten en de no-show patronen van de afgelopen 6 maanden om de meest voorkomende vragen, escalaties en risico-patiënten in kaart te brengen. Op basis hiervan ontwerpen we de conversational flow, intake-vragenlijst per behandel-type (algemeen, manueel, bekken, sport, oedeem, kind), DTF-screening-flow, no-show preventie-flow en KNGF-bewuste rode-vlag-escalatieprotocollen die specifiek bij uw werkwijze, EPD en patiëntdemografie passen.</p>
-      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-2">Fase 2 (week 3-5) is build en pilot: we configureren de AI met uw kennisbank (FAQ, eigen tarievenlijst, gecontracteerde verzekeraars, behandelplan-templates, oefen-reminder-templates), koppelen aan uw EPD (Intramed/FysioRoadmap/James Software/Pluvo) plus WhatsApp Business API, en testen intern twee weken lang. In deze periode simuleren u en uw team realistische patiënt-scenarios — de AI leert van correcties en wordt steeds nauwkeuriger op uw specifieke jargon, behandel-mix en escalatie-criteria. Eind fase 2 gaat de AI live met 30-40 procent van uw patiëntverkeer voor monitoring (typisch eerst no-show preventie, daarna intake).</p>
-      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-3">Fase 3 (week 6-12) is scale en optimaliseer: volledig live op het primaire kanaal met dagelijkse no-show KPI-monitoring, wekelijkse iteratie op herinnerings-templates en maandelijkse rapportage over recall-conversie, no-show rate en behandelplan-voltooiing. Vanaf maand 3 ziet u typisch een stabiel no-show percentage van 4-9 procent (van 10-25 procent baseline) en 70-80 procent behandelplan-voltooiing (van 45-55 procent baseline).</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-2">Fase 2 (week 3-5) is build en pilot: we configureren de AI met uw kennisbank (FAQ, eigen tarievenlijst, gecontracteerde verzekeraars, behandelplan-templates, oefen-reminder-templates), koppelen aan uw EPD (Intramed/FysioRoadmap/James Software/Pluvo) plus WhatsApp Business API, en testen intern twee weken lang. In deze periode simuleren u en uw team realistische patiënt-scenarios — de AI leert van correcties en wordt steeds nauwkeuriger op uw specifieke jargon, behandel-mix en escalatie-criteria. Eind fase 2 gaat de AI live met een deel van uw patiëntverkeer voor monitoring (typisch eerst no-show preventie, daarna intake).</p>
+      <p class="text-slate-600 leading-relaxed mb-4 reveal reveal-delay-3">Fase 3 (week 6-12) is scale en optimaliseer: volledig live op het primaire kanaal met dagelijkse no-show KPI-monitoring, wekelijkse iteratie op herinnerings-templates en maandelijkse rapportage over recall-conversie, no-show rate en behandelplan-voltooiing. Zo ziet u op uw eigen cijfers wat de AI doet voor no-shows en behandelplan-voltooiing.</p>
     </div>
   </section>
 
@@ -363,10 +363,10 @@ const roiBreakdown = [
     <div class="container-page">
       <div class="max-w-3xl">
         <h2 class="text-3xl sm:text-4xl font-semibold tracking-tighter text-pearl text-balance">
-          Klaar om no-show 65 procent te verlagen?
+          Klaar om no-shows te verminderen?
         </h2>
         <p class="mt-4 text-slate-300 leading-relaxed">
-          Onboarding 7 werkdagen voor één pakket, 14-21 dagen voor multi-pakket. KNGF-bewuste configuratie, NEN 7510-conforme cloud, EU-only data-verwerking met DPIA-template inbegrepen. Tijdens uw demo simuleren we een no-show preventie-flow plus een DTF-rode-vlag escalatie op een echte WhatsApp en telefoonlijn zodat u zelf hoort hoe Emma uw praktijk ondersteunen.
+          KNGF-bewuste configuratie, verwerkersovereenkomst en DPIA-template. Tijdens uw demo simuleren we een no-show preventie-flow plus een DTF-rode-vlag escalatie op een echte WhatsApp en telefoonlijn zodat u zelf hoort hoe Emma uw praktijk ondersteunen.
         </p>
         <div class="mt-6 flex flex-col sm:flex-row gap-3">
           <a href="/demo-aanvragen/" class="btn bg-pearl text-navy hover:bg-white text-base px-6 py-3.5">

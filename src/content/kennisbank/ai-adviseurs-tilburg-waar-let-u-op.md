@@ -6,6 +6,17 @@ published: 2026-10-16
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-verwerker", "ro-privacy"]
+faq:
+  - q: "Wat kost een AI-adviseur in Tilburg?"
+    a: "Dat verschilt per aanbieder en per opdracht. Vraag altijd om een offerte met duidelijk omschreven oplevering, zodat u maandelijkse kosten en eenmalige kosten kunt vergelijken. Wees alert op trajecten zonder concreet doel."
+  - q: "Is een AI-adviseur nodig voor een kleine ondernemer?"
+    a: "Niet altijd. Als uw website goed werkt en u uw telefoon bijhoudt, is er misschien weinig te winnen. Verliest u klanten door gemiste oproepen of wordt u online slecht gevonden, dan kan een korte, gerichte aanpak veel opleveren."
+  - q: "Kan AI mijn telefoon en WhatsApp echt overnemen?"
+    a: "Een AI-telefoniste kan veelvoorkomende vragen beantwoorden en aanvragen noteren, zodat niets blijft liggen. Voor lastige of gevoelige situaties blijft u zelf het aanspreekpunt. Spreek vooraf af wat de telefoniste wel en niet mag zeggen."
+  - q: "Welke regels gelden voor persoonsgegevens bij een AI-adviseur?"
+    a: "In de AVG staat wat organisaties en bedrijven met persoonsgegevens mogen, ook als een adviseur uw klantgegevens inziet. Laat u een leverancier gegevens verwerken, dan moet u een verwerkersovereenkomst met hem sluiten."
 ---
 
 Een aannemer in Tilburg hoort overal dat hij 'iets met AI' moet doen. Een tandarts in Goirle krijgt wekelijks mails van bureaus die slimme oplossingen beloven. Het lastige is niet het aanbod, maar het kiezen: wie helpt u echt verder en wie praat vooral over tools?
@@ -46,7 +57,7 @@ Juist het MKB heeft weinig tijd om experimenten te beheren. Daarom werkt een aan
 
 ## Hoe wordt uw bedrijf gevonden in ChatGPT, Gemini en Perplexity?
 
-Steeds meer mensen vragen ChatGPT, Gemini of Perplexity om een bedrijf in hun buurt. Om genoemd te worden, heeft u duidelijke pagina's nodig met uw diensten, werkgebied en veelgestelde vragen, plus consistente bedrijfsgegevens. Niemand kan een vermelding garanderen, maar heldere en betrouwbare informatie vergroot de kans.
+Mensen kunnen ChatGPT, Gemini of Perplexity vragen om een bedrijf in hun buurt. Om genoemd te worden, heeft u duidelijke pagina's nodig met uw diensten, werkgebied en veelgestelde vragen, plus consistente bedrijfsgegevens. Niemand kan een vermelding garanderen, maar heldere en betrouwbare informatie vergroot de kans.
 
 Dat betekent concreet: een pagina per dienst, korte en directe antwoorden op vragen die klanten stellen, en een vermelding van de plaatsen waar u werkt, zoals Tilburg, Berkel-Enschot of Udenhout. Zorg dat uw naam, adres en telefoonnummer overal hetzelfde zijn. Het is hetzelfde werk als goede SEO, met extra aandacht voor tekst die een AI-zoekmachine makkelijk kan samenvatten.
 
@@ -61,17 +72,6 @@ Veel adviezen stoppen bij vindbaarheid. Dat is jammer, want juist op het moment 
 Meet het aantal aanvragen, gemiste oproepen en afspraken voor en na de start. Een meetpaneel laat zien waar bezoekers vandaan komen en wat ze doen. Zonder meting blijft AI een gevoel. Vergelijk elke maand de cijfers en stuur bij waar iets niet werkt. Gemeten resultaten van Aanloop AI vindt u op aanloopai.nl/resultaten.
 
 Houd het simpel. Kies twee of drie cijfers die voor uw bedrijf tellen, bijvoorbeeld het aantal telefonische aanvragen per week en het aantal ingeplande afspraken. Als die na een paar maanden niet bewegen, past de aanpak niet en moet er iets veranderen.
-
-## Veelgestelde vragen
-
-**Wat kost een AI-adviseur in Tilburg?**
-Dat verschilt per aanbieder en per opdracht. Vraag altijd om een offerte met duidelijk omschreven oplevering, zodat u maandelijkse kosten en eenmalige kosten kunt vergelijken. Wees alert op trajecten zonder concreet doel.
-
-**Heb ik als kleine ondernemer wel een AI-adviseur nodig?**
-Niet altijd. Als uw website goed werkt en u uw telefoon bijhoudt, is er misschien weinig te winnen. Verliest u klanten door gemiste oproepen of wordt u online slecht gevonden, dan kan een korte, gerichte aanpak veel opleveren.
-
-**Kan AI mijn telefoon en WhatsApp echt overnemen?**
-Een AI-telefoniste kan veelvoorkomende vragen beantwoorden en aanvragen noteren, zodat niets blijft liggen. Voor lastige of gevoelige situaties blijft u zelf het aanspreekpunt. Spreek vooraf af wat de telefoniste wel en niet mag zeggen.
 
 ## Wilt u weten wat AI voor uw bedrijf in Tilburg kan doen?
 

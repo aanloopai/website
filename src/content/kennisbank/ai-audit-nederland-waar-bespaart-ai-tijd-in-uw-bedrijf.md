@@ -6,6 +6,19 @@ published: 2026-10-09
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["cbs-ai-2025", "ap-ai", "ap-avg", "ec-ai-act"]
+faq:
+  - q: "Wat kost een AI-audit in Nederland voor een MKB-bedrijf?"
+    a: "De kosten van een AI-audit verschillen per aanbieder en per omvang. De externe AI-audit voor het MKB heeft een vaste prijs en wordt opgeleverd in 14 werkdagen. Voor een kleine onderneming kunt u de basis zelf doen met de vijf stappen, zonder kosten. Vraag een externe partij vooraf wat er precies wordt geleverd: een rapport, een advies of een uitvoeringsplan."
+  - q: "Is technische kennis nodig voor een AI-audit?"
+    a: "Nee, voor een AI-audit hebt u geen technische kennis nodig. De audit draait om uw eigen werkproces, niet om techniek. U moet kunnen beschrijven wat u elke week doet en waar het misgaat. De technische vertaling naar een passende oplossing is het werk van de leverancier."
+  - q: "Is een AI-telefoniste toegestaan volgens de AVG?"
+    a: "Ja, een AI-telefoniste is toegestaan mits u transparant bent en de gegevens goed beveiligd zijn. Sluit een verwerkersovereenkomst af, informeer bellers dat ze met een AI spreken en leg vast welke gegevens worden bewaard en hoe lang. Twijfelt u over uw situatie, vraag dan advies aan een privacyadviseur."
+  - q: "Wat is een AI-audit voor een MKB-bedrijf?"
+    a: "Een AI-audit is een gestructureerde scan van uw bedrijfsprocessen die laat zien waar AI tijd bespaart, omzet behoudt of risico's oplevert. Het is geen technisch onderzoek en geen verkooptraject, maar een nuchtere inventaris van wat u elke week opnieuw doet en of software dat betrouwbaar kan overnemen."
+  - q: "Hoe voert u een AI-audit uit in vijf stappen?"
+    a: "Een AI-audit bestaat uit vijf stappen: taken inventariseren, tijdverlies meten, kansen beoordelen, risico's en regels toetsen en klein beginnen. Uw agenda, telefoonlog en facturen zijn het startpunt. Kies één toepassing, stel vooraf vast hoe u succes meet en evalueer na een paar weken."
 ---
 
 Een tandarts in Breda zit de hele ochtend achter de stoel en ziet 's middags zes gemiste oproepen op de telefoon. Een garagehouder in Zwolle schrijft 's avonds offertes uit zijn hoofd na. Een kapster in Haarlem belt klanten na die niet kwamen opdagen. Allemaal herkennen ze dat er tijd weglekt, maar niet precies waar, en niet wat ze eraan kunnen doen.
@@ -51,19 +64,3 @@ Per branche ziet dat er verschillend uit. Een kapsalon in Groningen wil vooral d
 Emma is een AI-telefoniste voor praktijken, kapsalons, garages en installateurs. Zij neemt op wanneer u het niet kunt, beantwoordt veelgestelde vragen, plant een afspraak in uw agenda en helpt no-shows te verminderen met herinneringen. Zo blijft een gemiste oproep niet liggen tot het einde van de werkdag.
 
 Dat sluit aan op wat de audit meestal laat zien: de telefoon is het knelpunt dat het eenvoudigst te meten en op te lossen is. U ziet in uw eigen telefoonlog hoeveel oproepen onbeantwoord blijven, en na de proefperiode ziet u hoeveel daarvan alsnog tot een afspraak leidden. Zo wordt de keuze voor AI een onderbouwd besluit in plaats van een gok.
-
-## Veelgestelde vragen
-
-### Wat kost een AI-audit?
-
-Dat verschilt per aanbieder en per omvang. Wilt u een uitgebreidere audit door een extern team, bekijk dan de [AI-audit voor het MKB](/diensten/audit/) met vaste prijs en oplevering in 14 werkdagen. Voor een kleine onderneming kunt u de basis zelf doen met de vijf stappen hierboven, zonder kosten. Laat u een externe partij meekijken, vraag dan vooraf wat er precies wordt geleverd: een rapport, een advies of een uitvoeringsplan.
-
-### Heb ik technische kennis nodig voor een AI-audit?
-
-Nee. De audit draait om uw eigen werkproces, niet om techniek. U moet kunnen beschrijven wat u elke week doet en waar het misgaat. De technische vertaling naar een passende oplossing is het werk van de leverancier.
-
-### Is een AI-telefoniste toegestaan volgens de AVG?
-
-Ja, mits u transparant bent en de gegevens goed beveiligd zijn. Sluit een verwerkersovereenkomst af, informeer bellers dat ze met een AI spreken en leg vast welke gegevens worden bewaard en hoe lang. Twijfelt u over uw situatie, vraag dan advies aan een privacyadviseur.
-
-**Wilt u weten hoeveel oproepen u nu mist en wat Emma daarvan kan opvangen? Neem contact op via [aanloopai.nl](https://aanloopai.nl) en plan een vrijblijvend gesprek.**

@@ -6,6 +6,17 @@ published: 2026-09-05
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-verwerker", "ro-privacy"]
+faq:
+  - q: "Wat kost automatische orderinvoer met AI?"
+    a: "De kosten hangen af van het aantal orders per maand, het aantal verschillende formats en de manier waarop uw TMS te koppelen is. Een pilot met één of twee opdrachtgevers is meestal binnen enkele weken te realiseren en geeft een reëel beeld voordat u breder uitrolt."
+  - q: "Is het ook bruikbaar bij slechte scans of vrij getypte mails?"
+    a: "Ja, mits u een controlestap inbouwt. Moderne modellen gaan goed om met afwijkende opmaak en losse tekst, maar een vage scan of een onvolledige opdracht hoort naar het controlescherm te gaan in plaats van blind in het TMS te belanden."
+  - q: "Moet ik mijn TMS vervangen?"
+    a: "Meestal niet. Zolang uw pakket een API of een gestructureerde import biedt, wordt de AI-laag ervoor geplaatst en blijft uw planning in het vertrouwde systeem werken. Bestaande EDI-koppelingen blijven daarnaast gewoon in gebruik."
+  - q: "Welke regels gelden voor persoonsgegevens bij automatische orderinvoer?"
+    a: "In de AVG staat wat organisaties en bedrijven met persoonsgegevens mogen, ook bij orders met namen en adressen. Laat u een leverancier gegevens verwerken, dan moet u een verwerkersovereenkomst met hem sluiten."
 ---
 
 Bij de meeste transportbedrijven begint een rit niet in de cabine, maar in de inbox. De ene opdrachtgever mailt een PDF, de tweede stuurt een Excel met twaalf regels, de derde belt en bevestigt pas later. Op de planning wordt dat allemaal overgetypt in het TMS — en juist daar sluipen de verkeerde postcode, het gemiste laadvenster en de vergeten referentie binnen.
@@ -37,7 +48,7 @@ Die laatste stap is belangrijker dan hij lijkt: door het originele document aan 
 
 ## Welke koppelingen heeft u nodig?
 
-In de meeste gevallen is geen nieuw TMS nodig. Pakketten die in Nederland veel bij vervoerders draaien, zoals Transpas, Boltrics of Yellowstar, bieden een API of een gestructureerde import waarmee orders van buitenaf kunnen worden aangemaakt. Daarnaast blijven bestaande EDI-stromen gewoon bestaan naast de AI-route.
+In de meeste gevallen is geen nieuw TMS nodig. Veel TMS-pakketten bieden een API of een gestructureerde import waarmee orders van buitenaf kunnen worden aangemaakt. Daarnaast blijven bestaande EDI-stromen gewoon bestaan naast de AI-route.
 
 Praktisch betekent dat: één postbus voor inkomende opdrachten, één koppeling naar het TMS en eventueel een verbinding met Portbase voor havengerelateerde gegevens. EDIFACT-berichten zoals IFTMIN blijven de snelste weg voor vaste opdrachtgevers — de AI-laag is bedoeld voor alle klanten die zo'n koppeling nooit zullen bouwen, en dat is bij veel vervoerders de meerderheid.
 
@@ -51,18 +62,7 @@ Juist die combinatie — veel verschillende verladers, korte tijdvensters en geg
 
 Begin klein: kies twee of drie opdrachtgevers met veel volume en een herkenbaar format, en meet eerst hoeveel tijd de huidige invoer kost. Zonder die nulmeting kunt u later niet hardmaken wat het oplevert. Houd daarnaast altijd een mens in de lus voor orders met een lage betrouwbaarheidsscore.
 
-Let verder op vastlegging en privacy. Orders bevatten persoonsgegevens van contactpersonen en chauffeurs, dus leg vast waar data wordt verwerkt en hoe lang die bewaard blijft — de AVG geldt onverkort. Bewaar bovendien per order een spoor van wat de AI heeft ingevuld en wat een medewerker heeft gecorrigeerd; die correcties zijn tegelijk het beste materiaal om het systeem verder te verbeteren. Dat digitale spoor sluit ook aan op de Europese lijn rond elektronische vrachtinformatie (eFTI), die ervoor zorgt dat overheden digitale vrachtdocumenten moeten accepteren.
-
-## Veelgestelde vragen
-
-**Wat kost automatische orderinvoer met AI?**
-De kosten hangen af van het aantal orders per maand, het aantal verschillende formats en de manier waarop uw TMS te koppelen is. Een pilot met één of twee opdrachtgevers is meestal binnen enkele weken te realiseren en geeft een reëel beeld voordat u breder uitrolt.
-
-**Werkt het ook bij slechte scans of vrij getypte mails?**
-Ja, mits u een controlestap inbouwt. Moderne modellen gaan goed om met afwijkende opmaak en losse tekst, maar een vage scan of een onvolledige opdracht hoort naar het controlescherm te gaan in plaats van blind in het TMS te belanden.
-
-**Moeten we ons TMS vervangen?**
-Meestal niet. Zolang uw pakket een API of een gestructureerde import biedt, wordt de AI-laag ervoor geplaatst en blijft uw planning in het vertrouwde systeem werken. Bestaande EDI-koppelingen blijven daarnaast gewoon in gebruik.
+Let verder op vastlegging en privacy. Orders bevatten persoonsgegevens van contactpersonen en chauffeurs, dus leg vast waar data wordt verwerkt en hoe lang die bewaard blijft — de AVG geldt onverkort. Bewaar bovendien per order een spoor van wat de AI heeft ingevuld en wat een medewerker heeft gecorrigeerd; die correcties zijn tegelijk het beste materiaal om het systeem verder te verbeteren.
 
 ## Aan de slag
 

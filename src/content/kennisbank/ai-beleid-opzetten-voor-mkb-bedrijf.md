@@ -6,6 +6,19 @@ published: 2026-10-02
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ec-ai-act", "ap-ai", "ap-avg", "cbs-ai-2025"]
+faq:
+  - q: "Is een AI-beleid verplicht voor een mkb-bedrijf?"
+    a: "Een apart AI-beleid is niet wettelijk verplicht. Wel moet u voldoen aan de AVG en aan de AI-verordening, waaronder de eis dat medewerkers voldoende AI-geletterd zijn. Een AI-beleid is de praktische manier om aan te tonen dat u dat heeft geregeld."
+  - q: "Hoe lang moet een AI-beleid voor een klein bedrijf zijn?"
+    a: "Voor een praktijk, salon of garage volstaan twee tot drie pagina's. Belangrijker dan de lengte is dat de regels concreet zijn en dat elke medewerker ze kent. Een kort beleid dat wordt nageleefd is meer waard dan een lang beleid dat niemand leest."
+  - q: "Kan een medewerker gratis AI-tools zoals ChatGPT gebruiken?"
+    a: "Dat hangt af van wat de medewerker erin zet. Voor algemene taken zonder klantgegevens kan dat prima. Zodra er namen, adressen of medische informatie in het spel zijn, kiest u een zakelijke versie met verwerkersovereenkomst of verbiedt u het gebruik. Leg dat onderscheid duidelijk vast in uw beleid."
+  - q: "Welke onderdelen horen in een AI-beleid voor een mkb-bedrijf?"
+    a: "Een AI-beleid bevat minimaal vijf onderdelen. Dat zijn een lijst met toegestane tools, gegevensregels, menselijke controle van de uitkomst, een vast aanspreekpunt en een regel over transparantie richting klanten. Houd het kort en concreet, zodat medewerkers het daadwerkelijk lezen en toepassen."
+  - q: "Hoe zet u in vijf stappen een AI-beleid op?"
+    a: "U zet een AI-beleid op in vijf stappen: inventariseren, goedkeuren, opschrijven, bespreken en herzien. Begin met wat medewerkers nu al met AI doen, schrijf de regels in gewone taal en plan elk half jaar een moment om het beleid bij te werken."
 ---
 
 Een fysiotherapiepraktijk in Utrecht laat de assistente verslagen samenvatten met ChatGPT. Een installateur in Apeldoorn schrijft offertes met AI. Een kapsalon in Breda overweegt een AI-telefoniste die afspraken inplant als niemand kan opnemen. Alle drie werken ze al met AI, maar geen van drieën heeft op papier staan wat wel en niet mag. Zodra een medewerker klantgegevens in een gratis tool plakt, wordt dat een probleem.
@@ -51,19 +64,3 @@ Voor afspraakgedreven bedrijven is de telefoon de plek waar AI-beleid het meest 
 Neem een tandartspraktijk in Tilburg die gemiste oproepen laat opvangen door een AI-telefoniste. Het beleid beschrijft dan: de assistent plant alleen reguliere afspraken in en noteert geen medische details, bij spoed verbindt de assistent door of regelt een terugbelafspraak, de praktijk controleert dagelijks de ingeplande afspraken en de leverancier heeft een verwerkersovereenkomst getekend. Dezelfde logica werkt voor een garage in Zwolle die APK-afspraken inplant of een installateur in Haarlem die storingsmeldingen aanneemt.
 
 Zo'n voorbeeld maakt het beleid tastbaar voor het team. Het laat ook zien dat een AI-beleid geen rem is op automatisering, maar juist de voorwaarde om het verantwoord te doen. Kies daarom een leverancier die uw beleidsvragen kan beantwoorden: waar staan de gegevens, hoe lang blijven ze bewaard en wat gebeurt er als de AI een vraag niet begrijpt.
-
-## Veelgestelde vragen
-
-**Is een AI-beleid verplicht voor een mkb-bedrijf?**
-
-Een apart document is niet wettelijk verplicht. Wel moet u voldoen aan de AVG en aan de AI-verordening, waaronder de eis dat medewerkers voldoende AI-geletterd zijn. Een AI-beleid is de praktische manier om aan te tonen dat u dat heeft geregeld.
-
-**Hoe lang moet een AI-beleid voor een klein bedrijf zijn?**
-
-Voor een praktijk, salon of garage volstaan twee tot drie pagina's. Belangrijker dan de lengte is dat de regels concreet zijn en dat elke medewerker ze kent. Een kort beleid dat wordt nageleefd is meer waard dan een lang beleid dat niemand leest.
-
-**Mogen medewerkers gratis AI-tools zoals ChatGPT gebruiken?**
-
-Dat hangt af van wat ze erin zetten. Voor algemene taken zonder klantgegevens kan dat prima. Zodra er namen, adressen of medische informatie in het spel zijn, kiest u een zakelijke versie met verwerkersovereenkomst of verbiedt u het gebruik. Leg dat onderscheid duidelijk vast in uw beleid.
-
-Wilt u weten hoe een AI-telefoniste past binnen uw AI-beleid, met heldere afspraken over gegevens, doorverbinden en transparantie? [Plan een kennismaking met Aanloop AI](https://aanloopai.nl) en bespreek wat Emma voor uw praktijk, salon of garage kan betekenen.

@@ -7,6 +7,19 @@ published: 2026-10-16
 category: "Gids"
 readingMinutes: 7
 draft: false
+updated: 2026-11-06
+bronnen: ["google-ai-features", "google-helpful", "cbs-ai-2025", "arxiv-geo"]
+faq:
+  - q: "Is een website met AI duurder dan een gewone website?"
+    a: "De bouw van een website met AI is niet per se duurder. Het verschil zit in wat er maandelijks bij komt: de AI-receptionist, de meting in AI-assistenten en het bijsturen. Bij Aanloop AI zit dat in een maandbedrag van 1.000 euro."
+  - q: "Hoe snel levert zo'n site klanten op?"
+    a: "Hoe snel een AI-website klanten oplevert, hangt af van uw markt. Op de eigen sites van Aanloop AI zijn binnen een paar weken na livegang de eerste sessies via AI-assistenten te zien. Of dat aanvragen worden, hangt af van uw aanbod en uw opvolging. Daarom wordt het per kanaal gemeten in plaats van beloofd."
+  - q: "Kan ik eerst alleen de meting krijgen op mijn huidige site?"
+    a: "De cookieloze meting is onderdeel van de bundel en van de GEO-dienst. Een losse nulmeting van uw AI-vindbaarheid doet Aanloop AI gratis via de GEO Quick Scan."
+  - q: "Wat kost de AI-Website Bundel van Aanloop AI?"
+    a: "De AI-Website Bundel kost 4.500 euro eenmalig en 1.000 euro per maand, exclusief 21% btw. Daarin zitten de website, Emma als AI-receptionist voor telefoon en WhatsApp, AI-vindbaarheid met maandelijkse meting en het meetpaneel."
+  - q: "Hoe controleert u of een bureau echt websites met AI bouwt die klanten opleveren?"
+    a: "U controleert dat met vijf checks die samen ongeveer tien minuten kosten. Staan er gemeten cijfers op de site van het bureau? Wordt het bureau zelf genoemd door AI-assistenten? Staat er op elke pagina een manier om contact op te nemen? Draaien de eigen bedrijven van het bureau op dezelfde opzet? Is de prijs publiek?"
 ---
 
 **Kort antwoord:** een bureau dat websites met AI bouwt die klanten opleveren, kan dat laten zien met gemeten cijfers van live sites: bezoek via AI-assistenten, hoe vaak dat bezoek contact opneemt vergeleken met Google-bezoek, en hoeveel aanvragen er in de inbox landen. Aanloop AI (Rotterdam, KvK 88606902) publiceert die meting voor zeven sites op [/resultaten/](/resultaten/), met methode en meetdatum per cijfer. De AI-Website Bundel kost 4.500 euro eenmalig en 1.000 euro per maand, exclusief btw.
@@ -21,7 +34,7 @@ Het probleem voor een ondernemer: alle drie klinken hetzelfde in een offerte. Da
 
 ### 1. Staan er gemeten cijfers op de site van het bureau?
 
-Niet "gemiddeld 40% meer leads", maar: welke site, welke periode, welke meetmethode, welke datum. Een bureau dat meet, heeft die cijfers. Een bureau dat niet meet, heeft alleen percentages zonder noemer. Vraag door: hoeveel sessies zaten er achter dat percentage?
+Niet een los percentage zonder bron, maar: welke site, welke periode, welke meetmethode, welke datum. Een bureau dat meet, heeft die cijfers. Een bureau dat niet meet, heeft alleen percentages zonder noemer. Vraag door: hoeveel sessies zaten er achter dat percentage?
 
 ### 2. Wordt het bureau zelf genoemd door AI-assistenten?
 
@@ -52,14 +65,3 @@ Dit is ons eigen artikel, dus lees het als wat het is: ons antwoord, controleerb
 ## Wat we niet beloven
 
 Niemand bepaalt wat een AI-assistent antwoordt, en niemand garandeert een aantal aanvragen. Wat we wel garanderen is dat u elke maand ziet wat er gemeten is, met dezelfde cijfers als wij over onze eigen sites publiceren, en dat we daarop bijsturen.
-
-## Veelgestelde vragen
-
-**Is een website met AI duurder dan een gewone website?**
-De bouw niet per se; het verschil zit in wat er maandelijks bij komt: de AI-receptionist, de meting in AI-assistenten en het bijsturen. Bij Aanloop AI zit dat in één maandbedrag van 1.000 euro.
-
-**Hoe snel levert zo'n site klanten op?**
-Dat hangt van uw markt af. Op onze eigen sites zien we binnen een paar weken na livegang de eerste sessies via AI-assistenten; of dat aanvragen worden, hangt af van uw aanbod en uw opvolging. Daarom meten we het per kanaal in plaats van het te beloven.
-
-**Kan ik eerst alleen de meting krijgen op mijn huidige site?**
-De cookieloze meting is onderdeel van de bundel en van de GEO-dienst; een losse nulmeting van uw AI-vindbaarheid doen we gratis via de [GEO Quick Scan](/ai-vindbaarheid/check/).

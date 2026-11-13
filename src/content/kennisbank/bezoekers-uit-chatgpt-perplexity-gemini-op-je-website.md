@@ -7,6 +7,21 @@ published: 2026-10-16
 category: "AI-vindbaarheid"
 readingMinutes: 8
 draft: false
+updated: 2026-11-06
+bronnen: ["google-ai-features", "arxiv-geo", "google-helpful"]
+faq:
+  - q: "Hoe zie ik of mijn site al AI-bezoek krijgt?"
+    a: "U ziet AI-bezoek in uw analytics aan verwijzers zoals chatgpt.com, perplexity.ai, gemini.google.com, copilot.microsoft.com of claude.ai. Staan die er niet, dan wordt uw site niet als bron gebruikt, of uw meting filtert ze weg."
+  - q: "Is AI-vindbaarheid hetzelfde als SEO?"
+    a: "AI-vindbaarheid is deels hetzelfde als SEO. Dezelfde autoriteit, structuur en snelheid helpen bij beide. Het verschil is dat het bij Google gaat om ranken in een lijst en bij AI-assistenten om genoemd worden in het antwoord zelf, wat letterlijke antwoordpagina's en citeerbare feiten vraagt."
+  - q: "Wat kost het om AI-vindbaarheid te laten verzorgen?"
+    a: "De AI-Website Bundel kost 4.500 euro eenmalig en 1.000 euro per maand, exclusief btw. Die bundel bevat website, Emma, AI-vindbaarheid en meetpaneel. Los kost GEO Maandelijks 595 euro per maand. De nulmeting via de GEO Quick Scan is gratis."
+  - q: "Hoe komen bezoekers uit ChatGPT, Perplexity en Gemini op mijn website?"
+    a: "Bezoekers komen op uw website als een AI-assistent uw pagina als bron gebruikt in zijn antwoord en de gebruiker op die bronlink klikt. Dat gebeurt vooral bij pagina's die één concrete vraag letterlijk beantwoorden, bij datasets en feitenpagina's met bron, en als AI-crawlers de site mogen lezen."
+  - q: "Hoeveel bezoek krijgt een website uit AI-assistenten?"
+    a: "Het bezoek uit AI-assistenten is klein in aantal, maar neemt op vier van de vijf gemeten sites vaker contact op dan Google-bezoek. Een assistent toont drie tot vijf bronnen en de meeste gebruikers klikken niet door. Wie wel doorklikt, had een concrete vraag."
+  - q: "Wat werkt niet om bezoek uit AI-assistenten te krijgen?"
+    a: "Meer blogartikelen zonder concrete vraag werken niet, en een AI-vindbaarheid-plugin zonder inhoud ook niet. Beloftes over citaties binnen zes weken zijn onbetrouwbaar, want niemand bepaalt wat een AI-assistent antwoordt."
 ---
 
 **Kort antwoord:** bezoekers uit ChatGPT, Perplexity en Gemini komen op uw website als een AI-assistent uw pagina als bron gebruikt in zijn antwoord. Dat gebeurt vooral bij pagina's die één concrete vraag letterlijk beantwoorden, bij datasets en feitenpagina's met bron, en als AI-crawlers de site mogen lezen (robots, headers, llms.txt). Op de zeven sites die Aanloop AI bouwt en meet, is dat bezoek klein in aantal maar neemt het op vier van de vijf gemeten sites vaker contact op dan Google-bezoek. De meting staat op [/resultaten/](/resultaten/).
@@ -54,14 +69,3 @@ Een vaste set vragen aan Gemini en ChatGPT, elke week dezelfde, en tellen of de 
 ## Wat niet werkt
 
 Meer blogartikelen zonder concrete vraag. Een "AI-vindbaarheid"-plugin zonder inhoud. Beloftes over "citaties binnen zes weken": niemand bepaalt wat een AI-assistent antwoordt. En cijfers zonder noemer: 50% van zes sessies is iets anders dan 50% van zeshonderd.
-
-## Veelgestelde vragen
-
-**Hoe zie ik of mijn site al AI-bezoek krijgt?**
-Kijk in uw analytics naar verwijzers met chatgpt.com, perplexity.ai, gemini.google.com, copilot.microsoft.com of claude.ai. Staan die er niet, dan wordt uw site niet als bron gebruikt, of uw meting filtert ze weg.
-
-**Is dit hetzelfde als SEO?**
-Deels. Dezelfde autoriteit, structuur en snelheid helpen bij beide. Het verschil: bij Google gaat het om ranken in een lijst, bij AI-assistenten om genoemd worden in het antwoord zelf. Dat vraagt letterlijke antwoordpagina's en citeerbare feiten.
-
-**Wat kost het om dit te laten doen?**
-Als onderdeel van de [AI-Website Bundel](/diensten/ai-website-bundel-mkb-nederland/) (website + Emma + AI-vindbaarheid + meetpaneel): 4.500 euro eenmalig en 1.000 euro per maand, exclusief btw. Los: [GEO Maandelijks](/ai-vindbaarheid/) 595 euro per maand. De nulmeting via de GEO Quick Scan is gratis.

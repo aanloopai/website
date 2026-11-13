@@ -7,6 +7,17 @@ published: 2026-10-10
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-verwerker", "ro-privacy", "ec-ai-act"]
+faq:
+  - q: "Is AI online marketing ook iets voor een klein bedrijf in Tilburg?"
+    a: "Ja. Juist kleine bedrijven hebben weinig tijd en winnen veel bij het automatiseren van terugkerend werk. Begin met één toepassing, zoals het opvangen van gemiste oproepen, en breid pas uit als u het effect ziet."
+  - q: "Moet ik klanten vertellen dat ze met een AI praten?"
+    a: "Ja, transparantie is een belangrijk uitgangspunt in de AI-verordening en past bij de AVG. Laat de assistent zich aan het begin van het gesprek duidelijk als AI-telefoniste voorstellen, en vermeld het gebruik in uw privacyverklaring."
+  - q: "Kan een AI-telefoniste mijn eigen contact met klanten vervangen?"
+    a: "Nee. Ze vangt op wat u niet kunt beantwoorden en plant afspraken in. Persoonlijke gesprekken, advies en behandelingen blijven uw werk. Zo houdt u tijd over voor wat u het beste doet."
+  - q: "Welke regels gelden voor persoonsgegevens bij AI-marketing?"
+    a: "In de AVG staat wat organisaties en bedrijven met persoonsgegevens mogen, ook als u klantgegevens in een marketingtool gebruikt. Laat u een leverancier gegevens verwerken, dan moet u een verwerkersovereenkomst met hem sluiten."
 ---
 
 Een fysiotherapeut in de Reeshof staat de hele ochtend achter de behandeltafel. Een installateur in Berkel-Enschot ligt onder een gootsteen. Een kapster in het centrum van Tilburg heeft een föhn in de hand. Intussen investeren ze in een website, advertenties en sociale media, en rinkelt de telefoon zonder dat iemand opneemt.
@@ -56,16 +67,5 @@ De beller krijgt direct antwoord, ook 's avonds of in het weekend, en u ziet daa
 Bij AI-marketing gelden de AVG en de Europese AI-verordening. Wie gesprekken of klantgegevens verwerkt, heeft een grondslag, een verwerkersovereenkomst en transparantie nodig. Klanten moeten weten dat ze met een AI-assistent praten. Laat dit vooraf controleren en leg het vast in uw privacyverklaring.
 
 Vraag elke leverancier waar gegevens worden opgeslagen, hoe lang ze bewaard blijven en wie er toegang toe heeft. Gaat het om zorgpraktijken, wees dan extra terughoudend met gezondheidsgegevens. Bij twijfel is advies van een privacyjurist of de Autoriteit Persoonsgegevens de juiste route.
-
-## Veelgestelde vragen
-
-**Is AI online marketing ook iets voor een klein bedrijf in Tilburg?**
-Ja. Juist kleine bedrijven hebben weinig tijd en winnen veel bij het automatiseren van terugkerend werk. Begin met één toepassing, zoals het opvangen van gemiste oproepen, en breid pas uit als u het effect ziet.
-
-**Moet ik klanten vertellen dat ze met een AI praten?**
-Ja, transparantie is een belangrijk uitgangspunt in de AI-verordening en past bij de AVG. Laat de assistent zich aan het begin van het gesprek duidelijk als AI-telefoniste voorstellen, en vermeld het gebruik in uw privacyverklaring.
-
-**Vervangt een AI-telefoniste mijn eigen contact met klanten?**
-Nee. Ze vangt op wat u niet kunt beantwoorden en plant afspraken in. Persoonlijke gesprekken, advies en behandelingen blijven uw werk. Zo houdt u tijd over voor wat u het beste doet.
 
 **Wilt u zien hoe Emma gemiste oproepen opvangt en afspraken inplant voor uw bedrijf in Tilburg? [Plan een vrijblijvende kennismaking op aanloopai.nl](https://aanloopai.nl).**

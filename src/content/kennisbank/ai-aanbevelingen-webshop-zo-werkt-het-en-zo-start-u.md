@@ -6,6 +6,17 @@ published: 2026-10-12
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-trackingcookies", "ro-privacy", "ap-verwerker"]
+faq:
+  - q: "Wat kosten AI-aanbevelingen voor een webshop?"
+    a: "Dat verschilt per aanbieder. Veel webshopplatformen hebben een basismodule of plug-in, externe aanbieders rekenen vaak op basis van het aantal bezoekers of bestellingen. Vraag vooraf om een proefperiode en een overzicht van wat het kost als uw webshop groeit."
+  - q: "Hoeveel bezoekers zijn nodig om te starten?"
+    a: "Voor modellen die op gedrag leren helpt veel verkeer. Met weinig bezoekers werken suggesties op basis van productkenmerken, zoals categorie en merk, of handmatig gekozen combinaties vaak beter. Start daarmee en schakel later over als de gegevens groeien."
+  - q: "Kan ik aanbevelingen gebruiken zonder toestemming van bezoekers?"
+    a: "Suggesties op basis van het product dat iemand nu bekijkt vragen geen persoonlijk profiel. Persoonlijke suggesties via cookies of trackers vragen vaak wel toestemming. Controleer uw situatie bij uw webshopaanbieder en de uitleg van de Autoriteit Persoonsgegevens."
+  - q: "Welke regels gelden voor cookies bij AI-aanbevelingen?"
+    a: "Om rechtsgeldige toestemming te krijgen voor trackingcookies moet u uw websitebezoekers informeren. Suggesties op basis van het product dat iemand nu bekijkt vragen geen persoonlijk profiel."
 ---
 
 Een kapster in Utrecht verkoopt naast haar behandelingen shampoo en stylingproducten online. Een garagehouder in Eindhoven biedt banden en onderhoudsproducten aan via een webshop. Beiden zien bezoekers binnenkomen, een product bekijken en weer weggaan zonder iets te kopen. Wat had die bezoeker nog meer kunnen interesseren?
@@ -63,17 +74,6 @@ Een werkbaar stappenplan:
 Voor een kapsalon in Utrecht met een productwebshop of een garage in Eindhoven die banden online verkoopt, zijn aanbevelingen een aanvulling op uw afspraken, geen vervanging. Online helpen suggesties klanten kiezen; telefonisch blijven vragen en afspraken binnenkomen die u mist als u bezig bent.
 
 Ook in Amsterdam, Rotterdam en kleinere plaatsen zien we dat ondernemers hun webshop en agenda als twee losse werelden behandelen. Een klant die online een product bekijkt, belt vaak daarna nog met een vraag of om een afspraak te maken. Als niemand opneemt, verdwijnt die klant alsnog. Een AI-telefoniste als Emma vangt die oproepen op en plant de afspraak, terwijl uw webshop de producten aanbeveelt.
-
-## Veelgestelde vragen
-
-**Wat kosten AI-aanbevelingen voor een webshop?**
-Dat verschilt per aanbieder. Veel webshopplatformen hebben een basismodule of plug-in, externe aanbieders rekenen vaak op basis van het aantal bezoekers of bestellingen. Vraag vooraf om een proefperiode en een overzicht van wat het kost als uw webshop groeit.
-
-**Heb ik veel bezoekers nodig om te starten?**
-Voor modellen die op gedrag leren helpt veel verkeer. Met weinig bezoekers werken suggesties op basis van productkenmerken, zoals categorie en merk, of handmatig gekozen combinaties vaak beter. Start daarmee en schakel later over als de gegevens groeien.
-
-**Mag ik aanbevelingen gebruiken zonder toestemming van bezoekers?**
-Suggesties op basis van het product dat iemand nu bekijkt vragen geen persoonlijk profiel. Persoonlijke suggesties via cookies of trackers vragen vaak wel toestemming. Controleer uw situatie bij uw webshopaanbieder en de uitleg van de Autoriteit Persoonsgegevens.
 
 ## Mis geen klant meer aan de telefoon
 

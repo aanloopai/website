@@ -46,7 +46,7 @@ const faqs = [
   },
   {
     q: 'Waar staat de data en wie is verwerker bij beide diensten?',
-    a: 'Beide noemen EU-hosting en een verwerkersovereenkomst. Aanloop AI noemt Amsterdam en Frankfurt als datacenters, een instelbare bewaartermijn van 7 tot 365 dagen en verwijdering binnen 24 uur. FysioTelefoniste noemt "EU-servers" zonder locatie, versleutelde opslag, en stelt dat zij geen medische dossiergegevens verwerken — alleen telefoonverkeer. Vraag bij beide de verwerkersovereenkomst op voordat u gezondheidsdata laat verwerken.',
+    a: 'Beide bieden een verwerkersovereenkomst. Aanloop AI draait niet uitsluitend in de EU: hosting bij Hetzner (Nuremberg) en Cloudflare (VS), met sub-verwerkers zoals ElevenLabs en OpenAI/Anthropic (VS), gedekt via standaardcontractbepalingen en/of het EU-US Data Privacy Framework; het register staat op /beveiliging/. Aanloop AI heeft geen SOC 2-, ISO 27001- of NEN 7510-certificaat. FysioTelefoniste noemt "EU-servers" zonder locatie, versleutelde opslag, en stelt dat zij geen medische dossiergegevens verwerken — alleen telefoonverkeer. Vraag bij beide de verwerkersovereenkomst op voordat u gezondheidsdata laat verwerken.',
   },
   {
     q: 'Meldt de AI aan de beller dat het een AI is?',
@@ -69,10 +69,10 @@ const comparison = [
   { feature: 'Proefperiode / garantie', emma: GARANTIE, ft: 'Geen geld-terug-termijn vermeld; wel geen abonnement ("Niet tevreden? Dan stop je gewoon.")', src: `${FT}/prijzen` },
   { feature: 'Praktijksoftware (Intramed)', emma: 'Geen kant-en-klare EPD-koppeling; integratie via REST API/webhook op aanvraag', ft: '"Wij bieden geen kant-en-klare Intramed-koppeling aan" — vier maatwerkroutes per Intramed-versie', src: `${FT}/blog/intramed-koppelen-ai-telefoniste` },
   { feature: 'WhatsApp', emma: 'Inbegrepen vanaf Groei (officiële WhatsApp Business API)', ft: `Niet vermeld op fysiotelefoniste.nl (${SCRAPED})`, src: FT },
-  { feature: 'Datalocatie / AVG', emma: 'EU-datacenters (Amsterdam/Frankfurt), encryptie, verwerkersovereenkomst, bewaartermijn 7-365 dagen instelbaar', ft: 'EU-servers, versleutelde opslag, verwerkersovereenkomst; "we verwerken geen medische dossiergegevens"', src: `${FT}/faq` },
+  { feature: 'Datalocatie / AVG', emma: 'Hetzner (Nuremberg), Cloudflare (VS); verwerkersovereenkomst; sub-verwerkers op /beveiliging/', ft: 'EU-servers, versleutelde opslag, verwerkersovereenkomst; "we verwerken geen medische dossiergegevens"', src: `${FT}/faq` },
   { feature: 'AI-disclosure (AI Act art. 50)', emma: 'Ja — opent met "Emma, de AI-assistent van …"; bevestigt AI te zijn als gevraagd', ft: `Niet vermeld op fysiotelefoniste.nl (${SCRAPED})`, src: FT },
   { feature: 'Wie beheert de bot', emma: 'Aanloop AI bouwt, traint en optimaliseert maandelijks', ft: 'Flireo B.V. bouwt op maat; aanpassingen inbegrepen ("je geeft het door en we passen de AI aan")', src: `${FT}/faq` },
-  { feature: 'Live binnen', emma: '7 werkdagen (Groei/Compleet begeleid)', ft: '3 werkdagen na het kennismakingsgesprek', src: `${FT}/faq` },
+  { feature: 'Live binnen', emma: 'Start: self-serve; Groei/Compleet: opzet door ons team, doorlooptijd in het gesprek', ft: '3 werkdagen na het kennismakingsgesprek', src: `${FT}/faq` },
   { feature: 'Klantcases / reviews', emma: 'Geen klantaantallen of reviews geclaimd — zie /vertrouwen/ "wat wij níet claimen"', ft: `Geen klantnamen of testimonials aangetroffen (${SCRAPED})`, src: FT },
   { feature: 'Bedrijf', emma: 'Aanloop AI, Rotterdam, KvK 88606902', ft: 'Flireo B.V., Deventer, KvK 94622868', src: `${FT}/over-ons` },
 ];

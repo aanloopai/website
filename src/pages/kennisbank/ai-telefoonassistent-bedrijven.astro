@@ -3,15 +3,15 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 
 const faqItems = [
   { question: 'Wat is een AI telefoonassistent?', answer: 'Een AI telefoonassistent is een geautomatiseerd systeem dat inkomende telefoongesprekken beantwoordt, begrijpt en afhandelt — zonder tussenkomst van een mens. Het systeem spreekt vloeiend Nederlands, begrijpt uw diensten en kan afspraken inplannen, vragen beantwoorden en leads doorsturen.' },
-  { question: 'Hoeveel kost een AI telefoniste voor mijn bedrijf?', answer: 'Een AI telefoniste bij Aanloop AI kost vanaf €149 per maand voor het Start-pakket (300 belminuten). Het Groei-pakket met WhatsApp en CRM-integratie kost €299 per maand. Voor onbeperkte gesprekken is er het Compleet-pakket voor €497 per maand. Vergeleken met een parttime receptioniste (€1.500–€2.500/maand exclusief werkgeverslasten) bespaart u direct. Training en support zijn inbegrepen; bij Groei en Compleet is een eenmalige setup van toepassing — op aanvraag. Op elk pakket: 14 dagen niet goed, geld terug.' },
-  { question: 'Kan een AI telefoonassistent ook buiten kantooruren werken?', answer: 'Ja, dat is juist het grote voordeel. Een AI telefoonassistent werkt 24/7 — weekenden, avonden en feestdagen inbegrepen. Zo mist u nooit een lead, ook niet buiten kantoortijd. Onderzoek toont dat 30-40% van inkomende zakelijke calls buiten standaard kantooruren binnenkomt of bij gemiste oproepen niet wordt teruggebeld.' },
+  { question: 'Hoeveel kost een AI telefoniste voor mijn bedrijf?', answer: 'Een AI telefoniste bij Aanloop AI kost vanaf €149 per maand voor het Start-pakket (300 belminuten). Het Groei-pakket met WhatsApp en CRM-integratie kost €299 per maand. Voor onbeperkte gesprekken is er het Compleet-pakket voor €497 per maand. Zet dat naast de loonkosten van een parttime receptioniste (inclusief werkgeverslasten) om te zien wat het u scheelt. Training en support zijn inbegrepen; bij Groei en Compleet geldt een eenmalige setup (bedrag op aanvraag). Op elk pakket: 14 dagen niet goed, geld terug.' },
+  { question: 'Kan een AI telefoonassistent ook buiten kantooruren werken?', answer: 'Ja, dat is juist het grote voordeel. Een AI telefoonassistent werkt 24/7 — weekenden, avonden en feestdagen inbegrepen. Zo mist u nooit een lead, ook niet buiten kantoortijd. Oproepen buiten kantooruren of tijdens drukte worden bij veel bedrijven niet teruggebeld.' },
   { question: 'Spreekt de AI telefoniste Nederlands?', answer: 'Ja, onze AI telefoonassistenten spreken vloeiend Nederlands — inclusief regionale accenten en informele spreektaal. We gebruiken geavanceerde voice AI technologie (ElevenLabs) voor een natuurlijke, menselijke stem. De AI kan ook automatisch overschakelen naar Engels, Duits of andere talen wanneer de beller een andere taal spreekt.' },
-  { question: 'Hoe lang duurt het om een AI telefoonassistent live te zetten?', answer: 'Bij Aanloop AI is uw AI telefoonassistent gemiddeld binnen 7 werkdagen live. We configureren het systeem, trainen het op uw diensten en testen uitgebreid voor go-live.' },
+  { question: 'Hoe lang duurt het om een AI telefoonassistent live te zetten?', answer: 'Bij Aanloop AI configureren we het systeem, trainen we het op uw diensten en testen we voor go-live. De doorlooptijd hangt af van uw kennisbank en koppelingen.' },
   { question: 'Werkt een AI telefoniste ook met mijn bestaande telefoonsysteem?', answer: 'Ja. We koppelen de AI telefoonassistent aan uw bestaande telefoonnummer via een eenvoudige omleiding. U hoeft uw nummer niet te wijzigen en uw klanten merken niets van de overstap.' },
-  { question: 'Welke telefonie-providers koppelt een AI-telefoonassistent aan in Nederland?', answer: 'Emma AI koppelt aan alle Nederlandse zakelijke telefonie-providers via SIP-trunk: KPN EEN, VoIP.ms, Anywhere365, Voys, Belsimpel Zakelijk, Bizner, RoutIT, Speakup, Cloud9. Geen vendor-lock-in: u behoudt uw bestaande nummer en provider. Migratie duurt 1-3 werkdagen, gefaseerde overname mogelijk (eerst overflow, dan primair).' },
-  { question: 'Hoe lang duurt het om een AI-telefoonassistent te trainen op mijn bedrijfsspecifieke vragen?', answer: 'Standaard onboarding 7 werkdagen: dag 1-2 kennisbank-analyse uit uw website, FAQs en handleidingen, dag 3-4 maatwerk-flows (afspraken, escalatie, openingstijden), dag 5 testfase met u en team, dag 6-7 finetuning op echte gesprekken. Wij hertrainen automatisch wekelijks op basis van nieuwe gesprekken — uw assistant wordt elke week beter zonder dat u handmatig hoeft te updaten.' },
+  { question: 'Welke telefonie-providers koppelt een AI-telefoonassistent aan in Nederland?', answer: 'Een AI-telefoonassistent koppelt doorgaans aan zakelijke telefonie-providers via SIP-trunk of doorschakeling. Vraag bij elke aanbieder welke providers worden ondersteund en of u uw bestaande nummer en provider kunt houden. Een gefaseerde overname (eerst overflow, dan primair) is vaak mogelijk.' },
+  { question: 'Hoe lang duurt het om een AI-telefoonassistent te trainen op mijn bedrijfsspecifieke vragen?', answer: 'Onboarding bestaat uit kennisbank-analyse op basis van uw website, FAQs en handleidingen, het inrichten van maatwerk-flows (afspraken, escalatie, openingstijden), een testfase met u en uw team en finetuning op echte gesprekken. De duur hangt af van de omvang van uw kennisbank en uw koppelingen.' },
   { question: 'Hoe werkt de spraaktechnologie achter een AI telefoonassistent?', answer: 'Een AI telefoonassistent combineert drie technologielagen: speech-to-text (STT) zet gesproken Nederlands om in tekst, een Large Language Model (LLM zoals GPT-4 of Claude) begrijpt de intentie en bepaalt het antwoord, en text-to-speech (TTS) genereert een natuurlijke stem. De volledige cyclus verloopt met een latency van 0,8-1,5 seconden — vergelijkbaar met een natuurlijke gesprekspauze.' },
-  { question: 'Is een AI telefoonassistent AVG-compliant?', answer: 'Ja, mits correct ingericht. Volgens de Autoriteit Persoonsgegevens moet u bellers informeren dat het gesprek door AI wordt afgehandeld en eventueel wordt opgenomen, een verwerkersovereenkomst (DPA) afsluiten met de leverancier, een grondslag voor verwerking hebben, en data uitsluitend binnen de EU verwerken. Aanloop AI levert standaard een DPA en verwerkt alle gespreksdata binnen de EU.' },
+  { question: 'Is een AI telefoonassistent AVG-compliant?', answer: 'Ja, mits correct ingericht. Volgens de Autoriteit Persoonsgegevens moet u bellers informeren dat het gesprek door AI wordt afgehandeld en eventueel wordt opgenomen, een verwerkersovereenkomst (DPA) afsluiten met de leverancier, een grondslag voor verwerking hebben, en vastleggen waar de data wordt verwerkt (doorgifte buiten de EU vraagt extra waarborgen). Aanloop AI levert standaard een verwerkersovereenkomst en publiceert op aanloopai.nl/beveiliging welke leveranciers gegevens verwerken, inclusief locatie.' },
   { question: 'Valt een AI telefoonassistent onder de EU AI Act?', answer: 'Ja, als systeem dat met natuurlijke personen communiceert valt een AI telefoonassistent onder de transparantieverplichting van de EU AI Act (beperkt risico). Dit betekent dat bellers geïnformeerd moeten worden dat zij met een AI-systeem spreken. Het is geen hoog-risico-toepassing zoals HR-screening of kredietbeoordeling, dus een conformity assessment is niet vereist.' },
   { question: 'Hoeveel gemiste oproepen kost mijn bedrijf nu echt?', answer: 'Reken het zelf uit: aantal gemiste calls per maand × conversiekans per call × gemiddelde klantwaarde. Een installatiebedrijf dat 40 calls per maand mist, met 25% conversiekans en €1.200 gemiddelde opdrachtwaarde, loopt €12.000 omzet per maand mis. Voor veel MKB-bedrijven is dit het grootste verborgen lek in de verkooppijplijn.' },
   { question: 'Kan een AI telefoonassistent doorverbinden naar een medewerker?', answer: 'Ja. De AI handelt routinevragen zelfstandig af maar verbindt intelligent door naar een mens bij complexe vragen, klachten, expliciet verzoek om een medewerker of negatief sentiment. De volledige gesprekscontext wordt meegegeven, zodat de klant zijn verhaal niet opnieuw hoeft te doen.' },
@@ -39,7 +39,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
 
 <BaseLayout
   title="AI Telefoonassistent voor Bedrijven — Complete Gids 2026"
-  description="Ontdek hoe een AI telefoonassistent uw bedrijf 24/7 bereikbaar maakt. Kosten, voordelen en implementatie. Aanloop AI — live in 7 werkdagen."
+  description="Ontdek hoe een AI telefoonassistent uw bedrijf 24/7 bereikbaar maakt. Kosten, voordelen en implementatie. Aanloop AI."
   schema={[articleSchema, speakableSchema]}
   faqSchema={faqItems}
 >
@@ -96,9 +96,9 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
             <ul class="space-y-2 text-sm text-slate-700">
               <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> AI telefoonassistent werkt 24/7 — ook buiten kantooruren</li>
               <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Spreekt vloeiend Nederlands, begrijpt context en intent</li>
-              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Gemiddeld 68% minder gemiste calls</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Minder gemiste calls, ook buiten kantooruren</li>
               <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Vanaf €149/maand — goedkoper dan een parttime receptioniste</li>
-              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Live in gemiddeld 7 werkdagen bij Aanloop AI</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> Begeleide onboarding bij Aanloop AI</li>
             </ul>
           </div>
 
@@ -131,7 +131,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             {[
               { icon: '📞', title: '24/7 bereikbaar', desc: 'Nooit meer een gemiste call — ook avonden, weekenden en feestdagen.' },
-              { icon: '💶', title: 'Kostenbesparing', desc: 'Goedkoper dan een parttimekracht. Gemiddeld €8.000–€15.000 besparing per jaar.' },
+              { icon: '💶', title: 'Kostenbesparing', desc: 'Vaak goedkoper dan een parttimekracht; reken het na met uw eigen loonkosten.' },
               { icon: '📅', title: 'Directe afspraakplanning', desc: 'De AI plant afspraken direct in uw agenda — zonder handmatige stap.' },
               { icon: '📊', title: 'Leadregistratie', desc: 'Elke inkomende lead wordt gelogd en doorgestuurd naar uw CRM of inbox.' },
               { icon: '🔒', title: 'AVG-compliant', desc: 'Uw gespreksdata blijft in Nederland. Wij werken met GDPR-conforme oplossingen.' },
@@ -150,7 +150,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
               { sector: '🏗️ Bouw & Installatie', desc: 'Aannemers en installateurs ontvangen offerteaanvragen en monteursboekingen terwijl ze op de werf staan. Geen gemiste kansen meer.', link: '/sectoren/bouw/' },
               { sector: '🏠 Vastgoed & Makelaars', desc: 'Bezichtigingsverzoeken worden 24/7 aangenomen en ingepland. Leads die buiten kantooruren bellen raken niet verloren.', link: '/sectoren/vastgoed/' },
               { sector: '🍽️ Horeca & Restaurants', desc: 'Reserveringen, no-show bevestigingen en menuvragen — volledig geautomatiseerd. Uw personeel kan zich richten op de gast.', link: '/sectoren/horeca/' },
-              { sector: '⚕️ Zorg & Welzijn', desc: 'Afspraken plannen, herhaalrecepten doorsturen en algemene vragen beantwoorden — AVG-compliant en NEN 7510 bewust.', link: '/sectoren/zorg/' },
+              { sector: '⚕️ Zorg & Welzijn', desc: 'Afspraken plannen, herhaalrecepten doorsturen en algemene vragen beantwoorden — AVG-conform werken; op verzoek met een NEN 7510-bewuste opzet.', link: '/sectoren/zorg/' },
               { sector: '⚖️ Juridisch & Advocatuur', desc: 'Intake-screening via telefoon. De AI stelt kwalificerende vragen en stuurt alleen relevante cases door.', link: '/sectoren/ai-voor-advocaten/' }].map(ex => (
               <div class="bg-white border border-slate-200 rounded-xl p-5">
                 <p class="font-bold text-navy text-sm mb-2">{ex.sector}</p>
@@ -165,9 +165,9 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
             {[
               { name: 'Start', price: '€149', per: '/maand', desc: '300 belminuten/maand, telefoon, self-serve, geen setup', highlight: false },
-              { name: 'Groei', price: '€299', per: '/maand', desc: '1.000 belminuten, WhatsApp inbegrepen, CRM-koppeling, tot 3 callscripts', highlight: true },
+              { name: 'Groei', price: '€299', per: '/maand', desc: '1.000 belminuten, WhatsApp inbegrepen, CRM-koppeling', highlight: true },
               { name: 'Compleet', price: '€497', per: '/maand', desc: 'Onbeperkte gesprekken, multi-number, workflows op maat, prioriteit support', highlight: false },
-              { name: 'Enterprise', price: 'Op maat', per: '', desc: 'Multi-locatie, SLA 99.9%, dedicated account manager, white-label', highlight: false }].map(p => (
+              { name: 'Enterprise', price: 'Op maat', per: '', desc: 'Maatwerk op offerte: SLA, vaste contactpersoon, white-label', highlight: false }].map(p => (
               <div class={`border rounded-xl p-5 text-center ${p.highlight ? 'border-brand-indigo bg-brand-indigo/5' : 'border-slate-200 bg-slate-50'}`}>
                 <p class="text-xs font-medium text-slate-500 mb-2">{p.name}</p>
                 <p class="text-2xl font-bold text-navy">{p.price}<span class="text-sm text-slate-500">{p.per}</span></p>
@@ -175,7 +175,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
               </div>
             ))}
           </div>
-          <p class="text-sm text-slate-500 mb-4">Alle prijzen exclusief 21% btw. Eenmalige setup vergoeding van toepassing bij Groei en Compleet — op aanvraag. Op elk pakket: 14 dagen niet goed, geld terug.</p>
+          <p class="text-sm text-slate-500 mb-4">Alle prijzen exclusief 21% btw. Eenmalige setup: €495 bij Groei, €795 bij Compleet. Op elk pakket: 14 dagen niet goed, geld terug.</p>
 
           <div class="bg-brand-emerald/5 border border-brand-emerald/20 rounded-xl p-5 mb-8">
             <p class="font-bold text-navy text-sm mb-2">💡 Vergelijk: AI vs. menselijke receptioniste</p>
@@ -207,7 +207,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
               </thead>
               <tbody class="divide-y divide-slate-100">
                 {[
-                  ['Voicemail', '€0', 'Altijd', 'Neemt alleen op, handelt niets af; ~70% belt niet terug'],
+                  ['Voicemail', '€0', 'Altijd', 'Neemt alleen op, handelt niets af; veel bellers bellen niet terug'],
                   ['Eigen receptionist (parttime)', '€1.500–€2.500', 'Kantooruren', 'Geen avond/weekend, ziekte, vakantie, inwerktijd'],
                   ['Telefonisch antwoordservice', '€0,80–€1,50 per call', '24/7', 'Geen kennis van uw bedrijf, alleen berichten aannemen'],
                   ['IVR-keuzemenu', '€20–€80', '24/7', 'Frustrerende menus, geen echte afhandeling'],
@@ -223,7 +223,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
               </tbody>
             </table>
           </div>
-          <p class="text-slate-700 leading-relaxed mb-4">De vergelijking laat zien waar een AI telefoonassistent het verschil maakt: hij combineert de 24/7-beschikbaarheid van een antwoordservice met de inhoudelijke kennis van een eigen medewerker — tegen een vaste, voorspelbare prijs. Voor de meeste MKB-bedrijven is de hybride aanpak optimaal: de AI handelt 70-85% van de routinegesprekken af en escaleert de rest naar uw team.</p>
+          <p class="text-slate-700 leading-relaxed mb-4">De vergelijking laat zien waar een AI telefoonassistent het verschil maakt: hij combineert de 24/7-beschikbaarheid van een antwoordservice met de inhoudelijke kennis van een eigen medewerker — tegen een vaste, voorspelbare prijs. Voor de meeste MKB-bedrijven is de hybride aanpak optimaal: de AI handelt routinegesprekken af en escaleert de rest naar uw team.</p>
           <p class="text-slate-700 leading-relaxed mb-4">Een antwoordservice blijft zinvol voor bedrijven met extreem lage belvolumes, en een eigen receptionist houdt waarde bij sterk relationeel klantcontact. Maar zodra u structureel calls mist of personeel duur wordt, kantelt de rekensom richting AI. Het Centraal Bureau voor de Statistiek meldt dat arbeidskosten in de Nederlandse dienstensector jaar op jaar stijgen — wat de relatieve aantrekkelijkheid van automatisering vergroot (zie <a href="https://www.cbs.nl/nl-nl/cijfers/detail/85619NED" rel="external" class="text-brand-indigo hover:underline">CBS Arbeidskosten</a>).</p>
 
           <h2 id="kpi" class="text-2xl font-bold text-navy mt-10 mb-4">7. KPI's: Hoe Meet u of het Werkt?</h2>
@@ -239,9 +239,9 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
               </thead>
               <tbody class="divide-y divide-slate-100">
                 {[
-                  ['Answer rate', 'Percentage opgenomen oproepen', '> 98%'],
-                  ['Containment rate', 'Gesprekken afgehandeld zonder escalatie', '70–85%'],
-                  ['Escalatieratio', 'Doorverbonden naar mens', '15–25% (dalend)'],
+                  ['Answer rate', 'Percentage opgenomen oproepen', 'Zo hoog mogelijk'],
+                  ['Containment rate', 'Gesprekken afgehandeld zonder escalatie', 'Eigen doel na nulmeting'],
+                  ['Escalatieratio', 'Doorverbonden naar mens', 'Hoger in het begin, dalend'],
                   ['Afspraak-conversie', 'Calls die tot een boeking leiden', 'Branchegebonden, meet baseline'],
                   ['Gemiddelde latency', 'Reactietijd AI per beurt', '< 1,5 sec'],
                 ].map(([k, w, s]) => (
@@ -254,7 +254,7 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
               </tbody>
             </table>
           </div>
-          <p class="text-slate-700 leading-relaxed mb-4">Reken de ROI concreet door. Stel: uw bedrijf mist 40 calls per maand. Met een conservatieve conversiekans van 20% en een gemiddelde klantwaarde van €900 vertegenwoordigt dat €7.200 aan misgelopen omzet. Een AI telefoonassistent die de helft van die calls converteert, levert €3.600 extra omzet per maand — ruim boven de abonnementskosten. Tel daar de bespaarde personeelskosten bij op en de terugverdientijd ligt voor de meeste MKB-bedrijven onder de twee maanden.</p>
+          <p class="text-slate-700 leading-relaxed mb-4">Reken de ROI concreet door. Stel: uw bedrijf mist 40 calls per maand. Met een conservatieve conversiekans van 20% en een gemiddelde klantwaarde van €900 vertegenwoordigt dat €7.200 aan misgelopen omzet. Een AI telefoonassistent die de helft van die calls converteert, levert €3.600 extra omzet per maand — ruim boven de abonnementskosten. Tel daar de bespaarde personeelskosten bij op en reken uit wanneer het zich terugverdient; dat hangt af van uw eigen cijfers.</p>
           <p class="text-slate-700 leading-relaxed mb-8">Belangrijk: meet eerst uw <strong>baseline</strong>. Hoeveel calls krijgt u nu, hoeveel mist u, en wat is uw huidige conversie? Veel bedrijven onderschatten het aantal gemiste oproepen omdat die simpelweg niet zichtbaar zijn in hun systeem. Een eenvoudige call-log-analyse over één maand maakt het lek meetbaar.</p>
 
           <h2 id="avg" class="text-2xl font-bold text-navy mt-10 mb-4">8. AVG, Gespreksopname en de EU AI Act</h2>
@@ -266,15 +266,15 @@ const speakableSchema = { '@context': 'https://schema.org', '@type': 'WebPage', 
               <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> <strong>Opname-melding:</strong> als u gesprekken opneemt, informeer de beller en bied een opt-out.</li>
               <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> <strong>Verwerkersovereenkomst (DPA):</strong> sluit een DPA af met uw AI-leverancier.</li>
               <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> <strong>Grondslag:</strong> baseer verwerking op uitvoering van een overeenkomst of gerechtvaardigd belang.</li>
-              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> <strong>Datalokatie:</strong> verwerk en bewaar gespreksdata uitsluitend binnen de EU.</li>
+              <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> <strong>Datalokatie:</strong> weet waar gespreksdata wordt verwerkt en bewaard; doorgifte buiten de EU vraagt waarborgen in de verwerkersovereenkomst.</li>
               <li class="flex items-start gap-2"><span class="text-brand-indigo mt-0.5">✓</span> <strong>Bewaartermijn:</strong> stel een korte, vastgelegde bewaartermijn in en honoreer verwijderverzoeken.</li>
             </ul>
           </div>
           <p class="text-slate-700 leading-relaxed mb-4">De Autoriteit Persoonsgegevens geeft praktische richtlijnen over het opnemen van telefoongesprekken en de informatieplicht die daarbij hoort (zie <a href="https://www.autoriteitpersoonsgegevens.nl/themas/werk-en-uitkering/controle-van-werknemers/controle-van-communicatiemiddelen" rel="external" class="text-brand-indigo hover:underline">Autoriteit Persoonsgegevens — opnemen van gesprekken</a>). Kort samengevat: opnemen mag, mits u een geldige grondslag heeft en de beller is geïnformeerd.</p>
           <p class="text-slate-700 leading-relaxed mb-4">Onder de <a href="https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai" rel="external" class="text-brand-indigo hover:underline">EU AI Act</a> valt een AI telefoonassistent in de categorie "beperkt risico". De kernverplichting is transparantie: de persoon aan de lijn moet weten dat hij met een AI-systeem communiceert. Een formele conformity assessment, zoals vereist voor hoog-risico-toepassingen (HR-werving, kredietscoring, biometrie), is voor klantgesprek-AI niet nodig. Wel verstandig: documenteer uw eigen risico-classificatie als bewijs van due diligence.</p>
-          <p class="text-slate-700 leading-relaxed mb-8">Aanloop AI levert standaard een Nederlandstalige verwerkersovereenkomst en verwerkt alle gespreksdata binnen de EU. Voor zorg- en juridische klanten is een NEN 7510-bewuste inrichting met audit-trail en role-based access mogelijk. Meer over de regelgeving leest u in onze gids <a href="/kennisbank/eu-ai-act-mkb-nederland-2026/" class="text-brand-indigo hover:underline">EU AI Act voor MKB</a> en <a href="/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/" class="text-brand-indigo hover:underline">AI & AVG-compliance</a>.</p>
+          <p class="text-slate-700 leading-relaxed mb-8">Aanloop AI levert standaard een Nederlandstalige verwerkersovereenkomst en publiceert op <a href="/beveiliging/" class="text-brand-indigo hover:underline">/beveiliging/</a> welke leveranciers gegevens verwerken en waar; een deel zit buiten de EU. Aanloop AI heeft zelf geen NEN 7510-certificaat. Voor zorg- en juridische klanten denken we op verzoek mee over een NEN 7510-bewuste inrichting; certificering ligt bij uw eigen organisatie. Meer over de regelgeving leest u in onze gids <a href="/kennisbank/eu-ai-act-mkb-nederland-2026/" class="text-brand-indigo hover:underline">EU AI Act voor MKB</a> en <a href="/kennisbank/ai-avg-gdpr-compliance-mkb-nederland/" class="text-brand-indigo hover:underline">AI & AVG-compliance</a>.</p>
 
-          <h2 id="implementatie" class="text-2xl font-bold text-navy mt-10 mb-4">9. Implementatie: Van 0 naar Live in 7 Werkdagen</h2>
+          <h2 id="implementatie" class="text-2xl font-bold text-navy mt-10 mb-4">9. Implementatie: Van 0 naar Live in 5 Stappen</h2>
           <div class="space-y-3 mb-8">
             {[
               { n: '1', t: 'Gratis AI Scan (dag 1)', d: 'We analyseren uw inkomende gesprekken, pijnpunten en wensen. Geheel gratis en vrijblijvend.' },

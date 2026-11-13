@@ -6,6 +6,17 @@ published: 2026-09-11
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ec-ai-literacy", "ap-verwerker"]
+faq:
+  - q: "Hoe lang duurt een AI workshop?"
+    a: "Meestal een dagdeel tot een volledige dag. Korter is te weinig om zelf aan de slag te gaan met eigen processen. Langer dan een dag is voor een eerste kennismaking zelden nodig; een vervolg is dan zinvoller dan een langere sessie."
+  - q: "Moet ik technische kennis hebben om mee te doen?"
+    a: "Nee. Een goede workshop is bedoeld voor ondernemers en medewerkers zonder IT-achtergrond. Kennis van het eigen werkproces is belangrijker dan kennis van software, omdat daar de automatiseringskansen zitten."
+  - q: "Kan een AI workshop ook op locatie in Groningen?"
+    a: "Ja. Een workshop op de eigen locatie heeft zelfs voordelen: het team werkt in de eigen omgeving, met eigen systemen en documenten, en er is geen reistijd. Zorg wel voor een rustige ruimte, laptops voor de deelnemers en een goede internetverbinding."
+  - q: "Moet mijn team AI-geletterd zijn volgens de AI-verordening?"
+    a: "Artikel 4 van de AI-verordening is sinds 2 februari 2025 van toepassing en gaat over AI-geletterdheid. Een workshop is een manier om daar invulling aan te geven."
 ---
 
 Steeds meer MKB-bedrijven in Groningen willen iets met AI, maar weten niet waar ze moeten beginnen. Een AI workshop is dan een logische eerste stap: in een dagdeel ontdek je wat kunstmatige intelligentie voor jouw bedrijf kan betekenen en waar het juist niets oplevert. Dit artikel legt uit wat een goede AI workshop in Groningen inhoudt, voor wie hij geschikt is en hoe je een echte workshop onderscheidt van een verkooppraatje.
@@ -26,7 +37,7 @@ In een AI workshop in Groningen leer je hoe taalmodellen werken, welke taken in 
 
 **Kansen in je eigen processen.** Het grootste deel van de workshop gaat over het werk dat deelnemers dagelijks doen: e-mails sorteren en beantwoorden, gegevens uit facturen of formulieren overnemen, offertes voorbereiden of rapportages opstellen. Per taak beoordeel je hoe vaak die voorkomt, hoeveel tijd hij kost en hoe erg een fout is.
 
-**Regels en risico's.** Klantgegevens in een AI-tool plakken is onder de AVG niet zonder meer toegestaan. De Europese AI-verordening verplicht organisaties bovendien sinds februari 2025 om te zorgen dat medewerkers die met AI werken daar voldoende kennis over hebben. Een workshop is een praktische manier om die verplichting in te vullen.
+**Regels en risico's.** Wees voorzichtig met klantgegevens in een AI-tool en sluit een verwerkersovereenkomst met een leverancier die ze verwerkt. Artikel 4 van de Europese AI-verordening is sinds 2 februari 2025 van toepassing en gaat over AI-geletterdheid. Een workshop is een praktische manier om daar invulling aan te geven.
 
 **Een eerste stap.** De sessie eindigt met een keuze: welke taak pakken we als eerste aan, wie is eigenaar en wat is nodig om te starten?
 
@@ -60,18 +71,5 @@ Een workshop is geen doel op zich. Het gevaar van veel AI-sessies is dat ze insp
 
 Of je nu in Groningen zit of in Rotterdam, de volgorde is hetzelfde: eerst begrijpen, dan kiezen, dan klein bouwen. Bedrijven die die volgorde omdraaien, kopen vaak een tool die niemand gebruikt.
 
-## Veelgestelde vragen
-
-**Hoe lang duurt een AI workshop?**
-
-Meestal een dagdeel tot een volledige dag. Korter is te weinig om zelf aan de slag te gaan met eigen processen. Langer dan een dag is voor een eerste kennismaking zelden nodig; een vervolg is dan zinvoller dan een langere sessie.
-
-**Moet ik technische kennis hebben om mee te doen?**
-
-Nee. Een goede workshop is bedoeld voor ondernemers en medewerkers zonder IT-achtergrond. Kennis van het eigen werkproces is belangrijker dan kennis van software, omdat daar de automatiseringskansen zitten.
-
-**Kan een AI workshop ook op locatie in Groningen?**
-
-Ja. Een workshop op de eigen locatie heeft zelfs voordelen: het team werkt in de eigen omgeving, met eigen systemen en documenten, en er is geen reistijd. Zorg wel voor een rustige ruimte, laptops voor de deelnemers en een goede internetverbinding.
 
 Wil je weten wat een AI workshop voor jouw bedrijf in Groningen kan opleveren? AanloopAI geeft workshops op locatie in Groningen en werkt vanuit Rotterdam met MKB-bedrijven door heel Nederland. Neem contact op voor een vrijblijvend gesprek over jullie processen en een programma op maat.

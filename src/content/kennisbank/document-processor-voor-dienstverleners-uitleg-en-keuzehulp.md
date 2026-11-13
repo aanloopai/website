@@ -6,6 +6,17 @@ published: 2026-09-16
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["kvk-bewaarplicht", "ap-verwerker", "ro-privacy"]
+faq:
+  - q: "Is een document processor hetzelfde als OCR?"
+    a: "Nee. OCR zet een afbeelding om in tekst en is één onderdeel van het geheel. Een document processor gaat verder: hij herkent het documenttype, haalt de juiste velden eruit en stuurt ze naar uw agenda, dossier of boekhouding."
+  - q: "Kan ik medische verwijsbrieven door AI laten verwerken?"
+    a: "Dat mag, mits u aan de AVG voldoet. Sluit een verwerkersovereenkomst met de leverancier, vraag naar opslag binnen de EU en een beveiligde verbinding, en vermeld het gebruik in uw privacyverklaring. Overleg bij twijfel met uw beroepsvereniging of een privacyjurist."
+  - q: "Is een document processor nodig als ik al een AI-telefoniste heb?"
+    a: "Niet per se. Emma lost het telefonische deel op en plant afspraken in. Is uw papierstroom klein, dan kunt u die prima handmatig blijven doen. Groeit de stapel of maakt u regelmatig overtypfouten, dan is een document processor de logische volgende stap."
+  - q: "Hoe lang moet ik mijn administratie bewaren?"
+    a: "Volgens de KVK bewaart u de basisgegevens van uw administratie 7 jaar. Vraag een leverancier daarom hoe lang documenten bewaard blijven en of u ze kunt exporteren."
 ---
 
 Een tandartspraktijk in Rotterdam krijgt dagelijks verwijsbrieven, verzekeringsoverzichten en leveranciersfacturen binnen. Een garage in Dordrecht ontvangt werkbonnen, keuringsrapporten en onderdelenfacturen. Een installateur in Utrecht werkt met offertes, opleverformulieren en garantiebewijzen. Al die documenten moeten worden gelezen, overgetypt en ergens opgeborgen, en dat gebeurt meestal tussen de klanten door.
@@ -47,9 +58,9 @@ Let bij een document processor op vier zaken: goede herkenning van Nederlandse d
 
 **Taal en documenttypen.** Veel tools zijn getraind op Engelstalige facturen. Test met uw eigen Nederlandse verwijsbrieven, werkbonnen en facturen, inclusief slechte scans en foto's van een telefoon.
 
-**Privacy.** Verwijsbrieven en dossiers bevatten gezondheidsgegevens; dat zijn bijzondere persoonsgegevens onder de AVG. Vraag om een verwerkersovereenkomst, opslag in de EU en de mogelijkheid om documenten na verwerking automatisch te verwijderen. De Autoriteit Persoonsgegevens houdt hier toezicht op.
+**Privacy.** Verwijsbrieven en dossiers bevatten gevoelige gegevens. Vraag om een verwerkersovereenkomst, opslag in de EU en de mogelijkheid om documenten na verwerking automatisch te verwijderen.
 
-**Bewaarplicht.** Uw administratie moet u volgens de Belastingdienst zeven jaar bewaren. Zorg dat verwerkte originelen veilig en doorzoekbaar blijven staan, ook als u later van tool wisselt.
+**Bewaarplicht.** Volgens de KVK bewaart u de basisgegevens van uw administratie 7 jaar. Zorg dat verwerkte originelen veilig en doorzoekbaar blijven staan, ook als u later van tool wisselt.
 
 **Koppelingen.** Zonder koppeling met agenda, klantsysteem en boekhoudpakket blijft u exporteren en importeren. Vraag concreet welke Nederlandse pakketten worden ondersteund.
 
@@ -67,18 +78,5 @@ Begin met één documentstroom die vaak voorkomt, bijvoorbeeld inkoopfacturen. V
 
 De winst zit niet alleen in tijd, maar in rust. Wie in de Randstad of daarbuiten een drukke praktijk of werkplaats runt, merkt vooral dat de stapel op het bureau niet meer groeit terwijl de telefoon gaat.
 
-## Veelgestelde vragen
-
-**Is een document processor hetzelfde als OCR?**
-
-Nee. OCR zet een afbeelding om in tekst en is één onderdeel van het geheel. Een document processor gaat verder: hij herkent het documenttype, haalt de juiste velden eruit en stuurt ze naar uw agenda, dossier of boekhouding.
-
-**Mag ik medische verwijsbrieven door AI laten verwerken?**
-
-Dat mag, mits u aan de AVG voldoet: een verwerkersovereenkomst met de leverancier, opslag binnen de EU, een beveiligde verbinding en een vermelding in uw privacyverklaring. Overleg bij twijfel met uw beroepsvereniging of een privacyjurist.
-
-**Heb ik een document processor nodig als ik al een AI-telefoniste heb?**
-
-Niet per se. Emma lost het telefonische deel op en plant afspraken in. Is uw papierstroom klein, dan kunt u die prima handmatig blijven doen. Groeit de stapel of maakt u regelmatig overtypfouten, dan is een document processor de logische volgende stap.
 
 Wilt u weten hoe Emma en documentverwerking samen uw administratie ontlasten? Plan een vrijblijvend kennismakingsgesprek via [aanloopai.nl](https://aanloopai.nl) en we kijken samen naar uw documentstromen.

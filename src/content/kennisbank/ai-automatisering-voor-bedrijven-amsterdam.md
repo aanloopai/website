@@ -7,6 +7,17 @@ published: 2026-09-30
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ap-verwerker", "ro-privacy", "ec-ai-act"]
+faq:
+  - q: "Is AI-automatisering geschikt voor een klein bedrijf in Amsterdam?"
+    a: "Ja. Juist kleine teams zonder receptie profiteren het meest, omdat elke gemiste oproep bij hen direct een gat in de agenda betekent. Kant-en-klare oplossingen vragen geen programmeerkennis en zijn ontworpen voor bedrijven waar de eigenaar zelf de telefoon opneemt."
+  - q: "Wat kost AI-automatisering voor een mkb-bedrijf?"
+    a: "Dat hangt af van de route. Kant-en-klare toepassingen werken meestal met een maandabonnement, terwijl maatwerk van een AI-bureau een ontwikkeltraject met uurtarief betekent. Vraag altijd om een proefperiode en reken uit wat één extra ingeplande afspraak per dag u oplevert."
+  - q: "Moet ik mijn huidige agenda- of praktijksoftware vervangen?"
+    a: "Nee, meestal niet. Goede AI-oplossingen koppelen met bestaande agenda's en planningssystemen, zodat afspraken automatisch op de juiste plek terechtkomen. Vraag de leverancier vooraf of uw systeem wordt ondersteund."
+  - q: "Welke regels gelden voor persoonsgegevens bij AI-automatisering?"
+    a: "In de AVG staat wat organisaties en bedrijven met persoonsgegevens mogen, ook als een telefoniste gesprekken met klanten voert. Laat u een leverancier gegevens verwerken, dan moet u een verwerkersovereenkomst met hem sluiten."
 ---
 
 Een fysiotherapiepraktijk in Amsterdam-Oost mist telefoontjes tijdens behandelingen. Een installateur uit Amstelveen staat op een dak als de klant belt. Een kapsalon in De Pijp kan tijdens het knippen niet opnemen. Alle drie zoeken ze hetzelfde: AI-automatisering voor bedrijven in Amsterdam die past bij een klein team, zonder groot IT-project.
@@ -54,18 +65,5 @@ Een praktische aanpak ziet er zo uit:
 4. **Regel privacy en transparantie.** U verwerkt klantgegevens, dus sluit een verwerkersovereenkomst met de leverancier zoals de AVG vereist. Laat bellers weten dat ze met een AI-assistent spreken; dat sluit aan bij de transparantieregels uit de Europese AI-verordening.
 5. **Evalueer na een maand.** Kijk naar gemiste oproepen, ingeplande afspraken en no-shows. Werkt het, dan breidt u uit.
 
-## Veelgestelde vragen
-
-### Is AI-automatisering geschikt voor een klein bedrijf in Amsterdam?
-
-Ja. Juist kleine teams zonder receptie profiteren het meest, omdat elke gemiste oproep bij hen direct een gat in de agenda betekent. Kant-en-klare oplossingen vragen geen programmeerkennis en zijn ontworpen voor bedrijven waar de eigenaar zelf de telefoon opneemt.
-
-### Wat kost AI-automatisering voor een mkb-bedrijf?
-
-Dat hangt af van de route. Kant-en-klare toepassingen werken meestal met een maandabonnement, terwijl maatwerk van een AI-bureau een ontwikkeltraject met uurtarief betekent. Vraag altijd om een proefperiode en reken uit wat één extra ingeplande afspraak per dag u oplevert.
-
-### Moet ik mijn huidige agenda- of praktijksoftware vervangen?
-
-Nee, meestal niet. Goede AI-oplossingen koppelen met bestaande agenda's en planningssystemen, zodat afspraken automatisch op de juiste plek terechtkomen. Vraag de leverancier vooraf of uw systeem wordt ondersteund.
 
 **Benieuwd wat AI-automatisering voor uw bedrijf in Amsterdam oplevert?** Emma, de AI-telefoniste van Aanloop AI, neemt op als u dat niet kunt, plant afspraken in uw agenda en stuurt herinneringen om no-shows te verminderen. [Plan een vrijblijvende kennismaking](https://aanloopai.nl) en ontdek hoe het werkt voor uw praktijk, salon, garage of installatiebedrijf.

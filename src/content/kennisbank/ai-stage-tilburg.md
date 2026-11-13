@@ -7,6 +7,17 @@ published: 2026-10-21
 category: "AI-automatisering"
 readingMinutes: 5
 draft: false
+updated: 2026-11-06
+bronnen: ["ro-stagevergoeding", "ap-avg"]
+faq:
+  - q: "Is programmeerervaring nodig voor een AI stage?"
+    a: "Niet altijd. Voor technische stages is programmeerkennis nuttig, maar bij MKB-bedrijven zijn er ook opdrachten voor studenten marketing, communicatie of bedrijfskunde, zoals content opstellen, antwoorden testen en resultaten analyseren. Wat telt is dat je logisch kunt nadenken en snel leert."
+  - q: "Moet een AI stage betaald zijn?"
+    a: "Dat verschilt per opleiding en bedrijf. Een werkgever is wettelijk niet verplicht om een stagevergoeding te geven, maar het mag wel; de hoogte bepaalt de werkgever zelf. Maak hier vooraf duidelijke afspraken over en leg ze vast in de stageovereenkomst die je opleiding gebruikt."
+  - q: "Kan ik ook zelf een AI-opdracht voorstellen aan een ondernemer?"
+    a: "Ja, en dat werkt vaak goed. Kies een concreet probleem, zoals gemiste telefoontjes of een website die niet in AI-antwoorden voorkomt, en leg kort uit wat je zou aanpakken. Een afgebakend voorstel is voor een ondernemer makkelijker te beoordelen dan een algemene stagevraag."
+  - q: "Welke privacyregels gelden voor mij als stagiair?"
+    a: "De AVG is een Europese wet die in de hele Europese Unie geldt. Krijg je bij een bedrijf te maken met klantgegevens, vraag dan vooraf welke afspraken gelden over geheimhouding en de omgang met die gegevens."
 ---
 
 Je studeert in Tilburg, Breda of Eindhoven en wilt tijdens je stage echt met AI aan de slag, niet alleen koffie halen en presentaties opmaken. Tegelijk zoeken ondernemers in Midden-Brabant naar iemand die hen helpt om AI praktisch in te zetten. Die twee vragen komen steeds vaker bij elkaar.
@@ -21,7 +32,7 @@ De invulling verschilt sterk per bedrijf. Bij een groot techbedrijf werk je vaak
 
 ## Waar vind je een AI stageplek in Tilburg en omgeving?
 
-Je vindt een AI stageplek in Tilburg via de stagebureaus van je opleiding, platforms als Stagemarkt (voor mbo) en LinkedIn, en door rechtstreeks bedrijven te benaderen. Veel plekken worden nooit breed geadverteerd, dus een gerichte open sollicitatie bij lokale MKB-bedrijven werkt vaak beter dan wachten op een vacature.
+Je vindt een AI stageplek in Tilburg via de stagebureaus van je opleiding, platforms voor stages en LinkedIn, en door rechtstreeks bedrijven te benaderen. Veel plekken worden nooit breed geadverteerd, dus een gerichte open sollicitatie bij lokale MKB-bedrijven werkt vaak beter dan wachten op een vacature.
 
 Handige plekken om te beginnen:
 
@@ -59,20 +70,6 @@ Enkele tips:
 Als ondernemer in Tilburg kun je een stagiair het beste een afgebakende AI-opdracht geven met een meetbaar doel, zoals het verbeteren van klantcontact of online vindbaarheid. Zorg voor een vaste begeleider en duidelijke kaders, zodat de stagiair kan leren en jij een bruikbaar resultaat krijgt.
 
 Een stagiair is geen vervanging van een vakkundige oplossing. Voor de kern van uw klantcontact, zoals de telefoon, WhatsApp en de website, wilt u iets dat betrouwbaar draait en gemeten wordt. Aanloop AI bouwt websites met Emma, een AI-telefoniste die opneemt via telefoon en WhatsApp, plus vindbaarheid in ChatGPT, Gemini en Perplexity en een meetpaneel. Een stagiair kan daar goed op voortbouwen, bijvoorbeeld door content aan te leveren of de resultaten te analyseren.
-
-## Veelgestelde vragen
-
-### Heb ik programmeerervaring nodig voor een AI stage?
-
-Niet altijd. Voor technische stages is programmeerkennis nuttig, maar bij MKB-bedrijven zijn er ook opdrachten voor studenten marketing, communicatie of bedrijfskunde, zoals content opstellen, antwoorden testen en resultaten analyseren. Wat telt is dat je logisch kunt nadenken en snel leert.
-
-### Moet een AI stage betaald zijn?
-
-Dat verschilt per opleiding en bedrijf. Een stagevergoeding is niet bij wet verplicht voor elke stage, maar veel bedrijven bieden er wel een. Maak hier vooraf duidelijke afspraken over en leg ze vast in de stageovereenkomst die je opleiding gebruikt.
-
-### Kan ik ook zelf een AI-opdracht voorstellen aan een ondernemer?
-
-Ja, en dat werkt vaak goed. Kies een concreet probleem, zoals gemiste telefoontjes of een website die niet in AI-antwoorden voorkomt, en leg kort uit wat je zou aanpakken. Een afgebakend voorstel is voor een ondernemer makkelijker te beoordelen dan een algemene stagevraag.
 
 ## Wilt u weten wat AI voor uw bedrijf kan doen?
 

@@ -5,11 +5,14 @@ import GeoBureauSectorLink from '../../components/geo/GeoBureauSectorLink.astro'
 import sectorImage from '../../assets/images/sectoren/accountancy.jpg';
 
 const faqItems = [
+  { question: 'Wat is AI voor accountants?', answer: 'AI voor accountants is software die routinewerk rond een accountantskantoor automatisch afhandelt: klantvragen beantwoorden, afspraken plannen, documenten opvragen en facturen voorbereiden. De accountant blijft verantwoordelijk voor advies, aangiftes en jaarrekeningen; de AI neemt alleen het herhaalbare werk eromheen over.' },
+  { question: 'Welke taken van een accountantskantoor kan AI overnemen?', answer: 'AI neemt vooral herhaalbare taken over: telefoon en WhatsApp opvangen, afspraken inplannen, herinneringen voor ontbrekende documenten versturen en factuurgegevens uitlezen. Inhoudelijk advies, fiscale beoordeling en het ondertekenen van stukken blijven bij de accountant en zijn niet door AI te vervangen.' },
+  { question: 'Wat kost een AI-assistent voor een accountantskantoor?', answer: 'Een AI-assistent voor een accountantskantoor valt onder de vaste maandtarieven van Aanloop AI, zoals gepubliceerd op de tarievenpagina. Wat u precies nodig hebt hangt af van het aantal telefoontjes en de gewenste koppelingen; in een gratis AI-scan bepalen we samen het passende pakket.' },
   { question: 'Kan AI boekhoudkundige vragen beantwoorden?', answer: 'De AI-assistent beantwoordt veelgestelde vragen over uw diensten, aanlevertermijnen, benodigde documenten en tarieven. Complexe fiscale vragen worden doorgeleid naar de juiste medewerker.' },
   { question: 'Hoe gaat de AI om met vertrouwelijke klantinformatie?', answer: 'Aanloop AI verwerkt alle data AVG-compliant via n8n self-hosted op een Nederlandse server. De AI heeft alleen toegang tot informatie die u zelf deelt in de kennisbank. Financiële klantdata wordt nooit opgeslagen of verwerkt buiten uw eigen systemen.' },
   { question: 'Kan de AI afspraken inplannen voor belastingaangifteperiode?', answer: 'Ja. De AI plant automatisch afspraken in uw agenda, stuurt bevestigingen en herinneringen, en vraagt vooraf welke documenten de klant moet meenemen.' },
-  { question: 'Hoeveel uur bespaar ik per week met een AI agent voor mijn boekhoudkantoor?', answer: 'Accountantskantoren besparen gemiddeld 10-20 uur per week op routinetaken: telefonische vragen (-72% minder onderbrekingen), documentverzameling en afspraakplanning. Dit staat gelijk aan €3.000-6.000/maand meer billable capaciteit.' },
-  { question: 'Kan de AI facturen automatisch verwerken?', answer: 'Ja. Via een n8n koppeling met Exact Online, Twinfield of Visma verwerkt de AI facturen automatisch: extraheren van data, categoriseren en boeken. Gemiddeld 85% tijdsbesparing op factuurverwerking. Zie onze kennisbank voor meer details.' },
+  { question: 'Hoeveel tijd bespaar ik met een AI agent voor mijn boekhoudkantoor?', answer: 'De tijdwinst hangt af van uw situatie: hoeveel telefonische vragen, documentverzameling en afspraakplanning uw kantoor nu handmatig doet. Meet het zelf met uw eigen cijfers: tel een paar weken hoeveel uur deze routinetaken kosten en vergelijk dat met de situatie na livegang.' },
+  { question: 'Kan de AI facturen automatisch verwerken?', answer: 'Ja. Via een n8n koppeling met Exact Online, Twinfield of Visma verwerkt de AI facturen automatisch: extraheren van data, categoriseren en boeken. Dat scheelt handmatig typewerk op factuurverwerking; de precieze tijdwinst hangt af van uw facturen en software. Zie onze kennisbank voor meer details.' },
   { question: 'Kan een AI-telefoniste koppelen met de software van mijn accountantskantoor?', answer: 'Meestal wel via de agenda en e-mail, een directe koppeling met boekhoud- of ERP-software is voor telefonie zelden nodig. De AI plant afspraken in een gedeelde online agenda en stuurt een samenvatting of terugbelverzoek per e-mail of notificatie naar de verantwoordelijke medewerker. Voor dossierinformatie uit het ERP-pakket is in de praktijk een aparte API-koppeling vereist, die per softwarepakket verschilt.' },
   { question: 'Wat doet de AI als een klant een vraag stelt die zij niet kan beantwoorden?', answer: 'Dan noteert de AI de vraag, het telefoonnummer en de gewenste terugbeltijd en zet zij het bericht door naar een medewerker. Inhoudelijke vragen over een aangifte, jaarrekening of btw-positie horen bij de accountant zelf. De AI beperkt zich tot het herkennen van het onderwerp en het inplannen van een terugbelmoment of afspraak, zodat de klant nooit zonder vervolg ophangt.' },
   { question: 'Moet ik klanten vertellen dat ze een AI-telefoniste aan de lijn hebben?', answer: 'Ja, de Europese AI-verordening verplicht sinds 2 augustus 2026 dat mensen weten dat ze met een AI-systeem communiceren. In de praktijk meldt de AI dit in de begroeting, bijvoorbeeld door zich voor te stellen als digitale assistente van het kantoor. Dat voorkomt verwarring en sluit aan bij de zorgvuldigheid die accountants toch al richting hun klanten moeten betrachten.' },
@@ -18,14 +21,14 @@ const faqItems = [
 ];
 const schema = { '@context': 'https://schema.org', '@type': 'Service', name: 'AI voor Accountancy en Financieel Advies', serviceType: 'AI voor Accountancy en Financieel Advies', provider: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl' }, areaServed: { '@type': 'Country', name: 'Nederland' }, description: 'AI agents voor accountants en boekhouders. Automatische factuurverwerking, afspraakinplanning, klantenservice. AVG-compliant.' };
 ---
-<BaseLayout title="AI voor accountants en accountantskantoren" description="AI voor accountants: AI-assistent voor accountantskantoren en boekhouders. Automatische factuurverwerking, afsprakenplanning en documentverzameling." schema={schema} faqSchema={faqItems}>
+<BaseLayout title="AI voor accountants: assistent voor kantoren" description="AI voor accountants: een AI-assistent die routinevragen beantwoordt, afspraken plant en documenten opvraagt. Wat het doet, wat niet en hoe u start." schema={schema} faqSchema={faqItems}>
   <section class="border-b border-slate-200 hero-gradient">
     <div class="container-page py-16 lg:py-24">
       <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
       <div class="max-w-3xl">
         <div class="flex items-center gap-4 mb-6"><div class="accent-band"><span></span><span></span><span></span><span></span></div><span class="eyebrow">Accountancy &amp; Administratie</span></div>
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05] reveal reveal-delay-1">Minder telefoneren, meer adviseren.</h1>
-        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl reveal reveal-delay-2">Uw klanten bellen voor standaardvragen terwijl uw team bezig is met dossiers. De AI-assistent beantwoordt routinevragen, plant afspraken in en verzamelt documenten — automatisch.</p>
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tighter text-navy text-balance leading-[1.05] reveal reveal-delay-1">AI voor accountants: minder telefoneren, meer adviseren.</h1>
+        <p class="mt-6 text-lg text-slate-600 leading-relaxed max-w-2xl reveal reveal-delay-2">AI voor accountants betekent in de praktijk: een AI-assistent die de routine rond uw dossiers overneemt. Uw klanten bellen voor standaardvragen terwijl uw team bezig is met dossiers; de assistent beantwoordt routinevragen, plant afspraken in en vraagt documenten op, ook buiten kantooruren.</p>
         <div class="mt-8 flex flex-col sm:flex-row gap-3 reveal reveal-delay-3">
           <a href="/gratis-ai-scan/" class="btn-primary text-base px-6 py-3.5">Gratis AI scan aanvragen <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg></a>
           <a href="/tarieven/" class="btn-outline text-base px-6 py-3.5">Bekijk tarieven</a>
@@ -81,13 +84,29 @@ const schema = { '@context': 'https://schema.org', '@type': 'Service', name: 'AI
   </section>
 
   <!-- Results -->
+  <!-- AI voor accountants: uitleg -->
+  <section class="section border-b border-slate-200">
+    <div class="container-page max-w-3xl">
+      <p class="eyebrow text-brand-indigo mb-2">AI voor accountants en accountantskantoren</p>
+      <h2 class="text-2xl lg:text-3xl font-bold text-navy mb-4">AI voor accountants: wat het doet en wat het niet doet</h2>
+      <p class="text-slate-700 leading-relaxed mb-4">Bij <strong class="text-navy">AI voor accountants</strong> gaat het niet om een systeem dat de boekhouding of het advies overneemt. Het gaat om de drukte rondom het vak: de telefoon die gaat terwijl u een jaarrekening afrondt, de klant die voor de derde keer vraagt welke stukken er nodig zijn, de afspraak die heen en weer gemaild wordt. Dat werk is repetitief, voorspelbaar en kost een kantoor dagelijks onbetaalde minuten. Juist dat deel kan een AI-assistent van uw kantoor overnemen.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">In de praktijk bestaat een AI-assistent voor een accountantskantoor uit drie onderdelen. <strong class="text-navy">Aannemen en beantwoorden:</strong> de assistent neemt de telefoon of een WhatsApp-bericht aan, herkent waar het over gaat en beantwoordt vragen over openingstijden, diensten, aanlevertermijnen en benodigde documenten uit de kennisbank die u zelf vult. <strong class="text-navy">Plannen en opvragen:</strong> hij plant afspraken in uw agenda, stuurt bevestigingen en herinneringen en vraagt vooraf welke documenten de klant moet meenemen of aanleveren. <strong class="text-navy">Doorzetten:</strong> alles wat inhoudelijk is, bijvoorbeeld een vraag over een aangifte of btw-positie, noteert de assistent met terugbelwens en zet hij door naar de juiste medewerker.</p>
+      <p class="text-slate-700 leading-relaxed mb-4">Daarnaast kan AI facturen en bijlagen uitlezen en voorbereiden voor uw boekhoudpakket, via een koppeling die per pakket verschilt (Exact Online, Twinfield en Visma komen het meest voor). Wat AI nadrukkelijk niet doet: fiscaal adviseren, stukken beoordelen of namens u ondertekenen. Een assistent die dat wel zou beloven, past niet bij het vak en niet bij de zorgvuldigheid die klanten van een accountant verwachten.</p>
+      <h3 class="text-xl font-bold text-navy mt-8 mb-3">Vertrouwelijkheid en AVG</h3>
+      <p class="text-slate-700 leading-relaxed mb-4">Klantgegevens van een accountantskantoor zijn gevoelig. Aanloop AI verwerkt gegevens binnen de EU en de automatiseringslaag draait self-hosted op een Nederlandse server. De assistent heeft alleen toegang tot wat u in de kennisbank zet en meldt aan bellers dat zij met een AI-assistent praten. Lees <a href="/vertrouwen/" class="text-brand-indigo hover:underline">hoe wij met uw data omgaan</a> voor de details.</p>
+      <h3 class="text-xl font-bold text-navy mt-8 mb-3">Zo start u</h3>
+      <p class="text-slate-700 leading-relaxed mb-4">U begint met een gratis AI-scan van dertig minuten: we kijken welke vragen en afspraken uw kantoor nu het meeste tijd kosten en of een assistent daar wat aan verbetert. Past het, dan staat de assistent binnen zeven werkdagen live. Tel in de weken ervoor zelf hoeveel uur uw team aan routinevragen kwijt is; zo kunt u zelf beoordelen wat het oplevert. De vaste maandtarieven vindt u op de <a href="/tarieven/" class="text-brand-indigo hover:underline">tarievenpagina</a>, en meer over de aanpak leest u in de gids <a href="/kennisbank/ai-voor-accountantskantoor-nederland-2026/" class="text-brand-indigo hover:underline">AI voor het accountantskantoor</a>. Zoekt u een breder AI-bureau voor uw kantoor, lees dan wat <a href="/ai-agency-nederland/" class="text-brand-indigo hover:underline">een AI-bureau in Nederland</a> voor het MKB doet.</p>
+      <p class="mt-6"><a href="/gratis-ai-scan/" class="btn-primary">Gratis AI-scan voor uw kantoor</a></p>
+    </div>
+  </section>
+
   <section class="section">
     <div class="container-page max-w-4xl mx-auto">
       <div class="text-center mb-10 reveal"><h2 class="text-2xl font-bold text-navy">Wat AI kan opleveren bij accountantskantoren</h2></div>
       <div class="grid grid-cols-3 gap-6 mb-12 reveal reveal-delay-1">
         {[
-          { value: '−72%', label: 'Minder telefonische onderbrekingen', color: 'text-brand-emerald' },
-          { value: '+28%', label: 'Meer billable uren', color: 'text-brand-indigo' },
+          { value: 'Minder', label: 'Telefonische onderbrekingen', color: 'text-brand-emerald' },
+          { value: 'Meer', label: 'Tijd voor declarabel werk', color: 'text-brand-indigo' },
           { value: '24/7', label: 'Beschikbaar', color: 'text-brand-amber' },
         ].map(s => (
           <div class="card text-center">
