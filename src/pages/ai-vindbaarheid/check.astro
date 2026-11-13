@@ -163,10 +163,12 @@ const schema = {
           fd.append('privacy', 'ja');
           fd.append('subject', 'GEO-scan aanvraag — ' + (form.bedrijf.value.trim() || url));
           fd.append('bericht', 'GEO Quick Scan uitgevoerd voor ' + url + ' — score ' + data.score + '/100 (' + data.grade + '). Stuur volledig rapport.');
-          fetch('/api/submit', { method: 'POST', body: fd });
+          // Lead-event pas NA een geslaagd serverantwoord (geen lead bij fout/honeypot/429).
+          fetch('/api/submit', { method: 'POST', body: fd })
+            .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return r.ok && j && j.success; }); })
+            .then(function (ok) { if (ok && window._track) window._track('generate_lead', { form_name: 'geo_scan', currency: 'EUR', value: 150 }); })
+            .catch(function () {});
         } catch (_) {}
-
-        if (window._track) window._track('generate_lead', { form_name: 'geo_scan', currency: 'EUR', value: 150 });
         label.textContent = 'Scan opnieuw';
       } catch (err) {
         errEl.textContent = (err && err.message) || 'Er ging iets mis. Probeer het opnieuw.';

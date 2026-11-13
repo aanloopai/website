@@ -306,7 +306,8 @@ else if(fe)fo.unobserve(fe);
 fe=n;fo.observe(n);}catch(x){}}
 fw();
 try{if(window.MutationObserver){mo=new MutationObserver(fw);mo.observe(document.documentElement,{childList:true,subtree:true});}}catch(x){}
-window.aanloopTrack=function(name,meta){send('custom',{meta:(String(name||'')+':'+String(meta||'')).slice(0,80)});};
+window.aanloopTrack=function(n,m){n=String(n||'');m=String(m||'');send(n==='lead'?n:'custom',{meta:(n==='lead'?m:n+':'+m).slice(0,80)});};
+try{for(var q=window.__visQ||[];q.length;)window.aanloopTrack.apply(0,q.shift());}catch(x){}
 })();`;
 
 export function beaconScript() {

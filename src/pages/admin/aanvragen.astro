@@ -22,6 +22,20 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
     <p class="empty-text">Contact-, demo- en scan-aanvragen van de website verschijnen hier.</p>
   </div></div>
 
+  <!-- Lead-ledger: alle sites (alleen metadata, geen persoonsgegevens) -->
+  <p class="section-title mt-6">Lead-ledger (alle sites)</p>
+  <div class="mt-3 flex items-center gap-2">
+    <select id="lg-site" class="pselect" style="width:auto">
+      <option value="">Alle sites</option>
+      <option value="fth">fth</option><option value="alfa">alfa</option><option value="kib">kib</option>
+      <option value="zoekeen">zoekeen</option><option value="aanloop">aanloop</option>
+    </select>
+  </div>
+  <div id="lg-list" class="mt-3 space-y-1"><div class="pskel h-16 w-full"></div></div>
+  <div id="lg-empty" class="pcard mt-3 hidden"><div class="empty">
+    <p class="empty-title">Nog geen leads in het ledger</p>
+  </div></div>
+
   <!-- Intake-aanvragen -->
   <p class="section-title mt-6">Nieuwe aanvragen (intake)</p>
   <div id="o-list" class="mt-3 space-y-3"><div class="pskel h-24 w-full"></div></div>
@@ -268,6 +282,42 @@ for (const p of PORTAL_CATALOG) productNames[p.key] = p.naam;
           })
           .catch(function (err) { window.adminFout.vangRest(err, 'Lead'); });
       }
+
+      // ── lead-ledger (alle sites, geen PII) ──
+      function loadLedger() {
+        var site = document.getElementById("lg-site").value;
+        fetch("/api/admin/ledger" + (site ? "?site=" + encodeURIComponent(site) : ""), { credentials: "same-origin" })
+          .then(function (r) { if (window.adminFout.http(r, "Ledger")) { throw 0; } return r.json(); })
+          .then(function (d) {
+            var list = d.leads || [];
+            var box = document.getElementById("lg-list");
+            if (!list.length) { box.innerHTML = ""; document.getElementById("lg-empty").classList.remove("hidden"); return; }
+            document.getElementById("lg-empty").classList.add("hidden");
+            box.innerHTML = list.map(function (l) {
+              return '<div class="pcard"><div class="pcard-b flex flex-wrap items-center justify-between gap-2 text-sm">' +
+                '<span><b>' + esc(l.site) + '</b> · ' + esc(l.form) + ' · ' + esc(l.landing) + '</span>' +
+                '<span class="text-xs" style="color:var(--p-ink-4)">' + new Date(l.received_at).toLocaleString("nl-NL") +
+                ' · ' + esc(l.status) + '</span>' +
+                (l.answered_at ? '' : '<button type="button" class="lg-ans pbtn pbtn--subtle pbtn--sm" data-site="' + esc(l.site) + '" data-id="' + esc(l.lead_id) + '">Beantwoord</button>') +
+                '</div></div>';
+            }).join("");
+          })
+          .catch(function (err) { window.adminFout.vangRest(err, "Ledger"); });
+      }
+      document.getElementById("lg-list").addEventListener("click", function (e) {
+        var btn = e.target.closest && e.target.closest(".lg-ans");
+        if (!btn) return;
+        btn.disabled = true;
+        fetch("/api/admin/ledger/answered", {
+          method: "POST", credentials: "same-origin", headers: { "content-type": "application/json" },
+          body: JSON.stringify({ site: btn.getAttribute("data-site"), lead_id: btn.getAttribute("data-id") }),
+        })
+          .then(function (r) { if (window.adminFout.http(r, "Ledger")) { throw 0; } return r.json(); })
+          .then(function () { loadLedger(); })
+          .catch(function (err) { btn.disabled = false; window.adminFout.vangRest(err, "Ledger"); });
+      });
+      document.getElementById("lg-site").addEventListener("change", loadLedger);
+      loadLedger();
 
       loadLeads();
       loadOrders();
