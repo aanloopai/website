@@ -2,15 +2,33 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import EmailHint from '../components/EmailHint.astro';
+import FaqSection from '../components/FaqSection.astro';
 import pageImage from '../assets/images/pages/contact.jpg';
 
 const url = new URL(Astro.request.url);
 const type = url.searchParams.get('type') || 'contact';
+
+// Zelfde array voor zichtbare FAQ én FAQPage-JSON-LD (faqSchema in BaseLayout):
+// de gestructureerde data is dan altijd identiek aan de zichtbare tekst.
+const faqItems = [
+  { question: 'Hoe snel krijg ik reactie op mijn bericht?', answer: 'U krijgt dezelfde dag reactie op een demo-aanvraag en binnen 24 uur op algemene vragen. Offertes nemen 1 tot 3 werkdagen in beslag. Na het versturen van het formulier krijgt u direct een bevestiging per e-mail.' },
+  { question: 'Is het adviesgesprek van 30 minuten echt gratis?', answer: 'Ja, het kennismakingsgesprek van 30 minuten is volledig gratis en vrijblijvend. We laten u live een AI-assistent zien die is afgestemd op uw branche, en u betaalt niets en zet niets vast.' },
+  { question: 'Hoe boek ik een demo van de AI-assistent?', answer: 'Kies boven het formulier de optie "Gratis demo" of gebruik de knop "Demo-aanvraagformulier" in de zijbalk. U kunt ook direct een tijdslot inplannen via Google Agenda — u krijgt dan meteen een uitnodiging met een videovergaderlink.' },
+  { question: 'Waar zijn jullie gevestigd en werken jullie alleen in Rotterdam?', answer: 'Aanloop AI is gevestigd in Rotterdam (KvK 88606902), maar we werken voor het hele Nederlandse MKB. Alle gesprekken en demo\'s vinden online plaats, dus uw locatie maakt niet uit.' },
+  { question: 'Hoe worden mijn gegevens verwerkt als ik het formulier invul?', answer: 'Uw gegevens worden alleen gebruikt om uw vraag of aanvraag te beantwoorden, AVG-conform op een server in de EU. We verkopen of delen uw data niet met derden en u krijgt geen ongewenste verkoopmails. De volledige uitleg staat in onze privacyverklaring.' },
+  { question: 'Wat moet ik in het berichtveld schrijven?', answer: 'Een korte zin is genoeg. Vermeld uw branche en waar u mee zit, bijvoorbeeld: "Wij zijn een tandartspraktijk in Utrecht en zoeken een AI-receptionist die afspraken inplant." We bellen u terug voor de details.' },
+  { question: 'Krijg ik direct een prijsindicatie als ik een offerte aanvraag?', answer: 'Nee, we sturen eerst een korte intake of plannen een belafspraak om uw situatie te begrijpen. Pas daarna ontvangt u binnen 1 tot 3 werkdagen een offerte die past bij uw situatie, zonder verrassingen achteraf.' },
+  { question: 'Kan ik ook gewoon mailen of bellen in plaats van het formulier?', answer: 'Ja, u kunt altijd mailen naar hello@aanloopai.nl — dat komt in precies dezelfde inbox als het formulier. Bellen kan ook; laat in het formulier of per e-mail weten wanneer u bereikbaar bent, dan plannen we een terugbelmoment.' },
+  { question: 'Voor welke branches leveren jullie AI-assistenten?', answer: 'We leveren AI-assistenten onder andere voor horeca, logistiek en transport, vastgoed en makelaars, detailhandel, zakelijke dienstverlening en zorg en welzijn. De assistent wordt getraind op de kennis van uw specifieke branche en bedrijf.' },
+  { question: 'Moet ik technische kennis hebben om met jullie te werken?', answer: 'Nee. Wij bouwen, installeren en beheren de AI-assistent volledig voor u. U levert alleen uw bedrijfskennis en bestaande informatiebronnen aan; het technische deel nemen wij volledig uit handen.' },
+  { question: 'Wat gebeurt er als de AI-assistent een vraag niet begrijpt?', answer: 'Dan wordt de vraag netjes doorverbonden met u of uw team via e-mail of telefoon, zoals u dat instelt. De assistent leert van die momenten en wordt naarmate steeds beter in het beantwoorden van de vragen van uw klanten.' },
+];
 ---
 
 <BaseLayout
   title="Contact"
   description="Neem contact op met Aanloop AI. Boek een gratis demo, stel een vraag, of plan een adviesgesprek van 30 minuten."
+  faqSchema={faqItems}
 >
   <section class="border-b border-slate-200">
     <div class="container-page py-16 lg:py-24">
@@ -233,6 +251,9 @@ const type = url.searchParams.get('type') || 'contact';
       </div>
     </div>
   </section>
+
+  <FaqSection items={faqItems} />
+
   <EmailHint />
 </BaseLayout>
 
