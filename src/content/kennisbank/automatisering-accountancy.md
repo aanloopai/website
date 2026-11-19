@@ -10,12 +10,14 @@ draft: false
 updated: 2026-11-19
 bronnen: ["ap-verwerker", "ro-privacy"]
 faq:
-  - q: "Vervangt automatisering de accountant?"
+  - q: "Kan automatisering de accountant volledig vervangen?"
     a: "Nee. Software neemt routinewerk over, zoals inlezen, koppelen en herinneren. Beoordeling, advies en verantwoordelijkheid voor de cijfers blijven bij de accountant. Wie slim automatiseert, houdt juist meer tijd over voor het gesprek met de cliënt."
   - q: "Waar begin ik met automatisering in mijn accountantskantoor?"
     a: "Begin met één terugkerend probleem, bijvoorbeeld ontbrekende documenten of telefoontjes die uw werk onderbreken. Los dat op, meet wat het oplevert en breid daarna uit. Dat is veiliger en goedkoper dan in één keer alles te veranderen."
-  - q: "Mag ik klantgegevens laten verwerken door een AI-tool?"
+  - q: "Is het toegestaan klantgegevens door een AI-tool te laten verwerken?"
     a: "Ja, mits u de AVG naleeft. Sluit een verwerkersovereenkomst met de leverancier, controleer waar gegevens worden opgeslagen en geef alleen toegang tot wat nodig is. Voor financiële gegevens geldt daarnaast uw geheimhoudingsplicht."
+  - q: "Welke taken in een accountantskantoor kunt u beter niet automatiseren?"
+    a: "Taken waarvoor oordeelsvermogen nodig is. Denk aan fiscaal advies, de beoordeling van risico's en uitzonderingen, en het contact met cliënten in moeilijke of gevoelige situaties. Software kan daar hooguit voorbereiden; de beslissing en het gesprek blijven bij de accountant."
 ---
 
 Een boekhoudkantoor in Utrecht, een administratiekantoor in Eindhoven en een accountant in Zwolle hebben vaak hetzelfde probleem: het werk loopt vol met herhaling. Elke maand dezelfde herinneringen aan klanten, dezelfde bonnetjes die ontbreken, dezelfde vragen aan de telefoon. Wie zoekt naar automatisering voor accountancy, wil meestal minder tijd kwijt zijn aan routine en meer ruimte voor advies.
@@ -74,16 +76,5 @@ Een werkbare volgorde:
 3. Test de oplossing met een beperkte groep klanten.
 4. Controleer de uitkomsten en pas aan waar het nodig is.
 5. Breid pas daarna uit naar de volgende taak.
-
-## Veelgestelde vragen
-
-**Vervangt automatisering de accountant?**
-Nee. Software neemt routinewerk over, zoals inlezen, koppelen en herinneren. Beoordeling, advies en verantwoordelijkheid voor de cijfers blijven bij de accountant. Wie slim automatiseert, houdt juist meer tijd over voor het gesprek met de cliënt.
-
-**Waar begin ik met automatisering in mijn accountantskantoor?**
-Begin met één terugkerend probleem, bijvoorbeeld ontbrekende documenten of telefoontjes die uw werk onderbreken. Los dat op, meet wat het oplevert en breid daarna uit. Dat is veiliger en goedkoper dan in één keer alles te veranderen.
-
-**Mag ik klantgegevens laten verwerken door een AI-tool?**
-Ja, mits u de AVG naleeft. Sluit een verwerkersovereenkomst met de leverancier, controleer waar gegevens worden opgeslagen en geef alleen toegang tot wat nodig is. Voor financiële gegevens geldt daarnaast uw geheimhoudingsplicht.
 
 Wilt u weten welke taken in uw kantoor het eerst om automatisering vragen? [Plan een vrijblijvend gesprek met Aanloop AI](https://aanloopai.nl) en bespreek uw situatie.
