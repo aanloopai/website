@@ -13,6 +13,8 @@ faq:
     a: "Het betekent dat software terugkerende kantoortaken overneemt, zoals gegevens invoeren, afspraken plannen, berichten beantwoorden en herinneringen versturen. U houdt zelf de controle over de beslissingen."
   - q: "Welke administratie kan ik als eerste automatiseren?"
     a: "Begin bij een taak die vaak terugkomt en vaste regels volgt, zoals het aannemen van telefoon en WhatsApp-berichten of het versturen van betalingsherinneringen. Meet een paar weken wat het oplevert en breid dan uit."
+  - q: "Wat levert administratie automatisering op voor een mkb-bedrijf?"
+    a: "Vooral tijd, snelheid en betrouwbaarheid: u typt minder over, klanten krijgen sneller antwoord en er raken minder aanvragen zoek. Wat het precies oplevert verschilt per bedrijf, daarom is meten belangrijker dan een algemene belofte."
   - q: "Is automatiseren van administratie veilig voor klantgegevens?"
     a: "Dat hangt af van de inrichting. Kies een leverancier die een verwerkersovereenkomst sluit, beperk welke gegevens de software ziet en leg vast waar die worden opgeslagen. Zo voldoet u aan de AVG."
 ---
@@ -75,16 +77,5 @@ Praktisch betekent dit:
 - Vraag waar gegevens worden opgeslagen en wie er toegang toe heeft.
 - Laat de software alleen die gegevens zien die nodig zijn voor de taak.
 - Controleer steekproefsgewijs of de uitkomsten kloppen.
-
-## Veelgestelde vragen
-
-**Wat is administratie automatisering voor het mkb?**
-Het betekent dat software terugkerende kantoortaken overneemt, zoals gegevens invoeren, afspraken plannen en berichten beantwoorden. U houdt zelf de controle over beslissingen en uitzonderingen.
-
-**Welke administratie kan ik als eerste automatiseren?**
-Begin bij een taak die vaak terugkomt en vaste regels volgt, zoals het aannemen van telefoon en WhatsApp-berichten of het versturen van betalingsherinneringen. Meet een paar weken wat het oplevert en breid daarna uit.
-
-**Is automatiseren van administratie veilig voor klantgegevens?**
-Dat hangt af van de inrichting. Kies een leverancier die een verwerkersovereenkomst sluit, beperk welke gegevens de software ziet en leg vast waar die worden opgeslagen. Zo houdt u de AVG op orde.
 
 **Wilt u weten welk deel van uw administratie u het snelst kunt automatiseren? Neem contact op met Aanloop AI via [aanloopai.nl](https://aanloopai.nl) en plan een vrijblijvend gesprek.**
