@@ -9,10 +9,12 @@ draft: false
 updated: 2026-11-14
 bronnen: ["ap-avg", "ap-verwerker", "ec-ai-act"]
 faq:
-  - q: "Mag een notariskantoor AI gebruiken?"
+  - q: "Is het toegestaan om AI te gebruiken op een notariskantoor?"
     a: "Ja, mits u het beroepsgeheim en de AVG respecteert. AI mag routinetaken ondersteunen, zoals telefoon, intake en planning. Advies, identificatie en het passeren van de akte blijven bij de notaris en zijn medewerkers."
   - q: "Waar begin ik met AI implementatie op mijn notariskantoor?"
     a: "Kies één proces dat veel tijd kost en weinig juridisch risico heeft, zoals het aannemen van telefoontjes en het inplannen van afspraken. Meet de huidige situatie en draai een pilot van enkele weken."
+  - q: "Welke taken kan AI overnemen bij een notariskantoor?"
+    a: "AI kan de telefoon en WhatsApp aannemen, afspraken inplannen, intakevragen stellen en documenten laten verzamelen. Ze stelt geen akte op en neemt geen cliëntenonderzoek over. Wat een oordeel vraagt, gaat door naar een medewerker."
   - q: "Wat moet ik regelen voor de AVG bij AI in het notariaat?"
     a: "Sluit een verwerkersovereenkomst met de leverancier, beperk de gegevens die het systeem ziet en bewaar ze niet langer dan nodig. Informeer cliënten dat ze met een digitale assistent praten."
 ---
@@ -59,16 +61,5 @@ Een voorbeeld is Emma, de AI-telefoniste van Aanloop AI. Zij neemt telefoon en W
 Meet vooraf en achteraf dezelfde dingen: aantal gemiste oproepen, tijd tot eerste reactie, aantal ingeplande afspraken en uren die medewerkers aan telefonie kwijt zijn. Zonder nulmeting weet u niet of de pilot iets oplevert. Een meetpaneel maakt die cijfers elke week zichtbaar.
 
 Kijk daarnaast naar de kwaliteit. Lees steekproefsgewijs gesprekken terug en vraag uw team waar de assistent verkeerd doorverwees. Zo verbetert u de instellingen gericht. Gemeten resultaten van andere MKB-bedrijven vindt u op [aanloopai.nl/resultaten](https://aanloopai.nl/resultaten/).
-
-## Veelgestelde vragen
-
-**Mag een notariskantoor AI gebruiken?**
-Ja, mits u het beroepsgeheim en de AVG respecteert. AI mag routinetaken ondersteunen, zoals telefoon, intake en planning. Advies, identificatie en het passeren van de akte blijven bij de notaris en zijn medewerkers.
-
-**Waar begin ik met AI implementatie op mijn notariskantoor?**
-Kies één proces dat veel tijd kost en weinig juridisch risico heeft, zoals het aannemen van telefoontjes en het inplannen van afspraken. Meet de huidige situatie en draai een pilot van enkele weken.
-
-**Wat moet ik regelen voor de AVG bij AI in het notariaat?**
-Sluit een verwerkersovereenkomst met de leverancier, beperk de gegevens die het systeem ziet en bewaar ze niet langer dan nodig. Informeer cliënten dat ze met een digitale assistent praten.
 
 **Wilt u zien hoe een AI-telefoniste op uw notariskantoor past? [Plan een vrijblijvend gesprek met Aanloop AI](https://aanloopai.nl) en start met een pilot op één taak.**
