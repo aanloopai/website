@@ -14,6 +14,8 @@ faq:
     a: "Een adviesbureau helpt u bepalen wat u met AI moet doen en begeleidt het traject, vaak op projectbasis. Een leverancier levert een werkend product dat u direct kunt gebruiken. Veel MKB-bedrijven hebben aan het tweede genoeg, omdat hun vraag concreet is, zoals telefoon aannemen of beter gevonden worden."
   - q: "Moet een AI-partner in Eindhoven zitten?"
     a: "Nee, maar nabijheid kan helpen voor een kennismaking of een werksessie op locatie. Belangrijker is dat de partij uw sector en de Nederlandse regels kent, in het Nederlands werkt en aantoonbaar resultaten heeft behaald voor vergelijkbare bedrijven."
+  - q: "Wat kost AI-advies en hoe snel ziet u resultaat?"
+    a: "De kosten verschillen sterk per partij en opdracht, dus een vaste richtprijs is niet te geven. Vraag om een offerte met een afgebakende scope en een meetbaar doel. Resultaat ziet u het snelst bij toepassingen die direct contact met klanten verbeteren, zoals telefoon en aanvragen."
   - q: "Hoe weet ik of een AI-project echt iets oplevert?"
     a: "Spreek vooraf een meetbaar doel af, bijvoorbeeld het aantal aanvragen of beantwoorde telefoontjes, en kijk na enkele weken naar de cijfers. Een partij die geen meting kan laten zien, kan u ook niet aantonen dat het werkt."
 ---
@@ -65,20 +67,6 @@ Drie voorbeelden uit de praktijk van lokale dienstverleners:
 - **AI-vindbaarheid:** steeds meer mensen vragen een AI-assistent om een bedrijf in hun buurt. Heldere, feitelijke informatie op uw site vergroot de kans dat u wordt genoemd.
 
 Begin met één onderdeel, kijk een paar weken naar de uitkomsten en bouw daarna uit. Dat is goedkoper en overzichtelijker dan alles tegelijk beginnen.
-
-## Veelgestelde vragen
-
-### Wat is het verschil tussen een AI-adviesbureau en een AI-leverancier?
-
-Een adviesbureau helpt u bepalen wat u met AI moet doen en begeleidt het traject, vaak op projectbasis. Een leverancier levert een werkend product dat u direct kunt gebruiken. Veel MKB-bedrijven hebben aan het tweede genoeg, omdat hun vraag concreet is, zoals telefoon aannemen of beter gevonden worden.
-
-### Moet een AI-partner in Eindhoven zitten?
-
-Nee, maar nabijheid kan helpen voor een kennismaking of een werksessie op locatie. Belangrijker is dat de partij uw sector en de Nederlandse regels kent, in het Nederlands werkt en aantoonbaar resultaten heeft behaald voor vergelijkbare bedrijven.
-
-### Hoe weet ik of een AI-project echt iets oplevert?
-
-Spreek vooraf een meetbaar doel af, bijvoorbeeld het aantal aanvragen of beantwoorde telefoontjes, en kijk na enkele weken naar de cijfers. Een partij die geen meting kan laten zien, kan u ook niet aantonen dat het werkt.
 
 ## Wilt u weten wat AI voor uw bedrijf in Eindhoven kan opleveren?
 
