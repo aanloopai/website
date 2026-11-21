@@ -200,4 +200,45 @@
     sync();
     new MutationObserver(sync).observe(banner, { attributes: true, attributeFilter: ['class'] });
   })();
+
+  /* ---- First-touch attributie --------------------------------------------
+   * Bij de eerste pageview van een sessie: landingspad + utm_* bewaren (nooit
+   * overschrijven). Alle formulieren posten met fetch('/api/submit', FormData),
+   * niet via een native submit, dus de waarden worden aan die FormData
+   * toegevoegd (alleen als het formulier de naam nog niet heeft). Storage kan
+   * geblokkeerd zijn: alles in try/catch, een formulier mag hier nooit op stuk. */
+  (function () {
+    var KEY = 'aanloop_first_touch';
+    var UTM = ['utm_source', 'utm_medium', 'utm_campaign'];
+    var touch = null;
+    try {
+      var raw = sessionStorage.getItem(KEY);
+      if (raw) {
+        touch = JSON.parse(raw);
+      } else {
+        touch = { first_landing: location.pathname };
+        var q = new URLSearchParams(location.search);
+        UTM.forEach(function (k) {
+          var v = q.get(k);
+          if (v) touch[k] = v.slice(0, 100);
+        });
+        sessionStorage.setItem(KEY, JSON.stringify(touch));
+      }
+    } catch (e) { touch = null; }
+    if (!touch || typeof touch !== 'object' || typeof window.fetch !== 'function') return;
+
+    var origFetch = window.fetch;
+    window.fetch = function (input, init) {
+      try {
+        var url = typeof input === 'string' ? input : (input && input.url) || '';
+        var body = init && init.body;
+        if (/\/api\/submit(\?|$)/.test(url) && body instanceof FormData) {
+          ['first_landing'].concat(UTM).forEach(function (k) {
+            if (touch[k] && !body.has(k)) body.append(k, touch[k]);
+          });
+        }
+      } catch (e) { /* nooit het formulier blokkeren */ }
+      return origFetch.apply(this, arguments);
+    };
+  })();
 })();

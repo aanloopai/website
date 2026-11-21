@@ -754,6 +754,11 @@ async function storeInboundLead(env, { formType, fields, userEmail, fullName, cl
     return id;
   } catch (err) {
     console.error('[/api/submit] lead insert failed:', err.message || err);
+    // Geen PII: alleen formtype en foutmelding. Telegram ontvangt de inzending zelf nog wel.
+    await alertStaff(env, `Lead NIET opgeslagen in D1 (${cap(formType, 60)})`,
+      `De D1-insert voor een nieuwe ${cap(formType, 60)}-aanvraag is mislukt: ${String(err.message || err).slice(0, 200)}
+`
+      + `De aanvraag staat niet in /admin/aanvragen; zie de Telegram-melding.`);
     return null;
   }
 }
@@ -846,6 +851,10 @@ async function handleSubmit(request, env) {
     const referer = request.headers.get('Referer') || '';
     let landing = '';
     try { landing = new URL(referer).pathname; } catch { /* no referer */ }
+    // first_landing = pagina waar de bezoeker binnenkwam (boot.js); de Referer is hier
+    // het formulier zelf. Alleen paden (begint met "/"), gekapt.
+    const firstLanding = (fields.first_landing || '').toString().trim().slice(0, 300);
+    if (firstLanding.startsWith('/') && !firstLanding.startsWith('//')) landing = firstLanding;
     await recordOwnLead(env, {
       leadId, form: formType, landing, referrer: referer,
       utm: { source: fields.utm_source, medium: fields.utm_medium, campaign: fields.utm_campaign },
