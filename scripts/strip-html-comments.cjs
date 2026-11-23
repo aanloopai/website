@@ -21,7 +21,7 @@ const fs = require('fs');
 const path = require('path');
 
 const DIST = path.join(__dirname, '..', 'dist');
-const PROTECT = /<(script|style|pre|code|textarea)\b[^>]*>[\s\S]*?<\/\1>/gi;
+const PROTECT = /<(script|style|pre|code|textarea|astro-island)\b[^>]*>[\s\S]*?<\/\1>/gi;
 const COMMENT = /<!--(?!\[if)[\s\S]*?-->/g;
 const NEXT_EXPORT = '/_next/static/';
 

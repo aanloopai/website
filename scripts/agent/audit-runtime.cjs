@@ -115,10 +115,10 @@ async function checkRoiCalcInteractivity(page) {
     if (!hasPreset) {
       issues.push('preset-cards niet gevonden in DOM (selector mismatch of niet gerenderd)');
     } else {
-      const allBefore = await page.locator('input[type="number"]').evaluateAll(els => els.map(e => e.value));
+      const allBefore = await page.locator('input[type="number"], input[type="range"]').evaluateAll(els => els.map(e => e.value));
       await page.locator(presetSelector).first().click({ timeout: 3000 }).catch(() => {});
       await page.waitForTimeout(500);
-      const allAfter = await page.locator('input[type="number"]').evaluateAll(els => els.map(e => e.value));
+      const allAfter = await page.locator('input[type="number"], input[type="range"]').evaluateAll(els => els.map(e => e.value));
       const anyChanged = allBefore.some((v, i) => v !== allAfter[i]);
       if (allBefore.length > 0 && !anyChanged) {
         issues.push('preset-card click veranderde geen enkele input-waarde — handler waarschijnlijk niet geregistreerd (ec1270d-class regressie)');
