@@ -21,6 +21,9 @@ const path = require('path');
 
 const DIST = path.join(__dirname, '..', 'dist');
 const SVG_RE = /<svg\b([^>]*)>([\s\S]*?)<\/svg>/gi;
+// React-eilanden hydrateren tegen hun server-HTML: een <use> in plaats van de
+// <path>'s die React verwacht geeft hydration-fout #418/#425. Eilanden blijven onaangeroerd.
+const ISLAND_RE = /<astro-island\b[\s\S]*?<\/astro-island>/gi;
 
 function walk(dir, files = []) {
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -40,9 +43,13 @@ function processFile(file) {
   const html = fs.readFileSync(file, 'utf8');
   if (!html.includes('</body>')) return null;
 
+  const islands = [...html.matchAll(ISLAND_RE)].map((m) => [m.index, m.index + m[0].length]);
+  const inIsland = (i) => islands.some(([a, b]) => i >= a && i < b);
+
   // Ronde 1: tellen welke inhoud vaker dan eens voorkomt.
   const counts = new Map();
   for (const m of html.matchAll(SVG_RE)) {
+    if (inIsland(m.index)) continue;
     const inner = m[2].trim();
     // Een svg die zelf al een <use> bevat of leeg is, valt af.
     if (!inner || inner.includes('<use')) continue;
@@ -56,7 +63,8 @@ function processFile(file) {
 
   // Ronde 2: vervangen en symbolen verzamelen.
   const symbols = new Map();
-  const out = html.replace(SVG_RE, (full, attrs, inner) => {
+  const out = html.replace(SVG_RE, (full, attrs, inner, offset) => {
+    if (inIsland(offset)) return full;
     const body = inner.trim();
     if (!body || body.includes('<use')) return full;
     const viewBox = attr(attrs, 'viewBox') || '';
