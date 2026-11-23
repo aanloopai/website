@@ -296,16 +296,21 @@ const pathParts = Astro.url.pathname.replace(/\/$/, '').split('/').filter(Boolea
 // Cinematisch paginabeeld achter de .hero-gradient-sectie (zie src/data/page-visuals.ts)
 const pageVisual = visualFor(Astro.url.pathname);
 const mainStyle = pageVisual ? `--page-visual:url('/visuals/${pageVisual.file}.jpg')` : undefined;
+// Tussenliggende paden zonder eigen indexpagina (/demo/, /geo-bureau/sector/)
+// komen niet als kruimel voor: anders wijst schema + zichtbare link naar een 404.
+const crumbParts = pathParts
+  .map((part, i) => ({ part, path: pathParts.slice(0, i + 1).join('/'), isLast: i === pathParts.length - 1 }))
+  .filter((c) => c.isLast || !['demo', 'geo-bureau/sector'].includes(c.path));
 const breadcrumbSchema = pathParts.length > 0 ? {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://aanloopai.nl/' },
-    ...pathParts.map((part, i) => ({
+    ...crumbParts.map((c, i) => ({
       '@type': 'ListItem',
       position: i + 2,
-      name: part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' '),
-      item: `https://aanloopai.nl/${pathParts.slice(0, i + 1).join('/')}/`,
+      name: c.part.charAt(0).toUpperCase() + c.part.slice(1).replace(/-/g, ' '),
+      item: `https://aanloopai.nl/${c.path}/`,
     })),
   ],
 } : null;
@@ -597,9 +602,8 @@ const allSchemas = [
           <div class="container-page py-3">
             <ol class="flex flex-wrap items-center gap-1.5 text-xs text-slate-500">
               <li><a href="/" class="hover:text-navy">Home</a></li>
-              {pathParts.map((part, i) => {
-                const isLast = i === pathParts.length - 1;
-                const href = `/${pathParts.slice(0, i + 1).join('/')}/`;
+              {crumbParts.map(({ part, path, isLast }) => {
+                const href = `/${path}/`;
                 const label = part.charAt(0).toUpperCase() + part.slice(1).replace(/-/g, ' ');
                 return (
                   <>

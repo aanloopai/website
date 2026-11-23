@@ -72,11 +72,18 @@ const sitemapUrls = new Set(
   Array.from(sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)).map((m) => m[1].trim())
 );
 
+// Centrale noindex-lijst (zelfde bron als BaseLayout en build-sitemap.cjs): pagina's
+// hierop staan bewust niet in de sitemap en zijn dus geen "indexable" pagina's.
+const NOINDEX_LISTED = new Set(
+  JSON.parse(fs.readFileSync(path.join(ROOT, 'src', 'data', 'noindex-paths.json'), 'utf8')).groups.flatMap((g) => g.paths)
+);
+
 const rows = files.map((f) => {
   const c = fs.readFileSync(f, 'utf8');
-  const { title, desc, noindex } = extract(c);
+  const { title, desc, noindex: noindexInSource } = extract(c);
   const ft = fullTitle(title);
   const url = pageToUrl(f);
+  const noindex = noindexInSource || NOINDEX_LISTED.has(url.replace('https://aanloopai.nl', ''));
   return {
     file: path.relative(ROOT, f).replace(/\\/g, '/'),
     url,

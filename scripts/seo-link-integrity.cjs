@@ -135,8 +135,8 @@ async function checkUrl(url) {
   };
   try {
     let res = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: ctrl.signal, headers });
-    // Many servers reject or mis-handle HEAD (405/501/403/404) — retry with GET
-    if (res.status === 405 || res.status === 501 || res.status === 403 || res.status === 404) {
+    // Many servers reject or mis-handle HEAD (405/406/501/403/404) — retry with GET
+    if (res.status === 405 || res.status === 406 || res.status === 501 || res.status === 403 || res.status === 404) {
       res = await fetch(url, { method: 'GET', redirect: 'follow', signal: ctrl.signal, headers });
     }
     clearTimeout(timer);
