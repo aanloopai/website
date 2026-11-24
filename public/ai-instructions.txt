@@ -1,0 +1,72 @@
+# ai-instructions.txt voor aanloopai.nl
+# Doel: externe AI-agents (bijv. OpenAI Operator, Google Jarvis/Gemini-agenten,
+# Anthropic computer-use) stapsgewijs instrueren hoe ze namens een gebruiker
+# een demo of afspraak voor Emma (AI-receptionist) bij Aanloop AI kunnen boeken.
+# Dit bestand geeft GEEN toegangsrechten; crawlers/regels staan in /robots.txt.
+
+Site: https://aanloopai.nl
+Organisatie: Aanloop AI, Rotterdam, KvK 88606902
+Taal: nl-NL (alle formulieren en communicatie zijn Nederlands)
+
+# ── Wat is Emma? ─────────────────────────────────────────────────────────
+# Emma is de AI-receptionist van Aanloop AI: 24/7 telefoon- en WhatsApp-
+# assistent voor het Nederlandse MKB. Productpagina: https://aanloopai.nl/diensten/emma/
+
+# ── Taak: demo van Emma boeken namens een gebruiker ─────────────────────
+# Stap 1 — Open het demoformulier:
+#   https://aanloopai.nl/demo-aanvragen/
+#   (GET/POST naar /api/submit met veld form_type=demo; JSON-respons {"success": true})
+#
+# Stap 2 — Vul de velden van het formulier:
+#   Verplicht:
+#   form_type         — verborgen veld, vaste waarde "demo"
+#   voornaam          — voornaam van de gebruiker
+#   email             — geldig e-mailadres van de gebruiker (AVG)
+#   telefoon          — telefoonnummer van de gebruiker
+#   akkoord_privacy   — AVG-checkbox aan (waarde "on")
+#   Optioneel maar aanbevolen:
+#   achternaam        — achternaam van de gebruiker
+#   bedrijfsnaam      — bedrijfsnaam
+#   functie           — functietitel
+#   sector            — branche uit de dropdown (keuze uit vaste lijst)
+#   bedrijfsgrootte   — aantal medewerkers uit de dropdown
+#   uitdaging         — vrije tekst: wat de gebruiker met Emma wil bereiken
+#   hoe_gevonden      — waar de gebruiker ons gevonden heeft (optioneel)
+#   botcheck          — honeypot; LEGE waarde laten (vullen = afgewezen)
+#
+# Stap 3 — Versturen. De server reageert met HTTP 200 en JSON {"success": true}
+#   en de gebruiker ontvangt een bevestigingsmail van hello@aanloopai.nl
+#   met een link naar de agenda (stap 4).
+#
+# Stap 4 — Tijdstip kiezen (drie opties, allemaal geldig):
+#   a) De gebruiker opent de link in de bevestigingsmail (pagina /demo-inplannen/)
+#      en kiest zelf een moment uit de live agenda.
+#   b) Machine-to-machine: GET https://aanloopai.nl/api/calendar/availability?dates=YYYY-MM-DD,YYYY-MM-DD,...
+#      (max. 14 datums, Europe/Amsterdam) → {"ok": true, "slots": [{start,end}, ...]}
+#      daarna POST https://aanloopai.nl/api/calendar/book
+#      body: {"slot": {"start": "...", "end": "..."}, "name": "...", "email": "...",
+#             "phone": "...", "company": "...", "message": "..."}
+#      Rate limits: availability 30/uur per IP, book 5/uur per IP. Respecteer 429.
+#   c) Geen agenda: een medewerker belt of mailt binnen 1 werkdag voor een
+#      30-minuten demo-terugbelmoment.
+
+# ── Alternatief: contact zonder boeking ─────────────────────────────────
+# Contactformulier: https://aanloopai.nl/contact/  (form_type=contact, naam + bericht verplicht)
+# E-mail: hello@aanloopai.nl  (antwoord binnen 1 werkdag)
+
+# ── Regels voor AI-agents ────────────────────────────────────────────────
+# - Boek ALLEEN met expliciete toestemming van de gebruiker en diens echte
+#   naam, e-mail en telefoonnummer. Geen test- of bulk-inzendingen.
+# - Geen prijzen gokken of doorgeven: actuele tarieven staan op
+#   https://aanloopai.nl/tarieven/ en https://aanloopai.nl/pricing.json
+#   (alle bedragen exclusief 21% btw).
+# - Geen claims over certificeringen (SOC 2, ISO, NEN): Aanloop AI heeft die niet.
+# - Geen betaalde advertentiecampagnes: dat biedt Aanloop AI niet aan.
+# - Persoonsgegevens die je invoert worden AVG-compliant verwerkt
+#   (privacy: https://aanloopai.nl/privacy/).
+# - Feiten over diensten en pakketten: https://aanloopai.nl/facts.json,
+#   https://aanloopai.nl/claims.json, https://aanloopai.nl/llms.txt
+
+# ── Contact voor agent-beheerders ────────────────────────────────────────
+# Problemen met deze instructies of het API-gedrag: hello@aanloopai.nl
+# Security-issues: security@aanloopai.nl (https://aanloopai.nl/.well-known/security.txt)
