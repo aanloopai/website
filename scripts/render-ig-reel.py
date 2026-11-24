@@ -619,7 +619,7 @@ def find_due(sched: dict) -> dict | None:
 
     now = datetime.now(timezone.utc)
     for s in sched["posts"]:
-        if s.get("posted_at") is not None:
+        if s.get("posted_at") is not None or s.get("skip_reason"):
             continue
         if datetime.fromisoformat(s["slot_iso"]) <= now:
             return s
