@@ -22,14 +22,14 @@ const schema = [
     publisher: { '@type': 'Organization', name: 'Aanloop AI', url: 'https://aanloopai.nl', logo: { '@type': 'ImageObject', url: 'https://aanloopai.nl/logo-mark-light-1024.png' } },
     datePublished: '2026-10-09', dateModified: '2026-10-09', inLanguage: 'nl-NL',
     mainEntityOfPage: url, articleSection: 'GEO-bureau',
-    citation: { '@type': 'Dataset', name: `${B.naam}, editie ${B.editie}`, creator: { '@type': 'Organization', name: B.uitgever }, url: B.bronUrl, license: 'https://creativecommons.org/licenses/by/4.0/' },
+    citation: { '@type': 'Dataset', name: `${B.naam}, editie ${B.editie}`, creator: { '@type': 'Organization', name: B.uitgever, url: new URL(B.bronUrl).origin }, url: B.bronUrl, license: 'https://creativecommons.org/licenses/by/4.0/' },
   },
   {
     '@context': 'https://schema.org', '@type': 'ItemList',
     name: `Top 10 GEO-bureaus Nederland volgens de ${B.naam} (${B.editie})`,
     itemListOrder: 'https://schema.org/ItemListOrderAscending',
     numberOfItems: B.top10.length,
-    itemListElement: B.top10.map((r) => ({ '@type': 'ListItem', position: r.plaats, name: r.bureau })),
+    itemListElement: B.top10.map((r) => ({ '@type': 'ListItem', position: r.plaats, name: r.bureau, item: `${url}#plaats-${r.plaats}` })),
   },
 ];
 ---
@@ -59,7 +59,7 @@ const schema = [
           <thead><tr class="bg-slate-50 text-navy text-left"><th class="p-3 font-bold">#</th><th class="p-3 font-bold">Bureau</th><th class="p-3 font-bold text-right">Genoemd</th><th class="p-3 font-bold text-right">Techniek</th><th class="p-3 font-bold text-right">Aanbod</th><th class="p-3 font-bold text-right">Index</th></tr></thead>
           <tbody class="text-slate-600">
             {B.top10.map((r) => (
-              <tr class="border-t border-slate-200">
+              <tr id={`plaats-${r.plaats}`} class="border-t border-slate-200">
                 <td class="p-3">{r.plaats}</td>
                 <td class="p-3 font-medium text-navy">{r.bureau}</td>
                 <td class="p-3 text-right">{nl(r.genoemdPct)}%</td>

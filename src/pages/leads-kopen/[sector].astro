@@ -28,9 +28,8 @@ const schema = [
     areaServed: { '@type': 'Country', name: 'Nederland' },
     audience: { '@type': 'BusinessAudience', audienceType: sector.doelgroep },
     url,
-    // Geen prijs: per lead, op aanvraag. Beschikbaarheid eerlijk gemapt:
-    // actief = InStock, in opbouw = PreOrder (leadstroom start na aansluiting).
-    offers: { '@type': 'Offer', availability: actief ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder', priceCurrency: 'EUR', url: 'https://aanloopai.nl/leads-kopen/aanmelden/' },
+    // Geen offers: de prijs per lead is niet openbaar (per partner afgesproken),
+    // en een Offer zonder prijs is ongeldig. Geen prijs verzinnen.
   },
   {
     '@context': 'https://schema.org', '@type': 'BreadcrumbList',

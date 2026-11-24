@@ -40,6 +40,8 @@ export interface SiteResultaat {
   eigenaar: 'eigen' | 'klant';
   eigenaarLabel: string;
   sector: string;
+  /** ISO-datum waarop de /werk/<key>/-pagina voor het eerst is gepubliceerd (eerste commit van de entry in git). Voedt Article.datePublished. */
+  gepubliceerd: string;
   live: string; // jaar, ISO-datum of korte status ("livegang gepland") van de huidige site
   samenvatting: string;
   /** Meta-description van /werk/<key>/ — 110–155 tekens (CI check-meta; guard test/resultaten.test.js). */
@@ -61,6 +63,7 @@ const beacon28 = (id: string, label: string, waarde: string, toelichting: string
 export const RESULTATEN: SiteResultaat[] = [
   {
     key: 'keukeninbeeld',
+    gepubliceerd: '2026-10-16',
     naam: 'Keuken in Beeld',
     host: 'keukeninbeeld.nl',
     url: 'https://keukeninbeeld.nl',
@@ -93,6 +96,7 @@ export const RESULTATEN: SiteResultaat[] = [
   },
   {
     key: 'fth',
+    gepubliceerd: '2026-10-16',
     naam: 'FleetTrack Holland',
     host: 'fleettrackholland.nl',
     url: 'https://fleettrackholland.nl',
@@ -122,6 +126,7 @@ export const RESULTATEN: SiteResultaat[] = [
   },
   {
     key: 'alfa',
+    gepubliceerd: '2026-10-16',
     naam: 'Alfa Reclame',
     host: 'alfareclame.nl',
     url: 'https://alfareclame.nl',
@@ -151,6 +156,7 @@ export const RESULTATEN: SiteResultaat[] = [
   },
   {
     key: 'tripandtick',
+    gepubliceerd: '2026-10-16',
     naam: 'Trip and Tick',
     host: 'tripandtick.com',
     url: 'https://tripandtick.com',
@@ -180,6 +186,7 @@ export const RESULTATEN: SiteResultaat[] = [
   },
   {
     key: 'aanloop',
+    gepubliceerd: '2026-10-16',
     naam: 'Aanloop AI',
     host: 'aanloopai.nl',
     url: 'https://aanloopai.nl',
@@ -208,6 +215,7 @@ export const RESULTATEN: SiteResultaat[] = [
   },
   {
     key: 'zoekeen',
+    gepubliceerd: '2026-10-16',
     naam: 'Zoekeen.nl',
     host: 'zoekeen.nl',
     url: 'https://zoekeen.nl',
@@ -232,6 +240,7 @@ export const RESULTATEN: SiteResultaat[] = [
   },
   {
     key: 'grynnstudio',
+    gepubliceerd: '2026-10-16',
     naam: 'Grynn Studio',
     host: 'grynnstudio.nl',
     url: 'https://grynnstudio.nl',
@@ -256,6 +265,7 @@ export const RESULTATEN: SiteResultaat[] = [
   },
   {
     key: 'allesinrenovatie',
+    gepubliceerd: '2026-11-01',
     naam: 'Alles in Renovatie',
     host: 'allesinrenovatie.nl',
     url: 'https://allesinrenovatie.nl',
@@ -282,6 +292,7 @@ export const RESULTATEN: SiteResultaat[] = [
   },
   {
     key: '4menterprise',
+    gepubliceerd: '2026-11-01',
     naam: '4M Enterprise',
     host: '4menterprise.nl',
     url: 'https://4menterprise.nl',
@@ -306,6 +317,7 @@ export const RESULTATEN: SiteResultaat[] = [
   },
   {
     key: 'pasfoto',
+    gepubliceerd: '2026-11-01',
     naam: 'Pasfoto Rotterdam Zuid',
     host: 'pasfotorotterdamzuid.nl',
     url: 'https://www.pasfotorotterdamzuid.nl',
@@ -330,6 +342,7 @@ export const RESULTATEN: SiteResultaat[] = [
   },
   {
     key: 'zorgadviesbureau',
+    gepubliceerd: '2026-11-01',
     naam: 'Zorg Advies Bureau',
     host: 'zorgadviesbureau.com',
     url: 'https://zorgadviesbureau.com',
