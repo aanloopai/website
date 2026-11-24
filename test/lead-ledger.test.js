@@ -3,7 +3,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { createRequire } from 'node:module';
 import { readFileSync } from 'node:fs';
-import { ledgerIngest, recordOwnLead, listLedger, ledgerRead, markLedgerAnswered } from '../src/lib/lead-ledger.js';
+import { ledgerIngest, recordOwnLead, listLedger, listLedgerKanalen, leadKanaal, ledgerRead, markLedgerAnswered } from '../src/lib/lead-ledger.js';
 import { hmacHex } from '../src/lib/visibility-core.js';
 
 const { DatabaseSync } = createRequire(import.meta.url)('node:sqlite');
@@ -157,6 +157,38 @@ describe('recordOwnLead / listLedger', () => {
     expect(all.leads).toHaveLength(2);
     const fth = await (await listLedger(env, new URL('https://aanloopai.nl/api/admin/ledger?site=fth'))).json();
     expect(fth.leads.map((l) => l.site)).toEqual(['fth']);
+  });
+});
+
+describe('leadKanaal / listLedgerKanalen', () => {
+  it('utm_source wins (+campaign)', () => {
+    expect(leadKanaal({ site: 'fth', utm_source: 'newsletter', referrer_host: 'www.google.com' })).toBe('newsletter');
+    expect(leadKanaal({ site: 'fth', utm_source: 'google', utm_campaign: 'brand' })).toBe('google/brand');
+  });
+  it('search-engine referrer is organic', () => {
+    expect(leadKanaal({ site: 'fth', referrer_host: 'www.google.com' })).toBe('organic (google)');
+    expect(leadKanaal({ site: 'fth', referrer_host: 'www.bing.com' })).toBe('organic (bing)');
+    expect(leadKanaal({ site: 'fth', referrer_host: 'google.nl' })).toBe('organic (google)');
+  });
+  it('empty or own-site referrer is direct; other host is the host', () => {
+    expect(leadKanaal({ site: 'fth' })).toBe('direct');
+    expect(leadKanaal({ site: 'fth', referrer_host: '' })).toBe('direct');
+    expect(leadKanaal({ site: 'fth', referrer_host: 'www.fleettrackholland.nl' })).toBe('direct');
+    expect(leadKanaal({ site: 'fth', referrer_host: 'linkedin.com' })).toBe('linkedin.com');
+  });
+  it('listLedger adds kanaal; kanalen groups by source and respects site + window', async () => {
+    await recordOwnLead(env, { leadId: 'k1', form: 'c', landing: '/', referrer: 'https://www.google.com/x', utm: {} });
+    await recordOwnLead(env, { leadId: 'k2', form: 'c', landing: '/', utm: { source: 'li' } });
+    await recordOwnLead(env, { leadId: 'k3', form: 'c', landing: '/' });
+    env.PORTAL_DB.raw.exec("INSERT INTO leads_all (site, lead_id, received_at) VALUES ('aanloop','old',1)");
+    const list = await (await listLedger(env, new URL('https://x/api/admin/ledger'))).json();
+    expect(list.leads.map((l) => l.kanaal).sort()).toEqual(['direct', 'direct', 'li', 'organic (google)']);
+    const k = await (await listLedgerKanalen(env, new URL('https://x/api/admin/ledger/kanalen?site=aanloop&days=90'))).json();
+    const by = Object.fromEntries(k.kanalen.map((r) => [r.kanaal_source, r.n]));
+    expect(by).toEqual({ 'www.google.com': 1, li: 1, direct: 1 });
+  });
+  it('kanalen route sits behind the admin session handler', () => {
+    expect(readFileSync(new URL('../src/lib/admin-routes.js', import.meta.url), 'utf8')).toContain("path === '/api/admin/ledger/kanalen'");
   });
 });
 
