@@ -147,7 +147,8 @@ async function checkUrl(url) {
     // remote server just hiccuped; classify as unverified, never as broken.
     let state;
     if (ok) state = 'ok';
-    else if (res.status >= 500) state = 'unverified';
+    // 429 = our runner was rate-limited; says nothing about whether the page exists.
+    else if (res.status === 429 || res.status >= 500) state = 'unverified';
     else state = 'broken';
     return { url, status: res.status, ok, state };
   } catch (err) {
@@ -208,7 +209,7 @@ async function runExternalChecks() {
       .sort((a, b) => b.referencedFrom.length - a.referencedFrom.length);
     console.log(`\nBroken external URLs: ${brokenExternal.length} / ${results.length}`);
     if (unverifiedExternal.length) {
-      console.log(`Unverified (network/TLS/timeout, not confirmed broken): ${unverifiedExternal.length}`);
+      console.log(`Unverified (network/TLS/timeout/429/5xx, not confirmed broken): ${unverifiedExternal.length}`);
     }
   } else {
     console.log('\n(external links not checked — pass --check-external for live HTTP checks)');
