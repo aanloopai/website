@@ -105,18 +105,64 @@ export async function recordOwnLead(env, { leadId, form, landing, referrer, utm 
   }
 }
 
+// Own domains per site: a referrer from the lead's own site is not a channel ("direct").
+const OWN_HOSTS = {
+  fth: ['fleettrackholland.nl'], alfa: ['alfareclame.nl'], kib: [],
+  zoekeen: ['zoekeen.nl'], aanloop: ['aanloopai.nl'],
+};
+const SEARCH_ENGINES = ['google', 'bing', 'duckduckgo', 'yahoo', 'ecosia'];
+const hostOf = (h) => String(h || '').trim().toLowerCase().replace(/^www\./, '');
+
+// Pure. utm_source wins (+ "/campaign"); else search-engine referrer -> organic; else own/empty -> direct; else host.
+export function leadKanaal(row) {
+  const src = String(row?.utm_source || '').trim();
+  if (src) {
+    const camp = String(row?.utm_campaign || '').trim();
+    return camp ? `${src}/${camp}` : src;
+  }
+  const host = hostOf(row?.referrer_host);
+  if (!host) return 'direct';
+  const engine = SEARCH_ENGINES.find((e) => host.startsWith(`${e}.`) || host.includes(`.${e}.`));
+  if (engine) return `organic (${engine})`;
+  const own = OWN_HOSTS[String(row?.site || '').toLowerCase()] || [];
+  if (own.some((o) => host === o || host.endsWith(`.${o}`))) return 'direct';
+  return host;
+}
+
 // Staff-only list (called from handleAdminApi, which already enforced the session).
 export async function listLedger(env, url) {
   if (!env.PORTAL_DB) return json({ ok: false, error: 'no_db' }, 503);
   const site = (url.searchParams.get('site') || '').toLowerCase();
-  const cols = 'site, lead_id, form, landing, ts, status, received_at, answered_at';
+  const cols = 'site, lead_id, form, landing, ts, status, received_at, answered_at, utm_source, utm_medium, utm_campaign, referrer_host';
   try {
     const q = LEDGER_SITES.includes(site)
       ? env.PORTAL_DB.prepare(`SELECT ${cols} FROM leads_all WHERE site = ? ORDER BY received_at DESC LIMIT 100`).bind(site)
       : env.PORTAL_DB.prepare(`SELECT ${cols} FROM leads_all ORDER BY received_at DESC LIMIT 100`);
-    return json({ ok: true, leads: (await q.all()).results || [] });
+    const leads = ((await q.all()).results || []).map((r) => ({ ...r, kanaal: leadKanaal(r) }));
+    return json({ ok: true, leads });
   } catch (err) {
     console.error('[ledger] list failed:', err?.message || err);
+    return json({ ok: false, error: 'db_error' }, 503);
+  }
+}
+
+// Staff-only: lead counts per site + raw channel source over the last N days (received_at = epoch ms).
+export async function listLedgerKanalen(env, url) {
+  if (!env.PORTAL_DB) return json({ ok: false, error: 'no_db' }, 503);
+  const site = (url.searchParams.get('site') || '').toLowerCase();
+  const d = Number(url.searchParams.get('days'));
+  const days = Number.isFinite(d) && d > 0 ? Math.min(365, Math.floor(d)) : 90;
+  const since = Date.now() - days * 86400000;
+  const sel = `SELECT site, COALESCE(NULLIF(utm_source,''), NULLIF(referrer_host,''), 'direct') AS kanaal_source, COUNT(*) AS n
+       FROM leads_all WHERE received_at >= ?`;
+  const tail = ' GROUP BY site, kanaal_source ORDER BY n DESC LIMIT 200';
+  try {
+    const q = LEDGER_SITES.includes(site)
+      ? env.PORTAL_DB.prepare(`${sel} AND site = ?${tail}`).bind(since, site)
+      : env.PORTAL_DB.prepare(sel + tail).bind(since);
+    return json({ ok: true, days, kanalen: (await q.all()).results || [] });
+  } catch (err) {
+    console.error('[ledger] kanalen failed:', err?.message || err);
     return json({ ok: false, error: 'db_error' }, 503);
   }
 }
